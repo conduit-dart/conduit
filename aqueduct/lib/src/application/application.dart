@@ -29,13 +29,13 @@ class Application<T extends ApplicationChannel> {
   /// The [ApplicationServer] listening for HTTP requests while under test.
   ///
   /// This property is only valid when an application is started via [startOnCurrentIsolate].
-  ApplicationServer server;
+  ApplicationServer? server;
 
   /// The [ApplicationChannel] handling requests while under test.
   ///
   /// This property is only valid when an application is started via [startOnCurrentIsolate]. You use
   /// this value to access elements of your application channel during testing.
-  T get channel => server?.channel as T;
+  T? get channel => server?.channel as T?;
 
   /// The logger that this application will write messages to.
   ///
@@ -117,7 +117,7 @@ class Application<T extends ApplicationChannel> {
       throw StateError(
           "Application error. Cannot invoke 'test' on already running Aqueduct application.");
     }
-    
+
     options.address ??= InternetAddress.loopbackIPv4;
 
     try {
@@ -125,7 +125,7 @@ class Application<T extends ApplicationChannel> {
 
       server = ApplicationServer(_runtime.channelType, options, 1);
 
-      await server.start();
+      await server!.start();
       _hasFinishedLaunching = true;
     } catch (e, st) {
       logger.severe("$e", this, st);
@@ -154,10 +154,10 @@ class Application<T extends ApplicationChannel> {
   /// Creates an [APIDocument] from an [ApplicationChannel].
   ///
   /// This method is called by the `aqueduct document` CLI.
-  static Future<APIDocument> document(Type type,
-      ApplicationOptions config, Map<String, dynamic> projectSpec) async {
+  static Future<APIDocument> document(Type type, ApplicationOptions config,
+      Map<String, dynamic> projectSpec) async {
     final runtime = RuntimeContext.current[type] as ChannelRuntime;
-    
+
     await runtime.runGlobalInitialization(config);
 
     final server = ApplicationServer(runtime.channelType, config, 1);
@@ -172,27 +172,27 @@ class Application<T extends ApplicationChannel> {
   }
 
   Future<ApplicationIsolateSupervisor> _spawn(
-    Application application,
-    ApplicationOptions config,
-    int identifier,
-    Logger logger,
-    Duration startupTimeout,
-    {bool logToConsole = false}) async {
+      Application application,
+      ApplicationOptions config,
+      int identifier,
+      Logger logger,
+      Duration startupTimeout,
+      {bool logToConsole = false}) async {
     final receivePort = ReceivePort();
 
     final libraryUri = _runtime.libraryUri;
     final typeName = _runtime.name;
     final entryPoint = _runtime.isolateEntryPoint;
 
-    final initialMessage = ApplicationInitialServerMessage(typeName,
-      libraryUri, config, identifier, receivePort.sendPort,
-      logToConsole: logToConsole);
-    final isolate = await Isolate.spawn(entryPoint, initialMessage,
-      paused: true);
+    final initialMessage = ApplicationInitialServerMessage(
+        typeName, libraryUri, config, identifier, receivePort.sendPort,
+        logToConsole: logToConsole);
+    final isolate =
+        await Isolate.spawn(entryPoint, initialMessage, paused: true);
 
     return ApplicationIsolateSupervisor(
-      application, isolate, receivePort, identifier, logger,
-      startupTimeout: startupTimeout);
+        application, isolate, receivePort, identifier, logger,
+        startupTimeout: startupTimeout);
   }
 }
 
