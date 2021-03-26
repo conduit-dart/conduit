@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:meta/meta.dart';
-
-void copyDirectory({@required Uri src, @required Uri dst}) {
+void copyDirectory({required Uri src, required Uri dst}) {
   final srcDir = Directory.fromUri(src);
   final dstDir = Directory.fromUri(dst);
   if (!dstDir.existsSync()) {
@@ -12,8 +10,8 @@ void copyDirectory({@required Uri src, @required Uri dst}) {
   srcDir.listSync().forEach((fse) {
     if (fse is File) {
       final outPath = dstDir.uri
-        .resolve(fse.uri.pathSegments.last)
-        .toFilePath(windows: Platform.isWindows);
+          .resolve(fse.uri.pathSegments.last)
+          .toFilePath(windows: Platform.isWindows);
       fse.copySync(outPath);
     } else if (fse is Directory) {
       final segments = fse.uri.pathSegments;
