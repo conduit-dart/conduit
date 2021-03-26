@@ -11,10 +11,10 @@ import 'managed.dart';
 ///         @Table(name: "_Account");
 ///         class _User {
 ///           @primaryKey
-///           int id;
+///           in? id;
 ///
-///           String name;
-///           String email;
+///           String? name;
+///           String? email;
 ///         }
 class Table {
   /// Default constructor.
@@ -37,12 +37,12 @@ class Table {
   /// Each instance of the associated table definition is unique for these properties.
   ///
   /// null if not set.
-  final List<Symbol> uniquePropertySet;
+  final List<Symbol>? uniquePropertySet;
 
   /// The name of the underlying database table.
   ///
   /// If this value is not set, the name defaults to the name of the table definition class.
-  final String name;
+  final String? name;
 }
 
 /// Possible values for a delete rule in a [Relate].
@@ -109,7 +109,7 @@ class Relate {
 ///         class User extends ManagedObject<_User> implements _User {}
 ///         class _User {
 ///           @primaryKey
-///           int id;
+///           int? id;
 ///
 ///           @Column(indexed: true, unique: true)
 ///           String email;
@@ -121,9 +121,9 @@ class Column {
   /// pass the string "2". If the default value is a string, it must also be wrapped in single quotes: "'defaultValue'".
   const Column(
       {bool primaryKey = false,
-      ManagedPropertyType databaseType,
+      ManagedPropertyType? databaseType,
       bool nullable = false,
-      String defaultValue,
+      String? defaultValue,
       bool unique = false,
       bool indexed = false,
       bool omitByDefault = false,
@@ -139,7 +139,6 @@ class Column {
         autoincrement = autoincrement,
         validators = validators;
 
-
   /// When true, indicates that this property is the primary key.
   ///
   /// Only one property of a class may have primaryKey equal to true.
@@ -149,7 +148,7 @@ class Column {
   ///
   /// By default, the database column type is inferred from the Dart type of the property, e.g. a Dart [String] is a PostgreSQL text type.
   /// This allows you to override the default type mapping for the annotated property.
-  final ManagedPropertyType databaseType;
+  final ManagedPropertyType? databaseType;
 
   /// Indicates whether or not the property can be null or not.
   ///
@@ -168,7 +167,7 @@ class Column {
   ///
   ///           ...
   ///         }
-  final String defaultValue;
+  final String? defaultValue;
 
   /// Whether or not the property is unique among all instances.
   ///
@@ -231,13 +230,13 @@ class Serialize {
 /// This annotation is a convenience for the following annotation:
 ///
 ///         @Column(primaryKey: true, databaseType: ManagedPropertyType.bigInteger, autoincrement: true)
-///         int id;
+///         int? id;
 ///
 /// The annotated property type must be [int].
 ///
 /// The validator [Validate.constant] is automatically applied to a property with this annotation.
 const Column primaryKey = Column(
-  primaryKey: true,
-  databaseType: ManagedPropertyType.bigInteger,
-  autoincrement: true,
-  validators: [Validate.constant()]);
+    primaryKey: true,
+    databaseType: ManagedPropertyType.bigInteger,
+    autoincrement: true,
+    validators: [Validate.constant()]);

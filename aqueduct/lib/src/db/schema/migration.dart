@@ -22,19 +22,19 @@ abstract class Migration {
   ///
   /// During migration, this value will be modified as [SchemaBuilder] operations
   /// are executed. See [SchemaBuilder].
-  Schema get currentSchema => database.schema;
+  Schema? get currentSchema => database?.schema;
 
   /// The [PersistentStore] that represents the database being migrated.
-  PersistentStore get store => database.store;
+  PersistentStore? get store => database?.store;
 
   // This value is provided by the 'upgrade' tool and is derived from the filename.
-  int version;
+  int? version;
 
   /// Receiver for database altering operations.
   ///
   /// Methods invoked on this instance - such as [SchemaBuilder.createTable] - will be validated
   /// and generate the appropriate SQL commands to apply to a database to alter its schema.
-  SchemaBuilder database;
+  SchemaBuilder? database;
 
   /// Method invoked to upgrade a database to this migration version.
   ///
@@ -56,9 +56,13 @@ abstract class Migration {
 
   static String sourceForSchemaUpgrade(
       Schema existingSchema, Schema newSchema, int version,
-      {List<String> changeList}) {
+      {List<String>? changeList}) {
     final diff = existingSchema.differenceFrom(newSchema);
-    final source = SchemaBuilder.fromDifference(null, diff, changeList: changeList).commands.map((line) => "\t\t$line").join("\n");
+    final source =
+        SchemaBuilder.fromDifference(null, diff, changeList: changeList)
+            .commands
+            .map((line) => "\t\t$line")
+            .join("\n");
 
     return """
 import 'dart:async';

@@ -16,7 +16,7 @@ abstract class QueryReduceOperation<T extends ManagedObject> {
   ///         var averageAge = await query.reduce.average((user) => user.age);
   ///
   /// The property must be an attribute and its type must be an [num], i.e. [int] or [double].
-  Future<double> average(num selector(T object));
+  Future<double> average(num? selector(T object));
 
   /// Counts the number of [ManagedObject] instances in the database.
   ///
@@ -38,25 +38,25 @@ abstract class QueryReduceOperation<T extends ManagedObject> {
   ///         var oldestUser = await query.reduce.maximum((user) => user.age);
   ///
   /// The property must be an attribute and its type must be [String], [int], [double], or [DateTime].
-  Future<U> maximum<U>(U selector(T object));
+  Future<U> maximum<U>(U? selector(T object));
 
   /// Finds the minimum of some [ManagedObject] property.
   ///
   /// [selector] identifies the property being evaluated, e.g.
   ///
-  ///         var query = new Query<User>();
+  ///         var query = Query<User>();
   ///         var youngestUser = await query.reduce.minimum((user) => user.age);
   ///
   /// The property must be an attribute and its type must be [String], [int], [double], or [DateTime].
-  Future<U> minimum<U>(U selector(T object));
+  Future<U> minimum<U>(U? selector(T object));
 
   /// Finds the sum of some [ManagedObject] property.
   ///
   /// [selector] identifies the property being evaluated, e.g.
   ///
-  ///         var query = new Query<User>();
+  ///         var query = Query<User>();
   ///         var yearsLivesByAllUsers = await query.reduce.sum((user) => user.age);
   ///
   /// The property must be an attribute and its type must be an [num], i.e. [int] or [double].
-  Future<U> sum<U extends num>(U selector(T object));
+  Future<U> sum<U extends num>(U? selector(T object));
 }

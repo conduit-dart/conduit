@@ -6,14 +6,14 @@ import 'package:aqueduct/src/db/query/query.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
   ColumnExpressionBuilder(
-      TableBuilder table, ManagedPropertyDescription property, this.expression,
+      TableBuilder table, ManagedPropertyDescription? property, this.expression,
       {this.prefix = ""})
       : super(table, property);
 
-  final String prefix;
+  final String? prefix;
   PredicateExpression expression;
 
-  String get defaultPrefix => "$prefix${table.sqlTableReference}_";
+  String get defaultPrefix => "$prefix${table?.sqlTableReference}_";
 
   QueryPredicate get predicate {
     final expr = expression;
@@ -119,6 +119,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   }
 
   String escapeLikeString(String input) {
-    return input.replaceAllMapped(RegExp(r"(\\|%|_)"), (Match m) => "\\${m[0]}");
+    return input.replaceAllMapped(
+        RegExp(r"(\\|%|_)"), (Match m) => "\\${m[0]}");
   }
 }

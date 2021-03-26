@@ -11,11 +11,11 @@ import 'package:aqueduct/src/db/managed/managed.dart';
 ///         class Event extends ManagedObject<_Event> implements _Event {}
 ///         class _Event {
 ///           @primaryKey
-///           int id;
+///           int? id;
 ///
-///           String type;
+///           String? type;
 ///
-///           Document details;
+///           Document? details;
 ///         }
 class Document {
   /// Creates an instance with an optional initial [data].

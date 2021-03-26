@@ -12,8 +12,10 @@ class PostgresQueryBuilder extends TableBuilder {
       : valueKeyPrefix = "v${prefixIndex}_",
         placeholderKeyPrefix = "@v${prefixIndex}_",
         super(query) {
-    (query.valueMap ?? query.values?.backing?.contents)
-        .forEach(addColumnValueBuilder);
+    final valueMap = query.valueMap ?? query.values.backing.contents;
+    if (valueMap != null) {
+      valueMap.forEach(addColumnValueBuilder);
+    }
 
     finalize(variables);
   }
@@ -33,21 +35,23 @@ class PostgresQueryBuilder extends TableBuilder {
 
   bool get containsJoins => returning.reversed.any((p) => p is TableBuilder);
 
-  String get sqlWhereClause {
+  String? get sqlWhereClause {
     if (predicate?.format == null) {
       return null;
     }
-    if (predicate.format.isEmpty) {
+    if (predicate!.format!.isEmpty) {
       return null;
     }
-    return predicate.format;
+    return predicate?.format;
   }
 
   void addColumnValueBuilder(String key, dynamic value) {
     final builder = _createColumnValueBuilder(key, value);
-    columnValueBuildersByKey[builder.sqlColumnName()] = builder;
-    variables[builder.sqlColumnName(withPrefix: valueKeyPrefix)] =
-        builder.value;
+    if (builder != null) {
+      columnValueBuildersByKey[builder.sqlColumnName()] = builder;
+      variables[builder.sqlColumnName(withPrefix: valueKeyPrefix)] =
+          builder.value;
+    }
   }
 
   List<T> instancesForRows<T extends ManagedObject>(List<List<dynamic>> rows) {
@@ -55,11 +59,11 @@ class PostgresQueryBuilder extends TableBuilder {
     return instantiator.instancesForRows<T>(rows);
   }
 
-  ColumnValueBuilder _createColumnValueBuilder(String key, dynamic value) {
-    var property = entity.properties[key];
+  ColumnValueBuilder? _createColumnValueBuilder(String key, dynamic value) {
+    var property = entity?.properties[key];
     if (property == null) {
       throw ArgumentError("Invalid query. Column '$key' does "
-          "not exist for table '${entity.tableName}'");
+          "not exist for table '${entity?.tableName}'");
     }
 
     if (property is ManagedRelationshipDescription) {
@@ -74,7 +78,7 @@ class PostgresQueryBuilder extends TableBuilder {
         }
 
         throw ArgumentError("Invalid query. Column '$key' in "
-            "'${entity.tableName}' does not exist. '$key' recognized as ORM relationship. "
+            "'${entity?.tableName}' does not exist. '$key' recognized as ORM relationship. "
             "Provided value must be 'Map' or ${property.destinationEntity.name}.");
       }
     }

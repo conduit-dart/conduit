@@ -34,11 +34,11 @@ abstract class ManagedBacking {
   ///
   /// Use this method to use any reference of a property from this instance.
   void removeProperty(String propertyName) {
-    contents.remove(propertyName);
+    contents?.remove(propertyName);
   }
 
   /// A map of all set values of this instance.
-  Map<String, dynamic> get contents;
+  Map<String, dynamic>? get contents;
 }
 
 /// An object that represents a database row.
@@ -49,14 +49,14 @@ abstract class ManagedBacking {
 /// A managed object is declared in two parts, the subclass and its table definition.
 ///
 ///         class User extends ManagedObject<_User> implements _User {
-///           String name;
+///           String? name;
 ///         }
 ///         class _User {
 ///           @primaryKey
-///           int id;
+///           int? id;
 ///
 ///           @Column(indexed: true)
-///           String email;
+///           String? email;
 ///         }
 ///
 /// Table definitions are plain Dart objects that represent a database table. Each property is a column in the database.
@@ -82,7 +82,7 @@ abstract class ManagedObject<T> extends Serializable {
   ManagedBacking backing = ManagedValueBacking();
 
   /// Retrieves a value by property name from [backing].
-  dynamic operator [](String propertyName) {
+  dynamic operator [](String? propertyName) {
     final prop = entity.properties[propertyName];
     if (prop == null) {
       throw ArgumentError("Invalid property access for '${entity.name}'. "
@@ -118,7 +118,7 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Checks whether or not a property has been set in this instances' [backing].
   bool hasValueForProperty(String propertyName) {
-    return backing.contents.containsKey(propertyName);
+    return backing.contents?.containsKey(propertyName) ?? false;
   }
 
   /// Callback to modify an object prior to updating it with a [Query].
@@ -133,7 +133,7 @@ abstract class ManagedObject<T> extends Serializable {
   ///
   ///         @override
   ///         void willUpdate() {
-  ///           updatedDate = new DateTime.now().toUtc();
+  ///           updatedDate = DateTime.now().toUtc();
   ///         }
   ///
   /// This method is only invoked when a query is configured by its [Query.values]. This method is not invoked
@@ -152,7 +152,7 @@ abstract class ManagedObject<T> extends Serializable {
   ///
   ///         @override
   ///         void willInsert() {
-  ///           createdDate = new DateTime.now().toUtc();
+  ///           createdDate = DateTime.now().toUtc();
   ///         }
   ///
   /// This method is only invoked when a query is configured by its [Query.values]. This method is not invoked
@@ -191,8 +191,7 @@ abstract class ManagedObject<T> extends Serializable {
       if (invocation.isGetter) {
         return this[propertyName];
       } else if (invocation.isSetter) {
-        this[propertyName] =
-          invocation.positionalArguments.first;
+        this[propertyName] = invocation.positionalArguments.first;
 
         return null;
       }
@@ -202,8 +201,8 @@ abstract class ManagedObject<T> extends Serializable {
   }
 
   @override
-  void readFromMap(Map<String, dynamic> object) {
-    object.forEach((key, v) {
+  void readFromMap(Map<String, dynamic>? object) {
+    object?.forEach((key, v) {
       final property = entity.properties[key];
       if (property == null) {
         throw ValidationException(["invalid input key '$key'"]);
@@ -217,7 +216,7 @@ abstract class ManagedObject<T> extends Serializable {
           backing.setValueForProperty(
               property, property.convertFromPrimitiveValue(v));
         } else {
-          if (!property.transientStatus.isAvailableAsInput) {
+          if (!property.transientStatus!.isAvailableAsInput) {
             throw ValidationException(["invalid input key '$key'"]);
           }
 
@@ -249,16 +248,16 @@ abstract class ManagedObject<T> extends Serializable {
   Map<String, dynamic> asMap() {
     var outputMap = <String, dynamic>{};
 
-    backing.contents.forEach((k, v) {
+    backing.contents?.forEach((k, v) {
       if (!_isPropertyPrivate(k)) {
-        outputMap[k] = entity.properties[k].convertToPrimitiveValue(v);
+        outputMap[k] = entity.properties[k]?.convertToPrimitiveValue(v);
       }
     });
 
     entity.attributes.values
-        .where((attr) => attr.transientStatus?.isAvailableAsOutput ?? false)
+        .where((attr) => attr?.transientStatus?.isAvailableAsOutput ?? false)
         .forEach((attr) {
-      var value = entity.runtime.getTransientValueForKey(this, attr.name);
+      var value = entity.runtime.getTransientValueForKey(this, attr!.name);
       if (value != null) {
         outputMap[attr.name] = value;
       }
@@ -268,7 +267,8 @@ abstract class ManagedObject<T> extends Serializable {
   }
 
   @override
-  APISchemaObject documentSchema(APIDocumentContext context) => entity.document(context);
+  APISchemaObject documentSchema(APIDocumentContext context) =>
+      entity.document(context);
 
   static bool _isPropertyPrivate(String propertyName) =>
       propertyName.startsWith("_");

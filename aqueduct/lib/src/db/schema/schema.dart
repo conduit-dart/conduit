@@ -22,24 +22,25 @@ class Schema {
   ///
   /// This is preferred method of creating an instance of this type. Each [ManagedEntity]
   /// in [dataModel] will correspond to a [SchemaTable] in [tables].
-  Schema.fromDataModel(ManagedDataModel dataModel) {
-    _tables = dataModel.entities.map((e) => SchemaTable.fromEntity(e)).toList();
+  Schema.fromDataModel(ManagedDataModel? dataModel) {
+    _tables =
+        dataModel?.entities.map((e) => SchemaTable.fromEntity(e)).toList();
   }
 
   /// Creates a deep copy of [otherSchema].
-  Schema.from(Schema otherSchema) {
-    _tables = otherSchema?.tables
-            ?.map((table) => SchemaTable.from(table))
-            ?.toList() ??
-        [];
+  Schema.from(Schema? otherSchema) {
+    _tables =
+        otherSchema?.tables.map((table) => SchemaTable.from(table)).toList() ??
+            [];
   }
 
   /// Creates a instance of this type from [map].
   ///
   /// [map] is typically created from [asMap].
   Schema.fromMap(Map<String, dynamic> map) {
-    _tables = (map["tables"] as List<Map<String, dynamic>>)
-        .map((t) => SchemaTable.fromMap(t))
+    _tables = (map["tables"] as List<Map<String, dynamic>?>)
+        .where((t) => t != null)
+        .map((t) => SchemaTable.fromMap(t!))
         .toList();
   }
 
@@ -54,18 +55,18 @@ class Schema {
   List<SchemaTable> get tables => List.unmodifiable(_tableStorage ?? []);
 
   // Do not set this directly. Use _tables= instead.
-  List<SchemaTable> _tableStorage;
+  List<SchemaTable>? _tableStorage;
 
   // ignore: avoid_setters_without_getters
-  set _tables(List<SchemaTable> tables) {
+  set _tables(List<SchemaTable>? tables) {
     _tableStorage = tables ?? [];
-    _tableStorage.forEach((t) => t.schema = this);
+    _tableStorage!.forEach((t) => t.schema = this);
   }
 
   /// Gets a table from [tables] by that table's name.
   ///
   /// See [tableForName] for details.
-  SchemaTable operator [](String tableName) => tableForName(tableName);
+  SchemaTable? operator [](String? tableName) => tableForName(tableName);
 
   /// The differences between two schemas.
   ///
@@ -84,18 +85,18 @@ class Schema {
           "Table ${table.name} already exists and cannot be added.");
     }
 
-    _tableStorage.add(table);
+    _tableStorage!.add(table);
     table.schema = this;
   }
 
   void replaceTable(SchemaTable existingTable, SchemaTable newTable) {
-    if (!_tableStorage.contains(existingTable)) {
+    if (!_tableStorage!.contains(existingTable)) {
       throw SchemaException(
           "Table ${existingTable.name} does not exist and cannot be replaced.");
     }
 
-    var index = _tableStorage.indexOf(existingTable);
-    _tableStorage[index] = newTable;
+    var index = _tableStorage!.indexOf(existingTable);
+    _tableStorage![index] = newTable;
     newTable.schema = this;
     existingTable.schema = null;
   }
@@ -104,11 +105,11 @@ class Schema {
     throw SchemaException("Renaming a table not yet implemented!");
 //
 //    if (tableForName(newName) != null) {
-//      throw new SchemaException("Table ${newName} already exist.");
+//      throw SchemaException("Table ${newName} already exist.");
 //    }
 //
 //    if (!tables.contains(table)) {
-//      throw new SchemaException("Table ${table.name} does not exist in schema.");
+//      throw SchemaException("Table ${table.name} does not exist in schema.");
 //    }
 //
 //    // Rename indices and constraints
@@ -124,7 +125,7 @@ class Schema {
       throw SchemaException("Table ${table.name} does not exist in schema.");
     }
     table.schema = null;
-    _tableStorage.remove(table);
+    _tableStorage!.remove(table);
   }
 
   /// Returns a [SchemaTable] for [name].
@@ -134,11 +135,14 @@ class Schema {
   ///
   /// Note: tables are typically prefixed with an underscore when using
   /// Aqueduct naming conventions for [ManagedObject].
-  SchemaTable tableForName(String name) {
-    var lowercaseName = name.toLowerCase();
+  SchemaTable? tableForName(String? name) {
+    var lowercaseName = name?.toLowerCase();
 
-    return tables.firstWhere((t) => t.name.toLowerCase() == lowercaseName,
-        orElse: () => null);
+    try {
+      return tables.firstWhere((t) => t.name?.toLowerCase() == lowercaseName);
+    } on StateError {
+      return null;
+    }
   }
 
   /// Emits this instance as a transportable [Map].
@@ -151,7 +155,7 @@ class Schema {
 ///
 /// This class is used for comparing schemas for validation and migration.
 class SchemaDifference {
-  /// Creates a new instance that represents the difference between [expectedSchema] and [actualSchema].
+  /// Creates a instance that represents the difference between [expectedSchema] and [actualSchema].
   ///
   SchemaDifference(this.expectedSchema, this.actualSchema) {
     for (var expectedTable in expectedSchema.tables) {
@@ -194,13 +198,16 @@ class SchemaDifference {
   List<SchemaTableDifference> get tableDifferences => _differingTables;
 
   List<SchemaTable> get tablesToAdd {
-    return _differingTables
-        .where((diff) => diff.expectedTable == null && diff.actualTable != null)
-        .map((d) => d.actualTable)
-        .toList();
+    List<SchemaTable> acc = [];
+    _differingTables.forEach((diff) {
+      if (diff.expectedTable == null && diff.actualTable != null) {
+        acc.add(diff.actualTable!);
+      }
+    });
+    return acc;
   }
 
-  List<SchemaTable> get tablesToDelete {
+  List<SchemaTable?> get tablesToDelete {
     return _differingTables
         .where((diff) => diff.expectedTable != null && diff.actualTable == null)
         .map((diff) => diff.expectedTable)
