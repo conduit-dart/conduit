@@ -17,15 +17,15 @@ String getInvokerSource(BuildContext context,
 
   var counter = 0;
   op.positionalParameters.forEach((p) {
-    buf.writeln("    args.positionalArguments[$counter] as ${p.type},");
+    buf.writeln("    args.positionalArguments?[$counter],");
     counter++;
   });
 
   op.namedParameters.forEach((p) {
-    var defaultValue = sourcifyValue(p.defaultValue);
+    var defaultValue = sourcifyValue(p!.defaultValue);
 
     buf.writeln(
-        "    ${p.symbolName}: args.namedArguments['${p.symbolName}'] as ${p.type} ?? $defaultValue,");
+        "    ${p.symbolName}: args.namedArguments?['${p.symbolName}'] ?? $defaultValue,");
   });
 
   buf.writeln("  );");
@@ -39,9 +39,9 @@ String getApplyRequestPropertiesSource(
   StringBuffer buf = StringBuffer();
   final subclassName = MirrorSystem.getName(runtime.type.simpleName);
 
-  runtime.ivarParameters.forEach((f) {
+  runtime.ivarParameters?.forEach((f) {
     buf.writeln("(untypedController as $subclassName).${f.symbolName} "
-        "= args.instanceVariables['${f.symbolName}'] as ${f.type};");
+        "= args.instanceVariables?['${f.symbolName}'];");
   });
 
   return buf.toString();
@@ -49,11 +49,11 @@ String getApplyRequestPropertiesSource(
 
 String getResourceControllerImplSource(
     BuildContext context, ResourceControllerRuntimeImpl runtime) {
-  final ivarSources = runtime.ivarParameters
+  final ivarSources = runtime.ivarParameters!
       .map((i) => getParameterSource(context, runtime, i))
       .join(",\n");
-  final operationSources = runtime.operations
-      .map((o) => getOperationSource(context, runtime, o))
+  final operationSources = runtime.operations!
+      .map((o) => getOperationSource(context, runtime, o!))
       .join(",\n");
 
   return """
@@ -80,32 +80,29 @@ String getDecoderSource(
       {
         return getElementDecoderSource(parameter.type);
       }
-      break;
     case BindingType.header:
       {
         return getListDecoderSource(parameter);
       }
-      break;
     case BindingType.query:
       {
         return getListDecoderSource(parameter);
       }
-      break;
     case BindingType.body:
       {
         return getBodyDecoderSource(parameter);
       }
-      break;
+    default:
+      throw StateError("unknown parameter");
   }
-  throw StateError("unknown parameter");
 }
 
-String sourcifyFilter(List<String> filter) {
+String sourcifyFilter(List<String>? filter) {
   if (filter == null) {
     return "null";
   }
 
-  return "[${filter?.map((s) => "'$s'")?.join(",")}]";
+  return "[${filter.map((s) => "'$s'").join(",")}]";
 }
 
 String getBodyDecoderSource(ResourceControllerParameter p) {
@@ -170,7 +167,7 @@ String getElementDecoderSource(Type type) {
 String getListDecoderSource(ResourceControllerParameter p) {
   if (reflectType(p.type).isSubtypeOf(reflectType(List))) {
     final mapper = getElementDecoderSource(
-      reflectType(p.type).typeArguments.first.reflectedType);
+        reflectType(p.type).typeArguments.first.reflectedType);
     return """(v) {
   return ${p.type}.from((v as List).map($mapper));  
 }  """;
@@ -209,12 +206,14 @@ String getOperationSource(
     BuildContext context,
     ResourceControllerRuntimeImpl runtime,
     ResourceControllerOperation operation) {
-  final scopeElements = operation.scopes?.map((s) => "AuthScope(${sourcifyValue(s.toString())})")?.join(",");
+  final scopeElements = operation.scopes
+      ?.map((s) => "AuthScope(${sourcifyValue(s.toString())})")
+      .join(",");
   final namedParameters = operation.namedParameters
-      .map((p) => getParameterSource(context, runtime, p))
+      .map((p) => getParameterSource(context, runtime, p!))
       .join(",");
   final positionalParameters = operation.positionalParameters
-      .map((p) => getParameterSource(context, runtime, p))
+      .map((p) => getParameterSource(context, runtime, p!))
       .join(",");
   final pathVars = operation.pathVariables.map((s) => "'$s'").join(",");
 

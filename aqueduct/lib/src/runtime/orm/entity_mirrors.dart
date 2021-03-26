@@ -6,8 +6,8 @@ import 'package:aqueduct/src/utilities/mirror_helpers.dart';
 
 ManagedType getManagedTypeFromType(TypeMirror type) {
   ManagedPropertyType kind;
-  ManagedType elements;
-  Map<String, dynamic> enumerationMap;
+  ManagedType? elements;
+  Map<String, dynamic>? enumerationMap;
 
   if (type.isAssignableTo(reflectType(int))) {
     kind = ManagedPropertyType.integer;
@@ -22,7 +22,7 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
   } else if (type.isSubtypeOf(reflectType(Map))) {
     if (!type.typeArguments.first.isAssignableTo(reflectType(String))) {
       throw UnsupportedError(
-        "Invalid type '${type.reflectedType}' for 'ManagedType'. Key is invalid; must be 'String'.");
+          "Invalid type '${type.reflectedType}' for 'ManagedType'. Key is invalid; must be 'String'.");
     }
     kind = ManagedPropertyType.map;
     elements = getManagedTypeFromType(type.typeArguments.last);
@@ -35,17 +35,16 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
     kind = ManagedPropertyType.string;
     final enumeratedCases = type.getField(#values).reflectee as List<dynamic>;
     enumerationMap = enumeratedCases.fold(<String, dynamic>{}, (m, v) {
-      m[v.toString().split(".").last] = v;
+      m?[v.toString().split(".").last] = v;
       return m;
     });
   } else {
     throw UnsupportedError(
-      "Invalid type '${type.reflectedType}' for 'ManagedType'.");
+        "Invalid type '${type.reflectedType}' for 'ManagedType'.");
   }
 
   return ManagedType(type.reflectedType, kind, elements, enumerationMap);
 }
-
 
 // Expanding the list of ivars for each class yields duplicates of
 // any ivar is overridden. Since the order in which ivars are returned
@@ -53,7 +52,7 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
 // we can simply fold this list so that the first ivar 'wins'.
 List<VariableMirror> instanceVariablesFromClass(ClassMirror classMirror) {
   return classHierarchyForClass(classMirror)
-      .expand((cm) => cm.declarations.values
+      .expand((cm) => cm!.declarations.values
           .where(isInstanceVariableMirror)
           .map((decl) => decl as VariableMirror))
       .fold(<VariableMirror>[], (List<VariableMirror> acc, decl) {
@@ -90,7 +89,7 @@ bool isTransientAccessorMethod(DeclarationMirror declMir) {
     return false;
   }
 
-  var methodMirror = declMir as MethodMirror;
+  var methodMirror = declMir;
   if (methodMirror.isStatic) {
     return false;
   }
@@ -115,8 +114,8 @@ bool isTransientPropertyOrAccessor(DeclarationMirror declaration) {
       isTransientProperty(declaration);
 }
 
-List<Validate> validatorsFromDeclaration(DeclarationMirror dm) =>
+List<Validate?> validatorsFromDeclaration(DeclarationMirror dm) =>
     allMetadataOfType<Validate>(dm);
 
-Serialize transientMetadataFromDeclaration(DeclarationMirror dm) =>
+Serialize? transientMetadataFromDeclaration(DeclarationMirror dm) =>
     firstMetadataOfType(dm);
