@@ -20,20 +20,22 @@ class RequestPath {
     }
 
     for (var segment in spec.segments) {
-      requestIterator.moveNext();
-      var requestSegment = requestIterator.current;
+      if (!requestIterator.moveNext()) {
+        remainingPath = "";
+        return;
+      }
+      final requestSegment = requestIterator.current;
 
       if (segment.isVariable) {
-        variables[segment.variableName] = requestSegment;
-        orderedVariableNames.add(segment.variableName);
+        variables[segment.variableName.toString()] = requestSegment;
+        orderedVariableNames.add(segment.variableName!);
       } else if (segment.isRemainingMatcher) {
         var remaining = [];
-        remaining.add(requestIterator.current ?? "");
+        remaining.add(requestIterator.current);
         while (requestIterator.moveNext()) {
           remaining.add(requestIterator.current);
         }
         remainingPath = remaining.join("/");
-
         return;
       }
     }
@@ -64,7 +66,7 @@ class RequestPath {
   ///
   /// The remaining path will will be a single string, including any path delimiters (/),
   /// but will not have a leading path delimiter.
-  String remainingPath;
+  String? remainingPath;
 
   /// An ordered list of variable names (the keys in [variables]) based on their position in the path.
   ///

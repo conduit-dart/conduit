@@ -9,8 +9,8 @@ import 'package:runtime/runtime.dart';
 ///
 /// See [RequestBody] for a concrete implementation.
 abstract class BodyDecoder {
-  BodyDecoder(Stream<List<int>> bodyByteStream)
-      : _originalByteStream = bodyByteStream;
+  BodyDecoder(Stream<List<int>>? bodyByteStream)
+      : _originalByteStream = bodyByteStream ?? const Stream.empty();
 
   /// The stream of bytes to decode.
   ///
@@ -20,7 +20,7 @@ abstract class BodyDecoder {
   /// Determines how [bytes] get decoded.
   ///
   /// A decoder is chosen from [CodecRegistry] according to this value.
-  ContentType get contentType;
+  ContentType? get contentType;
 
   /// Whether or not [bytes] is empty.
   ///
@@ -57,7 +57,7 @@ abstract class BodyDecoder {
   /// The raw bytes of this request body.
   ///
   /// This value is valid if [retainOriginalBytes] was set to true prior to [decode] being invoked.
-  List<int> get originalBytes {
+  List<int>? get originalBytes {
     if (retainOriginalBytes == false) {
       throw StateError(
           "'originalBytes' were not retained. Set 'retainOriginalBytes' to true prior to decoding.");
@@ -67,7 +67,7 @@ abstract class BodyDecoder {
 
   final Stream<List<int>> _originalByteStream;
   dynamic _decodedData;
-  List<int> _bytes;
+  List<int>? _bytes;
 
   /// Decodes this object's bytes as [T].
   ///

@@ -12,7 +12,8 @@ abstract class Serializable {
   /// The returned [APISchemaObject] will be of type [APIType.object]. By default, each instance variable
   /// of the receiver's type will be a property of the return value.
   APISchemaObject documentSchema(APIDocumentContext context) {
-    return (RuntimeContext.current[runtimeType] as SerializableRuntime).documentSchema(context);
+    return (RuntimeContext.current[runtimeType] as SerializableRuntime)
+        .documentSchema(context);
   }
 
   /// Reads values from [object].
@@ -23,7 +24,7 @@ abstract class Serializable {
   /// This method is used by implementors to assign and use values from [object] for its own
   /// purposes. [SerializableException]s should be thrown when [object] violates a constraint
   /// of the receiver.
-  void readFromMap(Map<String, dynamic> object);
+  void readFromMap(Map<String, dynamic>? object);
 
   /// Reads values from [object], after applying filters.
   ///
@@ -41,17 +42,17 @@ abstract class Serializable {
   ///     var values = json.decode(await request.body.decode());
   ///     var user = User()
   ///       ..read(values, ignore: ["id"]);
-  void read(Map<String, dynamic> object,
-      {Iterable<String> accept,
-      Iterable<String> ignore,
-      Iterable<String> reject,
-      Iterable<String> require}) {
+  void read(Map<String, dynamic>? object,
+      {Iterable<String>? accept,
+      Iterable<String>? ignore,
+      Iterable<String>? reject,
+      Iterable<String>? require}) {
     if (accept == null && ignore == null && reject == null && require == null) {
       readFromMap(object);
       return;
     }
 
-    final copy = Map<String, dynamic>.from(object);
+    final copy = Map<String, dynamic>.from(object!);
     final stillRequired = require?.toList();
     object.keys.forEach((key) {
       if (reject?.contains(key) ?? false) {
@@ -66,7 +67,7 @@ abstract class Serializable {
 
     if (stillRequired?.isNotEmpty ?? false) {
       throw SerializableException(
-          ["missing required input key(s): '${stillRequired.join(", ")}'"]);
+          ["missing required input key(s): '${stillRequired!.join(", ")}'"]);
     }
 
     readFromMap(copy);
@@ -78,7 +79,7 @@ abstract class Serializable {
   /// If a [Response.body]'s type implements this interface, this method is invoked prior to any content-type encoding
   /// performed by the [Response].  A [Response.body] may also be a [List<Serializable>], for which this method is invoked on
   /// each element in the list.
-  Map<String, dynamic> asMap();
+  Map<String, dynamic>? asMap();
 
   /// Whether a subclass will automatically be registered as a schema component automatically.
   ///
@@ -93,7 +94,7 @@ abstract class Serializable {
 class SerializableException implements HandlerException {
   SerializableException(this.reasons);
 
-  final List<String> reasons;
+  final List<String>? reasons;
 
   @override
   Response get response {

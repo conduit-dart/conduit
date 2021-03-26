@@ -20,18 +20,17 @@ import 'route_specification.dart';
 /// a [Router] is the [ApplicationChannel.entryPoint].
 class Router extends Controller {
   /// Creates a new [Router].
-  Router({String basePath, Future notFoundHandler(Request request)})
+  Router({String? basePath, Future notFoundHandler(Request request)?})
       : _unmatchedController = notFoundHandler,
         _basePathSegments =
-            basePath?.split("/")?.where((str) => str.isNotEmpty)?.toList() ??
-                [] {
-    policy.allowCredentials = false;
+            basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
+    policy?.allowCredentials = false;
   }
 
   final _RootNode _root = _RootNode();
   final List<_RouteController> _routeControllers = [];
   final List<String> _basePathSegments;
-  final Function _unmatchedController;
+  final Function? _unmatchedController;
 
   /// A prefix for all routes on this instance.
   ///
@@ -97,7 +96,7 @@ class Router extends Controller {
   }
 
   @override
-  Linkable linkFunction(FutureOr<RequestOrResponse> handle(Request request)) {
+  Linkable linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
     throw ArgumentError(
         "Invalid link. 'Router' cannot directly link to functions. Use 'route'.");
   }
@@ -121,22 +120,21 @@ class Router extends Controller {
       }
 
       final node =
-          _root.node.nodeForPathSegments(requestURISegmentIterator, req.path);
+          _root.node!.nodeForPathSegments(requestURISegmentIterator, req.path);
       if (node?.specification == null) {
         await _handleUnhandledRequest(req);
         return null;
       }
-      req.path.setSpecification(node.specification,
+      req.path.setSpecification(node!.specification!,
           segmentOffset: _basePathSegments.length);
-
-      next = node.controller;
+      next = node.controller!;
     } catch (any, stack) {
       return handleError(req, any, stack);
     }
 
     // This line is intentionally outside of the try block
     // so that this object doesn't handle exceptions for 'next'.
-    return next?.receive(req);
+    return next.receive(req);
   }
 
   @override
@@ -166,7 +164,7 @@ class Router extends Controller {
 
   Future _handleUnhandledRequest(Request req) async {
     if (_unmatchedController != null) {
-      return _unmatchedController(req);
+      return _unmatchedController!(req);
     }
     var response = Response.notFound();
     if (req.acceptsContentType(ContentType.html)) {
@@ -182,7 +180,7 @@ class Router extends Controller {
 }
 
 class _RootNode {
-  RouteNode node;
+  RouteNode? node;
 }
 
 class _RouteController extends Controller {
@@ -216,13 +214,13 @@ class _RouteController extends Controller {
             .toList();
 
       if (spec.segments.any((seg) => seg.isRemainingMatcher)) {
-        path.parameters.add(APIParameter.path("path")
+        path.parameters!.add(APIParameter.path("path")
           ..description =
               "This path variable may contain slashes '/' and may be empty.");
       }
 
       path.operations =
-          spec.controller.documentOperations(components, pathKey, path);
+          spec.controller!.documentOperations(components, pathKey, path);
 
       pathMap[pathKey] = path;
 

@@ -17,20 +17,20 @@ import 'serializable.dart';
 ///         }
 class Operation {
   const Operation(this.method,
-      [String pathVariable1,
-      String pathVariable2,
-      String pathVariable3,
-      String pathVariable4])
+      [String? pathVariable1,
+      String? pathVariable2,
+      String? pathVariable3,
+      String? pathVariable4])
       : _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,
         _pathVariable4 = pathVariable4;
 
   const Operation.get(
-      [String pathVariable1,
-      String pathVariable2,
-      String pathVariable3,
-      String pathVariable4])
+      [String? pathVariable1,
+      String? pathVariable2,
+      String? pathVariable3,
+      String? pathVariable4])
       : method = "GET",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
@@ -38,10 +38,10 @@ class Operation {
         _pathVariable4 = pathVariable4;
 
   const Operation.put(
-      [String pathVariable1,
-      String pathVariable2,
-      String pathVariable3,
-      String pathVariable4])
+      [String? pathVariable1,
+      String? pathVariable2,
+      String? pathVariable3,
+      String? pathVariable4])
       : method = "PUT",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
@@ -49,10 +49,10 @@ class Operation {
         _pathVariable4 = pathVariable4;
 
   const Operation.post(
-      [String pathVariable1,
-      String pathVariable2,
-      String pathVariable3,
-      String pathVariable4])
+      [String? pathVariable1,
+      String? pathVariable2,
+      String? pathVariable3,
+      String? pathVariable4])
       : method = "POST",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
@@ -60,10 +60,10 @@ class Operation {
         _pathVariable4 = pathVariable4;
 
   const Operation.delete(
-      [String pathVariable1,
-      String pathVariable2,
-      String pathVariable3,
-      String pathVariable4])
+      [String? pathVariable1,
+      String? pathVariable2,
+      String? pathVariable3,
+      String? pathVariable4])
       : method = "DELETE",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
@@ -71,16 +71,21 @@ class Operation {
         _pathVariable4 = pathVariable4;
 
   final String method;
-  final String _pathVariable1;
-  final String _pathVariable2;
-  final String _pathVariable3;
-  final String _pathVariable4;
+  final String? _pathVariable1;
+  final String? _pathVariable2;
+  final String? _pathVariable3;
+  final String? _pathVariable4;
 
   /// Returns a list of all path variables required for this operation.
   List<String> get pathVariables {
-    return [_pathVariable1, _pathVariable2, _pathVariable3, _pathVariable4]
-        .where((s) => s != null)
-        .toList();
+    List<String> acc = [];
+    [_pathVariable1, _pathVariable2, _pathVariable3, _pathVariable4]
+        .forEach((pathVar) {
+      if (pathVar != null) {
+        acc.add(pathVar);
+      }
+    });
+    return acc;
   }
 }
 
@@ -95,7 +100,7 @@ class Bind {
   /// the request /users?foo=bar would bind the value `bar` to the variable `foo`:
   ///
   ///         @Operation.get()
-  ///         Future<Response> getUsers(@Bind.query("foo") String foo) async => ...;
+  ///         Future<Response> getUsers(@Bind.query("foo") String? foo) async => ...;
   ///
   /// [name] is compared case-sensitively, i.e. `Foo` and `foo` are different.
   ///
@@ -206,13 +211,13 @@ class Bind {
         ignore = null,
         reject = null;
 
-  final String name;
+  final String? name;
   final BindingType bindingType;
 
-  final List<String> accept;
-  final List<String> ignore;
-  final List<String> reject;
-  final List<String> require;
+  final List<String>? accept;
+  final List<String>? ignore;
+  final List<String>? reject;
+  final List<String>? require;
 }
 
 enum BindingType { query, header, body, path }
