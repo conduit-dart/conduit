@@ -11,31 +11,32 @@ class CLISetup extends CLICommand with CLIProject {
   @Option("heroku",
       help:
           "DEPRECATED. Please see https://aqueduct.io/docs/deploy/deploy_heroku/.")
-  String get herokuName => decode("heroku");
+  String? get herokuName => decode("heroku");
 
   @Flag("tests",
       help:
           "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.")
-  bool get shouldSetupTests => decode("tests");
+  bool get shouldSetupTests => decode("tests", orElse: () => false);
 
   @Flag("confirm",
       abbr: "c",
       negatable: false,
       help: "Confirms that you wish to carry out this setup.")
-  bool get confirm => decode("confirm");
+  bool get confirm => decode("confirm", orElse: () => false);
 
   @Option("granting-user",
       abbr: "u",
       defaultsTo: "postgres",
       help:
-          "The username of the PostgreSQL user that has privileges to create a new test user and test database.")
-  String get grantingUser => decode("granting-user");
+          "The username of the PostgreSQL user that has privileges to create a test user and test database.")
+  String get grantingUser => decode("granting-user", orElse: () => "");
 
   @override
   Future<int> handle() async {
     if (shouldSetupHeroku) {
       displayInfo("This option has been deprecated.");
-      displayProgress("Please see https://aqueduct.io/docs/deploy/deploy_heroku/ for instructions.");
+      displayProgress(
+          "Please see https://aqueduct.io/docs/deploy/deploy_heroku/ for instructions.");
       return 0;
     } else /*if (shouldSetupTests*/ {
       return setupTestEnvironment();

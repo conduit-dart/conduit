@@ -7,7 +7,7 @@ import 'package:aqueduct/src/cli/mixins/project.dart';
 import 'package:aqueduct/src/cli/scripts/schema_builder.dart';
 import 'package:aqueduct/src/cli/migration_source.dart';
 import 'package:aqueduct/src/db/schema/schema.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_executor/isolate_executor.dart';
 
 abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
   @Option("migration-directory",
@@ -15,7 +15,8 @@ abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
           "The directory where migration files are stored. Relative paths are relative to the application-directory.",
       defaultsTo: "migrations")
   Directory get migrationDirectory {
-    final dir = Directory(decode("migration-directory")).absolute;
+    final dir =
+        Directory(decode("migration-directory", orElse: () => "")).absolute;
 
     if (!dir.existsSync()) {
       dir.createSync();
@@ -42,7 +43,7 @@ abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
   }
 
   Future<Schema> schemaByApplyingMigrationSources(List<MigrationSource> sources,
-      {Schema fromSchema}) async {
+      {Schema? fromSchema}) async {
     fromSchema ??= Schema.empty();
 
     if (sources.isNotEmpty) {

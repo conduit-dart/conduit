@@ -20,7 +20,7 @@ class MigrationSource {
     final migrationTypes = analyzer.getSubclassesFromFile("Migration", uri);
     if (migrationTypes.length != 1) {
       throw StateError(
-        "Invalid migration file. Must contain exactly one 'Migration' subclass. File: '$uri'.");
+          "Invalid migration file. Must contain exactly one 'Migration' subclass. File: '$uri'.");
     }
 
     final klass = migrationTypes.first;
@@ -48,13 +48,13 @@ class MigrationSource {
     return int.parse(migrationName.split("_").first);
   }
 
-  String source;
+  late String source;
 
-  String originalName;
+  late String originalName;
 
-  String name;
+  late String name;
 
-  Uri uri;
+  late Uri uri;
 
   int get versionNumber => versionNumberFromUri(uri);
 }

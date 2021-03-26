@@ -9,7 +9,7 @@ import 'package:aqueduct/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:aqueduct/src/db/query/query.dart';
 import 'package:aqueduct/src/cli/migration_source.dart';
 import 'package:aqueduct/src/db/schema/schema.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_executor/isolate_executor.dart';
 
 /// Used internally.
 class CLIDatabaseUpgrade extends CLICommand
@@ -25,12 +25,12 @@ class CLIDatabaseUpgrade extends CLICommand
     }
 
     try {
-      final currentVersion = await persistentStore.schemaVersion;
+      final currentVersion = await persistentStore?.schemaVersion;
       final appliedMigrations = migrations
-          .where((mig) => mig.versionNumber <= currentVersion)
+          .where((mig) => mig.versionNumber <= currentVersion!)
           .toList();
       final migrationsToExecute = migrations
-          .where((mig) => mig.versionNumber > currentVersion)
+          .where((mig) => mig.versionNumber > currentVersion!)
           .toList();
       if (migrationsToExecute.isEmpty) {
         displayInfo(
@@ -40,7 +40,7 @@ class CLIDatabaseUpgrade extends CLICommand
 
       if (currentVersion == 0) {
         displayInfo(
-            "Updating to version ${migrationsToExecute.last.versionNumber} on new database...");
+            "Updating to version ${migrationsToExecute.last.versionNumber} on database...");
       } else {
         displayInfo(
             "Updating to version ${migrationsToExecute.last.versionNumber} from version $currentVersion...");
@@ -54,7 +54,7 @@ class CLIDatabaseUpgrade extends CLICommand
     } on QueryException catch (e) {
       if (e.event == QueryExceptionEvent.transport) {
         final databaseUrl =
-            "${connectedDatabase.username}:${connectedDatabase.password}@${connectedDatabase.host}:${connectedDatabase.port}/${connectedDatabase.databaseName}";
+            "${connectedDatabase?.username}:${connectedDatabase?.password}@${connectedDatabase?.host}:${connectedDatabase?.port}/${connectedDatabase?.databaseName}";
         throw CLIException(
             "There was an error connecting to the database '$databaseUrl'. Reason: ${e.message}.");
       }
@@ -75,7 +75,7 @@ class CLIDatabaseUpgrade extends CLICommand
   }
 
   Future<Schema> executeMigrations(List<MigrationSource> migrations,
-      Schema fromSchema, int fromVersion) async {
+      Schema fromSchema, int? fromVersion) async {
     final schemaMap = await IsolateExecutor.run(
         RunUpgradeExecutable.input(
             fromSchema, _storeConnectionInfo, migrations, fromVersion),
@@ -92,7 +92,7 @@ class CLIDatabaseUpgrade extends CLICommand
     return Schema.fromMap(schemaMap);
   }
 
-  DBInfo get _storeConnectionInfo {
+  DBInfo? get _storeConnectionInfo {
     var s = persistentStore;
     if (s is PostgreSQLPersistentStore) {
       return DBInfo("postgres", s.username, s.password, s.host, s.port,

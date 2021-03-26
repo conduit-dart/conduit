@@ -11,7 +11,7 @@ import 'package:aqueduct/src/cli/command.dart';
 
 class CLIAuthScopeClient extends CLICommand
     with CLIDatabaseConnectingCommand, CLIDatabaseManagingCommand, CLIProject {
-  ManagedContext context;
+  ManagedContext? context;
 
   @Option("id", abbr: "i", help: "The client ID to insert.")
   String get clientID => decode("id");
@@ -23,18 +23,14 @@ class CLIAuthScopeClient extends CLICommand
   List<String> get scopes {
     String v = decode("scopes");
     if (v.isEmpty) {
-      return null;
+      return [];
     }
-    return v?.split(" ")?.toList();
+    return v.split(" ").toList();
   }
 
   @override
   Future<int> handle() async {
-    if (clientID == null) {
-      displayError("Option --id required.");
-      return 1;
-    }
-    if (scopes?.isEmpty ?? true) {
+    if (scopes.isEmpty) {
       displayError("Option --scopes required.");
       return 1;
     }
@@ -43,12 +39,12 @@ class CLIAuthScopeClient extends CLICommand
     context = ManagedContext(dataModel, persistentStore);
 
     var scopingClient = AuthClient.public(clientID,
-        allowedScopes: scopes?.map((s) => AuthScope(s))?.toList());
+        allowedScopes: scopes.map((s) => AuthScope(s)).toList());
 
     var query = Query<ManagedAuthClient>(context)
       ..where((o) => o.id).equalTo(clientID)
-      ..values.allowedScope =
-          scopingClient.allowedScopes?.map((s) => s.toString())?.join(" ");
+      ..values!.allowedScope =
+          scopingClient.allowedScopes?.map((s) => s.toString()).join(" ");
 
     var result = await query.updateOne();
     if (result == null) {

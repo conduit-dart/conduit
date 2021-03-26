@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:aqueduct/src/cli/command.dart';
 import 'package:aqueduct/src/cli/metadata.dart';
 import 'package:aqueduct/src/cli/scripts/get_channel_type.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_executor/isolate_executor.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path_lib;
@@ -14,14 +14,14 @@ abstract class CLIProject implements CLICommand {
       abbr: "d", help: "Project directory to execute command in")
   Directory get projectDirectory {
     if (_projectDirectory == null) {
-      String dir = decode("directory");
+      String? dir = decode("directory");
       if (dir == null) {
         _projectDirectory = Directory.current.absolute;
       } else {
         _projectDirectory = Directory(dir).absolute;
       }
     }
-    return _projectDirectory;
+    return _projectDirectory!;
   }
 
   Map<String, dynamic> get projectSpecification {
@@ -32,11 +32,11 @@ abstract class CLIProject implements CLICommand {
             "Failed to locate pubspec.yaml in project directory '${projectDirectory.path}'");
       }
       var yamlContents = file.readAsStringSync();
-      final yaml = loadYaml(yamlContents) as Map<dynamic, dynamic> ;
+      final yaml = loadYaml(yamlContents) as Map<dynamic, dynamic>;
       _pubspec = yaml.cast<String, dynamic>();
     }
 
-    return _pubspec;
+    return _pubspec!;
   }
 
   File get projectSpecificationFile =>
@@ -48,7 +48,7 @@ abstract class CLIProject implements CLICommand {
 
   String get packageName => projectSpecification["name"] as String;
 
-  Version get projectVersion {
+  Version? get projectVersion {
     if (_projectVersion == null) {
       var lockFile = File.fromUri(projectDirectory.uri.resolve("pubspec.lock"));
       if (!lockFile.existsSync()) {
@@ -64,9 +64,9 @@ abstract class CLIProject implements CLICommand {
     return _projectVersion;
   }
 
-  Directory _projectDirectory;
-  Map<String, dynamic> _pubspec;
-  Version _projectVersion;
+  Directory? _projectDirectory;
+  Map<String, dynamic>? _pubspec;
+  Version? _projectVersion;
 
   static File fileInDirectory(Directory directory, String name) {
     if (path_lib.isRelative(name)) {
@@ -87,7 +87,7 @@ abstract class CLIProject implements CLICommand {
         displayInfo("Aqueduct project version: $projectVersion");
       }
 
-      if (projectVersion?.major != toolVersion.major) {
+      if (projectVersion?.major != toolVersion?.major) {
         throw CLIException(
             "CLI version is incompatible with project aqueduct version.",
             instructions: [
@@ -100,16 +100,15 @@ abstract class CLIProject implements CLICommand {
   }
 
   Future<String> getChannelName() async {
-    final name = await IsolateExecutor.run(GetChannelExecutable({}),
-      packageConfigURI: packageConfigUri,
-      imports: GetChannelExecutable.importsForPackage(libraryName),
-      logHandler: displayProgress);
+    final name = await IsolateExecutor.run<String?>(GetChannelExecutable({}),
+        packageConfigURI: packageConfigUri,
+        imports: GetChannelExecutable.importsForPackage(libraryName),
+        logHandler: displayProgress);
     if (name == null) {
       throw CLIException(
-        "No ApplicationChannel subclass found in $packageName/$libraryName");
+          "No ApplicationChannel subclass found in $packageName/$libraryName");
     }
 
     return name;
   }
-
 }

@@ -14,10 +14,10 @@ import 'package:aqueduct/src/http/http.dart';
 /// Used internally.
 class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
   @Option("port", abbr: "p", help: "Port to listen on", defaultsTo: "8111")
-  int get port => decode("port");
+  int get port => decode<int>("port");
 
   @override
-  StoppableProcess runningProcess;
+  StoppableProcess? runningProcess;
 
   Directory get _hostedDirectory =>
       Directory.fromUri(projectDirectory.uri.resolve(".aqueduct_spec"));
@@ -25,10 +25,9 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
   @override
   Future<int> handle() async {
     await _build();
-
     runningProcess = await _listen();
 
-    return runningProcess.exitCode;
+    return runningProcess!.exitCode;
   }
 
   @override
@@ -48,7 +47,8 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
       ..addCachePolicy(const CachePolicy(requireConditionalRequest: true),
           (p) => p.endsWith(".json"))
       ..addCachePolicy(
-          const CachePolicy(expirationFromNow: Duration(days: 300)), (p) => true)
+          const CachePolicy(expirationFromNow: Duration(days: 300)),
+          (p) => true)
       ..logger.onRecord.listen((rec) {
         outputSink.writeln("${rec.message} ${rec.stackTrace ?? ""}");
       });
@@ -76,6 +76,7 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
     _hostedDirectory.createSync();
 
     final documentJSON = json.encode(await documentProject(this, this));
+
     final jsonSpecFile =
         File.fromUri(_hostedDirectory.uri.resolve("openapi.json"));
     jsonSpecFile.writeAsStringSync(documentJSON);
