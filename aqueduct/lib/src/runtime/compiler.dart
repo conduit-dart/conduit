@@ -6,7 +6,7 @@ import 'package:aqueduct/src/application/channel.dart';
 import 'package:aqueduct/src/runtime/orm/data_model_compiler.dart';
 
 import 'package:aqueduct/src/runtime/impl.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 class AqueductCompiler extends Compiler {
   @override

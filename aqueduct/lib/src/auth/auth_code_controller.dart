@@ -163,7 +163,7 @@ class AuthCodeController extends ResourceController {
     if (operation.method == "POST") {
       body.content["application/x-www-form-urlencoded"].schema
           .properties["password"].format = "password";
-      body.content["application/x-www-form-urlencoded"].schema.required = [
+      body.content["application/x-www-form-urlencoded"].schema.isRequired = [
         "client_id",
         "state",
         "response_type",

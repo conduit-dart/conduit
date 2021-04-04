@@ -5,20 +5,22 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:aqueduct/src/cli/runner.dart';
 import 'package:aqueduct/src/cli/running_process.dart';
 
-import 'package:command_line_agent/command_line_agent.dart';
+import 'package:fs_test_agent/dart_project_agent.dart';
+import 'package:fs_test_agent/working_directory_agent.dart';
 
 class CLIClient {
   CLIClient(this.agent);
 
-  final CommandLineAgent agent;
+  final WorkingDirectoryAgent agent;
 
-  ProjectAgent get projectAgent {
-    if (agent is ProjectAgent) {
-      return agent as ProjectAgent;
+  DartProjectAgent get projectAgent {
+    if (agent is DartProjectAgent) {
+      return agent as DartProjectAgent;
     }
 
     throw StateError("is not a project terminal");
   }
+
   List<String> defaultArgs;
 
   String get output {
@@ -54,15 +56,16 @@ class CLIClient {
   CLIClient replicate(Uri uri) {
     var dstUri = uri;
     if (!uri.isAbsolute) {
-      dstUri = ProjectAgent.projectsDirectory.uri.resolveUri(uri);
+      dstUri = DartProjectAgent.projectsDirectory.uri.resolveUri(uri);
     }
 
     final dstDirectory = Directory.fromUri(dstUri);
     if (dstDirectory.existsSync()) {
       dstDirectory.deleteSync(recursive: true);
     }
-    CommandLineAgent.copyDirectory(src: agent.workingDirectory.uri, dst: dstUri);
-    return CLIClient(ProjectAgent.existing(dstUri));
+    WorkingDirectoryAgent.copyDirectory(
+        src: agent.workingDirectory.uri, dst: dstUri);
+    return CLIClient(DartProjectAgent.existing(dstUri));
   }
 
   void clearOutput() {
@@ -74,14 +77,12 @@ class CLIClient {
       String template,
       bool offline = true}) async {
     if (template == null) {
-      final client = CLIClient(ProjectAgent(name, dependencies: {
-        "aqueduct" : {
-          "path": "../.."
-        }
+      final client = CLIClient(DartProjectAgent(name, dependencies: {
+        "aqueduct": {"path": "../.."}
       }, devDependencies: {
         "test": "^1.0.0"
       }));
-      
+
       client.projectAgent.addLibraryFile("channel", """
 import 'dart:async';
 
@@ -102,12 +103,12 @@ class TestChannel extends ApplicationChannel {
   }
 }
   """);
-      
+
       return client;
     }
-    
+
     try {
-      ProjectAgent.projectsDirectory.createSync();
+      DartProjectAgent.projectsDirectory.createSync();
     } catch (_) {}
 
     final args = <String>[];
@@ -124,14 +125,14 @@ class TestChannel extends ApplicationChannel {
     await run("create", args);
     print("$output");
 
-    return CLIClient(ProjectAgent.existing(ProjectAgent.projectsDirectory.uri.resolve("$name/")));
+    return CLIClient(DartProjectAgent.existing(
+        DartProjectAgent.projectsDirectory.uri.resolve("$name/")));
   }
 
   Future<int> executeMigrations(
       {String connectString =
           "postgres://dart:dart@localhost:5432/dart_test"}) async {
-    final res =
-        await run("db", ["upgrade", "--connect", connectString]);
+    final res = await run("db", ["upgrade", "--connect", connectString]);
     if (res != 0) {
       print("executeMigrations failed: $output");
     }

@@ -4,8 +4,8 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:aqueduct/src/cli/command.dart';
 import 'package:aqueduct/src/cli/mixins/openapi_options.dart';
 import 'package:aqueduct/src/cli/mixins/project.dart';
-import 'package:isolate_executor/isolate_executor.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:yaml/yaml.dart';
 
 class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
@@ -149,7 +149,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         "package:yaml/yaml.dart",
         "dart:convert",
         "dart:io",
-        "package:runtime/runtime.dart"
+        "package:conduit_runtime/runtime.dart"
       ];
 }
 

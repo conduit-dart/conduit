@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 library aqueduct;
 
 export 'package:logging/logging.dart';
-export 'package:safe_config/safe_config.dart';
+export 'package:conduit_config/conduit_config.dart';
 
 export 'package:aqueduct/src/runtime/compiler.dart';
 

@@ -565,6 +565,7 @@ void main() {
 
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
 
+@Table(name: "simple")
 class _TestModel {
   @primaryKey
   int id;
@@ -573,10 +574,6 @@ class _TestModel {
 
   @Column(nullable: true, unique: true)
   String emailAddress;
-
-  static String tableName() {
-    return "simple";
-  }
 }
 
 class GenUser extends ManagedObject<_GenUser> implements _GenUser {}

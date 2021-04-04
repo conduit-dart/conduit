@@ -16,18 +16,16 @@ void main() {
 
 class SameNameOne extends ManagedObject<_SameNameOne> {}
 
+@Table(name: "fo")
 class _SameNameOne {
   @primaryKey
   int id;
-
-  static String tableName() => "fo";
 }
 
 class SameNameTwo extends ManagedObject<_SameNameTwo> {}
 
+@Table(name: "fo")
 class _SameNameTwo {
   @primaryKey
   int id;
-
-  static String tableName() => "fo";
 }

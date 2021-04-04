@@ -9,7 +9,7 @@ import 'package:aqueduct/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:aqueduct/src/db/query/query.dart';
 import 'package:aqueduct/src/cli/migration_source.dart';
 import 'package:aqueduct/src/db/schema/schema.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 /// Used internally.
 class CLIDatabaseUpgrade extends CLICommand

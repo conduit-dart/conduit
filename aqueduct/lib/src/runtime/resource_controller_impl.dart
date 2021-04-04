@@ -9,7 +9,7 @@ import 'package:aqueduct/src/runtime/resource_controller/utility.dart';
 import 'package:aqueduct/src/runtime/resource_controller_generator.dart';
 import 'package:aqueduct/src/utilities/mirror_helpers.dart';
 import 'package:meta/meta.dart';
-import 'package:runtime/runtime.dart' hide firstMetadataOfType;
+import 'package:conduit_runtime/runtime.dart' hide firstMetadataOfType;
 
 class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
   ResourceControllerRuntimeImpl(this.type) {

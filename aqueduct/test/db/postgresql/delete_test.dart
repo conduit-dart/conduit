@@ -188,6 +188,7 @@ void main() {
 
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
 
+@Table(name: "simple")
 class _TestModel {
   @primaryKey
   int id;
@@ -198,10 +199,6 @@ class _TestModel {
   String email;
 
   ManagedSet<RefModel> ref;
-
-  static String tableName() {
-    return "simple";
-  }
 
   @override
   String toString() {

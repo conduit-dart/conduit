@@ -349,9 +349,10 @@ class ManagedObjectController<InstanceType extends ManagedObject>
       APIDocumentContext context, Operation operation) {
     if (operation.method == "POST" || operation.method == "PUT") {
       return APIRequestBody.schema(
-          context.schema.getObjectWithType(InstanceType),
-          contentTypes: ["application/json"],
-          required: true);
+        context.schema.getObjectWithType(InstanceType),
+        contentTypes: ["application/json"],
+        isRequired: true,
+      );
     }
 
     return null;

@@ -1,6 +1,7 @@
 // ignore: unnecessary_const
 @Tags(const ["cli"])
-import 'package:command_line_agent/command_line_agent.dart';
+import 'package:fs_test_agent/dart_project_agent.dart';
+import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
 
 import '../not_tests/cli_helpers.dart';
@@ -11,7 +12,9 @@ void main() {
   // This group handles checking the tool itself,
   // not the behavior of creating the appropriate migration file given schemas
   setUp(() async {
-    cli = await CLIClient(CommandLineAgent(ProjectAgent.projectsDirectory)).createProject();
+    cli = await CLIClient(
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+    ).createProject();
     await cli.agent.getDependencies(offline: true);
     cli.agent.addOrReplaceFile("lib/application_test.dart", """
 import 'package:aqueduct/aqueduct.dart';
@@ -27,7 +30,7 @@ class _TestObject {
       """);
   });
 
-  tearDown(ProjectAgent.tearDownAll);
+  tearDown(DartProjectAgent.tearDownAll);
 
   test("Ensure migration directory will get created on generation", () async {
     var res = await cli.run("db", ["schema"]);

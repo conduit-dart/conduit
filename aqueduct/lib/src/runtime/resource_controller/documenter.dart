@@ -100,7 +100,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
         return APIRequestBody.schema(ref,
             contentTypes: rc.acceptedContentTypes
                 .map((ct) => "${ct.primaryType}/${ct.subType}"),
-            required: boundBody.isRequired);
+            isRequired: boundBody.isRequired);
       }
     } else if (usesFormEncodedData) {
       final Map<String, APISchemaObject> props =
@@ -113,7 +113,8 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
       });
 
       return APIRequestBody.schema(APISchemaObject.object(props),
-          contentTypes: ["application/x-www-form-urlencoded"], required: true);
+          contentTypes: ["application/x-www-form-urlencoded"],
+          isRequired: true);
     }
 
     return null;
@@ -194,7 +195,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
         SerializableRuntimeImpl.documentType(context, reflectType(param.type));
     final documentedParameter = APIParameter(param.name, param.apiLocation,
         schema: schema,
-        required: param.isRequired,
+        isRequired: param.isRequired,
         allowEmptyValue: schema.type == APIType.boolean);
 
     return documentedParameter;

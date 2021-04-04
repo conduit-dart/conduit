@@ -2,9 +2,10 @@
 @Tags(const ["cli"])
 import 'dart:io';
 
-import 'package:command_line_agent/command_line_agent.dart';
-import 'package:test/test.dart';
+import 'package:fs_test_agent/dart_project_agent.dart';
+import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:http/http.dart' as http;
+import 'package:test/test.dart';
 
 import '../not_tests/cli_helpers.dart';
 
@@ -14,13 +15,15 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    templateCli = await CLIClient(CommandLineAgent(ProjectAgent.projectsDirectory)).createProject();
+    templateCli = await CLIClient(
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+    ).createProject();
     await templateCli.agent.getDependencies(offline: true);
   });
 
   tearDownAll(() async {
     await CLIClient.deactivateCLI();
-    ProjectAgent.tearDownAll();
+    DartProjectAgent.tearDownAll();
   });
 
   setUp(() async {
@@ -36,20 +39,20 @@ void main() {
     await task.hasStarted;
 
     expect(
-        Directory.fromUri(
-                projectUnderTestCli.agent.workingDirectory.uri.resolve(".aqueduct_spec/"))
+        Directory.fromUri(projectUnderTestCli.agent.workingDirectory.uri
+                .resolve(".aqueduct_spec/"))
             .existsSync(),
         true);
 
-    var response = await http.get("http://localhost:8111");
+    var response = await http.get(Uri.parse("http://localhost:8111"));
     expect(response.body, contains("redoc spec-url='openapi.json'"));
 
     // ignore: unawaited_futures
     task.process.stop(0);
     expect(await task.exitCode, 0);
     expect(
-        Directory.fromUri(
-          projectUnderTestCli.agent.workingDirectory.uri.resolve(".aqueduct_spec/"))
+        Directory.fromUri(projectUnderTestCli.agent.workingDirectory.uri
+                .resolve(".aqueduct_spec/"))
             .existsSync(),
         false);
   });

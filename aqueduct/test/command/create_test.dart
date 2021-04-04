@@ -4,7 +4,8 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path_lib;
 import 'package:pub_semver/pub_semver.dart';
-import 'package:command_line_agent/command_line_agent.dart';
+import 'package:fs_test_agent/dart_project_agent.dart';
+import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
@@ -15,33 +16,40 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final terminal = CommandLineAgent(ProjectAgent.projectsDirectory);
+    final terminal = WorkingDirectoryAgent(DartProjectAgent.projectsDirectory);
     cli = CLIClient(terminal);
   });
 
   tearDown(() {
-    ProjectAgent.projectsDirectory.listSync().forEach((e) {
+    DartProjectAgent.projectsDirectory.listSync().forEach((e) {
       e.deleteSync(recursive: true);
     });
     cli.clearOutput();
   });
 
   tearDownAll(() {
-    ProjectAgent.tearDownAll();
+    DartProjectAgent.tearDownAll();
     CLIClient.deactivateCLI();
   });
 
   group("Project naming", () {
     test("Appropriately named project gets created correctly", () async {
-      final res = await cli
-          .run("create", ["test_project", "--offline", "--stacktrace"]);
+      final res = await cli.run(
+        "create",
+        [
+          "test_project",
+          "--offline",
+          "--stacktrace",
+        ],
+      );
       expect(res, 0);
 
       expect(
-          Directory.fromUri(
-                  cli.agent.workingDirectory.uri.resolve("test_project/"))
-              .existsSync(),
-          true);
+        Directory.fromUri(
+          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        ).existsSync(),
+        isTrue,
+      );
     });
 
     test("Project name with bad characters fails immediately", () async {
@@ -50,7 +58,7 @@ void main() {
       expect(cli.output, contains("Invalid project name"));
       expect(cli.output, contains("snake_case"));
 
-      expect(ProjectAgent.projectsDirectory.listSync().isEmpty, true);
+      expect(DartProjectAgent.projectsDirectory.listSync().isEmpty, true);
     });
 
     test("Project name with uppercase characters fails immediately", () async {
@@ -60,10 +68,11 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-          Directory.fromUri(
-                  cli.agent.workingDirectory.uri.resolve("test_project/"))
-              .existsSync(),
-          false);
+        Directory.fromUri(
+          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        ).existsSync(),
+        isFalse,
+      );
     });
 
     test("Project name with dashes fails immediately", () async {
@@ -73,10 +82,11 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-          Directory.fromUri(
-                  cli.agent.workingDirectory.uri.resolve("test_project/"))
-              .existsSync(),
-          false);
+        Directory.fromUri(
+          cli.agent.workingDirectory.uri.resolve("test_project/"),
+        ).existsSync(),
+        isFalse,
+      );
     });
 
     test("Not providing name returns error", () async {
@@ -105,8 +115,7 @@ void main() {
       var res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      var aqueductLocationString = File.fromUri(cli
-              .agent.workingDirectory.uri
+      var aqueductLocationString = File.fromUri(cli.agent.workingDirectory.uri
               .resolve("test_project/")
               .resolve(".packages"))
           .readAsStringSync()
@@ -129,27 +138,42 @@ void main() {
     final aqueductVersion = Version.parse("${aqueductPubspec["version"]}");
 
     for (var template in templates) {
-      test("Templates can use 'this' version of Aqueduct in their dependencies",
-          () {
-        var projectDir = Directory("templates/$template/");
-        var pubspec = File.fromUri(projectDir.uri.resolve("pubspec.yaml"));
-        var contents = loadYaml(pubspec.readAsStringSync());
-        final projectVersionConstraint = VersionConstraint.parse(
-            contents["dependencies"]["aqueduct"] as String);
-        expect(projectVersionConstraint.allows(aqueductVersion), true);
-      });
+      test(
+        "Templates can use 'this' version of Aqueduct in their dependencies",
+        () {
+          var projectDir = Directory("templates/$template/");
+          var pubspec = File.fromUri(projectDir.uri.resolve("pubspec.yaml"));
+          var contents = loadYaml(pubspec.readAsStringSync());
+          final projectVersionConstraint = VersionConstraint.parse(
+            contents["dependencies"]["aqueduct"] as String,
+          );
+          expect(projectVersionConstraint.allows(aqueductVersion), true);
+        },
+      );
 
       test("Tests run on template generated from local path", () async {
         expect(
-            await cli.run("create", ["test_project", "-t", template, "--offline"]),
-            0);
+          await cli.run(
+            "create",
+            [
+              "test_project",
+              "-t",
+              template,
+              "--offline",
+            ],
+          ),
+          isZero,
+        );
 
         final cmd = Platform.isWindows ? "pub.bat" : "pub";
-        var res = Process.runSync(cmd, ["run", "test", "-j", "1"],
-            runInShell: true,
-            workingDirectory: cli.agent.workingDirectory.uri
-                .resolve("test_project")
-                .toFilePath(windows: Platform.isWindows));
+        var res = Process.runSync(
+          cmd,
+          ["run", "test", "-j", "1"],
+          runInShell: true,
+          workingDirectory: cli.agent.workingDirectory.uri
+              .resolve("test_project")
+              .toFilePath(windows: Platform.isWindows),
+        );
 
         expect(res.stdout, contains("All tests passed"));
         expect(res.exitCode, 0);

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 Future main(List<String> args) async {
   final blacklist = [

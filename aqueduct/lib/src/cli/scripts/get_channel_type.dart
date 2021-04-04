@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:mirrors';
 
 import 'package:aqueduct/src/application/channel.dart';
-import 'package:isolate_executor/isolate_executor.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 class GetChannelExecutable extends Executable<String> {
   GetChannelExecutable(Map<String, dynamic> message) : super(message);
@@ -26,6 +26,6 @@ class GetChannelExecutable extends Executable<String> {
   static List<String> importsForPackage(String packageName) => [
         "package:aqueduct/aqueduct.dart",
         "package:$packageName/$packageName.dart",
-        "package:runtime/runtime.dart"
+        "package:conduit_runtime/runtime.dart"
       ];
 }

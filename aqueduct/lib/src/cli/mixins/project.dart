@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:aqueduct/src/cli/command.dart';
 import 'package:aqueduct/src/cli/metadata.dart';
 import 'package:aqueduct/src/cli/scripts/get_channel_type.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as path_lib;

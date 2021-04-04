@@ -12,7 +12,7 @@ import 'package:aqueduct/src/http/serializable.dart';
 import 'package:aqueduct/src/openapi/documentable.dart';
 import 'package:aqueduct/src/openapi/openapi.dart';
 import 'package:aqueduct/src/runtime/resource_controller_impl.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   ChannelRuntimeImpl(this.type);

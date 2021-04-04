@@ -490,6 +490,7 @@ class TestModel extends ManagedObject<_TestModel> implements _TestModel {
   }
 }
 
+@Table(name: "simple")
 class _TestModel {
   @primaryKey
   int id;
@@ -499,10 +500,6 @@ class _TestModel {
   @Column(nullable: true, unique: true)
   String email;
 
-  static String tableName() {
-    return "simple";
-  }
-
   @override
   String toString() {
     return "TestModel: $id $name $email";
@@ -511,6 +508,7 @@ class _TestModel {
 
 class GenUser extends ManagedObject<_GenUser> implements _GenUser {}
 
+@Table(name: "GenUser")
 class _GenUser {
   @primaryKey
   int id;
@@ -518,10 +516,6 @@ class _GenUser {
   String name;
 
   ManagedSet<GenPost> posts;
-
-  static String tableName() {
-    return "GenUser";
-  }
 }
 
 class GenPost extends ManagedObject<_GenPost> implements _GenPost {}

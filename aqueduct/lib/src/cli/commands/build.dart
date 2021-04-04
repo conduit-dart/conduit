@@ -6,7 +6,7 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:aqueduct/src/cli/command.dart';
 import 'package:aqueduct/src/cli/metadata.dart';
 import 'package:aqueduct/src/cli/mixins/project.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:args/args.dart' as arg_package;
 
 class CLIBuild extends CLICommand with CLIProject {

@@ -22,7 +22,7 @@ import 'auth.dart';
 class AuthController extends ResourceController {
   /// Creates a new instance of an [AuthController].
   ///
-  /// [authServer] is the required authorization server that grants tokens.
+  /// [authServer] is the isRequired authorization server that grants tokens.
   AuthController(this.authServer) {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded")
@@ -146,7 +146,7 @@ class AuthController extends ResourceController {
   APIRequestBody documentOperationRequestBody(
       APIDocumentContext context, Operation operation) {
     final body = super.documentOperationRequestBody(context, operation);
-    body.content["application/x-www-form-urlencoded"].schema.required = [
+    body.content["application/x-www-form-urlencoded"].schema.isRequired = [
       "grant_type"
     ];
     body.content["application/x-www-form-urlencoded"].schema

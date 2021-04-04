@@ -5,7 +5,7 @@ import 'package:aqueduct/src/application/service_registry.dart';
 import 'package:aqueduct/src/openapi/openapi.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 import '../http/http.dart';
 import 'application.dart';

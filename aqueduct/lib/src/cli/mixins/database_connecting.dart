@@ -5,7 +5,7 @@ import 'package:aqueduct/src/cli/metadata.dart';
 import 'package:aqueduct/src/cli/mixins/project.dart';
 import 'package:aqueduct/src/db/persistent_store/persistent_store.dart';
 import 'package:aqueduct/src/db/postgresql/postgresql_persistent_store.dart';
-import 'package:safe_config/safe_config.dart';
+import 'package:conduit_config/conduit_config.dart';
 import 'package:aqueduct/src/cli/command.dart';
 
 abstract class CLIDatabaseConnectingCommand implements CLICommand, CLIProject {

@@ -1,17 +1,20 @@
 import 'dart:async';
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 import "package:test/test.dart";
 
 void main() {
   test("Cannot bind dynamic to header", () {
     try {
+      // ignore: unnecessary_statements
       RuntimeContext.current;
       fail('unreachable');
     } on StateError catch (e) {
-      expect(e.toString(),
-        contains("Invalid binding 'x' on 'ErrorDynamic.get1'"));
+      expect(
+        e.toString(),
+        contains("Invalid binding 'x' on 'ErrorDynamic.get1'"),
+      );
     }
   });
 }

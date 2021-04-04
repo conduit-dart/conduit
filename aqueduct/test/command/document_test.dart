@@ -2,7 +2,8 @@
 @Tags(const ["cli"])
 import 'dart:convert';
 
-import 'package:command_line_agent/command_line_agent.dart';
+import 'package:fs_test_agent/dart_project_agent.dart';
+import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
 
 import '../not_tests/cli_helpers.dart';
@@ -12,13 +13,14 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final t = CLIClient(CommandLineAgent(ProjectAgent.projectsDirectory));
+    final t =
+        CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
     terminal = await t.createProject(template: "db_and_auth");
   });
 
   tearDownAll(() async {
     await CLIClient.deactivateCLI();
-    ProjectAgent.tearDownAll();
+    DartProjectAgent.tearDownAll();
   });
 
   tearDown(() {
@@ -35,8 +37,10 @@ void main() {
   });
 
   test("Can override title/version/etc.", () async {
-    await terminal.run("document",
-        ["--machine", "--title", "foobar", "--api-version", "2.0.0"]);
+    await terminal.run(
+      "document",
+      ["--machine", "--title", "foobar", "--api-version", "2.0.0"],
+    );
 
     final map = json.decode(terminal.output);
     expect(map["info"]["title"], "foobar");
@@ -44,15 +48,18 @@ void main() {
   });
 
   test("Can set license, contact", () async {
-    await terminal.run("document", [
-      "--machine",
-      "--license-url",
-      "http://whatever.com",
-      "--license-name",
-      "bsd",
-      "--contact-email",
-      "a@b.com"
-    ]);
+    await terminal.run(
+      "document",
+      [
+        "--machine",
+        "--license-url",
+        "http://whatever.com",
+        "--license-name",
+        "bsd",
+        "--contact-email",
+        "a@b.com"
+      ],
+    );
 
     final map = json.decode(terminal.output);
     expect(map["info"]["license"]["name"], "bsd");
@@ -61,18 +68,19 @@ void main() {
   });
 
   test("Can view error stacktrace when failing to doc", () async {
-    terminal.agent.modifyFile("lib/controller/identity_controller.dart", (contents) {
+    terminal.agent.modifyFile("lib/controller/identity_controller.dart",
+        (contents) {
       final lastCurly = contents.lastIndexOf("}");
       return contents.replaceRange(lastCurly, lastCurly, """
-        @override 
+        @override
         void documentComponents(APIDocumentContext ctx) {
           throw new Exception("Hello!");
         }
       """);
     });
 
-    final exitCode = await terminal
-        .run("document", ["--machine", "--stacktrace"]);
+    final exitCode =
+        await terminal.run("document", ["--machine", "--stacktrace"]);
     expect(exitCode, isNot(0));
     expect(terminal.output, contains("IdentityController.documentComponents"));
     expect(terminal.output, contains("Exception: Hello!"));

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:open_api/v3.dart';
+import 'package:conduit_open_api/v3.dart';
 
 /// The methods you implement to document OpenAPI components.
 ///

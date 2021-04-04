@@ -2,12 +2,13 @@ import 'dart:async';
 import "dart:core";
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 import "package:test/test.dart";
 
 void main() {
   test("Ambiguous methods throws exception", () {
     try {
+      // ignore: unnecessary_statements
       RuntimeContext.current;
       fail('unreachable');
     } on StateError catch (e) {

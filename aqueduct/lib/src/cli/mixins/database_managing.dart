@@ -7,7 +7,7 @@ import 'package:aqueduct/src/cli/mixins/project.dart';
 import 'package:aqueduct/src/cli/scripts/schema_builder.dart';
 import 'package:aqueduct/src/cli/migration_source.dart';
 import 'package:aqueduct/src/db/schema/schema.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
   @Option("migration-directory",
