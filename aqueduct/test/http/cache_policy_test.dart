@@ -19,14 +19,14 @@ void main() {
   test("Prevent intermediate caching", () async {
     var policy = const CachePolicy(preventIntermediateProxyCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    var result = await http.get("http://localhost:8888/");
+    var result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "private");
   });
 
   test("Prevent caching altogether", () async {
     var policy = const CachePolicy(preventCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    var result = await http.get("http://localhost:8888/");
+    var result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "no-cache, no-store");
   });
 }

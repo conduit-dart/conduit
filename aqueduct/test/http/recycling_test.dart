@@ -25,8 +25,8 @@ void main() {
     server.root.link(() => DefaultController());
     server.root.didAddToChannel();
 
-    final r1 = await http.get("http://localhost:4040");
-    final r2 = await http.get("http://localhost:4040");
+    final r1 = await http.get(Uri.parse("http://localhost:4040"));
+    final r2 = await http.get(Uri.parse("http://localhost:4040"));
 
     final firstAddress = json.decode(r1.body)["hashCode"];
     final secondAddress = json.decode(r2.body)["hashCode"];
@@ -39,8 +39,8 @@ void main() {
     server.root.link(() => DefaultRecyclable());
     server.root.didAddToChannel();
 
-    final r1 = await http.get("http://localhost:4040");
-    final r2 = await http.get("http://localhost:4040");
+    final r1 = await http.get(Uri.parse("http://localhost:4040"));
+    final r2 = await http.get(Uri.parse("http://localhost:4040"));
 
     final firstAddress = json.decode(r1.body)["hashCode"];
     final secondAddress = json.decode(r2.body)["hashCode"];
@@ -55,19 +55,19 @@ void main() {
 
     final addresses = await Future.wait([
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["hashCode"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["hashCode"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["hashCode"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["hashCode"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["hashCode"]),
     ]);
 
@@ -83,19 +83,19 @@ void main() {
 
     final states = await Future.wait([
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
     ]);
 
@@ -108,13 +108,13 @@ void main() {
 
     await Future.wait([
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body)["state"]),
     ]);
 
@@ -131,19 +131,19 @@ void main() {
 
     final List<Map<String, dynamic>> responses = await Future.wait([
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
     ]);
 
@@ -174,19 +174,19 @@ void main() {
 
     final List<Map<String, dynamic>> responses = await Future.wait([
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get("http://localhost:4040")
+          .get(Uri.parse("http://localhost:4040"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
     ]);
 

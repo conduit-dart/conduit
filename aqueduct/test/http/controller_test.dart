@@ -51,7 +51,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.statusCode, 201);
     });
 
@@ -62,7 +62,7 @@ void main() {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers.containsKey("x-foo"), false);
     });
 
@@ -73,7 +73,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -84,7 +84,7 @@ void main() {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -95,7 +95,7 @@ void main() {
         return Response.ok({"x": "a"});
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(json.decode(resp.body), {"foo": "y", "x": "a"});
     });
 
@@ -108,7 +108,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get("http://localhost:4111/");
+      var resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.statusCode, 500);
     });
   });
@@ -143,7 +143,7 @@ void main() {
         set = true;
       });
 
-      var response = await http.get("http://localhost:4111");
+      var response = await http.get(Uri.parse("http://localhost:4111"));
       expect(response.statusCode, 200);
       expect(set, false);
     });
@@ -165,31 +165,42 @@ void main() {
     test(
         "Logging after socket is closed throws uncaught exception, still works correctly after",
         () async {
-          final request = await HttpClient().get("localhost", 8000, "/detach");
-          final response = await request.close();
+      final request = await HttpClient().get("localhost", 8000, "/detach");
+      final response = await request.close();
       try {
         await response.toList();
         expect(true, false);
         // ignore: empty_catches
       } on HttpException {}
 
-      expect((await http.get("http://localhost:8000/detach")).statusCode, 200);
+      expect(
+          (await http.get(Uri.parse("http://localhost:8000/detach")))
+              .statusCode,
+          200);
     });
 
     test("Request on bad state: header already sent is captured in Controller",
         () async {
-      expect((await http.get("http://localhost:8000/closed")).statusCode, 200);
-      expect((await http.get("http://localhost:8000/closed")).statusCode, 200);
+      expect(
+          (await http.get(Uri.parse("http://localhost:8000/closed")))
+              .statusCode,
+          200);
+      expect(
+          (await http.get(Uri.parse("http://localhost:8000/closed")))
+              .statusCode,
+          200);
     });
 
     test(
         "Request controller throwing HttpResponseException that dies on bad state: header already sent is captured in Controller",
         () async {
       expect(
-          (await http.get("http://localhost:8000/closed_exception")).statusCode,
+          (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+              .statusCode,
           200);
       expect(
-          (await http.get("http://localhost:8000/closed_exception")).statusCode,
+          (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+              .statusCode,
           200);
     });
   });
@@ -213,7 +224,7 @@ void main() {
         await next.receive(req);
       });
 
-      var resp = await http.get("http://localhost:8888");
+      var resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"name": "Bob"});
     });
@@ -230,7 +241,7 @@ void main() {
         await next.receive(req);
       });
 
-      var resp = await http.get("http://localhost:8888");
+      var resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"a": "b"});
     });
@@ -247,7 +258,7 @@ void main() {
         await next.receive(req);
       });
 
-      var resp = await http.get("http://localhost:8888");
+      var resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.statusCode, 500);
       expect(resp.headers["content-type"], isNull);
       expect(resp.body.isEmpty, true);
@@ -264,7 +275,7 @@ void main() {
         });
         await next.receive(req);
       });
-      var resp = await http.get("http://localhost:8888");
+      var resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.statusCode, 200);
       expect(resp.headers["content-length"], "0");
       expect(resp.headers["content-type"], isNull);
@@ -319,22 +330,24 @@ void main() {
       });
 
       // normal response
-      var resp = await http.get("http://localhost:8888");
+      var resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 100});
 
       // httpresponseexception
-      resp = await http.get("http://localhost:8888?q=http_response_exception");
+      resp = await http
+          .get(Uri.parse("http://localhost:8888?q=http_response_exception"));
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 400});
 
       // query exception
-      resp = await http.get("http://localhost:8888?q=query_exception");
+      resp =
+          await http.get(Uri.parse("http://localhost:8888?q=query_exception"));
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 503});
 
       // any other exception (500)
-      resp = await http.get("http://localhost:8888?q=server_error");
+      resp = await http.get(Uri.parse("http://localhost:8888?q=server_error"));
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 500});
     });
@@ -350,7 +363,7 @@ void main() {
         await next.receive(req);
       });
 
-      var resp = await http.post("http://localhost:8888",
+      var resp = await http.post(Uri.parse("http://localhost:8888"),
           headers: {"content-type": "application/json"},
           body: json.encode(["a"]));
 

@@ -36,36 +36,37 @@ void main() {
   });
 
   test("Request with no path parameters OK", () async {
-    var response = await http.get("http://localhost:8888/users");
+    var response = await http.get(Uri.parse("http://localhost:8888/users"));
     expect(response.statusCode, 200);
   });
 
   test("Request with path parameter of type needing parse OK", () async {
-    var response = await http.get("http://localhost:8888/users/1");
+    var response = await http.get(Uri.parse("http://localhost:8888/users/1"));
     expect(response.statusCode, 200);
   });
 
   test("Request with path parameter of wrong type returns 404", () async {
-    var response = await http.get("http://localhost:8888/users/foo");
+    var response = await http.get(Uri.parse("http://localhost:8888/users/foo"));
     expect(response.statusCode, 404);
   });
 
   test("Request with path parameter and body", () async {
-    var response = await http.put("http://localhost:8888/users/2",
+    var response = await http.put(Uri.parse("http://localhost:8888/users/2"),
         headers: {"Content-Type": "application/json;charset=utf-8"},
         body: json.encode({"name": "joe"}));
     expect(response.statusCode, 200);
   });
 
   test("Request without path parameter and body", () async {
-    var response = await http.post("http://localhost:8888/users",
+    var response = await http.post(Uri.parse("http://localhost:8888/users"),
         headers: {"Content-Type": "application/json;charset=utf-8"},
         body: json.encode({"name": "joe"}));
     expect(response.statusCode, 200);
   });
 
   test("Non-integer, oddly named identifier", () async {
-    var response = await http.get("http://localhost:8888/string/bar");
+    var response =
+        await http.get(Uri.parse("http://localhost:8888/string/bar"));
     expect(response.body, '"bar"');
   });
 }

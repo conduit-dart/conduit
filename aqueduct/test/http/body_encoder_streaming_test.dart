@@ -28,7 +28,7 @@ void main() {
         ..contentType = ContentType("application", "octet-stream");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get("http://localhost:8888");
+      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -77,7 +77,7 @@ void main() {
         ..contentType = ContentType("application", "silly");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get("http://localhost:8888");
+      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -107,7 +107,7 @@ void main() {
         ..contentType = ContentType("text", "plain", charset: "utf-8");
       server = await bindAndRespondWith(response);
 
-      var resultFuture = http.get("http://localhost:8888");
+      var resultFuture = http.get(Uri.parse("http://localhost:8888"));
 
       sc.add("abcd");
       sc.add("efgh");

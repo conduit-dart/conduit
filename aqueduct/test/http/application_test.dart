@@ -45,13 +45,13 @@ void main() {
     });
 
     test("Application responds to request", () async {
-      var response = await http.get("http://localhost:8888/t");
+      var response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
     });
 
     test("Application properly routes request", () async {
-      var tResponse = await http.get("http://localhost:8888/t");
-      var rResponse = await http.get("http://localhost:8888/r");
+      var tResponse = await http.get(Uri.parse("http://localhost:8888/t"));
+      var rResponse = await http.get(Uri.parse("http://localhost:8888/r"));
 
       expect(tResponse.body, '"t_ok"');
       expect(rResponse.body, '"r_ok"');
@@ -59,7 +59,7 @@ void main() {
 
     test("Application gzips content", () async {
       var resp = await http
-          .get("http://localhost:8888/t", headers: {"Accept-Encoding": "gzip"});
+          .get(Uri.parse("http://localhost:8888/t"), headers: {"Accept-Encoding": "gzip"});
       expect(resp.headers["content-encoding"], "gzip");
     });
 
@@ -68,7 +68,7 @@ void main() {
 
       var successful = false;
       try {
-        var _ = await http.get("http://localhost:8888/t");
+        var _ = await http.get(Uri.parse("http://localhost:8888/t"));
         successful = true;
       } catch (e) {
         expect(e, isNotNull);
@@ -76,7 +76,7 @@ void main() {
       expect(successful, false);
 
       await app.startOnCurrentIsolate();
-      var resp = await http.get("http://localhost:8888/t");
+      var resp = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(resp.statusCode, 200);
     });
 
@@ -85,7 +85,7 @@ void main() {
         () async {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
-        var result = await http.get("http://localhost:8888/startup");
+        var result = await http.get(Uri.parse("http://localhost:8888/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);
@@ -116,7 +116,7 @@ void main() {
 
       crashingApp.options.context = {"crashIn": "dontCrash"};
       await crashingApp.startOnCurrentIsolate();
-      var response = await http.get("http://localhost:8888/t");
+      var response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });

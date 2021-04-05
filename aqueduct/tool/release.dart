@@ -194,8 +194,11 @@ class Runner {
   Future<String> latestVersion() async {
     print("Getting latest version...");
     var response = await http.get(
+      Uri.parse(
         "https://api.github.com/repos/stablekernel/aqueduct/releases/latest",
-        headers: {"Authorization": "Bearer ${configuration.githubToken}"});
+      ),
+      headers: {"Authorization": "Bearer ${configuration.githubToken}"},
+    );
 
     if (response.statusCode != 200) {
       throw "latestVersion failed with status code ${response.statusCode}. Reason: ${response.body}";
@@ -256,12 +259,14 @@ class Runner {
 
     if (!isDryRun) {
       var response = await http.post(
-          "https://api.github.com/repos/stablekernel/aqueduct/releases",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer ${configuration.githubToken}"
-          },
-          body: body);
+        Uri.parse(
+            "https://api.github.com/repos/stablekernel/aqueduct/releases"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${configuration.githubToken}"
+        },
+        body: body,
+      );
 
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw "GitHub release tag failed with status code ${response.statusCode}. Reason: ${response.body}.";

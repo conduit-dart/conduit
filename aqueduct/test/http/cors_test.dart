@@ -26,26 +26,26 @@ void main() {
     // This group ensures that if a controller has or doesn't have a policy, if it is not a CORS request,
     // no CORS headers/processing occurs.
     test("Controller with no policy returns correctly", () async {
-      var resp = await http.get("http://localhost:8000/nopolicy");
+      var resp = await http.get(Uri.parse("http://localhost:8000/nopolicy"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Controller with permissive default policy returns correctly",
         () async {
-      var resp = await http.get("http://localhost:8000/defaultpolicy");
+      var resp = await http.get(Uri.parse("http://localhost:8000/defaultpolicy"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Controller with restrict policy returns correctly", () async {
-      var resp = await http.get("http://localhost:8000/restrictive");
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Invalid resource 404s", () async {
-      var resp = await http.get("http://localhost:8000/foobar");
+      var resp = await http.get(Uri.parse("http://localhost:8000/foobar"));
       expect(resp.statusCode, 404);
       expectThatNoCORSProcessingOccurred(resp);
     });
@@ -56,14 +56,14 @@ void main() {
       () {
     // This group ensures that if the Origin is invalid for a resource, that CORS processing aborts.
     test("Valid endpoint returns correctly, mis-matched origin", () async {
-      var resp = await http.get("http://localhost:8000/restrictive",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "not this"});
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Valid endpoint, case match failure", () async {
-      var resp = await http.get("http://localhost:8000/restrictive",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "http://Exclusive.com"});
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
@@ -72,7 +72,7 @@ void main() {
     test("Invalid resource gets CORS headers to expose 404 to calling client",
         () async {
       // In this case, there is no 'resource', so we add the origin so the calling client can see the 404. Not sure on this behavior.
-      var resp = await http.get("http://localhost:8000/foobar",
+      var resp = await http.get(Uri.parse("http://localhost:8000/foobar"),
           headers: {"Origin": "http://abc.com"});
       expect(resp.statusCode, 404);
       expect(resp.headers["access-control-allow-origin"], "http://abc.com");
@@ -85,7 +85,7 @@ void main() {
     test(
         "Unauthorized resource with invalid origin does not attach CORS headers",
         () async {
-      var resp = await http.get("http://localhost:8000/restrictive_auth",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive_auth"),
           headers: {
             "Origin": "http://Exclusive.com",
             "Authorization": "Bearer noauth"
@@ -102,7 +102,7 @@ void main() {
     test(
         "Origin and credentials are returned if credentials are supported and origin is specific, origin must be non-*",
         () async {
-      var resp = await http.get("http://localhost:8000/restrictive",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
       expect(
@@ -116,7 +116,7 @@ void main() {
     test(
         "Normal/Simple Requests: Origin and credentials are returned if credentials are supported and origin is catch-all, origin must be non-*",
         () async {
-      var resp = await http.get("http://localhost:8000/defaultpolicy",
+      var resp = await http.get(Uri.parse("http://localhost:8000/defaultpolicy"),
           headers: {"Origin": "http://foobar.com"});
       expect(resp.statusCode, 200);
       expect(resp.headers["access-control-allow-origin"], "http://foobar.com");
@@ -129,7 +129,7 @@ void main() {
     test(
         "Normal/Simple Requests: If credentials are not supported and origin is valid, only set origin",
         () async {
-      var resp = await http.get("http://localhost:8000/restrictive_nocreds",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive_nocreds"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
       expect(
@@ -146,7 +146,7 @@ void main() {
       () {
     // This group ensures that headers are exposed correctly
     test("Empty exposed headers returns no header to indicate them", () async {
-      var resp = await http.get("http://localhost:8000/defaultpolicy",
+      var resp = await http.get(Uri.parse("http://localhost:8000/defaultpolicy"),
           headers: {"Origin": "http://foobar.com"});
       expect(resp.statusCode, 200);
       expect(resp.headers["access-control-allow-origin"], "http://foobar.com");
@@ -157,7 +157,7 @@ void main() {
     });
 
     test("If one exposed header, return it in ACEH", () async {
-      var resp = await http.get("http://localhost:8000/restrictive_nocreds",
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive_nocreds"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
       expect(
@@ -169,7 +169,7 @@ void main() {
     });
 
     test("If multiple exposed headers, return them in ACEH", () async {
-      var resp = await http.get("http://localhost:8000/restrictive", headers: {
+      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"), headers: {
         "Authorization": "Bearer auth",
         "Origin": "http://exclusive.com"
       });
@@ -540,7 +540,7 @@ void main() {
       http.Response lastResponse;
 
       for (var i = 0; i < 10; i++) {
-        lastResponse = await http.get("http://localhost:8000/add",
+        lastResponse = await http.get(Uri.parse("http://localhost:8000/add"),
             headers: {"Origin": "http://www.a.com"});
         expect(lastResponse.statusCode, 200);
       }

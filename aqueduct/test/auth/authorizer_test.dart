@@ -45,7 +45,7 @@ void main() {
       var authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000");
+      var res = await http.get(Uri.parse("http://localhost:8000"));
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -54,7 +54,7 @@ void main() {
       var authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Notbearer"});
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
@@ -66,7 +66,7 @@ void main() {
       var authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Bearer "});
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
@@ -76,7 +76,7 @@ void main() {
       var authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer 1234567890asdfghjkl"
       });
       expect(res.statusCode, 401);
@@ -86,7 +86,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $expiredErrorToken"
       });
       expect(res.statusCode, 401);
@@ -96,7 +96,7 @@ void main() {
       var authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
       expect(res.statusCode, 200);
       expect(json.decode(res.body), {
@@ -112,7 +112,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000");
+      var res = await http.get(Uri.parse("http://localhost:8000"));
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -121,7 +121,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Notright"});
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
@@ -131,7 +131,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Basic "});
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
@@ -143,7 +143,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Basic asasd"});
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
@@ -153,7 +153,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("abcd:kilimanjaro".codeUnits)}"
       });
@@ -165,7 +165,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.app1:foobar".codeUnits)}"
       });
@@ -177,7 +177,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.app1:kilimanjaro".codeUnits)}"
       });
@@ -193,7 +193,7 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.public:".codeUnits)}"
       });
@@ -204,7 +204,7 @@ void main() {
         "credentials": "com.stablekernel.public:"
       });
 
-      res = await http.get("http://localhost:8000", headers: {
+      res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.public:password".codeUnits)}"
       });
@@ -216,13 +216,13 @@ void main() {
       var authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.app1:".codeUnits)}"
       });
       expect(res.statusCode, 401);
 
-      res = await http.get("http://localhost:8000", headers: {
+      res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("com.stablekernel.app1".codeUnits)}"
       });
@@ -278,7 +278,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
       });
       expect(res.statusCode, 200);
@@ -291,7 +291,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer, scopes: ["user.readonly"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
       });
       expect(res.statusCode, 200);
@@ -304,7 +304,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
       });
       expect(res.statusCode, 200);
@@ -317,7 +317,7 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
       });
       expect(res.statusCode, 200);
@@ -331,7 +331,7 @@ void main() {
           scopes: ["user:foo", "other_scope.readonly"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
       });
       expect(res.statusCode, 200);
@@ -346,7 +346,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userReadOnlyScopedAccessToken"
       });
       expect(res.statusCode, 403);
@@ -360,7 +360,7 @@ void main() {
       var authorizer = Authorizer.bearer(authServer, scopes: ["other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
       });
       expect(res.statusCode, 403);
@@ -374,7 +374,7 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
       });
       expect(res.statusCode, 403);
@@ -389,7 +389,7 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["other", "something_else"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
       });
       expect(res.statusCode, 403);
@@ -404,7 +404,7 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Bearer $userAndOtherReadOnlyScopedAccessToken"
       });
@@ -419,7 +419,7 @@ void main() {
         () async {
       var anotherAuthServer = AuthServer(CrashingStorage());
       server = await enableAuthorizer(Authorizer.basic(anotherAuthServer));
-      var res = await http.get("http://localhost:8000", headers: {
+      var res = await http.get(Uri.parse("http://localhost:8000"), headers: {
         HttpHeaders.authorizationHeader:
             "Basic ${const Base64Encoder().convert("a:".codeUnits)}"
       });
@@ -430,7 +430,7 @@ void main() {
         () async {
       var anotherAuthServer = AuthServer(CrashingStorage());
       server = await enableAuthorizer(Authorizer.bearer(anotherAuthServer));
-      var res = await http.get("http://localhost:8000",
+      var res = await http.get(Uri.parse("http://localhost:8000"),
           headers: {HttpHeaders.authorizationHeader: "Bearer axy"});
       expect(res.statusCode, 504);
     });

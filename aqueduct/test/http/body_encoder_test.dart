@@ -26,7 +26,7 @@ void main() {
     var response = Response.ok("xyz")..contentType = ContentType("foo", "bar");
     server = await bindAndRespondWith(response);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
 
     expect(resp.statusCode, 500);
     expect(response.headers["content-type"], isNull);
@@ -38,7 +38,7 @@ void main() {
       ..contentType = ContentType("foo", "bar");
     server = await bindAndRespondWith(response);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     var contentType = ContentType.parse(resp.headers["content-type"]);
     expect(resp.statusCode, 200);
     expect(contentType.primaryType, "foo");
@@ -53,7 +53,7 @@ void main() {
     var response = Response.ok("xyz")..contentType = ContentType("text", "bar");
     server = await bindAndRespondWith(response);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     var contentType = ContentType.parse(resp.headers["content-type"]);
     expect(resp.statusCode, 200);
     expect(contentType.primaryType, "text");
@@ -70,7 +70,7 @@ void main() {
       ..contentType = ContentType("b", "bar");
     server = await bindAndRespondWith(serverResponse);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     expect(resp.statusCode, 200);
     expect(resp.headers["content-type"], "b/bar");
     expect(resp.body, "hello");
@@ -87,7 +87,7 @@ void main() {
       ..contentType = ContentType("a", "specific", charset: "utf-8");
     server = await bindAndRespondWith(serverResponse);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     expect(resp.statusCode, 200);
     expect(resp.headers["content-type"], "a/specific; charset=utf-8");
     expect(json.decode(resp.body), {"key": "value"});
@@ -101,7 +101,7 @@ void main() {
       ..contentType = ContentType("application", "crash");
     server = await bindAndRespondWith(serverResponse);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     expect(resp.statusCode, 500);
   });
 
@@ -110,7 +110,7 @@ void main() {
       ..contentType = ContentType("text", "plain", charset: "abcd");
     server = await bindAndRespondWith(serverResponse);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     expect(resp.statusCode, 415);
   });
 
@@ -122,7 +122,7 @@ void main() {
       ..contentType = ContentType("application", "baddata");
     server = await bindAndRespondWith(serverResponse);
 
-    var resp = await http.get("http://localhost:8888");
+    var resp = await http.get(Uri.parse("http://localhost:8888"));
     expect(resp.statusCode, 500);
   });
 
