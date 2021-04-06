@@ -3,6 +3,7 @@ analyzer:
     implicit-casts: false
   exclude:
     - tmp/**
+    - templates/**
 
 linter:
   rules:

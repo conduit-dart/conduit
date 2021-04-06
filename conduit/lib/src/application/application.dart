@@ -5,14 +5,13 @@ import 'dart:isolate';
 import 'package:conduit/src/application/isolate_application_server.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:logging/logging.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 import '../http/http.dart';
 import 'application_server.dart';
 import 'isolate_supervisor.dart';
 import 'options.dart';
 import 'service_registry.dart';
-
 
 export 'application_server.dart';
 export 'options.dart';
