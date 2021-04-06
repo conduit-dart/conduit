@@ -1,0 +1,14 @@
+name: wildfire
+description: An empty Conduit application.
+version: 0.0.1
+author: stable|kernel <jobs@stablekernel.com>
+
+environment:
+  sdk: ">=2.10.0 <3.0.0"
+
+dependencies:
+  conduit: ^4.0.0-b1
+
+dev_dependencies:
+  test: ^1.0.0
+  conduit_test: ^2.0.0-b1
