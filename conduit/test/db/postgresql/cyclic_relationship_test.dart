@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -12,7 +13,7 @@ void main() {
 
   group("Self-reference", () {
     setUp(() async {
-      context = await contextWithModels([SelfRef]);
+      context = await PostgresTestConfig().contextWithModels([SelfRef]);
     });
 
     test("Insert an object that references an existing object", () async {
@@ -375,7 +376,7 @@ void main() {
 
   group("Reference to one another", () {
     setUp(() async {
-      context = await contextWithModels([Left, Right]);
+      context = await PostgresTestConfig().contextWithModels([Left, Right]);
     });
 
     test("Insert an object that references an existing object", () async {

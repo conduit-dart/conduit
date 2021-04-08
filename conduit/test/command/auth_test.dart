@@ -2,10 +2,10 @@
 @Tags(const ["cli"])
 import 'package:conduit/conduit.dart';
 import 'package:conduit/managed_auth.dart';
-import 'package:conduit/src/dev/context_helpers.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:test/test.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
 import '../not_tests/cli_helpers.dart';
 
 void main() {
@@ -39,7 +39,7 @@ void main() {
   });
 
   tearDown(() async {
-    await dropSchemaTables(schema, store);
+    await PostgresTestConfig().dropSchemaTables(schema, store);
     await context.close();
   });
 

@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -10,7 +11,7 @@ void main() {
   });
 
   test("Fetching an object gets entire object", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel(name: "Joe", email: "a@a.com");
     var req = Query<TestModel>(context!)..values = m;
@@ -26,7 +27,7 @@ void main() {
 
   test("Query with dynamic entity and mis-matched context throws exception",
       () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var someOtherContext = ManagedContext(ManagedDataModel([]), null);
     try {
@@ -40,7 +41,7 @@ void main() {
   });
 
   test("Specifying resultProperties works", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel(name: "Joe", email: "b@a.com");
     var req = Query<TestModel>(context!)..values = m;
@@ -60,7 +61,7 @@ void main() {
   });
 
   test("Returning properties for undefined attributes fails", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel(name: "Joe", email: "b@a.com");
     var req = Query<TestModel>(context!)..values = m;
@@ -82,7 +83,7 @@ void main() {
   });
 
   test("Ascending sort descriptors work", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel(name: "Joe$i", email: "asc$i@a.com");
@@ -113,7 +114,7 @@ void main() {
   });
 
   test("Descending sort descriptors work", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel(name: "Joe$i", email: "desc$i@a.com");
@@ -135,7 +136,7 @@ void main() {
   });
 
   test("Cannot sort by property that doesn't exist", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
     try {
       Query<TestModel>(context!)
           .sortBy((u) => u["nonexisting"], QuerySortOrder.ascending);
@@ -152,7 +153,7 @@ void main() {
   });
 
   test("Cannot sort by relationship property", () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
     try {
       Query<GenUser>(context!).sortBy((u) => u.posts, QuerySortOrder.ascending);
       expect(true, false);
@@ -168,7 +169,7 @@ void main() {
   });
 
   test("Order by multiple sort descriptors work", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel(name: "Joe${i % 2}", email: "multi$i@a.com");
@@ -217,7 +218,7 @@ void main() {
   });
 
   test("Fetching an invalid key fails", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel(name: "invkey", email: "invkey@a.com");
 
@@ -236,7 +237,7 @@ void main() {
   });
 
   test("Value for foreign key in predicate", () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     var u1 = GenUser()..name = "Joe";
     var u2 = GenUser()..name = "Fred";
@@ -282,7 +283,7 @@ void main() {
   });
 
   test("Fetch object with null reference", () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
     var p1 = await (Query<GenPost>(context!)..values = (GenPost()..text = "1"))
         .insert();
 
@@ -293,7 +294,7 @@ void main() {
   });
 
   test("Omits specific keys", () async {
-    context = await contextWithModels([Omit]);
+    context = await PostgresTestConfig().contextWithModels([Omit]);
 
     var iq = Query<Omit>(context!)..values = (Omit()..text = "foobar");
 
@@ -312,7 +313,7 @@ void main() {
   test(
       "Throw exception when fetchOne returns more than one because the fetchLimit can't be applied to joins",
       () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     var objects = [GenUser()..name = "Joe", GenUser()..name = "Bob"];
 
@@ -336,7 +337,7 @@ void main() {
   test(
       "Including RelationshipInverse property can only be done by using name of property",
       () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     var u1 = await (Query<GenUser>(context!)..values.name = "Joe").insert();
 
@@ -363,7 +364,7 @@ void main() {
   });
 
   test("Can use public accessor to private property", () async {
-    context = await contextWithModels([PrivateField]);
+    context = await PostgresTestConfig().contextWithModels([PrivateField]);
 
     await Query<PrivateField>(context!).insert();
     var q = Query<PrivateField>(context!);
@@ -374,7 +375,7 @@ void main() {
   test(
       "When fetching valid enum value from db, is available as enum value and in where",
       () async {
-    context = await contextWithModels([EnumObject]);
+    context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
     var q = Query<EnumObject>(context!)..values.enumValues = EnumValues.abcd;
 
@@ -397,7 +398,7 @@ void main() {
   });
 
   test("Can fetch enum value that is null", () async {
-    context = await contextWithModels([EnumObject]);
+    context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
     var q = Query<EnumObject>(context!)..values.enumValues = null;
 
@@ -409,7 +410,7 @@ void main() {
   });
 
   test("When fetching invalid enum value from db, throws error", () async {
-    context = await contextWithModels([EnumObject]);
+    context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
     await context!.persistentStore!
         .execute("INSERT INTO _enumobject (enumValues) VALUES ('foobar')");
@@ -425,7 +426,7 @@ void main() {
   });
 
   test("Cannot include relationship in returning properties", () async {
-    context = await contextWithModels([GenUser, GenPost]);
+    context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     try {
       Query<GenUser>(context!).returningProperties((p) => [p.posts]);
@@ -441,7 +442,7 @@ void main() {
   group("Fetch by id", () {
     int? id;
     setUp(() async {
-      context = await contextWithModels([TestModel]);
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
       id = (await context!.insertObject(TestModel(name: "bob"))).id;
     });
 

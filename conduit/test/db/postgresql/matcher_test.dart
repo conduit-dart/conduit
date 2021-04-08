@@ -1,12 +1,13 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
 
   setUpAll(() async {
-    context = await contextWithModels([TestModel, InnerModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
     var counter = 0;
     var names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
     for (var name in names) {

@@ -1,7 +1,8 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
 import 'package:postgres/postgres.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -12,7 +13,8 @@ void main() {
   });
 
   test("Deleting an object works", () async {
-    context = await contextWithModels([TestModel, RefModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     var m = TestModel()
       ..email = "a@a.com"
@@ -38,7 +40,8 @@ void main() {
 
   test("Deleting an object when there are many only deletes that object",
       () async {
-    context = await contextWithModels([TestModel, RefModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel()
@@ -66,7 +69,8 @@ void main() {
 
   test("Deleting all objects works, as long as you specify the magic",
       () async {
-    context = await contextWithModels([TestModel, RefModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel()
@@ -93,7 +97,8 @@ void main() {
 
   test("Trying to delete all objects without specifying the magic fails",
       () async {
-    context = await contextWithModels([TestModel, RefModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
       var m = TestModel()
@@ -122,7 +127,8 @@ void main() {
   });
 
   test("Deleting a related object w/nullify sets property to null", () async {
-    context = await contextWithModels([TestModel, RefModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     var testModelObject = TestModel()..name = "a";
     var testModelReq = Query<TestModel>(context!)..values = testModelObject;
@@ -143,7 +149,8 @@ void main() {
   });
 
   test("Deleting a related object w/restrict fails", () async {
-    context = await contextWithModels([GRestrict, GRestrictInverse]);
+    context = await PostgresTestConfig()
+        .contextWithModels([GRestrict, GRestrictInverse]);
 
     var griObject = GRestrictInverse()..name = "a";
     var griReq = Query<GRestrictInverse>(context!)..values = griObject;
@@ -166,7 +173,8 @@ void main() {
   });
 
   test("Deleting cascade object deletes other object", () async {
-    context = await contextWithModels([GCascade, GCascadeInverse]);
+    context = await PostgresTestConfig()
+        .contextWithModels([GCascade, GCascadeInverse]);
 
     var obj = GCascadeInverse()..name = "a";
     var req = Query<GCascadeInverse>(context!)..values = obj;

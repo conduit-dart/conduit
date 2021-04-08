@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -11,7 +12,7 @@ void main() {
   });
 
   test("Updating existing object works", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -38,7 +39,7 @@ void main() {
   test(
       "Updating non-nullable property to null gives error that specifies the offending property",
       () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -65,7 +66,7 @@ void main() {
   });
 
   test("Setting relationship to a new value succeeds", () async {
-    context = await contextWithModels([Child, Parent]);
+    context = await PostgresTestConfig().contextWithModels([Child, Parent]);
 
     var q = Query<Parent>(context!)..values.name = "Bob";
     var parent = await q.insert();
@@ -88,7 +89,7 @@ void main() {
   });
 
   test("Setting relationship to null succeeds", () async {
-    context = await contextWithModels([Child, Parent]);
+    context = await PostgresTestConfig().contextWithModels([Child, Parent]);
 
     var parent = Parent()..name = "Bob";
     var q = Query<Parent>(context!)..values = parent;
@@ -109,7 +110,7 @@ void main() {
   });
 
   test("Updating non-existent object does nothing", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -137,7 +138,7 @@ void main() {
   });
 
   test("Update object with ModelQuery", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m1 = TestModel()
       ..name = "Bob"
@@ -165,7 +166,7 @@ void main() {
   });
 
   test("Update object with new value for column in predicate", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
     var m1 = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
@@ -192,7 +193,7 @@ void main() {
   });
 
   test("updateOne returns updated object if found, null if not", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -220,7 +221,7 @@ void main() {
 
   test("updateOne throws exception if it updated more than one object",
       () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -248,7 +249,7 @@ void main() {
   });
 
   test("Update all without safeguard fails", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -276,7 +277,7 @@ void main() {
   });
 
   test("Update all WITH safeguard succeeds", () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var m = TestModel()
       ..name = "Bob"
@@ -301,7 +302,7 @@ void main() {
   test(
       "Attempted update that will cause conflict throws appropriate QueryException",
       () async {
-    context = await contextWithModels([TestModel]);
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     var objects = [
       TestModel()
@@ -328,7 +329,7 @@ void main() {
   });
 
   test("Can use enum to set property to be stored in db", () async {
-    context = await contextWithModels([EnumObject]);
+    context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
     var q = Query<EnumObject>(context!)..values.enumValues = EnumValues.efgh;
 

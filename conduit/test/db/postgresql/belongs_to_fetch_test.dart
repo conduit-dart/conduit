@@ -1,8 +1,9 @@
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
-import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit/src/dev/model_graph.dart';
+
+import 'postgres_test_config.dart';
 
 /*
   The more rigid tests on joining are covered by tiered_where, has_many and has_one tests.
@@ -14,7 +15,7 @@ void main() {
   ManagedContext? ctx;
 
   setUpAll(() async {
-    ctx = await contextWithModels([
+    ctx = await PostgresTestConfig().contextWithModels([
       RootObject,
       RootJoinObject,
       OtherRootObject,

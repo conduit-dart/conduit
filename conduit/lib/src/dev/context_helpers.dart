@@ -2,6 +2,13 @@ import 'dart:async';
 
 import 'package:conduit/conduit.dart';
 
+/// TODO: I think these function should go into the test directory
+/// but we first need to check if other packages are dependant on them.
+/// For the moment I've copied each of these methods into
+/// test/db/postgres/postgres_test_config.dart
+/// and updated all unit tests to use those versions.
+/// If it turns out that these libraries are share db other packages then
+/// we should create a common_unit_test package to house these.
 Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
   var persistentStore =
       PostgreSQLPersistentStore("dart", "dart", "localhost", 5432, "dart_test");

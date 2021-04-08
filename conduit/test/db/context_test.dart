@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgresql/postgres_test_config.dart';
 
 void main() {
   group("Multiple contexts, same data model", () {
@@ -113,7 +114,7 @@ Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
   var persistentStore =
       PostgreSQLPersistentStore("dart", "dart", "localhost", 5432, "dart_test");
 
-  var commands = commandsFromDataModel(dataModel, temporary: true);
+  var commands =  PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
   var context = ManagedContext(dataModel, persistentStore);
 
   for (var cmd in commands) {

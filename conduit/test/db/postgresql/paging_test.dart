@@ -1,13 +1,14 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgres_test_config.dart';
 
 void main() {
   group("Offset/limit", () {
     ManagedContext? context;
 
     setUpAll(() async {
-      context = await contextWithModels([PageableTestModel]);
+      context = await PostgresTestConfig().contextWithModels([PageableTestModel]);
       for (int i = 0; i < 10; i++) {
         var p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -63,7 +64,7 @@ void main() {
     };
 
     setUpAll(() async {
-      context = await contextWithModels([PageableTestModel]);
+      context = await PostgresTestConfig().contextWithModels([PageableTestModel]);
       for (int i = 0; i < 10; i++) {
         var p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -282,7 +283,7 @@ void main() {
 
     setUpAll(() async {
       context =
-          await contextWithModels([PageableTestModel, HasMany, BelongsTo]);
+          await PostgresTestConfig().contextWithModels([PageableTestModel, HasMany, BelongsTo]);
       for (int i = 0; i < 10; i++) {
         var p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();

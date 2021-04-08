@@ -1,8 +1,9 @@
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
-import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit/src/dev/model_graph.dart';
+
+import 'postgres_test_config.dart';
 
 /*
   If you're going to look at these tests, you'll have to draw out the model graph defined in model_graph.dart
@@ -16,7 +17,7 @@ void main() {
   late List<RootObject> rootObjects;
   ManagedContext? ctx;
   setUpAll(() async {
-    ctx = await contextWithModels([
+    ctx = await PostgresTestConfig().contextWithModels([
       RootObject,
       RootJoinObject,
       OtherRootObject,

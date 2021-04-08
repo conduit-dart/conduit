@@ -1,11 +1,12 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-import 'package:conduit/src/dev/helpers.dart';
+
+import 'postgresql/postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
   setUp(() async {
-    context = await contextWithModels([Parent, Child, Grandchild]);
+    context = await PostgresTestConfig().contextWithModels([Parent, Child, Grandchild]);
   });
 
   tearDown(() async {
