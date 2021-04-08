@@ -5,6 +5,8 @@ import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
+
 void main() {
   group("Standard operations", () {
     var app = Application<TestChannel>();
@@ -109,8 +111,7 @@ class TestChannel extends ApplicationChannel {
   @override
   Future prepare() async {
     var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgreSQLPersistentStore(
-        "dart", "dart", "localhost", 5432, "dart_test");
+    var persistentStore = PostgresTestConfig().persistentStore();
     context = ManagedContext(dataModel, persistentStore);
 
     var targetSchema = Schema.fromDataModel(context.dataModel!);

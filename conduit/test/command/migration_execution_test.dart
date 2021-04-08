@@ -11,11 +11,12 @@ import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
 import '../not_tests/cli_helpers.dart';
 
 late CLIClient cli;
-DatabaseConfiguration connectInfo = DatabaseConfiguration.withConnectionInfo(
-    "dart", "dart", "localhost", 5432, "dart_test");
+DatabaseConfiguration connectInfo =
+    PostgresTestConfig().databaseConfiguration();
 String connectString =
     "postgres://${connectInfo.username}:${connectInfo.password}@${connectInfo.host}:${connectInfo.port}/${connectInfo.databaseName}";
 
@@ -66,8 +67,8 @@ void main() {
 
   test("Generate and execute initial schema makes workable DB", () async {
     expect(await runMigrationCases(["Case1"]), isZero);
-    var version = await store
-        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    var version =
+        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
     ]);
@@ -99,8 +100,8 @@ void main() {
   test("Multiple migration files are ran", () async {
     expect(await runMigrationCases(["Case31", "Case32"]), isZero);
 
-    var version = await store
-        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    var version =
+        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
       [2]
@@ -111,8 +112,8 @@ void main() {
 
   test("Only later migration files are ran if already at a version", () async {
     expect(await runMigrationCases(["Case41"]), isZero);
-    var version = await store
-        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    var version =
+        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
     ]);
@@ -122,8 +123,8 @@ void main() {
     expect(await tableExists(store, "_foo"), isFalse);
 
     expect(await runMigrationCases(["Case42"], fromVersion: 1), isZero);
-    version = await store
-        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    version =
+        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
       [2]

@@ -19,16 +19,12 @@ void main() {
     cli = CLIClient(DartProjectAgent("application_test", dependencies: {
       "conduit": {"path": "../.."}
     }))
-      ..defaultArgs = [
-        "--connect",
-        "postgres://dart:dart@localhost:5432/dart_test"
-      ];
+      ..defaultArgs = ["--connect", PostgresTestConfig.connectionUrl];
     await cli.agent.getDependencies();
   });
 
   setUp(() async {
-    store = PostgreSQLPersistentStore(
-        "dart", "dart", "localhost", 5432, "dart_test");
+    store = PostgresTestConfig().persistentStore();
 
     final builder = SchemaBuilder.toSchema(store, schema);
     for (var command in builder.commands) {

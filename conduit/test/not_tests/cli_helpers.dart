@@ -8,6 +8,8 @@ import 'package:conduit/src/cli/running_process.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
+
 class CLIClient {
   CLIClient(this.agent);
 
@@ -128,8 +130,7 @@ class TestChannel extends ApplicationChannel {
   }
 
   Future<int> executeMigrations(
-      {String connectString =
-          "postgres://dart:dart@localhost:5432/dart_test"}) async {
+      {String connectString = PostgresTestConfig.connectionUrl}) async {
     final res = await run("db", ["upgrade", "--connect", connectString]);
     if (res != 0) {
       print("executeMigrations failed: $output");

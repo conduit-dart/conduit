@@ -9,13 +9,14 @@ import 'package:conduit/src/cli/mixins/database_managing.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:test/test.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
+
 void main() {
   group("Cooperation", () {
     late PersistentStore store;
 
     setUp(() {
-      store = PostgreSQLPersistentStore(
-          "dart", "dart", "localhost", 5432, "dart_test");
+      store = PostgresTestConfig().persistentStore();
     });
 
     tearDown(() async {
@@ -46,7 +47,8 @@ void main() {
 
       var mig = Migration1();
       mig.version = 1;
-      final outSchema = await (store.upgrade(schema, [mig], temporary: true) as FutureOr<Schema>);
+      final outSchema = await (store.upgrade(schema, [mig], temporary: true)
+          as FutureOr<Schema>);
 
       // 'Sync up' that schema to compare it
       final tableToKeep = schema.tableForName("tableToKeep")!;
@@ -54,9 +56,7 @@ void main() {
           "addedColumn", ManagedPropertyType.integer,
           defaultValue: "2"));
       tableToKeep.removeColumn(tableToKeep.columnForName("columnToDelete")!);
-      tableToKeep
-          .columnForName("columnToEdit")!
-          .defaultValue = "'foo'";
+      tableToKeep.columnForName("columnToEdit")!.defaultValue = "'foo'";
 
       schema.removeTable(schema.tableForName("tableToDelete")!);
 

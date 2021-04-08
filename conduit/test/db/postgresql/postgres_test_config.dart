@@ -17,6 +17,16 @@ class PostgresTestConfig {
   static const password = 'dart';
   static const dbName = 'dart_test';
 
+  static const connectionUrl =
+      "postgres://$username:$password@$host:$port/$dbName";
+
+  PostgreSQLPersistentStore persistentStore() =>
+      PostgreSQLPersistentStore(username, password, host, port, dbName);
+
+  DatabaseConfiguration databaseConfiguration() =>
+      DatabaseConfiguration.withConnectionInfo(
+          username, password, host, port, dbName);
+
   Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
     var persistentStore =
         PostgreSQLPersistentStore(username, password, host, port, dbName);

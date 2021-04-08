@@ -111,10 +111,10 @@ class _U {
 class U extends ManagedObject<_U> implements _U {}
 
 Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
-  var persistentStore =
-      PostgreSQLPersistentStore("dart", "dart", "localhost", 5432, "dart_test");
+  var persistentStore = PostgresTestConfig().persistentStore();
 
-  var commands =  PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
+  var commands =
+      PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
   var context = ManagedContext(dataModel, persistentStore);
 
   for (var cmd in commands) {

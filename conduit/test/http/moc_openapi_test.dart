@@ -7,6 +7,8 @@ import 'package:conduit/conduit.dart';
 
 import 'package:conduit/src/dev/helpers.dart';
 
+import '../db/postgresql/postgres_test_config.dart';
+
 void main() {
   group("Documentation", () {
     late Map<String, APIOperation> collectionOperations;
@@ -114,8 +116,7 @@ class TestChannel extends ApplicationChannel {
   @override
   Future prepare() async {
     var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgreSQLPersistentStore(
-        "dart", "dart", "localhost", 5432, "dart_test");
+    var persistentStore = PostgresTestConfig().persistentStore();
     context = ManagedContext(dataModel, persistentStore);
 
     var targetSchema = Schema.fromDataModel(context.dataModel!);

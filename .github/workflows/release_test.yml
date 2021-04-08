@@ -4,9 +4,9 @@ on:
   release:
 
 jobs:
-  aqueduct_test:
+  conduit_test:
     env:
-      TEST_DIR: aqueduct_test
+      TEST_DIR: conduit_test
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -21,7 +21,7 @@ jobs:
           POSTGRES_PASSWORD: dart
           POSTGRES_DB: dart_test
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
     - uses: actions/checkout@v2
     - uses: dart-lang/setup-dart@v1
@@ -34,9 +34,9 @@ jobs:
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ env.RUNNER_CMD }}
     
-  aqueduct:
+  conduit:
     env:
-      TEST_DIR: aqueduct
+      TEST_DIR: conduit
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -51,7 +51,7 @@ jobs:
           POSTGRES_PASSWORD: dart
           POSTGRES_DB: dart_test
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
@@ -64,9 +64,9 @@ jobs:
         working-directory: ${{ env.TEST_DIR }}
         run: ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }}
         
-  aqueduct_tool:
+  conduit_tool:
     env:
-      TEST_DIR: aqueduct
+      TEST_DIR: conduit
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -79,7 +79,7 @@ jobs:
           POSTGRES_PASSWORD: dart
           POSTGRES_DB: dart_test
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
