@@ -207,7 +207,8 @@ class _TestObject {
       projectUnderTestCli.agent.modifyFile(
         "lib/application_test.dart",
         (prev) {
-          return prev.replaceFirst("String? foo;", "String? foo;\nString bar;");
+          return prev.replaceFirst(
+              "String? foo;", "String? foo;\nString? bar;");
         },
       );
       res = await projectUnderTestCli.run("db", ["generate"]);
