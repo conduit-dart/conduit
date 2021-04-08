@@ -8,13 +8,38 @@ Please document the intent of the pull request. All non-documentation pull reque
 
 ## Running Tests
 
-Tests will automatically be run when you submit a pull request, but you will need to run tests locally. You must have a local PostgreSQL server with a database created with the following:
+Tests will automatically be run when you submit a pull request, but you will need to run tests locally. 
+
+To script exists to make running the unit tests easy.
+
+tool/install_unit_test_dependencies.dart
+tool/run_unit_tests.dart
+
+These scripts install a docker container running postgres on an alternate port 15432 and then
+run the unit test against those scripts.
+
+### Manual db configuration
+If you have to create your own postgres install (not recommended) then you need to configure
+it to run on port 15432.
+
+You can override each of the db connection args via environment variables:
+
+PSQL_HOST
+PSQL_PORT
+PSQL_USERNAME
+PSQL_PASSWORD
+PSQL_DBNAME
+
+
+TODO: allow a user to configure the port the unit tests are run on. 
+
+To manually create the test db:
 
 ```bash
-psql -c 'create user dart with createdb;' -U postgres
-psql -c "alter user dart with password 'dart';" -U postgres
-psql -c 'create database dart_test;' -U postgres
-psql -c 'grant all on database dart_test to dart;' -U postgres
+psql -p 15432 -c 'create user dart with createdb;' -U postgres
+psql -p 15432  -c "alter user dart with password 'dart';" -U postgres
+psql -p 15432  -c 'create database dart_test;' -U postgres
+psql -p 15432  -c 'grant all on database dart_test to dart;' -U postgres
 ```
 
 Run all tests with the following command:
