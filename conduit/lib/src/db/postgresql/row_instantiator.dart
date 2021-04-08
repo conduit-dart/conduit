@@ -112,7 +112,7 @@ class RowInstantiator {
       // Now if it is belongsTo, we may have already populated it with the foreign key object.
       // In this case, we do need to override it
       if (existingInnerInstance == null) {
-        instance[table.joinedBy!.name] = innerInstanceWrapper!.instance;
+        instance[table.joinedBy!.name] = innerInstanceWrapper?.instance;
       }
     }
   }
