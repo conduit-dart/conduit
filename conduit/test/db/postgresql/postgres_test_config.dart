@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:conduit/conduit.dart';
 
 /// This class is used to define the default configuration use
@@ -11,13 +13,13 @@ class PostgresTestConfig {
 
   static late final PostgresTestConfig _self = PostgresTestConfig();
 
-  static const host = 'localhost';
-  static const port = 15432;
-  static const username = 'dart';
-  static const password = 'dart';
-  static const dbName = 'dart_test';
+  static const defaultHost = 'localhost';
+  static const defaultPort = 15432;
+  static const defaultUsername = 'dart';
+  static const defaultPassword = 'dart';
+  static const defaultDbName = 'dart_test';
 
-  static const connectionUrl =
+  String get connectionUrl =>
       "postgres://$username:$password@$host:$port/$dbName";
 
   PostgreSQLPersistentStore persistentStore() =>
@@ -67,5 +69,57 @@ class PostgresTestConfig {
         tables.insert(0, tables.removeLast());
       }
     }
+  }
+
+  int? _port;
+  int get port {
+    if (_port == null) {
+      /// Check for an environment variable.
+      const _key = 'PSQL_PORT';
+      if (Platform.environment.containsKey(_key)) {
+        var value = Platform.environment[_key];
+        if (value != null) {
+          _port = int.tryParse(value);
+        }
+        if (_port == null) {
+          throw ArgumentError(
+              "The Environment Variable $_key does not contain a valid integer. Found: $value");
+        }
+      } else {
+        _port = defaultPort;
+      }
+    }
+    return _port!;
+  }
+
+  String? _host;
+  String get host => _host ??= _initialise('PSQL_HOST', defaultHost);
+
+  String? _username;
+  String get username =>
+      _username ??= _initialise('PSQL_USERNAME', defaultUsername);
+
+  String? _password;
+  String get password =>
+      _password ??= _initialise('PSQL_PASSWORD', defaultPassword);
+
+  String? _dbName;
+  String get dbName => _dbName ??= _initialise('PSQL_DBNAME', defaultDbName);
+
+  String _initialise(String key, String defaultValue) {
+    var value = defaultValue;
+
+    /// Check for an environment variable.
+    if (Platform.environment.containsKey(key)) {
+      var value = Platform.environment[key];
+      if (value != null) {
+        value = value.trim();
+      }
+      if (value == null || value.isEmpty) {
+        throw ArgumentError(
+            "The Environment Variable $key does not contain a valid String. Found null or an empty string.");
+      }
+    }
+    return value;
   }
 }

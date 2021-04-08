@@ -129,8 +129,8 @@ class TestChannel extends ApplicationChannel {
         DartProjectAgent.projectsDirectory.uri.resolve("$name/")));
   }
 
-  Future<int> executeMigrations(
-      {String connectString = PostgresTestConfig.connectionUrl}) async {
+  Future<int> executeMigrations({String? connectString}) async {
+    connectString ??= PostgresTestConfig().connectionUrl;
     final res = await run("db", ["upgrade", "--connect", connectString]);
     if (res != 0) {
       print("executeMigrations failed: $output");

@@ -12,6 +12,7 @@ environment:
   matrix:
   - TEST_DIR: conduit_test
   - TEST_DIR: conduit
+  - PSQL_PORT: 5432
 
 install:
   - ps: wget https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dartsdk-windows-x64-release.zip -OutFile dart-sdk.zip

@@ -19,7 +19,7 @@ void main() {
     cli = CLIClient(DartProjectAgent("application_test", dependencies: {
       "conduit": {"path": "../.."}
     }))
-      ..defaultArgs = ["--connect", PostgresTestConfig.connectionUrl];
+      ..defaultArgs = ["--connect", PostgresTestConfig().connectionUrl];
     await cli.agent.getDependencies();
   });
 
