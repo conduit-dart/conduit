@@ -13,7 +13,7 @@ void main() {
     } on StateError catch (e) {
       expect(
         e.toString(),
-        "Bad state: Invalid binding 'x' on 'ErrorDefaultBool.get1': "
+        "Bad state: Invalid binding 'x' on 'ErrorDefaultBool.get1':"
         "Parameter type does not implement static parse method.",
       );
     }
