@@ -1,0 +1,12 @@
+version: "3.3"
+   
+services:
+      postgres:
+        image: postgres:9.6
+        restart: always
+        environment:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: 34achfAdce
+          POSTGRES_DB: conduit_test_db
+        ports:
+          - 15432:5432

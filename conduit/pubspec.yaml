@@ -33,6 +33,7 @@ dev_dependencies:
   fs_test_agent: ^1.0.0-b1
   conduit_test:
     path: ../conduit_test
+  dcli: ^0.51.0
 
 dependency_overrides:
   conduit_common: 

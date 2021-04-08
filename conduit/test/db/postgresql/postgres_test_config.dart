@@ -15,9 +15,9 @@ class PostgresTestConfig {
 
   static const defaultHost = 'localhost';
   static const defaultPort = 15432;
-  static const defaultUsername = 'dart';
-  static const defaultPassword = 'dart';
-  static const defaultDbName = 'dart_test';
+  static const defaultUsername = 'conduit_test_user';
+  static const defaultPassword = '34achfAdce';
+  static const defaultDbName = 'conduit_test_db';
 
   String get connectionUrl =>
       "postgres://$username:$password@$host:$port/$dbName";
