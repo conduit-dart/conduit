@@ -98,11 +98,6 @@ class ManagedDataModel extends Object
     var entity =
         _entities[type] ?? _tableDefinitionToEntityMap[type.toString()];
 
-    if (entity == null) {
-      throw StateError(
-          "No entity found for '$type. Did you forget to create a 'ManagedContext'?");
-    }
-
     return entity;
   }
 
