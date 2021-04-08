@@ -65,8 +65,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
     }).toList();
 
     try {
-      final updatedSchema =
-          await (store.upgrade(inputSchema, instances) as FutureOr<Schema>);
+      final updatedSchema = (await store.upgrade(inputSchema, instances))!;
       await store.close();
 
       return updatedSchema.asMap();

@@ -148,8 +148,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       {Map<String, dynamic>? substitutionValues, Duration? timeout}) async {
     timeout ??= const Duration(seconds: 30);
     var now = DateTime.now().toUtc();
-    var dbConnection =
-        await (executionContext as FutureOr<PostgreSQLConnection?>);
+    var dbConnection = await executionContext;
     try {
       var rows = await dbConnection!.query(sql,
           substitutionValues: substitutionValues,
@@ -178,8 +177,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<T?> transaction<T>(ManagedContext transactionContext,
       Future<T?> transactionBlock(ManagedContext transaction)) async {
-    final dbConnection =
-        await (getDatabaseConnection());
+    final dbConnection = await (getDatabaseConnection());
 
     T? output;
     Rollback? rollback;
@@ -242,8 +240,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<Schema?> upgrade(Schema? fromSchema, List<Migration> withMigrations,
       {bool temporary = false}) async {
-    var connection =
-        await (getDatabaseConnection());
+    var connection = await (getDatabaseConnection());
 
     Schema? schema = fromSchema;
 
