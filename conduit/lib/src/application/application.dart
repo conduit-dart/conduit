@@ -141,7 +141,9 @@ class Application<T extends ApplicationChannel?> {
   Future stop() async {
     _hasFinishedLaunching = false;
     await Future.wait(supervisors.map((s) => s.stop()));
-    await server?.server.close(force: true);
+    if (server != null && server!.server != null) {
+      await server!.server!.close(force: true);
+    }
 
     await ServiceRegistry.defaultInstance.close();
     _hasFinishedLaunching = false;
