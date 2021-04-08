@@ -297,7 +297,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
 StateError _makeError(VariableMirror mirror, String s) {
   return StateError(
       "Invalid binding '${MirrorSystem.getName(mirror.simpleName)}' "
-      "on '${getMethodAndClassName(mirror)}': $s");
+      "on '${getMethodAndClassName(mirror)}':$s");
 }
 
 void _enforceTypeCanBeParsedFromString(
