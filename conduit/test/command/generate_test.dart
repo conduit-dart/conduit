@@ -28,9 +28,9 @@ class TestObject extends ManagedObject<_TestObject> {}
 
 class _TestObject {
   @primaryKey
-  int id;
+  int? id;
 
-  String foo;
+  String? foo;
 }
       """);
   });
@@ -84,7 +84,7 @@ class _TestObject {
     // Let's add an index
     projectUnderTestCli.agent.modifyFile("lib/application_test.dart", (prev) {
       return prev.replaceFirst(
-          "String foo;", "@Column(indexed: true) String foo;");
+          "String? foo;", "@Column(indexed: true) String? foo;");
     });
 
     res = await projectUnderTestCli.run("db", ["generate"]);
@@ -126,7 +126,7 @@ class _TestObject {
       "lib/application_test.dart",
       (prev) {
         return prev.replaceFirst(
-            "String foo;", "@Column(indexed: true) String foo;");
+            "String? foo;", "@Column(indexed: true) String? foo;");
       },
     );
 
@@ -207,7 +207,7 @@ class _TestObject {
       projectUnderTestCli.agent.modifyFile(
         "lib/application_test.dart",
         (prev) {
-          return prev.replaceFirst("String foo;", "String foo;\nString bar;");
+          return prev.replaceFirst("String? foo;", "String? foo;\nString bar;");
         },
       );
       res = await projectUnderTestCli.run("db", ["generate"]);

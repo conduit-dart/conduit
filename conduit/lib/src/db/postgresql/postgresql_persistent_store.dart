@@ -179,7 +179,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   Future<T?> transaction<T>(ManagedContext transactionContext,
       Future<T?> transactionBlock(ManagedContext transaction)) async {
     final dbConnection =
-        await (getDatabaseConnection() as FutureOr<PostgreSQLConnection>);
+        await (getDatabaseConnection());
 
     T? output;
     Rollback? rollback;
@@ -243,7 +243,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   Future<Schema?> upgrade(Schema? fromSchema, List<Migration> withMigrations,
       {bool temporary = false}) async {
     var connection =
-        await (getDatabaseConnection() as FutureOr<PostgreSQLConnection>);
+        await (getDatabaseConnection());
 
     Schema? schema = fromSchema;
 

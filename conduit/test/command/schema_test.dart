@@ -23,9 +23,9 @@ class TestObject extends ManagedObject<_TestObject> {}
 
 class _TestObject {
   @primaryKey
-  int id;
+  int? id;
 
-  String foo;
+  String? foo;
 }
       """);
   });
