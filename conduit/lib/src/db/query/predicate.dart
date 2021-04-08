@@ -57,7 +57,7 @@ class QueryPredicate {
     // If we have duplicate keys anywhere, we need to disambiguate them.
     int dupeCounter = 0;
     final allFormatStrings = [];
-    final valueMap = <String?, dynamic>{};
+    final valueMap = <String, dynamic>{};
     for (var predicate in predicateList) {
       final duplicateKeys = predicate!.parameters?.keys
         .where((k) => valueMap.keys.contains(k))
@@ -98,5 +98,5 @@ class QueryPredicate {
   ///
   /// Input values should not be in the format string, but instead provided in this map.
   /// Keys of this map will be searched for in the format string and be replaced by the value in this map.
-  Map<String?, dynamic>? parameters;
+  Map<String, dynamic>? parameters;
 }

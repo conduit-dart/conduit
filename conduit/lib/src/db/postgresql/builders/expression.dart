@@ -49,7 +49,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   QueryPredicate containsPredicate(Iterable<dynamic> values,
       {bool within = true}) {
     var tokenList = [];
-    var pairedMap = <String?, dynamic>{};
+    var pairedMap = <String, dynamic>{};
 
     var counter = 0;
     values.forEach((value) {
@@ -119,6 +119,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   }
 
   String escapeLikeString(String input) {
-    return input.replaceAllMapped(RegExp(r"(\\|%|_)"), (Match m) => "\\${m[0]}");
+    return input.replaceAllMapped(
+        RegExp(r"(\\|%|_)"), (Match m) => "\\${m[0]}");
   }
 }
