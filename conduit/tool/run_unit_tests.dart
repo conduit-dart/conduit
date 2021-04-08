@@ -27,6 +27,10 @@ void main(List<String> args) {
     exit(1);
   }
 
+  ProcessSignal.sigint.watch().listen((signal) {
+    print('ctrl-caught');
+    'docker-compose down'.run;
+  });
   DartSdk().runPubGet('..');
 
   startPostgresDaemon();
@@ -34,6 +38,12 @@ void main(List<String> args) {
   print('Starting postgres docker image');
 
   print('Staring Conduit unit tests');
+
+  env['POSTGRES_USER'] = 'conduit_test_user';
+  env['POSTGRES_PASSWORD'] = '34achfAdce';
+  env['POSTGRES_DB'] = 'conduit_test_db';
+
+  /// run the tests
   'pub run test -j1'.start(workingDirectory: '..');
 
   print('Stopping posgress docker image');
