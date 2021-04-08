@@ -11,7 +11,9 @@ import 'package:conduit/conduit.dart';
 class PostgresTestConfig {
   factory PostgresTestConfig() => _self;
 
-  static late final PostgresTestConfig _self = PostgresTestConfig();
+  PostgresTestConfig._internal();
+
+  static late final PostgresTestConfig _self = PostgresTestConfig._internal();
 
   static const defaultHost = 'localhost';
   static const defaultPort = 15432;
