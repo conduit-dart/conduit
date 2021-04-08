@@ -108,7 +108,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   ///
   /// When executing queries, prefer to use [executionContext] instead. Failure to do so might result
   /// in issues when executing queries during a transaction.
-  Future<PostgreSQLConnection?> getDatabaseConnection() async {
+  Future<PostgreSQLConnection> getDatabaseConnection() async {
     if (_databaseConnection == null || _databaseConnection!.isClosed) {
       if (_pendingConnectionCompleter == null) {
         _pendingConnectionCompleter = Completer<PostgreSQLConnection>();
@@ -129,7 +129,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       return _pendingConnectionCompleter!.future;
     }
 
-    return _databaseConnection;
+    return _databaseConnection!;
   }
 
   @override
@@ -149,9 +149,9 @@ class PostgreSQLPersistentStore extends PersistentStore
     timeout ??= const Duration(seconds: 30);
     var now = DateTime.now().toUtc();
     var dbConnection =
-        await (executionContext as FutureOr<PostgreSQLExecutionContext>);
+        await (executionContext as FutureOr<PostgreSQLConnection?>);
     try {
-      var rows = await dbConnection.query(sql,
+      var rows = await dbConnection!.query(sql,
           substitutionValues: substitutionValues,
           timeoutInSeconds: timeout.inSeconds);
 

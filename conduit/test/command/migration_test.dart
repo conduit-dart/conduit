@@ -47,8 +47,11 @@ void main() {
 
       var mig = Migration1();
       mig.version = 1;
+      // ignore: unnecessary_cast
       final outSchema = await (store.upgrade(schema, [mig], temporary: true)
-          as FutureOr<Schema>);
+          as FutureOr<Schema?>);
+
+      expect(outSchema, isNotNull);
 
       // 'Sync up' that schema to compare it
       final tableToKeep = schema.tableForName("tableToKeep")!;
@@ -64,7 +67,7 @@ void main() {
         SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
       ]));
 
-      expect(outSchema.differenceFrom(schema).hasDifferences, false);
+      expect(outSchema!.differenceFrom(schema).hasDifferences, false);
 
       var insertResults = await store.execute(
           "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn");
