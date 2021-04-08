@@ -20,6 +20,7 @@ dependencies:
   logging: ^1.0.0
   meta: ^1.1.5
   path: ^1.6.1
+  pedantic: ^1.0.0
   postgres: ^2.1.1
   pub_cache: ^0.3.0
   pub_semver: ^2.0.0
