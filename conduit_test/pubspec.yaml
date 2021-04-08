@@ -1,8 +1,9 @@
 name: conduit_test
 description: Utilities for writing automated tests for Conduit applications
 version: 2.0.0-b1
-homepage: https://github.com/stablekernel/conduit
-author: stable|kernel <jobs@stablekernel.com>
+homepage: https://github.com/conduit.dart/conduit
+authors: stable|kernel <jobs@stablekernel.com>
+  bsutton@noojee.com.au
 documentation:
 
 environment:

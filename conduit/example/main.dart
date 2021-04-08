@@ -6,7 +6,7 @@
       pub global activate conduit
       conduit create my_app
 
-  More examples available: https://github.com/stablekernel/conduit_examples
+  More examples available: https://github.com/conduit.dart/conduit_examples
  */
 
 import 'dart:async';
