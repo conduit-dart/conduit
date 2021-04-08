@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:conduit/conduit.dart';
 import 'package:http/http.dart' as http;
+import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 
 import 'package:conduit/src/dev/helpers.dart';
@@ -17,14 +18,17 @@ void main() {
 
   group("Default decoders", () {
     late HttpServer server;
-    late Request request;
+    Request? request;
 
     setUp(() async {
+      print('http server starting');
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
     });
 
     tearDown(() async {
-      await request.raw.response.close();
+      if (request != null) {
+        await request!.raw.response.close();
+      }
       await server.close(force: true);
     });
 
@@ -39,8 +43,9 @@ void main() {
       });
 
       test("Empty body shows as isEmpty", () async {
-        // ignore: unawaited_futures
-        http.get(Uri.parse("http://localhost:8123")).catchError((err) {});
+        unawaited(
+            http.get(Uri.parse("http://localhost:8123")).catchError((err) {}));
+        print('get completed');
         var request = await server.first;
         var body = RequestBody(request);
         expect(body.isEmpty, true);
@@ -98,7 +103,7 @@ void main() {
           .catchError((err) {});
 
       request = Request(await server.first);
-      Map<String, dynamic> body = await request.body.decode();
+      Map<String, dynamic> body = await request!.body.decode();
       expect(body, {"a": "val"});
     });
 
@@ -111,9 +116,9 @@ void main() {
       await req.close().catchError((err) {});
 
       request = Request(await server.first);
-      expect(request.raw.headers.contentType!.charset, null);
+      expect(request!.raw.headers.contentType!.charset, null);
 
-      Map<String, dynamic> body = await request.body.decode();
+      Map<String, dynamic> body = await request!.body.decode();
       expect(body, {"a": "val"});
     });
 
@@ -336,9 +341,8 @@ void main() {
 
     test("decodeAsMap with no data returns null", () async {
       // ignore: unawaited_futures
-      http.post(Uri.parse("http://localhost:8123"), headers: {
-        "Content-Type": "application/json"
-      }).catchError((err) {});
+      http.post(Uri.parse("http://localhost:8123"),
+          headers: {"Content-Type": "application/json"}).catchError((err) {});
       var body = RequestBody(await server.first);
 
       expect(await body.decode<Map<String, dynamic>>(), null);
@@ -347,9 +351,8 @@ void main() {
 
     test("asMap with no data returns null", () async {
       // ignore: unawaited_futures
-      http.post(Uri.parse("http://localhost:8123"), headers: {
-        "Content-Type": "application/json"
-      }).catchError((err) {});
+      http.post(Uri.parse("http://localhost:8123"),
+          headers: {"Content-Type": "application/json"}).catchError((err) {});
 
       var body = RequestBody(await server.first);
       await body.decode();
@@ -420,9 +423,8 @@ void main() {
 
     test("decodeAsList with no data returns null", () async {
       // ignore: unawaited_futures
-      http.post(Uri.parse("http://localhost:8123"), headers: {
-        "Content-Type": "application/json"
-      }).catchError((err) {});
+      http.post(Uri.parse("http://localhost:8123"),
+          headers: {"Content-Type": "application/json"}).catchError((err) {});
       var body = RequestBody(await server.first);
 
       expect(await body.decode(), null);
@@ -431,9 +433,8 @@ void main() {
 
     test("asList with no data returns null", () async {
       // ignore: unawaited_futures
-      http.post(Uri.parse("http://localhost:8123"), headers: {
-        "Content-Type": "application/json"
-      }).catchError((err) {});
+      http.post(Uri.parse("http://localhost:8123"),
+          headers: {"Content-Type": "application/json"}).catchError((err) {});
 
       var body = RequestBody(await server.first);
       await body.decode();
