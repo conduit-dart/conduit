@@ -22,3 +22,5 @@ Dart_Packages.xml
 *.iml
 release.yaml
 tmp/
+conduit/foobar
+conduit/migrations

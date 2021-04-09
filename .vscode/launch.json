@@ -11,10 +11,15 @@
             "type": "dart"
         },
         {
-            "name": "conduit_test",
-            "cwd": "conduit_test",
+            "name": "All Conduit Tests",
+            "type": "dart",
+            "program": "conduit/test/",
             "request": "launch",
-            "type": "dart"
-        }
+            "args": [
+                
+                "-j1",
+                "test"
+            ]
+        },
     ]
 }
