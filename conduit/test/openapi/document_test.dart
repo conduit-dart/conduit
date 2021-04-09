@@ -275,7 +275,7 @@ void main() {
               .toList();
           expect(middlewareParam.length, 1);
 
-          expect(doc.components!.resolve(middlewareParam.first!).schema!.type,
+          expect(doc.components!.resolve(middlewareParam.first!)!.schema!.type,
               APIType.string);
         });
       });
@@ -306,7 +306,7 @@ void main() {
         expect(ref.referenceURI!.path, "/components/schemas/ref-component");
 
         final resolved = doc.components!.resolve(ref);
-        expect(resolved.type, APIType.object);
+        expect(resolved!.type, APIType.object);
         expect(resolved.properties!["key"]!.type, APIType.string);
       });
 

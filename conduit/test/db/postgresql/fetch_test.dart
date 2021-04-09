@@ -382,7 +382,7 @@ void main() {
     await q.insert();
 
     q = Query<EnumObject>(context!);
-    var result = (await q.fetchOne())!;
+    EnumObject? result = (await q.fetchOne())!;
     expect(result.enumValues, EnumValues.abcd);
     expect(result.asMap()["enumValues"], "abcd");
 
@@ -393,7 +393,7 @@ void main() {
 
     q = Query<EnumObject>(context!)
       ..where((o) => o.enumValues).equalTo(EnumValues.efgh);
-    result = (await q.fetchOne())!;
+    result = await q.fetchOne();
     expect(result, isNull);
   });
 

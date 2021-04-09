@@ -1,17 +1,14 @@
 name: conduit_test
 description: Utilities for writing automated tests for Conduit applications
 version: 2.0.0-b1
-homepage: https://github.com/conduit.dart/conduit
-authors: stable|kernel <jobs@stablekernel.com>
-  bsutton@noojee.com.au
-documentation:
+homepage: https://github.com/conduit-dart/conduit
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   test: ^1.3.0
-  matcher: '>=0.12.3 <0.14.0'
+  matcher: ">=0.12.3 <0.14.0"
   conduit: ^2.0.0-b1
 
 # This is removed before being published.
