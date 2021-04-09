@@ -169,7 +169,7 @@ class TestChannel extends ApplicationChannel {
 
     print("Running 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
-    Directory.current = agent.workingDirectory;
+    //Directory.current = agent.workingDirectory;
 
     var cmd = Runner()..outputSink = _output;
     var results = cmd.options.parse(args);
@@ -179,7 +179,7 @@ class TestChannel extends ApplicationChannel {
       print("command failed: ${output}");
     }
 
-    Directory.current = saved;
+    //Directory.current = saved;
 
     return exitCode;
   }
@@ -191,7 +191,7 @@ class TestChannel extends ApplicationChannel {
 
     print("Starting 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
-    Directory.current = agent.workingDirectory;
+   // Directory.current = agent.workingDirectory;
 
     var cmd = Runner()..outputSink = _output;
     var results = cmd.options.parse(args);
@@ -201,13 +201,13 @@ class TestChannel extends ApplicationChannel {
     final timer = Timer.periodic(const Duration(milliseconds: 100), (t) {
       if (cmd.runningProcess != null) {
         t.cancel();
-        Directory.current = saved;
+       // Directory.current = saved;
         task.process = cmd.runningProcess;
         task._processStarted.complete(true);
       } else {
         elapsed += 100;
         if (elapsed > 60000) {
-          Directory.current = saved;
+         // Directory.current = saved;
           t.cancel();
           task._processStarted
               .completeError(TimeoutException("Timed out after 30 seconds"));
@@ -220,7 +220,7 @@ class TestChannel extends ApplicationChannel {
         print("Command failed to start with exit code: $exitCode");
         print("Message: $output");
         timer.cancel();
-        Directory.current = saved;
+       // Directory.current = saved;
         task._processStarted.completeError(false);
         task._processFinished.complete(exitCode);
       } else {
