@@ -350,7 +350,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
       APIDocumentContext context, Operation? operation) {
     if (operation!.method == "POST" || operation.method == "PUT") {
       return APIRequestBody.schema(
-        context.schema.getObjectWithType(InstanceType) as APISchemaObject,
+        context.schema.getObjectWithType(InstanceType),
         contentTypes: ["application/json"],
         isRequired: true,
       );
@@ -369,26 +369,21 @@ class ManagedObjectController<InstanceType extends ManagedObject>
             "200": APIResponse.schema(
                 "Returns a list of objects.",
                 APISchemaObject.array(
-                    ofSchema: context.schema.getObjectWithType(InstanceType)
-                        as APISchemaObject?)),
+                    ofSchema: context.schema.getObjectWithType(InstanceType))),
             "400": APIResponse.schema("Invalid request.",
                 APISchemaObject.object({"error": APISchemaObject.string()}))
           };
         }
 
         return {
-          "200": APIResponse.schema(
-              "Returns a single object.",
-              context.schema.getObjectWithType(InstanceType)
-                  as APISchemaObject),
+          "200": APIResponse.schema("Returns a single object.",
+              context.schema.getObjectWithType(InstanceType)),
           "404": APIResponse("No object found.")
         };
       case "PUT":
         return {
-          "200": APIResponse.schema(
-              "Returns updated object.",
-              context.schema.getObjectWithType(InstanceType)
-                  as APISchemaObject),
+          "200": APIResponse.schema("Returns updated object.",
+              context.schema.getObjectWithType(InstanceType)),
           "404": APIResponse("No object found."),
           "400": APIResponse.schema("Invalid request.",
               APISchemaObject.object({"error": APISchemaObject.string()})),
@@ -397,10 +392,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         };
       case "POST":
         return {
-          "200": APIResponse.schema(
-              "Returns created object.",
-              context.schema.getObjectWithType(InstanceType)
-                  as APISchemaObject),
+          "200": APIResponse.schema("Returns created object.",
+              context.schema.getObjectWithType(InstanceType)),
           "400": APIResponse.schema("Invalid request.",
               APISchemaObject.object({"error": APISchemaObject.string()})),
           "409": APIResponse.schema("Object already exists",

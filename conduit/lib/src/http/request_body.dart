@@ -91,6 +91,7 @@ class RequestBody extends BodyDecoder {
       contentType!.subType == "x-www-form-urlencoded";
 
   final Stream<List<int>> _originalByteStream;
+  // ignore: close_sinks
   StreamController<List<int>>? _bufferingController;
   int _bytesRead = 0;
 }

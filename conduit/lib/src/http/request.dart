@@ -9,7 +9,7 @@ typedef _ResponseModifier = void Function(Response resp);
 
 /// A single HTTP request.
 ///
-/// Instances of this class travel through a [Controller] chain to be responded to, sometimes acquiring new values
+/// Instances of this class travel through a [Controller] chain to be responded to, sometimes acquiring values
 /// as they go through controllers. Each instance of this class has a standard library [HttpRequest]. You should not respond
 /// directly to the [HttpRequest], as [Controller]s take that responsibility.
 class Request implements RequestOrResponse {
@@ -22,10 +22,10 @@ class Request implements RequestOrResponse {
   ///
   /// Use this property to access values from the HTTP request that aren't accessible through this instance.
   ///
-  /// You should typically not manipulate this property's [HttpRequest.response]. By default, Conduit controls
+  /// You should typically not manipulate this property's [HttpRequest.response]. By default, Aqueduct controls
   /// the response through its [Controller]s.
   ///
-  /// If you wish to respond to a request manually - and prohibit Conduit from responding to the request - you must
+  /// If you wish to respond to a request manually - and prohibit Aqueduct from responding to the request - you must
   /// remove this instance from the request channel. To remove a request from the channel, return null from a [Controller]
   /// handler method instead of a [Response] or [Request]. For example:
   ///
@@ -85,7 +85,7 @@ class Request implements RequestOrResponse {
   /// a q-value (if one exists) and the specificity of the content-type.
   ///
   /// See also [acceptsContentType].
-  List<ContentType>? get acceptableContentTypes {
+  List<ContentType> get acceptableContentTypes {
     if (_cachedAcceptableTypes == null) {
       try {
         var contentTypes = raw.headers[HttpHeaders.acceptHeader]
@@ -123,7 +123,7 @@ class Request implements RequestOrResponse {
             body: {"error": "accept header is malformed"});
       }
     }
-    return _cachedAcceptableTypes;
+    return _cachedAcceptableTypes!;
   }
 
   List<ContentType>? _cachedAcceptableTypes;
@@ -135,11 +135,11 @@ class Request implements RequestOrResponse {
   ///
   /// Note that if no Accept header is present, this method always returns true.
   bool acceptsContentType(ContentType contentType) {
-    if (acceptableContentTypes!.isEmpty) {
+    if (acceptableContentTypes.isEmpty) {
       return true;
     }
 
-    return acceptableContentTypes!.any((acceptable) {
+    return acceptableContentTypes.any((acceptable) {
       if (acceptable.primaryType == "*") {
         return true;
       }
@@ -230,35 +230,35 @@ class Request implements RequestOrResponse {
   ///
   /// [Controller]s invoke this method to respond to this request.
   ///
-  /// Once this method has executed, the [Request] is no longer valid. All headers from [conduitResponse] are
-  /// added to the HTTP response. If [conduitResponse] has a [Response.body], this request will attempt to encode the body data according to the
-  /// Content-Type in the [conduitResponse]'s [Response.headers].
+  /// Once this method has executed, the [Request] is no longer valid. All headers from [aqueductResponse] are
+  /// added to the HTTP response. If [aqueductResponse] has a [Response.body], this request will attempt to encode the body data according to the
+  /// Content-Type in the [aqueductResponse]'s [Response.headers].
   ///
-  Future respond(Response conduitResponse) {
+  Future respond(Response aqueductResponse) {
     respondDate = DateTime.now().toUtc();
 
     final modifiers = _responseModifiers;
     _responseModifiers = null;
     modifiers?.forEach((modifier) {
-      modifier(conduitResponse);
+      modifier(aqueductResponse);
     });
 
-    _Reference<String?> compressionType = _Reference(null);
-    var body = conduitResponse.body;
+    _Reference<String> compressionType = _Reference(null);
+    var body = aqueductResponse.body;
     if (body is! Stream) {
       // Note: this pre-encodes the body in memory, such that encoding fails this will throw and we can return a 500
       // because we have yet to write to the response.
-      body = _responseBodyBytes(conduitResponse, compressionType);
+      body = _responseBodyBytes(aqueductResponse, compressionType);
     }
 
-    response.statusCode = conduitResponse.statusCode!;
-    conduitResponse.headers.forEach((k, v) {
+    response.statusCode = aqueductResponse.statusCode!;
+    aqueductResponse.headers.forEach((k, v) {
       response.headers.add(k, v as Object);
     });
 
-    if (conduitResponse.cachePolicy != null) {
+    if (aqueductResponse.cachePolicy != null) {
       response.headers.add(HttpHeaders.cacheControlHeader,
-          conduitResponse.cachePolicy!.headerValue);
+          aqueductResponse.cachePolicy!.headerValue);
     }
 
     if (body == null) {
@@ -267,7 +267,7 @@ class Request implements RequestOrResponse {
     }
 
     response.headers.add(
-        HttpHeaders.contentTypeHeader, conduitResponse.contentType.toString());
+        HttpHeaders.contentTypeHeader, aqueductResponse.contentType.toString());
 
     if (body is List<int>) {
       if (compressionType.value != null) {
@@ -281,13 +281,13 @@ class Request implements RequestOrResponse {
       return response.close();
     } else if (body is Stream) {
       // Otherwise, body is stream
-      final bodyStream = _responseBodyStream(conduitResponse, compressionType)!;
+      final bodyStream = _responseBodyStream(aqueductResponse, compressionType);
       if (compressionType.value != null) {
         response.headers
             .add(HttpHeaders.contentEncodingHeader, compressionType.value!);
       }
       response.headers.add(HttpHeaders.transferEncodingHeader, "chunked");
-      response.bufferOutput = conduitResponse.bufferOutput;
+      response.bufferOutput = aqueductResponse.bufferOutput;
 
       return response.addStream(bodyStream).then((_) {
         return response.close();
@@ -300,7 +300,7 @@ class Request implements RequestOrResponse {
   }
 
   List<int>? _responseBodyBytes(
-      Response resp, _Reference<String?> compressionType) {
+      Response resp, _Reference<String> compressionType) {
     if (resp.body == null) {
       return null;
     }
@@ -315,7 +315,7 @@ class Request implements RequestOrResponse {
     // There isn't a great way of doing this that I can think of except splitting out gzip from the fused codec,
     // have to measure the value of fusing vs the cost of gzipping smaller data.
     var canGzip = CodecRegistry.defaultInstance
-            .isContentTypeCompressable(resp.contentType!)! &&
+            .isContentTypeCompressable(resp.contentType) &&
         _acceptsGzipResponseBody;
 
     if (codec == null) {
@@ -324,10 +324,10 @@ class Request implements RequestOrResponse {
             "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.");
       }
 
-      final bytes = resp.body as List<int>?;
+      final bytes = resp.body as List<int>;
       if (canGzip) {
         compressionType.value = "gzip";
-        return gzip.encode(bytes!);
+        return gzip.encode(bytes);
       }
       return bytes;
     }
@@ -340,8 +340,8 @@ class Request implements RequestOrResponse {
     return codec.encode(resp.body);
   }
 
-  Stream<List<int>>? _responseBodyStream(
-      Response resp, _Reference<String?> compressionType) {
+  Stream<List<int>> _responseBodyStream(
+      Response resp, _Reference<String> compressionType) {
     Codec<dynamic, List<int>>? codec;
     if (resp.encodeBody) {
       codec =
@@ -349,7 +349,7 @@ class Request implements RequestOrResponse {
     }
 
     var canGzip = CodecRegistry.defaultInstance
-            .isContentTypeCompressable(resp.contentType!)! &&
+            .isContentTypeCompressable(resp.contentType) &&
         _acceptsGzipResponseBody;
     if (codec == null) {
       if (resp.body is! Stream<List<int>>) {
@@ -357,10 +357,10 @@ class Request implements RequestOrResponse {
             "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.");
       }
 
-      final stream = resp.body as Stream<List<int>>?;
+      final stream = resp.body as Stream<List<int>>;
       if (canGzip) {
         compressionType.value = "gzip";
-        return gzip.encoder.bind(stream!);
+        return gzip.encoder.bind(stream);
       }
 
       return stream;
@@ -434,5 +434,5 @@ class HTTPStreamingException implements Exception {
 class _Reference<T> {
   _Reference(this.value);
 
-  T value;
+  T? value;
 }

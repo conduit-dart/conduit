@@ -134,8 +134,8 @@ void main() {
         () async {
       ctx.document.paths = {
         "/path": APIPath(operations: {
-          "get": APIOperation("id1",
-              {"200": ctx.responses.getObjectWithType(String) as APIResponse})
+          "get": APIOperation(
+              "id1", {"200": ctx.responses.getObjectWithType(String)})
         })
       };
 
@@ -154,8 +154,7 @@ void main() {
         () async {
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(
-            schema: ctx.schema.getObject("foo") as APISchemaObject?)
+        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
       });
 
       try {
@@ -173,15 +172,14 @@ void main() {
         () async {
       ctx.document.paths = {
         "/path": APIPath(operations: {
-          "get": APIOperation("id1",
-              {"200": ctx.responses.getObjectWithType(String) as APIResponse})
+          "get": APIOperation(
+              "id1", {"200": ctx.responses.getObjectWithType(String)})
         })
       };
 
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(
-            schema: ctx.schema.getObject("foo") as APISchemaObject?)
+        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
       });
 
       ctx.schema.register("foo", APISchemaObject.integer());
@@ -593,7 +591,7 @@ class Middleware extends Controller {
 
     ops.values.forEach((op) {
       op.parameters ??= [];
-      op.parameters!.add(components.parameters["x-api-key"] as APIParameter?);
+      op.parameters!.add(components.parameters["x-api-key"]);
     });
 
     return ops;
@@ -632,8 +630,8 @@ class Endpoint extends Controller {
       "get": APIOperation("get0", {"200": APIResponse("get/0-200")}),
       "post": APIOperation("post0", {"200": APIResponse("post/0-200")},
           requestBody: APIRequestBody({
-            "application/json": APIMediaType(
-                schema: registry.schema["someObject"] as APISchemaObject?)
+            "application/json":
+                APIMediaType(schema: registry.schema["someObject"])
           }))
     };
   }
@@ -654,9 +652,9 @@ class ComponentA implements APIComponentDocumenter {
   void documentComponents(APIDocumentContext components) {
     final schemaObject = APISchemaObject.object({
       "name": APISchemaObject.string(),
-      "refByType": components.schema.getObjectWithType(ReferencableSchemaObject)
-          as APISchemaObject?,
-      "refByName": components.schema["named-component"] as APISchemaObject
+      "refByType":
+          components.schema.getObjectWithType(ReferencableSchemaObject),
+      "refByName": components.schema["named-component"]
     });
 
     components.schema.register("someObject", schemaObject);

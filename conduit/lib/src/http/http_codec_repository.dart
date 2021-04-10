@@ -22,7 +22,7 @@ class CodecRegistry {
     setAllowsCompression(ContentType("text", "event-stream"), false);
   }
 
-  /// The instance used by Conduit to encode and decode HTTP bodies.
+  /// The instance used by Aqueduct to encode and decode HTTP bodies.
   ///
   /// Custom codecs must be added to this instance. This value is guaranteed to be non-null.
   static CodecRegistry get defaultInstance => _defaultInstance;
@@ -32,7 +32,7 @@ class CodecRegistry {
   Map<String, Map<String, Codec>> _fullySpecificedCodecs = {};
   Map<String, bool> _primaryTypeCompressionMap = {};
   Map<String, Map<String, bool>> _fullySpecifiedCompressionMap = {};
-  Map<String, Map<String, String?>> _defaultCharsetMap = {};
+  Map<String, Map<String, String>> _defaultCharsetMap = {};
 
   /// Adds a custom [codec] for [contentType].
   ///
@@ -83,7 +83,7 @@ class CodecRegistry {
 
     if (contentType.charset != null) {
       var innerCodecs = _defaultCharsetMap[contentType.primaryType] ?? {};
-      innerCodecs[contentType.subType] = contentType.charset;
+      innerCodecs[contentType.subType] = contentType.charset!;
       _defaultCharsetMap[contentType.primaryType] = innerCodecs;
     }
   }
@@ -107,16 +107,16 @@ class CodecRegistry {
   /// Whether or not [contentType] has been configured to be compressed.
   ///
   /// See also [setAllowsCompression].
-  bool? isContentTypeCompressable(ContentType contentType) {
+  bool isContentTypeCompressable(ContentType? contentType) {
     var subtypeCompress =
-        _fullySpecifiedCompressionMap[contentType.primaryType];
+        _fullySpecifiedCompressionMap[contentType?.primaryType];
     if (subtypeCompress != null) {
-      if (subtypeCompress.containsKey(contentType.subType)) {
-        return subtypeCompress[contentType.subType];
+      if (subtypeCompress.containsKey(contentType?.subType)) {
+        return subtypeCompress[contentType?.subType] ?? false;
       }
     }
 
-    return _primaryTypeCompressionMap[contentType.primaryType] ?? false;
+    return _primaryTypeCompressionMap[contentType?.primaryType] ?? false;
   }
 
   /// Returns a [Codec] for [contentType].
@@ -128,7 +128,7 @@ class CodecRegistry {
     }
 
     Codec? contentCodec;
-    Codec<String?, List<int>>? charsetCodec;
+    Codec<String, List<int>>? charsetCodec;
 
     var subtypes = _fullySpecificedCodecs[contentType.primaryType];
     if (subtypes != null) {
@@ -162,7 +162,7 @@ class CodecRegistry {
     return null;
   }
 
-  Codec<String?, List<int>> _codecForCharset(String? charset) {
+  Codec<String, List<int>> _codecForCharset(String? charset) {
     var encoding = Encoding.getByName(charset);
     if (encoding == null) {
       throw Response(415, null, {"error": "invalid charset '$charset'"});
@@ -171,7 +171,7 @@ class CodecRegistry {
     return encoding;
   }
 
-  Codec<String?, List<int>>? _defaultCharsetCodecForType(ContentType type) {
+  Codec<String, List<int>>? _defaultCharsetCodecForType(ContentType type) {
     var inner = _defaultCharsetMap[type.primaryType];
     if (inner == null) {
       return null;
@@ -186,7 +186,7 @@ class CodecRegistry {
   }
 }
 
-class _FormCodec extends Codec<Map<String, dynamic>?, dynamic> {
+class _FormCodec extends Codec<Map<String, dynamic>, dynamic> {
   const _FormCodec();
 
   @override

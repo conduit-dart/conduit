@@ -28,11 +28,9 @@ APISchemaObject? getSchemaObjectReference(
   if (isListSerializable(type)) {
     return APISchemaObject.array(
         ofSchema: context.schema.getObjectWithType(
-                reflectType(type).typeArguments.first.reflectedType)
-            as APISchemaObject?);
+            reflectType(type).typeArguments.first.reflectedType));
   } else if (isSerializable(type)) {
-    return context.schema.getObjectWithType(reflectType(type).reflectedType)
-        as APISchemaObject?;
+    return context.schema.getObjectWithType(reflectType(type).reflectedType);
   }
 
   return null;

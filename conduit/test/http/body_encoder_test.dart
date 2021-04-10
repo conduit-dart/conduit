@@ -270,7 +270,7 @@ Future<HttpServer> bindAndRespondWith(Response response) async {
   return server;
 }
 
-class ByteCodec extends Codec<dynamic, List<int>?> {
+class ByteCodec extends Codec<dynamic, List<int>> {
   @override
   Converter<dynamic, List<int>> get encoder => const ByteEncoder();
   @override
