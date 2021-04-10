@@ -163,7 +163,8 @@ void main() {
       expect(
           response,
           hasHeaders({
-            "x-timestamp": isAfter(xTimestamp.subtract(const Duration(seconds: 10)))
+            "x-timestamp":
+                isAfter(xTimestamp.subtract(const Duration(seconds: 10)))
           }));
       expect(
           response,
@@ -175,8 +176,8 @@ void main() {
       expect(
           response,
           hasHeaders({
-            "x-timestamp":
-                isBeforeOrSameMomentAs(xTimestamp.add(const Duration(seconds: 10)))
+            "x-timestamp": isBeforeOrSameMomentAs(
+                xTimestamp.add(const Duration(seconds: 10)))
           }));
       expect(response,
           hasHeaders({"x-timestamp": isAfterOrSameMomentAs(xTimestamp)}));
@@ -192,7 +193,8 @@ void main() {
         expect(
             response,
             hasHeaders({
-              "x-timestamp": isAfter(xTimestamp.add(const Duration(seconds: 10)))
+              "x-timestamp":
+                  isAfter(xTimestamp.add(const Duration(seconds: 10)))
             }));
       },
           allOf([
@@ -230,8 +232,8 @@ void main() {
         expect(
             response,
             hasHeaders({
-              "x-timestamp":
-                  isAfterOrSameMomentAs(xTimestamp.add(const Duration(seconds: 10)))
+              "x-timestamp": isAfterOrSameMomentAs(
+                  xTimestamp.add(const Duration(seconds: 10)))
             }));
       },
           allOf([
@@ -467,7 +469,7 @@ void main() {
           await defaultTestClient.request("/foo").get(), 200,
           body: {"a": "b"}, headers: {"content-type": ContentType.json});
 
-      expect(resp.statusCode, 200);
+      expect(resp!.statusCode, 200);
     });
 
     test("Omit status code from matcher, matching ignores it", () async {

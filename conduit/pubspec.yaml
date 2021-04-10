@@ -9,10 +9,10 @@ environment:
 dependencies:
   args: ^2.0.0
   analyzer: ^1.3.0
-  conduit_common: ^0.0.1
+  conduit_common: ^0.0.2
   conduit_config: ^1.0.0-b1
   conduit_isolate_exec: ^1.0.0-b1
-  conduit_open_api: ^1.0.0-b3
+  conduit_open_api: ^1.0.0-b5
   conduit_password_hash: ^1.0.0-b1
   conduit_runtime: ^1.0.0-b1
   crypto: ^3.0.0
@@ -34,6 +34,11 @@ dev_dependencies:
   conduit_test:
     path: ../conduit_test
   dcli: ^0.51.0
+  mockito: ^5.0.0
 
 executables:
   conduit: conduit
+
+dependency_overrides:
+  conduit_open_api:
+    path: ../../open-api-dart

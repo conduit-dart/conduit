@@ -21,9 +21,10 @@ void main() {
     expect(authHeader, startsWith("Bearer"));
 
     final q = Query<ManagedAuthToken>(harness.context!)
-      ..where((o) => o.accessToken).equalTo((authHeader as String).substring(7));
-    final token = await (q.fetchOne() as FutureOr<ManagedAuthToken>);
-    expect(token.client.id, "id");
+      ..where((o) => o.accessToken)
+          .equalTo((authHeader as String).substring(7));
+    final token = await q.fetchOne();
+    expect(token!.client.id, "id");
   });
 
   test("Can use confidental client to authenticate", () async {
@@ -39,9 +40,10 @@ void main() {
     expect(authHeader, startsWith("Bearer"));
 
     final q = Query<ManagedAuthToken>(harness.context!)
-      ..where((o) => o.accessToken).equalTo((authHeader as String).substring(7));
-    final token = await (q.fetchOne() as FutureOr<ManagedAuthToken>);
-    expect(token.client.id, "confidential-id");
+      ..where((o) => o.accessToken)
+          .equalTo((authHeader as String).substring(7));
+    final token = await q.fetchOne();
+    expect(token!.client.id, "confidential-id");
   });
 
   test("Can authenticate user with client and access protected route",
@@ -121,7 +123,7 @@ class Channel extends ApplicationChannel {
     context = ManagedContext(
         ManagedDataModel.fromCurrentMirrorSystem(),
         PostgreSQLPersistentStore(
-            "dart", "dart", "localhost", 5432, "dart_test"));
+            "dart", "dart", "localhost", 15432, "dart_test"));
     authServer = AuthServer(ManagedAuthDelegate<User>(context));
   }
 
@@ -146,7 +148,6 @@ class HarnessSubclass extends TestHarness<Channel>
 
   @override
   ManagedContext? get context => channel!.context;
-
 
   @override
   Future onSetUp() async {

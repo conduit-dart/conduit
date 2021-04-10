@@ -123,8 +123,8 @@ void main() {
 
     test("HTTP requests are issued", () async {
       final defaultTestClient = Agent.onPort(4040);
-      expect(await defaultTestClient.request("/foo").get() is TestResponse,
-          true);
+      expect(
+          await defaultTestClient.request("/foo").get() is TestResponse, true);
       Request msg = await server.next();
       expect(msg.path.string, "/foo");
       expect(msg.method, "GET");
@@ -145,8 +145,8 @@ void main() {
       expect(msg.body.as(), {"foo": "bar"});
 
       expect(
-          await defaultTestClient
-              .execute("PATCH", "/foo", body: {"foo": "bar"}) is TestResponse,
+          await defaultTestClient.execute("PATCH", "/foo", body: {"foo": "bar"})
+              is TestResponse,
           true);
       msg = await server.next();
       expect(msg.path.string, "/foo");
@@ -288,8 +288,8 @@ void main() {
             {"ACCEPT": req.headers.value(HttpHeaders.acceptHeader)}));
       });
 
-      final  client = Agent.onPort(4000);
-      final  req = client.request("/foo")
+      final client = Agent.onPort(4000);
+      final req = client.request("/foo")
         ..accept = [ContentType.json, ContentType.text];
 
       final response = await req.post();

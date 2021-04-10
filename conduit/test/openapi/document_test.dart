@@ -134,8 +134,8 @@ void main() {
         () async {
       ctx.document.paths = {
         "/path": APIPath(operations: {
-          "get": APIOperation(
-              "id1", {"200": ctx.responses.getObjectWithType(String)})
+          "get": APIOperation("id1",
+              {"200": ctx.responses.getObjectWithType(String) as APIResponse})
         })
       };
 
@@ -154,7 +154,8 @@ void main() {
         () async {
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        "application/json": APIMediaType(
+            schema: ctx.schema.getObject("foo") as APISchemaObject?)
       });
 
       try {
@@ -172,14 +173,15 @@ void main() {
         () async {
       ctx.document.paths = {
         "/path": APIPath(operations: {
-          "get": APIOperation(
-              "id1", {"200": ctx.responses.getObjectWithType(String)})
+          "get": APIOperation("id1",
+              {"200": ctx.responses.getObjectWithType(String) as APIResponse})
         })
       };
 
       ctx.document.components!.responses["test"] =
           APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        "application/json": APIMediaType(
+            schema: ctx.schema.getObject("foo") as APISchemaObject?)
       });
 
       ctx.schema.register("foo", APISchemaObject.integer());
@@ -228,33 +230,33 @@ void main() {
       });
 
       test("Paths with path parameter are found in path-level parameters", () {
-        expect(doc.paths!["/path"]!.parameters.length, 0);
-        expect(doc.paths!["/constant"]!.parameters.length, 0);
-        expect(doc.paths!["/dynamic"]!.parameters.length, 0);
+        expect(doc.paths!["/path"]!.parameters!.length, 0);
+        expect(doc.paths!["/constant"]!.parameters!.length, 0);
+        expect(doc.paths!["/dynamic"]!.parameters!.length, 0);
 
-        expect(doc.paths!["/path/{id}"]!.parameters.length, 1);
-        expect(doc.paths!["/path/{id}"]!.parameters.first!.location,
+        expect(doc.paths!["/path/{id}"]!.parameters!.length, 1);
+        expect(doc.paths!["/path/{id}"]!.parameters!.first!.location,
             APIParameterLocation.path);
-        expect(doc.paths!["/path/{id}"]!.parameters.first!.schema!.type,
+        expect(doc.paths!["/path/{id}"]!.parameters!.first!.schema!.type,
             APIType.string);
-        expect(doc.paths!["/path/{id}"]!.parameters.first!.name, "id");
+        expect(doc.paths!["/path/{id}"]!.parameters!.first!.name, "id");
       });
 
       test("Paths have all expected operations", () {
         expect(doc.paths!["/dynamic"]!.operations, {});
 
-        final getConstant = doc.paths!["/constant"]!.operations["get"]!;
-        final postConstant = doc.paths!["/constant"]!.operations["post"]!;
+        final getConstant = doc.paths!["/constant"]!.operations!["get"]!;
+        final postConstant = doc.paths!["/constant"]!.operations!["post"]!;
         expect(getConstant.responses!["200"]!.description, "get/0-200");
         expect(postConstant.responses!["200"]!.description, "post/0-200");
 
-        final getPath0 = doc.paths!["/path"]!.operations["get"]!;
-        final postPath0 = doc.paths!["/path"]!.operations["post"]!;
+        final getPath0 = doc.paths!["/path"]!.operations!["get"]!;
+        final postPath0 = doc.paths!["/path"]!.operations!["post"]!;
         expect(getPath0.responses!["200"]!.description, "get/0-200");
         expect(postPath0.responses!["200"]!.description, "post/0-200");
 
-        final getPath1 = doc.paths!["/path/{id}"]!.operations["get"]!;
-        final putPath1 = doc.paths!["/path/{id}"]!.operations["put"]!;
+        final getPath1 = doc.paths!["/path/{id}"]!.operations!["get"]!;
+        final putPath1 = doc.paths!["/path/{id}"]!.operations!["put"]!;
         expect(getPath1.responses!["200"]!.description, "get/1-200");
         expect(getPath1.responses!["400"]!.description, "get/1-400");
         expect(getPath1.parameters!.length, 2);
@@ -263,9 +265,9 @@ void main() {
 
       test("Middleware can provide additional parameters to operation", () {
         final opsWithMiddleware = [
-          doc.paths!["/path/{id}"]!.operations.values,
-          doc.paths!["/path"]!.operations.values,
-          doc.paths!["/constant"]!.operations.values,
+          doc.paths!["/path/{id}"]!.operations!.values,
+          doc.paths!["/path"]!.operations!.values,
+          doc.paths!["/constant"]!.operations!.values,
         ].expand((i) => i).toList();
 
         opsWithMiddleware.forEach((op) {
@@ -544,7 +546,7 @@ class DefaultChannel extends ApplicationChannel {
 
     router
         .route("/path/[:id]")
-        .linkFunction((req) => req)
+        .linkFunction((req) => req)!
         .link(() => Middleware())!
         .link(() => Endpoint(null, null));
 
@@ -591,7 +593,7 @@ class Middleware extends Controller {
 
     ops.values.forEach((op) {
       op.parameters ??= [];
-      op.parameters!.add(components.parameters["x-api-key"]);
+      op.parameters!.add(components.parameters["x-api-key"] as APIParameter?);
     });
 
     return ops;
@@ -614,7 +616,7 @@ class Endpoint extends Controller {
       APIDocumentContext registry, String route, APIPath path) {
     documented?.complete();
 
-    if (path.parameters.isNotEmpty) {
+    if (path.parameters!.isNotEmpty) {
       return {
         "get": APIOperation("get1", {
           "200": APIResponse("get/1-200"),
@@ -630,8 +632,8 @@ class Endpoint extends Controller {
       "get": APIOperation("get0", {"200": APIResponse("get/0-200")}),
       "post": APIOperation("post0", {"200": APIResponse("post/0-200")},
           requestBody: APIRequestBody({
-            "application/json":
-                APIMediaType(schema: registry.schema["someObject"])
+            "application/json": APIMediaType(
+                schema: registry.schema["someObject"] as APISchemaObject?)
           }))
     };
   }
@@ -652,9 +654,9 @@ class ComponentA implements APIComponentDocumenter {
   void documentComponents(APIDocumentContext components) {
     final schemaObject = APISchemaObject.object({
       "name": APISchemaObject.string(),
-      "refByType":
-          components.schema.getObjectWithType(ReferencableSchemaObject),
-      "refByName": components.schema["named-component"]
+      "refByType": components.schema.getObjectWithType(ReferencableSchemaObject)
+          as APISchemaObject?,
+      "refByName": components.schema["named-component"] as APISchemaObject
     });
 
     components.schema.register("someObject", schemaObject);

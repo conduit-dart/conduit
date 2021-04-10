@@ -96,15 +96,15 @@ void main() {
       expect(model2.properties!["model1"]!.type, APIType.object);
       expect(model2.properties!["model1"]!.isReadOnly, false);
       expect(model2.properties!["model1"]!.properties!.length, 1);
-      expect(
-          model2.properties!["model1"]!.properties!["id"]!.type, APIType.integer);
+      expect(model2.properties!["model1"]!.properties!["id"]!.type,
+          APIType.integer);
 
       final model3 = doc.components!.schemas["Model3"]!;
       expect(model3.properties!["model1"]!.type, APIType.object);
       expect(model2.properties!["model1"]!.isReadOnly, false);
       expect(model3.properties!["model1"]!.properties!.length, 1);
-      expect(
-          model3.properties!["model1"]!.properties!["id"]!.type, APIType.integer);
+      expect(model3.properties!["model1"]!.properties!["id"]!.type,
+          APIType.integer);
     });
 
     test(
@@ -169,9 +169,11 @@ void main() {
         "Schema object contains minimumExclusive if max exclusive value in validator",
         () {
       expect(schema!.properties!["greaterThanEqualTo"]!.maximum, isNull);
-      expect(schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum, isNull);
+      expect(
+          schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum, isNull);
       expect(schema!.properties!["greaterThanEqualTo"]!.minimum, 1);
-      expect(schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum, false);
+      expect(
+          schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum, false);
     });
 
     test("Schema object contains range if range validator", () {
@@ -223,24 +225,24 @@ void main() {
     });
 
     test("Can emit document for ManagedObjectController", () {
-      expect(doc.paths!["/model"]!.operations.length, 2);
+      expect(doc.paths!["/model"]!.operations!.length, 2);
       expect(
-          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
+          doc.paths!["/model"]!.operations!["get"]!.responses!["200"]!
               .content!["application/json"]!.schema!.type,
           APIType.array);
       expect(
-          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
+          doc.paths!["/model"]!.operations!["get"]!.responses!["200"]!
               .content!["application/json"]!.schema!.items!.referenceURI!.path,
           "/components/schemas/Model1");
       expect(
-          doc.paths!["/model"]!.operations["post"]!.requestBody!
+          doc.paths!["/model"]!.operations!["post"]!.requestBody!
               .content!["application/json"]!.schema!.referenceURI!.path,
           "/components/schemas/Model1");
 
-      expect(doc.paths!["/model/{id}"]!.operations.length, 3);
+      expect(doc.paths!["/model/{id}"]!.operations!.length, 3);
 
-      expect(doc.paths!["/subclass"]!.operations.length, 2);
-      expect(doc.paths!["/subclass/{id}"]!.operations.length, 3);
+      expect(doc.paths!["/subclass"]!.operations!.length, 2);
+      expect(doc.paths!["/subclass/{id}"]!.operations!.length, 3);
     });
   });
 

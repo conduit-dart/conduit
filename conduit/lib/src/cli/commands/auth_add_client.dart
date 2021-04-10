@@ -69,7 +69,7 @@ class CLIAuthAddClient extends CLICommand
     return v.split(" ").toList();
   }
 
-  late ManagedContext context;
+  ManagedContext? context;
 
   @override
   Future<int> handle() async {
@@ -90,7 +90,7 @@ class CLIAuthAddClient extends CLICommand
 
     var managedCredentials = ManagedAuthClient.fromClient(credentials);
 
-    final query = Query<ManagedAuthClient>(context)
+    final query = Query<ManagedAuthClient>(context!)
       ..values = managedCredentials;
 
     try {
@@ -123,7 +123,7 @@ class CLIAuthAddClient extends CLICommand
 
   @override
   Future cleanup() async {
-    await context.close();
+    await context?.close();
   }
 
   @override

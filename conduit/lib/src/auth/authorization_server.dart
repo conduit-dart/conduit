@@ -157,8 +157,8 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// If credentials are not correct, it will throw the appropriate [AuthRequestError].
   ///
   /// After [expiration], this token will no longer be valid.
-  Future<AuthToken> authenticate(
-      String? username, String? password, String? clientID, String? clientSecret,
+  Future<AuthToken> authenticate(String? username, String? password,
+      String? clientID, String? clientSecret,
       {Duration expiration = const Duration(hours: 24),
       List<AuthScope>? requestedScopes}) async {
     if (clientID == null) {
@@ -188,7 +188,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       }
     }
 
-    final authenticatable = await delegate.getResourceOwner(this, username)!;
+    final authenticatable = await delegate.getResourceOwner(this, username);
     if (authenticatable == null) {
       throw AuthServerException(AuthRequestError.invalidGrant, client);
     }
@@ -220,7 +220,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidRequest, null);
     }
 
-    final t = await delegate.getToken(this, byAccessToken: accessToken)!;
+    final t = await delegate.getToken(this, byAccessToken: accessToken);
     if (t == null || t.isExpired) {
       throw AuthServerException(
           AuthRequestError.invalidGrant, AuthClient(t?.clientID, null, null));
@@ -258,7 +258,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidRequest, client);
     }
 
-    final t = await delegate.getToken(this, byRefreshToken: refreshToken)!;
+    final t = await delegate.getToken(this, byRefreshToken: refreshToken);
     if (t == null || t.clientID != clientID) {
       throw AuthServerException(AuthRequestError.invalidGrant, client);
     }
@@ -340,14 +340,14 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.unauthorizedClient, client);
     }
 
-    final authenticatable = await delegate.getResourceOwner(this, username)!;
+    final authenticatable = await delegate.getResourceOwner(this, username);
     if (authenticatable == null) {
       throw AuthServerException(AuthRequestError.accessDenied, client);
     }
 
-    final dbSalt = authenticatable.salt!;
+    final dbSalt = authenticatable.salt;
     final dbPassword = authenticatable.hashedPassword;
-    if (hashPassword(password, dbSalt) != dbPassword) {
+    if (hashPassword(password, dbSalt!) != dbPassword) {
       throw AuthServerException(AuthRequestError.accessDenied, client);
     }
 
@@ -389,7 +389,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
-    final authCode = await delegate.getCode(this, authCodeString)!;
+    final authCode = await delegate.getCode(this, authCodeString);
     if (authCode == null) {
       throw AuthServerException(AuthRequestError.invalidGrant, client);
     }
@@ -481,11 +481,14 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       {List<AuthScope>? requiredScope}) {
     if (parser is AuthorizationBasicParser) {
       final credentials = authorizationData as AuthBasicCredentials;
+      print('asd');
       return _validateClientCredentials(credentials);
     } else if (parser is AuthorizationBearerParser) {
+      print('assssssd');
       return verify(authorizationData as String, scopesRequired: requiredScope);
     }
 
+    print('assssssasdasdasdasdd');
     throw ArgumentError(
         "Invalid 'parser' for 'AuthServer.validate'. Use 'AuthorizationBasicParser' or 'AuthorizationBearerHeader'.");
   }

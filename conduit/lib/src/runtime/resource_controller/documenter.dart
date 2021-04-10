@@ -28,9 +28,11 @@ APISchemaObject? getSchemaObjectReference(
   if (isListSerializable(type)) {
     return APISchemaObject.array(
         ofSchema: context.schema.getObjectWithType(
-            reflectType(type).typeArguments.first.reflectedType));
+                reflectType(type).typeArguments.first.reflectedType)
+            as APISchemaObject?);
   } else if (isSerializable(type)) {
-    return context.schema.getObjectWithType(reflectType(type).reflectedType);
+    return context.schema.getObjectWithType(reflectType(type).reflectedType)
+        as APISchemaObject?;
   }
 
   return null;
@@ -104,17 +106,16 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
             isRequired: boundBody.isRequired);
       }
     } else if (usesFormEncodedData) {
-      final Map<String?, APISchemaObject?> props =
+      final Map<String, APISchemaObject?> props =
           parametersForOperation(operation)
               .where((p) => p.location == BindingType.query)
               .map((param) => _documentParameter(context, operation, param))
-              .fold(<String?, APISchemaObject?>{}, (prev, elem) {
-        prev[elem.name] = elem.schema;
+              .fold(<String, APISchemaObject?>{}, (prev, elem) {
+        prev[elem.name!] = elem.schema;
         return prev;
       });
 
-      return APIRequestBody.schema(
-          APISchemaObject.object(props as Map<String, APISchemaObject?>?),
+      return APIRequestBody.schema(APISchemaObject.object(props),
           contentTypes: ["application/x-www-form-urlencoded"],
           isRequired: true);
     }
@@ -126,7 +127,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
   Map<String, APIOperation> documentOperations(ResourceController rc,
       APIDocumentContext context, String route, APIPath path) {
     final opsForPath = runtime.operations.where(
-        (operation) => path.containsPathParameters(withoutNulls(operation)));
+        (operation) => path.containsPathParameters(operation.pathVariables));
 
     return opsForPath.fold(<String, APIOperation>{}, (prev, opObj) {
       final instanceMembers = reflect(rc).type.instanceMembers;
@@ -159,15 +160,6 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
       prev[opObj.httpMethod.toLowerCase()] = operationDoc;
       return prev;
     });
-  }
-
-  /// Strip potential nulls from the list so we can cast it to a List<String>
-  /// in reallity the list probably doesn't contain any nulls.
-  List<String> withoutNulls(ResourceControllerOperation operation) {
-    var list = operation.pathVariables;
-
-    list.removeWhere((element) => element == null);
-    return list.cast<String>();
   }
 
   List<ResourceControllerParameter> parametersForOperation(Operation? op) {

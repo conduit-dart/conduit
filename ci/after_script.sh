@@ -8,7 +8,7 @@ if [[ "$STAGE" == "coverage" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_RE
 
     rm -rf "$TEST_DIR"/coverage_json
     mkdir "$TEST_DIR"/coverage_json
-    $HOME/.local/bin/aws s3 sync "$TEST_DIR"/coverage_json s3://aqueduct-coverage-storage/coverage --delete
+    $HOME/.local/bin/aws s3 sync "$TEST_DIR"/coverage_json s3://conduit-coverage-storage/coverage --delete
   fi
 fi
 

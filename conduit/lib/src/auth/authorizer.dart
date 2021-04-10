@@ -190,9 +190,12 @@ class Authorizer extends Controller {
     final operations = super.documentOperations(context, route, path);
 
     operations.forEach((_, op) {
-      op.addResponse(400, context.responses["MalformedAuthorizationHeader"]);
-      op.addResponse(401, context.responses["InsufficientAccess"]);
-      op.addResponse(403, context.responses["InsufficientScope"]);
+      op.addResponse(400,
+          context.responses["MalformedAuthorizationHeader"] as APIResponse?);
+      op.addResponse(
+          401, context.responses["InsufficientAccess"] as APIResponse?);
+      op.addResponse(
+          403, context.responses["InsufficientScope"] as APIResponse?);
 
       final requirements = validator!
           .documentRequirementsForAuthorizer(context, this, scopes: scopes);

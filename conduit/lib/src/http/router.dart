@@ -24,9 +24,8 @@ class Router extends Controller {
   Router({String? basePath, Future notFoundHandler(Request request)?})
       : _unmatchedController = notFoundHandler,
         _basePathSegments =
-            basePath?.split("/").where((str) => str.isNotEmpty).toList() ??
-                [] {
-    policy!.allowCredentials = false;
+            basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
+    policy?.allowCredentials = false;
   }
 
   final _RootNode _root = _RootNode();
@@ -92,20 +91,20 @@ class Router extends Controller {
 
   /// Routers override this method to throw an exception. Use [route] instead.
   @override
-  Linkable link(Controller generatorFunction()) {
+  Linkable? link(Controller generatorFunction()) {
     throw ArgumentError(
         "Invalid link. 'Router' cannot directly link to controllers. Use 'route'.");
   }
 
   @override
-  Linkable linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
+  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
     throw ArgumentError(
         "Invalid link. 'Router' cannot directly link to functions. Use 'route'.");
   }
 
   @override
-  Future? receive(Request req) async {
-    Controller? next;
+  Future receive(Request req) async {
+    Controller next;
     try {
       var requestURISegmentIterator = req.raw.uri.pathSegments.iterator;
 
@@ -122,22 +121,21 @@ class Router extends Controller {
       }
 
       final node =
-          _root.node.nodeForPathSegments(requestURISegmentIterator, req.path);
+          _root.node!.nodeForPathSegments(requestURISegmentIterator, req.path);
       if (node?.specification == null) {
         await _handleUnhandledRequest(req);
         return null;
       }
       req.path.setSpecification(node!.specification!,
           segmentOffset: _basePathSegments.length);
-
-      next = node.controller;
+      next = node.controller!;
     } catch (any, stack) {
       return handleError(req, any, stack);
     }
 
     // This line is intentionally outside of the try block
     // so that this object doesn't handle exceptions for 'next'.
-    return next?.receive(req);
+    return next.receive(req);
   }
 
   @override
@@ -183,7 +181,7 @@ class Router extends Controller {
 }
 
 class _RootNode {
-  late RouteNode node;
+  RouteNode? node;
 }
 
 class _RouteController extends Controller {
@@ -199,7 +197,7 @@ class _RouteController extends Controller {
   @override
   Map<String, APIPath> documentPaths(APIDocumentContext components) {
     return specifications.fold(<String, APIPath>{}, (pathMap, spec) {
-      final elements = spec.segments!.map((rs) {
+      final elements = spec.segments.map((rs) {
         if (rs.isLiteralMatcher) {
           return rs.literal;
         } else if (rs.isVariable) {
@@ -216,8 +214,8 @@ class _RouteController extends Controller {
             .map((pathVar) => APIParameter.path(pathVar))
             .toList();
 
-      if (spec.segments!.any((seg) => seg.isRemainingMatcher)) {
-        path.parameters.add(APIParameter.path("path")
+      if (spec.segments.any((seg) => seg.isRemainingMatcher)) {
+        path.parameters!.add(APIParameter.path("path")
           ..description =
               "This path variable may contain slashes '/' and may be empty.");
       }

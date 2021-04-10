@@ -8,8 +8,6 @@ import 'package:conduit/src/cli/running_process.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 
-import '../db/postgresql/postgres_test_config.dart';
-
 class CLIClient {
   CLIClient(this.agent);
 
@@ -82,7 +80,7 @@ class CLIClient {
       final client = CLIClient(DartProjectAgent(name, dependencies: {
         "conduit": {"path": "../.."}
       }, devDependencies: {
-        "test": "^1.0.0"
+        "test": "^1.6.7"
       }));
 
       client.projectAgent.addLibraryFile("channel", """
@@ -98,7 +96,7 @@ class TestChannel extends ApplicationChannel {
     router
       .route("/example")
       .linkFunction((request) async {
-        return new Response.ok({"key": "value"});
+        return Response.ok({"key": "value"});
       });
 
     return router;
@@ -129,8 +127,9 @@ class TestChannel extends ApplicationChannel {
         DartProjectAgent.projectsDirectory.uri.resolve("$name/")));
   }
 
-  Future<int> executeMigrations({String? connectString}) async {
-    connectString ??= PostgresTestConfig().connectionUrl;
+  Future<int> executeMigrations(
+      {String connectString =
+          "postgres://dart:dart@localhost:5432/dart_test"}) async {
     final res = await run("db", ["upgrade", "--connect", connectString]);
     if (res != 0) {
       print("executeMigrations failed: $output");
@@ -169,17 +168,19 @@ class TestChannel extends ApplicationChannel {
 
     print("Running 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
-    //Directory.current = agent.workingDirectory;
+    Directory.current = agent.workingDirectory;
 
     var cmd = Runner()..outputSink = _output;
     var results = cmd.options.parse(args);
 
     final exitCode = await cmd.process(results);
+    print(exitCode);
+    print('asdasdad');
     if (exitCode != 0) {
       print("command failed: ${output}");
     }
 
-    //Directory.current = saved;
+    Directory.current = saved;
 
     return exitCode;
   }
@@ -191,7 +192,7 @@ class TestChannel extends ApplicationChannel {
 
     print("Starting 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
-   // Directory.current = agent.workingDirectory;
+    Directory.current = agent.workingDirectory;
 
     var cmd = Runner()..outputSink = _output;
     var results = cmd.options.parse(args);
@@ -201,13 +202,13 @@ class TestChannel extends ApplicationChannel {
     final timer = Timer.periodic(const Duration(milliseconds: 100), (t) {
       if (cmd.runningProcess != null) {
         t.cancel();
-       // Directory.current = saved;
+        Directory.current = saved;
         task.process = cmd.runningProcess;
         task._processStarted.complete(true);
       } else {
         elapsed += 100;
         if (elapsed > 60000) {
-         // Directory.current = saved;
+          Directory.current = saved;
           t.cancel();
           task._processStarted
               .completeError(TimeoutException("Timed out after 30 seconds"));
@@ -220,7 +221,7 @@ class TestChannel extends ApplicationChannel {
         print("Command failed to start with exit code: $exitCode");
         print("Message: $output");
         timer.cancel();
-       // Directory.current = saved;
+        Directory.current = saved;
         task._processStarted.completeError(false);
         task._processFinished.complete(exitCode);
       } else {

@@ -111,8 +111,8 @@ class AuthRedirectController extends ResourceController {
       return _unsupportedResponseTypeResponse;
     }
 
-    final renderedPage = await delegate!.render(
-        this, request!.raw.uri, responseType, clientID, state, scope);
+    final renderedPage = await delegate!
+        .render(this, request!.raw.uri, responseType, clientID, state, scope);
     if (renderedPage == null) {
       return Response.notFound();
     }

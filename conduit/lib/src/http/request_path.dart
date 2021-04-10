@@ -19,7 +19,7 @@ class RequestPath {
       requestIterator.moveNext();
     }
 
-    for (var segment in spec.segments!) {
+    for (var segment in spec.segments) {
       requestIterator.moveNext();
       var requestSegment = requestIterator.current;
 

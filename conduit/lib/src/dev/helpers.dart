@@ -115,7 +115,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   static const String defaultPassword = "foobaraxegrind21%";
 
-  late Map<String?, AuthClient> clients;
+  Map<String?, AuthClient>? clients;
   Map<int, TestUser> users = {};
   List<TestToken> tokens = [];
   List<AuthScope>? allowedScopes;
@@ -178,7 +178,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   @override
   void addClient(AuthServer server, AuthClient client) {
-    clients[client.id] = client;
+    clients?[client.id] = client;
   }
 
   @override
@@ -279,12 +279,12 @@ class InMemoryAuthStorage extends AuthServerDelegate {
       tokens.removeWhere((c) => c.code == code);
 
   @override
-  FutureOr<AuthClient>? getClient(AuthServer server, String? clientID) =>
-      clients[clientID];
+  FutureOr<AuthClient?> getClient(AuthServer server, String? clientID) =>
+      clients?[clientID];
 
   @override
   FutureOr removeClient(AuthServer server, String clientID) =>
-      clients.remove(clientID);
+      clients?.remove(clientID);
 
   @override
   List<AuthScope>? getAllowedScopes(ResourceOwner owner) => allowedScopes;

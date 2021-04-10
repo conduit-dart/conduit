@@ -244,7 +244,7 @@ class DefaultRecyclable extends Controller implements Recyclable<String> {
   }
 
   @override
-  void restore(String state) {
+  void restore(String? state) {
     this.state = state;
   }
 
@@ -270,7 +270,7 @@ class MiddlewareRecyclable extends Controller implements Recyclable<String> {
   }
 
   @override
-  void restore(String state) {
+  void restore(String? state) {
     this.state = state;
   }
 

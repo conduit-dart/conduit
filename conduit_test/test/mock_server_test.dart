@@ -166,7 +166,7 @@ void main() {
 
       expect(
           outageResponseFuture.timeout(const Duration(milliseconds: 100),
-              onTimeout: () => Future.value(null)),
+              onTimeout: () => successResponse),
           completes);
     });
 

@@ -7,7 +7,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 ## 3.3.0-b1
 
-- Adds 'aqueduct build' command that generates an executable binary of an Aqueduct app, with some known issues
+- Adds 'conduit build' command that generates an executable binary of an conduit app, with some known issues
     - Windows is not currently supported.
     - Compilation will fail for files that import relative URIs and declare at least one type that is a subclass of any of `ManagedObject`, `ApplicationChannel`, `Controller`, `ResourceController`, `Configuration`.
         - Convert relative URI imports to package imports to resolve.
@@ -17,7 +17,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 ## 3.2.2-dev
 
-- [#723](https://github.com/stablekernel/aqueduct/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
+- [#723](https://github.com/stablekernel/conduit/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
 - Deprecates `AuthScope.allowsScope()`, use `AuthScope.isSubsetOrEqualTo()` instead.
 
 ## 3.2.1
@@ -58,7 +58,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 - `Controller` is now an abstract class that requires implementing `handle`. This is a minor breaking change that should not have an impact.
 - 'Serializable' can now implement static 'document' method to override component documentation behavior
-- Removes `aqueduct setup --heroku=<name>` and instead points to documentation.
+- Removes `conduit setup --heroku=<name>` and instead points to documentation.
 - Fixes issue ORM had with transformed values (e.g. enums) and nullable columns
 
 ## 3.0.0
@@ -68,7 +68,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - Adds `ManagedContext.transaction` to enable queries to be run in a database transaction.
 - Adds 'Scope' annotation to add granular scoping to `ResourceController` methods.
 - Adds `Recyclable<T>` to control whether controllers are instantiated per request or are reused.
-- Adds support for storing PostgreSQL JSONB data with `Document` data type.
+- Adds support for storing PostgreSQL JSON data with `Document` data type.
 - Adds `Query.insertObject`.
 - Adds support for OpenAPI 3.0.0 documentation generation.
     - Adds `APIComponentDocumenter`, `APIOperationDocumenter`, `APIDocumentContext`.
@@ -77,14 +77,14 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - `Query.where` behavior has changed to consistently use property selector syntax.
     - Removes methods like `whereEqualTo` and replaced with `QueryExpression`.
 - `Controller.generate` renamed to `Controller.link`. Removed `Controller.pipe`.
-- `package:aqueduct/test` moved to `package:aqueduct_test/aqueduct_test`, which is a separate dependency from `aqueduct`.
+- `package:conduit/test` moved to `package:conduit_test/conduit_test`, which is a separate dependency from `conduit`.
 - Renames methods in `AuthDelegate` to provide consistency.
 - Removes `ManagedContext.defaultContext`; context usage must be explicit.
 - Removes `HTTPResponseException`. Responses can now be thrown instead.
 - `QueryException`s are no longer thrown for every ORM exception. If a store chooses to interpret an exception, it will still throw a `QueryException`. Otherwise, the underlying driver exception will be thrown.
 - Default constructor for `PostgreSQLPersistentStore` now takes connection info instead of closure.
 - `Controller.listen` renamed `Controller.linkFunction`.
-- Change default port for `aqueduct serve` to 8888.
+- Change default port for `conduit serve` to 8888.
 - Binding metadata - `HTTPPath`, `HTTPBody`, `HTTPQuery` and `HTTPHeader` - have been changed to `Bind.path`, `Bind.body`, `Bind.query` and `Bind.header`, respectively.
 - Remove `@httpGet` (and other `HTTPMethod` annotations) constants. Behavior replaced by `@Operation`.
 - Removes `runOnMainIsolate` from `Application.start()` and added `Application.startOnMainIsolate()` as replacement.
@@ -121,9 +121,9 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 ## 2.5.0
 
-- Adds `aqueduct db schema` to print an application's data model.
-- Adds `aqueduct document serve` that serves the API documentation for an application.
-- Adds `--machine` flag to `aqueduct` tool to only emit machine-readable output.
+- Adds `conduit db schema` to print an application's data model.
+- Adds `conduit document serve` that serves the API documentation for an application.
+- Adds `--machine` flag to `conduit` tool to only emit machine-readable output.
 - Adds `defaultDelay` to `MockHTTPServer`. Defaults to null for no delay.
 - Adds `defaultResponse` to `MockHTTPServer`. Defaults to a 503 response instead of a 200.
 - Adds option to set a custom delay for a specific response in `MockHTTPServer`'s `queueResponse` function.
@@ -144,7 +144,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - Adds `whereNot` to apply an inverse to other `Query.where` expression, e.g. `whereNot(whereIn(["a", "b"]))`.
 - Fixes bug where subclassing `ManagedObjectController` didn't work.
 - Renames `ResourceRegistry` to `ServiceRegistry`.
-- Improves feedback and interface for `package:aqueduct/test.dart`.
+- Improves feedback and interface for `package:conduit/test.dart`.
 
 ## 2.3.0
 
@@ -166,8 +166,8 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 ## 2.2.0
 
-- The default template created by `aqueduct create` is now mostly empty. Available templates can be listed with `aqueduct create list-templates` and selected with the command-line option `--template`.
-- Bug fixes where `aqueduct auth` would fail to insert new Client IDs.
+- The default template created by `conduit create` is now mostly empty. Available templates can be listed with `conduit create list-templates` and selected with the command-line option `--template`.
+- Bug fixes where `conduit auth` would fail to insert new Client IDs.
 - `joinMany` and `joinOne` are deprecated, use `join(set:)` and `join(object:)` instead.
 - `HTTPCodecRepository` replaces `Response.addEncoder` and `HTTPBody.addDecoder`.
 - `Stream`s may now be `Response` bodies.
@@ -186,20 +186,20 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - Fixes race condition when stopping an application during test execution
 - Adds validation behavior to `ManagedObject`s using `Validate` and `ManagedValidator` and `ManagedObject.validate`.
 - `ManagedObject`s now have callbacks `willUpdate` and `willInsert` to modify their values before updating and inserting.
-- Fixes issue with `aqueduct serve` on Windows.
+- Fixes issue with `conduit serve` on Windows.
 
 ## 2.0.3
 
-- Fixes issue with `aqueduct document` for routes using `listen`
+- Fixes issue with `conduit document` for routes using `listen`
 - Fixes issue when using `TestClient` to execute requests with public OAuth2 client
-- Enables database migrations past the initial `aqueduct db generate`.
+- Enables database migrations past the initial `conduit db generate`.
 - CLI tools print tool version, project version (when applicable)
 
 ## 2.0.2
 
 - Allow binding to system-assigned port so tests can be run in parallel
-- Change `aqueduct serve` default port to 8081 so can develop in parallel to Angular2 apps that default to 8080
-- Remove `SecurityContext` reference from `ApplicationConfiguration`. SSL configured via new `aqueduct serve` arguments `ssl-key-path` and `ssl-certificate-path`, or overriding `securityContext` in `RequestSink`.
+- Change `conduit serve` default port to 8081 so can develop in parallel to Angular2 apps that default to 8080
+- Remove `SecurityContext` reference from `ApplicationConfiguration`. SSL configured via new `conduit serve` arguments `ssl-key-path` and `ssl-certificate-path`, or overriding `securityContext` in `RequestSink`.
 
 ## 2.0.1
 
@@ -227,16 +227,16 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - ORM: Renamed `ManagedSet.matchOn` to `ManagedSet.haveAtLeastOneWhere`.
 - ORM: Added matchers for case-insensitive string matching, and added case-insensitive option to `whereEquals` and `whereNotEquals`.
 
-- Auth: Added `aqueduct/managed_auth` library. Implements storage of OAuth 2.0 tokens using `ManagedObject`s. See API reference for more details.
+- Auth: Added `conduit/managed_auth` library. Implements storage of OAuth 2.0 tokens using `ManagedObject`s. See API reference for more details.
 - Auth: Improved error and response messaging to better align with the OAuth 2.0 spec, especially with regards to the authorization code flow.
 - Auth: Added distinction between public and confidential clients, as defined by OAuth 2.0 spec.
 - Auth: Improved class and property naming.
 
-- Tooling: Added `aqueduct auth` tool to create client ID and secrets and add them to a database for applications using the `aqueduct/managed_auth` package.
-- Tooling: Added more user-friendly configuration options for `aqueduct db` tool.
-- Tooling: Added `aqueduct setup --heroku` for setting up projects to be deployed to Heroku.
-- Tooling: Added `aqueduct serve` command for running Aqueduct applications without having to write a start script.
-- Tooling: Added `aqueduct document` command to generate OpenAPI specification for Aqueduct applications, instead of relying on a script that came with the template.
+- Tooling: Added `conduit auth` tool to create client ID and secrets and add them to a database for applications using the `conduit/managed_auth` package.
+- Tooling: Added more user-friendly configuration options for `conduit db` tool.
+- Tooling: Added `conduit setup --heroku` for setting up projects to be deployed to Heroku.
+- Tooling: Added `conduit serve` command for running conduit applications without having to write a start script.
+- Tooling: Added `conduit document` command to generate OpenAPI specification for conduit applications, instead of relying on a script that came with the template.
 
 
 ## 1.0.4
@@ -246,13 +246,13 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 - @HTTPQuery parameters in HTTPController responder method will now only allow multiple keys in the query string if and only if the argument type is a List.
 
 ## 1.0.3
-- Fix to allow Windows user to use `aqueduct setup`.
+- Fix to allow Windows user to use `conduit setup`.
 - Fix to CORS processing.
 - HTTPControllers now return 405 if there is no responder method match for a request.
 
 ## 1.0.2
 - Fix type checking for transient map and list properties of ManagedObject.
-- Add flags to `Process.runSync` that allow Windows user to use `aqueduct` executable.
+- Add flags to `Process.runSync` that allow Windows user to use `conduit` executable.
 
 ## 1.0.1
 - Change behavior of isolate supervision. If an isolate has an uncaught exception, it logs the exception but does not restart the isolate.

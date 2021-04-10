@@ -41,7 +41,8 @@ void main() {
 
       expect(content.schema!.type, APIType.object);
       expect(content.schema!.properties!.length, 6);
-      expect(content.schema!.properties!["refresh_token"]!.type, APIType.string);
+      expect(
+          content.schema!.properties!["refresh_token"]!.type, APIType.string);
       expect(content.schema!.properties!["scope"]!.type, APIType.string);
       expect(content.schema!.properties!["code"]!.type, APIType.string);
       expect(content.schema!.properties!["grant_type"]!.type, APIType.string);
@@ -149,7 +150,11 @@ void main() {
     test("GET serves HTML string for only response", () {
       expect(operations!["get"]!.responses!.length, 1);
       expect(
-          operations!["get"]!.responses!["200"]!.content!["text/html"]!.schema!.type,
+          operations!["get"]!
+              .responses!["200"]!
+              .content!["text/html"]!
+              .schema!
+              .type,
           APIType.string);
     });
 
@@ -158,7 +163,8 @@ void main() {
       final op = operations!["get"]!;
       expect(op.parameters!.length, 4);
       expect(
-          op.parameters!.every((p) => p!.location == APIParameterLocation.query),
+          op.parameters!
+              .every((p) => p!.location == APIParameterLocation.query),
           true);
       expect(op.parameterNamed("client_id")!.schema!.type, APIType.string);
       expect(op.parameterNamed("scope")!.schema!.type, APIType.string);
@@ -187,7 +193,8 @@ void main() {
       expect(content.schema!.properties!["client_id"]!.type, APIType.string);
       expect(content.schema!.properties!["scope"]!.type, APIType.string);
       expect(content.schema!.properties!["state"]!.type, APIType.string);
-      expect(content.schema!.properties!["response_type"]!.type, APIType.string);
+      expect(
+          content.schema!.properties!["response_type"]!.type, APIType.string);
       expect(content.schema!.properties!["username"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.format, "password");
@@ -206,7 +213,8 @@ void main() {
       final redirectResponse =
           operations!["post"]!.responses!["${HttpStatus.movedTemporarily}"]!;
       expect(redirectResponse.content, isNull);
-      expect(redirectResponse.headers!["Location"]!.schema!.type, APIType.string);
+      expect(
+          redirectResponse.headers!["Location"]!.schema!.type, APIType.string);
       expect(redirectResponse.headers!["Location"]!.schema!.format, "uri");
     });
   });

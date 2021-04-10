@@ -8,7 +8,7 @@
 
 ## 1.0.0
 
-- Initial version from `package:aqueduct`.
+- Initial version from `package:conduit`.
 - Adds `TestHarness` base class for test harnesses.
 - Adds `TestHarnessORMMixin` for testing ORM applications.
 - Adds `TestHarnessAuthMixin` for testing OAuth2 applications.

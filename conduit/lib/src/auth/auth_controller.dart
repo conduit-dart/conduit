@@ -93,8 +93,8 @@ class AuthController extends ResourceController {
           return _responseForError(AuthRequestError.invalidRequest);
         }
 
-        final token = await authServer!.exchange(
-            authCode, basicRecord.username, basicRecord.password);
+        final token = await authServer!
+            .exchange(authCode, basicRecord.username, basicRecord.password);
 
         return AuthController.tokenResponse(token);
       } else if (grantType == null) {

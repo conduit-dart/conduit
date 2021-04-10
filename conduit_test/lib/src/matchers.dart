@@ -252,7 +252,7 @@ Matcher hasResponse(int? statusCode,
 ///           await client.request("/foo").get(),
 ///           200, body: "foo", headers: {"x-foo": "foo"});
 ///         print("$response");
-TestResponse expectResponse(TestResponse response, int statusCode,
+TestResponse? expectResponse(TestResponse? response, int statusCode,
     {dynamic body, Map<String, dynamic>? headers}) {
   expect(response, hasResponse(statusCode, body: body, headers: headers));
   return response;

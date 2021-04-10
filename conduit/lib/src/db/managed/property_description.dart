@@ -507,8 +507,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
 
   @override
   APISchemaObject documentSchemaObject(APIDocumentContext context) {
-    final relatedType =
-        context.schema.getObjectWithType(inverse!.entity!.instanceType);
+    final relatedType = context.schema
+        .getObjectWithType(inverse!.entity!.instanceType) as APISchemaObject;
 
     if (relationshipType == ManagedRelationshipType.hasMany) {
       return APISchemaObject.array(ofSchema: relatedType)

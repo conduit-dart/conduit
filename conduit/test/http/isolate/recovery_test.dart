@@ -98,7 +98,7 @@ class UncaughtCrashController extends Controller {
   FutureOr<RequestOrResponse> handle(Request req) {
     if (req.raw.uri.queryParameters["crash"] == "true") {
       Future(() {
-        dynamic? x;
+        dynamic x;
 
         /// force an npe to test the crash handler.
         x.foo();

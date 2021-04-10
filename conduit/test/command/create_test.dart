@@ -58,7 +58,7 @@ void main() {
       expect(cli.output, contains("Invalid project name"));
       expect(cli.output, contains("snake_case"));
 
-      expect(DartProjectAgent.projectsDirectory.listSync().isEmpty, true);
+      expect(DartProjectAgent.projectsDirectory.listSync().isEmpty, isTrue);
     });
 
     test("Project name with uppercase characters fails immediately", () async {
@@ -106,7 +106,7 @@ void main() {
 
       expect(lines.length, names.length + 4);
       for (var n in names) {
-        expect(lines.any((l) => l.startsWith("\x1B[0m    $n ")), true);
+        expect(lines.any((l) => l.startsWith("\x1B[0m    $n ")), isTrue);
       }
     });
 
@@ -147,7 +147,7 @@ void main() {
           final projectVersionConstraint = VersionConstraint.parse(
             contents["dependencies"]["conduit"] as String,
           );
-          expect(projectVersionConstraint.allows(conduitVersion), true);
+          expect(projectVersionConstraint.allows(conduitVersion), isTrue);
         },
       );
 

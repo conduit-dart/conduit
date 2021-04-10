@@ -443,7 +443,8 @@ void main() {
       var schema = Schema.fromDataModel(dm);
       schema.tableForName("_Unique")!.uniqueColumnSet = null;
 
-      var cmds = psc.deleteTableUniqueColumnSet(schema.tableForName("_Unique")!);
+      var cmds =
+          psc.deleteTableUniqueColumnSet(schema.tableForName("_Unique")!);
       expect(cmds.first, "DROP INDEX IF EXISTS _Unique_unique_idx");
     });
 

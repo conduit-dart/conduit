@@ -20,7 +20,7 @@ void main() {
       final completer = Completer();
       final root = PassthruController();
       root
-          .linkFunction((req) async => req)
+          .linkFunction((req) async => req)!
           .link(() => Always200Controller())!
           .link(() => PrepareTailController(completer));
       root.didAddToChannel();
@@ -47,7 +47,7 @@ void main() {
     test("Can add change status code", () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => resp.statusCode = 201);
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok(null);
       });
 
@@ -58,7 +58,7 @@ void main() {
     test("Can remove header", () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => resp.headers.remove("x-foo"));
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
@@ -69,7 +69,7 @@ void main() {
     test("Can add header", () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok(null);
       });
 
@@ -80,7 +80,7 @@ void main() {
     test("Can change header value", () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
@@ -91,7 +91,7 @@ void main() {
     test("Can modify body prior to encoding", () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => resp.body["foo"] = "y");
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok({"x": "a"});
       });
 
@@ -104,7 +104,7 @@ void main() {
         () async {
       root.linkFunction((r) async {
         return r..addResponseModifier((resp) => throw Exception('expected'));
-      }).linkFunction((r) async {
+      })!.linkFunction((r) async {
         return Response.ok(null);
       });
 
@@ -137,7 +137,7 @@ void main() {
         req.raw.response.close();
 
         return null;
-      }).linkFunction(
+      })!.linkFunction(
           // ignore: missing_return
           (req) {
         set = true;

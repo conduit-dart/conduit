@@ -14,8 +14,8 @@ pub get
 $RUNNER_CMD $RUNNER_ARGS
 
 #if [[ "$TRAVIS_BUILD_STAGE_NAME" == "coverage" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == false ]]; then
-#  pub global activate -sgit https://github.com/stablekernel/aqueduct-coverage-tool.git
-#  pub global run aqueduct_coverage_tool:main
+#  pub global activate -sgit https://github.com/stablekernel/conduit-coverage-tool.git
+#  pub global run conduit_coverage_tool:main
 #fi
 
 cd ..

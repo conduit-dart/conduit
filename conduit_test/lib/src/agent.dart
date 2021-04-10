@@ -149,7 +149,7 @@ class Agent {
   /// Makes a GET request with this agent.
   ///
   /// Calls [execute] with "GET" method.
-  Future<TestResponse> get(String path,
+  Future<TestResponse?> get(String path,
       {Map<String, dynamic>? headers, Map<String, Object>? query}) {
     return execute("GET", path, headers: headers, query: query);
   }
@@ -157,7 +157,7 @@ class Agent {
   /// Makes a POST request with this agent.
   ///
   /// Calls [execute] with "POST" method.
-  Future<TestResponse> post(String path,
+  Future<TestResponse?> post(String path,
       {dynamic body,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? query}) {
@@ -167,7 +167,7 @@ class Agent {
   /// Makes a DELETE request with this agent.
   ///
   /// Calls [execute] with "DELETE" method.
-  Future<TestResponse> delete(String path,
+  Future<TestResponse?> delete(String path,
       {dynamic body,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? query}) {
@@ -177,7 +177,7 @@ class Agent {
   /// Makes a PUT request with this agent.
   ///
   /// Calls [execute] with "PUT" method.
-  Future<TestResponse> put(String path,
+  Future<TestResponse?> put(String path,
       {dynamic body,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? query}) {
@@ -197,7 +197,7 @@ class Agent {
   /// are only those in [Agent.headers].
   ///
   /// If [query] is non-null, each value is URI-encoded and then the map is encoding as the request URI's  query string.
-  Future<TestResponse> execute(String method, String path,
+  Future<TestResponse?> execute(String method, String path,
       {dynamic body,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? query}) {

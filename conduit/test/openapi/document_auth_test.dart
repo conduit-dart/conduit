@@ -30,30 +30,30 @@ void main() {
         "Basic Authorizer adds oauth2 client authentication to operations for all paths",
         () {
       final noVarPath = doc.paths!["/basic"]!;
-      expect(noVarPath.operations.length, 2);
-      expect(noVarPath.operations["get"]!.security!.length, 1);
-      expect(noVarPath.operations["get"]!.security!.first!.requirements,
+      expect(noVarPath.operations!.length, 2);
+      expect(noVarPath.operations!["get"]!.security!.length, 1);
+      expect(noVarPath.operations!["get"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
-      expect(noVarPath.operations["post"]!.security!.length, 1);
-      expect(noVarPath.operations["post"]!.security!.first!.requirements,
+      expect(noVarPath.operations!["post"]!.security!.length, 1);
+      expect(noVarPath.operations!["post"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
 
       final varPath = doc.paths!["/basic/{id}"]!;
-      expect(varPath.operations.length, 1);
-      expect(varPath.operations["get"]!.security!.length, 1);
-      expect(varPath.operations["get"]!.security!.first!.requirements,
+      expect(varPath.operations!.length, 1);
+      expect(varPath.operations!["get"]!.security!.length, 1);
+      expect(varPath.operations!["get"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
     });
 
     test("No scope bearer authorizer adds oauth2 authentication to operations",
         () {
       final noVarPath = doc.paths!["/bearer-no-scope"]!;
-      expect(noVarPath.operations.length, 2);
-      expect(noVarPath.operations["get"]!.security!.length, 1);
-      expect(noVarPath.operations["get"]!.security!.first!.requirements,
+      expect(noVarPath.operations!.length, 2);
+      expect(noVarPath.operations!["get"]!.security!.length, 1);
+      expect(noVarPath.operations!["get"]!.security!.first!.requirements,
           {"oauth2": []});
-      expect(noVarPath.operations["post"]!.security!.length, 1);
-      expect(noVarPath.operations["post"]!.security!.first!.requirements,
+      expect(noVarPath.operations!["post"]!.security!.length, 1);
+      expect(noVarPath.operations!["post"]!.security!.first!.requirements,
           {"oauth2": []});
     });
 
@@ -61,13 +61,13 @@ void main() {
         "Scoped bearer authorizer adds oauth2 authentication to operations w/ scope",
         () {
       final noVarPath = doc.paths!["/bearer-scope"]!;
-      expect(noVarPath.operations.length, 2);
-      expect(noVarPath.operations["get"]!.security!.length, 1);
-      expect(noVarPath.operations["get"]!.security!.first!.requirements, {
+      expect(noVarPath.operations!.length, 2);
+      expect(noVarPath.operations!["get"]!.security!.length, 1);
+      expect(noVarPath.operations!["get"]!.security!.first!.requirements, {
         "oauth2": ["scope"]
       });
-      expect(noVarPath.operations["post"]!.security!.length, 1);
-      expect(noVarPath.operations["post"]!.security!.first!.requirements, {
+      expect(noVarPath.operations!["post"]!.security!.length, 1);
+      expect(noVarPath.operations!["post"]!.security!.first!.requirements, {
         "oauth2": ["scope"]
       });
     });
@@ -80,8 +80,8 @@ void main() {
 
     test("Authorizer adds Forbidden and Unauthorized to response components",
         () {
-      expect(
-          doc.components!.responses["InsufficientScope"]!.description, isNotNull);
+      expect(doc.components!.responses["InsufficientScope"]!.description,
+          isNotNull);
       expect(
           doc.components!.responses["InsufficientScope"]!
               .content!["application/json"]!.schema!.type,
@@ -99,31 +99,37 @@ void main() {
           isNotNull);
 
       expect(
-          doc.components!.responses["MalformedAuthorizationHeader"]!.description,
+          doc.components!.responses["MalformedAuthorizationHeader"]!
+              .description,
           isNotNull);
     });
 
     test("Bearer Authorizer adds 401 and 403 response to operations", () {
       final noVarPath = doc.paths!["/bearer-no-scope"]!;
-      expect(noVarPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
+      expect(
+          noVarPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
-      expect(noVarPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
+      expect(
+          noVarPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
-      expect(noVarPath.operations["get"]!.responses!["400"]!.referenceURI!.path,
+      expect(
+          noVarPath.operations!["get"]!.responses!["400"]!.referenceURI!.path,
           "/components/responses/MalformedAuthorizationHeader");
     });
 
     test("Basic Authorizer adds 401 and 403 response to operations", () {
       final noVarPath = doc.paths!["/basic"]!;
-      expect(noVarPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
+      expect(
+          noVarPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
-      expect(noVarPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
+      expect(
+          noVarPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
 
       final varPath = doc.paths!["/basic/{id}"]!;
-      expect(varPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
+      expect(varPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
-      expect(varPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
+      expect(varPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
     });
   });
@@ -143,16 +149,19 @@ void main() {
       final doc = await Application.document(AuthControllerOnlyChannel,
           ApplicationOptions(), {"name": "Test", "version": "1.0"});
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.refreshURL,
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
+              .refreshURL,
           Uri(path: "auth/token"));
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.tokenURL,
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
+              .tokenURL,
           Uri(path: "auth/token"));
       expect(
           doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
               .authorizationURL,
           isNull);
-      expect(doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.scopes,
+      expect(
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.scopes,
           {});
     });
 
@@ -162,10 +171,12 @@ void main() {
       final doc = await Application.document(ScopedControllerChannel,
           ApplicationOptions(), {"name": "Test", "version": "1.0"});
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.refreshURL,
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
+              .refreshURL,
           Uri(path: "auth/token"));
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.tokenURL,
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
+              .tokenURL,
           Uri(path: "auth/token"));
       expect(
           doc.components!.securitySchemes["oauth2"]!.flows!["password"]!
@@ -173,16 +184,16 @@ void main() {
           isNull);
 
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["authorizationCode"]!
-              .refreshURL,
+          doc.components!.securitySchemes["oauth2"]!
+              .flows!["authorizationCode"]!.refreshURL,
           Uri(path: "auth/token"));
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["authorizationCode"]!
-              .tokenURL,
+          doc.components!.securitySchemes["oauth2"]!
+              .flows!["authorizationCode"]!.tokenURL,
           Uri(path: "auth/token"));
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["authorizationCode"]!
-              .authorizationURL,
+          doc.components!.securitySchemes["oauth2"]!
+              .flows!["authorizationCode"]!.authorizationURL,
           Uri(path: "auth/code"));
     });
 
@@ -191,11 +202,12 @@ void main() {
         () async {
       final doc = await Application.document(ScopedControllerChannel,
           ApplicationOptions(), {"name": "Test", "version": "1.0"});
-      expect(doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.scopes,
+      expect(
+          doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.scopes,
           {"scope1": "", "scope2": ""});
       expect(
-          doc.components!.securitySchemes["oauth2"]!.flows!["authorizationCode"]!
-              .scopes,
+          doc.components!.securitySchemes["oauth2"]!
+              .flows!["authorizationCode"]!.scopes,
           {"scope1": "", "scope2": ""});
     });
   });
@@ -313,7 +325,8 @@ class ScopedControllerChannel extends ApplicationChannel {
         .link(() => DocumentedController());
     router
         .route("/r2")
-        .link(() => Authorizer.bearer(authServer, scopes: ["scope1", "scope2"]))!
+        .link(
+            () => Authorizer.bearer(authServer, scopes: ["scope1", "scope2"]))!
         .link(() => DocumentedController());
 
     router
