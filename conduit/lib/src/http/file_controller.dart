@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
@@ -80,7 +79,7 @@ class FileController extends Controller {
   };
 
   final Map<String, ContentType> _extensionMap = Map.from(_defaultExtensionMap);
-  final List<_PolicyPair> _policyPairs = [];
+  final List<_PolicyPair?> _policyPairs = [];
   final Uri _servingDirectory;
   final _OnFileNotFound? _onFileNotFound;
 
@@ -141,7 +140,8 @@ class FileController extends Controller {
   /// returns it if exists.
   CachePolicy? cachePolicyForPath(String path) {
     return _policyPairs
-        .firstWhereOrNull((pair) => pair.shouldApplyToPath(path))
+        .firstWhere((pair) => pair?.shouldApplyToPath(path) ?? false,
+            orElse: () => null)
         ?.policy;
   }
 
@@ -152,7 +152,7 @@ class FileController extends Controller {
     }
 
     var relativePath = request.path.remainingPath;
-    var fileUri = _servingDirectory.resolve(relativePath);
+    var fileUri = _servingDirectory.resolve(relativePath ?? "");
     File file;
     if (FileSystemEntity.isDirectorySync(fileUri.toFilePath())) {
       file = File.fromUri(fileUri.resolve("index.html"));

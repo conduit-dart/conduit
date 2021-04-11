@@ -22,10 +22,10 @@ class Request implements RequestOrResponse {
   ///
   /// Use this property to access values from the HTTP request that aren't accessible through this instance.
   ///
-  /// You should typically not manipulate this property's [HttpRequest.response]. By default, Aqueduct controls
+  /// You should typically not manipulate this property's [HttpRequest.response]. By default, Conduit controls
   /// the response through its [Controller]s.
   ///
-  /// If you wish to respond to a request manually - and prohibit Aqueduct from responding to the request - you must
+  /// If you wish to respond to a request manually - and prohibit Conduit from responding to the request - you must
   /// remove this instance from the request channel. To remove a request from the channel, return null from a [Controller]
   /// handler method instead of a [Response] or [Request]. For example:
   ///
@@ -230,35 +230,35 @@ class Request implements RequestOrResponse {
   ///
   /// [Controller]s invoke this method to respond to this request.
   ///
-  /// Once this method has executed, the [Request] is no longer valid. All headers from [aqueductResponse] are
-  /// added to the HTTP response. If [aqueductResponse] has a [Response.body], this request will attempt to encode the body data according to the
-  /// Content-Type in the [aqueductResponse]'s [Response.headers].
+  /// Once this method has executed, the [Request] is no longer valid. All headers from [conduitResponse] are
+  /// added to the HTTP response. If [conduitResponse] has a [Response.body], this request will attempt to encode the body data according to the
+  /// Content-Type in the [conduitResponse]'s [Response.headers].
   ///
-  Future respond(Response aqueductResponse) {
+  Future respond(Response conduitResponse) {
     respondDate = DateTime.now().toUtc();
 
     final modifiers = _responseModifiers;
     _responseModifiers = null;
     modifiers?.forEach((modifier) {
-      modifier(aqueductResponse);
+      modifier(conduitResponse);
     });
 
     _Reference<String> compressionType = _Reference(null);
-    var body = aqueductResponse.body;
+    var body = conduitResponse.body;
     if (body is! Stream) {
       // Note: this pre-encodes the body in memory, such that encoding fails this will throw and we can return a 500
       // because we have yet to write to the response.
-      body = _responseBodyBytes(aqueductResponse, compressionType);
+      body = _responseBodyBytes(conduitResponse, compressionType);
     }
 
-    response.statusCode = aqueductResponse.statusCode!;
-    aqueductResponse.headers.forEach((k, v) {
+    response.statusCode = conduitResponse.statusCode!;
+    conduitResponse.headers.forEach((k, v) {
       response.headers.add(k, v as Object);
     });
 
-    if (aqueductResponse.cachePolicy != null) {
+    if (conduitResponse.cachePolicy != null) {
       response.headers.add(HttpHeaders.cacheControlHeader,
-          aqueductResponse.cachePolicy!.headerValue);
+          conduitResponse.cachePolicy!.headerValue);
     }
 
     if (body == null) {
@@ -267,7 +267,7 @@ class Request implements RequestOrResponse {
     }
 
     response.headers.add(
-        HttpHeaders.contentTypeHeader, aqueductResponse.contentType.toString());
+        HttpHeaders.contentTypeHeader, conduitResponse.contentType.toString());
 
     if (body is List<int>) {
       if (compressionType.value != null) {
@@ -281,13 +281,13 @@ class Request implements RequestOrResponse {
       return response.close();
     } else if (body is Stream) {
       // Otherwise, body is stream
-      final bodyStream = _responseBodyStream(aqueductResponse, compressionType);
+      final bodyStream = _responseBodyStream(conduitResponse, compressionType);
       if (compressionType.value != null) {
         response.headers
             .add(HttpHeaders.contentEncodingHeader, compressionType.value!);
       }
       response.headers.add(HttpHeaders.transferEncodingHeader, "chunked");
-      response.bufferOutput = aqueductResponse.bufferOutput;
+      response.bufferOutput = conduitResponse.bufferOutput;
 
       return response.addStream(bodyStream).then((_) {
         return response.close();

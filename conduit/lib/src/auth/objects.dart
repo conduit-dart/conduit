@@ -456,10 +456,8 @@ class AuthScope {
   bool isExactlyScope(AuthScope scope) {
     final incomingIterator = scope._segments.iterator;
     for (var segment in _segments) {
-      bool hasMore = incomingIterator.moveNext();
-
       /// the scope has less segments so no match.
-      if (hasMore == false) {
+      if (!incomingIterator.moveNext()) {
         return false;
       }
 

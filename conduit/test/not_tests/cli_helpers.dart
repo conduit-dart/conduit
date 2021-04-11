@@ -174,8 +174,6 @@ class TestChannel extends ApplicationChannel {
     var results = cmd.options.parse(args);
 
     final exitCode = await cmd.process(results);
-    print(exitCode);
-    print('asdasdad');
     if (exitCode != 0) {
       print("command failed: ${output}");
     }

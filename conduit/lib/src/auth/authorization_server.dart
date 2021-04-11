@@ -481,14 +481,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       {List<AuthScope>? requiredScope}) {
     if (parser is AuthorizationBasicParser) {
       final credentials = authorizationData as AuthBasicCredentials;
-      print('asd');
       return _validateClientCredentials(credentials);
     } else if (parser is AuthorizationBearerParser) {
-      print('assssssd');
       return verify(authorizationData as String, scopesRequired: requiredScope);
     }
 
-    print('assssssasdasdasdasdd');
     throw ArgumentError(
         "Invalid 'parser' for 'AuthServer.validate'. Use 'AuthorizationBasicParser' or 'AuthorizationBearerHeader'.");
   }

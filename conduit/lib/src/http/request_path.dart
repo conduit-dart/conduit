@@ -20,12 +20,15 @@ class RequestPath {
     }
 
     for (var segment in spec.segments) {
-      requestIterator.moveNext();
-      var requestSegment = requestIterator.current;
+      if (!requestIterator.moveNext()) {
+        remainingPath = "";
+        return;
+      }
+      final requestSegment = requestIterator.current;
 
       if (segment.isVariable) {
-        variables[segment.variableName] = requestSegment;
-        orderedVariableNames.add(segment.variableName);
+        variables[segment.variableName.toString()] = requestSegment;
+        orderedVariableNames.add(segment.variableName!);
       } else if (segment.isRemainingMatcher) {
         var remaining = [];
         remaining.add(requestIterator.current);
@@ -33,7 +36,6 @@ class RequestPath {
           remaining.add(requestIterator.current);
         }
         remainingPath = remaining.join("/");
-
         return;
       }
     }
@@ -50,7 +52,7 @@ class RequestPath {
   ///     /users/2
   /// This property will be {'id' : '2'}.
   ///
-  Map<String?, String> variables = {};
+  Map<String, String> variables = {};
 
   /// A list of the segments in a matched path.
   ///
@@ -64,7 +66,7 @@ class RequestPath {
   ///
   /// The remaining path will will be a single string, including any path delimiters (/),
   /// but will not have a leading path delimiter.
-  late String remainingPath;
+  String? remainingPath;
 
   /// An ordered list of variable names (the keys in [variables]) based on their position in the path.
   ///
@@ -72,7 +74,7 @@ class RequestPath {
   /// available for the specific request are in this list. For example, if a route has two path variables,
   /// but the incoming request this [RequestPath] represents only has one variable, only that one variable
   /// will appear in this property.
-  List<String?> orderedVariableNames = [];
+  List<String> orderedVariableNames = [];
 
   /// The path of the requested URI.
   ///

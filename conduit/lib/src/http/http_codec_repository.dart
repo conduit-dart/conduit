@@ -22,7 +22,7 @@ class CodecRegistry {
     setAllowsCompression(ContentType("text", "event-stream"), false);
   }
 
-  /// The instance used by Aqueduct to encode and decode HTTP bodies.
+  /// The instance used by Conduit to encode and decode HTTP bodies.
   ///
   /// Custom codecs must be added to this instance. This value is guaranteed to be non-null.
   static CodecRegistry get defaultInstance => _defaultInstance;
