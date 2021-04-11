@@ -57,13 +57,15 @@ abstract class CLICommand {
         ?.runningProcess;
   }
 
-  @Flag("version", help: "Prints version of this tool", negatable: false, defaultsTo: false)
+  @Flag("version",
+      help: "Prints version of this tool", negatable: false, defaultsTo: false)
   bool get showVersion => decode("version")!;
 
   @Flag("color", help: "Toggles ANSI color", negatable: true, defaultsTo: true)
   bool get showColors => decode("color")!;
 
-  @Flag("help", abbr: "h", help: "Shows this", negatable: false, defaultsTo: false)
+  @Flag("help",
+      abbr: "h", help: "Shows this", negatable: false, defaultsTo: false)
   bool get helpMeItsScary => decode("help")!;
 
   @Flag("stacktrace",
@@ -96,8 +98,7 @@ abstract class CLICommand {
   static const _tabs = "    ";
   static const _errorDelimiter = "*** ";
 
-
-  T? decode<T>(String key) {
+  T decode<T>(String key, {T Function()? orElse}) {
     final val = _argumentValues[key];
     if (T == int && val is String) {
       return int.parse(val) as T;
@@ -185,7 +186,8 @@ abstract class CLICommand {
       var toolPubspecFile =
           File.fromUri(conduitDirectory.absolute.uri.resolve("pubspec.yaml"));
 
-      final toolPubspecContents = loadYaml(toolPubspecFile.readAsStringSync()) as Map;
+      final toolPubspecContents =
+          loadYaml(toolPubspecFile.readAsStringSync()) as Map;
       final toolVersion = toolPubspecContents["version"] as String;
       _toolVersion = Version.parse(toolVersion);
     } catch (e) {

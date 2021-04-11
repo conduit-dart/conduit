@@ -17,13 +17,12 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   @Option("template",
       abbr: "t", help: "Name of the template to use", defaultsTo: "default")
-  String get templateName => decode("template")!;
+  String get templateName => decode("template", orElse: () => "default")!;
 
   @Flag("offline",
       negatable: false,
-      help: "Will fetch dependencies from a local cache if they exist.",
-      defaultsTo: false)
-  bool get offline => decode("offline")!;
+      help: "Will fetch dependencies from a local cache if they exist.")
+  bool get offline => decode("offline", orElse: () => false)!;
 
   String? get projectName =>
       remainingArguments.isNotEmpty ? remainingArguments.first : null;
@@ -49,7 +48,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     destDirectory.createSync();
 
     final templateSourceDirectory =
-        Directory.fromUri(getTemplateLocation(templateName));
+        Directory.fromUri(getTemplateLocation(templateName) ?? Uri());
     if (!templateSourceDirectory.existsSync()) {
       displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
@@ -57,10 +56,10 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
     displayProgress("Template source is: ${templateSourceDirectory.path}");
     displayProgress("See more templates with 'conduit create list-templates'");
-    copyProjectFiles(destDirectory, templateSourceDirectory, projectName);
+    copyProjectFiles(destDirectory, templateSourceDirectory, projectName!);
 
     createProjectSpecificFiles(destDirectory.path);
-    if (conduitPackageRef!.sourceType == "path") {
+    if (conduitPackageRef?.sourceType == "path") {
       final conduitLocation = conduitPackageRef!.resolve()!.location;
 
       addDependencyOverridesToPackage(destDirectory.path, {
@@ -80,7 +79,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     }
 
     displayProgress("Success.");
-    displayInfo("New project '$projectName' successfully created.");
+    displayInfo("project '$projectName' successfully created.");
     displayProgress("Project is located at ${destDirectory.path}");
     displayProgress("Open this directory in IntelliJ IDEA, Atom or VS Code.");
     displayProgress(
@@ -123,18 +122,18 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     return true;
   }
 
-  void interpretContentFile(String? projectName, Directory destinationDirectory,
+  void interpretContentFile(String projectName, Directory destinationDirectory,
       FileSystemEntity sourceFileEntity) {
     if (shouldIncludeItem(sourceFileEntity)) {
       if (sourceFileEntity is Directory) {
         copyDirectory(projectName, destinationDirectory, sourceFileEntity);
       } else if (sourceFileEntity is File) {
-        copyFile(projectName!, destinationDirectory, sourceFileEntity);
+        copyFile(projectName, destinationDirectory, sourceFileEntity);
       }
     }
   }
 
-  void copyDirectory(String? projectName, Directory destinationParentDirectory,
+  void copyDirectory(String projectName, Directory destinationParentDirectory,
       Directory sourceDirectory) {
     var sourceDirectoryName = sourceDirectory
         .uri.pathSegments[sourceDirectory.uri.pathSegments.length - 2];
@@ -205,9 +204,9 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   void copyProjectFiles(Directory destinationDirectory,
-      Directory sourceDirectory, String? projectName) {
+      Directory sourceDirectory, String projectName) {
     displayInfo(
-        "Copying template files to new project directory (${destinationDirectory.path})...");
+        "Copying template files to project directory (${destinationDirectory.path})...");
     try {
       destinationDirectory.createSync();
 
@@ -296,7 +295,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 class CLITemplateList extends CLICommand with CLIConduitGlobal {
   @override
   Future<int> handle() async {
-    final templateRootDirectory = Directory.fromUri(templateDirectory);
+    final templateRootDirectory = Directory.fromUri(templateDirectory ?? Uri());
     final templateDirectories = await templateRootDirectory
         .list()
         .where((fse) => fse is Directory)
@@ -344,11 +343,11 @@ class CLIConduitGlobal {
         .getDefiningPackageRef();
   }
 
-  Uri get templateDirectory {
-    return conduitPackageRef!.resolve()!.location.uri.resolve("templates/");
+  Uri? get templateDirectory {
+    return conduitPackageRef?.resolve()?.location.uri.resolve("templates/");
   }
 
-  Uri getTemplateLocation(String templateName) {
-    return templateDirectory.resolve("$templateName/");
+  Uri? getTemplateLocation(String templateName) {
+    return templateDirectory?.resolve("$templateName/");
   }
 }

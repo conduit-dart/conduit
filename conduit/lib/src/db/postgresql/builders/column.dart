@@ -33,7 +33,8 @@ class ColumnBuilder extends Returnable {
     }
 
     return List.from(keys.map((key) {
-      return ColumnBuilder(table, propertyForName(entity!, key.path.first!.name),
+      return ColumnBuilder(
+          table, propertyForName(entity!, key.path.first!.name),
           documentKeyPath: key.dynamicElements);
     }));
   }
@@ -64,7 +65,7 @@ class ColumnBuilder extends Returnable {
     ManagedPropertyType.datetime: PostgreSQLDataType.timestampWithoutTimezone,
     ManagedPropertyType.boolean: PostgreSQLDataType.boolean,
     ManagedPropertyType.doublePrecision: PostgreSQLDataType.double,
-    ManagedPropertyType.document: PostgreSQLDataType.json
+    ManagedPropertyType.document: PostgreSQLDataType.jsonb
   };
 
   static Map<PredicateOperator, String> symbolTable = {
@@ -125,8 +126,8 @@ class ColumnBuilder extends Returnable {
   }
 
   String get sqlTypeSuffix {
-    var type =
-        PostgreSQLFormat.dataTypeStringForDataType(typeMap[property!.type!.kind]);
+    var type = PostgreSQLFormat.dataTypeStringForDataType(
+        typeMap[property!.type!.kind]);
     if (type != null) {
       return ":$type";
     }

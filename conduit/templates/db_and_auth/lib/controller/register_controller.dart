@@ -25,8 +25,8 @@ class RegisterController extends ResourceController {
     final token = await authServer.authenticate(
         user.username,
         user.password,
-        request.authorization!.credentials!.username,
-        request.authorization!.credentials!.password);
+        request?.authorization?.credentials?.username,
+        request?.authorization?.credentials?.password);
 
     final response = AuthController.tokenResponse(token);
     final newBody = u.asMap()..["authorization"] = response.body;

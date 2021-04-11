@@ -114,7 +114,8 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
             }
             if (flow.authorizationURL != null &&
                 !flow.authorizationURL!.isAbsolute) {
-              flow.authorizationURL = baseUri.resolveUri(flow.authorizationURL!);
+              flow.authorizationURL =
+                  baseUri.resolveUri(flow.authorizationURL!);
             }
             if (flow.tokenURL != null && !flow.tokenURL!.isAbsolute) {
               flow.tokenURL = baseUri.resolveUri(flow.tokenURL!);

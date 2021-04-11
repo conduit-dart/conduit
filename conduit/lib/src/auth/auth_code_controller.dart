@@ -184,8 +184,8 @@ class AuthCodeController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation? operation) {
-    if (operation!.method == "GET") {
+      APIDocumentContext context, Operation operation) {
+    if (operation.method == "GET") {
       return {
         "200": APIResponse.schema(
             "Serves a login form.", APISchemaObject.string(),

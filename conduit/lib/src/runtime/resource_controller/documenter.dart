@@ -133,7 +133,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
           firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
 
       final operationDoc = APIOperation(opObj.dartMethodName,
-          rc.documentOperationResponses(context, metadata),
+          rc.documentOperationResponses(context, metadata!),
           summary: rc.documentOperationSummary(context, metadata),
           description: rc.documentOperationDescription(context, metadata),
           parameters: rc.documentOperationParameters(context, metadata),

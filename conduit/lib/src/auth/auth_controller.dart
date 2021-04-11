@@ -178,7 +178,7 @@ class AuthController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation? operation) {
+      APIDocumentContext context, Operation operation) {
     return {
       "200": APIResponse.schema(
           "Successfully exchanged credentials for token",

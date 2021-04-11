@@ -23,10 +23,10 @@ export 'package:conduit/conduit.dart';
 class Harness extends TestHarness<WildfireChannel>
     with TestHarnessAuthMixin<WildfireChannel>, TestHarnessORMMixin {
   @override
-  ManagedContext? get context => channel.context;
+  ManagedContext? get context => channel?.context;
 
   @override
-  AuthServer? get authServer => channel.authServer;
+  AuthServer? get authServer => channel?.authServer;
 
   Agent? publicAgent;
 

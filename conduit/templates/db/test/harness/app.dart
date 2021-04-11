@@ -21,7 +21,7 @@ export 'package:conduit/conduit.dart';
 ///
 class Harness extends TestHarness<WildfireChannel> with TestHarnessORMMixin {
   @override
-  ManagedContext get context => channel.context;
+  ManagedContext? get context => channel?.context;
 
   @override
   Future onSetUp() async {

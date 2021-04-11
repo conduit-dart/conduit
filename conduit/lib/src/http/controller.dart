@@ -152,38 +152,27 @@ abstract class Controller
   /// By default, it invokes this controller's [handle] method within a try-catch block
   /// that guarantees an HTTP response will be sent for [Request].
   Future receive(Request req) async {
-    print('aaaaa');
     if (req.isPreflightRequest) {
       return _handlePreflightRequest(req);
     }
 
     Request? next;
     try {
-      print('asdasdadasdasd');
       try {
-        print('asdasdadasdasd');
         final result = await handle(req);
-        print('dsssss');
         if (result is Response) {
-          print('asdasdasdasdasdasdadadasdasd');
           await _sendResponse(req, result, includeCORSHeaders: true);
-          print('2222222');
           logger.info(req.toDebugString());
           return null;
         } else if (result is Request) {
-          print('q2222');
           next = result;
         }
       } on Response catch (response) {
-        print('afasfsffffffffffadasdasd');
         await _sendResponse(req, response, includeCORSHeaders: true);
-        print('ggh');
         logger.info(req.toDebugString());
         return null;
       } on HandlerException catch (e) {
-        print('aasdasd');
         await _sendResponse(req, e.response, includeCORSHeaders: true);
-        print('a,,,,,,');
         logger.info(req.toDebugString());
         return null;
       }
