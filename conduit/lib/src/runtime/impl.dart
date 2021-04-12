@@ -29,7 +29,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   IsolateEntryFunction get isolateEntryPoint => isolateServerEntryPoint;
 
   @override
-  Uri get libraryUri => (type!.owner as LibraryMirror).uri;
+  Uri get libraryUri => (type!.owner! as LibraryMirror).uri;
 
   bool get hasGlobalInitializationMethod {
     return type!.staticMembers[_globalStartSymbol] != null;
@@ -44,7 +44,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   }
 
   @override
-  Future? runGlobalInitialization(ApplicationOptions config) {
+  Future? runGlobalInitialization(ApplicationOptions config) async {
     if (hasGlobalInitializationMethod) {
       return type!.invoke(_globalStartSymbol, [config]).reflectee as Future?;
     }

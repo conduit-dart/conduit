@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
-
 import 'postgres_test_config.dart';
 
 /*
@@ -173,8 +172,9 @@ void main() {
         expect(p.child?.toy?.tid, originalIterator.current.child?.toy?.tid);
         expect(p.child?.toy?.name, originalIterator.current.child?.toy?.name);
 
-        final vacIter = originalIterator.current.child?.vaccinations?.iterator ??
-            <Vaccine>[].iterator;
+        final vacIter =
+            originalIterator.current.child?.vaccinations?.iterator ??
+                <Vaccine>[].iterator;
         p.child?.vaccinations?.forEach((v) {
           vacIter.moveNext();
           expect(v.vid, vacIter.current.vid);
@@ -416,7 +416,8 @@ void main() {
         () async {
       try {
         Query<Parent>(context!).returningProperties((p) => [p.pid, p.child]);
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -429,7 +430,8 @@ void main() {
         q
             .join(object: (p) => p.child)
             .returningProperties((c) => [c.cid, c.toy]);
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -445,7 +447,8 @@ void main() {
 
       try {
         await q.fetchOne();
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on StateError catch (e) {
         expect(
             e.toString(),

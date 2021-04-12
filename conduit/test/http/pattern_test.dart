@@ -202,6 +202,7 @@ void expectRouterException(void Function() f, {String? exceptionMessage}) {
   try {
     f();
     fail("Expected RouterException");
+    // ignore: avoid_catching_errors
   } on ArgumentError catch (e) {
     if (exceptionMessage != null) {
       expect(e.message, exceptionMessage);

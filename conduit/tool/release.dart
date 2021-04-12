@@ -18,8 +18,11 @@ Future main(List<String> args) async {
   try {
     exitCode = await runner.run();
   } catch (e, st) {
+    // ignore: avoid_print
     print("Release failed!");
+    // ignore: avoid_print
     print("$e");
+    // ignore: avoid_print
     print("$st");
     exitCode = -1;
   } finally {
@@ -68,6 +71,7 @@ class Runner {
         throw "Release failed. Version $upcomingVersion already exists.";
       }
 
+      // ignore: avoid_print
       print("Preparing to release $upcomingVersion (from $previousVersion)...");
       changeset = await changesFromDirectory(master, upcomingVersion);
     }
@@ -93,6 +97,7 @@ class Runner {
     ];
 
     final docsLive = await directoryWithBranch("gh-pages");
+    // ignore: avoid_print
     print("Cleaning ${docsLive.path}...");
     docsLive.listSync().where((fse) {
       if (fse is Directory) {
@@ -107,9 +112,11 @@ class Runner {
       fse.deleteSync(recursive: true);
     });
 
+    // ignore: avoid_print
     print("Transforming docs from ${docSource.path} into ${docsLive.path}...");
     await transformDirectory(transformers, docSource, docsLive);
 
+    // ignore: avoid_print
     print("Building /source to /docs site with mkdoc...");
     var process = await Process.start(
         "mkdocs", ["build", "-d", docsLive.uri.resolve("docs").path, "-s"],
@@ -151,6 +158,7 @@ class Runner {
 
     // Push gh-pages to remote
     if (!isDryRun!) {
+      // ignore: avoid_print
       print("Pushing gh-pages to remote...");
       final process =
           await Process.start("git", ["push"], workingDirectory: docsLive.path);
@@ -170,6 +178,7 @@ class Runner {
         await Directory.current.createTemp(branchName.replaceAll("/", "_"));
     _cleanup.add(() => dir.delete(recursive: true));
 
+    // ignore: avoid_print
     print("Cloning '$branchName' into ${dir.path}...");
     final process = await Process.start("git", [
       "clone",
@@ -192,6 +201,7 @@ class Runner {
   }
 
   Future<String> latestVersion() async {
+    // ignore: avoid_print
     print("Getting latest version...");
     final response = await http.get(
       Uri.parse(
@@ -243,6 +253,7 @@ class Runner {
                 .start)
         .trim();
 
+    // ignore: avoid_print
     print("Changeset for $prefixedVersion:");
     print(changeset);
 
@@ -254,13 +265,14 @@ class Runner {
     final body =
         json.encode({"tag_name": version, "name": name, "body": description});
 
+    // ignore: avoid_print
     print("Tagging GitHub release $version");
+    // ignore: avoid_print
     print("- $name");
 
     if (!isDryRun!) {
       final response = await http.post(
-        Uri.parse(
-            "https://api.github.com/repos/stablekernel/conduit/releases"),
+        Uri.parse("https://api.github.com/repos/stablekernel/conduit/releases"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer ${configuration.githubToken}"
@@ -275,12 +287,15 @@ class Runner {
   }
 
   Future publish(Directory master) async {
+    // ignore: avoid_print
     print("Formatting code...");
     final fmt = await Process.run("dartfmt", ["-w", "lib/", "bin/"]);
     if (fmt.exitCode != 0) {
+      // ignore: avoid_print
       print("WARNING: Failed to run 'dartfmt -w lib/ bin/");
     }
 
+    // ignore: avoid_print
     print("Publishing to pub...");
     final args = ["publish"];
     if (isDryRun!) {
@@ -304,6 +319,7 @@ class Runner {
 
   Future<Map<String, Map<String?, List<SymbolResolution>>>> generateSymbolMap(
       Directory codeBranchDir) async {
+    // ignore: avoid_print
     print("Generating API reference...");
     final process = await Process.start("dartdoc", [],
         workingDirectory: codeBranchDir.path);
@@ -317,6 +333,7 @@ class Runner {
       throw "Release failed. Generating API reference failed with exit code: $exitCode.";
     }
 
+    // ignore: avoid_print
     print("Building symbol map...");
     final indexFile = File.fromUri(codeBranchDir.uri
         .resolve("doc/")

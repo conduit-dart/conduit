@@ -8,7 +8,6 @@ import 'package:logging/logging.dart';
 
 import 'http.dart';
 
-
 /// The unifying protocol for [Request] and [Response] classes.
 ///
 /// A [Controller] must return an instance of this type from its [Controller.handle] method.
@@ -45,7 +44,8 @@ abstract class Linkable {
   Linkable? link(Controller Function() instantiator);
 
   /// See [Controller.linkFunction].
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle);
+  Linkable? linkFunction(
+      FutureOr<RequestOrResponse?> Function(Request request) handle);
 }
 
 /// Base class for request handling objects.
@@ -121,7 +121,8 @@ abstract class Controller
   ///
   /// See [link] for a variant of this method that takes an object instead of a closure.
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle) {
+  Linkable? linkFunction(
+      FutureOr<RequestOrResponse?> Function(Request request) handle) {
     return _nextController = _FunctionController(handle);
   }
 
@@ -175,6 +176,7 @@ abstract class Controller
         return null;
       }
     } catch (any, stacktrace) {
+      // ignore: avoid_print
       print(stacktrace);
 
       // ignore: unawaited_futures
@@ -373,14 +375,15 @@ class _ControllerRecycler<T> extends Controller {
   @override
   Linkable? link(Controller Function() instantiator) {
     final c = super.link(instantiator);
-    nextInstanceToReceive?._nextController = c as Controller;
+    nextInstanceToReceive?._nextController = c as Controller?;
     return c;
   }
 
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle) {
+  Linkable? linkFunction(
+      FutureOr<RequestOrResponse?> Function(Request request) handle) {
     final c = super.linkFunction(handle);
-    nextInstanceToReceive?._nextController = c as Controller;
+    nextInstanceToReceive?._nextController = c as Controller?;
     return c;
   }
 

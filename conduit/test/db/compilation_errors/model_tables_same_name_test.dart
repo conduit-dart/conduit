@@ -5,7 +5,8 @@ void main() {
   test("Two entities with same tableName should throw exception", () {
     try {
       final _ = ManagedDataModel([SameNameOne, SameNameTwo]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("SameNameOne"));
       expect(e.message, contains("SameNameTwo"));

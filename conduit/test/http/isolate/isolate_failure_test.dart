@@ -17,7 +17,7 @@ void main() {
       try {
         crashingApp.options.context = {"crashIn": "addRoutes"};
         await crashingApp.start(consoleLogging: true);
-        expect(true, false);
+        fail('unreachable');
       } on ApplicationStartupException catch (e) {
         expect(e.toString(), contains("TestException: addRoutes"));
       }
@@ -25,7 +25,7 @@ void main() {
       try {
         crashingApp.options.context = {"crashIn": "prepare"};
         await crashingApp.start(consoleLogging: true);
-        expect(true, false);
+        fail('unreachable');
       } on ApplicationStartupException catch (e) {
         expect(e.toString(), contains("TestException: prepare"));
       }
@@ -48,7 +48,7 @@ void main() {
 
       try {
         await conflictingApp.start(consoleLogging: true);
-        expect(true, false);
+        fail('unreachable');
       } on ApplicationStartupException catch (e) {
         expect(e.toString(), contains("Failed to create server socket"));
       }
@@ -64,12 +64,13 @@ void main() {
 
       try {
         await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
-        expect(true, false);
+        fail('unreachable');
       } on TimeoutException catch (e) {
         expect(e.toString(), contains("Isolate (1) failed to launch"));
       }
 
       expect(timeoutApp.supervisors.length, 0);
+      // ignore: avoid_print
       print("-- test completes");
     });
 
@@ -82,12 +83,13 @@ void main() {
 
       try {
         await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
-        expect(true, false);
+        fail('unreachable');
       } on TimeoutException catch (e) {
         expect(e.toString(), contains("Isolate (2) failed to launch"));
       }
 
       expect(timeoutApp.supervisors.length, 0);
+      // ignore: avoid_print
       print("-- test completes");
     });
   });
@@ -113,6 +115,7 @@ class TimeoutChannel extends ApplicationChannel {
     var elapsed = 0;
     timer = Timer.periodic(const Duration(milliseconds: 500), (t) {
       elapsed += 500;
+      // ignore: avoid_print
       print("waiting...");
       if (elapsed > timeoutLength * 1000) {
         completer.complete();

@@ -5,7 +5,8 @@ void main() {
   test("Model with Relationship and Column fails compilation", () {
     try {
       ManagedDataModel([InvalidMetadata, InvalidMetadata1]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("cannot both have"));
       expect(e.message, contains("InvalidMetadata"));

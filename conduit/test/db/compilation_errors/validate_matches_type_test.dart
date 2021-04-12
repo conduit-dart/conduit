@@ -15,7 +15,8 @@ void main() {
   test("Non-string Validate.matches", () {
     try {
       ManagedDataModel([FailingRegex]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.toString(), contains("is only valid for 'String'"));
       expect(e.toString(), contains("_FRX.d"));

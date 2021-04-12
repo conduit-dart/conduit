@@ -120,24 +120,20 @@ class Column {
   /// [defaultValue] is sent as-is to the database, therefore, if the default value is the integer value 2,
   /// pass the string "2". If the default value is a string, it must also be wrapped in single quotes: "'defaultValue'".
   const Column(
-      {ManagedPropertyType? databaseType,
+      {this.databaseType,
       bool primaryKey = false,
       bool nullable = false,
-      String? defaultValue,
+      this.defaultValue,
       bool unique = false,
       bool indexed = false,
       bool omitByDefault = false,
-      bool autoincrement = false,
-      List<Validate> validators = const []})
+      this.autoincrement = false,
+      this.validators = const []})
       : isPrimaryKey = primaryKey,
-        databaseType = databaseType,
         isNullable = nullable,
-        defaultValue = defaultValue,
         isUnique = unique,
         isIndexed = indexed,
-        shouldOmitByDefault = omitByDefault,
-        autoincrement = autoincrement,
-        validators = validators;
+        shouldOmitByDefault = omitByDefault;
 
   /// When true, indicates that this property is the primary key.
   ///

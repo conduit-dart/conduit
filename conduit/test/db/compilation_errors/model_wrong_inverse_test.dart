@@ -5,7 +5,8 @@ void main() {
   test("Managed objects with missing inverses fail compilation", () {
     try {
       ManagedDataModel([MissingInverse1, MissingInverseWrongSymbol]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("has no inverse property"));
       expect(e.message, contains("'_MissingInverseWrongSymbol'"));

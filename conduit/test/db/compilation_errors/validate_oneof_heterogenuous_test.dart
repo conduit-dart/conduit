@@ -15,7 +15,8 @@ void main() {
   test("Heterogenous oneOf", () {
     try {
       ManagedDataModel([FailingHeterogenous]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.toString(), contains("Validate.oneOf"));
       expect(e.toString(), contains("_FH.d"));

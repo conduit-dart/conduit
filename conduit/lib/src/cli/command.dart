@@ -198,6 +198,7 @@ abstract class CLICommand {
       final toolVersion = toolPubspecContents["version"] as String;
       _toolVersion = Version.parse(toolVersion);
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }
@@ -265,19 +266,28 @@ abstract class CLICommand {
   };
 
   void printHelp({String? parentCommandName}) {
+    // ignore: avoid_print
     print(description);
+    // ignore: avoid_print
     print(detailedDescription);
+    // ignore: avoid_print
     print("");
     if (parentCommandName == null) {
+      // ignore: avoid_print
       print("Usage: $usage");
     } else {
+      // ignore: avoid_print
       print("Usage: $parentCommandName $usage");
     }
+    // ignore: avoid_print
     print("");
+    // ignore: avoid_print
     print("Options:");
+    // ignore: avoid_print
     print(options.usage);
 
     if (options.commands.isNotEmpty) {
+      // ignore: avoid_print
       print("Available sub-commands:");
 
       final commandNames = options.commands.keys.toList();
@@ -285,6 +295,7 @@ abstract class CLICommand {
       final length = commandNames.first.length + 3;
       commandNames.forEach((command) {
         final desc = _commandMap[command]?.description;
+        // ignore: avoid_print
         print("  ${command.padRight(length)}$desc");
       });
     }
@@ -292,7 +303,8 @@ abstract class CLICommand {
 
   bool isExecutableInShellPath(String name) {
     final String locator = Platform.isWindows ? "where" : "which";
-    final ProcessResult results = Process.runSync(locator, [name], runInShell: true);
+    final ProcessResult results =
+        Process.runSync(locator, [name], runInShell: true);
 
     return results.exitCode == 0;
   }

@@ -262,6 +262,7 @@ class Model1 extends ManagedObject<_Model1> implements _Model1 {
   String? get getter => null;
 
   @Serialize()
+  // ignore: avoid_setters_without_getters
   set setter(int s) {}
 
   @Serialize()

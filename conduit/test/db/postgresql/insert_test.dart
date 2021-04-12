@@ -2,7 +2,6 @@ import 'package:conduit/conduit.dart';
 import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 
-
 import 'postgres_test_config.dart';
 
 void main() {
@@ -87,6 +86,7 @@ void main() {
       try {
         await insertReq.insert();
         fail('should not be reached');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(),
             contains("Column 'bad_key' does not exist for table 'simple'"));
@@ -212,7 +212,8 @@ void main() {
     test(
         "works when given object with relationship and returns embedded object.",
         () async {
-      context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+      context =
+          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
       var u = GenUser()..name = "Joe";
       final q = Query<GenUser>(context!)..values = u;
@@ -271,7 +272,8 @@ void main() {
 
     test("works when values are read from JSON and does not insert relations.",
         () async {
-      context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+      context =
+          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
       final json = {
         "name": "Bob",
@@ -313,7 +315,8 @@ void main() {
     test("works when an enum is set as a value for enum field.", () async {
       context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
-      final q = Query<EnumObject>(context!)..values.enumValues = EnumValues.efgh;
+      final q = Query<EnumObject>(context!)
+        ..values.enumValues = EnumValues.efgh;
 
       final result = await q.insert();
       expect(result.enumValues, EnumValues.efgh);

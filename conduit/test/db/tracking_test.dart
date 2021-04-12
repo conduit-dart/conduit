@@ -6,7 +6,8 @@ import 'postgresql/postgres_test_config.dart';
 void main() {
   ManagedContext? context;
   setUp(() async {
-    context = await PostgresTestConfig().contextWithModels([Parent, Child, Grandchild]);
+    context = await PostgresTestConfig()
+        .contextWithModels([Parent, Child, Grandchild]);
   });
 
   tearDown(() async {
@@ -26,8 +27,11 @@ void main() {
 
     test("Cannot select relationship", () {
       try {
-        context!.entityForType(Child)!.identifyAttribute((Child? p) => p!.parent);
+        context!
+            .entityForType(Child)!
+            .identifyAttribute((Child? p) => p!.parent);
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("cannot be selected"));
       }
@@ -39,6 +43,7 @@ void main() {
             .entityForType(Child)!
             .identifyAttribute((Child? p) => p!.parent!.field);
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("Cannot use relationships"));
       }
@@ -52,6 +57,7 @@ void main() {
           return p.field;
         });
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -75,6 +81,7 @@ void main() {
             .entityForType(Child)!
             .identifyAttribute((Child? p) => p!.document!["foo"]);
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(),
             contains("Cannot access subdocuments for this operation"));
@@ -107,6 +114,7 @@ void main() {
             .entityForType(Parent)!
             .identifyRelationship((Parent? p) => p!.document);
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("Invalid property selection"));
       }
@@ -118,6 +126,7 @@ void main() {
             .entityForType(Grandchild)!
             .identifyRelationship((Grandchild? p) => p!.parent.parent);
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("Cannot identify a nested relationship"));
       }
@@ -131,6 +140,7 @@ void main() {
           return p.grandchild;
         });
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -142,9 +152,8 @@ void main() {
 
   group("KeyPath identification", () {
     test("Identify multiple properties", () {
-      final props = context!
-          .entityForType(Parent)!
-          .identifyProperties((Parent? x) => [x!.document, x.field, x.children])!;
+      final props = context!.entityForType(Parent)!.identifyProperties(
+          (Parent? x) => [x!.document, x.field, x.children])!;
       expect(props.length, 3);
       expect(props.any((k) => k.path.first!.name == "document"), true);
       expect(props.any((k) => k.path.first!.name == "field"), true);

@@ -196,9 +196,7 @@ class Authorizer extends Controller {
 
       final requirements = validator!
           .documentRequirementsForAuthorizer(context, this, scopes: scopes);
-      requirements.forEach((req) {
-        op.addSecurityRequirement(req);
-      });
+      requirements.forEach(op.addSecurityRequirement);
     });
 
     return operations;

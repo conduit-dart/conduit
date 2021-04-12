@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
-
 import 'postgres_test_config.dart';
 
 /*
@@ -21,7 +20,8 @@ void main() {
     ManagedContext? context;
     late List<Parent> truth;
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([Child, Parent, Toy, Vaccine]);
+      context = await PostgresTestConfig()
+          .contextWithModels([Child, Parent, Toy, Vaccine]);
       truth = await populate(context);
     });
 
@@ -245,7 +245,8 @@ void main() {
     ManagedContext? context;
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([Child, Parent, Toy, Vaccine]);
+      context = await PostgresTestConfig()
+          .contextWithModels([Child, Parent, Toy, Vaccine]);
       await populate(context);
     });
 
@@ -369,7 +370,8 @@ void main() {
     late List<Parent> truth;
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([Child, Parent, Toy, Vaccine]);
+      context = await PostgresTestConfig()
+          .contextWithModels([Child, Parent, Toy, Vaccine]);
       truth = await populate(context);
     });
 
@@ -422,7 +424,8 @@ void main() {
     ManagedContext? context;
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([Child, Parent, Toy, Vaccine]);
+      context = await PostgresTestConfig()
+          .contextWithModels([Child, Parent, Toy, Vaccine]);
       await populate(context);
     });
 
@@ -446,7 +449,8 @@ void main() {
     ManagedContext? context;
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([Child, Parent, Toy, Vaccine]);
+      context = await PostgresTestConfig()
+          .contextWithModels([Child, Parent, Toy, Vaccine]);
       await populate(context);
     });
 
@@ -458,6 +462,7 @@ void main() {
         () async {
       try {
         Query<Parent>(context!).returningProperties((p) => [p.pid, p.children]);
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -475,7 +480,8 @@ void main() {
             .join(set: (p) => p.children)
             .returningProperties((p) => [p.cid, p.vaccinations]);
 
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),

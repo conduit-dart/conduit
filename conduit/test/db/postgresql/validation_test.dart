@@ -30,7 +30,7 @@ void main() {
       ..values.equalTo2OnUpdate = 2;
     try {
       await q.update();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("must be one of: 'a','b'"));
     }
@@ -41,7 +41,7 @@ void main() {
       ..values.equalTo2OnUpdate = 1;
     try {
       await q.update();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("must be equal to '2'"));
     }
@@ -63,7 +63,7 @@ void main() {
       ..values.equalTo2OnUpdate = 3;
     try {
       await q.updateOne();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("must be equal to"));
     }
@@ -82,7 +82,7 @@ void main() {
       ..values.equalTo1OnInsert = 1;
     try {
       await q.insert();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("must be one of"));
     }
@@ -92,7 +92,7 @@ void main() {
       ..values.equalTo1OnInsert = 2;
     try {
       await q.insert();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("must be equal to"));
     }
@@ -136,7 +136,7 @@ void main() {
     q = Query<V>(ctx)..where((o) => o.id).equalTo(o.id);
     try {
       await q.update();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("V.f"));
       expect(e.toString(), contains("must be one of"));
@@ -147,7 +147,7 @@ void main() {
     final q = Query<W>(ctx);
     try {
       await q.insert();
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expect(e.toString(), contains("W.f"));
       expect(e.toString(), contains("must be one of"));

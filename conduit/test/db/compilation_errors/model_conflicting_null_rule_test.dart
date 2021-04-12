@@ -6,7 +6,8 @@ void main() {
       () {
     try {
       ManagedDataModel([Owner, FailingChild]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message,
           contains("Relationship 'ref' on '_FailingChild' has both"));

@@ -241,7 +241,8 @@ void main() {
 
     try {
       final _ = await req.updateOne();
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           contains("'updateOne' modified more than one row in '_TestModel'"));
@@ -267,7 +268,8 @@ void main() {
 
     try {
       final _ = await req.update();
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(
           e.message,
@@ -322,7 +324,7 @@ void main() {
         ..where((o) => o.emailAddress).equalTo("2@a.com")
         ..values.emailAddress = "1@a.com";
       await q.updateOne();
-      expect(true, false);
+      fail('unreachable');
     } on QueryException catch (e) {
       expect(e.event, QueryExceptionEvent.conflict);
     }

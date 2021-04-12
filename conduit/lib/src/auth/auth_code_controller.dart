@@ -8,6 +8,7 @@ import '../http/http.dart';
 import 'auth.dart';
 
 /// Provides [AuthCodeController] with application-specific behavior.
+// ignore: provide_deprecation_message
 @deprecated
 abstract class AuthCodeControllerDelegate {
   /// Returns an HTML representation of a login form.
@@ -45,6 +46,7 @@ abstract class AuthCodeControllerDelegate {
 ///         .route("/auth/code")
 ///         .link(() => new AuthCodeController(authServer));
 ///
+// ignore: provide_deprecation_message
 @deprecated
 class AuthCodeController extends ResourceController {
   /// Creates a new instance of an [AuthCodeController].

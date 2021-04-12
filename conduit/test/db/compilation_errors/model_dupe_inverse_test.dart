@@ -5,7 +5,8 @@ void main() {
   test("Duplicate inverse properties fail compilation", () {
     try {
       ManagedDataModel([DupInverse, DupInverseHas]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("has multiple relationship properties"));
       expect(e.message, contains("'inverse'"));

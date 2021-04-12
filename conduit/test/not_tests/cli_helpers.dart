@@ -132,6 +132,7 @@ class TestChannel extends ApplicationChannel {
           "postgres://dart:dart@localhost:5432/dart_test"}) async {
     final res = await run("db", ["upgrade", "--connect", connectString]);
     if (res != 0) {
+      // ignore: avoid_print
       print("executeMigrations failed: $output");
     }
     return res;
@@ -166,6 +167,7 @@ class TestChannel extends ApplicationChannel {
     args.insert(0, command);
     args.addAll(defaultArgs ?? []);
 
+    // ignore: avoid_print
     print("Running 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
@@ -175,6 +177,7 @@ class TestChannel extends ApplicationChannel {
 
     final exitCode = await cmd.process(results);
     if (exitCode != 0) {
+      // ignore: avoid_print
       print("command failed: $output");
     }
 
@@ -188,6 +191,7 @@ class TestChannel extends ApplicationChannel {
     args.insert(0, command);
     args.addAll(defaultArgs ?? []);
 
+    // ignore: avoid_print
     print("Starting 'conduit ${args.join(" ")}'");
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
@@ -216,14 +220,18 @@ class TestChannel extends ApplicationChannel {
 
     cmd.process(results).then((exitCode) {
       if (!task._processStarted.isCompleted) {
+        // ignore: avoid_print
         print("Command failed to start with exit code: $exitCode");
+        // ignore: avoid_print
         print("Message: $output");
         timer.cancel();
         Directory.current = saved;
         task._processStarted.completeError(false);
         task._processFinished.complete(exitCode);
       } else {
+        // ignore: avoid_print
         print("Command completed with exit code: $exitCode");
+        // ignore: avoid_print
         print("Output: $output");
         task._processFinished.complete(exitCode);
       }

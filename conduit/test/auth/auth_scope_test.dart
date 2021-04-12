@@ -5,43 +5,43 @@ void main() {
   test("Cannot create invalid scopes", () {
     try {
       AuthScope("");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope("user.readonly:location");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope("user:location.readonly:equipment");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope("user:location:");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope(":user:location:");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope(" ab");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
 
     try {
       AuthScope("ab c");
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on FormatException {}
   });
@@ -163,14 +163,14 @@ void main() {
   test("Cannot contain invalid characters", () {
     try {
       final _ = AuthScope("abdef\"xz");
-      expect(true, false);
+      fail('unreachable');
     } on FormatException catch (e) {
       expect(e.toString(), contains("Invalid authorization scope"));
     }
 
     try {
       final _ = AuthScope("abdef\\xz");
-      expect(true, false);
+      fail('unreachable');
     } on FormatException catch (e) {
       expect(e.toString(), contains("Invalid authorization scope"));
     }

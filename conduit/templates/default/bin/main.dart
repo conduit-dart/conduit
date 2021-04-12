@@ -7,6 +7,8 @@ Future main() async {
 
   await app.startOnCurrentIsolate();
 
+  // ignore: avoid_print
   print("Application started on port: ${app.options.port}.");
+  // ignore: avoid_print
   print("Use Ctrl-C (SIGINT) to stop running the application.");
 }

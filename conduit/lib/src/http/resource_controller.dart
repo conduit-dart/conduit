@@ -67,7 +67,10 @@ import 'http.dart';
 ///
 /// To access the request directly, use [request]. Note that the [Request.body] of [request] will be decoded prior to invoking an operation method.
 abstract class ResourceController extends Controller
-    implements Recyclable<Null> {
+    // ignore: prefer_void_to_null
+    implements
+        // ignore: prefer_void_to_null
+        Recyclable<Null> {
   ResourceController() {
     _runtime =
         (RuntimeContext.current.runtimes[runtimeType] as ControllerRuntime?)
@@ -75,6 +78,7 @@ abstract class ResourceController extends Controller
   }
 
   @override
+  // ignore: prefer_void_to_null
   Null get recycledState => null;
 
   ResourceControllerRuntime? _runtime;
@@ -131,6 +135,7 @@ abstract class ResourceController extends Controller
   void didDecodeRequestBody(RequestBody body) {}
 
   @override
+  // ignore: prefer_void_to_null
   void restore(Null state) {
     /* no op - fetched from static cache in Runtime */
   }
@@ -288,17 +293,19 @@ abstract class ResourceController extends Controller
     /* Begin decoding bindings */
     final args = ResourceControllerOperationInvocationArgs();
     final errors = <String>[];
-    final errorCatchWrapper = (ResourceControllerParameter p, f) {
+    dynamic errorCatchWrapper(ResourceControllerParameter p, f) {
       try {
         return f();
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         errors.add(
             "${e.message ?? 'ArgumentError'} for ${p.locationName} value '${p.name}'");
       }
       return null;
-    };
-    final checkIfMissingRequiredAndEmitErrorIfSo =
-        (ResourceControllerParameter p, dynamic v) {
+    }
+
+    dynamic checkIfMissingRequiredAndEmitErrorIfSo(
+        ResourceControllerParameter p, dynamic v) {
       if (v == null && p.isRequired) {
         if (p.location == BindingType.body) {
           errors.add("missing required ${p.locationName}");
@@ -307,7 +314,7 @@ abstract class ResourceController extends Controller
         }
         return null;
       }
-    };
+    }
 
     args.positionalArguments = operation.positionalParameters
         .map((p) {

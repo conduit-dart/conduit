@@ -117,6 +117,7 @@ void main() {
     try {
       req = Query<TestModel>(context!);
       await req.delete();
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(), contains("'canModifyAllInstances'"));
     }

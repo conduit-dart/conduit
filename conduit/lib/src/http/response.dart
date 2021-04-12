@@ -14,10 +14,9 @@ class Response implements RequestOrResponse {
   ///
   /// There exist convenience constructors for common response status codes
   /// and you should prefer to use those.
-  Response(int statusCode, Map<String, dynamic>? headers, dynamic body) {
+  Response(this.statusCode, Map<String, dynamic>? headers, dynamic body) {
     this.body = body;
     this.headers = LowercaseMap.fromMap(headers ?? {});
-    this.statusCode = statusCode;
   }
 
   /// Represents a 200 response.
@@ -46,10 +45,9 @@ class Response implements RequestOrResponse {
   ///
   /// Where [lastModified] is the last modified date of the resource
   /// and [cachePolicy] is the same policy as applied when this resource was first fetched.
-  Response.notModified(DateTime lastModified, CachePolicy? cachePolicy) {
+  Response.notModified(DateTime lastModified, this.cachePolicy) {
     statusCode = HttpStatus.notModified;
     headers = {HttpHeaders.lastModifiedHeader: HttpDate.format(lastModified)};
-    this.cachePolicy = cachePolicy;
   }
 
   /// Represents a 400 response.

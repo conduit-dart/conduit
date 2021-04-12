@@ -1,13 +1,13 @@
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
-
 import 'postgresql/postgres_test_config.dart';
 
 void main() {
   late ManagedContext ctx;
   setUpAll(() async {
-    ctx = await PostgresTestConfig().contextWithModels([Root, Child, Constructor]);
+    ctx = await PostgresTestConfig()
+        .contextWithModels([Root, Child, Constructor]);
   });
   tearDownAll(() async {
     await ctx.close();
@@ -19,6 +19,7 @@ void main() {
     try {
       Query<Missing>(ctx);
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid context"));
     }
@@ -43,6 +44,7 @@ void main() {
         ..join(object: (r) => r.child)
         ..join(object: (r) => r.child);
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(), contains("Invalid query"));
     }
@@ -76,6 +78,7 @@ void main() {
     try {
       q.values.children = ManagedSet<Child>();
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid property access"));
     }
@@ -88,6 +91,7 @@ void main() {
     try {
       q.values.parent.name = "ok";
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid property access"));
     }
@@ -99,6 +103,7 @@ void main() {
     try {
       q.values.child!.id = 1;
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid property access"));
     }
@@ -135,6 +140,7 @@ void main() {
     try {
       q.values.parent.name = "bob";
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid property access"));
     }

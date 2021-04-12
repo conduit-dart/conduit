@@ -215,7 +215,8 @@ void main() {
 
   group("Self joins - standard", () {
     test("Can join by one relationship", () async {
-      final q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+      final q = Query<Team>(ctx!)
+        ..sortBy((t) => t.id, QuerySortOrder.ascending);
 
       q.join(set: (t) => t.awayGames).join(object: (g) => g.homeTeam);
 
@@ -261,7 +262,8 @@ void main() {
     });
 
     test("Can join by other relationship", () async {
-      final q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+      final q = Query<Team>(ctx!)
+        ..sortBy((t) => t.id, QuerySortOrder.ascending);
 
       q.join(set: (t) => t.homeGames).join(object: (g) => g.awayTeam);
       final results = await q.fetch();
@@ -347,7 +349,8 @@ void main() {
         final q = Query<Team>(ctx!);
 
         q.join(set: (t) => t.homeGames).join(object: (g) => g.homeTeam);
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on StateError catch (e) {
         expect(e.toString(), contains("Invalid query construction"));
       }
@@ -377,7 +380,8 @@ void main() {
 
     test("Can implicit join from join table - one side", () async {
       // 'Games where Iowa was away'
-      final q = Query<Game>(ctx!)..where((o) => o.awayTeam!.name).contains("Iowa");
+      final q = Query<Game>(ctx!)
+        ..where((o) => o.awayTeam!.name).contains("Iowa");
       final results = await q.fetch();
       expect(
           results.map((g) => g.asMap()).toList(),
@@ -429,8 +433,8 @@ void main() {
           .contains("Minn");
       var results = await q.fetch();
       expect(results.length, 3);
-      expect(
-          results.firstWhere((t) => t.name == "Minnesota").awayGames!.length, 1);
+      expect(results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
+          1);
       expect(
           results
               .where((t) => t.name != "Minnesota")

@@ -17,14 +17,14 @@ void main() {
   });
 
   test("Prevent intermediate caching", () async {
-    final policy = const CachePolicy(preventIntermediateProxyCaching: true);
+    const policy = const CachePolicy(preventIntermediateProxyCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
     final result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "private");
   });
 
   test("Prevent caching altogether", () async {
-    final policy = const CachePolicy(preventCaching: true);
+    const policy = const CachePolicy(preventCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
     final result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "no-cache, no-store");

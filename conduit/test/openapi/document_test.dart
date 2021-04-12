@@ -142,6 +142,7 @@ void main() {
       try {
         await ctx.finalize();
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Reference"));
         expect(e.message, contains("responses"));
@@ -160,6 +161,7 @@ void main() {
       try {
         await ctx.finalize();
         fail("unreachable");
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Reference"));
         expect(e.message, contains("'#/components/schemas/foo'"));

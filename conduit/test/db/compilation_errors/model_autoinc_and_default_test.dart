@@ -15,7 +15,8 @@ void main() {
   test("Property is both autoincrement and default value, fails", () {
     try {
       final _ = ManagedDataModel([AutoincrementAndDefault]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("_AutoincrementAndDefault.i"));
       expect(e.message, contains("autoincrement"));

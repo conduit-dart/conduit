@@ -4,7 +4,6 @@ import 'package:conduit/conduit.dart';
 import 'package:conduit/managed_auth.dart';
 import 'package:test/test.dart';
 
-
 import '../db/postgresql/postgres_test_config.dart';
 
 // These tests are similar to managed_auth_storage_test, but handle the cases where authenticatables
@@ -16,13 +15,13 @@ void main() {
   late List<User> createdUsers;
 
   setUpAll(() async {
-    context =
-        await PostgresTestConfig().contextWithModels([User, ManagedAuthClient, ManagedAuthToken]);
+    context = await PostgresTestConfig()
+        .contextWithModels([User, ManagedAuthClient, ManagedAuthToken]);
     storage = RoleBasedAuthStorage(context);
     auth = AuthServer(storage);
     createdUsers = await createUsers(context, 5);
 
-    final salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+    const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
 
     final clients = [
       AuthClient.withRedirectURI("redirect",
@@ -84,7 +83,7 @@ void main() {
             "redirect",
             "a",
             requestedScopes: [AuthScope("location:add")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -99,7 +98,7 @@ void main() {
             "redirect",
             "a",
             requestedScopes: [AuthScope("location:add")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -132,7 +131,7 @@ void main() {
             "redirect",
             "a",
             requestedScopes: [AuthScope("location")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -152,7 +151,7 @@ void main() {
       try {
         await auth.refresh(t.refreshToken, "redirect", "a",
             requestedScopes: [AuthScope("user")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -171,7 +170,7 @@ void main() {
           AuthScope("user.readonly"),
           AuthScope("location:add:xyz")
         ]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -230,7 +229,7 @@ void main() {
             User.defaultPassword,
             "redirect",
             requestedScopes: [AuthScope("location:add")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -244,7 +243,7 @@ void main() {
             User.defaultPassword,
             "redirect",
             requestedScopes: [AuthScope("location:add")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -276,7 +275,7 @@ void main() {
             User.defaultPassword,
             "redirect",
             requestedScopes: [AuthScope("location")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }

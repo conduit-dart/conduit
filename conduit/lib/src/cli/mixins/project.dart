@@ -107,6 +107,7 @@ abstract class CLIProject implements CLICommand {
           imports: GetChannelExecutable.importsForPackage(libraryName),
           logHandler: displayProgress);
       return name;
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       throw CLIException(
           "No ApplicationChannel subclass found in $packageName/$libraryName : ${e.message}");

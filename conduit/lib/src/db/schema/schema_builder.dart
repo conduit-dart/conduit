@@ -110,7 +110,8 @@ class SchemaBuilder {
   }
 
   /// Alters a table in [schema].
-  void alterTable(String tableName, void Function(SchemaTable targetTable) modify) {
+  void alterTable(
+      String tableName, void Function(SchemaTable targetTable) modify) {
     final existingTable = schema!.tableForName(tableName);
     if (existingTable == null) {
       throw SchemaException("Table $tableName does not exist.");
@@ -131,7 +132,7 @@ class SchemaBuilder {
         commands.addAll(store!.addTableUniqueColumnSet(newTable));
       } else {
         innerCommands.add(
-            "t.uniqueColumnSet = [${newTable.uniqueColumnSet!.map((s) => "\"$s\"").join(',')}]");
+            "t.uniqueColumnSet = [${newTable.uniqueColumnSet!.map((s) => '"$s\"').join(',')}]");
       }
     } else if (shouldRemoveUnique) {
       if (store != null) {
@@ -316,8 +317,8 @@ class SchemaBuilder {
 
     if (existingColumn.isNullable != newColumn.isNullable) {
       if (store != null) {
-        commands.addAll(store!.alterColumnNullability(
-            table, newColumn, unencodedInitialValue));
+        commands.addAll(store!
+            .alterColumnNullability(table, newColumn, unencodedInitialValue));
       } else {
         innerCommands.add('c.isNullable = ${newColumn.isNullable}');
       }
@@ -332,7 +333,8 @@ class SchemaBuilder {
     }
 
     if (store == null && innerCommands.isNotEmpty) {
-      commands.add("database.alterColumn(\"$tableName\", \"$columnName\", (c) {${innerCommands.join(";")};});");
+      commands.add(
+          "database.alterColumn(\"$tableName\", \"$columnName\", (c) {${innerCommands.join(";")};});");
     }
   }
 
@@ -380,9 +382,10 @@ class SchemaBuilder {
       addColumn(difference.actualTable!.name!, c!);
 
       if (!c.isNullable! && c.defaultValue == null) {
-        changeList?.add("WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
-          "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
-          "SchemaColumn(\"${c.name}\", ...)'.");
+        changeList?.add(
+            "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
+            "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
+            "SchemaColumn(\"${c.name}\", ...)'.");
       }
     });
 
@@ -405,10 +408,12 @@ class SchemaBuilder {
       });
 
       if (columnDiff.expectedColumn!.isNullable! &&
-        !columnDiff.actualColumn!.isNullable! && columnDiff.actualColumn!.defaultValue == null) {
-        changeList?.add("WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
-          "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
-          "SchemaColumn(\"${columnDiff.actualColumn!.name}\", ...)'.");
+          !columnDiff.actualColumn!.isNullable! &&
+          columnDiff.actualColumn!.defaultValue == null) {
+        changeList?.add(
+            "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
+            "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
+            "SchemaColumn(\"${columnDiff.actualColumn!.name}\", ...)'.");
       }
     });
 

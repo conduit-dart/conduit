@@ -28,7 +28,7 @@ void main() {
       final completer = Completer<List<int>>();
       final socket = await SecureSocket.connect("localhost", 8888,
           onBadCertificate: (_) => true);
-      final request =
+      const request =
           "GET /r HTTP/1.1\r\nConnection: close\r\nHost: localhost\r\n\r\n";
       socket.add(request.codeUnits);
 

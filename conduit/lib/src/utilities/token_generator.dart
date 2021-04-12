@@ -1,7 +1,7 @@
 import 'dart:math';
 
 String randomStringOfLength(int length) {
-  final possibleCharacters =
+  const possibleCharacters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   final buff = StringBuffer();
 

@@ -2,11 +2,13 @@ import 'package:conduit/src/db/managed/data_model.dart';
 import 'package:conduit/src/db/managed/entity.dart';
 import 'package:conduit/src/utilities/reference_counting_list.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class ManagedDataModelManager {
   static ReferenceCountingList<ManagedDataModel> dataModels =
       ReferenceCountingList<ManagedDataModel>();
 
-  static ManagedEntity findEntity(Type type, {ManagedEntity Function()? orElse}) {
+  static ManagedEntity findEntity(Type type,
+      {ManagedEntity Function()? orElse}) {
     for (final d in ManagedDataModelManager.dataModels) {
       final entity = d.tryEntityForType(type);
       if (entity != null) {

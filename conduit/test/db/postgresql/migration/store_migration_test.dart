@@ -6,8 +6,7 @@ import 'package:conduit/conduit.dart';
 import '../postgres_test_config.dart';
 
 void main() {
-  final store =
-     PostgresTestConfig().persistentStore();
+  final store = PostgresTestConfig().persistentStore();
 
   setUp(() async {});
 
@@ -53,7 +52,7 @@ void main() {
         temporary: true);
     try {
       await store.upgrade(s1, [EmptyMigration()..version = 1], temporary: true);
-      expect(true, false);
+      fail('unreachable');
     } on MigrationException catch (e) {
       expect(e.message, contains("Trying to upgrade database"));
     }
@@ -67,7 +66,7 @@ void main() {
         temporary: true);
     try {
       await store.upgrade(s1, [EmptyMigration()..version = 1], temporary: true);
-      expect(true, false);
+      fail('unreachable');
     } on MigrationException catch (e) {
       expect(e.message, contains("Trying to upgrade database"));
     }

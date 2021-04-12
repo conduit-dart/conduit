@@ -1,7 +1,6 @@
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
 
-
 import 'postgres_test_config.dart';
 
 void main() {
@@ -85,6 +84,7 @@ void main() {
         await Query.insertObject(t, Model()..name = "1");
         throw StateError("hello");
       });
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(), contains("hello"));
     }
@@ -117,7 +117,8 @@ void main() {
       () async {
     await context.transaction((t) async {
       await Query.insertObject(t, Model()..name = "1");
-      await t.persistentStore!.execute("INSERT INTO _Model (name) VALUES ('2')");
+      await t.persistentStore!
+          .execute("INSERT INTO _Model (name) VALUES ('2')");
       await Query.insertObject(t, Model()..name = "3");
     });
 

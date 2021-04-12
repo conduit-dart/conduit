@@ -16,6 +16,7 @@ class GetSchemaExecutable extends Executable<Map<String, dynamic>> {
       return schema.asMap();
     } on SchemaException catch (e) {
       return {"error": e.message};
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       return {"error": e.message};
     }

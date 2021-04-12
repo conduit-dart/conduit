@@ -15,7 +15,8 @@ void main() {
   test("DateTime fails to parse", () {
     try {
       ManagedDataModel([FailingDateTime]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.toString(), contains("19x34"));
       expect(e.toString(), contains("cannot be parsed as expected"));

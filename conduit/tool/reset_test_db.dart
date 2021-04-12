@@ -15,6 +15,7 @@ import 'package:dcli/dcli.dart';
 ///
 
 void main(List<String> args) {
+  // ignore: avoid_print
   print('Shutting down Postgres docker container');
   'docker-compose down'.run;
 

@@ -3,6 +3,7 @@ import 'package:dcli/dcli.dart';
 /// Docker functions
 void installDocker() {
   if (which('docker').found) {
+    // ignore: avoid_print
     print('Using an existing docker install.');
     return;
   }
@@ -13,6 +14,7 @@ void installDocker() {
 /// Docker-Compose functions
 void installDockerCompose() {
   if (which('docker-compose').found) {
+    // ignore: avoid_print
     print('Using an existing docker-compose install.');
     return;
   }
@@ -23,20 +25,24 @@ void installDockerCompose() {
 /// Postgres functions
 void installPostgressDaemon() {
   if (isPostgresDaemonInstalled()) {
+    // ignore: avoid_print
     print('Using existing postgress daemon.');
     return;
   }
 
+  // ignore: avoid_print
   print('Installing postgres docker image');
   'docker pull postgres'.run;
 }
 
 void installPostgresClient() {
   if (isPostgresClientInstalled()) {
+    // ignore: avoid_print
     print('Using existing postgress client.');
     return;
   }
 
+  // ignore: avoid_print
   print('Installing postgres client');
   'apt  --assume-yes install postgresql-client'.start(privileged: true);
 }
@@ -44,6 +50,7 @@ void installPostgresClient() {
 bool isPostgresClientInstalled() => which('psql').found;
 
 void startPostgresDaemon() {
+  // ignore: avoid_print
   print('Staring docker postgres image');
   'docker-compose up -d'.run;
 }

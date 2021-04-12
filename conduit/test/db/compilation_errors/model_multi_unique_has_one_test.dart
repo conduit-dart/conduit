@@ -10,7 +10,8 @@ void main() {
         MultiUniqueFailureRelationship,
         MultiUniqueFailureRelationshipInverse
       ]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("declares 'a' as unique"));
     }

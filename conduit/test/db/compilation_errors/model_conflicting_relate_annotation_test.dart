@@ -25,7 +25,8 @@ void main() {
   test("Both properties have Relationship metadata", () {
     try {
       final _ = ManagedDataModel([InvalidCyclicLeft, InvalidCyclicRight]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("_InvalidCyclicLeft"));
       expect(e.message, contains("_InvalidCyclicRight"));

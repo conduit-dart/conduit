@@ -212,6 +212,7 @@ class PropertyBuilder {
       }
 
       return getManagedTypeFromType(declType);
+      // ignore: avoid_catching_errors
     } on UnsupportedError {
       return null;
     }

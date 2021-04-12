@@ -10,6 +10,7 @@ void main() {
       // ignore: unnecessary_statements
       RuntimeContext.current;
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(
         e.toString(),

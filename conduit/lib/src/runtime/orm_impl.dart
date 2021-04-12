@@ -142,7 +142,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
             .node as VariableDeclaration;
 
         return _getConstructorSourcesFromColumnArgList(
-                    (elementDeclaration.initializer as MethodInvocation)
+                    (elementDeclaration.initializer! as MethodInvocation)
                         .argumentList,
                     importUris: importUris)
                 ?.map((c) => c)
@@ -185,7 +185,8 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         ? "${property.destinationEntity!.instanceType}"
         : "null";
 
-    return """() {
+    return """
+() {
   return [${constructorInvocations.join(",")}].map((v) {
     final state = v.compile(${_getManagedTypeInstantiator(property.type)}, relationshipInverseType: $inverseType);
     return ManagedValidator(v, state);
@@ -312,7 +313,8 @@ ManagedRelationshipDescription.make<${relationship.declaredType}>(
             .reflectedType
             .toString();
 
-    return """() {
+    return """
+() {
 final entity = ManagedEntity('${entity.tableName}', ${entity.instanceType}, ${sourcifyValue(tableDef)});
 return entity
     ..primaryKey = '${entity.primaryKey}'
@@ -329,7 +331,8 @@ return entity
       return "case '${attr!.name}': (object as ${instanceType.reflectedType}).${attr.name} = value as ${attr.declaredType}; break;";
     }).join("\n");
 
-    return """switch (key) {
+    return """
+switch (key) {
     $cases
 }""";
   }
@@ -342,7 +345,8 @@ return entity
       return "case '${attr!.name}': return (object as ${instanceType.reflectedType}).${attr.name};";
     }).join("\n");
 
-    return """switch (key) {
+    return """
+switch (key) {
     $cases
 }""";
   }
@@ -369,7 +373,8 @@ return entity
   }
 
   String _getGetPropertyNameImpl(BuildContext ctx) {
-    return """final name = entity.symbolMap[invocation.memberName];
+    return """
+final name = entity.symbolMap[invocation.memberName];
 if (name != null) {
   return name;
 }

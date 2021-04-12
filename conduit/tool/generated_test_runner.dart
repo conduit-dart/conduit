@@ -40,6 +40,7 @@ Future main(List<String> args) async {
     final currentTime = DateTime.now();
     final makePrompt = () =>
         "(Pass: ${passingFiles.length} Fail: ${failingFiles.length} Remain: $remainingCounter)";
+    // ignore: avoid_print
     print("${makePrompt()} Loading test ${f.path}...");
 
     final ctx = BuildContext(
@@ -51,6 +52,7 @@ Future main(List<String> args) async {
     final bm = BuildManager(ctx);
     await bm.build();
 
+    // ignore: avoid_print
     print("${makePrompt()} Running tests derived from ${f.path}...");
     final result = await Process.start("dart", ["test/main_test.dart"],
         workingDirectory:
@@ -69,6 +71,7 @@ Future main(List<String> args) async {
     if (await result.exitCode != 0) {
       exitCode = -1;
       failingFiles.add(f);
+      // ignore: avoid_print
       print("Tests FAILED in ${f.path}.");
     } else {
       passingFiles.add(f);
@@ -81,8 +84,11 @@ Future main(List<String> args) async {
     remainingCounter--;
   }
 
+  // ignore: avoid_print
   print("==============");
+  // ignore: avoid_print
   print("Result Summary");
+  // ignore: avoid_print
   print("==============");
 
   final testRoot = Directory.current.uri.resolve("test/");
@@ -100,9 +106,11 @@ Future main(List<String> args) async {
   };
 
   passingFiles.forEach((f) {
+    // ignore: avoid_print
     print("  ${stripParentDir(f.uri)}: success");
   });
   failingFiles.forEach((f) {
+    // ignore: avoid_print
     print("  ${stripParentDir(f.uri)}: FAILURE");
   });
 }

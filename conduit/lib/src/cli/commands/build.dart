@@ -93,8 +93,7 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
         help: "The port number to listen for HTTP requests on.",
         defaultsTo: "8888")
     ..addFlag("ipv6-only",
-        help: "Limits listening to IPv6 connections only.",
-        negatable: false)
+        help: "Limits listening to IPv6 connections only.", negatable: false)
     ..addOption("ssl-certificate-path",
         help:
             "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.")
@@ -108,6 +107,7 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
 
   final values = argParser.parse(args);
   if (values["help"] == true) {
+    // ignore: avoid_print
     print(argParser.usage);
     return 0;
   }

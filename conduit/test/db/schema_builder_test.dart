@@ -24,14 +24,14 @@ void main() {
 
       try {
         builder.createTable(SchemaTable("foobar", []));
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("already exists"));
       }
 
       try {
         builder.createTable(SchemaTable("_defaultITEM", []));
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("already exists"));
       }
@@ -40,14 +40,15 @@ void main() {
     test("Removing a table", () {
       try {
         builder.deleteTable("foobar");
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
 
       builder.deleteTable("_DefaultItem");
       expect(
-          builder.schema!.tables.firstWhereOrNull((st) => st.name == "_DefaultItem"),
+          builder.schema!.tables
+              .firstWhereOrNull((st) => st.name == "_DefaultItem"),
           isNull);
 
       builder.deleteTable("_cONTAINER");
@@ -118,7 +119,7 @@ void main() {
       try {
         builder.addColumn(
             "_DefaultItem", SchemaColumn("col1", ManagedPropertyType.integer));
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("already exists"));
       }
@@ -126,7 +127,7 @@ void main() {
       try {
         builder.addColumn(
             "foobar", SchemaColumn("col3", ManagedPropertyType.integer));
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
@@ -143,14 +144,14 @@ void main() {
 
       try {
         builder.deleteColumn("_DefaultItem", "col1");
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
 
       try {
         builder.deleteColumn("foobar", "id");
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
@@ -159,21 +160,21 @@ void main() {
     test("Altering column", () {
       try {
         builder.alterColumn("_Container", "defaultItem", (c) {});
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
 
       try {
         builder.alterColumn("_DefaultItem", "foo", (c) {});
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
 
       try {
         builder.alterColumn("foobar", "id", (c) {});
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
       }
@@ -183,7 +184,7 @@ void main() {
         builder.alterColumn("_defaultITEM", "id", (c) {
           c.type = ManagedPropertyType.boolean;
         });
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("May not change"));
       }
@@ -192,7 +193,7 @@ void main() {
         builder.alterColumn("_defaultItem", "id", (c) {
           c.autoincrement = !c.autoincrement!;
         });
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("May not change"));
       }
@@ -201,7 +202,7 @@ void main() {
         builder.alterColumn("_defaultItem", "id", (c) {
           c.relatedTableName = "foo";
         });
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("May not change"));
       }
@@ -210,7 +211,7 @@ void main() {
         builder.alterColumn("_defaultItem", "id", (c) {
           c.relatedColumnName = "foo";
         });
-        expect(true, false);
+        fail('unreachable');
       } on SchemaException catch (e) {
         expect(e.message, contains("May not change"));
       }

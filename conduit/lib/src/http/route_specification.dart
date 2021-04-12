@@ -12,7 +12,7 @@ class RouteSpecification {
     segments = _splitPathSegments(patternString);
     variableNames = segments
         .where((e) => e.isVariable)
-        .map((e) => e.variableName as String)
+        .map((e) => e.variableName!)
         .toList();
   }
 

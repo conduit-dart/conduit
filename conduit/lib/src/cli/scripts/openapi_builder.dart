@@ -130,6 +130,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         "error":
             "There was an issue loading the configuration file '$configPath': ${e.message}"
       };
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       return {
         "error": "There was an issue compiling a data model: ${e.message}"

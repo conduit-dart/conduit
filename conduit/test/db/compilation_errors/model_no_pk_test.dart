@@ -12,7 +12,8 @@ void main() {
   test("Entity without primary key fails", () {
     try {
       ManagedDataModel([NoPrimaryKey]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(
           e.message,

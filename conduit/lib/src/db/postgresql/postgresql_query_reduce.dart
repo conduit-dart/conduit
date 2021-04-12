@@ -53,7 +53,7 @@ class PostgresQueryReduce<T extends ManagedObject>
       buffer.write("WHERE ${builder.sqlWhereClause} ");
     }
 
-    final store = query.context.persistentStore as PostgreSQLPersistentStore;
+    final store = query.context.persistentStore! as PostgreSQLPersistentStore;
     final connection =
         await (store.executionContext as FutureOr<PostgreSQLExecutionContext>);
     try {

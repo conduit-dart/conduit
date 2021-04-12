@@ -6,6 +6,7 @@ void main() {
     try {
       ManagedDataModel([HasNoDefaultConstructor]);
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.toString(), contains("HasNoDefaultConstructor"));
       expect(e.toString(), contains("default, unnamed constructor"));

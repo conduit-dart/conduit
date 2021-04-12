@@ -24,12 +24,10 @@ class RouteSegment {
   }
 
   RouteSegment.direct(
-      {String? literal,
-      String? variableName,
+      {this.literal,
+      this.variableName,
       String? expression,
       bool matchesAnything = false}) {
-    this.literal = literal;
-    this.variableName = variableName;
     isRemainingMatcher = matchesAnything;
     if (expression != null) {
       matcher = RegExp(expression);

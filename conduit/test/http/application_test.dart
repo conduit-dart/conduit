@@ -58,8 +58,8 @@ void main() {
     });
 
     test("Application gzips content", () async {
-      final resp = await http
-          .get(Uri.parse("http://localhost:8888/t"), headers: {"Accept-Encoding": "gzip"});
+      final resp = await http.get(Uri.parse("http://localhost:8888/t"),
+          headers: {"Accept-Encoding": "gzip"});
       expect(resp.headers["content-encoding"], "gzip");
     });
 
@@ -85,7 +85,8 @@ void main() {
         () async {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
-        final result = await http.get(Uri.parse("http://localhost:8888/startup"));
+        final result =
+            await http.get(Uri.parse("http://localhost:8888/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);
@@ -101,7 +102,7 @@ void main() {
       try {
         crashingApp.options.context = {"crashIn": "addRoutes"};
         await crashingApp.startOnCurrentIsolate();
-        expect(true, false);
+        fail('unreachable');
       } on Exception catch (e) {
         expect(e.toString(), contains("addRoutes"));
       }
@@ -109,7 +110,7 @@ void main() {
       try {
         crashingApp.options.context = {"crashIn": "prepare"};
         await crashingApp.startOnCurrentIsolate();
-        expect(true, false);
+        fail('unreachable');
       } on Exception catch (e) {
         expect(e.toString(), contains("prepare"));
       }

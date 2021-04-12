@@ -15,7 +15,8 @@ void main() {
   test("Non-matching type for oneOf", () {
     try {
       ManagedDataModel([FailingOneOf]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.toString(), contains("Validate.oneOf"));
       expect(e.toString(), contains("_FOO.d"));

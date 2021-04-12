@@ -6,7 +6,8 @@ void main() {
       () {
     try {
       ManagedDataModel([MultiUniqueFailureNoElement]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("Must contain two or more attributes"));
     }

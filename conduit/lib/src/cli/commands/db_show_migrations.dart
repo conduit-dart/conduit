@@ -14,8 +14,11 @@ class CLIDatabaseShowMigrations extends CLICommand
       return " $versionString | ${mig.uri!.pathSegments.last}";
     }).join("\n");
 
+    // ignore: avoid_print
     print(" Version  | Path");
+    // ignore: avoid_print
     print("----------|-----------");
+    // ignore: avoid_print
     print(files);
 
     return 0;

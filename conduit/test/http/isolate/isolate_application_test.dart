@@ -15,12 +15,15 @@ void main() {
     setUp(() async {
       app = Application<TestChannel>();
       await app.start(numberOfInstances: 2, consoleLogging: true);
+      // ignore: avoid_print
       print("started");
     });
 
     tearDown(() async {
+      // ignore: avoid_print
       print("stopping");
       await app.stop();
+      // ignore: avoid_print
       print("stopped");
     });
 
@@ -87,7 +90,8 @@ void main() {
         () async {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
-        final result = await http.get(Uri.parse("http://localhost:8888/startup"));
+        final result =
+            await http.get(Uri.parse("http://localhost:8888/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);

@@ -57,7 +57,7 @@ void main() {
       final resp = await resultFuture;
       try {
         await resp.toList();
-        expect(true, false);
+        fail('unreachable');
       } on HttpException catch (e) {
         expect(
             e.toString(), contains("Connection closed while receiving data"));
@@ -138,7 +138,7 @@ void main() {
       try {
         final resp = await resultFuture;
         await resp.toList();
-        expect(true, false);
+        fail('unreachable');
       } on HttpException catch (e) {
         expect(
             e.toString(), contains("Connection closed while receiving data"));
@@ -297,7 +297,7 @@ void main() {
       });
 
       final socket = await Socket.connect("localhost", 8888);
-      final request =
+      const request =
           "GET /r HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
       socket.add(request.codeUnits);
 

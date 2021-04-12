@@ -33,7 +33,8 @@ void main() {
     try {
       Query.forEntity(
           context!.dataModel!.entityForType(TestModel), someOtherContext);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           allOf([contains("'simple'"), contains("is from different context")]));
@@ -72,6 +73,7 @@ void main() {
       req = Query<TestModel>(context!)
         ..returningProperties((t) => [t.id, t["foobar"]]);
       fail("unreachable");
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(
           e.toString(),
@@ -140,7 +142,8 @@ void main() {
     try {
       Query<TestModel>(context!)
           .sortBy((u) => u["nonexisting"], QuerySortOrder.ascending);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(
           e.toString(),
@@ -156,7 +159,8 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
     try {
       Query<GenUser>(context!).sortBy((u) => u.posts, QuerySortOrder.ascending);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(
           e.toString(),
@@ -230,6 +234,7 @@ void main() {
         ..returningProperties((t) => [t.id, t["badkey"]]);
 
       fail("unreachable");
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(),
           contains("Property 'badkey' does not exist on 'TestModel'"));
@@ -327,7 +332,8 @@ void main() {
 
       await q.fetchOne();
 
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           contains("'fetchOne' returned more than one row from 'GenUser'"));
@@ -356,7 +362,8 @@ void main() {
     try {
       q = Query<GenPost>(context!)
         ..returningProperties((p) => [p.id, p["owner_id"]]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(),
           contains("Property 'owner_id' does not exist on 'GenPost'"));
@@ -382,13 +389,13 @@ void main() {
     await q.insert();
 
     q = Query<EnumObject>(context!);
-    EnumObject? result = (await q.fetchOne())!;
-    expect(result.enumValues, EnumValues.abcd);
+    EnumObject? result = await q.fetchOne();
+    expect(result!.enumValues, EnumValues.abcd);
     expect(result.asMap()["enumValues"], "abcd");
 
     q = Query<EnumObject>(context!)
       ..where((o) => o.enumValues).equalTo(EnumValues.abcd);
-    result = (await q.fetchOne())!;
+    result = await q.fetchOne();
     expect(result, isNotNull);
 
     q = Query<EnumObject>(context!)
@@ -418,7 +425,8 @@ void main() {
     try {
       final q = Query<EnumObject>(context!);
       await q.fetch();
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(), contains("Database error when retrieving value"));
       expect(e.toString(), contains("invalid option for key 'enumValues'"));
@@ -431,6 +439,7 @@ void main() {
     try {
       Query<GenUser>(context!).returningProperties((p) => [p.posts]);
       fail("unreachable");
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(
           e.toString(),
@@ -462,6 +471,7 @@ void main() {
       try {
         await context!.fetchObjectWithID(id);
         fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Unknown entity"));
       }
@@ -471,6 +481,7 @@ void main() {
       try {
         await context!.fetchObjectWithID<Omit>(id);
         fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Unknown entity"));
       }

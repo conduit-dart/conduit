@@ -7,7 +7,8 @@ void main() {
       () {
     try {
       ManagedDataModel([MultiUniqueFailureSingleElement]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message,
           contains("add 'Column(unique: true)' to declaration of 'a'"));

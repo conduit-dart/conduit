@@ -24,8 +24,7 @@ void main() {
         .link(() => AuthController(authenticationServer));
     router!.didAddToChannel();
 
-    server =
-        await HttpServer.bind("localhost", 8888);
+    server = await HttpServer.bind("localhost", 8888);
     server!.map((req) => Request(req)).listen(router!.receive);
   });
 
@@ -76,7 +75,8 @@ void main() {
   group("Success Cases: refresh_token", () {
     test("Confidental Client gets a access token, retains same access token",
         () async {
-      final resToken = await grant("com.stablekernel.app1", "kilimanjaro", user1);
+      final resToken =
+          await grant("com.stablekernel.app1", "kilimanjaro", user1);
 
       final resRefresh = await refresh("com.stablekernel.app1", "kilimanjaro",
           refreshTokenMapFromTokenResponse(resToken!));
@@ -166,19 +166,19 @@ void main() {
   group("Success Cases: authorization_code", () {
     test("Exchange valid code gets access token with refresh token", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.redirect");
+          user1["username"], user1["password"], "com.stablekernel.redirect");
       final res =
-          await exchange("com.stablekernel.redirect", "mckinley", code.code!);
+          await exchange("com.stablekernel.redirect", "mckinley", code.code);
       expect(res, hasAuthResponse(200, bearerTokenMatcher));
     });
 
     test("If code is scoped, token has same scope", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.scoped",
+          user1["username"], user1["password"], "com.stablekernel.scoped",
           requestedScopes: [AuthScope("user")]);
 
       final res =
-          await exchange("com.stablekernel.scoped", "kilimanjaro", code.code!);
+          await exchange("com.stablekernel.scoped", "kilimanjaro", code.code);
       expect(res, hasAuthResponse(200, bearerTokenMatcherWithScope("user")));
     });
   });
@@ -277,7 +277,7 @@ void main() {
   group("code Failure Cases", () {
     test("code is invalid (not issued)", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.redirect");
+          user1["username"], user1["password"], "com.stablekernel.redirect");
       final res = await exchange(
           "com.stablekernel.redirect", "mckinley", "a${code.code}");
       expect(res, hasResponse(400, body: {"error": "invalid_grant"}));
@@ -295,7 +295,7 @@ void main() {
 
     test("code is duplicated", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.redirect");
+          user1["username"], user1["password"], "com.stablekernel.redirect");
       final encodedCode = Uri.encodeQueryComponent(code.code!);
 
       final client = Agent.onPort(8888)
@@ -320,7 +320,7 @@ void main() {
 
     test("code is from a different client", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.redirect");
+          user1["username"], user1["password"], "com.stablekernel.redirect");
       final res =
           await exchange("com.stablekernel.redirect2", "gibraltar", code.code);
       expect(res, hasResponse(400, body: {"error": "invalid_grant"}));
@@ -394,11 +394,13 @@ void main() {
     });
 
     test("refresh_token is omitted", () async {
-      final resToken = await grant("com.stablekernel.app1", "kilimanjaro", user1);
+      final resToken =
+          await grant("com.stablekernel.app1", "kilimanjaro", user1);
 
       final m = refreshTokenMapFromTokenResponse(resToken!);
       m.remove("refresh_token");
-      final resRefresh = await refresh("com.stablekernel.app1", "kilimanjaro", m);
+      final resRefresh =
+          await refresh("com.stablekernel.app1", "kilimanjaro", m);
       expect(resRefresh, hasResponse(400, body: {"error": "invalid_request"}));
     });
 
@@ -428,25 +430,30 @@ void main() {
     });
 
     test("refresh_token is empty", () async {
-      final resToken = await grant("com.stablekernel.app1", "kilimanjaro", user1);
+      final resToken =
+          await grant("com.stablekernel.app1", "kilimanjaro", user1);
 
       final m = refreshTokenMapFromTokenResponse(resToken!);
       m["refresh_token"] = "";
-      final resRefresh = await refresh("com.stablekernel.app1", "kilimanjaro", m);
+      final resRefresh =
+          await refresh("com.stablekernel.app1", "kilimanjaro", m);
       expect(resRefresh, hasResponse(400, body: {"error": "invalid_grant"}));
     });
 
     test("Refresh token doesn't exist (was not issued)", () async {
-      final resToken = await grant("com.stablekernel.app1", "kilimanjaro", user1);
+      final resToken =
+          await grant("com.stablekernel.app1", "kilimanjaro", user1);
 
       final m = refreshTokenMapFromTokenResponse(resToken!);
       m["refresh_token"] = "${m["refresh_token"]}a";
-      final resRefresh = await refresh("com.stablekernel.app1", "kilimanjaro", m);
+      final resRefresh =
+          await refresh("com.stablekernel.app1", "kilimanjaro", m);
       expect(resRefresh, hasResponse(400, body: {"error": "invalid_grant"}));
     });
 
     test("Client id/secret pair is different than original", () async {
-      final resToken = await grant("com.stablekernel.app1", "kilimanjaro", user1);
+      final resToken =
+          await grant("com.stablekernel.app1", "kilimanjaro", user1);
 
       final resRefresh = await refresh("com.stablekernel.app2", "fuji",
           refreshTokenMapFromTokenResponse(resToken!));
@@ -520,11 +527,11 @@ void main() {
       client = Agent.onPort(8888);
 
       refreshTokenString = (await authenticationServer!.authenticate(
-              user1["username"]!,
-              user1["password"]!,
+              user1["username"],
+              user1["password"],
               "com.stablekernel.app1",
               "kilimanjaro"))
-          .refreshToken!;
+          .refreshToken;
     });
 
     test("Client omits authorization header", () async {
@@ -585,11 +592,9 @@ void main() {
     setUp(() async {
       client = Agent.onPort(8888);
 
-      code = (await authenticationServer!.authenticateForCode(
-              user1["username"]!,
-              user1["password"]!,
-              "com.stablekernel.redirect"))
-          .code!;
+      code = (await authenticationServer!.authenticateForCode(user1["username"],
+              user1["password"], "com.stablekernel.redirect"))
+          .code;
     });
 
     test("Client omits authorization header", () async {
@@ -612,7 +617,8 @@ void main() {
     });
 
     test("Confidential client has wrong secret", () async {
-      final resp = await exchange("com.stablekernel.redirect", "notright", code);
+      final resp =
+          await exchange("com.stablekernel.redirect", "notright", code);
       expect(resp, hasResponse(400, body: {"error": "invalid_client"}));
     });
 
@@ -636,7 +642,7 @@ void main() {
   group("Scope failure cases", () {
     test("Try to add scope to code exchange is invalid_request", () async {
       final code = await authenticationServer!.authenticateForCode(
-          user1["username"]!, user1["password"]!, "com.stablekernel.scoped",
+          user1["username"], user1["password"], "com.stablekernel.scoped",
           requestedScopes: [AuthScope("user")]);
 
       final m = {
@@ -658,7 +664,7 @@ void main() {
 
     test("Malformed scope is invalid_scope error", () async {
       final m = Map<String, String>.from(user1);
-      m["scope"] = "\"user";
+      m["scope"] = '"user';
 
       final res = await grant("com.stablekernel.scoped", "kilimanjaro", m);
       expect(res, hasResponse(400, body: {"error": "invalid_scope"}));
@@ -671,7 +677,7 @@ void main() {
       final resToken = await grant("com.stablekernel.scoped", "kilimanjaro", m);
 
       final refreshMap = refreshTokenMapFromTokenResponse(resToken!);
-      refreshMap["scope"] = "\"user";
+      refreshMap["scope"] = '"user';
       final resRefresh =
           await refresh("com.stablekernel.scoped", "kilimanjaro", refreshMap);
       expect(resRefresh, hasResponse(400, body: {"error": "invalid_scope"}));

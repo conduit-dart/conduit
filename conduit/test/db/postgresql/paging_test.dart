@@ -8,7 +8,8 @@ void main() {
     ManagedContext? context;
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([PageableTestModel]);
+      context =
+          await PostgresTestConfig().contextWithModels([PageableTestModel]);
       for (int i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -64,7 +65,8 @@ void main() {
     };
 
     setUpAll(() async {
-      context = await PostgresTestConfig().contextWithModels([PageableTestModel]);
+      context =
+          await PostgresTestConfig().contextWithModels([PageableTestModel]);
       for (int i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -282,8 +284,8 @@ void main() {
     };
 
     setUpAll(() async {
-      context =
-          await PostgresTestConfig().contextWithModels([PageableTestModel, HasMany, BelongsTo]);
+      context = await PostgresTestConfig()
+          .contextWithModels([PageableTestModel, HasMany, BelongsTo]);
       for (int i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -301,7 +303,8 @@ void main() {
 
       try {
         final _ = await req.fetch();
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on StateError catch (e) {
         expect(e.toString(),
             contains("Bounding value for column 'value' has invalid type"));
@@ -314,7 +317,8 @@ void main() {
           ..pageBy((p) => p["foobar"], QuerySortOrder.ascending,
               boundingValue: "0");
 
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(
             e.toString(),
@@ -336,7 +340,8 @@ void main() {
       try {
         Query<HasMany>(context!)
             .pageBy((p) => p.objects, QuerySortOrder.ascending);
-        expect(true, false);
+        fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(),
             contains("Property 'objects' on 'HasMany' is a relationship"));

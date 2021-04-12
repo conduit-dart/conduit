@@ -12,7 +12,8 @@ import 'http.dart';
 /// to add mappings in an application's [ApplicationChannel] subclass constructor.
 class CodecRegistry {
   CodecRegistry._() {
-    add(ContentType("application", "json", charset: "utf-8"), const JsonCodec());
+    add(ContentType("application", "json", charset: "utf-8"),
+        const JsonCodec());
     add(ContentType("application", "x-www-form-urlencoded", charset: "utf-8"),
         const _FormCodec());
     setAllowsCompression(ContentType("text", "*"), true);
@@ -203,7 +204,7 @@ class _FormEncoder extends Converter<Map<String, dynamic>, String> {
   }
 
   String _encodePair(String key, dynamic value) {
-    final encode = (String v) => "$key=${Uri.encodeQueryComponent(v)}";
+    String encode(String v) => "$key=${Uri.encodeQueryComponent(v)}";
     if (value is List<String>) {
       return value.map(encode).join("&");
     } else if (value is String) {

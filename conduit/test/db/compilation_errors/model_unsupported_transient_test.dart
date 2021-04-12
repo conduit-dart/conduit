@@ -17,7 +17,8 @@ void main() {
       () {
     try {
       ManagedDataModel([InvalidTransientModel]);
-      expect(true, false);
+      fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("'InvalidTransientModel'"));
       expect(e.message, contains("'uri'"));

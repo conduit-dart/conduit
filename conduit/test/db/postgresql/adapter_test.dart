@@ -101,7 +101,7 @@ void main() {
 
       try {
         await persistentStore!.executeQuery("SELECT 1", null, 20);
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on QueryException {}
 

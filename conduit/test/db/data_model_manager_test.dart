@@ -14,6 +14,7 @@ void main() {
     try {
       T();
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           contains("Did you forget to create a 'ManagedContext'?"));
@@ -42,6 +43,7 @@ void main() {
     try {
       T();
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           contains("Did you forget to create a 'ManagedContext'?"));
@@ -64,6 +66,7 @@ void main() {
     try {
       T();
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       expect(e.toString(),
           contains("Did you forget to create a 'ManagedContext'?"));

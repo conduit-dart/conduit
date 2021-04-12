@@ -22,6 +22,7 @@ void main() {
     Request? request;
 
     setUp(() async {
+      // ignore: avoid_print
       print('http server starting');
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
     });
@@ -47,6 +48,7 @@ void main() {
         unawaited(http
             .get(Uri.parse("http://localhost:8123"))
             .catchError((err) => Future.value(http.Response.bytes([], 500))));
+        // ignore: avoid_print
         print('get completed');
         final request = await server.first;
         final body = RequestBody(request);
@@ -194,7 +196,7 @@ void main() {
 
       try {
         await request.body.decode();
-        expect(true, false);
+        fail('unreachable');
       } on Response catch (e) {
         expect(e.statusCode, 400);
       }
@@ -325,7 +327,7 @@ void main() {
 
       try {
         body.as<Map<String, dynamic>>();
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on StateError {}
     });
@@ -337,7 +339,7 @@ void main() {
 
       try {
         await body.decode<Map<String, dynamic>>();
-        expect(true, false);
+        fail('unreachable');
       } on Response catch (e) {
         expect(e.statusCode, 400);
       }
@@ -409,7 +411,7 @@ void main() {
 
       try {
         body.as<List<Map<String, dynamic>>>();
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on StateError {}
     });
@@ -421,7 +423,7 @@ void main() {
 
       try {
         await body.decode<List<Map<String, dynamic>>>();
-        expect(true, false);
+        fail('unreachable');
       } on Response catch (response) {
         expect(response.statusCode, 400);
       }
@@ -494,7 +496,7 @@ void main() {
 
       try {
         body.as<String>();
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on StateError {}
     });
@@ -506,7 +508,7 @@ void main() {
 
       try {
         await body.decode<String>();
-        expect(true, false);
+        fail('unreachable');
       } on Response catch (response) {
         expect(response.statusCode, 400);
       }
@@ -568,7 +570,7 @@ void main() {
       final body = RequestBody(await server.first);
       try {
         body.as<List<int>>();
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on StateError {}
     });
@@ -602,7 +604,7 @@ void main() {
       final body = RequestBody(await server.first);
       try {
         body.originalBytes;
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on StateError {}
     });

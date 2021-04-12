@@ -120,7 +120,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     final completer = Completer<List<int>>();
     final socket = await SecureSocket.connect("localhost", 8888,
         onBadCertificate: (_) => true);
-    final request =
+    const request =
         "GET /example HTTP/1.1\r\nConnection: close\r\nHost: localhost\r\n\r\n";
     socket.add(request.codeUnits);
 

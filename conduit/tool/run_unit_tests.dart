@@ -28,6 +28,7 @@ void main(List<String> args) {
   }
 
   ProcessSignal.sigint.watch().listen((signal) {
+    // ignore: avoid_print
     print('ctrl-caught');
     'docker-compose down'.run;
   });
@@ -35,8 +36,10 @@ void main(List<String> args) {
 
   startPostgresDaemon();
 
+  // ignore: avoid_print
   print('Starting postgres docker image');
 
+  // ignore: avoid_print
   print('Staring Conduit unit tests');
 
   env['POSTGRES_USER'] = 'conduit_test_user';
@@ -46,5 +49,6 @@ void main(List<String> args) {
   /// run the tests
   'pub run test -j1'.start(workingDirectory: '..');
 
+  // ignore: avoid_print
   print('Stopping posgress docker image');
 }

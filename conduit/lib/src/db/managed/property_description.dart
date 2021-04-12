@@ -21,13 +21,12 @@ abstract class ManagedPropertyDescription {
       bool indexed = false,
       bool nullable = false,
       bool includedInDefaultResultSet = true,
-      bool autoincrement = false,
+      this.autoincrement = false,
       List<ManagedValidator?> validators = const []})
       : isUnique = unique,
         isIndexed = indexed,
         isNullable = nullable,
         isIncludedInDefaultResultSet = includedInDefaultResultSet,
-        autoincrement = autoincrement,
         _validators = validators {
     _validators.forEach((v) => v!.property = this);
   }
@@ -151,9 +150,9 @@ abstract class ManagedPropertyDescription {
 class ManagedAttributeDescription extends ManagedPropertyDescription {
   ManagedAttributeDescription(
       ManagedEntity entity, String name, ManagedType type, Type? declaredType,
-      {Serialize? transientStatus,
+      {this.transientStatus,
       bool primaryKey = false,
-      String? defaultValue,
+      this.defaultValue,
       bool unique = false,
       bool indexed = false,
       bool nullable = false,
@@ -161,8 +160,6 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       bool autoincrement = false,
       List<ManagedValidator?> validators = const []})
       : isPrimaryKey = primaryKey,
-        defaultValue = defaultValue,
-        transientStatus = transientStatus,
         super(entity, name, type, declaredType,
             unique: unique,
             indexed: indexed,
@@ -495,13 +492,14 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       throw ValidationException(["invalid input type for '$name'"]);
     }
 
-    final instantiator = (dynamic m) {
+    dynamic instantiator(dynamic m) {
       if (m is! Map<String, dynamic>) {
         throw ValidationException(["invalid input type for '$name'"]);
       }
       final instance = destinationEntity!.instanceOf()..readFromMap(m);
       return instance;
-    };
+    }
+
     return destinationEntity!.setOf(value.map(instantiator));
   }
 

@@ -79,6 +79,7 @@ void main() {
       try {
         Query<T>(ctx2);
         fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("Invalid context"));
       }
@@ -86,6 +87,7 @@ void main() {
       try {
         Query<U>(ctx1);
         fail('unreachable');
+        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("Invalid context"));
       }

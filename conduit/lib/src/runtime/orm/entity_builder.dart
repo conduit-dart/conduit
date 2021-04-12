@@ -226,7 +226,7 @@ class EntityBuilder {
     attributes.forEach((prop) {
       final complement = out.firstWhereOrNull((pb) => pb.name == prop.name);
       if (complement != null) {
-        complement.serialize = const Serialize(output: true);
+        complement.serialize = const Serialize();
       } else {
         out.add(prop);
       }

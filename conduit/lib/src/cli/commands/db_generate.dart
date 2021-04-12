@@ -22,8 +22,8 @@ class CLIDatabaseGenerate extends CLICommand
   String _toSnakeCase(String name) {
     final sb = StringBuffer();
     final words = <String>[];
-    final isAllCaps = !name.contains(RegExp(r'[a-z]'));
-    final upperAlphaRegex = RegExp(r'[A-Z]');
+    final isAllCaps = !name.contains(RegExp('[a-z]'));
+    final upperAlphaRegex = RegExp('[A-Z]');
     final symbolRegex = RegExp(r'[ ./_\-]');
 
     for (int i = 0; i < name.length; i++) {

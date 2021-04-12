@@ -8,7 +8,9 @@ void justLogEverything() {
   hierarchicalLoggingEnabled = true;
   Logger("")
     ..level = Level.ALL
-    ..onRecord.listen((p) => print("$p ${p.object} ${p.stackTrace}"));
+    ..onRecord.listen((p) =>
+        // ignore: avoid_print
+        print("$p ${p.object} ${p.stackTrace}"));
 }
 
 class PassthruController extends Controller {
@@ -135,7 +137,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   }
 
   void reset() {
-    final salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+    const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
     clients = {
       "com.stablekernel.app1": AuthClient("com.stablekernel.app1",
           AuthUtility.generatePasswordHash("kilimanjaro", salt), salt),
@@ -317,8 +319,10 @@ class DefaultPersistentStore extends PersistentStore {
   Future close() async {}
 
   @override
-  Future<T?> transaction<T>(ManagedContext transactionContext,
-          Future<T?> Function(ManagedContext transaction) transactionBlock) async =>
+  Future<T?> transaction<T>(
+          ManagedContext transactionContext,
+          Future<T?> Function(ManagedContext transaction)
+              transactionBlock) async =>
       throw Exception("Transaciton not supported on mock");
 
   @override

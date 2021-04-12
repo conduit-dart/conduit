@@ -109,7 +109,8 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
   final require = sourcifyFilter(p.requireFilter);
   final accept = sourcifyFilter(p.acceptFilter);
   if (isSerializable(p.type)) {
-    return """(v) {
+    return """
+    (v) {
     return ${p.type}()
       ..read((v as RequestBody).as(), 
            accept: $accept,
@@ -119,7 +120,8 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
     }
     """;
   } else if (isListSerializable(p.type)) {
-    return """ (b) {
+    return """
+    (b) {
       final body = b as RequestBody;
       final bodyList = body.as<List<Map<String, dynamic>>>();
       if (bodyList.isEmpty) {
@@ -139,7 +141,8 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
     }""";
   }
 
-  return """(b) { 
+  return """
+  (b) { 
     return (b as RequestBody).as<${p.type}>();
   }""";
 }
@@ -152,7 +155,8 @@ String getElementDecoderSource(Type type) {
     return "(v) { return v as String; }";
   }
 
-  return """(v) {
+  return """
+(v) {
   try {
     return $className.parse(v as String);
   } catch (_) {
@@ -165,13 +169,15 @@ String getElementDecoderSource(Type type) {
 String getListDecoderSource(ResourceControllerParameter p) {
   if (reflectType(p.type).isSubtypeOf(reflectType(List))) {
     final mapper = getElementDecoderSource(
-      reflectType(p.type).typeArguments.first.reflectedType);
-    return """(v) {
+        reflectType(p.type).typeArguments.first.reflectedType);
+    return """
+(v) {
   return ${p.type}.from((v as List).map($mapper));  
 }  """;
   }
 
-  return """(v) {
+  return """
+(v) {
   final listOfValues = v as List;
   if (listOfValues.length > 1) {
     throw ArgumentError("multiple values not expected");
@@ -204,7 +210,9 @@ String getOperationSource(
     BuildContext context,
     ResourceControllerRuntimeImpl runtime,
     ResourceControllerOperation operation) {
-  final scopeElements = operation.scopes?.map((s) => "AuthScope(${sourcifyValue(s.toString())})").join(",");
+  final scopeElements = operation.scopes
+      ?.map((s) => "AuthScope(${sourcifyValue(s.toString())})")
+      .join(",");
   final namedParameters = operation.namedParameters
       .map((p) => getParameterSource(context, runtime, p))
       .join(",");

@@ -36,6 +36,7 @@ abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
       sources.sort((s1, s2) => s1.versionNumber.compareTo(s2.versionNumber));
 
       return sources;
+      // ignore: avoid_catching_errors
     } on StateError catch (e) {
       throw CLIException(e.message);
     }

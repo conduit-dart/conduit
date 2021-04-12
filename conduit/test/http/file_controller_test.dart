@@ -10,9 +10,9 @@ void main() {
   final client = HttpClient();
   final fileDirectory = Directory("temp_files");
   final jsonContents = {"key": "value"};
-  final cssContents = "a { color: red; }";
-  final jsContents = "f() {}";
-  final htmlContents = "<html><h3>Conduit</h3></html>";
+  const cssContents = "a { color: red; }";
+  const jsContents = "f() {}";
+  const htmlContents = "<html><h3>Conduit</h3></html>";
   final jsonFile = File.fromUri(fileDirectory.uri.resolve("file.json"));
   final cssFile = File.fromUri(fileDirectory.uri.resolve("file.css"));
   final jsFile = File.fromUri(fileDirectory.uri.resolve("file.js"));
@@ -215,7 +215,7 @@ void main() {
   test("Client connection closed before data is sent still shuts down stream",
       () async {
     final socket = await Socket.connect("localhost", 8888);
-    final request =
+    const request =
         "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
     socket.add(request.codeUnits);
     await socket.flush();

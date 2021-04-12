@@ -169,7 +169,7 @@ void main() {
       final response = await request.close();
       try {
         await response.toList();
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on HttpException {}
 

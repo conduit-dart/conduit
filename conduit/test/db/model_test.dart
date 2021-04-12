@@ -52,7 +52,7 @@ void main() {
     try {
       user["name"] = 1;
 
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expectError(e, contains("invalid input value for 'name'"));
     }
@@ -148,9 +148,7 @@ void main() {
     expect(user.id, 1);
     expect(user.name, "Bob");
 
-    final posts = postMap
-        .map((e) => Post()..readFromMap(washMap(e)))
-        .toList();
+    final posts = postMap.map((e) => Post()..readFromMap(washMap(e))).toList();
     expect(posts[0].id, 1);
     expect(posts[1].id, 2);
     expect(posts[0].text, "hey");
@@ -163,7 +161,7 @@ void main() {
     final user = User();
     try {
       user.readFromMap(washMap(map));
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expectError(e, contains("invalid input key 'bad_key'"));
     }
@@ -172,14 +170,14 @@ void main() {
   test("Reading from map with non-assignable type fails", () {
     try {
       User().readFromMap(washMap({"id": "foo"}));
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expectError(e, contains("invalid input value for 'id'"));
     }
   });
 
   test("Handles DateTime conversion", () {
-    final dateString = "2000-01-01T05:05:05.010Z";
+    const dateString = "2000-01-01T05:05:05.010Z";
     var map = {"id": 1, "name": "Bob", "dateCreated": dateString};
     var user = User();
     user.readFromMap(washMap(map));
@@ -194,7 +192,7 @@ void main() {
     user = User();
     try {
       user.readFromMap(washMap(map));
-      expect(true, false);
+      fail('unreachable');
     } on ValidationException catch (e) {
       expectError(e, contains("invalid input value for 'dateCreated'"));
     }
@@ -476,7 +474,7 @@ void main() {
   }, skip: "NYI in AOT");
 
   test("Transient Properties of all types can be read and returned", () {
-    final dateString = "2016-10-31T15:40:45+00:00";
+    const dateString = "2016-10-31T15:40:45+00:00";
     final m = (TransientTypeTest()
           ..readFromMap(washMap({
             "transientInt": 5,
@@ -598,7 +596,7 @@ void main() {
     final t = TransientTest();
     try {
       t.readFromMap(washMap({"notAnAttribute": true}));
-      expect(true, false);
+      fail('unreachable');
       // ignore: empty_catches
     } on ValidationException {}
 
@@ -664,14 +662,14 @@ void main() {
       final e = EnumObject();
       try {
         e.readFromMap(washMap({"enumValues": "foobar"}));
-        expect(true, false);
+        fail('unreachable');
       } on ValidationException catch (e) {
         expectError(e, contains("invalid option for key 'enumValues'"));
       }
 
       try {
         e["enumValues"] = "foobar";
-        expect(true, false);
+        fail('unreachable');
       } on ValidationException catch (e) {
         expectError(e, contains("invalid input value for 'enumValues'"));
       }
@@ -815,6 +813,7 @@ class TransientTest extends ManagedObject<_TransientTest>
   }
 
   @Serialize(input: true, output: false)
+  // ignore: avoid_setters_without_getters
   set inputOnly(String s) {
     text = s;
   }
@@ -832,6 +831,7 @@ class TransientTest extends ManagedObject<_TransientTest>
 
   // This is intentionally invalid
   @Serialize(input: false, output: true)
+  // ignore: avoid_setters_without_getters
   set invalidOutput(String s) {
     text = s;
   }

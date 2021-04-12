@@ -7,7 +7,6 @@ import 'package:conduit/managed_auth.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 
-
 import '../db/postgresql/postgres_test_config.dart';
 
 // These tests mostly duplicate authenticate_test.dart, but also add a few more
@@ -17,10 +16,10 @@ void main() {
   ManagedContext? context;
 
   setUp(() async {
-    context =
-        await PostgresTestConfig().contextWithModels([User, ManagedAuthClient, ManagedAuthToken]);
+    context = await PostgresTestConfig()
+        .contextWithModels([User, ManagedAuthClient, ManagedAuthToken]);
 
-    final salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+    const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
     final clients = [
       AuthClient("com.stablekernel.app1",
           AuthUtility.generatePasswordHash("kilimanjaro", salt), salt),
@@ -79,7 +78,7 @@ void main() {
     test("Cannot revoke null client", () async {
       try {
         await auth.removeClient(null);
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -251,7 +250,7 @@ void main() {
       try {
         await auth.authenticate("nonsense", User.defaultPassword,
             "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -260,7 +259,7 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, "nonsense",
             "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -269,7 +268,7 @@ void main() {
       try {
         await auth.authenticate(
             createdUser.username, "%", "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -278,7 +277,7 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "nonsense", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -287,7 +286,7 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "com.stablekernel.app1", "nonsense");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -296,7 +295,7 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "com.stablekernel.app1", "%");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -307,14 +306,14 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "com.stablekernel.app1", null);
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "com.stablekernel.app1", "");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -324,7 +323,7 @@ void main() {
       try {
         await auth.authenticate(createdUser.username, User.defaultPassword,
             "com.stablekernel.public", "nonsense");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -455,7 +454,7 @@ void main() {
     test("Cannot refresh token that has not been issued", () async {
       try {
         await auth.refresh("nonsense", "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -463,7 +462,7 @@ void main() {
     test("Cannot refresh token that is null", () async {
       try {
         await auth.refresh(null, "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -471,7 +470,7 @@ void main() {
     test("Cannot refresh wildcard token", () async {
       try {
         await auth.refresh("%", "com.stablekernel.app1", "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -479,7 +478,7 @@ void main() {
     test("Cannot refresh token if client id is missing", () async {
       try {
         await auth.refresh(initialToken.refreshToken, null, "kilimanjaro");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -489,7 +488,7 @@ void main() {
       try {
         await auth.refresh(
             initialToken.refreshToken, "com.stablekernel.app2", "fuji");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -498,7 +497,7 @@ void main() {
       try {
         await auth.refresh(
             initialToken.refreshToken, "com.stablekernel.app1", null);
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -507,7 +506,7 @@ void main() {
       try {
         await auth.refresh(
             initialToken.refreshToken, "com.stablekernel.app1", "nonsense");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -520,7 +519,7 @@ void main() {
       try {
         await auth.refresh(
             token.accessToken, "com.stablekernel.redirect", "mckinley");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -568,7 +567,7 @@ void main() {
       try {
         await auth.authenticateForCode(
             "bob+0@stable", User.defaultPassword, "com.stablekernel.redirect");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client!.id, "com.stablekernel.redirect");
         expect(e.reason, AuthRequestError.accessDenied);
@@ -579,7 +578,7 @@ void main() {
       try {
         await auth.authenticateForCode(
             createdUser.username, "foobaraxegri%", "com.stablekernel.redirect");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client!.id, "com.stablekernel.redirect");
         expect(e.reason, AuthRequestError.accessDenied);
@@ -590,7 +589,7 @@ void main() {
       try {
         await auth.authenticateForCode(
             createdUser.username, "%", "com.stablekernel.redirect");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client!.id, "com.stablekernel.redirect");
         expect(e.reason, AuthRequestError.accessDenied);
@@ -601,7 +600,7 @@ void main() {
       try {
         await auth.authenticateForCode(
             createdUser.username, User.defaultPassword, "com.stabl");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client, isNull);
         expect(e.reason, AuthRequestError.invalidClient);
@@ -612,7 +611,7 @@ void main() {
       try {
         await auth.authenticateForCode(createdUser.username,
             User.defaultPassword, "com.stablekernel.app1");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client!.id, "com.stablekernel.app1");
         expect(e.reason, AuthRequestError.unauthorizedClient);
@@ -623,7 +622,7 @@ void main() {
       try {
         await auth.authenticateForCode(
             createdUser.username, User.defaultPassword, null);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.client, isNull);
         expect(e.reason, AuthRequestError.invalidClient);
@@ -639,7 +638,7 @@ void main() {
       try {
         await auth.exchange(
             authCode.code, "com.stablekernel.redirect", "mckinley");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -678,7 +677,7 @@ void main() {
       try {
         await auth.exchange(null, "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -687,7 +686,7 @@ void main() {
       try {
         await auth.exchange("%", "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -696,7 +695,7 @@ void main() {
       try {
         await auth.exchange("foobar", "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -711,7 +710,7 @@ void main() {
       try {
         await auth.exchange(code.code, "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -728,7 +727,7 @@ void main() {
       try {
         await auth.exchange(code.code, "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -756,7 +755,7 @@ void main() {
       try {
         await auth.exchange(code.code, "com.stablekernel.redirect", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -785,7 +784,7 @@ void main() {
       try {
         await auth.exchange(code.code, null, "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -794,7 +793,7 @@ void main() {
       try {
         await auth.exchange(code.code, "nonsense", "mckinley");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -805,7 +804,7 @@ void main() {
         await auth.exchange(
             code.code, "com.stablekernel.redirect2", "gibraltar");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -814,7 +813,7 @@ void main() {
       try {
         await auth.exchange(code.code, "com.stablekernel.redirect", null);
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -823,7 +822,7 @@ void main() {
       try {
         await auth.exchange(code.code, "com.stablekernel.redirect", "nonsense");
 
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
     });
@@ -860,7 +859,7 @@ void main() {
       try {
         await auth.exchange(
             unusedCode.code, "com.stablekernel.redirect", "mckinley");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -905,8 +904,11 @@ void main() {
           "com.stablekernel.redirect2");
       final exchangedTokenKeep = await auth.exchange(
           exchangedCodeKeep.code, "com.stablekernel.redirect2", "gibraltar");
-      final issuedTokenKeep = await auth.authenticate(createdUsers.first.username,
-          User.defaultPassword, "com.stablekernel.redirect2", "gibraltar");
+      final issuedTokenKeep = await auth.authenticate(
+          createdUsers.first.username,
+          User.defaultPassword,
+          "com.stablekernel.redirect2",
+          "gibraltar");
 
       await auth.removeClient("com.stablekernel.redirect");
 
@@ -980,7 +982,7 @@ void main() {
       try {
         await auth.exchange(
             unusedCode.code, "com.stablekernel.redirect", "mckinley");
-        expect(true, false);
+        fail('unreachable');
         // ignore: empty_catches
       } on AuthServerException {}
 
@@ -1068,8 +1070,10 @@ void main() {
 
       // Make a new code, should kill the race condition code and the first generated code in the loop.
       // Other user codes remain
-      final newCode = await auth.authenticateForCode(createdUsers.first.username,
-          User.defaultPassword, "com.stablekernel.redirect");
+      final newCode = await auth.authenticateForCode(
+          createdUsers.first.username,
+          User.defaultPassword,
+          "com.stablekernel.redirect");
       final codeQuery = Query<ManagedAuthToken>(context!);
       var codesInDB = (await codeQuery.fetch()).map((ac) => ac.code).toList();
 
@@ -1083,8 +1087,10 @@ void main() {
       expect(codesInDB.contains(newCode.code), true);
 
       // Make a new code, but with a different client, should still kill off the oldest expiring code.
-      final lastCode = await auth.authenticateForCode(createdUsers.first.username,
-          User.defaultPassword, "com.stablekernel.redirect2");
+      final lastCode = await auth.authenticateForCode(
+          createdUsers.first.username,
+          User.defaultPassword,
+          "com.stablekernel.redirect2");
       codesInDB = (await codeQuery.fetch()).map((ac) => ac.code).toList();
 
       // These codes are in chronological order
@@ -1214,7 +1220,7 @@ void main() {
       auth = AuthServer(storage);
       createdUser = (await createUsers(context, 1)).first;
 
-      final salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+      const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
 
       final clients = [
         AuthClient.public("all", allowedScopes: [
@@ -1345,7 +1351,7 @@ void main() {
             requestedScopes: [
               AuthScope("user"),
             ]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1357,7 +1363,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all", null,
             requestedScopes: [AuthScope("unknown")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1371,7 +1377,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all", null,
             requestedScopes: [AuthScope("location")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1385,7 +1391,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all", null,
             requestedScopes: [AuthScope("admin:settings")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1446,7 +1452,7 @@ void main() {
           AuthScope("admin:settings.readonly")
         ]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1463,7 +1469,7 @@ void main() {
         final _ = await auth.refresh(token.refreshToken, "all.redirect", "a",
             requestedScopes: [AuthScope("user")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1488,14 +1494,14 @@ void main() {
       try {
         final _ = await auth.refresh(token1.refreshToken, "all.redirect", "a",
             requestedScopes: [AuthScope("user"), AuthScope("location:add")]);
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
 
       try {
         final _ = await auth.refresh(token2.refreshToken, "all.redirect", "a");
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1574,7 +1580,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all.redirect",
             requestedScopes: [AuthScope("unknown")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1588,7 +1594,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all.redirect",
             requestedScopes: [AuthScope("location")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
@@ -1602,7 +1608,7 @@ void main() {
             createdUser.username, User.defaultPassword, "all.redirect",
             requestedScopes: [AuthScope("admin:settings")]);
 
-        expect(true, false);
+        fail('unreachable');
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
       }
