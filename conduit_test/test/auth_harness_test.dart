@@ -93,6 +93,7 @@ void main() {
     try {
       await harness.loginUser(scopeAgent, user.username, "incorrect");
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(), contains("Invalid username/password."));
     }
@@ -107,6 +108,7 @@ void main() {
       await harness.loginUser(scopeAgent, user.username, "password",
           scopes: ["whatever"]);
       fail('unreachable');
+      // ignore: avoid_catching_errors
     } on ArgumentError catch (e) {
       expect(e.toString(),
           contains("Scope not permitted for client identifier and/or user."));

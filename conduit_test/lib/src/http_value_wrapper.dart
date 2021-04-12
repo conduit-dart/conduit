@@ -32,13 +32,13 @@ class HTTPValueMatcherWrapper extends Matcher {
       throw StateError("Header response value is not a String.");
     }
 
-    final onSuccess = (v) {
+    bool onSuccess(v) {
       if (v == null) {
         matchState.addAll(tempMatchState);
         return false;
       }
       return _matcher.matches(v, matchState);
-    };
+    }
 
     try {
       return onSuccess(num.parse(item));

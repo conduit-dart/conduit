@@ -82,10 +82,10 @@ class TestRequest {
         if (val == null || val == true) {
           pairs.add(key);
         } else if (val is List) {
-          val.forEach((innerVal) {
+          for (final innerVal in val) {
             final urlEncoded = Uri.encodeComponent('$innerVal');
             pairs.add("$key=$urlEncoded");
-          });
+          }
         } else {
           final urlEncoded = Uri.encodeComponent('$val');
           pairs.add("$key=$urlEncoded");
@@ -113,11 +113,13 @@ class TestRequest {
   /// Will apply the following header to this request:
   ///
   ///         Authorization: Bearer token
+  // ignore: avoid_setters_without_getters
   set bearerAuthorization(String token) {
     headers[HttpHeaders.authorizationHeader] = "Bearer $token";
   }
 
   /// Sets the Accept header of this request.
+  // ignore: avoid_setters_without_getters
   set accept(List<ContentType> contentTypes) {
     headers[HttpHeaders.acceptHeader] =
         contentTypes.map((ct) => ct.toString()).join(",");

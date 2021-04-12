@@ -86,14 +86,14 @@ class PartialMapMatcher extends Matcher {
     if (mismatches.isNotEmpty) {
       mismatchDescription
           .add("the following keys differ from partial matcher: \n");
-      mismatches.forEach((s) {
+      for (final s in mismatches) {
         final matcher = _matcherMap[s]!;
         final value = item[s];
         mismatchDescription.add("  - '$s' ");
         matcher.describeMismatch(
             value, mismatchDescription, matchState, verbose);
         mismatchDescription.add("\n");
-      });
+      }
     }
 
     return mismatchDescription;

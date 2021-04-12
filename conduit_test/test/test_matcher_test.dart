@@ -326,7 +326,7 @@ void main() {
             contains("Body after decoding"),
             contains("{'foo': 'notbar'}"),
             contains("body differs for the following reasons"),
-            contains("at location [\'foo\'] is \'bar\' instead of \'notbar\'"),
+            contains("at location ['foo'] is 'bar' instead of 'notbar'"),
           ]));
     });
   });
@@ -378,7 +378,7 @@ void main() {
       },
           allOf([
             contains("{'foo': 'notbar', 'x': 'y'}"),
-            contains("at location [\'foo\'] is \'bar\' instead of \'notbar\'")
+            contains("at location ['foo'] is 'bar' instead of 'notbar'")
           ]));
     });
 
@@ -395,9 +395,9 @@ void main() {
           expect(response, hasBody({"foo": isNot(isString), "x": 5}));
         },
         allOf([
-          contains("{'foo': <not <Instance of \'String\'>>, 'x': 5}"),
+          contains("{'foo': <not <Instance of 'String'>>, 'x': 5}"),
           contains(
-              "at location ['foo'] is 'bar' which does not match not <Instance of \'String\'>")
+              "at location ['foo'] is 'bar' which does not match not <Instance of 'String'>")
         ]),
       );
     });

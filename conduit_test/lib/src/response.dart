@@ -19,7 +19,7 @@ class TestResponse {
   /// not need to invoke TestResponseBody.decode or any of its asynchronous
   /// decoding methods.
   final TestResponseBody body;
-  
+
   /// HTTP response.
   HttpClientResponse get innerResponse => _innerResponse;
 
@@ -43,9 +43,9 @@ class TestResponse {
 
     final headerItems = headers.toString().split("\n");
     headerItems.removeWhere((str) => str == "");
-    headerItems.forEach((header) {
+    for (final header in headerItems) {
       buffer.writeln("  - $header");
-    });
+    }
 
     if (!body.isEmpty) {
       buffer.writeln("Decoded body is:");
@@ -71,7 +71,7 @@ class TestResponseBody extends BodyDecoder {
   TestResponseBody(HttpClientResponse response)
       : _response = response,
         super(response) {
-    _hasContent = (response.headers.contentLength ) > 0 ||
+    _hasContent = (response.headers.contentLength) > 0 ||
         response.headers.chunkedTransferEncoding;
   }
 
