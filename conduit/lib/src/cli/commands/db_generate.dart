@@ -14,7 +14,7 @@ class CLIDatabaseGenerate extends CLICommand
           "Name of the generated migration. Automaticaly lower- and snakecased.",
       defaultsTo: "unnamed")
   String get migrationName {
-    final String name = decode("name")!;
+    final String name = decode<String>("name");
 
     return _toSnakeCase(name);
   }

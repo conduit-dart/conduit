@@ -7,7 +7,7 @@ import 'package:conduit/conduit.dart';
 ///
 /// We assume the user has setup their test environment using the provider
 /// tool/docker-compose.yml file which creates a docker service on an alternate
-/// port: 15432
+/// port: 5432
 class PostgresTestConfig {
   factory PostgresTestConfig() => _self;
 
@@ -16,7 +16,7 @@ class PostgresTestConfig {
   static late final PostgresTestConfig _self = PostgresTestConfig._internal();
 
   static const defaultHost = 'localhost';
-  static const defaultPort = 15432;
+  static const defaultPort = 5432;
   static const defaultUsername = 'dart';
   static const defaultPassword = 'dart';
   static const defaultDbName = 'dart_test';

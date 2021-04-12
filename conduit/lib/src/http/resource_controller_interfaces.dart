@@ -49,7 +49,7 @@ class ResourceControllerOperation {
       required this.invoker});
 
   final List<AuthScope>? scopes;
-  final List<String?> pathVariables;
+  final List<String> pathVariables;
   final String httpMethod;
   final String dartMethodName;
 

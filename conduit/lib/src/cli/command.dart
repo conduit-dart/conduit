@@ -59,24 +59,24 @@ abstract class CLICommand {
 
   @Flag("version",
       help: "Prints version of this tool", negatable: false, defaultsTo: false)
-  bool get showVersion => decode("version")!;
+  bool get showVersion => decode<bool>("version");
 
   @Flag("color", help: "Toggles ANSI color", negatable: true, defaultsTo: true)
-  bool get showColors => decode("color")!;
+  bool get showColors => decode<bool>("color");
 
   @Flag("help",
       abbr: "h", help: "Shows this", negatable: false, defaultsTo: false)
-  bool get helpMeItsScary => decode("help")!;
+  bool get helpMeItsScary => decode<bool>("help");
 
   @Flag("stacktrace",
       help: "Shows the stacktrace if an error occurs", defaultsTo: false)
-  bool get showStacktrace => decode("stacktrace")!;
+  bool get showStacktrace => decode<bool>("stacktrace");
 
   @Flag("machine",
       help:
           "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
       defaultsTo: false)
-  bool get isMachineOutput => decode("machine")!;
+  bool get isMachineOutput => decode<bool>("machine");
 
   final Map<String, CLICommand> _commandMap = {};
 
@@ -99,11 +99,18 @@ abstract class CLICommand {
   static const _errorDelimiter = "*** ";
 
   T decode<T>(String key, {T Function()? orElse}) {
-    final val = _argumentValues[key];
-    if (T == int && val is String) {
-      return int.parse(val) as T;
+    try {
+      final val = _argumentValues[key];
+      if (T == int && val is String) {
+        return int.parse(val) as T;
+      }
+      return RuntimeContext.current.coerce<T>(val);
+    } catch (e) {
+      if (orElse != null) {
+        return orElse();
+      }
+      rethrow;
     }
-    return RuntimeContext.current.coerce(val);
   }
 
   void registerCommand(CLICommand cmd) {

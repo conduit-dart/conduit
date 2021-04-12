@@ -61,7 +61,7 @@ void main() {
     test("Make multiple requests at once, all fail because db connect fails",
         () async {
       persistentStore = PostgreSQLPersistentStore(
-          "dart", "dart", "localhost", 15432, "xyzxyznotadb");
+          "dart", "dart", "localhost", 5432, "xyzxyznotadb");
       var expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var values = await Future.wait(expectedValues.map(
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
@@ -79,7 +79,7 @@ void main() {
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy = SocketProxy(15433, 15432);
+      proxy = SocketProxy(15433, 5432);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -105,7 +105,7 @@ void main() {
         // ignore: empty_catches
       } on QueryException {}
 
-      proxy = SocketProxy(15433, 15432);
+      proxy = SocketProxy(15433, 5432);
       await proxy!.open();
 
       var x = await persistentStore!.executeQuery("SELECT 1", null, 20);

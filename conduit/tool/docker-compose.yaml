@@ -9,5 +9,5 @@ services:
       POSTGRES_PASSWORD: dart
       POSTGRES_DB: dart_test
     ports:
-      - 0.0.0.0:15432:5432
+      - 0.0.0.0:5432:5432
       

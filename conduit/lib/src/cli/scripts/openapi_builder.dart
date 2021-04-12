@@ -143,7 +143,8 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         "package:yaml/yaml.dart",
         "dart:convert",
         "dart:io",
-        "package:conduit_runtime/runtime.dart"
+        "package:conduit_runtime/runtime.dart",
+        "package:conduit_open_api/v3.dart"
       ];
 }
 

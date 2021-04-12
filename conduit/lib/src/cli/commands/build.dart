@@ -14,13 +14,14 @@ class CLIBuild extends CLICommand with CLIProject {
       help:
           "Whether or not the 'build' directory should be left intact after the application is compiled.",
       defaultsTo: false)
-  bool get retainBuildArtifacts => decode("retain-build-artifacts")!;
+  bool get retainBuildArtifacts => decode<bool>("retain-build-artifacts");
 
   @Option("build-directory",
       help:
           "The directory to store build artifacts during compilation. By default, this directory is deleted when this command completes. See 'retain-build-artifacts' flag.",
       defaultsTo: "build")
-  Directory get buildDirectory => Directory(decode("build-directory")!).absolute;
+  Directory get buildDirectory =>
+      Directory(decode<String>("build-directory")).absolute;
 
   @override
   Future<int> handle() async {
@@ -122,7 +123,6 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
     ..configurationFilePath = values['config-path'] as String?
     ..certificateFilePath = values['ssl-certificate-path'] as String?
     ..privateKeyFilePath = values['ssl-key-path'] as String?;
-
 
   final isolateCountString = values['isolates'];
   if (isolateCountString == null) {

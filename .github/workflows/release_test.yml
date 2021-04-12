@@ -53,7 +53,7 @@ jobs:
           POSTGRES_PASSWORD: dart
           POSTGRES_DB: dart_test
         ports:
-          - 15432:5432
+          - 5432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
@@ -81,7 +81,7 @@ jobs:
           POSTGRES_PASSWORD: dart
           POSTGRES_DB: dart_test
         ports:
-          - 15432:5432
+          - 5432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1

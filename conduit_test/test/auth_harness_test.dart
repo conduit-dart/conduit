@@ -123,7 +123,7 @@ class Channel extends ApplicationChannel {
     context = ManagedContext(
         ManagedDataModel.fromCurrentMirrorSystem(),
         PostgreSQLPersistentStore(
-            "dart", "dart", "localhost", 15432, "dart_test"));
+            "dart", "dart", "localhost", 5432, "dart_test"));
     authServer = AuthServer(ManagedAuthDelegate<User>(context));
   }
 
