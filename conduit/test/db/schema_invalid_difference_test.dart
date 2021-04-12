@@ -69,7 +69,7 @@ void main() {
       SchemaTable("_u", [
         SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
         SchemaColumn("auto", ManagedType.integer, autoincrement: true),
-        SchemaColumn("not_auto", ManagedType.integer, autoincrement: false),
+        SchemaColumn("not_auto", ManagedType.integer),
       ]),
     ]);
 

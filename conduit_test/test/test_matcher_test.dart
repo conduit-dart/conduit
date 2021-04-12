@@ -505,13 +505,12 @@ void main() {
       expect(
           response,
           hasResponse(null,
-              body: null,
               headers: {"Content-Type": "application/json; charset=utf-8"}));
     });
   });
 }
 
-TestFailure failureFor(void f()) {
+TestFailure failureFor(void Function() f) {
   try {
     f();
   } on TestFailure catch (e) {
@@ -521,7 +520,7 @@ TestFailure failureFor(void f()) {
   throw TestFailure("failureFor succeeded, must not succeed.");
 }
 
-void expectFailureFor(void f(), dynamic matcher) {
+void expectFailureFor(void Function() f, dynamic matcher) {
   final msg = failureFor(f).toString();
   expect(msg, matcher);
 }

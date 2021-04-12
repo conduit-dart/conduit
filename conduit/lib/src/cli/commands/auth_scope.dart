@@ -21,7 +21,7 @@ class CLIAuthScopeClient extends CLICommand
           "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
       defaultsTo: "")
   List<String>? get scopes {
-    String? v = decode("scopes");
+    final String? v = decode("scopes");
     if (v == null || v.isEmpty) {
       return null;
     }
@@ -39,18 +39,18 @@ class CLIAuthScopeClient extends CLICommand
       return 1;
     }
 
-    var dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+    final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     context = ManagedContext(dataModel, persistentStore);
 
-    var scopingClient = AuthClient.public(clientID!,
+    final scopingClient = AuthClient.public(clientID!,
         allowedScopes: scopes?.map((s) => AuthScope(s)).toList());
 
-    var query = Query<ManagedAuthClient>(context)
+    final query = Query<ManagedAuthClient>(context)
       ..where((o) => o.id).equalTo(clientID)
       ..values.allowedScope =
           scopingClient.allowedScopes?.map((s) => s.toString()).join(" ");
 
-    var result = await query.updateOne();
+    final result = await query.updateOne();
     if (result == null) {
       displayError("Client ID '$clientID' does not exist.");
       return 1;

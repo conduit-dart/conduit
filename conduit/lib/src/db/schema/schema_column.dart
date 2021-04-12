@@ -101,10 +101,11 @@ class SchemaColumn {
   ManagedPropertyType? get type => typeFromTypeString(_type);
 
   set type(ManagedPropertyType? t) {
-    if (t != null)
+    if (t != null) {
       _type = typeStringForType(t);
-    else
+    } else {
       type = null;
+    }
   }
 
   /// Whether or not this column is indexed.
@@ -364,7 +365,7 @@ class SchemaColumnDifference {
     }).toList();
   }
 
-  List<_PropertyDifference> _differingProperties = [];
+  final List<_PropertyDifference> _differingProperties = [];
 }
 
 class _PropertyDifference {
@@ -375,7 +376,7 @@ class _PropertyDifference {
   final dynamic actualValue;
 
   String getErrorMessage(String? actualTableName, String? expectedColumnName) {
-    return "Column '${expectedColumnName}' in table '${actualTableName}' expected "
+    return "Column '$expectedColumnName' in table '$actualTableName' expected "
         "'$expectedValue' for '$name', but migration files yield '$actualValue'";
   }
 }

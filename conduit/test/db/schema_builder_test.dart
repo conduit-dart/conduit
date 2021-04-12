@@ -6,14 +6,14 @@ void main() {
   group("Alterations", () {
     late SchemaBuilder builder;
     setUp(() {
-      var dataModel = ManagedDataModel([
+      final dataModel = ManagedDataModel([
         LoadedSingleItem,
         DefaultItem,
         LoadedItem,
         Container,
         ExtensiveModel
       ]);
-      Schema baseSchema = Schema.fromDataModel(dataModel);
+      final Schema baseSchema = Schema.fromDataModel(dataModel);
       builder = SchemaBuilder(null, baseSchema);
     });
 

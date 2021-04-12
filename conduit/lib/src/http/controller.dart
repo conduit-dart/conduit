@@ -8,8 +8,6 @@ import 'package:logging/logging.dart';
 
 import 'http.dart';
 
-typedef _ControllerGeneratorClosure = Controller Function();
-typedef _Handler = FutureOr<RequestOrResponse?> Function(Request request);
 
 /// The unifying protocol for [Request] and [Response] classes.
 ///
@@ -44,10 +42,10 @@ abstract class Recyclable<T> implements Controller {
 /// All [Controller]s implement this interface.
 abstract class Linkable {
   /// See [Controller.link].
-  Linkable? link(Controller instantiator());
+  Linkable? link(Controller Function() instantiator);
 
   /// See [Controller.linkFunction].
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request));
+  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle);
 }
 
 /// Base class for request handling objects.
@@ -106,7 +104,7 @@ abstract class Controller
   ///
   /// See [linkFunction] for a variant of this method that takes a closure instead of an object.
   @override
-  Linkable? link(Controller instantiator()) {
+  Linkable? link(Controller Function() instantiator) {
     final instance = instantiator();
     if (instance is Recyclable) {
       _nextController = _ControllerRecycler(instantiator, instance);
@@ -123,7 +121,7 @@ abstract class Controller
   ///
   /// See [link] for a variant of this method that takes an object instead of a closure.
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
+  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle) {
     return _nextController = _FunctionController(handle);
   }
 
@@ -226,7 +224,7 @@ abstract class Controller
   Future handleError(
       Request request, dynamic caughtValue, StackTrace trace) async {
     if (caughtValue is HTTPStreamingException) {
-      logger.severe("${request.toDebugString(includeHeaders: true)}",
+      logger.severe(request.toDebugString(includeHeaders: true),
           caughtValue.underlyingException, caughtValue.trace);
 
       // ignore: unawaited_futures
@@ -250,7 +248,7 @@ abstract class Controller
       await _sendResponse(request, response, includeCORSHeaders: true);
 
       logger.severe(
-          "${request.toDebugString(includeHeaders: true)}", caughtValue, trace);
+          request.toDebugString(includeHeaders: true), caughtValue, trace);
     } catch (e) {
       logger.severe("Failed to send response, draining request. Reason: $e");
       // ignore: unawaited_futures
@@ -260,8 +258,8 @@ abstract class Controller
 
   void applyCORSHeadersIfNecessary(Request req, Response resp) {
     if (req.isCORSRequest && !req.isPreflightRequest) {
-      var lastPolicyController = _lastController;
-      var p = lastPolicyController.policy;
+      final lastPolicyController = _lastController;
+      final p = lastPolicyController.policy;
       if (p != null) {
         if (p.isRequestOriginAllowed(req.raw)) {
           resp.headers.addAll(p.headersForRequest(req));
@@ -291,7 +289,7 @@ abstract class Controller
   Future _handlePreflightRequest(Request req) async {
     Controller controllerToDictatePolicy;
     try {
-      var lastControllerInChain = _lastController;
+      final lastControllerInChain = _lastController;
       if (lastControllerInChain != this) {
         controllerToDictatePolicy = lastControllerInChain;
       } else {
@@ -345,7 +343,7 @@ class _ControllerRecycler<T> extends Controller {
     nextInstanceToReceive = instance;
   }
 
-  _ControllerGeneratorClosure generator;
+  Controller Function() generator;
   CORSPolicy? policyOverride;
   T? recycleState;
 
@@ -373,14 +371,14 @@ class _ControllerRecycler<T> extends Controller {
   }
 
   @override
-  Linkable? link(Controller instantiator()) {
+  Linkable? link(Controller Function() instantiator) {
     final c = super.link(instantiator);
     nextInstanceToReceive?._nextController = c as Controller;
     return c;
   }
 
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
+  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle) {
     final c = super.linkFunction(handle);
     nextInstanceToReceive?._nextController = c as Controller;
     return c;
@@ -423,7 +421,7 @@ class _ControllerRecycler<T> extends Controller {
 class _FunctionController extends Controller {
   _FunctionController(this._handler);
 
-  final _Handler _handler;
+  final FutureOr<RequestOrResponse?> Function(Request) _handler;
 
   @override
   FutureOr<RequestOrResponse?> handle(Request request) {

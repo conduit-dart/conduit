@@ -15,7 +15,7 @@ void main() {
     cli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createProject();
-    await cli.agent.getDependencies(offline: true);
+    await cli.agent.getDependencies();
     cli.agent.addOrReplaceFile("lib/application_test.dart", """
 import 'package:conduit/conduit.dart';
 
@@ -33,7 +33,7 @@ class _TestObject {
   tearDown(DartProjectAgent.tearDownAll);
 
   test("Ensure migration directory will get created on generation", () async {
-    var res = await cli.run("db", ["schema"]);
+    final res = await cli.run("db", ["schema"]);
     expect(res, 0);
     expect(cli.output, contains("_TestObject"));
   });

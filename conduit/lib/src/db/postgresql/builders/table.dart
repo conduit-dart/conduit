@@ -105,8 +105,8 @@ class TableBuilder implements Returnable {
       right = ColumnBuilder(this, joinedBy!.inverse);
     }
 
-    var leftColumn = left.sqlColumnName(withTableNamespace: true);
-    var rightColumn = right.sqlColumnName(withTableNamespace: true);
+    final leftColumn = left.sqlColumnName(withTableNamespace: true);
+    final rightColumn = right.sqlColumnName(withTableNamespace: true);
     return QueryPredicate("$leftColumn=$rightColumn", null);
   }
 
@@ -121,8 +121,8 @@ class TableBuilder implements Returnable {
   }
 
   void finalize(Map<String, dynamic> variables) {
-    final allExpressions = [_manualPredicate]
-      ..addAll(expressionBuilders.map((c) => c.predicate));
+    final allExpressions = [_manualPredicate, ...expressionBuilders.map((c) => c.predicate)]
+      ;
 
     predicate = QueryPredicate.and(allExpressions);
     if (predicate?.parameters != null) {
@@ -140,17 +140,17 @@ class TableBuilder implements Returnable {
       final firstElement = expression.keyPath.path.first;
       final lastElement = expression.keyPath.path.last;
 
-      bool isPropertyOnThisEntity = expression.keyPath.length == 1;
-      bool isForeignKey = expression.keyPath.length == 2 &&
+      final bool isPropertyOnThisEntity = expression.keyPath.length == 1;
+      final bool isForeignKey = expression.keyPath.length == 2 &&
           lastElement is ManagedAttributeDescription &&
           lastElement.isPrimaryKey &&
           firstElement is ManagedRelationshipDescription &&
           firstElement.isBelongsTo;
 
       if (isPropertyOnThisEntity) {
-        bool isBelongsTo = lastElement is ManagedRelationshipDescription &&
+        final bool isBelongsTo = lastElement is ManagedRelationshipDescription &&
             lastElement.isBelongsTo;
-        bool isColumn =
+        final bool isColumn =
             lastElement is ManagedAttributeDescription || isBelongsTo;
 
         if (isColumn) {
@@ -175,7 +175,7 @@ class TableBuilder implements Returnable {
 
   void addColumnExpressionToJoinedTable(
       QueryExpression<dynamic, dynamic> expression) {
-    TableBuilder joinedTable = _findJoinedTable(expression.keyPath);
+    final TableBuilder joinedTable = _findJoinedTable(expression.keyPath);
     final lastElement = expression.keyPath.path.last;
     if (lastElement is ManagedRelationshipDescription) {
       final inversePrimaryKey =
@@ -248,21 +248,21 @@ class TableBuilder implements Returnable {
   String? get sqlTableReference => tableAlias ?? entity!.tableName;
 
   String get sqlInnerSelect {
-    var nestedJoins =
+    final nestedJoins =
         returning!.whereType<TableBuilder>().map((t) => t.sqlJoin).join(" ");
 
-    var flattenedColumns = flattenedColumnsToReturn;
+    final flattenedColumns = flattenedColumnsToReturn;
 
-    var columnsWithNamespace = flattenedColumns
+    final columnsWithNamespace = flattenedColumns
         .map((p) => p.sqlColumnName(withTableNamespace: true))
         .join(",");
-    var columnsWithoutNamespace =
+    final columnsWithoutNamespace =
         flattenedColumns.map((p) => p.sqlColumnName()).join(",");
 
-    var outerWhereString = " WHERE ${predicate!.format}";
-    var selectString =
+    final outerWhereString = " WHERE ${predicate!.format}";
+    final selectString =
         "SELECT $columnsWithNamespace FROM $sqlTableName $nestedJoins";
-    var alias = "$sqlTableReference($columnsWithoutNamespace)";
+    final alias = "$sqlTableReference($columnsWithoutNamespace)";
     return "LEFT OUTER JOIN ($selectString$outerWhereString) $alias ON ${joiningPredicate.format}";
   }
 
@@ -284,11 +284,11 @@ class TableBuilder implements Returnable {
 
     final totalJoinPredicate =
         QueryPredicate.and([joiningPredicate, predicate]);
-    var thisJoin =
+    final thisJoin =
         "LEFT OUTER JOIN $sqlTableName ON ${totalJoinPredicate.format}";
 
     if (returning!.any((p) => p is TableBuilder)) {
-      var nestedJoins = returning!.whereType<TableBuilder>().map((p) {
+      final nestedJoins = returning!.whereType<TableBuilder>().map((p) {
         return p.sqlJoin;
       }).toList();
       nestedJoins.insert(0, thisJoin);

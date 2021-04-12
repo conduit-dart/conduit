@@ -14,7 +14,7 @@ void main() {
     templateCli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createProject();
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   tearDownAll(DartProjectAgent.tearDownAll);
@@ -47,13 +47,13 @@ class _TestObject {
       projectUnderTestCli.agent.workingDirectory.uri.resolve(".packages"),
     ).deleteSync();
 
-    var res = await projectUnderTestCli.run("db", ["generate"]);
+    final res = await projectUnderTestCli.run("db", ["generate"]);
     expect(res, isNot(0));
   });
 
   test("Ensure migration directory will get created on generation", () async {
     expect(projectUnderTestCli.defaultMigrationDirectory.existsSync(), false);
-    var res = await projectUnderTestCli.run("db", ["generate"]);
+    final res = await projectUnderTestCli.run("db", ["generate"]);
     expect(res, isZero);
     expect(projectUnderTestCli.defaultMigrationDirectory.existsSync(), true);
   });
@@ -161,7 +161,7 @@ class _TestObject {
   test(
     "Can specify migration directory other than default, relative path",
     () async {
-      var res = await projectUnderTestCli
+      final res = await projectUnderTestCli
           .run("db", ["generate", "--migration-directory", "foobar"]);
       expect(res, isZero);
 
@@ -180,7 +180,7 @@ class _TestObject {
     final migDir = Directory.fromUri(
       projectUnderTestCli.agent.workingDirectory.uri.resolve("foobar/"),
     );
-    var res = await projectUnderTestCli.run(
+    final res = await projectUnderTestCli.run(
       "db",
       [
         "generate",

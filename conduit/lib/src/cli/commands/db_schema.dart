@@ -10,12 +10,12 @@ class CLIDatabaseSchema extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
   @override
   Future<int> handle() async {
-    var map = (await getProjectSchema(this)).asMap();
+    final map = (await getProjectSchema(this)).asMap();
     if (isMachineOutput) {
-      outputSink.write("${json.encode(map)}");
+      outputSink.write(json.encode(map));
     } else {
       const encoder = JsonEncoder.withIndent("  ");
-      outputSink.write("${encoder.convert(map)}");
+      outputSink.write(encoder.convert(map));
     }
     return 0;
   }

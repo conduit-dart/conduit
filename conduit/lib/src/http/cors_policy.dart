@@ -17,7 +17,7 @@ class CORSPolicy {
   ///
   /// Values are set to match [defaultPolicy].
   CORSPolicy() {
-    var def = defaultPolicy;
+    final def = defaultPolicy;
     allowedOrigins = List.from(def.allowedOrigins);
     allowCredentials = def.allowCredentials;
     exposedResponseHeaders = List.from(def.exposedResponseHeaders);
@@ -112,9 +112,9 @@ class CORSPolicy {
   /// This will add Access-Control-Allow-Origin, Access-Control-Expose-Headers and Access-Control-Allow-Credentials
   /// depending on the this policy.
   Map<String, dynamic> headersForRequest(Request request) {
-    var origin = request.raw.headers.value("origin");
+    final origin = request.raw.headers.value("origin");
 
-    var headers = <String, dynamic>{};
+    final headers = <String, dynamic>{};
     headers["Access-Control-Allow-Origin"] = origin;
 
     if (exposedResponseHeaders.isNotEmpty) {
@@ -139,7 +139,7 @@ class CORSPolicy {
       return true;
     }
 
-    var origin = request.headers.value("origin");
+    final origin = request.headers.value("origin");
     if (allowedOrigins.contains(origin)) {
       return true;
     }
@@ -156,18 +156,18 @@ class CORSPolicy {
       return false;
     }
 
-    var method = request.headers.value("access-control-request-method");
+    final method = request.headers.value("access-control-request-method");
     if (!allowedMethods.contains(method)) {
       return false;
     }
 
-    var requestedHeaders = request.headers
+    final requestedHeaders = request.headers
         .value("access-control-request-headers")
         ?.split(",")
         .map((str) => str.trim().toLowerCase())
         .toList();
     if (requestedHeaders?.isNotEmpty ?? false) {
-      var nonSimpleHeaders =
+      final nonSimpleHeaders =
           requestedHeaders!.where((str) => !simpleRequestHeaders.contains(str));
       if (nonSimpleHeaders.any((h) => !allowedRequestHeaders.contains(h))) {
         return false;
@@ -183,7 +183,7 @@ class CORSPolicy {
   /// to this policy.
   /// This method is invoked internally by [Controller]s that have a [Controller.policy].
   Response preflightResponse(Request req) {
-    var headers = {
+    final headers = {
       "Access-Control-Allow-Origin": req.raw.headers.value("origin"),
       "Access-Control-Allow-Methods": allowedMethods.join(", "),
       "Access-Control-Allow-Headers": allowedRequestHeaders.join(", ")

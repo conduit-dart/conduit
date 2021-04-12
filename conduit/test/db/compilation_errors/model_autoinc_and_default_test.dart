@@ -14,7 +14,7 @@ class _AutoincrementAndDefault {
 void main() {
   test("Property is both autoincrement and default value, fails", () {
     try {
-      var _ = ManagedDataModel([AutoincrementAndDefault]);
+      final _ = ManagedDataModel([AutoincrementAndDefault]);
       expect(true, false);
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("_AutoincrementAndDefault.i"));

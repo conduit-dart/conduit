@@ -43,7 +43,7 @@ abstract class CLICommand {
   }
 
   /// Options for this command.
-  args.ArgParser options = args.ArgParser(allowTrailingOptions: true);
+  args.ArgParser options = args.ArgParser();
 
   late args.ArgResults _argumentValues;
 
@@ -185,12 +185,12 @@ abstract class CLICommand {
 
   Future determineToolVersion() async {
     try {
-      var toolLibraryFilePath = (await Isolate.resolvePackageUri(
+      final toolLibraryFilePath = (await Isolate.resolvePackageUri(
               currentMirrorSystem().findLibrary(#conduit).uri))!
           .toFilePath(windows: Platform.isWindows);
-      var conduitDirectory = Directory(FileSystemEntity.parentOf(
+      final conduitDirectory = Directory(FileSystemEntity.parentOf(
           FileSystemEntity.parentOf(toolLibraryFilePath)));
-      var toolPubspecFile =
+      final toolPubspecFile =
           File.fromUri(conduitDirectory.absolute.uri.resolve("pubspec.yaml"));
 
       final toolPubspecContents =
@@ -236,7 +236,7 @@ abstract class CLICommand {
   String get detailedDescription => "";
 
   String get usage {
-    var buf = StringBuffer(name);
+    final buf = StringBuffer(name);
     if (_commandMap.isNotEmpty) {
       buf.write(" <command>");
     }
@@ -265,8 +265,8 @@ abstract class CLICommand {
   };
 
   void printHelp({String? parentCommandName}) {
-    print("$description");
-    print("$detailedDescription");
+    print(description);
+    print(detailedDescription);
     print("");
     if (parentCommandName == null) {
       print("Usage: $usage");
@@ -275,24 +275,24 @@ abstract class CLICommand {
     }
     print("");
     print("Options:");
-    print("${options.usage}");
+    print(options.usage);
 
     if (options.commands.isNotEmpty) {
       print("Available sub-commands:");
 
-      var commandNames = options.commands.keys.toList();
+      final commandNames = options.commands.keys.toList();
       commandNames.sort((a, b) => b.length.compareTo(a.length));
-      var length = commandNames.first.length + 3;
+      final length = commandNames.first.length + 3;
       commandNames.forEach((command) {
-        var desc = _commandMap[command]?.description;
-        print("  ${command.padRight(length, " ")}$desc");
+        final desc = _commandMap[command]?.description;
+        print("  ${command.padRight(length)}$desc");
       });
     }
   }
 
   bool isExecutableInShellPath(String name) {
-    String locator = Platform.isWindows ? "where" : "which";
-    ProcessResult results = Process.runSync(locator, [name], runInShell: true);
+    final String locator = Platform.isWindows ? "where" : "which";
+    final ProcessResult results = Process.runSync(locator, [name], runInShell: true);
 
     return results.exitCode == 0;
   }

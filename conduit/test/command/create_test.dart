@@ -101,21 +101,21 @@ void main() {
       // If you are adding a template, just add it to this list. If you are renaming/deleting a template,
       // make sure there is still a 'default' template.
       await cli.run("create", ["list-templates"]);
-      var names = ["db", "db_and_auth", "default"];
-      var lines = cli.output.split("\n");
+      final names = ["db", "db_and_auth", "default"];
+      final lines = cli.output.split("\n");
 
       expect(lines.length, names.length + 4);
-      for (var n in names) {
+      for (final n in names) {
         expect(lines.any((l) => l.startsWith("\x1B[0m    $n ")), isTrue);
       }
     });
 
     test("Template gets generated from local path, project points to it",
         () async {
-      var res = await cli.run("create", ["test_project", "--offline"]);
+      final res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      var conduitLocationString = File.fromUri(cli.agent.workingDirectory.uri
+      final conduitLocationString = File.fromUri(cli.agent.workingDirectory.uri
               .resolve("test_project/")
               .resolve(".packages"))
           .readAsStringSync()
@@ -124,7 +124,7 @@ void main() {
           .split("conduit:")
           .last;
 
-      var path = path_lib.normalize(path_lib.fromUri(conduitLocationString));
+      final path = path_lib.normalize(path_lib.fromUri(conduitLocationString));
       expect(path, path_lib.join(Directory.current.path, "lib"));
     });
 
@@ -137,13 +137,13 @@ void main() {
     final conduitPubspec = loadYaml(File("pubspec.yaml").readAsStringSync());
     final conduitVersion = Version.parse("${conduitPubspec["version"]}");
 
-    for (var template in templates) {
+    for (final template in templates) {
       test(
         "Templates can use 'this' version of Conduit in their dependencies",
         () {
-          var projectDir = Directory("templates/$template/");
-          var pubspec = File.fromUri(projectDir.uri.resolve("pubspec.yaml"));
-          var contents = loadYaml(pubspec.readAsStringSync());
+          final projectDir = Directory("templates/$template/");
+          final pubspec = File.fromUri(projectDir.uri.resolve("pubspec.yaml"));
+          final contents = loadYaml(pubspec.readAsStringSync());
           final projectVersionConstraint = VersionConstraint.parse(
             contents["dependencies"]["conduit"] as String,
           );
@@ -166,7 +166,7 @@ void main() {
         );
 
         final cmd = Platform.isWindows ? "pub.bat" : "pub";
-        var res = Process.runSync(
+        final res = Process.runSync(
           cmd,
           ["run", "test", "-j", "1"],
           runInShell: true,

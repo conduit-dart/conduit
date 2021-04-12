@@ -10,14 +10,14 @@ import 'package:conduit/conduit.dart';
 /// If it turns out that these libraries are share db other packages then
 /// we should create a common_unit_test package to house these.
 Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
-  var persistentStore =
+  final persistentStore =
       PostgreSQLPersistentStore("dart", "dart", "localhost", 5432, "dart_test");
 
-  var dataModel = ManagedDataModel(instanceTypes);
-  var commands = commandsFromDataModel(dataModel, temporary: true);
-  var context = ManagedContext(dataModel, persistentStore);
+  final dataModel = ManagedDataModel(instanceTypes);
+  final commands = commandsFromDataModel(dataModel, temporary: true);
+  final context = ManagedContext(dataModel, persistentStore);
 
-  for (var cmd in commands) {
+  for (final cmd in commands) {
     await persistentStore.execute(cmd);
   }
 
@@ -26,8 +26,8 @@ Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
 
 List<String> commandsFromDataModel(ManagedDataModel dataModel,
     {bool temporary = false}) {
-  var targetSchema = Schema.fromDataModel(dataModel);
-  var builder = SchemaBuilder.toSchema(
+  final targetSchema = Schema.fromDataModel(dataModel);
+  final builder = SchemaBuilder.toSchema(
       PostgreSQLPersistentStore(null, null, null, 5432, null), targetSchema,
       isTemporary: temporary);
   return builder.commands;
@@ -35,7 +35,7 @@ List<String> commandsFromDataModel(ManagedDataModel dataModel,
 
 List<String> commandsForModelInstanceTypes(List<Type> instanceTypes,
     {bool temporary = false}) {
-  var dataModel = ManagedDataModel(instanceTypes);
+  final dataModel = ManagedDataModel(instanceTypes);
   return commandsFromDataModel(dataModel, temporary: temporary);
 }
 

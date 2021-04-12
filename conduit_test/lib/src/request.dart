@@ -80,7 +80,7 @@ class TestRequest {
 
       query.forEach((key, val) {
         if (val == null || val == true) {
-          pairs.add("$key");
+          pairs.add(key);
         } else if (val is List) {
           val.forEach((innerVal) {
             final urlEncoded = Uri.encodeComponent('$innerVal');

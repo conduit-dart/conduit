@@ -66,7 +66,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
 
   @override
   QueryExpression<T, InstanceType> where<T>(
-      T propertyIdentifier(InstanceType x)) {
+      T Function(InstanceType x) propertyIdentifier) {
     final properties = entity!.identifyProperties(propertyIdentifier)!;
     if (properties.length != 1) {
       throw ArgumentError(
@@ -80,15 +80,15 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
 
   @override
   Query<T> join<T extends ManagedObject>(
-      {T? object(InstanceType x)?, ManagedSet<T>? set(InstanceType x)?}) {
-    var relationship = object ?? set!;
+      {T? Function(InstanceType x)? object, ManagedSet<T>? Function(InstanceType x)? set}) {
+    final relationship = object ?? set!;
     final desc = entity!.identifyRelationship(relationship);
 
     return _createSubquery<T>(desc);
   }
 
   @override
-  void pageBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order,
+  void pageBy<T>(T Function(InstanceType x) propertyIdentifier, QuerySortOrder order,
       {T? boundingValue}) {
     final attribute = entity!.identifyAttribute(propertyIdentifier);
     pageDescriptor =
@@ -96,7 +96,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   @override
-  void sortBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order) {
+  void sortBy<T>(T Function(InstanceType x) propertyIdentifier, QuerySortOrder order) {
     final attribute = entity!.identifyAttribute(propertyIdentifier);
 
     sortDescriptors ??= <QuerySortDescriptor>[];
@@ -104,7 +104,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   @override
-  void returningProperties(List<dynamic> propertyIdentifiers(InstanceType x)) {
+  void returningProperties(List<dynamic> Function(InstanceType x) propertyIdentifiers) {
     final properties = entity!.identifyProperties(propertyIdentifiers)!;
 
     if (properties.any((kp) => kp.path.any((p) =>
@@ -143,7 +143,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
     var parent = _parentQuery;
     while (parent != null) {
       if (parent.subQueries!.containsKey(fromRelationship.inverse)) {
-        var validJoins = fromRelationship.entity!.relationships!.values
+        final validJoins = fromRelationship.entity!.relationships!.values
             .where((r) => !identical(r, fromRelationship))
             .map((r) => "'${r!.name}'")
             .join(", ");
@@ -162,7 +162,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
 
     subQueries ??= {};
 
-    var subquery = Query<T>(context);
+    final subquery = Query<T>(context);
     (subquery as QueryMixin)._parentQuery = this;
     subQueries![fromRelationship] = subquery;
 

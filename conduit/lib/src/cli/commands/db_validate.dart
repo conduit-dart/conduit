@@ -9,17 +9,17 @@ class CLIDatabaseValidate extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
   @override
   Future<int> handle() async {
-    var migrations = projectMigrations;
+    final migrations = projectMigrations;
     if (migrations.isEmpty) {
       displayError("No migration files found in ${migrationDirectory!.path}.");
       return 1;
     }
 
     final currentSchema = await getProjectSchema(this);
-    var schemaFromMigrationFiles =
+    final schemaFromMigrationFiles =
         await schemaByApplyingMigrationSources(migrations);
 
-    var differences = currentSchema.differenceFrom(schemaFromMigrationFiles);
+    final differences = currentSchema.differenceFrom(schemaFromMigrationFiles);
 
     if (differences.hasDifferences) {
       displayError("Validation failed");

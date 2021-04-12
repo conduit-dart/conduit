@@ -24,7 +24,7 @@ void main() {
       Team,
       Game
     ]);
-    var _ = await populateModelGraph(ctx);
+    final _ = await populateModelGraph(ctx);
     await populateGameSchedule(ctx);
   });
 
@@ -34,11 +34,11 @@ void main() {
 
   group("Explicit joins", () {
     test("Can join across many to many relationship, from one side", () async {
-      var q = Query<RootObject>(ctx!)
+      final q = Query<RootObject>(ctx!)
         ..sortBy((r) => r.rid, QuerySortOrder.ascending);
 
       q.join(set: (r) => r.join).join(object: (r) => r.other);
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((r) => r.asMap()).toList(),
           equals([
@@ -73,11 +73,11 @@ void main() {
 
     test("Can join across many to many relationship, from other side",
         () async {
-      var q = Query<OtherRootObject>(ctx!)
+      final q = Query<OtherRootObject>(ctx!)
         ..sortBy((o) => o.id, QuerySortOrder.ascending);
 
       q.join(set: (r) => r.join).join(object: (r) => r.root);
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((r) => r.asMap()).toList(),
           equals([
@@ -112,12 +112,12 @@ void main() {
     });
 
     test("Can join from join table", () async {
-      var q = Query<RootJoinObject>(ctx!)
+      final q = Query<RootJoinObject>(ctx!)
         ..sortBy((r) => r.id, QuerySortOrder.ascending)
         ..join(object: (r) => r.other)
         ..join(object: (r) => r.root);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((r) => r.asMap()).toList(),
           equals([
@@ -142,7 +142,7 @@ void main() {
 
   group("Implicit joins", () {
     test("Can use implicit matcher across many to many table", () async {
-      var q = Query<RootObject>(ctx!)
+      final q = Query<RootObject>(ctx!)
         ..sortBy((r) => r.rid, QuerySortOrder.ascending);
       //..where((o) => o.join.haveAtLeastOneWhere.other.value1).lessThan(4);
 
@@ -157,9 +157,9 @@ void main() {
     }, skip: "#481");
 
     test("Can use implicit join with join table to one side", () async {
-      var q = Query<RootJoinObject>(ctx!)
+      final q = Query<RootJoinObject>(ctx!)
         ..where((o) => o.root!.value1).equalTo(1);
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((r) => r.asMap()).toList(),
           equals([
@@ -215,11 +215,11 @@ void main() {
 
   group("Self joins - standard", () {
     test("Can join by one relationship", () async {
-      var q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+      final q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
 
       q.join(set: (t) => t.awayGames).join(object: (g) => g.homeTeam);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((r) => r.asMap()).toList(),
           equals([
@@ -261,10 +261,10 @@ void main() {
     });
 
     test("Can join by other relationship", () async {
-      var q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+      final q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
 
       q.join(set: (t) => t.homeGames).join(object: (g) => g.awayTeam);
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((r) => r.asMap()).toList(),
@@ -307,11 +307,11 @@ void main() {
     });
 
     test("Can join from join table", () async {
-      var q = Query<Game>(ctx!)
+      final q = Query<Game>(ctx!)
         ..join(object: (g) => g.awayTeam)
         ..join(object: (g) => g.homeTeam)
         ..sortBy((g) => g.id, QuerySortOrder.ascending);
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((r) => r.asMap()).toList(),
@@ -344,7 +344,7 @@ void main() {
         "Attempt to join many to many relationship on the same property throws an exception before executing",
         () async {
       try {
-        var q = Query<Team>(ctx!);
+        final q = Query<Team>(ctx!);
 
         q.join(set: (t) => t.homeGames).join(object: (g) => g.homeTeam);
         expect(true, false);
@@ -377,8 +377,8 @@ void main() {
 
     test("Can implicit join from join table - one side", () async {
       // 'Games where Iowa was away'
-      var q = Query<Game>(ctx!)..where((o) => o.awayTeam!.name).contains("Iowa");
-      var results = await q.fetch();
+      final q = Query<Game>(ctx!)..where((o) => o.awayTeam!.name).contains("Iowa");
+      final results = await q.fetch();
       expect(
           results.map((g) => g.asMap()).toList(),
           equals([
@@ -401,10 +401,10 @@ void main() {
 
     test("Can implicit join from join table - both sides", () async {
       // 'Games where Iowa played Wisconsin at home'
-      var q = Query<Game>(ctx!)
+      final q = Query<Game>(ctx!)
         ..where((o) => o.homeTeam!.name).contains("Wisco")
         ..where((o) => o.awayTeam!.name).contains("Iowa");
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((g) => g.asMap()).toList(),
           equals([
@@ -457,12 +457,12 @@ void main() {
   group("Self joins - standard + filter", () {
     test("Can filter returned nested objects by their values", () async {
       // 'All teams and the games they've played at Minnesota'
-      var q = Query<Team>(ctx!);
+      final q = Query<Team>(ctx!);
       q
           .join(set: (t) => t.awayGames)
           .where((o) => o.homeTeam!.name)
           .contains("Minn");
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((r) => r.asMap()).toList(),
@@ -516,18 +516,18 @@ class _Team {
 }
 
 Future populateGameSchedule(ManagedContext? ctx) async {
-  var teams = [
+  final teams = [
     Team()..name = "Wisconsin",
     Team()..name = "Minnesota",
     Team()..name = "Iowa",
   ];
 
-  for (var t in teams) {
-    var q = Query<Team>(ctx!)..values = t;
+  for (final t in teams) {
+    final q = Query<Team>(ctx!)..values = t;
     t.id = (await q.insert()).id;
   }
 
-  var games = [
+  final games = [
     Game()
       ..homeTeam = teams[0] // Wisconsin
       ..awayTeam = teams[1] // Minnesota
@@ -545,8 +545,8 @@ Future populateGameSchedule(ManagedContext? ctx) async {
       ..awayScore = 3,
   ];
 
-  for (var g in games) {
-    var q = Query<Game>(ctx!)..values = g;
+  for (final g in games) {
+    final q = Query<Game>(ctx!)..values = g;
     await q.insert();
   }
 }

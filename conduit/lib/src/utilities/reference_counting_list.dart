@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 class ReferenceCountingList<T extends ReferenceCountable> extends ListBase<T> {
-  List<T> _inner = <T>[];
+  final List<T> _inner = <T>[];
 
   @override
   T operator [](int index) {

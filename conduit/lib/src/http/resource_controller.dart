@@ -139,7 +139,7 @@ abstract class ResourceController extends Controller
   FutureOr<RequestOrResponse> handle(Request request) async {
     this.request = request;
 
-    var preprocessedResult = await willProcessRequest(request);
+    final preprocessedResult = await willProcessRequest(request);
     if (preprocessedResult is Request) {
       return _process();
     } else if (preprocessedResult is Response) {
@@ -226,7 +226,7 @@ abstract class ResourceController extends Controller
   }
 
   bool _requestContentTypeIsSupported(Request? req) {
-    var incomingContentType = request!.raw.headers.contentType;
+    final incomingContentType = request!.raw.headers.contentType;
     return acceptedContentTypes.firstWhereOrNull((ct) {
           return ct.primaryType == incomingContentType!.primaryType &&
               ct.subType == incomingContentType.subType;
@@ -266,7 +266,7 @@ abstract class ResourceController extends Controller
       if (request!.authorization == null) {
         // todo: this should be done compile-time
         Logger("conduit").warning(
-            "'${runtimeType}' must be linked to channel that contains an 'Authorizer', because "
+            "'$runtimeType' must be linked to channel that contains an 'Authorizer', because "
             "it uses 'Scope' annotation for one or more of its operation methods.");
         throw Response.serverError();
       }

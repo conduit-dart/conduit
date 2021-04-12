@@ -27,7 +27,7 @@ void main() {
     final t =
         CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
     cli = await t.createProject();
-    await cli.agent.getDependencies(offline: true);
+    await cli.agent.getDependencies();
   });
 
   setUp(() async {
@@ -46,7 +46,7 @@ void main() {
   });
 
   tearDown(() async {
-    var tables = [
+    final tables = [
       "_conduit_version_pgsql",
       "_foo",
       "_testobject",
@@ -67,7 +67,7 @@ void main() {
 
   test("Generate and execute initial schema makes workable DB", () async {
     expect(await runMigrationCases(["Case1"]), isZero);
-    var version =
+    final version =
         await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
@@ -84,7 +84,7 @@ void main() {
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
       ) as List<List<dynamic>>;
       expect(versionRow.first.first, 1);
-      var updateDate = versionRow.first.last;
+      final updateDate = versionRow.first.last;
 
       cli.clearOutput();
       expect(await runMigrationCases(["Case2"]), isZero);
@@ -100,7 +100,7 @@ void main() {
   test("Multiple migration files are ran", () async {
     expect(await runMigrationCases(["Case31", "Case32"]), isZero);
 
-    var version =
+    final version =
         await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
@@ -207,7 +207,7 @@ void main() {
   test(
     "If migration fails because adding a new non-nullable column to an table, a friendly error is emitted",
     () async {
-      StringBuffer buf = StringBuffer();
+      final StringBuffer buf = StringBuffer();
       expect(
           await runMigrationCases(["Case81", "Case82"], log: buf), isNonZero);
       expect(buf.toString(), contains("adding or altering"));
@@ -280,7 +280,7 @@ Future runMigrationCases(List<String?> migrationNames,
   final migs =
       getOrderedTestMigrations(migrationNames, fromVersion: fromVersion);
 
-  for (var mig in migs) {
+  for (final mig in migs) {
     final file = File.fromUri(cli.defaultMigrationDirectory.uri
         .resolve("${mig.versionNumber}_name.migration.dart"));
     file.writeAsStringSync(
@@ -306,18 +306,10 @@ class Case1 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -341,18 +333,10 @@ class Case2 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -376,18 +360,10 @@ class Case31 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -411,17 +387,12 @@ class Case32 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn.relationship(
           "testObject",
           ManagedPropertyType.bigInteger,
           relatedTableName: "_TestObject",
           relatedColumnName: "id",
-          rule: DeleteRule.nullify,
-          isNullable: true,
           isUnique: true,
         ),
       ],
@@ -446,18 +417,10 @@ class Case41 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -481,15 +444,10 @@ class Case42 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn.relationship("testObject", ManagedPropertyType.bigInteger,
             relatedTableName: "_TestObject",
             relatedColumnName: "id",
-            rule: DeleteRule.nullify,
-            isNullable: true,
             isUnique: true),
       ],
     ));
@@ -513,18 +471,10 @@ class Case5 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -549,18 +499,10 @@ class Case61 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -584,15 +526,10 @@ class Case62 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn.relationship("testObject", ManagedPropertyType.bigInteger,
             relatedTableName: "_UnknownTable",
             relatedColumnName: "id",
-            rule: DeleteRule.nullify,
-            isNullable: true,
             isUnique: true),
       ],
     ));
@@ -613,11 +550,6 @@ class Case63 extends Migration {
         SchemaColumn(
           "name",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         unencodedInitialValue: "0");
   }
@@ -640,18 +572,10 @@ class Case7 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
         SchemaColumn(
           "foo",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -678,9 +602,6 @@ class Case81 extends Migration {
           ManagedPropertyType.bigInteger,
           isPrimaryKey: true,
           autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ),
       ],
     ));
@@ -703,11 +624,6 @@ class Case82 extends Migration {
         SchemaColumn(
           "name",
           ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
         ));
   }
 

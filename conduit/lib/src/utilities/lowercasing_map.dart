@@ -8,7 +8,7 @@ class LowercaseMap<V> extends Object with MapMixin<String, V> {
     });
   }
 
-  Map<String, V> _inner = {};
+  final Map<String, V> _inner = {};
 
   @override
   Iterable<String> get keys => _inner.keys;

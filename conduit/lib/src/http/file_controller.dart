@@ -6,9 +6,6 @@ import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
 import 'http.dart';
 
-typedef _OnFileNotFound = FutureOr<Response> Function(
-    FileController controller, Request req);
-
 /// Serves files from a directory on the filesystem.
 ///
 /// See the constructor for usage.
@@ -41,12 +38,12 @@ class FileController extends Controller {
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
   FileController(String pathOfDirectoryToServe,
-      {FutureOr<Response> onFileNotFound(
-          FileController controller, Request req)?})
+      {FutureOr<Response> Function(FileController controller, Request req)?
+          onFileNotFound})
       : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
         _onFileNotFound = onFileNotFound;
 
-  static Map<String, ContentType> _defaultExtensionMap = {
+  static final Map<String, ContentType> _defaultExtensionMap = {
     /* Web content */
     "html": ContentType("text", "html", charset: "utf-8"),
     "css": ContentType("text", "css", charset: "utf-8"),
@@ -81,7 +78,7 @@ class FileController extends Controller {
   final Map<String, ContentType> _extensionMap = Map.from(_defaultExtensionMap);
   final List<_PolicyPair?> _policyPairs = [];
   final Uri _servingDirectory;
-  final _OnFileNotFound? _onFileNotFound;
+  final FutureOr<Response> Function(FileController, Request)? _onFileNotFound;
 
   /// Returns a [ContentType] for a file extension.
   ///
@@ -130,7 +127,8 @@ class FileController extends Controller {
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
   ///
-  void addCachePolicy(CachePolicy policy, bool shouldApplyToPath(String path)) {
+  void addCachePolicy(
+      CachePolicy policy, bool Function(String path) shouldApplyToPath) {
     _policyPairs.add(_PolicyPair(policy, shouldApplyToPath));
   }
 
@@ -151,8 +149,8 @@ class FileController extends Controller {
       return Response(HttpStatus.methodNotAllowed, null, null);
     }
 
-    var relativePath = request.path.remainingPath;
-    var fileUri = _servingDirectory.resolve(relativePath ?? "");
+    final relativePath = request.path.remainingPath;
+    final fileUri = _servingDirectory.resolve(relativePath ?? "");
     File file;
     if (FileSystemEntity.isDirectorySync(fileUri.toFilePath())) {
       file = File.fromUri(fileUri.resolve("index.html"));
@@ -165,7 +163,7 @@ class FileController extends Controller {
         return _onFileNotFound!(this, request);
       }
 
-      var response = Response.notFound();
+      final response = Response.notFound();
       if (request.acceptsContentType(ContentType.html)) {
         response
           ..body = "<html><h3>404 Not Found</h3></html>"
@@ -174,20 +172,20 @@ class FileController extends Controller {
       return response;
     }
 
-    var lastModifiedDate = file.lastModifiedSync();
-    var ifModifiedSince =
+    final lastModifiedDate = file.lastModifiedSync();
+    final ifModifiedSince =
         request.raw.headers.value(HttpHeaders.ifModifiedSinceHeader);
     if (ifModifiedSince != null) {
-      var date = HttpDate.parse(ifModifiedSince);
+      final date = HttpDate.parse(ifModifiedSince);
       if (!lastModifiedDate.isAfter(date)) {
         return Response.notModified(lastModifiedDate, _policyForFile(file));
       }
     }
 
-    var lastModifiedDateStringValue = HttpDate.format(lastModifiedDate);
-    var contentType = contentTypeForExtension(path.extension(file.path)) ??
+    final lastModifiedDateStringValue = HttpDate.format(lastModifiedDate);
+    final contentType = contentTypeForExtension(path.extension(file.path)) ??
         ContentType("application", "octet-stream");
-    var byteStream = file.openRead();
+    final byteStream = file.openRead();
 
     return Response.ok(byteStream,
         headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue})
@@ -215,11 +213,9 @@ class FileController extends Controller {
   CachePolicy? _policyForFile(File file) => cachePolicyForPath(file.path);
 }
 
-typedef _ShouldApplyToPath = bool Function(String path);
-
 class _PolicyPair {
   _PolicyPair(this.policy, this.shouldApplyToPath);
 
-  final _ShouldApplyToPath shouldApplyToPath;
+  final bool Function(String) shouldApplyToPath;
   final CachePolicy policy;
 }

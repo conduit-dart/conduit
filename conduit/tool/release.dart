@@ -8,12 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
 Future main(List<String> args) async {
-  var parser = ArgParser()
+  final parser = ArgParser()
     ..addFlag("dry-run")
     ..addFlag("docs-only")
     ..addOption("name")
     ..addOption("config", abbr: "c", defaultsTo: "release.yaml");
-  var runner = Runner(parser.parse(args));
+  final runner = Runner(parser.parse(args));
 
   try {
     exitCode = await runner.run();
@@ -34,7 +34,7 @@ class Runner {
 
   ArgResults options;
   late ReleaseConfig configuration;
-  List<Function> _cleanup = [];
+  final List<Function> _cleanup = [];
   bool? get isDryRun => options["dry-run"] as bool?;
   bool? get docsOnly => options["docs-only"] as bool?;
   String? get name => options["name"] as String?;
@@ -58,11 +58,11 @@ class Runner {
     print(
         "Preparing release: '$name'... ${isDryRun! ? "(dry-run)" : ""} ${docsOnly! ? "(docs-only)" : ""}");
 
-    var master = await directoryWithBranch("master");
+    final master = await directoryWithBranch("master");
     String? upcomingVersion;
     String? changeset;
     if (!docsOnly!) {
-      var previousVersion = await latestVersion();
+      final previousVersion = await latestVersion();
       upcomingVersion = await versionFromDirectory(master);
       if (upcomingVersion == previousVersion) {
         throw "Release failed. Version $upcomingVersion already exists.";
@@ -73,7 +73,7 @@ class Runner {
     }
 
     // Clone docs/source into another directory.
-    var docsSource = await directoryWithBranch("docs/source");
+    final docsSource = await directoryWithBranch("docs/source");
     await publishDocs(docsSource, master);
 
     if (!docsOnly!) {
@@ -85,18 +85,18 @@ class Runner {
   }
 
   Future publishDocs(Directory docSource, Directory code) async {
-    var symbolMap = await generateSymbolMap(code);
-    var blacklist = ["tools", "build"];
-    var transformers = [
+    final symbolMap = await generateSymbolMap(code);
+    final blacklist = ["tools", "build"];
+    final transformers = [
       BlacklistTransformer(blacklist),
       APIReferenceTransformer(symbolMap, baseReferenceURL)
     ];
 
-    var docsLive = await directoryWithBranch("gh-pages");
+    final docsLive = await directoryWithBranch("gh-pages");
     print("Cleaning ${docsLive.path}...");
     docsLive.listSync().where((fse) {
       if (fse is Directory) {
-        var lastPathComponent =
+        final lastPathComponent =
             fse.uri.pathSegments[fse.uri.pathSegments.length - 2];
         return lastPathComponent != ".git";
       } else if (fse is File) {
@@ -123,7 +123,7 @@ class Runner {
       throw "mkdocs failed with exit code $exitCode.";
     }
 
-    var sourceDirectoryInLive =
+    final sourceDirectoryInLive =
         Directory.fromUri(docsLive.uri.resolve("source"));
     sourceDirectoryInLive.deleteSync(recursive: true);
     process = await Process.start("git", ["add", "."],
@@ -152,13 +152,13 @@ class Runner {
     // Push gh-pages to remote
     if (!isDryRun!) {
       print("Pushing gh-pages to remote...");
-      var process =
+      final process =
           await Process.start("git", ["push"], workingDirectory: docsLive.path);
       // ignore: unawaited_futures
       stderr.addStream(process.stderr);
       // ignore: unawaited_futures
       stdout.addStream(process.stdout);
-      var exitCode = await process.exitCode;
+      final exitCode = await process.exitCode;
       if (exitCode != 0) {
         throw "git push to ${docsLive.path} failed with exit code $exitCode.";
       }
@@ -166,12 +166,12 @@ class Runner {
   }
 
   Future<Directory> directoryWithBranch(String branchName) async {
-    var dir =
+    final dir =
         await Directory.current.createTemp(branchName.replaceAll("/", "_"));
     _cleanup.add(() => dir.delete(recursive: true));
 
     print("Cloning '$branchName' into ${dir.path}...");
-    var process = await Process.start("git", [
+    final process = await Process.start("git", [
       "clone",
       "-b",
       branchName,
@@ -183,7 +183,7 @@ class Runner {
     // ignore: unawaited_futures
     // stdout.addStream(process.stdout);
 
-    var exitCode = await process.exitCode;
+    final exitCode = await process.exitCode;
     if (exitCode != 0) {
       throw "directoryWithBranch ($branchName) failed with exit code $exitCode.";
     }
@@ -193,7 +193,7 @@ class Runner {
 
   Future<String> latestVersion() async {
     print("Getting latest version...");
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse(
         "https://api.github.com/repos/stablekernel/conduit/releases/latest",
       ),
@@ -213,8 +213,8 @@ class Runner {
   }
 
   Future<String> versionFromDirectory(Directory directory) async {
-    var pubspecFile = File.fromUri(directory.uri.resolve("pubspec.yaml"));
-    var yaml = loadYaml(await pubspecFile.readAsString());
+    final pubspecFile = File.fromUri(directory.uri.resolve("pubspec.yaml"));
+    final yaml = loadYaml(await pubspecFile.readAsString());
 
     return "v${(yaml["version"] as String).trim()}";
   }
@@ -222,20 +222,20 @@ class Runner {
   Future<String> changesFromDirectory(
       Directory directory, String prefixedVersion) async {
     // Strip "v"
-    var version = prefixedVersion.substring(1);
+    final version = prefixedVersion.substring(1);
     assert(version.split(".").length == 3);
 
-    var regex = RegExp(r"^## ([0-9]+\.[0-9]+\.[0-9]+)", multiLine: true);
+    final regex = RegExp(r"^## ([0-9]+\.[0-9]+\.[0-9]+)", multiLine: true);
 
-    var changelogFile = File.fromUri(directory.uri.resolve("CHANGELOG.md"));
-    var changelogContents = await changelogFile.readAsString();
-    var versionContentsList = regex.allMatches(changelogContents).toList();
-    var latestChangelogVersion = versionContentsList
+    final changelogFile = File.fromUri(directory.uri.resolve("CHANGELOG.md"));
+    final changelogContents = await changelogFile.readAsString();
+    final versionContentsList = regex.allMatches(changelogContents).toList();
+    final latestChangelogVersion = versionContentsList
         .firstWhere((m) => m.group(1) == version, orElse: () {
       throw "Release failed. No entry in CHANGELOG.md for $version.";
     });
 
-    var changeset = changelogContents
+    final changeset = changelogContents
         .substring(
             latestChangelogVersion.end,
             versionContentsList[
@@ -244,21 +244,21 @@ class Runner {
         .trim();
 
     print("Changeset for $prefixedVersion:");
-    print("$changeset");
+    print(changeset);
 
     return changeset;
   }
 
   Future postGithubRelease(
       String? version, String? name, String? description) async {
-    var body =
+    final body =
         json.encode({"tag_name": version, "name": name, "body": description});
 
     print("Tagging GitHub release $version");
     print("- $name");
 
     if (!isDryRun!) {
-      var response = await http.post(
+      final response = await http.post(
         Uri.parse(
             "https://api.github.com/repos/stablekernel/conduit/releases"),
         headers: {
@@ -282,21 +282,21 @@ class Runner {
     }
 
     print("Publishing to pub...");
-    var args = ["publish"];
+    final args = ["publish"];
     if (isDryRun!) {
       args.add("--dry-run");
     } else {
       args.add("-f");
     }
 
-    var process =
+    final process =
         await Process.start("pub", args, workingDirectory: master.path);
     // ignore: unawaited_futures
     stderr.addStream(process.stderr);
     // ignore: unawaited_futures
     stdout.addStream(process.stdout);
 
-    var exitCode = await process.exitCode;
+    final exitCode = await process.exitCode;
     if (exitCode != 0) {
       throw "Publish failed with exit code: $exitCode.";
     }
@@ -305,37 +305,37 @@ class Runner {
   Future<Map<String, Map<String?, List<SymbolResolution>>>> generateSymbolMap(
       Directory codeBranchDir) async {
     print("Generating API reference...");
-    var process = await Process.start("dartdoc", [],
+    final process = await Process.start("dartdoc", [],
         workingDirectory: codeBranchDir.path);
     // ignore: unawaited_futures
     stderr.addStream(process.stderr);
     // ignore: unawaited_futures
     stdout.addStream(process.stdout);
 
-    var exitCode = await process.exitCode;
+    final exitCode = await process.exitCode;
     if (exitCode != 0) {
       throw "Release failed. Generating API reference failed with exit code: $exitCode.";
     }
 
     print("Building symbol map...");
-    var indexFile = File.fromUri(codeBranchDir.uri
+    final indexFile = File.fromUri(codeBranchDir.uri
         .resolve("doc/")
         .resolve("api/")
         .resolve("index.json"));
     final indexJSON = json.decode(await indexFile.readAsString())
         as List<Map<String, dynamic>>;
-    var libraries = indexJSON
+    final libraries = indexJSON
         .where((m) => m["type"] == "library")
         .map((lib) => lib["qualifiedName"])
         .toList();
 
-    List<SymbolResolution> resolutions = indexJSON
+    final List<SymbolResolution> resolutions = indexJSON
         .where((m) => m["type"] != "library")
         .map((obj) => SymbolResolution.fromMap(obj.cast()))
         .toList();
 
-    var qualifiedMap = <String?, List<SymbolResolution>>{};
-    var nameMap = <String?, List<SymbolResolution>>{};
+    final qualifiedMap = <String?, List<SymbolResolution>>{};
+    final nameMap = <String?, List<SymbolResolution>>{};
     resolutions.forEach((resolution) {
       if (!nameMap.containsKey(resolution.name)) {
         nameMap[resolution.name] = [resolution];
@@ -343,7 +343,7 @@ class Runner {
         nameMap[resolution.name]!.add(resolution);
       }
 
-      var qualifiedKey =
+      final qualifiedKey =
           libraries.fold(resolution.qualifiedName, (String? p, e) {
         return p!.replaceFirst("$e.", "");
       });
@@ -359,13 +359,13 @@ class Runner {
 
   Future transformDirectory(List<Transformer> transformers, Directory source,
       Directory destination) async {
-    var contents = source.listSync(recursive: false);
-    var files = contents.whereType<File>();
-    for (var f in files) {
-      var filename = f.uri.pathSegments.last;
+    final contents = source.listSync();
+    final files = contents.whereType<File>();
+    for (final f in files) {
+      final filename = f.uri.pathSegments.last;
 
       List<int>? contents;
-      for (var transformer in transformers) {
+      for (final transformer in transformers) {
         if (!transformer.shouldIncludeItem(filename)) {
           break;
         }
@@ -378,21 +378,21 @@ class Runner {
         contents = await transformer.transform(contents);
       }
 
-      var destinationUri = destination.uri.resolve(filename);
+      final destinationUri = destination.uri.resolve(filename);
       if (contents != null) {
-        var outFile = File.fromUri(destinationUri);
+        final outFile = File.fromUri(destinationUri);
         outFile.writeAsBytesSync(contents);
       }
     }
 
-    Iterable<Directory> subdirectories = contents.whereType<Directory>();
-    for (var subdirectory in subdirectories) {
-      var dirName = subdirectory
+    final Iterable<Directory> subdirectories = contents.whereType<Directory>();
+    for (final subdirectory in subdirectories) {
+      final dirName = subdirectory
           .uri.pathSegments[subdirectory.uri.pathSegments.length - 2];
       Directory? destinationDir =
-          Directory.fromUri(destination.uri.resolve("$dirName"));
+          Directory.fromUri(destination.uri.resolve(dirName));
 
-      for (var t in transformers) {
+      for (final t in transformers) {
         if (!t.shouldConsiderDirectories) {
           continue;
         }
@@ -404,7 +404,7 @@ class Runner {
       }
 
       if (destinationDir != null) {
-        destinationDir.createSync(recursive: false);
+        destinationDir.createSync();
         await transformDirectory(transformers, subdirectory, destinationDir);
       }
     }
@@ -456,7 +456,7 @@ class BlacklistTransformer extends Transformer {
       return false;
     }
 
-    for (var b in blacklist) {
+    for (final b in blacklist) {
       if (b == filename) {
         return false;
       }
@@ -482,14 +482,14 @@ class APIReferenceTransformer extends Transformer {
   Future<List<int>> transform(List<int> inputContents) async {
     var contents = utf8.decode(inputContents);
 
-    var matches = regex.allMatches(contents).toList().reversed;
+    final matches = regex.allMatches(contents).toList().reversed;
 
     matches.forEach((match) {
       var symbol = match.group(1);
-      var resolution = bestGuessForSymbol(symbol);
+      final resolution = bestGuessForSymbol(symbol);
       if (resolution != null) {
         symbol = symbol!.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-        var replacement = constructedReferenceURLFrom(
+        final replacement = constructedReferenceURLFrom(
             baseReferenceURL, resolution.link!.split("/"));
         contents = contents.replaceRange(
             match.start, match.end, "<a href=\"$replacement\">$symbol</a>");
@@ -528,9 +528,9 @@ class APIReferenceTransformer extends Transformer {
 }
 
 Uri constructedReferenceURLFrom(Uri base, List<String> relativePathComponents) {
-  var subdirectories =
+  final subdirectories =
       relativePathComponents.sublist(0, relativePathComponents.length - 1);
-  Uri enclosingDir = subdirectories.fold(base, (Uri prev, elem) {
+  final Uri enclosingDir = subdirectories.fold(base, (Uri prev, elem) {
     return prev.resolve("$elem/");
   });
 

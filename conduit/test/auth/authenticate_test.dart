@@ -15,10 +15,10 @@ void main() {
   });
 
   test("isTokenExpired works correctly", () {
-    var oldToken = AuthToken()
+    final oldToken = AuthToken()
       ..expirationDate =
           DateTime.now().toUtc().subtract(const Duration(seconds: 1));
-    var futureToken = AuthToken()
+    final futureToken = AuthToken()
       ..expirationDate =
           DateTime.now().toUtc().add(const Duration(seconds: 10));
 
@@ -27,10 +27,10 @@ void main() {
   });
 
   test("isAuthCodeExpired works correctly", () {
-    var oldCode = AuthCode()
+    final oldCode = AuthCode()
       ..expirationDate =
           DateTime.now().toUtc().subtract(const Duration(seconds: 1));
-    var futureCode = AuthCode()
+    final futureCode = AuthCode()
       ..expirationDate =
           DateTime.now().toUtc().add(const Duration(seconds: 10));
 
@@ -46,7 +46,7 @@ void main() {
     });
 
     test("Get client for ID", () async {
-      var c = await auth.getClient("com.stablekernel.app1");
+      final c = await auth.getClient("com.stablekernel.app1");
       expect(c is AuthClient, true);
     });
 
@@ -77,7 +77,7 @@ void main() {
     test(
         "Can create token with all information + refresh token if client is confidential",
         () async {
-      var token = await auth.authenticate(
+      final token = await auth.authenticate(
           createdUser!.username,
           InMemoryAuthStorage.defaultPassword,
           "com.stablekernel.app1",
@@ -207,7 +207,7 @@ void main() {
     });
 
     test("Can create token that is verifiable", () async {
-      var token = await auth.authenticate(
+      final token = await auth.authenticate(
           createdUser!.username,
           InMemoryAuthStorage.defaultPassword,
           "com.stablekernel.app1",
@@ -230,7 +230,7 @@ void main() {
 
     test("Can create token with sub-scope of client scope", () async {
       delegate.allowedScopes = [AuthScope("user")];
-      var token = await auth.authenticate(
+      final token = await auth.authenticate(
           createdUser!.username,
           InMemoryAuthStorage.defaultPassword,
           "com.stablekernel.public.scoped",
@@ -280,7 +280,7 @@ void main() {
     });
 
     test("Expired token cannot be verified", () async {
-      var token = await auth.authenticate(
+      final token = await auth.authenticate(
           createdUser!.username,
           InMemoryAuthStorage.defaultPassword,
           "com.stablekernel.app1",
@@ -317,7 +317,7 @@ void main() {
     test(
         "Can refresh token with all information + refresh token if token had refresh token",
         () async {
-      var token = await auth.refresh(
+      final token = await auth.refresh(
           initialToken.refreshToken, "com.stablekernel.app1", "kilimanjaro");
       expect(token.accessToken, isNot(initialToken.accessToken));
       expect(token.refreshToken, initialToken.refreshToken);
@@ -343,7 +343,7 @@ void main() {
       expect(token.issueDate!.difference(token.expirationDate!),
           initialToken.issueDate!.difference(initialToken.expirationDate!));
 
-      var authorization = await auth.verify(token.accessToken);
+      final authorization = await auth.verify(token.accessToken);
       expect(authorization.clientID, "com.stablekernel.app1");
       expect(authorization.ownerID, initialToken.resourceOwnerIdentifier);
     });
@@ -424,7 +424,7 @@ void main() {
     });
 
     test("Can create an auth code that can be exchanged for a token", () async {
-      var authCode = await auth.authenticateForCode(createdUser!.username,
+      final authCode = await auth.authenticateForCode(createdUser!.username,
           InMemoryAuthStorage.defaultPassword, "com.stablekernel.redirect");
 
       expect(authCode.code!.length, greaterThan(0));
@@ -450,7 +450,7 @@ void main() {
               .abs(),
           lessThan(601));
 
-      var token = await auth.exchange(
+      final token = await auth.exchange(
           authCode.code, "com.stablekernel.redirect", "mckinley");
       expect(token, isNotNull);
     });
@@ -525,7 +525,7 @@ void main() {
     });
 
     test("Can create an auth code that can be exchanged for a token", () async {
-      var token = await auth.exchange(
+      final token = await auth.exchange(
           code.code, "com.stablekernel.redirect", "mckinley");
       expect(token.accessToken, isString);
       expect(token.refreshToken, isString);
@@ -575,7 +575,7 @@ void main() {
 
     test("Code that has been exchanged already fails, issued token is revoked",
         () async {
-      var issuedToken = await auth.exchange(
+      final issuedToken = await auth.exchange(
           code.code, "com.stablekernel.redirect", "mckinley");
 
       try {
@@ -597,9 +597,9 @@ void main() {
     test(
         "Code that has been exchanged already fails, issued and refreshed token is revoked",
         () async {
-      var issuedToken = await auth.exchange(
+      final issuedToken = await auth.exchange(
           code.code, "com.stablekernel.redirect", "mckinley");
-      var refreshedToken = await auth.refresh(
+      final refreshedToken = await auth.refresh(
           issuedToken.refreshToken, "com.stablekernel.redirect", "mckinley");
 
       try {
@@ -674,12 +674,12 @@ void main() {
   });
 
   test("Clients have separate tokens", () async {
-    var auth = AuthServer(delegate);
+    final auth = AuthServer(delegate);
 
     delegate.createUsers(1);
-    TestUser createdUser = delegate.users[1]!;
+    final TestUser createdUser = delegate.users[1]!;
 
-    var token = await auth.authenticate(
+    final token = await auth.authenticate(
         "bob+0@stablekernel.com",
         InMemoryAuthStorage.defaultPassword,
         "com.stablekernel.app1",
@@ -688,9 +688,9 @@ void main() {
     expect(p1.clientID, "com.stablekernel.app1");
     expect(p1.ownerID, createdUser.id);
 
-    var token2 = await auth.authenticate("bob+0@stablekernel.com",
+    final token2 = await auth.authenticate("bob+0@stablekernel.com",
         InMemoryAuthStorage.defaultPassword, "com.stablekernel.app2", "fuji");
-    var p2 = await auth.verify(token2.accessToken);
+    final p2 = await auth.verify(token2.accessToken);
     expect(p2.clientID, "com.stablekernel.app2");
     expect(p2.ownerID, createdUser.id);
 
@@ -700,15 +700,15 @@ void main() {
   });
 
   test("Ensure users aren't authenticated by other users", () async {
-    var auth = AuthServer(delegate);
+    final auth = AuthServer(delegate);
     delegate.createUsers(10);
-    var users = delegate.users.values.toList();
-    var t1 = await auth.authenticate(
+    final users = delegate.users.values.toList();
+    final t1 = await auth.authenticate(
         "bob+0@stablekernel.com",
         InMemoryAuthStorage.defaultPassword,
         "com.stablekernel.app1",
         "kilimanjaro");
-    var t2 = await auth.authenticate(
+    final t2 = await auth.authenticate(
         "bob+4@stablekernel.com",
         InMemoryAuthStorage.defaultPassword,
         "com.stablekernel.app1",

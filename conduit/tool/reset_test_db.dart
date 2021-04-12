@@ -18,12 +18,12 @@ void main(List<String> args) {
   print('Shutting down Postgres docker container');
   'docker-compose down'.run;
 
-  var images =
+  final images =
       'docker images'.toList().where((line) => line.startsWith('postgres'));
 
   for (var image in images) {
     image = image.replaceAll('  ', ' ');
-    var parts = image.split(' ');
+    final parts = image.split(' ');
 
     if (parts.isEmpty) continue;
 

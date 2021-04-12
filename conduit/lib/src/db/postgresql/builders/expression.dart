@@ -48,8 +48,8 @@ class ColumnExpressionBuilder extends ColumnBuilder {
 
   QueryPredicate containsPredicate(Iterable<dynamic> values,
       {bool within = true}) {
-    var tokenList = [];
-    var pairedMap = <String, dynamic>{};
+    final tokenList = [];
+    final pairedMap = <String, dynamic>{};
 
     var counter = 0;
     values.forEach((value) {

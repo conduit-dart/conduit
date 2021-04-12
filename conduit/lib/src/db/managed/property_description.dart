@@ -544,6 +544,6 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       //   relTypeString = 'Not set';
       //   break;
     }
-    return "- $name -> '${destinationEntity!.name}' | Type: $relTypeString | Inverse: ${inverseKey}";
+    return "- $name -> '${destinationEntity!.name}' | Type: $relTypeString | Inverse: $inverseKey";
   }
 }

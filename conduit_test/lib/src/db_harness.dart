@@ -68,8 +68,8 @@ abstract class TestHarnessORMMixin {
         context!.persistentStore, Schema.fromDataModel(context!.dataModel!),
         isTemporary: true);
 
-    for (var cmd in builder.commands) {
-      logger?.info("$cmd");
+    for (final cmd in builder.commands) {
+      logger?.info(cmd);
       await context!.persistentStore?.execute(cmd);
     }
   }

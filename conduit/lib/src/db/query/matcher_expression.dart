@@ -131,7 +131,7 @@ class QueryExpression<T, InstanceType> {
   QueryExpressionJunction<T, InstanceType> like(String value,
       {bool caseSensitive = true}) {
     expression = StringExpression(value, PredicateStringOperator.equals,
-          caseSensitive: caseSensitive, allowSpecialCharacters: true);
+          caseSensitive: caseSensitive);
 
     return _createJunction();
   }
@@ -155,7 +155,7 @@ class QueryExpression<T, InstanceType> {
   QueryExpressionJunction<T, InstanceType> notLike(String value,
       {bool caseSensitive = true}) {
     expression = StringExpression(value, PredicateStringOperator.equals,
-          caseSensitive: caseSensitive, invertOperator: true, allowSpecialCharacters: true);
+          caseSensitive: caseSensitive, invertOperator: true);
 
     return _createJunction();
   }
@@ -318,7 +318,7 @@ class QueryExpression<T, InstanceType> {
   ///       var query = new Query<Employee>()
   ///         ..where((e) => e.salary).between(80000, 100000);
   QueryExpressionJunction<T, InstanceType> between(T lhs, T rhs) {
-    expression = RangeExpression(lhs, rhs, within: true);
+    expression = RangeExpression(lhs, rhs);
 
     return _createJunction();
   }
@@ -367,7 +367,7 @@ class QueryExpression<T, InstanceType> {
   ///       var q = new Query<Employee>()
   ///         ..where((e) => e.manager).isNull();
   QueryExpressionJunction<T, InstanceType> isNull() {
-    expression = const NullCheckExpression(shouldBeNull: true);
+    expression = const NullCheckExpression();
 
     return _createJunction();
   }

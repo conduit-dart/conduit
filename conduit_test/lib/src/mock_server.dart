@@ -122,7 +122,8 @@ class MockHTTPServer extends MockServer<Request> {
   /// it returns is sent back to the client.
   ///
   /// Optionally includes a [delay] before sending the response to simulate long-running tasks or network issues.
-  void queueHandler(Response handler(Request request), {Duration? delay}) {
+  void queueHandler(Response Function(Request request) handler,
+      {Duration? delay}) {
     _responseQueue.add(
         _MockServerResponse(handler: handler, delay: delay ?? defaultDelay));
   }
@@ -186,8 +187,6 @@ class MockHTTPServer extends MockServer<Request> {
   }
 }
 
-typedef _MockRequestHandler = Response Function(Request request);
-
 class _MockServerResponse {
   _MockServerResponse(
       {this.object, this.handler, this.delay, this.outageCount = 0});
@@ -195,7 +194,7 @@ class _MockServerResponse {
   final Duration? delay;
 
   final Response? object;
-  final _MockRequestHandler? handler;
+  final Response Function(Request)? handler;
   int outageCount;
 
   Future<Response?> respond(Request req) async {

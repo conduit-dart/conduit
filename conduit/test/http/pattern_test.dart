@@ -198,7 +198,7 @@ void main() {
   });
 }
 
-void expectRouterException(void f(), {String? exceptionMessage}) {
+void expectRouterException(void Function() f, {String? exceptionMessage}) {
   try {
     f();
     fail("Expected RouterException");

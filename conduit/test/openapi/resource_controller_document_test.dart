@@ -20,7 +20,7 @@ void main() {
     final idOperations = document.paths!["/a/{id}"]!.operations!.values;
     expect(collectionOperations.length, 3);
     expect(idOperations.length, 2);
-    for (var op in [collectionOperations, idOperations].expand((i) => i)) {
+    for (final op in [collectionOperations, idOperations].expand((i) => i)) {
       expect(op!.parameterNamed("optionalQueryProperty")!.schema!.type,
           APIType.integer);
       expect(op.parameterNamed("optionalQueryProperty")!.isRequired, false);

@@ -233,7 +233,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     final enumStr = type.enumerationMap == null
         ? "null"
         : "{${type.enumerationMap!.keys.map((k) {
-            var vStr = sourcifyValue(type.enumerationMap![k]);
+            final vStr = sourcifyValue(type.enumerationMap![k]);
             return "'$k': $vStr";
           }).join(",")}}";
 
@@ -393,7 +393,7 @@ return entity.symbolMap[Symbol(symbolName)];
   String compile(BuildContext ctx) {
     final importUris = <Uri>[];
 
-    final className = "${MirrorSystem.getName(instanceType.simpleName)}";
+    final className = MirrorSystem.getName(instanceType.simpleName);
     final originalFileUri = instanceType.location!.sourceUri.toString();
     final relationshipsStr = entity.relationships!.keys.map((name) {
       return "'$name': ${_getRelationshipInstantiator(ctx, entity.relationships![name]!, importUris: importUris)}";

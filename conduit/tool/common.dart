@@ -70,11 +70,11 @@ void configurePostgress(String pathToProgressDb) {
 
 bool isPostgresDaemonInstalled() {
   bool found = false;
-  var images = 'docker images'.toList(skipLines: 1);
+  final images = 'docker images'.toList(skipLines: 1);
 
   for (var image in images) {
     image = image.replaceAll('  ', ' ');
-    var parts = image.split(' ');
+    final parts = image.split(' ');
     if (parts.isNotEmpty && parts[0] == 'postgres') {
       found = true;
       break;

@@ -21,7 +21,7 @@ import 'route_specification.dart';
 /// a [Router] is the [ApplicationChannel.entryPoint].
 class Router extends Controller {
   /// Creates a new [Router].
-  Router({String? basePath, Future notFoundHandler(Request request)?})
+  Router({String? basePath, Future Function(Request request)? notFoundHandler})
       : _unmatchedController = notFoundHandler,
         _basePathSegments =
             basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
@@ -73,7 +73,7 @@ class Router extends Controller {
   ///         /files/*
   ///
   Linkable route(String pattern) {
-    var routeController = _RouteController(
+    final routeController = _RouteController(
         RouteSpecification.specificationsForRoutePattern(pattern));
     _routeControllers.add(routeController);
     return routeController;
@@ -84,20 +84,20 @@ class Router extends Controller {
     _root.node =
         RouteNode(_routeControllers.expand((rh) => rh.specifications).toList());
 
-    for (var c in _routeControllers) {
+    for (final c in _routeControllers) {
       c.didAddToChannel();
     }
   }
 
   /// Routers override this method to throw an exception. Use [route] instead.
   @override
-  Linkable? link(Controller generatorFunction()) {
+  Linkable? link(Controller Function() generatorFunction) {
     throw ArgumentError(
         "Invalid link. 'Router' cannot directly link to controllers. Use 'route'.");
   }
 
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
+  Linkable? linkFunction(FutureOr<RequestOrResponse?> Function(Request request) handle) {
     throw ArgumentError(
         "Invalid link. 'Router' cannot directly link to functions. Use 'route'.");
   }
@@ -167,7 +167,7 @@ class Router extends Controller {
     if (_unmatchedController != null) {
       return _unmatchedController!(req);
     }
-    var response = Response.notFound();
+    final response = Response.notFound();
     if (req.acceptsContentType(ContentType.html)) {
       response
         ..body = "<html><h3>404 Not Found</h3></html>"
@@ -176,7 +176,7 @@ class Router extends Controller {
 
     applyCORSHeadersIfNecessary(req, response);
     await req.respond(response);
-    logger.info("${req.toDebugString()}");
+    logger.info(req.toDebugString());
   }
 }
 

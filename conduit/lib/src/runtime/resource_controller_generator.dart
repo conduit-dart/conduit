@@ -22,7 +22,7 @@ String getInvokerSource(BuildContext context,
   });
 
   op.namedParameters.forEach((p) {
-    var defaultValue = sourcifyValue(p.defaultValue);
+    final defaultValue = sourcifyValue(p.defaultValue);
 
     buf.writeln(
         "    ${p.symbolName}: args.namedArguments['${p.symbolName}'] as ${p.type} ?? $defaultValue,");
@@ -36,7 +36,7 @@ String getInvokerSource(BuildContext context,
 
 String getApplyRequestPropertiesSource(
     BuildContext context, ResourceControllerRuntimeImpl runtime) {
-  StringBuffer buf = StringBuffer();
+  final StringBuffer buf = StringBuffer();
   final subclassName = MirrorSystem.getName(runtime.type.simpleName);
 
   runtime.ivarParameters!.forEach((f) {
@@ -145,7 +145,7 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
 }
 
 String getElementDecoderSource(Type type) {
-  final className = "${type}";
+  final className = "$type";
   if (reflectType(type).isSubtypeOf(reflectType(bool))) {
     return "(v) { return true; }";
   } else if (reflectType(type).isSubtypeOf(reflectType(String))) {

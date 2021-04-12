@@ -13,7 +13,7 @@ void main() {
   test("Fetching an object gets entire object", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel(name: "Joe", email: "a@a.com");
+    final m = TestModel(name: "Joe", email: "a@a.com");
     var req = Query<TestModel>(context!)..values = m;
     var item = await req.insert();
 
@@ -29,7 +29,7 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var someOtherContext = ManagedContext(ManagedDataModel([]), null);
+    final someOtherContext = ManagedContext(ManagedDataModel([]), null);
     try {
       Query.forEntity(
           context!.dataModel!.entityForType(TestModel), someOtherContext);
@@ -43,11 +43,11 @@ void main() {
   test("Specifying resultProperties works", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel(name: "Joe", email: "b@a.com");
+    final m = TestModel(name: "Joe", email: "b@a.com");
     var req = Query<TestModel>(context!)..values = m;
 
     var item = await req.insert();
-    var id = item.id;
+    final id = item.id;
 
     req = Query<TestModel>(context!)
       ..predicate = QueryPredicate("id = @id", {"id": item.id})
@@ -63,7 +63,7 @@ void main() {
   test("Returning properties for undefined attributes fails", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel(name: "Joe", email: "b@a.com");
+    final m = TestModel(name: "Joe", email: "b@a.com");
     var req = Query<TestModel>(context!)..values = m;
 
     await req.insert();
@@ -86,8 +86,8 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel(name: "Joe$i", email: "asc$i@a.com");
-      var req = Query<TestModel>(context!)..values = m;
+      final m = TestModel(name: "Joe$i", email: "asc$i@a.com");
+      final req = Query<TestModel>(context!)..values = m;
       await req.insert();
     }
 
@@ -106,8 +106,8 @@ void main() {
     result = await req.fetch();
 
     int? idIndex = 0;
-    for (TestModel m in result) {
-      int? next = m.id;
+    for (final TestModel m in result) {
+      final int? next = m.id;
       expect(next, greaterThan(idIndex));
       idIndex = next;
     }
@@ -117,20 +117,20 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel(name: "Joe$i", email: "desc$i@a.com");
+      final m = TestModel(name: "Joe$i", email: "desc$i@a.com");
 
-      var req = Query<TestModel>(context!)..values = m;
+      final req = Query<TestModel>(context!)..values = m;
 
       await req.insert();
     }
 
-    var req = Query<TestModel>(context!)
+    final req = Query<TestModel>(context!)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
       ..predicate = QueryPredicate("email like @key", {"key": "desc%"});
-    var result = await req.fetch();
+    final result = await req.fetch();
 
     for (int i = 0; i < 10; i++) {
-      int v = 9 - i;
+      final int v = 9 - i;
       expect(result[i].email, "desc$v@a.com");
     }
   });
@@ -172,19 +172,19 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel(name: "Joe${i % 2}", email: "multi$i@a.com");
+      final m = TestModel(name: "Joe${i % 2}", email: "multi$i@a.com");
 
-      var req = Query<TestModel>(context!)..values = m;
+      final req = Query<TestModel>(context!)..values = m;
 
       await req.insert();
     }
 
-    var req = Query<TestModel>(context!)
+    final req = Query<TestModel>(context!)
       ..sortBy((t) => t.name, QuerySortOrder.ascending)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
       ..predicate = QueryPredicate("email like @key", {"key": "multi%"});
 
-    var result = await req.fetch();
+    final result = await req.fetch();
 
     expect(result[0].name, "Joe0");
     expect(result[0].email, "multi8@a.com");
@@ -220,7 +220,7 @@ void main() {
   test("Fetching an invalid key fails", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel(name: "invkey", email: "invkey@a.com");
+    final m = TestModel(name: "invkey", email: "invkey@a.com");
 
     var req = Query<TestModel>(context!)..values = m;
     await req.insert();
@@ -245,16 +245,16 @@ void main() {
     u2 = await (Query<GenUser>(context!)..values = u2).insert();
 
     for (int i = 0; i < 5; i++) {
-      var p1 = GenPost()..text = "${2 * i}";
+      final p1 = GenPost()..text = "${2 * i}";
       p1.owner = u1;
       await (Query<GenPost>(context!)..values = p1).insert();
 
-      var p2 = GenPost()..text = "${2 * i + 1}";
+      final p2 = GenPost()..text = "${2 * i + 1}";
       p2.owner = u2;
       await (Query<GenPost>(context!)..values = p2).insert();
     }
 
-    var req = Query<GenPost>(context!)
+    final req = Query<GenPost>(context!)
       ..predicate = QueryPredicate("owner_id = @id", {"id": u1.id});
     var res = await req.fetch();
     expect(res.length, 5);
@@ -266,11 +266,11 @@ void main() {
             .length,
         5);
 
-    var query = Query<GenPost>(context!);
+    final query = Query<GenPost>(context!);
     query.where((o) => o.owner).identifiedBy(u1.id);
     res = await query.fetch();
 
-    GenUser? user = res.first.owner;
+    final GenUser? user = res.first.owner;
     expect(user, isNotNull);
     expect(res.length, 5);
     expect(
@@ -287,7 +287,7 @@ void main() {
     var p1 = await (Query<GenPost>(context!)..values = (GenPost()..text = "1"))
         .insert();
 
-    var req = Query<GenPost>(context!);
+    final req = Query<GenPost>(context!);
     p1 = (await req.fetchOne())!;
 
     expect(p1.owner, isNull);
@@ -296,16 +296,16 @@ void main() {
   test("Omits specific keys", () async {
     context = await PostgresTestConfig().contextWithModels([Omit]);
 
-    var iq = Query<Omit>(context!)..values = (Omit()..text = "foobar");
+    final iq = Query<Omit>(context!)..values = (Omit()..text = "foobar");
 
-    var result = await iq.insert();
+    final result = await iq.insert();
     expect(result.id, greaterThan(0));
     expect(result.backing.contents!["text"], isNull);
 
-    var fq = Query<Omit>(context!)
+    final fq = Query<Omit>(context!)
       ..predicate = QueryPredicate("id=@id", {"id": result.id});
 
-    var fResult = (await fq.fetchOne())!;
+    final fResult = (await fq.fetchOne())!;
     expect(fResult.id, result.id);
     expect(fResult.backing.contents!["text"], isNull);
   });
@@ -315,15 +315,15 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
-    var objects = [GenUser()..name = "Joe", GenUser()..name = "Bob"];
+    final objects = [GenUser()..name = "Joe", GenUser()..name = "Bob"];
 
-    for (var o in objects) {
-      var req = Query<GenUser>(context!)..values = o;
+    for (final o in objects) {
+      final req = Query<GenUser>(context!)..values = o;
       await req.insert();
     }
 
     try {
-      var q = Query<GenUser>(context!)..join(set: (u) => u.posts);
+      final q = Query<GenUser>(context!)..join(set: (u) => u.posts);
 
       await q.fetchOne();
 
@@ -339,7 +339,7 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
-    var u1 = await (Query<GenUser>(context!)..values.name = "Joe").insert();
+    final u1 = await (Query<GenUser>(context!)..values.name = "Joe").insert();
 
     await (Query<GenPost>(context!)
           ..values.text = "text"
@@ -349,7 +349,7 @@ void main() {
     var q = Query<GenPost>(context!)
       ..returningProperties((p) => [p.id, p.owner]);
 
-    var result = (await q.fetchOne())!;
+    final result = (await q.fetchOne())!;
     expect(result.owner!.id, 1);
     expect(result.owner!.backing.contents!.length, 1);
 
@@ -367,8 +367,8 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([PrivateField]);
 
     await Query<PrivateField>(context!).insert();
-    var q = Query<PrivateField>(context!);
-    var result = (await q.fetchOne())!;
+    final q = Query<PrivateField>(context!);
+    final result = (await q.fetchOne())!;
     expect(result.public, "x");
   });
 
@@ -404,7 +404,7 @@ void main() {
 
     await q.insert();
     q = Query<EnumObject>(context!);
-    var result = (await q.fetchOne())!;
+    final result = (await q.fetchOne())!;
     expect(result.enumValues, null);
     expect(result.asMap()["enumValues"], isNull);
   });
@@ -416,7 +416,7 @@ void main() {
         .execute("INSERT INTO _enumobject (enumValues) VALUES ('foobar')");
 
     try {
-      var q = Query<EnumObject>(context!);
+      final q = Query<EnumObject>(context!);
       await q.fetch();
       expect(true, false);
     } on StateError catch (e) {

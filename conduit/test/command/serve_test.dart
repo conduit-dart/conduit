@@ -31,7 +31,7 @@ void main() {
     templateCli = await CLIClient(
             WorkingDirectoryAgent(DartProjectAgent.projectsDirectory))
         .createProject();
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   setUp(() async {
@@ -50,15 +50,15 @@ void main() {
     expect(projectUnderTestCli.output, contains("Port: 8888"));
     expect(projectUnderTestCli.output, contains("config.yaml"));
 
-    var thisPubspec = yaml.loadYaml(
+    final thisPubspec = yaml.loadYaml(
         File.fromUri(Directory.current.uri.resolve("pubspec.yaml"))
             .readAsStringSync());
-    var thisVersion = Version.parse(thisPubspec["version"] as String);
+    final thisVersion = Version.parse(thisPubspec["version"] as String);
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));
     expect(projectUnderTestCli.output,
         contains("Conduit project version: $thisVersion"));
 
-    var result = await http.get(Uri.parse("http://localhost:8888/example"));
+    final result = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(result.statusCode, 200);
 
     // ignore: unawaited_futures
@@ -117,15 +117,15 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     ]);
     await task.hasStarted;
 
-    var completer = Completer<List<int>>();
-    var socket = await SecureSocket.connect("localhost", 8888,
+    final completer = Completer<List<int>>();
+    final socket = await SecureSocket.connect("localhost", 8888,
         onBadCertificate: (_) => true);
-    var request =
+    final request =
         "GET /example HTTP/1.1\r\nConnection: close\r\nHost: localhost\r\n\r\n";
     socket.add(request.codeUnits);
 
     socket.listen((bytes) => completer.complete(bytes));
-    var httpResult = String.fromCharCodes(await completer.future);
+    final httpResult = String.fromCharCodes(await completer.future);
     expect(httpResult, contains("200 OK"));
     await socket.close();
   });
@@ -156,7 +156,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
         .resolve("server.key")
         .toFilePath(windows: Platform.isWindows));
 
-    var badCertFile = File.fromUri(
+    final badCertFile = File.fromUri(
         projectUnderTestCli.agent.workingDirectory.uri.resolve("server.crt"));
     badCertFile.writeAsStringSync("foobar");
 
@@ -208,7 +208,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
   test("Use config-path, relative path", () async {
     projectUnderTestCli.agent.addOrReplaceFile("foobar.yaml", "key: value");
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
-      var newContents = c.replaceAll('return Response.ok({"key": "value"});',
+      final newContents = c.replaceAll('return Response.ok({"key": "value"});',
           "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
       return "import 'dart:io';\n$newContents";
     });
@@ -217,14 +217,14 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
         .start("serve", ["--config-path", "foobar.yaml", "-n", "1"]);
     await task.hasStarted;
 
-    var result = await http.get(Uri.parse("http://localhost:8888/example"));
+    final result = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(result.body, contains("key: value"));
   });
 
   test("Use config-path, absolute path", () async {
     projectUnderTestCli.agent.addOrReplaceFile("foobar.yaml", "key: value");
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
-      var newContents = c.replaceAll('return Response.ok({"key": "value"});',
+      final newContents = c.replaceAll('return Response.ok({"key": "value"});',
           "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
       return "import 'dart:io';\n$newContents";
     });
@@ -239,7 +239,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     ]);
     await task.hasStarted;
 
-    var result = await http.get(Uri.parse("http://localhost:8888/example"));
+    final result = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(result.body, contains("key: value"));
   });
 }

@@ -62,12 +62,12 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
     }
 
     try {
-      var config = ApplicationOptions()..configurationFilePath = configPath;
+      final config = ApplicationOptions()..configurationFilePath = configPath;
 
       final yaml = (loadYaml(pubspecContents!) as Map<dynamic, dynamic>)
           .cast<String, dynamic>();
 
-      var document =
+      final document =
           await Application.document(channels.first.channelType, config, yaml);
 
       document.servers = hosts;
@@ -128,7 +128,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
     } on ConfigurationException catch (e) {
       return {
         "error":
-            "There was an issue loading the configuration file '${configPath}': ${e.message}"
+            "There was an issue loading the configuration file '$configPath': ${e.message}"
       };
     } on ManagedDataModelError catch (e) {
       return {

@@ -301,7 +301,7 @@ class AuthScope {
           "Invalid AuthScope. May not an empty string.", scopeString);
     }
 
-    for (var c in scopeString.codeUnits) {
+    for (final c in scopeString.codeUnits) {
       if (!(c == 33 || (c >= 35 && c <= 91) || (c >= 93 && c <= 126))) {
         throw FormatException(
             "Invalid authorization scope. May only contain "
@@ -424,7 +424,7 @@ class AuthScope {
 
     // If we aren't restricted by modifier, let's make sure we have access.
     final thisIterator = _segments.iterator;
-    for (var incomingSegment in incomingScope._segments) {
+    for (final incomingSegment in incomingScope._segments) {
       // If the incoming scope is more restrictive than this scope,
       // then it's not allowed.
       if (!thisIterator.moveNext()) {
@@ -455,7 +455,7 @@ class AuthScope {
   /// Whether or not two scopes are exactly the same.
   bool isExactlyScope(AuthScope scope) {
     final incomingIterator = scope._segments.iterator;
-    for (var segment in _segments) {
+    for (final segment in _segments) {
       /// the scope has less segments so no match.
       if (!incomingIterator.moveNext()) {
         return false;

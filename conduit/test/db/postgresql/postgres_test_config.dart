@@ -32,14 +32,14 @@ class PostgresTestConfig {
           username, password, host, port, dbName);
 
   Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
-    var persistentStore =
+    final persistentStore =
         PostgreSQLPersistentStore(username, password, host, port, dbName);
 
-    var dataModel = ManagedDataModel(instanceTypes);
-    var commands = commandsFromDataModel(dataModel, temporary: true);
-    var context = ManagedContext(dataModel, persistentStore);
+    final dataModel = ManagedDataModel(instanceTypes);
+    final commands = commandsFromDataModel(dataModel, temporary: true);
+    final context = ManagedContext(dataModel, persistentStore);
 
-    for (var cmd in commands) {
+    for (final cmd in commands) {
       await persistentStore.execute(cmd);
     }
 
@@ -48,8 +48,8 @@ class PostgresTestConfig {
 
   List<String> commandsFromDataModel(ManagedDataModel dataModel,
       {bool temporary = false}) {
-    var targetSchema = Schema.fromDataModel(dataModel);
-    var builder = SchemaBuilder.toSchema(
+    final targetSchema = Schema.fromDataModel(dataModel);
+    final builder = SchemaBuilder.toSchema(
         PostgreSQLPersistentStore(null, null, null, 5432, null), targetSchema,
         isTemporary: temporary);
     return builder.commands;
@@ -57,7 +57,7 @@ class PostgresTestConfig {
 
   List<String> commandsForModelInstanceTypes(List<Type> instanceTypes,
       {bool temporary = false}) {
-    var dataModel = ManagedDataModel(instanceTypes);
+    final dataModel = ManagedDataModel(instanceTypes);
     return commandsFromDataModel(dataModel, temporary: temporary);
   }
 
@@ -79,7 +79,7 @@ class PostgresTestConfig {
       /// Check for an environment variable.
       const _key = 'PSQL_PORT';
       if (Platform.environment.containsKey(_key)) {
-        var value = Platform.environment[_key];
+        final value = Platform.environment[_key];
         if (value != null) {
           _port = int.tryParse(value);
         }
@@ -109,7 +109,7 @@ class PostgresTestConfig {
   String get dbName => _dbName ??= _initialise('PSQL_DBNAME', defaultDbName);
 
   String _initialise(String key, String defaultValue) {
-    var value = defaultValue;
+    final value = defaultValue;
 
     /// Check for an environment variable.
     if (Platform.environment.containsKey(key)) {

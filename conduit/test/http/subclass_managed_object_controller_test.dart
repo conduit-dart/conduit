@@ -9,17 +9,17 @@ import '../db/postgresql/postgres_test_config.dart';
 
 void main() {
   group("Standard operations", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(app.options.port);
-    List<TestModel> allObjects = [];
+    final client = Agent.onPort(app.options.port);
+    final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {
-        var q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel!.context)
           ..values.createdAt = now
           ..values.name = "$i";
         allObjects.add(await q.insert());
@@ -34,18 +34,18 @@ void main() {
     });
 
     test("Can get one object", () async {
-      var resp = await client.request("/controller/2").get();
+      final resp = await client.request("/controller/2").get();
       expect(resp, hasResponse(200, body: {"data": allObjects[1].asMap()}));
     });
 
     test("Missing object returns overridden status code", () async {
-      var resp = await client.request("/controller/1").get();
+      final resp = await client.request("/controller/1").get();
       expect(resp, hasStatus(403));
     });
 
     test("Can get all objects", () async {
-      var resp = await client.request("/controller").get();
-      var sublist = allObjects.sublist(1);
+      final resp = await client.request("/controller").get();
+      final sublist = allObjects.sublist(1);
       expect(
           resp,
           hasResponse(200,
@@ -53,20 +53,20 @@ void main() {
     });
 
     test("Can update an object", () async {
-      var expectedMap = {
+      final expectedMap = {
         "id": 2,
         "name": "Mr. Fred",
         "createdAt": allObjects[1].createdAt.toIso8601String()
       };
 
-      var resp = await (client.request("/controller/2")
+      final resp = await (client.request("/controller/2")
             ..body = {"name": "Fred"})
           .put();
       expect(resp, hasResponse(200, body: {"data": expectedMap}));
     });
 
     test("Missing object for update returns overridden status code", () async {
-      var resp = await (client.request("/controller/25")
+      final resp = await (client.request("/controller/25")
             ..body = {"name": "Fred"})
           .put();
 
@@ -74,14 +74,14 @@ void main() {
     });
 
     test("Can create an object", () async {
-      var resp = await (client.request("/controller")
+      final resp = await (client.request("/controller")
             ..body = {
               "name": "John",
               "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
             })
           .post();
 
-      var expectedMap = {
+      final expectedMap = {
         "id": allObjects.length + 1,
         "name": "Mr. John",
         "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
@@ -110,17 +110,17 @@ class TestChannel extends ApplicationChannel {
 
   @override
   Future prepare() async {
-    var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgresTestConfig().persistentStore();
+    final dataModel = ManagedDataModel([TestModel]);
+    final persistentStore = PostgresTestConfig().persistentStore();
     context = ManagedContext(dataModel, persistentStore);
 
-    var targetSchema = Schema.fromDataModel(context.dataModel!);
-    var schemaBuilder = SchemaBuilder.toSchema(
+    final targetSchema = Schema.fromDataModel(context.dataModel!);
+    final schemaBuilder = SchemaBuilder.toSchema(
         context.persistentStore, targetSchema,
         isTemporary: true);
 
-    var commands = schemaBuilder.commands;
-    for (var cmd in commands) {
+    final commands = schemaBuilder.commands;
+    for (final cmd in commands) {
       await context.persistentStore!.execute(cmd);
     }
   }

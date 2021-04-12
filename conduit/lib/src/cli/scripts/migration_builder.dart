@@ -21,9 +21,9 @@ class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
   @override
   Future<Map<String, dynamic>> execute() async {
     try {
-      var dataModel = ManagedDataModel.fromCurrentMirrorSystem();
-      var schema = Schema.fromDataModel(dataModel);
-      var changeList = <String>[];
+      final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+      final schema = Schema.fromDataModel(dataModel);
+      final changeList = <String>[];
 
       final source = Migration.sourceForSchemaUpgrade(
           inputSchema, schema, versionTag,

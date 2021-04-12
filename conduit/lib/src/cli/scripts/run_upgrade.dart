@@ -36,7 +36,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
 
     PostgreSQLPersistentStore.logger.level = Level.ALL;
     PostgreSQLPersistentStore.logger.onRecord
-        .listen((r) => log("${r.message}"));
+        .listen((r) => log(r.message));
 
     late PersistentStore store;
     if (dbInfo.flavor == "postgres") {
@@ -45,7 +45,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
           timeZone: dbInfo.timeZone);
     }
 
-    var migrationTypes = currentMirrorSystem()
+    final migrationTypes = currentMirrorSystem()
         .isolate
         .rootLibrary
         .declarations

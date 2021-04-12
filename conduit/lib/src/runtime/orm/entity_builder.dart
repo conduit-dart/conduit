@@ -27,7 +27,7 @@ class EntityBuilder {
     runtime = ManagedEntityRuntimeImpl(instanceType, entity);
 
     properties = _getProperties();
-    var _primaryKeyProperty =
+    final _primaryKeyProperty =
         properties.firstWhereOrNull((p) => p.column?.isPrimaryKey ?? false);
     if (_primaryKeyProperty == null) {
       throw ManagedDataModelErrorImpl.noPrimaryKey(entity);
@@ -185,7 +185,7 @@ class EntityBuilder {
       return metadata!.name;
     }
 
-    var declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
+    final declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
         .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
 
     if (declaredTableNameClass == null) {
@@ -226,7 +226,7 @@ class EntityBuilder {
     attributes.forEach((prop) {
       final complement = out.firstWhereOrNull((pb) => pb.name == prop.name);
       if (complement != null) {
-        complement.serialize = const Serialize(input: true, output: true);
+        complement.serialize = const Serialize(output: true);
       } else {
         out.add(prop);
       }

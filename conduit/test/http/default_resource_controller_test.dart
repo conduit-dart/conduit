@@ -9,17 +9,17 @@ import '../db/postgresql/postgres_test_config.dart';
 
 void main() {
   group("Standard operations", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(app.options.port);
-    List<TestModel> allObjects = [];
+    final client = Agent.onPort(app.options.port);
+    final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {
-        var q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel!.context)
           ..values.createdAt = now
           ..values.name = "$i";
         allObjects.add(await q.insert());
@@ -34,24 +34,24 @@ void main() {
     });
 
     test("Can get one object", () async {
-      var resp = await client.request("/controller/1").get();
+      final resp = await client.request("/controller/1").get();
       expect(resp, hasResponse(200, body: allObjects.first.asMap()));
     });
 
     test("Can get all objects", () async {
-      var resp = await client.request("/controller").get();
+      final resp = await client.request("/controller").get();
       expect(resp,
           hasResponse(200, body: allObjects.map((m) => m.asMap()).toList()));
     });
 
     test("Can update an object", () async {
-      var expectedMap = {
+      final expectedMap = {
         "id": 1,
         "name": "Fred",
         "createdAt": allObjects.first.createdAt!.toIso8601String()
       };
 
-      var resp = await client.put("/controller/1", body: {"name": "Fred"});
+      final resp = await client.put("/controller/1", body: {"name": "Fred"});
       expect(resp, hasResponse(200, body: expectedMap));
 
       expect(await client.request("/controller/1").get(),
@@ -61,14 +61,14 @@ void main() {
     });
 
     test("Can create an object", () async {
-      var resp = await (client.request("/controller")
+      final resp = await (client.request("/controller")
             ..body = {
               "name": "John",
               "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
             })
           .post();
 
-      var expectedMap = {
+      final expectedMap = {
         "id": allObjects.length + 1,
         "name": "John",
         "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
@@ -85,9 +85,9 @@ void main() {
   });
 
   group("Standard operation failure cases", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(8888);
+    final client = Agent.onPort(8888);
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
@@ -105,7 +105,7 @@ void main() {
 
     test("Put an object with the wrong type of path param returns 404",
         () async {
-      var resp = await (client.request("/controller/one")
+      final resp = await (client.request("/controller/one")
             ..body = {"name": "Fred"})
           .put();
       expect(resp, hasStatus(404));
@@ -118,9 +118,9 @@ void main() {
   });
 
   group("Objects that don't exist", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(8888);
+    final client = Agent.onPort(8888);
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
@@ -153,17 +153,17 @@ void main() {
   });
 
   group("Extended GET requests", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(8888);
-    List<TestModel> allObjects = [];
+    final client = Agent.onPort(8888);
+    final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {
-        var q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel!.context)
           ..values.createdAt = now
           ..values.name = "${9 - i}";
         allObjects.add(await q.insert());
@@ -211,7 +211,7 @@ void main() {
     });
 
     test("Getting all objects with bad syntax fails", () async {
-      var resp = await client.request("/controller?sortBy=name,asc,bar").get();
+      final resp = await client.request("/controller?sortBy=name,asc,bar").get();
       expect(
           resp,
           hasResponse(400, body: {
@@ -269,17 +269,17 @@ void main() {
   });
 
   group("With dynamic entity", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = 8888;
-    var client = Agent.onPort(8888);
-    List<TestModel> allObjects = [];
+    final client = Agent.onPort(8888);
+    final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {
-        var q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel!.context)
           ..values.createdAt = now
           ..values.name = "${9 - i}";
         allObjects.add(await q.insert());
@@ -294,12 +294,12 @@ void main() {
     });
 
     test("Can get one object", () async {
-      var resp = await client.request("/dynamic/1").get();
+      final resp = await client.request("/dynamic/1").get();
       expect(resp, hasResponse(200, body: allObjects.first.asMap()));
     });
 
     test("Can get all objects", () async {
-      var resp = await client.request("/dynamic").get();
+      final resp = await client.request("/dynamic").get();
       expect(resp,
           hasResponse(200, body: allObjects.map((m) => m.asMap()).toList()));
     });
@@ -311,17 +311,17 @@ class TestChannel extends ApplicationChannel {
 
   @override
   Future prepare() async {
-    var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgresTestConfig().persistentStore();
+    final dataModel = ManagedDataModel([TestModel]);
+    final persistentStore = PostgresTestConfig().persistentStore();
     context = ManagedContext(dataModel, persistentStore);
 
-    var targetSchema = Schema.fromDataModel(context.dataModel!);
-    var schemaBuilder = SchemaBuilder.toSchema(
+    final targetSchema = Schema.fromDataModel(context.dataModel!);
+    final schemaBuilder = SchemaBuilder.toSchema(
         context.persistentStore, targetSchema,
         isTemporary: true);
 
-    var commands = schemaBuilder.commands;
-    for (var cmd in commands) {
+    final commands = schemaBuilder.commands;
+    for (final cmd in commands) {
       await context.persistentStore!.execute(cmd);
     }
   }

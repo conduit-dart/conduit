@@ -44,16 +44,16 @@ List<String> _pathsFromRoutePattern(final String inputPattern) {
     endingOptionalCloseCount++;
   }
 
-  var chars = routePattern.codeUnits;
-  var patterns = <String>[];
-  var buffer = StringBuffer();
-  var openOptional = '['.codeUnitAt(0);
-  var openExpression = '('.codeUnitAt(0);
-  var closeExpression = ')'.codeUnitAt(0);
+  final chars = routePattern.codeUnits;
+  final patterns = <String>[];
+  final buffer = StringBuffer();
+  final openOptional = '['.codeUnitAt(0);
+  final openExpression = '('.codeUnitAt(0);
+  final closeExpression = ')'.codeUnitAt(0);
 
   bool insideExpression = false;
   for (var i = 0; i < chars.length; i++) {
-    var code = chars[i];
+    final code = chars[i];
 
     if (code == openExpression) {
       if (insideExpression) {
@@ -110,17 +110,17 @@ List<RouteSegment> _splitPathSegments(String inputPath) {
     path = path.substring(0, path.length - 1);
   }
 
-  var segments = <String>[];
-  var chars = path.codeUnits;
+  final segments = <String>[];
+  final chars = path.codeUnits;
   var buffer = StringBuffer();
 
-  var openExpression = '('.codeUnitAt(0);
-  var closeExpression = ')'.codeUnitAt(0);
-  var pathDelimiter = '/'.codeUnitAt(0);
+  final openExpression = '('.codeUnitAt(0);
+  final closeExpression = ')'.codeUnitAt(0);
+  final pathDelimiter = '/'.codeUnitAt(0);
   bool insideExpression = false;
 
   for (var i = 0; i < path.length; i++) {
-    var code = chars[i];
+    final code = chars[i];
 
     if (code == openExpression) {
       buffer.writeCharCode(code);

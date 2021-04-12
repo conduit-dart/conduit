@@ -95,7 +95,7 @@ class Schema {
           "Table ${existingTable.name} does not exist and cannot be replaced.");
     }
 
-    var index = _tableStorage!.indexOf(existingTable);
+    final index = _tableStorage!.indexOf(existingTable);
     _tableStorage![index] = newTable;
     newTable.schema = this;
     existingTable.schema = null;
@@ -136,7 +136,7 @@ class Schema {
   /// Note: tables are typically prefixed with an underscore when using
   /// Conduit naming conventions for [ManagedObject].
   SchemaTable? tableForName(String name) {
-    var lowercaseName = name.toLowerCase();
+    final lowercaseName = name.toLowerCase();
 
     return tables.firstWhereOrNull((t) => t.name!.toLowerCase() == lowercaseName);
   }
@@ -154,12 +154,12 @@ class SchemaDifference {
   /// Creates a new instance that represents the difference between [expectedSchema] and [actualSchema].
   ///
   SchemaDifference(this.expectedSchema, this.actualSchema) {
-    for (var expectedTable in expectedSchema.tables) {
-      var actualTable = actualSchema[expectedTable.name!];
+    for (final expectedTable in expectedSchema.tables) {
+      final actualTable = actualSchema[expectedTable.name!];
       if (actualTable == null) {
         _differingTables.add(SchemaTableDifference(expectedTable, null));
       } else {
-        var diff = expectedTable.differenceFrom(actualTable);
+        final diff = expectedTable.differenceFrom(actualTable);
         if (diff.hasDifferences) {
           _differingTables.add(diff);
         }
@@ -213,7 +213,7 @@ class SchemaDifference {
         .toList();
   }
 
-  List<SchemaTableDifference> _differingTables = [];
+  final List<SchemaTableDifference> _differingTables = [];
 }
 
 /// Thrown when a [Schema] encounters an error.

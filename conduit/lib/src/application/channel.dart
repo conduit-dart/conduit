@@ -232,8 +232,8 @@ class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
   /// [onError], if provided, will be invoked when this isolate tries to [add] invalid data. Only the isolate
   /// that failed to send the data will receive [onError] events.
   @override
-  StreamSubscription<dynamic> listen(void onData(dynamic event)?,
-          {Function? onError, void onDone()?, bool? cancelOnError = false}) =>
+  StreamSubscription<dynamic> listen(void Function(dynamic event)? onData,
+          {Function? onError, void Function()? onDone, bool? cancelOnError = false}) =>
       _inboundController.stream.listen(onData,
           onError: onError ??
               ((err, StackTrace st) =>

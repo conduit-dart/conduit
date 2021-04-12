@@ -27,7 +27,7 @@ class CLIClient {
     return _output.toString();
   }
 
-  StringBuffer _output = StringBuffer();
+  final StringBuffer _output = StringBuffer();
 
   static Future activateCLI({String path = "."}) {
     final cmd = Platform.isWindows ? "pub.bat" : "pub";
@@ -121,7 +121,7 @@ class TestChannel extends ApplicationChannel {
     args.add(name);
 
     await run("create", args);
-    print("$output");
+    print(output);
 
     return CLIClient(DartProjectAgent.existing(
         DartProjectAgent.projectsDirectory.uri.resolve("$name/")));
@@ -149,10 +149,10 @@ class TestChannel extends ApplicationChannel {
 
     final files = <File>[];
     for (var i = 1; i < schemas.length; i++) {
-      var source =
+      final source =
           Migration.sourceForSchemaUpgrade(schemas[i - 1], schemas[i], i);
 
-      var file = File.fromUri(defaultMigrationDirectory.uri
+      final file = File.fromUri(defaultMigrationDirectory.uri
           .resolve("${i + currentNumberOfMigrations}.migration.dart"));
       file.writeAsStringSync(source);
       files.add(file);
@@ -170,12 +170,12 @@ class TestChannel extends ApplicationChannel {
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
 
-    var cmd = Runner()..outputSink = _output;
-    var results = cmd.options.parse(args);
+    final cmd = Runner()..outputSink = _output;
+    final results = cmd.options.parse(args);
 
     final exitCode = await cmd.process(results);
     if (exitCode != 0) {
-      print("command failed: ${output}");
+      print("command failed: $output");
     }
 
     Directory.current = saved;
@@ -192,8 +192,8 @@ class TestChannel extends ApplicationChannel {
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
 
-    var cmd = Runner()..outputSink = _output;
-    var results = cmd.options.parse(args);
+    final cmd = Runner()..outputSink = _output;
+    final results = cmd.options.parse(args);
 
     final task = CLITask();
     var elapsed = 0.0;
@@ -247,6 +247,6 @@ class CLITask {
 
   Future<int> get exitCode => _processFinished.future;
 
-  Completer<int> _processFinished = Completer<int>();
-  Completer<bool> _processStarted = Completer<bool>();
+  final Completer<int> _processFinished = Completer<int>();
+  final Completer<bool> _processStarted = Completer<bool>();
 }

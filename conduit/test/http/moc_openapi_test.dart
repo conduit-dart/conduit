@@ -16,7 +16,7 @@ void main() {
         ..paths = {}
         ..components = APIComponents());
 
-      var dataModel = ManagedDataModel([TestModel]);
+      final dataModel = ManagedDataModel([TestModel]);
       final ctx = ManagedContext(dataModel, DefaultPersistentStore());
       final c = ManagedObjectController<TestModel>(ctx);
       c.restore(c.recycledState);
@@ -31,7 +31,7 @@ void main() {
     });
 
     test("getObject", () {
-      var op = idOperations!["get"]!;
+      final op = idOperations!["get"]!;
       expect(op.id, "getTestModel");
 
       expect(op.responses!.length, 2);
@@ -44,7 +44,7 @@ void main() {
     });
 
     test("createObject", () {
-      var op = collectionOperations!["post"]!;
+      final op = collectionOperations!["post"]!;
       expect(op.id, "createTestModel");
 
       expect(op.responses!.length, 3);
@@ -62,7 +62,7 @@ void main() {
     });
 
     test("updateObject", () {
-      var op = idOperations!["put"]!;
+      final op = idOperations!["put"]!;
       expect(op.id, "updateTestModel");
 
       expect(op.responses!.length, 4);
@@ -81,7 +81,7 @@ void main() {
     });
 
     test("deleteObject", () {
-      var op = idOperations!["delete"]!;
+      final op = idOperations!["delete"]!;
       expect(op.id, "deleteTestModel");
 
       expect(op.responses!.length, 2);
@@ -91,7 +91,7 @@ void main() {
     });
 
     test("getObjects", () {
-      var op = collectionOperations!["get"]!;
+      final op = collectionOperations!["get"]!;
       expect(op.id, "getTestModels");
 
       expect(op.responses!.length, 2);
@@ -114,18 +114,18 @@ class TestChannel extends ApplicationChannel {
 
   @override
   Future prepare() async {
-    var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgreSQLPersistentStore(
+    final dataModel = ManagedDataModel([TestModel]);
+    final persistentStore = PostgreSQLPersistentStore(
         "dart", "dart", "localhost", 5432, "dart_test");
     context = ManagedContext(dataModel, persistentStore);
 
-    var targetSchema = Schema.fromDataModel(context!.dataModel!);
-    var schemaBuilder = SchemaBuilder.toSchema(
+    final targetSchema = Schema.fromDataModel(context!.dataModel!);
+    final schemaBuilder = SchemaBuilder.toSchema(
         context!.persistentStore, targetSchema,
         isTemporary: true);
 
-    var commands = schemaBuilder.commands;
-    for (var cmd in commands) {
+    final commands = schemaBuilder.commands;
+    for (final cmd in commands) {
       await context!.persistentStore!.execute(cmd);
     }
   }

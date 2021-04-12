@@ -5,11 +5,11 @@ import 'package:conduit/conduit.dart';
 
 void main() {
   test("Can add resources to registry that get shut down", () async {
-    var controller = StreamController();
+    final controller = StreamController();
     ServiceRegistry.defaultInstance
         .register<StreamController>(controller, (s) => s.close());
 
-    var msgCompleter = Completer();
+    final msgCompleter = Completer();
     controller.stream.listen((msg) {
       msgCompleter.complete();
     });
@@ -22,11 +22,11 @@ void main() {
   });
 
   test("Can remove resource", () async {
-    var controller = StreamController();
+    final controller = StreamController();
     ServiceRegistry.defaultInstance
         .register<StreamController>(controller, (s) => s.close());
 
-    var msgCompleter = Completer();
+    final msgCompleter = Completer();
     controller.stream.listen((msg) {
       msgCompleter.complete();
     });

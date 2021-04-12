@@ -24,7 +24,7 @@ class _InvalidCyclicRight {
 void main() {
   test("Both properties have Relationship metadata", () {
     try {
-      var _ = ManagedDataModel([InvalidCyclicLeft, InvalidCyclicRight]);
+      final _ = ManagedDataModel([InvalidCyclicLeft, InvalidCyclicRight]);
       expect(true, false);
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("_InvalidCyclicLeft"));

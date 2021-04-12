@@ -114,13 +114,13 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
       expectedString = "'${_getName(expectedProperty)}'";
     }
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' has "
+        "'$tableName' has "
         "no inverse property. Every relationship must have an inverse. "
         "$expectedString on "
-        "'${destinationTableName}'"
+        "'$destinationTableName'"
         "is supposed to exist, and it should be either a "
-        "'${instanceName}' or"
-        "'ManagedSet<${instanceName}>'.");
+        "'$instanceName' or"
+        "'ManagedSet<$instanceName>'.");
   }
 
   factory ManagedDataModelErrorImpl.incompatibleDeleteRule(
@@ -135,9 +135,9 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   factory ManagedDataModelErrorImpl.dualMetadata(String tableName,
       Symbol property, String destinationTableName, String? inverseProperty) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' "
-        "on '${tableName}' "
-        "and '${inverseProperty}' "
-        "on '${destinationTableName}' "
+        "on '$tableName' "
+        "and '$inverseProperty' "
+        "on '$destinationTableName' "
         "both have 'Relate' metadata, but only one can. "
         "The property with 'Relate' metadata is a foreign key column "
         "in the database.");
@@ -146,7 +146,7 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   factory ManagedDataModelErrorImpl.duplicateInverse(
       String tableName, String? inverseName, List<String?> conflictingNames) {
     return ManagedDataModelErrorImpl(
-        "Entity '${tableName}' has multiple relationship "
+        "Entity '$tableName' has multiple relationship "
         "properties that claim to be the inverse of '$inverseName'. A property may "
         "only have one inverse. The claiming properties are: ${conflictingNames.join(", ")}.");
   }
@@ -154,7 +154,7 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   factory ManagedDataModelErrorImpl.noDestinationEntity(
       String tableName, Symbol property, Symbol expectedType) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' expects that there is a subclass "
+        "'$tableName' expects that there is a subclass "
         "of 'ManagedObject' named '${_getName(expectedType)}', "
         "but there isn't one. If you have declared one - and you really checked "
         "hard for typos - make sure the file it is declared in is imported appropriately.");
@@ -166,7 +166,7 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
       List<String> possibleEntities,
       Symbol expected) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' expects that just one "
+        "'$tableName' expects that just one "
         "'ManagedObject' subclass uses a table definition that extends "
         "'${_getName(expected)}. But the following implementations were found: "
         "${possibleEntities.join(",")}. That's just "
@@ -229,14 +229,14 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
 
   factory ManagedDataModelErrorImpl.invalidEntityUniqueProperty(
       String tableName, Symbol property) {
-    return ManagedDataModelErrorImpl("Type '${tableName}' "
+    return ManagedDataModelErrorImpl("Type '$tableName' "
         "declares '${MirrorSystem.getName(property)}' as unique in 'Table', "
         "but '${MirrorSystem.getName(property)}' is not a property of this type.");
   }
 
   factory ManagedDataModelErrorImpl.relationshipEntityUniqueProperty(
       String tableName, Symbol property) {
-    return ManagedDataModelErrorImpl("Type '${tableName}' "
+    return ManagedDataModelErrorImpl("Type '$tableName' "
         "declares '${_getName(property)}' as unique in 'Table'. This property cannot "
         "be used to make an instance unique; only attributes or belongs-to relationships may used "
         "in this way.");

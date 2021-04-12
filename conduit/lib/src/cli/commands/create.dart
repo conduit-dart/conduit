@@ -39,7 +39,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
       return 1;
     }
 
-    var destDirectory = destinationDirectoryFromPath(projectName!);
+    final destDirectory = destinationDirectoryFromPath(projectName!);
     if (destDirectory.existsSync()) {
       displayError("${destDirectory.path} already exists, stopping.");
       return 1;
@@ -89,7 +89,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   bool shouldIncludeItem(FileSystemEntity entity) {
-    var ignoreFiles = [
+    final ignoreFiles = [
       "packages",
       "pubspec.lock",
       "Dart_Packages.xml",
@@ -98,7 +98,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
       "vcs.xml",
     ];
 
-    var hiddenFilesToKeep = [
+    final hiddenFilesToKeep = [
       ".gitignore",
       ".travis.yml",
       "analysis_options.yaml"
@@ -135,9 +135,9 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   void copyDirectory(String projectName, Directory destinationParentDirectory,
       Directory sourceDirectory) {
-    var sourceDirectoryName = sourceDirectory
+    final sourceDirectoryName = sourceDirectory
         .uri.pathSegments[sourceDirectory.uri.pathSegments.length - 2];
-    var destDir = Directory(
+    final destDir = Directory(
         path_lib.join(destinationParentDirectory.path, sourceDirectoryName));
 
     destDir.createSync();
@@ -149,7 +149,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   void copyFile(
       String projectName, Directory destinationDirectory, File sourceFile) {
-    var path = path_lib.join(
+    final path = path_lib.join(
         destinationDirectory.path, fileNameForFile(projectName, sourceFile));
     var contents = sourceFile.readAsStringSync();
 
@@ -157,7 +157,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     contents =
         contents.replaceAll("Wildfire", camelCaseFromSnakeCase(projectName));
 
-    var outputFile = File(path);
+    final outputFile = File(path);
     outputFile.createSync();
     outputFile.writeAsStringSync(contents);
   }
@@ -182,15 +182,15 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   void createProjectSpecificFiles(String directoryPath) {
     displayProgress("Generating config.yaml from config.src.yaml.");
-    var configSrcPath = File(path_lib.join(directoryPath, "config.src.yaml"));
+    final configSrcPath = File(path_lib.join(directoryPath, "config.src.yaml"));
     configSrcPath
         .copySync(File(path_lib.join(directoryPath, "config.yaml")).path);
   }
 
   void addDependencyOverridesToPackage(
       String packageDirectoryPath, Map<String, Uri> overrides) {
-    var pubspecFile = File(path_lib.join(packageDirectoryPath, "pubspec.yaml"));
-    var contents = pubspecFile.readAsStringSync();
+    final pubspecFile = File(path_lib.join(packageDirectoryPath, "pubspec.yaml"));
+    final contents = pubspecFile.readAsStringSync();
 
     final overrideBuffer = StringBuffer();
     overrideBuffer.writeln("dependency_overrides:");
@@ -222,28 +222,28 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   bool isSnakeCase(String string) {
-    var expr = RegExp("^[a-z][a-z0-9_]*\$");
+    final expr = RegExp("^[a-z][a-z0-9_]*\$");
     return expr.hasMatch(string);
   }
 
   String camelCaseFromSnakeCase(String string) {
     return string.split("_").map((str) {
-      var firstChar = str.substring(0, 1);
-      var remainingString = str.substring(1, str.length);
+      final firstChar = str.substring(0, 1);
+      final remainingString = str.substring(1, str.length);
       return firstChar.toUpperCase() + remainingString;
-    }).join("");
+    }).join();
   }
 
   Future<int> fetchProjectDependencies(Directory workingDirectory,
       {bool offline = false}) async {
-    var args = ["get"];
+    final args = ["get"];
     if (offline) {
       args.add("--offline");
     }
 
     try {
       final cmd = Platform.isWindows ? "pub.bat" : "pub";
-      var process = await Process.start(cmd, args,
+      final process = await Process.start(cmd, args,
               workingDirectory: workingDirectory.absolute.path,
               runInShell: true)
           .timeout(const Duration(seconds: 60));

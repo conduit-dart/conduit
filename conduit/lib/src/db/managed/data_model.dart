@@ -68,8 +68,8 @@ class ManagedDataModel extends Object
   }
 
   Iterable<ManagedEntity> get entities => _entities.values;
-  Map<Type, ManagedEntity> _entities = {};
-  Map<String, ManagedEntity?> _tableDefinitionToEntityMap = {};
+  final Map<Type, ManagedEntity> _entities = {};
+  final Map<String, ManagedEntity?> _tableDefinitionToEntityMap = {};
 
   /// Returns a [ManagedEntity] for a [Type].
   ///
@@ -84,7 +84,7 @@ class ManagedDataModel extends Object
   /// If the [type] has no known [ManagedEntity] then a [StateError] is thrown.
   /// Use [tryEntityForType] to test if an entity exists.
   ManagedEntity entityForType(Type type) {
-    var entity = tryEntityForType(type);
+    final entity = tryEntityForType(type);
 
     if (entity == null) {
       throw StateError(
@@ -95,7 +95,7 @@ class ManagedDataModel extends Object
   }
 
   ManagedEntity? tryEntityForType(Type type) {
-    var entity =
+    final entity =
         _entities[type] ?? _tableDefinitionToEntityMap[type.toString()];
 
     return entity;

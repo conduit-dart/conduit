@@ -113,7 +113,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   ///
   /// This mechanism only works on [fetch] and [fetchOne] execution methods. You *must not* execute a subquery created by this method.
   Query<T> join<T extends ManagedObject>(
-      {T? object(InstanceType x)?, ManagedSet<T>? set(InstanceType x)?});
+      {T? Function(InstanceType x)? object, ManagedSet<T>? Function(InstanceType x)? set});
 
   /// Configures this instance to fetch a section of a larger result set.
   ///
@@ -137,7 +137,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   ///
   /// Note that internally, [pageBy] adds a matcher to [where] and adds a high-priority [sortBy].
   /// Adding multiple [pageBy]s to an instance has undefined behavior.
-  void pageBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order,
+  void pageBy<T>(T Function(InstanceType x) propertyIdentifier, QuerySortOrder order,
       {T? boundingValue});
 
   /// Configures this instance to sort its results by some property and order.
@@ -149,7 +149,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   ///
   ///         var query = Query<Employee>()
   ///           ..sortBy((e) => e.name, QuerySortOrder.ascending);
-  void sortBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order);
+  void sortBy<T>(T Function(InstanceType x) propertyIdentifier, QuerySortOrder order);
 
   /// The [ManagedEntity] of the [InstanceType].
   ManagedEntity? get entity;
@@ -191,7 +191,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   ///           ..where((e) => e.manager.name).equalTo("Sally");
   ///
   QueryExpression<T, InstanceType> where<T>(
-      T propertyIdentifier(InstanceType x));
+      T Function(InstanceType x) propertyIdentifier);
 
   /// Confirms that a query has no predicate before executing it.
   ///
@@ -294,7 +294,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   /// it can be stripped from the returned object(s) with [ManagedObject.removePropertyFromBackingMap].
   ///
   /// If this method is not invoked, the properties defined by [ManagedEntity.defaultProperties] are returned.
-  void returningProperties(List<dynamic> propertyIdentifiers(InstanceType x));
+  void returningProperties(List<dynamic> Function(InstanceType x) propertyIdentifiers);
 
   /// Inserts an [InstanceType] into the underlying database.
   ///

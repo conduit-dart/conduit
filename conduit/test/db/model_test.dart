@@ -9,8 +9,8 @@ void main() {
   late ManagedContext context;
 
   setUpAll(() {
-    var ps = DefaultPersistentStore();
-    ManagedDataModel dm = ManagedDataModel([
+    final ps = DefaultPersistentStore();
+    final ManagedDataModel dm = ManagedDataModel([
       TransientTest,
       TransientTypeTest,
       User,
@@ -39,7 +39,7 @@ void main() {
   });
 
   test("Model object construction", () {
-    var user = User();
+    final user = User();
     user.name = "Joe";
     user.id = 1;
 
@@ -48,7 +48,7 @@ void main() {
   });
 
   test("Mismatched type throws exception", () {
-    var user = User();
+    final user = User();
     try {
       user["name"] = 1;
 
@@ -65,15 +65,15 @@ void main() {
   });
 
   test("Accessing model object without field should return null", () {
-    var user = User();
+    final user = User();
     expect(user.name, isNull);
   });
 
   test("Can assign and read embedded objects", () {
-    var user = User();
+    final user = User();
     user.id = 1;
     user.name = "Bob";
-    List<Post> posts = <Post>[
+    final List<Post> posts = <Post>[
       Post()
         ..text = "A"
         ..id = 1
@@ -99,18 +99,18 @@ void main() {
   });
 
   test("Can assign null to relationships", () {
-    var u = User();
+    final u = User();
     u.posts = null;
 
-    var p = Post();
+    final p = Post();
     p.owner = null;
   });
 
   test("Can convert object to map", () {
-    var user = User();
+    final user = User();
     user.id = 1;
     user.name = "Bob";
-    var posts = [
+    final posts = [
       Post()
         ..text = "A"
         ..id = 1,
@@ -123,11 +123,11 @@ void main() {
     ];
     user.posts = ManagedSet<Post>.from(posts);
 
-    var m = user.asMap();
+    final m = user.asMap();
     expect(m is Map, true);
     expect(m["id"], 1);
     expect(m["name"], "Bob");
-    var mPosts = m["posts"];
+    final mPosts = m["posts"];
     expect(mPosts.length, 3);
     expect(mPosts.first["id"], 1);
     expect(mPosts.first["text"], "A");
@@ -135,20 +135,20 @@ void main() {
   });
 
   test("Can read from map", () {
-    var map = {"id": 1, "name": "Bob"};
+    final map = {"id": 1, "name": "Bob"};
 
-    var postMap = [
+    final postMap = [
       {"text": "hey", "id": 1},
       {"text": "ho", "id": 2}
     ];
 
-    var user = User();
+    final user = User();
     user.readFromMap(washMap(map));
 
     expect(user.id, 1);
     expect(user.name, "Bob");
 
-    var posts = postMap
+    final posts = postMap
         .map((e) => Post()..readFromMap(washMap(e)))
         .toList();
     expect(posts[0].id, 1);
@@ -158,9 +158,9 @@ void main() {
   });
 
   test("Reading from map with bad key fails", () {
-    var map = {"id": 1, "name": "Bob", "bad_key": "value"};
+    final map = {"id": 1, "name": "Bob", "bad_key": "value"};
 
-    var user = User();
+    final user = User();
     try {
       user.readFromMap(washMap(map));
       expect(true, false);
@@ -179,7 +179,7 @@ void main() {
   });
 
   test("Handles DateTime conversion", () {
-    var dateString = "2000-01-01T05:05:05.010Z";
+    final dateString = "2000-01-01T05:05:05.010Z";
     var map = {"id": 1, "name": "Bob", "dateCreated": dateString};
     var user = User();
     user.readFromMap(washMap(map));
@@ -187,7 +187,7 @@ void main() {
     expect(user.dateCreated!.difference(DateTime.parse(dateString)),
         Duration.zero);
 
-    var remap = user.asMap();
+    final remap = user.asMap();
     expect(remap["dateCreated"], dateString);
 
     map = {"id": 1, "name": "Bob", "dateCreated": 123};
@@ -203,7 +203,7 @@ void main() {
   test(
       "Handles input of type num for double precision float properties of the model",
       () {
-    var m = TransientTypeTest()
+    final m = TransientTypeTest()
       ..readFromMap(washMap({
         "transientDouble": 30,
       }));
@@ -212,13 +212,13 @@ void main() {
   });
 
   test("Reads embedded object", () {
-    var postMap = {
+    final postMap = {
       "text": "hey",
       "id": 1,
       "owner": {"name": "Alex", "id": 18}
     };
 
-    var post = Post()..readFromMap(washMap(postMap));
+    final post = Post()..readFromMap(washMap(postMap));
     expect(post.text, "hey");
     expect(post.id, 1);
     expect(post.owner!.id, 18);
@@ -226,8 +226,8 @@ void main() {
   });
 
   test("Trying to read embedded object that isnt an object fails", () {
-    var postMap = {"text": "hey", "id": 1, "owner": 12};
-    var post = Post();
+    final postMap = {"text": "hey", "id": 1, "owner": 12};
+    final post = Post();
     var successful = false;
     try {
       post.readFromMap(washMap(postMap));
@@ -239,7 +239,7 @@ void main() {
   });
 
   test("Setting embeded object to null doesn't throw exception", () {
-    var post = Post()
+    final post = Post()
       ..id = 4
       ..owner = (User()
         ..id = 3
@@ -249,7 +249,7 @@ void main() {
   });
 
   test("Setting properties to null is OK", () {
-    var u = User();
+    final u = User();
     u.name = "Bob";
     u.dateCreated = null;
     u.name =
@@ -260,15 +260,15 @@ void main() {
   });
 
   test("Primary key works", () {
-    var u = User();
+    final u = User();
     expect(u.entity.primaryKey, "id");
 
-    var p = Post();
+    final p = Post();
     expect(p.entity.primaryKey, "id");
   });
 
   test("Transient properties aren't stored in backing", () {
-    var t = TransientTest();
+    final t = TransientTest();
     t.readFromMap(washMap({"inOut": 2}));
     expect(t.inOut, 2);
     expect(t["inOut"], isNull);
@@ -359,7 +359,7 @@ void main() {
   });
 
   test("mappableOutput properties that are null are not emitted in asMap", () {
-    var m = (TransientTest()
+    final m = (TransientTest()
           ..id = 1
           ..text = null)
         .asMap();
@@ -371,7 +371,7 @@ void main() {
   });
 
   test("Properties that aren't mappableOutput are not emitted in asMap", () {
-    var m = (TransientTest()
+    final m = (TransientTest()
           ..id = 1
           ..text = "foo"
           ..inputInt = 2)
@@ -387,13 +387,13 @@ void main() {
   });
 
   test("Can remove single property from backing map", () {
-    var u = (User()
+    final u = (User()
       ..id = 1
       ..name = "Bob"
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertyFromBackingMap("name");
 
-    var m = u.asMap();
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -402,13 +402,13 @@ void main() {
 
   test("Removing single non-existent property from backing map has no effect",
       () {
-    var u = (User()
+    final u = (User()
       ..id = 1
       ..name = "Bob"
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertyFromBackingMap("dummy");
 
-    var m = u.asMap();
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), true);
@@ -416,13 +416,13 @@ void main() {
   });
 
   test("Can remove multiple properties from backing map", () {
-    var u = (User()
+    final u = (User()
       ..id = 1
       ..name = "Bob"
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["name", "dateCreated"]);
 
-    var m = u.asMap();
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -431,13 +431,13 @@ void main() {
 
   test("Can remove single property from backing map with multi-property method",
       () {
-    var u = (User()
+    final u = (User()
       ..id = 1
       ..name = "Bob"
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["name"]);
 
-    var m = u.asMap();
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -447,13 +447,13 @@ void main() {
   test(
       "Removing multiple non-existent properties from backing map has no effect",
       () {
-    var u = (User()
+    final u = (User()
       ..id = 1
       ..name = "Bob"
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["dummy1", "dummy2"]);
 
-    var m = u.asMap();
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), true);
@@ -462,7 +462,7 @@ void main() {
 
   test("DeepMap Transient Properties of all types can be read and returned",
       () {
-    var m = (TransientTypeTest()
+    final m = (TransientTypeTest()
           ..readFromMap(washMap({
             "deepMap": {
               "ok": {"ik1": 1, "ik2": 2}
@@ -476,8 +476,8 @@ void main() {
   }, skip: "NYI in AOT");
 
   test("Transient Properties of all types can be read and returned", () {
-    var dateString = "2016-10-31T15:40:45+00:00";
-    var m = (TransientTypeTest()
+    final dateString = "2016-10-31T15:40:45+00:00";
+    final m = (TransientTypeTest()
           ..readFromMap(washMap({
             "transientInt": 5,
             "transientBigInt": 123456789,
@@ -511,7 +511,7 @@ void main() {
       {"other": "otherval"}
     ]);
 
-    var tm = m["transientMap"];
+    final tm = m["transientMap"];
     expect(tm is Map, true);
     expect(tm["key"], "value");
     expect(tm["anotherKey"], "anotherValue");
@@ -579,7 +579,7 @@ void main() {
   });
 
   test("Reading hasMany relationship from JSON succeeds", () {
-    var u = User();
+    final u = User();
     u.readFromMap(washMap({
       "name": "Bob",
       "id": 1,
@@ -595,7 +595,7 @@ void main() {
   test(
       "Reading/writing instance property that isn't marked as transient shows up nowhere",
       () {
-    var t = TransientTest();
+    final t = TransientTest();
     try {
       t.readFromMap(washMap({"notAnAttribute": true}));
       expect(true, false);
@@ -609,7 +609,7 @@ void main() {
   test(
       "Omit transient properties in asMap when object is a foreign key reference",
       () {
-    var b = TransientBelongsTo()
+    final b = TransientBelongsTo()
       ..id = 1
       ..owner = (TransientOwner()..id = 1);
     expect(b.asMap(), {
@@ -643,25 +643,25 @@ void main() {
 
   group("Persistent enum fields", () {
     test("Can assign/read enum value to persistent property", () {
-      var e = EnumObject();
+      final e = EnumObject();
       e.enumValues = EnumValues.abcd;
       expect(e.enumValues, EnumValues.abcd);
     });
 
     test("Enum value in readMap is a matching string", () {
-      var e = EnumObject()..readFromMap(washMap({"enumValues": "efgh"}));
+      final e = EnumObject()..readFromMap(washMap({"enumValues": "efgh"}));
       expect(e.enumValues, EnumValues.efgh);
     });
 
     test("Enum value in asMap is a matching string", () {
-      var e = EnumObject()..enumValues = EnumValues.other18;
+      final e = EnumObject()..enumValues = EnumValues.other18;
       expect(e.asMap()["enumValues"], "other18");
     });
 
     test(
         "Cannot assign value via backingMap or readMap that isn't a valid enum case",
         () {
-      var e = EnumObject();
+      final e = EnumObject();
       try {
         e.readFromMap(washMap({"enumValues": "foobar"}));
         expect(true, false);
@@ -680,18 +680,18 @@ void main() {
 
   group("Private fields", () {
     test("Private fields on entity", () {
-      var entity = context.dataModel!.entityForType(PrivateField);
+      final entity = context.dataModel!.entityForType(PrivateField);
       expect(entity.attributes["_private"], isNotNull);
     });
 
     test("Can get/set value of private field", () {
-      var p = PrivateField();
+      final p = PrivateField();
       p._private = "x";
       expect(p._private, "x");
     });
 
     test("Can get/set value of private field thru public accessor", () {
-      var p = PrivateField()..public = "x";
+      final p = PrivateField()..public = "x";
       expect(p.public, "x");
       expect(p._private, "x");
     });
@@ -705,7 +705,7 @@ void main() {
     });
 
     test("Private fields cannot be set in readFromMap()", () {
-      var p = PrivateField();
+      final p = PrivateField();
       try {
         p.readFromMap(washMap({"_private": "x"}));
         fail('unreachable');
@@ -920,12 +920,12 @@ class TransientTypeTest extends ManagedObject<_TransientTypeTest>
 
   @Serialize(input: false, output: true)
   Map<String, String> get transientMap {
-    List<String> pairs = backingMapString.split(",");
+    final List<String> pairs = backingMapString.split(",");
 
-    var returnMap = <String, String>{};
+    final returnMap = <String, String>{};
 
     pairs.forEach((String pair) {
-      List<String> pairList = pair.split(":");
+      final List<String> pairList = pair.split(":");
       returnMap[pairList[0]] = pairList[1];
     });
 
@@ -934,8 +934,8 @@ class TransientTypeTest extends ManagedObject<_TransientTypeTest>
 
   @Serialize(input: true, output: false)
   set transientMap(Map<String, String> m) {
-    var pairStrings = m.keys.map((key) {
-      String? value = m[key];
+    final pairStrings = m.keys.map((key) {
+      final String? value = m[key];
       return "$key:$value";
     });
 

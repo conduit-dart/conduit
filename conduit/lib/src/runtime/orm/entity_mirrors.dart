@@ -90,7 +90,7 @@ bool isTransientAccessorMethod(DeclarationMirror declMir) {
     return false;
   }
 
-  var methodMirror = declMir;
+  final methodMirror = declMir;
   if (methodMirror.isStatic) {
     return false;
   }
@@ -100,7 +100,7 @@ bool isTransientAccessorMethod(DeclarationMirror declMir) {
     return false;
   }
 
-  var mapMetadata = transientMetadataFromDeclaration(declMir);
+  final mapMetadata = transientMetadataFromDeclaration(declMir);
   if (mapMetadata == null) {
     return false;
   }

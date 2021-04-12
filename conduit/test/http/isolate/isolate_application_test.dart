@@ -29,26 +29,26 @@ void main() {
     });
 
     test("Application responds to request", () async {
-      var response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
     });
 
     test("Application properly routes request", () async {
-      var tRequest = http.get(Uri.parse("http://localhost:8888/t"));
-      var rRequest = http.get(Uri.parse("http://localhost:8888/r"));
+      final tRequest = http.get(Uri.parse("http://localhost:8888/t"));
+      final rRequest = http.get(Uri.parse("http://localhost:8888/r"));
 
-      var tResponse = await tRequest;
-      var rResponse = await rRequest;
+      final tResponse = await tRequest;
+      final rResponse = await rRequest;
 
       expect(tResponse.body, '"t_ok"');
       expect(rResponse.body, '"r_ok"');
     });
 
     test("Application handles a bunch of requests", () async {
-      var reqs = <Future>[];
-      var responses = <http.Response>[];
+      final reqs = <Future>[];
+      final responses = <http.Response>[];
       for (int i = 0; i < 20; i++) {
-        var req = http.get(Uri.parse("http://localhost:8888/t"));
+        final req = http.get(Uri.parse("http://localhost:8888/t"));
         // ignore: unawaited_futures
         req.then((resp) {
           responses.add(resp);
@@ -78,7 +78,7 @@ void main() {
 
       await app.start(numberOfInstances: 2, consoleLogging: true);
 
-      var resp = await http.get(Uri.parse("http://localhost:8888/t"));
+      final resp = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(resp.statusCode, 200);
     });
 
@@ -87,7 +87,7 @@ void main() {
         () async {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
-        var result = await http.get(Uri.parse("http://localhost:8888/startup"));
+        final result = await http.get(Uri.parse("http://localhost:8888/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);
@@ -107,7 +107,7 @@ void main() {
       app = Application<TestChannel>();
       expect(app.isRunning, false);
 
-      var future = app.start(numberOfInstances: 2, consoleLogging: true);
+      final future = app.start(numberOfInstances: 2, consoleLogging: true);
       expect(app.isRunning, false);
       await future;
       expect(app.isRunning, true);
@@ -131,7 +131,7 @@ class TestChannel extends ApplicationChannel {
     router.route("/t").linkFunction((req) async => Response.ok("t_ok"));
     router.route("/r").linkFunction((req) async => Response.ok("r_ok"));
     router.route("startup").linkFunction((r) async {
-      var total = options!.context["startup"].fold(0, (a, b) => a + b);
+      final total = options!.context["startup"].fold(0, (a, b) => a + b);
       return Response.ok("$total");
     });
     return router;

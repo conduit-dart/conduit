@@ -97,7 +97,7 @@ class ManagedContext implements APIComponentDocumenter {
   ///            ...
   ///         });
   Future<T?> transaction<T>(
-      Future<T?> transactionBlock(ManagedContext transaction)) {
+      Future<T?> Function(ManagedContext transaction) transactionBlock) {
     return persistentStore!
         .transaction(ManagedContext.childOf(this), transactionBlock);
   }

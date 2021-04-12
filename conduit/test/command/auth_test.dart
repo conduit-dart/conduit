@@ -27,7 +27,7 @@ void main() {
     store = PostgresTestConfig().persistentStore();
 
     final builder = SchemaBuilder.toSchema(store, schema);
-    for (var command in builder.commands) {
+    for (final command in builder.commands) {
       await store.execute(command);
     }
 

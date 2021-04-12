@@ -6,7 +6,7 @@ class ManagedDataModelManager {
   static ReferenceCountingList<ManagedDataModel> dataModels =
       ReferenceCountingList<ManagedDataModel>();
 
-  static ManagedEntity findEntity(Type type, {ManagedEntity orElse()?}) {
+  static ManagedEntity findEntity(Type type, {ManagedEntity Function()? orElse}) {
     for (final d in ManagedDataModelManager.dataModels) {
       final entity = d.tryEntityForType(type);
       if (entity != null) {

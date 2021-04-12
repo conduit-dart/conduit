@@ -9,14 +9,14 @@ class CLIDatabaseShowMigrations extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject, CLIDatabaseConnectingCommand {
   @override
   Future<int> handle() async {
-    var files = projectMigrations.map((mig) {
-      var versionString = "${mig.versionNumber}".padLeft(8, "0");
+    final files = projectMigrations.map((mig) {
+      final versionString = "${mig.versionNumber}".padLeft(8, "0");
       return " $versionString | ${mig.uri!.pathSegments.last}";
     }).join("\n");
 
     print(" Version  | Path");
     print("----------|-----------");
-    print("$files");
+    print(files);
 
     return 0;
   }

@@ -36,7 +36,7 @@ Future main(List<String> args) async {
   var remainingCounter = testFiles.length;
   final passingFiles = <File>[];
   final failingFiles = <File>[];
-  for (File f in testFiles) {
+  for (final File f in testFiles) {
     final currentTime = DateTime.now();
     final makePrompt = () =>
         "(Pass: ${passingFiles.length} Fail: ${failingFiles.length} Remain: $remainingCounter)";

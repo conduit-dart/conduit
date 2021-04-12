@@ -34,7 +34,7 @@ class ServiceRegistry {
   ///         new StreamController(), (c) => c.close());
   ///
   /// If [object] has already been registered, this method does nothing and [onClose] will only be invoked once.
-  T register<T>(T object, FutureOr onClose(T object)) {
+  T register<T>(T object, FutureOr Function(T object) onClose) {
     if (_registrations.any((r) => identical(r.object, object))) {
       return object;
     }

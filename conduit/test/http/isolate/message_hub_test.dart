@@ -21,8 +21,8 @@ void main() {
       app = Application<HubChannel>()..options.port = 8000;
       await app.start(numberOfInstances: 3);
 
-      var resp = await postMessage("msg1");
-      var postingIsolateID = isolateIdentifierFromResponse(resp);
+      final resp = await postMessage("msg1");
+      final postingIsolateID = isolateIdentifierFromResponse(resp);
       var id1 = 1;
       var id2 = 2;
       if (postingIsolateID == 1) {
@@ -82,8 +82,8 @@ void main() {
         ..options.context = {"multipleListeners": true};
       await app.start(numberOfInstances: 3);
 
-      var resp = await postMessage("msg1");
-      var postingIsolateID = isolateIdentifierFromResponse(resp);
+      final resp = await postMessage("msg1");
+      final postingIsolateID = isolateIdentifierFromResponse(resp);
 
       var id1 = 1;
       var id2 = 2;
@@ -120,8 +120,8 @@ void main() {
       await app.start(numberOfInstances: 3);
 
       var resp = await postMessage("garbage");
-      var errors = await getErrorsFromIsolates();
-      var serverID = isolateIdentifierFromResponse(resp);
+      final errors = await getErrorsFromIsolates();
+      final serverID = isolateIdentifierFromResponse(resp);
       expect(errors[serverID]!.length, 1);
       expect(errors[serverID]!.first,
           contains("Illegal argument in isolate message"));
@@ -133,7 +133,7 @@ void main() {
         resendID = isolateIdentifierFromResponse(resp);
       }
 
-      int expectedReceiverID = resendID == 1 ? 2 : 1;
+      final int expectedReceiverID = resendID == 1 ? 2 : 1;
       expect(
           waitForMessages({
             expectedReceiverID: [
@@ -160,7 +160,7 @@ Future waitForMessages(Map<int, List<Map<String, dynamic>>> expectedMessages,
   if (expectedMessages.containsKey(respondingIsolateID)) {
     final remainingMessagesExpectedForIsolateID =
         expectedMessages[respondingIsolateID];
-    for (var message in messages!) {
+    for (final message in messages!) {
       final firstMatchedMessage =
           remainingMessagesExpectedForIsolateID!.firstWhereOrNull((msg) {
         return msg["isolateID"] == message["isolateID"] &&
@@ -191,11 +191,11 @@ Future waitForMessages(Map<int, List<Map<String, dynamic>>> expectedMessages,
 }
 
 Future<Map<int, List<Map<String, dynamic>>>> getMessagesFromIsolates() async {
-  var msgs = <int, List<Map<String, dynamic>>>{};
+  final msgs = <int, List<Map<String, dynamic>>>{};
 
   while (msgs.length != 3) {
-    var resp = await http.get(Uri.parse("http://localhost:8000/messages"));
-    var serverID = isolateIdentifierFromResponse(resp);
+    final resp = await http.get(Uri.parse("http://localhost:8000/messages"));
+    final serverID = isolateIdentifierFromResponse(resp);
 
     if (!msgs.containsKey(serverID)) {
       msgs[serverID] = (json.decode(resp.body) as List).cast();
@@ -206,11 +206,11 @@ Future<Map<int, List<Map<String, dynamic>>>> getMessagesFromIsolates() async {
 }
 
 Future<Map<int, List<String>>> getErrorsFromIsolates() async {
-  var msgs = <int, List<String>>{};
+  final msgs = <int, List<String>>{};
 
   while (msgs.length != 3) {
-    var resp = await http.get(Uri.parse("http://localhost:8000/errors"));
-    var serverID = isolateIdentifierFromResponse(resp);
+    final resp = await http.get(Uri.parse("http://localhost:8000/errors"));
+    final serverID = isolateIdentifierFromResponse(resp);
 
     if (!msgs.containsKey(serverID)) {
       msgs[serverID] = (json.decode(resp.body) as List).cast();
@@ -253,19 +253,19 @@ class HubChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
     router.route("/messages").linkFunction((req) async {
-      var msgs = List.from(messages);
+      final msgs = List.from(messages);
       messages = [];
       return Response.ok(msgs);
     });
 
     router.route("/errors").linkFunction((req) async {
-      var msgs = List.from(errors);
+      final msgs = List.from(errors);
       errors = [];
       return Response.ok(msgs);
     });
 
     router.route("/send").linkFunction((req) async {
-      String msg = await req.body.decode();
+      final String msg = await req.body.decode();
       if (msg == "garbage") {
         messageHub.add((x) => x);
       } else {

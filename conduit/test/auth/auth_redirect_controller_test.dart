@@ -11,7 +11,7 @@ import 'package:conduit/src/dev/helpers.dart';
 
 void main() {
   late Application<TestChannel> application;
-  Agent client = Agent.onPort(8888);
+  final Agent client = Agent.onPort(8888);
 
   final codeResponse = (Map<String, String?> form) {
     final m = Map<String, String>.from(form);
@@ -71,7 +71,6 @@ void main() {
       expect(
           resp,
           hasResponse(200,
-              body: null,
               headers: {"content-type": "text/html; charset=utf-8"}));
 
       // The data is actually JSON for purposes of this test, just makes it easier to validate here.
@@ -97,7 +96,6 @@ void main() {
       expect(
           resp,
           hasResponse(200,
-              body: null,
               headers: {"content-type": "text/html; charset=utf-8"}));
 
       // The data is actually JSON for purposes of this test, just makes it easier to validate here.

@@ -56,7 +56,7 @@ abstract class CLIDocumentOptions implements CLICommand {
 
   Uri parseHostOption(String str) {
     try {
-      var uri = Uri.parse(str);
+      final uri = Uri.parse(str);
       return uri;
     } on FormatException catch (_) {
       throw CLIException("Invalid Host Option", instructions: [

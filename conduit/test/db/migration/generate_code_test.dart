@@ -10,15 +10,9 @@ final List<SchemaColumn> columnsWithAllAttributeOptions = [
   SchemaColumn("id", ManagedPropertyType.integer,
       isPrimaryKey: true,
       autoincrement: true,
-      defaultValue: null,
-      isIndexed: true,
-      isNullable: false,
-      isUnique: false),
+      isIndexed: true),
   SchemaColumn("t", ManagedPropertyType.string,
-      isPrimaryKey: false,
-      autoincrement: false,
       defaultValue: '\'x\'',
-      isIndexed: false,
       isNullable: true,
       isUnique: true),
 ];
@@ -195,7 +189,7 @@ void main() {
   group("Alter column", () {
     test("isIndexed", () {
       builder.createTable(SchemaTable("foo",
-          [SchemaColumn("id", ManagedPropertyType.integer, isIndexed: false)]));
+          [SchemaColumn("id", ManagedPropertyType.integer)]));
       builder.alterColumn("foo", "id", (c) {
         c.isIndexed = true;
       });
@@ -218,7 +212,7 @@ void main() {
 
     test("defaultValue", () {
       builder.createTable(SchemaTable("foo", [
-        SchemaColumn("id", ManagedPropertyType.integer, defaultValue: null)
+        SchemaColumn("id", ManagedPropertyType.integer)
       ]));
       builder.alterColumn("foo", "id", (c) {
         c.defaultValue = "'foobar'";
@@ -247,7 +241,7 @@ void main() {
 
     test("isUnique", () {
       builder.createTable(SchemaTable("foo",
-          [SchemaColumn("id", ManagedPropertyType.integer, isUnique: false)]));
+          [SchemaColumn("id", ManagedPropertyType.integer)]));
       builder.alterColumn("foo", "id", (c) {
         c.isUnique = true;
       });
@@ -270,7 +264,7 @@ void main() {
 
     test("isNullable", () {
       builder.createTable(SchemaTable("foo", [
-        SchemaColumn("id", ManagedPropertyType.integer, isNullable: false)
+        SchemaColumn("id", ManagedPropertyType.integer)
       ]));
       builder.alterColumn("foo", "id", (c) {
         c.isNullable = true;
@@ -294,7 +288,7 @@ void main() {
 
     test("isNullable foreign key", () {
       builder.createTable(SchemaTable("foo", [
-        SchemaColumn("id", ManagedPropertyType.integer, isNullable: false)
+        SchemaColumn("id", ManagedPropertyType.integer)
       ]));
       builder.createTable(SchemaTable("bar", [
         SchemaColumn("id", ManagedPropertyType.integer),
@@ -323,7 +317,7 @@ void main() {
 
     test("deleteRule", () {
       builder.createTable(SchemaTable("foo", [
-        SchemaColumn("id", ManagedPropertyType.integer, isNullable: false)
+        SchemaColumn("id", ManagedPropertyType.integer)
       ]));
       builder.createTable(SchemaTable("bar", [
         SchemaColumn("id", ManagedPropertyType.integer),
@@ -354,8 +348,7 @@ void main() {
 
     test("Multiple statements", () {
       builder.createTable(SchemaTable("foo", [
-        SchemaColumn("id", ManagedPropertyType.integer,
-            isIndexed: false, isUnique: false)
+        SchemaColumn("id", ManagedPropertyType.integer)
       ]));
       builder.alterColumn("foo", "id", (c) {
         c.isIndexed = true;

@@ -131,7 +131,7 @@ class PropertyBuilder {
   void link(List<ManagedEntity?> others) {
     validators!.forEach((v) => v.link(others));
     if (isRelationship) {
-      var destinationEntity =
+      final destinationEntity =
           others.firstWhere((e) => e == relatedProperty!.parent.entity);
 
       final dartType =
@@ -222,7 +222,7 @@ class PropertyBuilder {
       if ((declaration as MethodMirror).isGetter) {
         return MirrorSystem.getName(declaration.simpleName);
       } else if ((declaration as MethodMirror).isSetter) {
-        var name = MirrorSystem.getName(declaration.simpleName);
+        final name = MirrorSystem.getName(declaration.simpleName);
         return name.substring(0, name.length - 1);
       }
     } else if (declaration is VariableMirror) {
@@ -267,16 +267,16 @@ class PropertyBuilder {
   }
 
   static Serialize? _getTransienceForProperty(DeclarationMirror declaration) {
-    Serialize? metadata = firstMetadataOfType<Serialize>(declaration);
+    final Serialize? metadata = firstMetadataOfType<Serialize>(declaration);
     if (declaration is VariableMirror) {
       return metadata;
     }
 
     final m = declaration as MethodMirror;
     if (m.isGetter && metadata!.isAvailableAsOutput) {
-      return const Serialize(output: true, input: false);
+      return const Serialize(input: false);
     } else if (m.isSetter && metadata!.isAvailableAsInput) {
-      return const Serialize(input: true, output: false);
+      return const Serialize(output: false);
     }
 
     return null;

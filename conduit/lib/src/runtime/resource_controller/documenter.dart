@@ -61,7 +61,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
   @override
   List<APIParameter?> documentOperationParameters(
       ResourceController rc, APIDocumentContext context, Operation? operation) {
-    bool usesFormEncodedData = operation!.method == "POST" &&
+    final bool usesFormEncodedData = operation!.method == "POST" &&
         rc.acceptedContentTypes.any((ct) =>
             ct.primaryType == "application" &&
             ct.subType == "x-www-form-urlencoded");
@@ -129,7 +129,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
 
     return opsForPath.fold(<String, APIOperation>{}, (prev, opObj) {
       final instanceMembers = reflect(rc).type.instanceMembers;
-      Operation? metadata =
+      final Operation? metadata =
           firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
 
       final operationDoc = APIOperation(opObj.dartMethodName,
@@ -180,7 +180,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
     final existingScopes = operationScopes.map((s) => AuthScope(s)).toList();
 
     methodScopes.forEach((methodScope) {
-      for (var existingScope in existingScopes) {
+      for (final existingScope in existingScopes) {
         if (existingScope.isSubsetOrEqualTo(methodScope)) {
           operationScopes.remove(existingScope.toString());
         }

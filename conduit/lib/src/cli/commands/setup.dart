@@ -61,7 +61,7 @@ class CLISetup extends CLICommand with CLIProject {
       return -1;
     }
 
-    var commands = [
+    final commands = [
       "create database dart_test;",
       "create user dart with createdb;",
       "alter user dart with password 'dart';",
@@ -82,8 +82,8 @@ class CLISetup extends CLICommand with CLIProject {
     }
 
     displayInfo("Connecting to database...");
-    for (var cmd in commands) {
-      List<String> args = ["-c", cmd, "-U", grantingUser];
+    for (final cmd in commands) {
+      final List<String> args = ["-c", cmd, "-U", grantingUser];
 
       final result = Process.runSync("psql", args, runInShell: true);
       final output = (result.stdout as String) + (result.stderr as String);

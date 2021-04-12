@@ -31,8 +31,7 @@ class CLIBuild extends CLICommand with CLIProject {
         libraryUri,
         buildDirectory.uri,
         root.resolve("$packageName.aot"),
-        getScriptSource(await getChannelName()),
-        forTests: false);
+        getScriptSource(await getChannelName()));
 
     final bm = BuildManager(ctx);
     await bm.build();
@@ -95,8 +94,7 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
         defaultsTo: "8888")
     ..addFlag("ipv6-only",
         help: "Limits listening to IPv6 connections only.",
-        negatable: false,
-        defaultsTo: false)
+        negatable: false)
     ..addOption("ssl-certificate-path",
         help:
             "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.")

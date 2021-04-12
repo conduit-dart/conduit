@@ -187,7 +187,7 @@ class ControllerRuntimeImpl extends ControllerRuntime {
   }
   
   @override
-  bool get isMutable => ${isMutable};
+  bool get isMutable => $isMutable;
 
   ResourceControllerRuntime get resourceController => _resourceController;
   ResourceControllerRuntime _resourceController;
@@ -226,7 +226,7 @@ class SerializableRuntimeImpl extends SerializableRuntime {
 
   static APISchemaObject documentVariable(
       APIDocumentContext context, VariableMirror mirror) {
-    APISchemaObject object = documentType(context, mirror.type)
+    final APISchemaObject object = documentType(context, mirror.type)
       ..title = MirrorSystem.getName(mirror.simpleName);
 
     return object;

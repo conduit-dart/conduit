@@ -43,8 +43,8 @@ class MigrationSource {
   }
 
   static int versionNumberFromUri(Uri uri) {
-    var fileName = uri.pathSegments.last;
-    var migrationName = fileName.split(".").first;
+    final fileName = uri.pathSegments.last;
+    final migrationName = fileName.split(".").first;
     return int.parse(migrationName.split("_").first);
   }
 

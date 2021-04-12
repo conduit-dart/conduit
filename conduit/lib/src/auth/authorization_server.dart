@@ -274,7 +274,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
     var updatedScopes = t.scopes;
     if ((requestedScopes?.length ?? 0) != 0) {
       // If we do specify scope
-      for (var incomingScope in requestedScopes!) {
+      for (final incomingScope in requestedScopes!) {
         final hasExistingScopeOrSuperset = t.scopes!.any(
             (existingScope) => incomingScope.isSubsetOrEqualTo(existingScope));
 
@@ -290,7 +290,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       updatedScopes = requestedScopes;
     } else if (client.supportsScopes) {
       // Ensure we still have access to same scopes if we didn't specify any
-      for (var incomingScope in t.scopes!) {
+      for (final incomingScope in t.scopes!) {
         if (!client.allowsScope(incomingScope)) {
           throw AuthServerException(AuthRequestError.invalidScope, client);
         }
