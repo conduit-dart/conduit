@@ -1,7 +1,5 @@
 #! /usr/bin/env dcli
 
-import 'dart:io';
-
 import 'package:dcli/dcli.dart';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
@@ -52,11 +50,14 @@ void main(List<String> args) {
   var dbSettings = DbSettings.load();
 
   var nameRegExp = r'[a-zA-Z0-0\-_]+';
+  var passwordRegExp = r'[a-zA-Z0-0\-_!]+';
 
   print(
       'The unit tests can setup a docker container running postgres or you can use an existing postgres server');
   var createPostgresContainer =
       confirm('Do you want to start a postgres docker container?');
+
+  dbSettings.useContainer = createPostgresContainer;
   if (createPostgresContainer) {
     dbSettings.host = 'localhost';
   } else {
@@ -74,7 +75,7 @@ void main(List<String> args) {
   dbSettings.username = ask('Database Username:',
       validator: Ask.regExp(nameRegExp), defaultValue: dbSettings.username);
   dbSettings.password = ask('Database Password:',
-      validator: Ask.alphaNumeric, defaultValue: dbSettings.password);
+      validator: Ask.regExp(passwordRegExp), defaultValue: dbSettings.password);
   dbSettings.dbName = ask('Database Name:',
       validator: Ask.regExp(nameRegExp), defaultValue: dbSettings.dbName);
 
@@ -91,26 +92,23 @@ void main(List<String> args) {
   dbSettings.save();
   dbSettings.createEnvironmentVariables();
 
-  installPostgresClient();
+  final postgresManager = PostgresManager(dbSettings);
+
+  postgresManager.installPostgresClient();
   if (createPostgresContainer) {
     installDocker();
 
     installDockerCompose();
 
-    installPostgressDaemon();
+    postgresManager.installPostgressDaemon();
 
-    startPostgresDaemon();
-
-    print('Waiting for postgres to start.');
-    while (!isPostgresRunning(dbSettings)) {
-      stdout.write('.');
-      waitForEx(stdout.flush());
-    }
-    print('');
+    postgresManager.startPostgresDaemon();
   }
 
-  print('Configuring postgress');
-  configurePostgress(dbSettings, useDockerContainer: createPostgresContainer);
+  postgresManager.stopPostgresDaemon();
+
+  print('Setup complete');
+  print(orange('run ./run_unit_tests.dart'));
 }
 
 // void preChecks() {
