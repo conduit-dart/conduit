@@ -198,7 +198,7 @@ abstract class ResourceController extends Controller
   /// possible responses. The key is a [String] representation of a status code (e.g., "200") and the value
   /// is an [APIResponse] object.
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation? operation) {
+      APIDocumentContext context, Operation operation) {
     return {"200": APIResponse("Successful response.")};
   }
 
