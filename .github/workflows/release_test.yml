@@ -8,7 +8,7 @@ jobs:
     env:
       TEST_DIR: conduit_test
       POSTGRES_USER: conduit_test_user
-      POSTGRES_PASSWORD: 34achfAdce
+      POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       POSTGRES_PORT: 5432
       RUNNER_CMD: pub run test -j 1 -r expanded
@@ -22,7 +22,7 @@ jobs:
         image: postgres:9.6
         env:
           POSTGRES_USER: conduit_test_user
-          POSTGRES_PASSWORD: 34achfAdce
+          POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
           POSTGRES_PORT: 5432
         ports:
@@ -43,7 +43,7 @@ jobs:
     env:
       TEST_DIR: conduit
       POSTGRES_USER: conduit_test_user
-      POSTGRES_PASSWORD: 34achfAdce
+      POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       POSTGRES_PORT: 5432
       RUNNER_CMD: pub run test -j 1 -r expanded
@@ -57,7 +57,7 @@ jobs:
         image: postgres:9.6
         env:
           POSTGRES_USER: conduit_test_user
-          POSTGRES_PASSWORD: 34achfAdce
+          POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
           POSTGRES_PORT: 5432
         ports:
@@ -86,7 +86,7 @@ jobs:
         image: postgres:9.6
         env:
           POSTGRES_USER: conduit_test_user
-          POSTGRES_PASSWORD: 34achfAdce
+          POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
           POSTGRES_PORT: 5432
         ports:

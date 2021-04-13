@@ -54,16 +54,16 @@ void configurePostgress(String pathToProgressDb) {
   }
 
   /// create
-  /// database: dart_test
+  /// database: conduit_test_db
   /// user: dart
   /// password: dart
   // "psql --host=localhost --port=5432 -c 'create user dart with createdb;' -U postgres"
   //     .run;
   // '''psql --host=localhost --port=5432 -c 'alter user dart with password "dart";' -U postgres'''
   //     .run;
-  // "psql ---host=localhost -port=5432 -c 'create database dart_test;' -U postgres"
+  // "psql ---host=localhost -port=5432 -c 'create database conduit_test_db;' -U postgres"
   //     .run;
-  env['PGPASSWORD'] = '34achfAdce';
+  env['PGPASSWORD'] = 'conduit!';
   "psql --host=localhost --port=5432 -c 'grant all on database conduit_test_db to conduit_test_user;' -U conduit_test_user conduit_test_db"
       .run;
 }

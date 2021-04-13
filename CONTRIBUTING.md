@@ -52,7 +52,7 @@ tool/.setting.yaml
 POSTGRES_HOST: localhost
 POSTGRES_PORT: 15432
 POSTGRES_USER: conduit_test_user
-POSTGRES_PASSWORD: 34achfAdce
+POSTGRES_PASSWORD: conduit!
 POSTGRES_DB: conduit_test_db
 ```
 
@@ -62,7 +62,7 @@ If you have installed postgres yourself then you will need to create the test db
 
 ```bash
 psql -c 'create user conduit_test_user with createdb;' -U postgres
-psql -c "alter user conduit_test_user with password '34achfAdce';" -U postgres
+psql -c "alter user conduit_test_user with password 'conduit!';" -U postgres
 psql -c 'create database conduit_test_db;' -U postgres
 psql -c 'grant all on database conduit_test_db to conduit_test_user;' -U postgres
 ```

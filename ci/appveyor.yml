@@ -28,7 +28,7 @@ build: off
 
 test_script:
   - cmd: psql -U postgres -c "create user conduit_test_user with createdb;"
-  - cmd: psql -U postgres -c "alter user conduit_test_user with password '34achfAdce';"
+  - cmd: psql -U postgres -c "alter user conduit_test_user with password 'conduit!';"
   - cmd: psql -U postgres -c "create database conduit_test_db;"
   - cmd: psql -U postgres -c "grant all on database conduit_test_db to conduit_test_user;"
   - cd %TEST_DIR%

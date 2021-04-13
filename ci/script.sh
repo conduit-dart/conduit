@@ -3,7 +3,7 @@
 set -e
 
 psql -c 'create user conduit_test_user with createdb;' -U postgres
-psql -c "alter user conduit_test_user with password '34achfAdce';" -U postgres
+psql -c "alter user conduit_test_user with password 'conduit!';" -U postgres
 psql -c 'create database conduit_test_db;' -U postgres
 psql -c 'grant all on database conduit_test_db to conduit_test_user;' -U postgres
 

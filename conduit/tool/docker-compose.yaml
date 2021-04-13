@@ -7,7 +7,7 @@ services:
         restart: always
         environment:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 34achfAdce
+          POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: postgres
           POSTGRES_PORT: 15432
         ports:

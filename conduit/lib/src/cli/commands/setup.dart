@@ -15,8 +15,8 @@ class CLISetup extends CLICommand with CLIProject {
 
   @Flag("tests",
       help:
-          "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.", 
-          defaultsTo: true)
+          "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
+      defaultsTo: true)
   bool get shouldSetupTests => decode("tests")!;
 
   @Flag("confirm",
@@ -37,7 +37,8 @@ class CLISetup extends CLICommand with CLIProject {
   Future<int> handle() async {
     if (shouldSetupHeroku) {
       displayInfo("This option has been deprecated.");
-      displayProgress("Please see https://conduit.io/docs/deploy/deploy_heroku/ for instructions.");
+      displayProgress(
+          "Please see https://conduit.io/docs/deploy/deploy_heroku/ for instructions.");
       return 0;
     } else /*if (shouldSetupTests*/ {
       return setupTestEnvironment();
@@ -64,7 +65,7 @@ class CLISetup extends CLICommand with CLIProject {
     var commands = [
       "create database conduit_test_db;",
       "create user conduit_test_user with createdb;",
-      "alter user conduit_test_user with password '34achfAdce';",
+      "alter user conduit_test_user with password 'conduit!';",
       "grant all on database conduit_test_db to dart;"
     ];
 
@@ -94,7 +95,7 @@ class CLISetup extends CLICommand with CLIProject {
             "Successfully created role 'conduit_test_user' with createdb permissions.");
       } else if (output.contains("ALTER ROLE")) {
         displayProgress(
-            "Successfully set user 'conduit_test_user' password to '34achfAdce'.");
+            "Successfully set user 'conduit_test_user' password to 'conduit!'.");
       } else if (output.contains("GRANT")) {
         displayProgress(
             "Successfully granted all privileges to database conduit_test_db to user 'conduit_test_user'.");

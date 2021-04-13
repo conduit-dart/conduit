@@ -16,12 +16,12 @@ To generate a SwaggerUI client, run `conduit document client`.
 
 ## Running Application Tests
 
-Tests are run with a local PostgreSQL database named `dart_test`. If this database does not exist, create it from your SQL prompt:
+Tests are run with a local PostgreSQL database named `conduit_test_db`. If this database does not exist, create it from your SQL prompt:
 
-CREATE DATABASE dart_test;
-CREATE USER dart WITH createdb;
-ALTER USER dart WITH password 'dart';
-GRANT all ON DATABASE dart_test TO dart;
+CREATE DATABASE conduit_test_db;
+CREATE USER conduit_test_user WITH createdb;
+ALTER USER conduit_test_user WITH password 'conduit!';
+GRANT all ON DATABASE conduit_test_db TO conduit_test_user;
 
 
 To run all tests for this application, run the following in this directory:
