@@ -136,12 +136,12 @@ class SocketProxy {
 
   bool isEnabled = true;
 
-  late ServerSocket _server;
+  ServerSocket? _server;
   List<SocketPair> _pairs = [];
 
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);
-    _server.listen((socket) async {
+    _server!.listen((socket) async {
       // ignore: close_sinks
       final outgoing = await Socket.connect("localhost", dest);
 
@@ -162,7 +162,7 @@ class SocketProxy {
   }
 
   Future close() async {
-    await _server.close();
+    await _server?.close();
     await Future.wait(_pairs.map((sp) async {
       await sp.src.close();
       await sp.dest.close();
