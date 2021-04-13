@@ -96,7 +96,6 @@ class ManagedType {
           return dartValue is String;
         }
     }
-
   }
 
   @override

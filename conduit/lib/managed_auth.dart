@@ -328,7 +328,6 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
 
     final token = await query.fetchOne();
 
-
     return token?.asToken();
   }
 

@@ -1,3 +1,21 @@
+# 2.0.0-a3
+changed start_db.dart to always recreate the user/db.
+Added notes on the new startup_db.dart script for unit tests.
+Fixed a failed unit test as the method documentOperationResponse did not match the signature of the super it overrides.
+Fixed incorrect port mappings for the socket proxy.
+Created a script to start the postgres deamon and create the database to make it easy to run single unit tests from vscode.
+Expanded the no. of acceptable characters for the password. Migrated to using the new PostgresManager class.
+The run_unit_test script now starts and waits for postgress to be running and resets the db if required.
+replaced all references to aqueduct to conduit.
+removed the unused context_helpers.dart
+Updated all reference to the db name dart_test to be conduit_test_db. Changed the default password to conduit! to make it easier to remember given we are publishing this password anyway.
+"break" tests
+Fixed permission issues with the postgres user setup
+move dummy config to not_test
+fix up changelogs
+fix bin
+update changelog
+
 # Conduit
 
 ## 2.0.0-a2

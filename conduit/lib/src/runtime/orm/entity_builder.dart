@@ -140,8 +140,7 @@ class EntityBuilder {
     entity.relationships = relationships;
     entity.validators = [];
     entity.validators.addAll(attributes.values.expand((a) => a!.validators));
-    entity.validators
-        .addAll(relationships.values.expand((a) => a!.validators));
+    entity.validators.addAll(relationships.values.expand((a) => a!.validators));
     entity.uniquePropertySet =
         uniquePropertySet?.map((key) => entity.properties[key]).toList();
   }

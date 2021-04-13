@@ -37,10 +37,12 @@ void main() {
     final request =
         await clientServer.getWithTypes(["text/plain", "text/html"]);
     expect(
-        request.acceptableContentTypes.any((ct) => ct.primaryType == "text" && ct.subType == "plain"),
+        request.acceptableContentTypes
+            .any((ct) => ct.primaryType == "text" && ct.subType == "plain"),
         true);
     expect(
-        request.acceptableContentTypes.any((ct) => ct.primaryType == "text" && ct.subType == "html"),
+        request.acceptableContentTypes
+            .any((ct) => ct.primaryType == "text" && ct.subType == "html"),
         true);
     expect(request.acceptsContentType(ContentType.json), false);
     expect(request.acceptsContentType(ContentType.html), true);

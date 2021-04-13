@@ -325,7 +325,8 @@ void main() {
       expect(token.refreshToken, isString);
       expect(token.clientID, "com.stablekernel.app1");
       expect(token.resourceOwnerIdentifier, createdUser!.id);
-      expect(token.issueDate!.difference(DateTime.now().toUtc()).inSeconds.abs(),
+      expect(
+          token.issueDate!.difference(DateTime.now().toUtc()).inSeconds.abs(),
           lessThan(5));
 
       final now = DateTime.now().toUtc();
@@ -468,8 +469,8 @@ void main() {
 
     test("Generate auth code with bad password fails", () async {
       try {
-        await auth.authenticateForCode(
-            createdUser!.username, "foobaraxegri%", "com.stablekernel.redirect");
+        await auth.authenticateForCode(createdUser!.username, "foobaraxegri%",
+            "com.stablekernel.redirect");
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.client!.id, "com.stablekernel.redirect");

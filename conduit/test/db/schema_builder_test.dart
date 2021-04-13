@@ -47,7 +47,8 @@ void main() {
 
       builder.deleteTable("_DefaultItem");
       expect(
-          builder.schema!.tables.firstWhereOrNull((st) => st.name == "_DefaultItem"),
+          builder.schema!.tables
+              .firstWhereOrNull((st) => st.name == "_DefaultItem"),
           isNull);
 
       builder.deleteTable("_cONTAINER");
