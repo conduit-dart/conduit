@@ -1,6 +1,5 @@
 #! /usr/bin/env dcli
 
-
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:dcli/dcli.dart';
 
@@ -38,11 +37,10 @@ void main(List<String> args) {
     postgresManager.waitForPostgresToStart();
   }
 
-  if (postgresManager.doesDbExist()) {
-    print('Found existing database ${dbSettings.dbName}.');
-  } else {
-    postgresManager.createPostgresDb();
-  }
+  postgresManager.dropPostgresDb();
+  postgresManager.dropUser();
+
+  postgresManager.createPostgresDb();
 
   print(orange('Postgres is ready.'));
 }
