@@ -32,12 +32,23 @@ void main(List<String> args) {
   });
   DartSdk().runPubGet('..');
 
-  var settings = DbSettings.load();
-  settings.createEnvironmentVariables();
+  var dbSettings = DbSettings.load();
+  dbSettings.createEnvironmentVariables();
 
-  startPostgresDaemon();
+  var postgresManager = PostgresManager(dbSettings);
 
-  print('Starting postgres docker image');
+  if (dbSettings.useContainer) {
+    print('Starting postgres docker image');
+    postgresManager.startPostgresDaemon();
+  }
+
+  postgresManager.waitForPostgresToStart();
+
+  print('recreating database');
+  postgresManager.dropPostgresDb();
+  postgresManager.dropUser();
+
+  postgresManager.createPostgresDb();
 
   print('Staring Conduit unit tests');
 
@@ -45,5 +56,5 @@ void main(List<String> args) {
   'pub run test -j1'.start(workingDirectory: '..');
 
   print('Stopping posgress docker image');
-  stopPostgresDaemon();
+  postgresManager.stopPostgresDaemon();
 }
