@@ -71,14 +71,14 @@ void main() {
     test(
         "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
         () async {
-      persistentStore = PostgresTestConfig().persistentStore(port: 5433);
+      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       var expectedValues = [1, 2, 3, 4, 5];
       var values = await Future.wait(expectedValues.map(
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy = SocketProxy(15432, 5432);
+      proxy = SocketProxy(15433, 15432);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -95,7 +95,7 @@ void main() {
 
     test("Connect to bad db fails gracefully, can then be used again",
         () async {
-      persistentStore = PostgresTestConfig().persistentStore(port: 5433);
+      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       try {
         await persistentStore!.executeQuery("SELECT 1", null, 20);
@@ -103,7 +103,7 @@ void main() {
         // ignore: empty_catches
       } on QueryException {}
 
-      proxy = SocketProxy(15432, 5432);
+      proxy = SocketProxy(15433, 15432);
       await proxy!.open();
 
       var x = await persistentStore!.executeQuery("SELECT 1", null, 20);
