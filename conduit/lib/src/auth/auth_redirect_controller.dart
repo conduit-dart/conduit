@@ -31,7 +31,7 @@ abstract class AuthRedirectControllerDelegate {
       String? responseType, String? clientID, String? state, String? scope);
 }
 
-/// [Controller] for issuing OAuth 2.0 authorization codes and tokens.
+/// Controller for issuing OAuth 2.0 authorization codes and tokens.
 ///
 /// This controller provides an endpoint for creating an OAuth 2.0 authorization code or access token. An authorization code
 /// can be exchanged for an access token with an [AuthController]. This is known as the OAuth 2.0 'Authorization Code Grant' flow.

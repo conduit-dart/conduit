@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart' show IterableExtension;
 
 import 'http.dart';
 import 'route_specification.dart';

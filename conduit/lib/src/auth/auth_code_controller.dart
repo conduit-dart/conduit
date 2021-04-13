@@ -32,7 +32,7 @@ abstract class AuthCodeControllerDelegate {
       String? responseType, String? clientID, String? state, String? scope);
 }
 
-/// [Controller] for issuing OAuth 2.0 authorization codes.
+/// Controller for issuing OAuth 2.0 authorization codes.
 ///
 /// Deprecated, use [AuthRedirectController] instead.
 ///
