@@ -13,7 +13,7 @@
 
 - You can no longer set Query.values to null, instead use Query.clearValues().
 
-# Aqueduct
+# Conduit
 
 ## 3.3.0-b1
 

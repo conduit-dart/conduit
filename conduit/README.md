@@ -1,34 +1,34 @@
-![Aqueduct](https://s3.amazonaws.com/aqueduct-collateral/aqueduct.png)
+![Conduit](https://s3.amazonaws.com/conduit-collateral/conduit.png)
 
-[![OSX/Linux Build Status](https://travis-ci.org/stablekernel/aqueduct.svg?branch=master)](https://travis-ci.org/stablekernel/aqueduct) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/aqueduct) [![codecov](https://codecov.io/gh/stablekernel/aqueduct/branch/master/graph/badge.svg)](https://codecov.io/gh/stablekernel/aqueduct)
+[![OSX/Linux Build Status](https://travis-ci.org/stablekernel/conduit.svg?branch=master)](https://travis-ci.org/stablekernel/conduit) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/conduit) [![codecov](https://codecov.io/gh/stablekernel/conduit/branch/master/graph/badge.svg)](https://codecov.io/gh/stablekernel/conduit)
 
 [![Slack](https://slackaqueductsignup.herokuapp.com/badge.svg)](http://slackaqueductsignup.herokuapp.com/)
 
-Aqueduct is a modern Dart HTTP server framework. The framework is composed of libraries for handling and routing HTTP requests, object-relational mapping (ORM), authentication and authorization (OAuth 2.0 provider) and documentation (OpenAPI). These libraries are used to build scalable REST APIs that run on the Dart VM.
+Conduit is a modern Dart HTTP server framework. The framework is composed of libraries for handling and routing HTTP requests, object-relational mapping (ORM), authentication and authorization (OAuth 2.0 provider) and documentation (OpenAPI). These libraries are used to build scalable REST APIs that run on the Dart VM.
 
-If this is your first time viewing Aqueduct, check out [the tour](https://aqueduct.io/docs/tour/).
+If this is your first time viewing Conduit, check out [the tour](https://conduit.io/docs/tour/).
 
 ## Getting Started
 
 1. [Install Dart](https://www.dartlang.org/install).
-2. Activate Aqueduct
+2. Activate Conduit
 
-        pub global activate aqueduct
+        pub global activate conduit
 
 3. Create a new project.
 
-        aqueduct create my_project
+        conduit create my_project
 
-Open the project directory in [IntelliJ IDE](https://www.jetbrains.com/idea/download/), [Atom](https://atom.io) or [Visual Studio Code](https://code.visualstudio.com). All three IDEs have a Dart plugin. For IntelliJ IDEA users, there are [file and code templates](https://aqueduct.io/docs/intellij/) for Aqueduct.
+Open the project directory in [IntelliJ IDE](https://www.jetbrains.com/idea/download/), [Atom](https://atom.io) or [Visual Studio Code](https://code.visualstudio.com). All three IDEs have a Dart plugin. For IntelliJ IDEA users, there are [file and code templates](https://conduit.io/docs/intellij/) for Conduit.
 
 ## Tutorials, Documentation and Examples
 
-Step-by-step tutorials for beginners are available [here](https://aqueduct.io/docs/tut/getting-started).
+Step-by-step tutorials for beginners are available [here](https://conduit.io/docs/tut/getting-started).
 
-You can find the API reference [here](https://www.dartdocs.org/documentation/aqueduct/latest) or you can install it in [Dash](https://kapeli.com/docsets#dartdoc).
+You can find the API reference [here](https://www.dartdocs.org/documentation/conduit/latest) or you can install it in [Dash](https://kapeli.com/docsets#dartdoc).
 
-You can find in-depth and conceptual guides [here](https://aqueduct.io/docs/).
+You can find in-depth and conceptual guides [here](https://conduit.io/docs/).
 
-An ever-expanding repository of Aqueduct examples is [here](https://github.com/stablekernel/aqueduct_examples).
+An ever-expanding repository of Conduit examples is [here](https://github.com/stablekernel/aqueduct_examples).
 
-*If you are migrating from Aqueduct 2.5 to Aqueduct 3.0, see [the migration guide](https://aqueduct.io/docs/migration/).*
+*If you are migrating from Conduit 2.5 to Conduit 3.0, see [the migration guide](https://conduit.io/docs/migration/).*

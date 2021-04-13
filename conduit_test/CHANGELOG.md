@@ -12,7 +12,7 @@
 
 - Alpha release for Conduit NNBD included
 
-# Aqueduct
+# Conduit
 
 ## 1.0.1
 
