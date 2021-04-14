@@ -1,4 +1,4 @@
-# http
+# HTTP/REST
 
 An Conduit application serves HTTP clients by sending responses for requests.
 

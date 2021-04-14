@@ -2,7 +2,7 @@
 
 * [Introduction](README.md)
 * [Migration Guide](migration_guide.md)
-* [http](http/README.md)
+* [HTTP/REST](http/README.md)
   * [Serving Files and Caching](http/serving_files.md)
   * [Uploading Files](http/file_upload.md)
   * [Handling Requests: Fundamentals](http/controller.md)
