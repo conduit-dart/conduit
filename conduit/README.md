@@ -1,8 +1,8 @@
 ![Conduit](https://s3.amazonaws.com/conduit-collateral/conduit.png)
 
-[![OSX/Linux Build Status](https://travis-ci.org/stablekernel/conduit.svg?branch=master)](https://travis-ci.org/stablekernel/conduit) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/conduit) [![codecov](https://codecov.io/gh/stablekernel/conduit/branch/master/graph/badge.svg)](https://codecov.io/gh/stablekernel/conduit)
+[![OSX/Linux Build Status](https://travis-ci.org/conduit.dart/conduit.svg?branch=master)](https://travis-ci.org/conduit.dart/conduit) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/conduit) [![codecov](https://codecov.io/gh/conduit.dart/conduit/branch/master/graph/badge.svg)](https://codecov.io/gh/conduit.dart/conduit)
 
-[![Slack](https://slackaqueductsignup.herokuapp.com/badge.svg)](http://slackaqueductsignup.herokuapp.com/)
+[![Slack](https://slackconduitsignup.herokuapp.com/badge.svg)](http://slackconduitsignup.herokuapp.com/)
 
 Conduit is a modern Dart HTTP server framework. The framework is composed of libraries for handling and routing HTTP requests, object-relational mapping (ORM), authentication and authorization (OAuth 2.0 provider) and documentation (OpenAPI). These libraries are used to build scalable REST APIs that run on the Dart VM.
 
@@ -29,6 +29,6 @@ You can find the API reference [here](https://www.dartdocs.org/documentation/con
 
 You can find in-depth and conceptual guides [here](https://conduit.io/docs/).
 
-An ever-expanding repository of Conduit examples is [here](https://github.com/stablekernel/aqueduct_examples).
+An ever-expanding repository of Conduit examples is [here](https://github.com/conduit.dart/conduit_examples).
 
 *If you are migrating from Conduit 2.5 to Conduit 3.0, see [the migration guide](https://conduit.io/docs/migration/).*

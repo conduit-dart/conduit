@@ -45,7 +45,7 @@ update changelog
 
 ## 3.2.2-dev
 
-- [#723](https://github.com/stablekernel/conduit/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
+- [#723](https://github.com/conduit.dart/conduit/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
 - Deprecates `AuthScope.allowsScope()`, use `AuthScope.isSubsetOrEqualTo()` instead.
 
 ## 3.2.1
