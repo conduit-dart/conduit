@@ -1,7 +1,7 @@
-root: ./conduit/doc/source
+root: ./conduit/doc/source/docs
 
 ​structure:  
-    readme: index.html  
+    readme: index.md  
     summary: SUMMARY.md​
     
 redirects:  
