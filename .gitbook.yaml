@@ -1,0 +1,8 @@
+root: ./doc/source
+
+​structure:  
+    readme: index.html  
+    summary: SUMMARY.md​
+    
+redirects:  
+    previous/page: new-folder/page.md
