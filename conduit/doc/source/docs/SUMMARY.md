@@ -1,13 +1,12 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [migration\_guide](migration_guide.md)
+* [Migration Guide](migration_guide.md)
 * [http](http/README.md)
   * [Serving Files and Caching](http/serving_files.md)
   * [Uploading Files](http/file_upload.md)
   * [Handling Requests: Fundamentals](http/controller.md)
   * [Serializing Request and Response Bodies](http/request_and_response.md)
-  * [index](http/index.md)
   * [ResourceController](http/resource_controller.md)
   * [Using Websockets in Conduit](http/websockets.md)
   * [Routing](http/routing.md)

@@ -1,4 +1,4 @@
-# migration\_guide
+# Migration Guide
 
 ## Migrating from Aqueduct to Conduit
 

@@ -26,7 +26,7 @@ There are different approaches depending on how you prefer to learn.
 * The guides \(located in the menu on this website\) dive deeply into the concepts of Conduit and show example code.
 * [Creating a new project](getting_started.md#creating-a-project) and using the [API reference](https://pub.dev/documentation/conduit/latest/) to jump right in.
 
-It is best to first understand how HTTP requests are responded to - the foundation of Conduit - before moving on to topics such as the ORM and OAuth 2.0. Both the tutorial and the [HTTP guides](http/index.md) are the primary source of this information. A project created by the `conduit` tool has example routes connected for modification, too.
+It is best to first understand how HTTP requests are responded to - the foundation of Conduit - before moving on to topics such as the ORM and OAuth 2.0. Both the tutorial and the [HTTP guides]() are the primary source of this information. A project created by the `conduit` tool has example routes connected for modification, too.
 
 ## Creating a Project
 
