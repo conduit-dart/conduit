@@ -1,3 +1,5 @@
+# index
+
 ## Tasks
 
 An Conduit application starts an HTTP server and invokes your code for each request. The code that is invoked might depend on the request's path, method, and other attributes. For example, the request `GET /heroes` will invoke different code than `POST /authors`. You configure which code is invoked in an `ApplicationChannel` subclass; every application declares exactly one `ApplicationChannel` subclass.
@@ -8,7 +10,8 @@ Conduit applications create multiple threads, and each thread takes turn handlin
 
 ## Guides
 
-- [Starting and Stopping Applications](channel.md)
-- [Configuring an Application and its Environment](configure.md)
-- [Application and Project Structure](structure.md)
-- [Performance: Multi-threading](threading.md)
+* [Starting and Stopping Applications](channel.md)
+* [Configuring an Application and its Environment](configure.md)
+* [Application and Project Structure](structure.md)
+* [Performance: Multi-threading](threading.md)
+

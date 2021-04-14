@@ -29,8 +29,7 @@ class HeroConfig extends Configuration {
 
 A `Configuration` subclass declares the expected properties of a configuration file. `HeroConfig` has one property named `database` - this matches the name of our top-level key in `config.yaml`. A `DatabaseConfiguration` is a built-in configuration type that has properties for `host`, `port`, `username`, `password` and `databaseName`. We can load `config.yaml` into a `HeroConfig` because they have the same structure and all of the key names match the property names in our configuration types.
 
-!!! tip "Invalid Configuration"
-    If your configuration file and configuration object don't have a matching structure, an error will be thrown when your application starts and tell you which values are missing.
+!!! tip "Invalid Configuration" If your configuration file and configuration object don't have a matching structure, an error will be thrown when your application starts and tell you which values are missing.
 
 Let's load `config.yaml` and use its values to set up our database connection by replacing the `prepare` method in `lib/channel.dart`:
 
@@ -51,18 +50,17 @@ Future prepare() async {
 
   context = ManagedContext(dataModel, persistentStore);
 }
-```  
+```
 
-When our application starts, our channel has access to an `options` property that has the command-line arguments that started the application. By default, the value of `configurationFilePath` is `config.yaml` (it corresponds to `--config-path` in `conduit serve`). When `config.yaml` is read, its values are read into a `HeroConfig` and are used to configure our database connection.
+When our application starts, our channel has access to an `options` property that has the command-line arguments that started the application. By default, the value of `configurationFilePath` is `config.yaml` \(it corresponds to `--config-path` in `conduit serve`\). When `config.yaml` is read, its values are read into a `HeroConfig` and are used to configure our database connection.
 
 Re-run your application and it'll work exactly the same as it did before - except now, we can substitute databases depending on how we run the application.
 
 ### Configuration Template
 
-You shouldn't check `config.yaml` into version control because it contains sensitive information. However, it is important to check in a *configuration source file*. A configuration source file has the same structure as `HeroConfig`, but it has values for your test environment - both locally and with continuous integration tools. It is also used as a template for your deployed configuration files.
+You shouldn't check `config.yaml` into version control because it contains sensitive information. However, it is important to check in a _configuration source file_. A configuration source file has the same structure as `HeroConfig`, but it has values for your test environment - both locally and with continuous integration tools. It is also used as a template for your deployed configuration files.
 
-!!! tip "Sensitive Information"
-    Use a platform like Heroku or Kubernetes. You can store sensitive information in secured environment variables. You can substitute environment variables in a configuration file by using the variable's name with a `$` prefix as a value, e.g. `password: $DATABASE_PASSWORD`.
+!!! tip "Sensitive Information" Use a platform like Heroku or Kubernetes. You can store sensitive information in secured environment variables. You can substitute environment variables in a configuration file by using the variable's name with a `$` prefix as a value, e.g. `password: $DATABASE_PASSWORD`.
 
 A configuration source file should be named `config.src.yaml`, and one currently exists as an empty file in your project. Enter the following configuration into this file:
 
@@ -73,9 +71,9 @@ database:
   username: dart
   password: dart
   databaseName: dart_test
-```  
+```
 
-This file has the expected structure, but has different values for the database information (for a database that we will create shortly). In the next section, we'll use this configuration file to run our automated tests.
+This file has the expected structure, but has different values for the database information \(for a database that we will create shortly\). In the next section, we'll use this configuration file to run our automated tests.
 
 ## Testing in Conduit
 
@@ -83,8 +81,7 @@ So far, we've tested our application by using a web application. This isn't a go
 
 Because testing is so important, there is a package for writing Conduit application tests. In this chapter, we will use this package to make sure our hero endpoints are working correctly.
 
-!!! note "package:conduit_test"
-    The package `conduit_test` and `test` was already added to your `pubspec.yaml` file as a test dependency by the template generator.
+!!! note "package:conduit\_test" The package `conduit_test` and `test` was already added to your `pubspec.yaml` file as a test dependency by the template generator.
 
 In all Dart applications, a test suite is a Dart script with a `main` function. In this function, the `test` function is called multiple times to register expectations. A test passes if all of your expectations are met. An example Dart test looks like this:
 
@@ -101,7 +98,7 @@ void main() {
 
 ### Setting up your Development Environment
 
-In `config.src.yaml`, we target the database `dart:dart@localhost:5432/dart_test`. This is a 'special' database that is used by all Conduit applications for automated testing (by default). When your application is tested, its tables are temporarily added to this database and then discarded after tests complete. This means that no data is stored in between test runs.
+In `config.src.yaml`, we target the database `dart:dart@localhost:5432/dart_test`. This is a 'special' database that is used by all Conduit applications for automated testing \(by default\). When your application is tested, its tables are temporarily added to this database and then discarded after tests complete. This means that no data is stored in between test runs.
 
 Create this database by running [psql](https://postgresapp.com/documentation/cli-tools.html) and enter the following SQL:
 
@@ -112,17 +109,15 @@ ALTER USER dart WITH password 'dart';
 GRANT all ON database dart_test TO dart;
 ```
 
-!!! tip "dart_test Database"
-    You only have to create this database once per machine, and in any continuous integration scripts. All of your Conduit applications will use this database for automated testing. Fun fact - you can run multiple application's tests simultaneously using this database because the tables only exist for the database connection that created them.
+!!! tip "dart\_test Database" You only have to create this database once per machine, and in any continuous integration scripts. All of your Conduit applications will use this database for automated testing. Fun fact - you can run multiple application's tests simultaneously using this database because the tables only exist for the database connection that created them.
 
 ### Writing Your First Test
 
 We will create a test suite to make sure that all hero endpoints return the right data, and make the right changes. Create a new file named `test/hero_controller_test.dart`.
 
-!!! warning "Test Files Names and Locations"
-    A test file must end in `_test.dart` and must be in the `test/` directory of your project, or it won't be run.
+!!! warning "Test Files Names and Locations" A test file must end in `_test.dart` and must be in the `test/` directory of your project, or it won't be run.
 
-At the top of this file, import your application's *test harness* and enter the following `main` function:
+At the top of this file, import your application's _test harness_ and enter the following `main` function:
 
 ```dart
 import 'harness/app.dart';
@@ -145,7 +140,7 @@ void main() {
 }
 ```
 
-A harness has an `Agent` that can send requests to the application it started. Methods like `get` and `post` take a path (and optionally headers and a body) and return a response object. This object is used in `expectResponse` to validate the status code and other values. Tests in Conduit are written in this way: make a request, expect that the response is intended.
+A harness has an `Agent` that can send requests to the application it started. Methods like `get` and `post` take a path \(and optionally headers and a body\) and return a response object. This object is used in `expectResponse` to validate the status code and other values. Tests in Conduit are written in this way: make a request, expect that the response is intended.
 
 Because our application makes database queries, we have to to upload our database schema to the test database before each test. Fortunately, this is something our test harness can also do. In `test/harness/app.dart`, mixin `TestHarnessORMMixin` and override two methods:
 
@@ -163,13 +158,11 @@ class Harness extends TestHarness<HeroesChannel> with TestHarnessORMMixin {
 
 The mixin gives our harness the method `resetData`. This method deletes everything from the test database and uploads the schema in a pristine state. By calling this method in `onSetUp`, our test harness will reset data before each test.
 
-!!! tip "New Project Templates"
-    Using the `-t` command-line argument with `conduit create` allows you to select a template. Templates like `db` and `db_and_auth` have a test harness that already mixes in `TestHarnessORMMixin`.
+!!! tip "New Project Templates" Using the `-t` command-line argument with `conduit create` allows you to select a template. Templates like `db` and `db_and_auth` have a test harness that already mixes in `TestHarnessORMMixin`.
 
 Now, we can run this test by right-clicking on the `main` function in `hero_controller_test.dart` and selecting `Run tests in 'hero_controller_test.dart'`. A panel will appear that shows the results of your tests. You'll see a green checkmark next to the test in this panel to show that your test succeeded. If your test did not succeed, the reason will be printed to the console. If your test failed because of an error in your code, you will also be able to see the stack trace of the error.
 
-!!! tip "Running Tests"
-    You can also run all of your tests for an application by running `pub run test` from your project's directory. You can re-run a test with the green play button at the top right corner of the screen, or the keyboard shortcut associated with it (this shortcut varies depending on your installation).
+!!! tip "Running Tests" You can also run all of your tests for an application by running `pub run test` from your project's directory. You can re-run a test with the green play button at the top right corner of the screen, or the keyboard shortcut associated with it \(this shortcut varies depending on your installation\).
 
 We should expect that more than just the status code is correct. Let's verify that the body is a list, where every element is an object that contains an id and name. Update your test:
 
@@ -185,10 +178,9 @@ test("GET /heroes returns 200 OK", () async {
 
 This expectation ensures that the body is a list and that every element is an object with a `id` greater than 0, and a `name` that is a string. When expecting a body value, the body is first decoded from its content-type before the expectation. In practice, this means that your JSON response body is deserialized into an object or list. Your expectations of the body are built from Dart objects like `List` and `Object` that deserialized from JSON.
 
-!!! tip "Matchers"
-    The function `everyElement` is a `Matcher` from `package:matcher`. There are many types of matchers for all kinds of scenarios, and `package:conduit_test` includes Conduit-specific matchers. See the [conduit_test API Reference](https://www.pub.dev/documentation/conduit_test/latest/) for all Conduit matchers.
+!!! tip "Matchers" The function `everyElement` is a `Matcher` from `package:matcher`. There are many types of matchers for all kinds of scenarios, and `package:conduit_test` includes Conduit-specific matchers. See the [conduit\_test API Reference](https://www.pub.dev/documentation/conduit_test/latest/) for all Conduit matchers.
 
-This test actually has an error that we will fix in it by using another matcher. Right now, this endpoint returns an *empty list* because there are no heroes in the database! Let's insert a hero before we make this request, and also expect that there is at least one element in the body. Make sure to import `hero.dart` at the top of the file!
+This test actually has an error that we will fix in it by using another matcher. Right now, this endpoint returns an _empty list_ because there are no heroes in the database! Let's insert a hero before we make this request, and also expect that there is at least one element in the body. Make sure to import `hero.dart` at the top of the file!
 
 ```dart
 import 'package:heroes/model/hero.dart';
@@ -237,7 +229,7 @@ test("POST /heroes returns 200 OK", () async {
 
 This test creates a hero named 'Fred', but expects that the returned hero has the name 'Bob'. When we run the test, we see this test failure:
 
-```
+```text
 Expected: --- HTTP Response ---
           - Status code must be 200
           - Headers can be anything
@@ -295,3 +287,4 @@ test("POST /heroes returns 200 OK", () async {
 In this test, we request two 'Fred' heroes be created, and the second request fails with a 409 because `name` is a unique property of a hero. Notice that the first request didn't fail, even though we had created a 'Fred' hero in the previous test - that's because we reset the database for each test in our harness.
 
 ## [Next Chapter: Authentication and Authorization](oauth2.md)
+

@@ -1,3 +1,5 @@
+# index
+
 ## Tasks
 
 Conduit applications auto-generate an OpenAPI 3.0 document.
@@ -8,7 +10,8 @@ You create documents with the `conduit document` command-line tool.
 
 ## Guides
 
-- [Creating an OpenAPI Document](cli.md)
-- [Documenting Components](components.md)
-- [Documenting Endpoint Controllers](endpoint.md)
-- [Documenting Middleware Controllers](middleware.md)
+* [Creating an OpenAPI Document](cli.md)
+* [Documenting Components](components.md)
+* [Documenting Endpoint Controllers](endpoint.md)
+* [Documenting Middleware Controllers](middleware.md)
+

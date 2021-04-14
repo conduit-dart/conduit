@@ -4,7 +4,7 @@ Conduit 3 makes a number of breaking changes from Conduit 2. Some of these chang
 
 ## RequestSink is now ApplicationChannel
 
-This type has been renamed to `ApplicationChannel` and its methods for initializing an application have changed. The method `setupRouter` has been replaced by the getter `entryPoint`. All controller creating code should be located in this getter, and you must now create the `Router` yourself if you choose to. Additionally, the methods to link together controllers (e.g., `generate`, `pipe`) have been replaced with the `link` method, which always takes a closure.
+This type has been renamed to `ApplicationChannel` and its methods for initializing an application have changed. The method `setupRouter` has been replaced by the getter `entryPoint`. All controller creating code should be located in this getter, and you must now create the `Router` yourself if you choose to. Additionally, the methods to link together controllers \(e.g., `generate`, `pipe`\) have been replaced with the `link` method, which always takes a closure.
 
 ```dart
 class Channel extends ApplicationChannel {
@@ -24,7 +24,7 @@ class Channel extends ApplicationChannel {
 }
 ```
 
-The object returned by this getter is the first controller to receive a request, and does not have to be a router (e.g., it could be global middleware). By default, the closure provided to `link` is invoked once at startup and the same controller instance is reused for all requests. If a `Controller` implements `Recyclable<T>`, the closure is invoke for each new request and a new controller is created to handle the request.
+The object returned by this getter is the first controller to receive a request, and does not have to be a router \(e.g., it could be global middleware\). By default, the closure provided to `link` is invoked once at startup and the same controller instance is reused for all requests. If a `Controller` implements `Recyclable<T>`, the closure is invoke for each new request and a new controller is created to handle the request.
 
 You are no longer required to implement a constructor for `ApplicationChannel`. All of your initialization should be provided by overriding `prepare` in your channel. You will have access to configuration data through an `options` property in both `prepare` and `entryPoint`.
 
@@ -46,7 +46,7 @@ class MyController extends ResourceController {
 }
 ```
 
-Operation methods must now be decorated an `Operation` annotation; this replaces metadata like `@httpGet`. For an operation method to match a request with path variables, the names of those path variables must be arguments to the `Operation` constructor. In previous versions, path variable methods were selected if the method's arguments bound a path variable. This is no longer the case - binding a path variable has no impact on the selection of a method, the path variable *must* be identified in the `Operation`. You no longer have to bind a path variable and can retrieve it through the `request.path`.
+Operation methods must now be decorated an `Operation` annotation; this replaces metadata like `@httpGet`. For an operation method to match a request with path variables, the names of those path variables must be arguments to the `Operation` constructor. In previous versions, path variable methods were selected if the method's arguments bound a path variable. This is no longer the case - binding a path variable has no impact on the selection of a method, the path variable _must_ be identified in the `Operation`. You no longer have to bind a path variable and can retrieve it through the `request.path`.
 
 Bound parameters are identified by the `Bind` annotation, and the type of binding is identified by the constructor used. This syntax replaces `HTTPQuery.bind()`, etc.
 
@@ -61,11 +61,11 @@ final query = Query<User>()
 
 Methods like `whereEqualTo` no longer exist - all expressions to apply to a selected property are instance methods of the object returned by `where`.
 
-## Test library is now conduit_test
+## Test library is now conduit\_test
 
 The test library is now a separate library named `conduit_test` and must be added to your `pubspec.yaml`. Much of its behavior has changed to make writing tests more effective. See the [documentation](testing/tests.md) for more details.
 
-## Swagger -> OpenAPI
+## Swagger -&gt; OpenAPI
 
 Conduit had experimental support for Swagger documentation generation. It now has full, tested support for OpenAPI 3 documentation generation. See the [documentation](openapi/index.md) for more details.
 
@@ -73,7 +73,7 @@ Conduit had experimental support for Swagger documentation generation. It now ha
 
 The following common signatures are a non-exhaustive list of simple API renaming:
 
-```
+```text
 Authorization.resourceOwnerIdentifier -> Authorization.ownerID
 Request.innerRequest -> Request.raw
 AuthStorage -> AuthServerDelegate
@@ -93,3 +93,4 @@ RequestController.processRequest -> Controller.handle
 HTTPController -> ResourceController
 Router.unhandledRequestController -> Router.unmatchedController
 ```
+

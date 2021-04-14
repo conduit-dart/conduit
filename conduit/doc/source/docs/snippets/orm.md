@@ -1,6 +1,6 @@
 # Conduit ORM Snippets
 
-## Filter Query by Column/Property (WHERE clause)
+## Filter Query by Column/Property \(WHERE clause\)
 
 ```dart
 var query = new Query<Employee>(context)
@@ -32,7 +32,7 @@ var query = new Query<Employee>(context)
 var employee = await query.fetchOne();
 ```
 
-## Executing a Join (Has-One)
+## Executing a Join \(Has-One\)
 
 ```dart
 var query = new Query<Team>(context)
@@ -40,7 +40,7 @@ var query = new Query<Team>(context)
 var teamsAndTheirLeague = await query.fetch();
 ```
 
-## Executing a Join (Has-Many)
+## Executing a Join \(Has-Many\)
 
 ```dart
 var query = new Query<Team>(context)
@@ -68,7 +68,7 @@ var query = new Query<Team>(context)
 var teamsWithRookies = await query.fetch();
 ```
 
-## Complex/Unsupported WHERE Clause (using 'OR')
+## Complex/Unsupported WHERE Clause \(using 'OR'\)
 
 ```dart
 var query = new Query<Team>(context)
@@ -127,5 +127,5 @@ class MyAppConfiguration extends Configuration {
 
   DatabaseConnectionConfiguration database;
 }
-
 ```
+

@@ -38,7 +38,7 @@ test("that Last-Modified Header Is After Date ", () async {
 });
 ```
 
-## HTTP POST with JSON in Test 
+## HTTP POST with JSON in Test
 
 ```dart
 test("that can send JSON body", () async {
@@ -49,3 +49,4 @@ test("that can send JSON body", () async {
   expect(await request.post(), hasStatus(202));
 });
 ```
+

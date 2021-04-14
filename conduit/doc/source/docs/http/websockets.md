@@ -1,10 +1,10 @@
 # Using Websockets in Conduit
 
-A standard HTTP request will yield an HTTP response from a web server. In order for the server to send data to a client, the client must have sent a request for that data. A *websocket* is a special type of HTTP request that stays open, and both the server and client can send data to one another whenever they please.
+A standard HTTP request will yield an HTTP response from a web server. In order for the server to send data to a client, the client must have sent a request for that data. A _websocket_ is a special type of HTTP request that stays open, and both the server and client can send data to one another whenever they please.
 
 For example, a chat application might use websockets to send messages to everyone in a chatroom. In this scenario, the chat client application opens a websocket connection to the server application. When the user types a message, their chat client sends that message on its websocket. The payload might be JSON data that looks like this:
 
-```json
+```javascript
 {
   "action": "send_message",
   "room": "general",
@@ -12,9 +12,9 @@ For example, a chat application might use websockets to send messages to everyon
 }
 ```
 
-The server will receive this data, then turn around and send a modified version to *every* websocket connection it has. That data might look like this:
+The server will receive this data, then turn around and send a modified version to _every_ websocket connection it has. That data might look like this:
 
-```json
+```javascript
 {
   "action": "receive_message",
   "room": "general",
@@ -42,7 +42,7 @@ router
   });
 ```
 
-It's important that a request that is upgraded to a websocket is removed from the channel by returning null from the controller. (See the section on `Conduit and dart:io` [in this guide](../application/structure.md) for more details.)
+It's important that a request that is upgraded to a websocket is removed from the channel by returning null from the controller. \(See the section on `Conduit and dart:io` [in this guide](../application/structure.md) for more details.\)
 
 A client application can connect to the URL `ws://localhost:8888/connect`. A Dart application would make this connection like so:
 
@@ -105,9 +105,9 @@ conduit serve -n 1
 
 For many applications, this is a fine solution. For others, it may not be.
 
-Recall that one of the benefits of Conduit's multi-isolate architecture is that code tested on a single instance will scale to multiple instances behind a load balancer. If an Conduit application runs correctly on a single, multi-isolate instance, it will run correctly on multiple instances. This (somewhat) enforced structure prevents us from naively keeping track of websocket connections on a single isolate, which would cause issues when we scale out to a multi-instance system.
+Recall that one of the benefits of Conduit's multi-isolate architecture is that code tested on a single instance will scale to multiple instances behind a load balancer. If an Conduit application runs correctly on a single, multi-isolate instance, it will run correctly on multiple instances. This \(somewhat\) enforced structure prevents us from naively keeping track of websocket connections on a single isolate, which would cause issues when we scale out to a multi-instance system.
 
-If you find yourself in a situation where your application is so popular you need multiple servers to efficiently serve requests, you'll have a good idea on how to architect an appropriate solution (or you'll have the money to hire someone that does). In many situations, the REST API and websocket server are separate instances anyhow - they have different lifecycles and deployment behavior. It may make sense to run a websocket server on a single isolate, since you are likely IO-bound instead of CPU bound.
+If you find yourself in a situation where your application is so popular you need multiple servers to efficiently serve requests, you'll have a good idea on how to architect an appropriate solution \(or you'll have the money to hire someone that does\). In many situations, the REST API and websocket server are separate instances anyhow - they have different lifecycles and deployment behavior. It may make sense to run a websocket server on a single isolate, since you are likely IO-bound instead of CPU bound.
 
 If you still prefer to have a multi-isolate server with websockets, the `ApplicationMessageHub` will come in handy. When broadcasting messages to connected websockets across the application, you first send the data to each websocket connected to the isolate that is originating the message. Then, the message is added to the `ApplicationMessageHub`:
 
@@ -137,3 +137,4 @@ class ChatChannel extends ApplicationChannel {
   }
 }
 ```
+

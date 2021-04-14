@@ -2,7 +2,7 @@
 
 To send commands to a database - whether to fetch, insert, delete or update objects - you will create, configure and execute instances of `Query<T>`. The type argument must be a subclass of `ManagedObject`, which determines the table the query will operate on.
 
-A query compiles and executes a SQL query and requires a [ManagedContext](connecting.db) to determine the database to connect to. Here's an example of a `Query<T>` that fetches all instances of `User`:
+A query compiles and executes a SQL query and requires a [ManagedContext](https://github.com/noojee/conduit/tree/3f4c01be85b7ff135772166173524e76a5f80c32/conduit/doc/source/source/docs/db/connecting.db) to determine the database to connect to. Here's an example of a `Query<T>` that fetches all instances of `User`:
 
 ```dart
 final query = Query<User>(context);
@@ -11,10 +11,10 @@ final allUsers = await query.fetch();
 
 A `Query<T>` has four basic execution methods: `fetch`, `update`, `insert`, `delete`.
 
-* `fetch` will retrieve data from a database (it is equivalent to the SQL operation `SELECT`).
-* `update` will modify existing data in a database (it is equivalent to the SQL operation `UPDATE`).
-* `insert` will add new data to a database (it is equivalent to the SQL operation `INSERT`).
-* `delete` will remove data from a database (it is equivalent to the SQL operation `DELETE`).
+* `fetch` will retrieve data from a database \(it is equivalent to the SQL operation `SELECT`\).
+* `update` will modify existing data in a database \(it is equivalent to the SQL operation `UPDATE`\).
+* `insert` will add new data to a database \(it is equivalent to the SQL operation `INSERT`\).
+* `delete` will remove data from a database \(it is equivalent to the SQL operation `DELETE`\).
 
 A `Query<T>` has many configurable properties. These properties will impact which objects get fetched, the data that gets sent to the database, the order that data is returned in, and so on.
 
@@ -42,17 +42,17 @@ final query = Query<User>(context)
   ..values.name = "Bob"
   ..values.email = "bob@conduit.dart.com";  
 
-final user = await query.insert();  
+final user = await query.insert();
 ```
 
-The `values` of a `Query<T>` is an instance of `T` (the managed object type you are inserting). You can configure individual properties of `values`, or you can assign `values` to an instance you have created elsewhere:
+The `values` of a `Query<T>` is an instance of `T` \(the managed object type you are inserting\). You can configure individual properties of `values`, or you can assign `values` to an instance you have created elsewhere:
 
 ```dart
 final userValues = User()
   ..name = "Bob"
   ..email = "bob@conduit.dart.com";
 final query = Query<User>(context)..values = userValues;
-final user = await query.insert();  
+final user = await query.insert();
 ```
 
 Either way, this query is translated into the following SQL:
@@ -61,7 +61,7 @@ Either way, this query is translated into the following SQL:
 INSERT INTO _user (name, email) VALUES ('Bob', 'bob@conduit.dart.com') RETURNING id, name, email;
 ```
 
-Notice that only the values set on the `values` object are included in the SQL INSERT query. In this example, both `name` and `email` were set, but not `id` and therefore only `name` and `email` were included in the query. (In this case, the primary key is auto-incrementing and the database will generate it.)
+Notice that only the values set on the `values` object are included in the SQL INSERT query. In this example, both `name` and `email` were set, but not `id` and therefore only `name` and `email` were included in the query. \(In this case, the primary key is auto-incrementing and the database will generate it.\)
 
 Values that are explicitly set to `null` will be sent as `NULL`. For example, consider the following `Query<T>` and its SQL:
 
@@ -76,8 +76,7 @@ await query.insert();
 
 An insert query will return a managed object that represents the row that is inserted.
 
-!!! warning "Prefer the Inserted Object"
-    After you insert an object, you should prefer to use the object returned by an insert query rather than the values you used to populate the query. The object returned from the query will be an accurate representation of the database row, while the object used to build the query may be incomplete or different. For example, an auto-incrementing primary key won't be available in your query-building instance, but will in the object returned from the successful query.
+!!! warning "Prefer the Inserted Object" After you insert an object, you should prefer to use the object returned by an insert query rather than the values you used to populate the query. The object returned from the query will be an accurate representation of the database row, while the object used to build the query may be incomplete or different. For example, an auto-incrementing primary key won't be available in your query-building instance, but will in the object returned from the successful query.
 
 There is one difference to note when choosing between assigning an instance to `values`, or configuring the properties of `values`. In an instance you create, a relationship property must be instantiated before accessing its properties. When accessing the relationship properties of `values`, an empty instance of the related object is created immediately upon access.
 
@@ -106,7 +105,7 @@ final insertedObjects = await context.insertObjects([bob, jay]);
 
 Updating rows with a `Query<T>` is similar to inserting data: you set the `Query.values` for properties you want to change. The type parameter for the `Query<T>` indicates which database table will get updated when the query is executed.
 
-An update query can - and likely should - be restricted to a single row or subset of rows. This is done by configuring the `Query.where` property - which gets translated into the *where clause* of the SQL command. Here's an example:
+An update query can - and likely should - be restricted to a single row or subset of rows. This is done by configuring the `Query.where` property - which gets translated into the _where clause_ of the SQL command. Here's an example:
 
 ```dart
 // A Query that will change any user's whose name is 'Bob' to 'Fred'
@@ -134,8 +133,7 @@ var query = Query<User>(context)
   ..where((u) => u.name).equalTo("Bob");
 ```
 
-
-An update query returns every modified row as a result. If no rows are updated, the return value is an empty list.  
+An update query returns every modified row as a result. If no rows are updated, the return value is an empty list.
 
 There is a variant to `Query<T>.update` named `updateOne`. The `updateOne` method will build and execute a SQL query in the same way a normal `update` does, however, it will only return the single instance that was updated instead of a list. This is convenience method for the caller to get back a single instance instead of a list:
 
@@ -148,9 +146,9 @@ var query = Query<User>(context)
 var updatedUser = await query.updateOne();
 ```
 
-The `updateOne` method will return `null` if no rows were updated. It is important to note that if `updateOne` is used and more than one row is updated, `updateOne` will throw an exception and the changes to the data *are not reversible*. Because this is likely a mistake, this is considered an error, hence the exception is thrown. It is up to the programmer to recognize whether or not a particular `updateOne` query would impact multiple rows.
+The `updateOne` method will return `null` if no rows were updated. It is important to note that if `updateOne` is used and more than one row is updated, `updateOne` will throw an exception and the changes to the data _are not reversible_. Because this is likely a mistake, this is considered an error, hence the exception is thrown. It is up to the programmer to recognize whether or not a particular `updateOne` query would impact multiple rows.
 
-Update queries have a safety feature that prevents you from accidentally updating every row. If you try to execute a `Query<T>` to do an update without configuring `where`, an exception is thrown prior to carrying out the request. If you actually want to update every row of a table, you must set the `Query.canModifyAllInstances` to `true` prior to execution. (This property defaults to `false`.)
+Update queries have a safety feature that prevents you from accidentally updating every row. If you try to execute a `Query<T>` to do an update without configuring `where`, an exception is thrown prior to carrying out the request. If you actually want to update every row of a table, you must set the `Query.canModifyAllInstances` to `true` prior to execution. \(This property defaults to `false`.\)
 
 ### Deleting Data with a Query
 
@@ -217,17 +215,15 @@ Thus, the following three names would be ordered like so: 'Sally Smith', 'John W
 
 ### Property Selectors
 
-In the section on sorting, you saw the use of a *property selector* to select the property of the user to sort by. This syntax is used for many other query manipulations, like filtering and joining. A property selector is a closure that gives you an object of the type you are querying and must return a property of that object. The selector `(u) => u.lastName` in the previous section is a property selector that selects the last name of a user.
+In the section on sorting, you saw the use of a _property selector_ to select the property of the user to sort by. This syntax is used for many other query manipulations, like filtering and joining. A property selector is a closure that gives you an object of the type you are querying and must return a property of that object. The selector `(u) => u.lastName` in the previous section is a property selector that selects the last name of a user.
 
 The Dart analyzer will infer that the argument of a property selector, and it is always the same type as the object being queried. This enables IDE auto-completion, static error checking, and other tools like project-wide renaming.
 
-!!! tip "Live Templates"
-    To speed up query building, create a Live Template in IntelliJ that generates a property selector when typing 'ps'. The source of the template is `(o) => o.$END$`. A downloadable settings configuration for IntelliJ exists [here](../intellij.md) that includes this shortcut.
-
+!!! tip "Live Templates" To speed up query building, create a Live Template in IntelliJ that generates a property selector when typing 'ps'. The source of the template is `(o) => o.$END$`. A downloadable settings configuration for IntelliJ exists [here](../intellij.md) that includes this shortcut.
 
 ## Specifying Result Properties
 
-When executing queries that return managed objects (i.e., `insert()`, `update()` and `fetch()`), the default properties for each object are fetched. The default properties of a managed object are properties that correspond to a database column - attributes declared in the table definition. A managed object's default properties can be modified when declaring its table definition:
+When executing queries that return managed objects \(i.e., `insert()`, `update()` and `fetch()`\), the default properties for each object are fetched. The default properties of a managed object are properties that correspond to a database column - attributes declared in the table definition. A managed object's default properties can be modified when declaring its table definition:
 
 ```dart
 class _User {
@@ -255,10 +251,11 @@ Note that if you omit the primary key of a managed object from `returningPropert
 
 When executing a query, it may fail for any number of reasons: the query is invalid, a database couldn't be reached, constraints were violated, etc. In many cases, this exception originates from the underlying database driver. When thrown in a controller, these exceptions will trigger a 500 Server Error response.
 
-Exceptions that are thrown in response to user input (e.g., violating a database constraint, invalid data type) are re-interpreted into a `QueryException` or `ValidationException`. Both of these exception types have an associated `Response` object that is sent instead of the default 500 Server error.
+Exceptions that are thrown in response to user input \(e.g., violating a database constraint, invalid data type\) are re-interpreted into a `QueryException` or `ValidationException`. Both of these exception types have an associated `Response` object that is sent instead of the default 500 Server error.
 
 For this reason, you don't need to catch database query exceptions in a controller; an appropriate response will be sent on your behalf.
 
 ### Statement Reuse
 
 Conduit will parameterize and reuse queries when possible. This allows for significant speed and security improvements. Note that you do not have to do anything special to take advantage of this feature. However, currently at this time, you may not disable this feature.
+

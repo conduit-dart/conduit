@@ -13,13 +13,12 @@ GRANT all ON database quiz TO quiz_user;
 
 This creates a database `quiz` that `quiz_user` has access to. Now, add `quiz`'s data model to this database by running the following commands in the project directory:
 
-```
+```text
 conduit db generate
 conduit db upgrade --connect postgres://quiz_user:quizzy@localhost:5432/quiz
 ```
 
 The first command generates a migration file in `migrations/` that adds tables `_Question` and `_Answer`, and the second command executes that migration file on the newly created database.
-
 
 After adding the data model to the `quiz` database, run the following commands in `psql` to insert a question and answer:
 
@@ -61,7 +60,7 @@ QuizSink(ApplicationOptions appConfig) : super(appConfig) {
 
 Finally, create the file `config.yaml` in the root of the project directory and add the following key-values pairs:
 
-```
+```text
 database:
  username: quiz_user
  password: quizzy
@@ -70,16 +69,15 @@ database:
  databaseName: quiz
 ```
 
-Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running an Conduit application (and tips for running them remotely), see [this guide](../deploy/index.md).
+Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running an Conduit application \(and tips for running them remotely\), see [this guide](../deploy/index.md).
 
-!!! tip "Test and Deployment Configuration"
-    The `configurationFilePath` defaults to `config.yaml` when using `conduit serve`. In the test harness, the `configurationFilePath` is set to `config.src.yaml`. To continue running the tests, add the database connection configuration for `dart_test` database to the file `config.src.yaml`. For more details on configuration, see [this guide](../http/configure.md).
+!!! tip "Test and Deployment Configuration" The `configurationFilePath` defaults to `config.yaml` when using `conduit serve`. In the test harness, the `configurationFilePath` is set to `config.src.yaml`. To continue running the tests, add the database connection configuration for `dart_test` database to the file `config.src.yaml`. For more details on configuration, see [this guide](https://github.com/noojee/conduit/tree/3f4c01be85b7ff135772166173524e76a5f80c32/conduit/doc/source/source/docs/http/configure.md).
 
 ## Onward
 
 We've only touched on a small part of Conduit, but we've hit the fundamentals pretty well. The rest of the guides on this site will take you deeper on these topics, and topics we haven't covered like OAuth 2.0.
 
-It's very important that you get comfortable using the [API reference](https://pub.dev/documentation/conduit/latest/) in addition to these guides. If you are looking to solve a problem, start by looking at the API reference for all of the objects you have access to (including the type you are writing the method for). The properties and methods you have access to will lead you to more properties and methods that'll eventually do what you want done.
+It's very important that you get comfortable using the [API reference](https://pub.dev/documentation/conduit/latest/) in addition to these guides. If you are looking to solve a problem, start by looking at the API reference for all of the objects you have access to \(including the type you are writing the method for\). The properties and methods you have access to will lead you to more properties and methods that'll eventually do what you want done.
 
 Users of the documentation viewer [Dash](https://kapeli.com/dash) can add Conduit through the `Preferences` pane, under `Downloads`.
 
@@ -87,6 +85,7 @@ There are IntelliJ IDEA file and code templates available for Conduit. See [this
 
 And lastly, remember to create a new project:
 
-```
+```text
 conduit create my_next_big_idea
 ```
+

@@ -1,3 +1,5 @@
+# index
+
 ## Tasks
 
 Conduit has types to manage authentication and authorization according to the [OAuth 2.0 specification](https://tools.ietf.org/html/rfc6749).
@@ -8,13 +10,14 @@ An `AuthServer` service object is injected into `Authorizer` controllers that pr
 
 The `conduit auth` command-line tool manages configuration - such as client identifier management - for live applications.
 
-![Authorization Objects](../img/authobjects.png)
+![Authorization Objects](../.gitbook/assets/authobjects.png)
 
 ## Guides
 
-- [What is OAuth 2.0?](what_is_oauth.md)
-- [Creating and Using AuthServers](server.md)
-- [Securing Routes with Authorizer](authorizer.md)
-- [Adding Authentication Endpoints](controllers.md)
-- [Using Scopes to Control Access](auth_scopes.md)
-- [Managing OAuth 2.0 Clients](cli.md)
+* [What is OAuth 2.0?](what_is_oauth.md)
+* [Creating and Using AuthServers](server.md)
+* [Securing Routes with Authorizer](authorizer.md)
+* [Adding Authentication Endpoints](controllers.md)
+* [Using Scopes to Control Access](auth_scopes.md)
+* [Managing OAuth 2.0 Clients](cli.md)
+

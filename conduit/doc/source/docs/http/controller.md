@@ -6,9 +6,9 @@ In Conduit, HTTP requests and responses are instances of `Request`s and `Respons
 
 A controller is the basic building block of an Conduit application. A controller handles an HTTP request in some way. For example, a controller could return a 200 OK response with a JSON-encoded list of city names. A controller could also check a request to make sure it had the right credentials in its authorization header.
 
-Controllers are linked together to compose their behaviors into a *channel*. A channel handles a request by performing each of its controllers' behavior in order. For example, a channel might verify the credentials of a request and then return a list of city names by composing two controllers that take each of these actions.
+Controllers are linked together to compose their behaviors into a _channel_. A channel handles a request by performing each of its controllers' behavior in order. For example, a channel might verify the credentials of a request and then return a list of city names by composing two controllers that take each of these actions.
 
-![Conduit Channel](../img/simple_controller_diagram.png)
+![Conduit Channel](../.gitbook/assets/simple_controller_diagram.png)
 
 You subclass controllers to provide their request handling logic, and there are common controller subclasses in Conduit for your use.
 
@@ -21,14 +21,13 @@ final controller = VerifyController();
 controller.link(() => ResponseController());
 ```
 
-In the above, `VerifyController` links `ResponseController`. A request handled by the verifying controller can either respond to the request or let the response controller handle it. If the verifying controller sends a respond, the response controller will never receive the request. Any number of controllers can be linked, but the last controller linked must respond to a request. Controllers that always respond to request are called *endpoint controllers*. *Middleware controllers* verify or modify the request, and typically only respond when an error is encountered.
+In the above, `VerifyController` links `ResponseController`. A request handled by the verifying controller can either respond to the request or let the response controller handle it. If the verifying controller sends a respond, the response controller will never receive the request. Any number of controllers can be linked, but the last controller linked must respond to a request. Controllers that always respond to request are called _endpoint controllers_. _Middleware controllers_ verify or modify the request, and typically only respond when an error is encountered.
 
-Linking occurs in an [application channel](../application/channel.md), and is finalized during startup of your application (i.e., once you have set up your controllers, the cannot be changed once the application starts receiving requests).
+Linking occurs in an [application channel](../application/channel.md), and is finalized during startup of your application \(i.e., once you have set up your controllers, the cannot be changed once the application starts receiving requests\).
 
 ## Subclassing Controller to Handle Requests
 
 Every `Controller` implements its `handle` method to handle a request. You override this method in your controllers to provide the logic for your controllers. The following is an example of an endpoint controller, because it always sends a response:
-
 
 ```dart
 class NoteController extends Controller {
@@ -60,12 +59,11 @@ class Authorizer extends Controller {
 }
 ```
 
-!!! tip "Endpoint Controllers"
-    In most cases, endpoint controllers are created by subclassing [ResourceController](resource_controller.md). This controller allows you to declare more than one handler method in a controller to better organize logic. For example, one method might handle POST requests, while another handles GET requests.
+!!! tip "Endpoint Controllers" In most cases, endpoint controllers are created by subclassing [ResourceController](resource_controller.md). This controller allows you to declare more than one handler method in a controller to better organize logic. For example, one method might handle POST requests, while another handles GET requests.
 
 ### Modifying a Response with Middleware
 
-A middleware controller can add a *response modifier* to a request. When an endpoint controller eventually creates a response, these modifiers are applied to the response before it is sent. Modifiers are added by invoking `addResponseModifier` on a request.
+A middleware controller can add a _response modifier_ to a request. When an endpoint controller eventually creates a response, these modifiers are applied to the response before it is sent. Modifiers are added by invoking `addResponseModifier` on a request.
 
 ```dart
 class Versioner extends Controller {
@@ -92,13 +90,13 @@ For simple behavior, functions with the same signature as `handle` can be linked
     .linkFunction((req) async => Response.ok(null));
 ```
 
-Linking a function has all of the same behavior as `Controller.handle`: it can return a request or response, automatically handles exceptions, and can have controllers (and functions) linked to it.
+Linking a function has all of the same behavior as `Controller.handle`: it can return a request or response, automatically handles exceptions, and can have controllers \(and functions\) linked to it.
 
 ## Controller Instantiation and Recycling
 
 It is important to understand why `link` takes a closure, instead of a controller object. Conduit is an object oriented framework. Objects have both state and behavior. An application will receive multiple requests that will be handled by the same type of controller. If a mutable controller object were reused to handle multiple requests, it could retain some of its state between requests. This would create problems that are difficult to debug.
 
-Most controllers are immutable - in other words, all of their properties are final and they have no setters. This (mostly) ensures that the controller won't change behavior between requests. When a controller is immutable, the `link` closure is invoked once to create and link the controller object, and then the closure is discarded. The same controller object will be reused for every request.
+Most controllers are immutable - in other words, all of their properties are final and they have no setters. This \(mostly\) ensures that the controller won't change behavior between requests. When a controller is immutable, the `link` closure is invoked once to create and link the controller object, and then the closure is discarded. The same controller object will be reused for every request.
 
 Controllers can be mutable, with the caveat that they cannot be reused for multiple requests. For example, a `ResourceController` can have properties that are bound to the values of a request, and therefore these properties will change and a new instance must be created for each request.
 
@@ -132,7 +130,7 @@ The `recycledState` getter is called once, when the controller is first linked. 
 
 ## Exception Handling
 
-If an exception or error is thrown during the handling of a request, the controller currently handling the request will catch it. For the majority of values caught, a controller will send a 500 Server Response. The details of the exception or error will be [logged](../application/configure.md), and the request is removed from the channel (it will not be passed to a linked controller).
+If an exception or error is thrown during the handling of a request, the controller currently handling the request will catch it. For the majority of values caught, a controller will send a 500 Server Response. The details of the exception or error will be [logged](../application/configure.md), and the request is removed from the channel \(it will not be passed to a linked controller\).
 
 This is the default behavior for all thrown values except `Response` and `HandlerException`.
 
@@ -192,3 +190,4 @@ class WithdrawalException implements HandlerException {
 ## CORS Headers and Preflight Requests
 
 `Controller`s have built-in behavior for handling CORS requests. They will automatically respond to `OPTIONS` preflight requests and attach CORS headers to any other response. See [the chapter on CORS](../application/configure.md) for more details.
+

@@ -27,4 +27,5 @@ class Middleware extends Controller {
 }
 ```
 
-Each string key in an operations map is the lowercase name of an HTTP method, e.g. 'get' or 'post'. An `APIOperation` encapsulates its request parameters and responses. 
+Each string key in an operations map is the lowercase name of an HTTP method, e.g. 'get' or 'post'. An `APIOperation` encapsulates its request parameters and responses.
+

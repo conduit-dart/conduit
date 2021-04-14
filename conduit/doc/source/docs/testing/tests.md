@@ -2,8 +2,8 @@
 
 From the ground up, Conduit is built to be tested. In practice, this means two things:
 
-- A deployed Conduit application has zero code differences from an Conduit application under test.
-- There are helpful utilities for writing tests in Conduit.
+* A deployed Conduit application has zero code differences from an Conduit application under test.
+* There are helpful utilities for writing tests in Conduit.
 
 ## How Tests are Written
 
@@ -22,24 +22,22 @@ void main() {
 }}
 ```
 
-When `TestHarness.install` is invoked, it installs two callbacks that will start your application in 'test mode' when the tests start, and stop it after the tests complete. An application running in 'test mode' creates a local HTTP server and instantiates your `ApplicationChannel` *on the same isolate as your tests are running on*. This allows you to reach into your application channel's services to add test expectations on the state that the services manage.
+When `TestHarness.install` is invoked, it installs two callbacks that will start your application in 'test mode' when the tests start, and stop it after the tests complete. An application running in 'test mode' creates a local HTTP server and instantiates your `ApplicationChannel` _on the same isolate as your tests are running on_. This allows you to reach into your application channel's services to add test expectations on the state that the services manage.
 
 When your application is started in this way, its options have some default values:
 
-- the application listens on a random port
-- the `configurationFilePath` is `config.src.yaml`
+* the application listens on a random port
+* the `configurationFilePath` is `config.src.yaml`
 
 The `config.src.yaml` file must have the same structure as your deployment configurations, but values are substituted with test control values. For example, database connection configuration will point at a local test database instead of a production database. For more details on configuring an application, see [this guide](../application/configure.md).
 
-!!! note "Harness Install"
-    The `install` method calls `setUpAll` and `tearDownAll` from `package:test` to start and stop your application. You can manually start and stop your application by invoking `TestHarness.start` and `TestHarness.stop`. However, this is not recommended because `onSetUp` and `onTearDown` will not be called for each test.
+!!! note "Harness Install" The `install` method calls `setUpAll` and `tearDownAll` from `package:test` to start and stop your application. You can manually start and stop your application by invoking `TestHarness.start` and `TestHarness.stop`. However, this is not recommended because `onSetUp` and `onTearDown` will not be called for each test.
 
-!!! note "Uncaught Exceptions when Testing"
-    A test harness configures the application to let uncaught exceptions escape so that they trigger a failure in your test. This is different than when running an application normally, where all exceptions are caught and send an error response to the HTTP client.
+!!! note "Uncaught Exceptions when Testing" A test harness configures the application to let uncaught exceptions escape so that they trigger a failure in your test. This is different than when running an application normally, where all exceptions are caught and send an error response to the HTTP client.
 
 ### Using a TestHarness Subclass
 
-Most applications should subclass `TestHarness<T>` to provide application customization. (Applications created through the CLI have a suclass in `test/harness/app.dart`.) You override callback methods for events that occur during testing, like when the application starts, and before and after each test.
+Most applications should subclass `TestHarness<T>` to provide application customization. \(Applications created through the CLI have a suclass in `test/harness/app.dart`.\) You override callback methods for events that occur during testing, like when the application starts, and before and after each test.
 
 ```dart
 class Harness extends TestHarness<WildfireChannel> {
@@ -79,10 +77,9 @@ final request = harness.agent.request("/endpoint")
   ..headers["X-Header"] = "Value";
 ```
 
-When a request includes a body, the body is encoded according to the content-type of the request (defaults to JSON). The encoding behavior is provided by `CodecRegistry`, the same type that manages encoding and decoding for your application logic. When adding a body to a test request, you provide the unencoded value (a Dart `Map`, for example) and it is encoded into the correct value (a JSON object, for example). On the inverse side, when validating a response body, the body is already decoded to a Dart type prior to your test code receiving the response.
+When a request includes a body, the body is encoded according to the content-type of the request \(defaults to JSON\). The encoding behavior is provided by `CodecRegistry`, the same type that manages encoding and decoding for your application logic. When adding a body to a test request, you provide the unencoded value \(a Dart `Map`, for example\) and it is encoded into the correct value \(a JSON object, for example\). On the inverse side, when validating a response body, the body is already decoded to a Dart type prior to your test code receiving the response.
 
-!!! note "Codecs and CodecRegistry"
-    Your tests will run on the same isolate as your application. Whatever codecs have been registered in the codec repository by your application are automatically made available to the code that encodes and decodes your tests requests. You don't have to do anything special to opt-in to non-default codecs.
+!!! note "Codecs and CodecRegistry" Your tests will run on the same isolate as your application. Whatever codecs have been registered in the codec repository by your application are automatically made available to the code that encodes and decodes your tests requests. You don't have to do anything special to opt-in to non-default codecs.
 
 ### Agents Add Default Values to Requests
 
@@ -110,7 +107,7 @@ Validating response headers and bodies can be more complex than validating a sta
 
 The `hasHeaders` matcher takes a map of header names and values, and expects that the response's headers contains a matching header for each one in the map. The value may be a `String` or another `Matcher`. The response can have more headers than expected - those headers are ignored. If you want to exactly specify all headers, there is an optional flag to pass `hasHeaders`.
 
-The `hasBody` matcher takes any object or matcher that is compared to the *decoded* body of the response. The body is decoded according to its content-type prior to this comparison. For example, if your response returns a JSON object `{"key": "value"}`, this object is first decoded into a Dart `Map` with the value `{'key': 'value'}`. The following matchers would all be true:
+The `hasBody` matcher takes any object or matcher that is compared to the _decoded_ body of the response. The body is decoded according to its content-type prior to this comparison. For example, if your response returns a JSON object `{"key": "value"}`, this object is first decoded into a Dart `Map` with the value `{'key': 'value'}`. The following matchers would all be true:
 
 ```dart
 // exact match of Dart Map
@@ -151,9 +148,9 @@ This ensures that `key3` is not in the map. This is different than verifying `ke
 
 ### Verifying Side Effects
 
-For requests that are not idempotent (they change data in some way), you must also verify the state of the data has changed correctly after the request. This is often done by sending another request your application handles to get the updated data. For example, after you create an employee with `POST /employees`, you verify the employee was stored correctly by expecting `GET /employees/:id` has the same data you just sent it.
+For requests that are not idempotent \(they change data in some way\), you must also verify the state of the data has changed correctly after the request. This is often done by sending another request your application handles to get the updated data. For example, after you create an employee with `POST /employees`, you verify the employee was stored correctly by expecting `GET /employees/:id` has the same data you just sent it.
 
-Sometimes, the expected changes are not accessible through your API. For example, let's say that creating a new employee adds a record to an auditing database, but this database is not accessible through a public API. When testing, however, you would want to ensure that record was added to the database. You can access your application's services (like its database connection) in your tests through `TestHarness.channel`. For example, you might execute a `Query<T>` against your application's test database:
+Sometimes, the expected changes are not accessible through your API. For example, let's say that creating a new employee adds a record to an auditing database, but this database is not accessible through a public API. When testing, however, you would want to ensure that record was added to the database. You can access your application's services \(like its database connection\) in your tests through `TestHarness.channel`. For example, you might execute a `Query<T>` against your application's test database:
 
 ```dart
 test("POST /employees adds an audit log record", () async {
@@ -176,3 +173,4 @@ Anything the `ApplicationChannel` can access, so too can the tests.
 ## Further Reading
 
 For testing applications that use OAuth 2.0 or the ORM, see the guide on [mixins](mixins.md) for important behavior.
+

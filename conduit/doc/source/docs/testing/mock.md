@@ -48,7 +48,7 @@ You may also subclass `MockHTTPServer` and override its `open` method to add log
 
 ## Configuring a MockHTTPServer
 
-A `MockHTTPServer` is created when setting up tests. It must be closed when tearing down tests. If you use the same mock server to across all tests (e.g., open it in `setUpAll`), make sure to clear it after each test:
+A `MockHTTPServer` is created when setting up tests. It must be closed when tearing down tests. If you use the same mock server to across all tests \(e.g., open it in `setUpAll`\), make sure to clear it after each test:
 
 ```dart
 import 'package:conduit/test.dart';
@@ -72,14 +72,14 @@ void main() {
 
 An instance of `MockHTTPServer` listens on localhost on a specific port. An application that makes testable external service requests should provide the base URI for those services in a configuration file. The URI for that service in the [configuration file used during testing](../application/configure.md) should point at localhost and a specific port. For example, if a deployed `config.yaml` file has the following key-values:
 
-```
+```text
 github:
-  baseURL: https://api.github.com/  
+  baseURL: https://api.github.com/
 ```
 
 Then `config.src.yaml` would have:
 
-```
+```text
 github:
   baseURL: http://localhost:4000/
 ```
@@ -105,4 +105,5 @@ class AppApplicationChannel extends ApplicationChannel {
 
 Note that `APIConfiguration` is an existing type and is meant for this purpose.
 
-Also note that the testing strategy for database connections is *not* to use a mock but to use a temporary, local database that is set up and torn down during tests. This is possible because you own the data model generating code - whereas you probably don't have access to an external service's development API.
+Also note that the testing strategy for database connections is _not_ to use a mock but to use a temporary, local database that is set up and torn down during tests. This is possible because you own the data model generating code - whereas you probably don't have access to an external service's development API.
+

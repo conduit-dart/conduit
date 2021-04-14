@@ -6,9 +6,9 @@ The rows from a table can be sorted and fetched in contiguous chunks. This sorti
 
 Naive paging can be accomplished using the `fetchLimit` and `offset` properties of a `Query<T>`. For example, if a table contains 100 rows, and you would like to grab 10 at a time, each query would have a value of 10 for its `fetchLimit`. The first query would have an `offset` of 0, then 10, then 20, and so on. Especially when using `sortBy`, this type of paging can be effective. One of the drawbacks to this type of paging is that it can skip or duplicate rows if rows are being added or deleted between fetches.
 
-![Paging Error](../img/paging.png)
+![Paging Error](../.gitbook/assets/paging.png)
 
-For example, consider the seven objects above that are ordered by time. If we page by two objects at a time (`fetchLimit=2`) starting at the first item (`offset=0`), our first result set is the first two objects. The next page is the original offset plus the same limit - we grab the next two rows. But before the next page is fetched, a new object is inserted and its at an index that we already fetched. The next page would return `3:00pm` again. A similar problem occurs if a row is deleted when paging in this way.
+For example, consider the seven objects above that are ordered by time. If we page by two objects at a time \(`fetchLimit=2`\) starting at the first item \(`offset=0`\), our first result set is the first two objects. The next page is the original offset plus the same limit - we grab the next two rows. But before the next page is fetched, a new object is inserted and its at an index that we already fetched. The next page would return `3:00pm` again. A similar problem occurs if a row is deleted when paging in this way.
 
 It is really annoying for client applications to have to check for and merge duplicates. Another paging technique that doesn't suffer from this problem relies on the client sending a value from the last object in the previous page, instead of an offset. So in the above example, instead of asking for offset 2 in the second query, it'd send the value `1:30pm`. The query filters out rows with a value less than the one it was sent, orders the remaining rows and then fetches the newest from the top.
 
@@ -33,7 +33,7 @@ When paging, the query must have a `fetchLimit` - otherwise you're just sorting 
 
 When you first start paging, you don't have any results yet, so you can't specify a value from the last result set. In this case, the `boundingValue` of `pageBy` is null - meaning start from the beginning. Once the first set has been fetched, the `boundingValue` is the value of the paging property in the last object returned.
 
-This is often accomplished by adding a query parameter to an endpoint that takes in a bounding value. (See `ManagedObjectController<T>` as an example.)
+This is often accomplished by adding a query parameter to an endpoint that takes in a bounding value. \(See `ManagedObjectController<T>` as an example.\)
 
 A `pageBy` query will return an empty list of objects when no more values are left. If the number of objects remaining in the last page are less than the `fetchLimit`, only those objects will be returned. For example, if there four more objects left and the `fetchLimit` is 10, the number of objects returned will be four.
 
@@ -55,11 +55,11 @@ var query = Query<User>(context)
   ..where((u) => u.id).equalTo(1);
 ```
 
-(The generated SQL here would be `SELECT _user.id, _user.name, ... FROM _user WHERE _user.id = 1`.)
+\(The generated SQL here would be `SELECT _user.id, _user.name, ... FROM _user WHERE _user.id = 1`.\)
 
 There are many expression methods like `equalTo` - see the documentation for `QueryExpression<T>` for a complete list.
 
-You may add multiple criteria to a query by invoking `where` multiple times. Each criteria is combined together with a logical 'and'. For example, the following query will find all users whose `name` is "Bob" *and* `email` is not null:
+You may add multiple criteria to a query by invoking `where` multiple times. Each criteria is combined together with a logical 'and'. For example, the following query will find all users whose `name` is "Bob" _and_ `email` is not null:
 
 ```dart
 final query = Query<User>(context)
@@ -92,7 +92,7 @@ Notice in the above that you may select properties of relationships when buildin
 
 For selecting properties that are not backed by a foreign key column in the table being queried, see the next section on Joins.
 
-## Including Relationships in a Fetch (aka, Joins)
+## Including Relationships in a Fetch \(aka, Joins\)
 
 A `Query<T>` can also fetch relationship properties. This allows queries to fetch entire model graphs and reduces the number of round-trips to a database.
 
@@ -149,7 +149,7 @@ users.first.asMap() == {
 }; // yup
 ```
 
-When joining a has-many relationship, the `set:` argument takes a property selector that must select a `ManagedSet`. (When fetching a has-one or belongs-to relationship, use the `object:` argument.)
+When joining a has-many relationship, the `set:` argument takes a property selector that must select a `ManagedSet`. \(When fetching a has-one or belongs-to relationship, use the `object:` argument.\)
 
 The method `join()` returns a new `Query<T>`, where `T` is the type of the joined object. That is, the above code could also be written as such:
 
@@ -162,7 +162,7 @@ Query<Task> taskSubQuery = q.join(set: (u) => u.tasks);
 
 ### Configuring Join Queries
 
-You do not execute a query created by a join, but you do configure it like any other query. (The parent query keeps track of the joined query and you execute the parent query.) For example, you may modify the properties that are returned for the joined objects:
+You do not execute a query created by a join, but you do configure it like any other query. \(The parent query keeps track of the joined query and you execute the parent query.\) For example, you may modify the properties that are returned for the joined objects:
 
 ```dart
 var q = Query<User>(context);
@@ -170,7 +170,7 @@ var q = Query<User>(context);
 q.join(set: (u) => u.tasks)  
   ..returningProperties((t) => [t.id, t.contents]);
 
-final usersAndTasks = await q.fetch();  
+final usersAndTasks = await q.fetch();
 ```
 
 You may also apply filtering criteria to a join query. Consider a `Parent` that has-many `Children`. When fetching parents and joining their children, a `where` expression on the join query impacts which children are returned, but does not impact which parents are returned. For example, the following query would fetch every parent, but would only include children who are greater than 1 years old:
@@ -185,7 +185,7 @@ final parentsAndTheirChildren = await q.fetch();
 
 ### Filtering Objects by Their Relationships
 
-However, consider if we applied a similar expression to the parent query - it would only return parents *who have children that are greater than 1 years old*.
+However, consider if we applied a similar expression to the parent query - it would only return parents _who have children that are greater than 1 years old_.
 
 ```dart
 final q = Query<Parent>(context)
@@ -228,7 +228,7 @@ q.join(set: (u) => u.tasks)
 
 This would fetch all users, their addresses, all of their tasks, and the location for each of their tasks. You'd get a nice sized tree of objects here.
 
-## Reduce Functions (aka, Aggregate Functions)
+## Reduce Functions \(aka, Aggregate Functions\)
 
 Queries can also be used to perform functions like `count`, `sum`, `average`, `min` and `max`. Here's an example:
 
@@ -255,7 +255,7 @@ var averageSalaryOfPeopleNamedBob = await query.reduce.sum((u) => u.salary);
 
 You may always execute arbitrary SQL with `PersistentStore.execute`. Note that the objects returned will be a `List<List<dynamic>>` - a list of rows, for each a list of columns.
 
-You may also provide raw WHERE clauses with `Query.predicate`. A `QueryPredicate` is a `String` that is set as the query's where clause. A `QueryPredicate` has two properties, a format string and a `Map<String, dynamic>` of parameter values. The `format` string can (and should) parameterize any input values. Parameters are indicated in the format string using the `@` token:
+You may also provide raw WHERE clauses with `Query.predicate`. A `QueryPredicate` is a `String` that is set as the query's where clause. A `QueryPredicate` has two properties, a format string and a `Map<String, dynamic>` of parameter values. The `format` string can \(and should\) parameterize any input values. Parameters are indicated in the format string using the `@` token:
 
 ```dart
 // Creates a predicate that would only include instances where some column "id" is less than 2
@@ -263,3 +263,4 @@ var predicate = QueryPredicate("id < @idVariable", {"idVariable" : 2});
 ```
 
 The text following the `@` token may contain `[A-Za-z0-9_]`. The resulting where clause will be formed by replacing each token with the matching key in the parameters map. The value is not transformed in any way, so it must be the appropriate type for the column. If a key is not present in the `Map`, an exception will be thrown. Extra keys will be ignored.
+

@@ -2,19 +2,19 @@
 
 ## What is routing?
 
-Every HTTP request has a URL. A URL identifies a *resource*. In the early days of the Internet, a resource was a file. For example, the URL `http://www.geocities.com/my_page/image.jpg` would return the file `image.jpg` from the folder `my_page` on the webserver located at `www.geocities.com`. In a web application today, resources come from many other sources of data, like a database or a connected device. The job of a web application is to provide, create or modify a resource for a URL, wherever that resource might come from.
+Every HTTP request has a URL. A URL identifies a _resource_. In the early days of the Internet, a resource was a file. For example, the URL `http://www.geocities.com/my_page/image.jpg` would return the file `image.jpg` from the folder `my_page` on the webserver located at `www.geocities.com`. In a web application today, resources come from many other sources of data, like a database or a connected device. The job of a web application is to provide, create or modify a resource for a URL, wherever that resource might come from.
 
 A URL is made up of many parts, some of which are optional. The typical URL we see as humans looks like this: `http://conduit.dart.com/about`. Most people recognize that typing this URL into a browser would take them to our company's "About" page. In other words, our "About" page is a resource and the URL identifies it.
 
-More generally, the "About" page URL has the three required components of a URL: a *scheme* (`http`), a *host* (`conduit.dart.com`) and a *path* (`/about`). The host specifies the computer responsible for providing the resource, the path identifies the resource and the scheme lets both the requester and the host know how they should exchange information.
+More generally, the "About" page URL has the three required components of a URL: a _scheme_ \(`http`\), a _host_ \(`conduit.dart.com`\) and a _path_ \(`/about`\). The host specifies the computer responsible for providing the resource, the path identifies the resource and the scheme lets both the requester and the host know how they should exchange information.
 
-An Conduit application receives requests when the scheme is `http` (or `https`) and the host refers to a machine where the application is running. Therefore, once the application gets the request, it only cares about the remaining component: the path.
+An Conduit application receives requests when the scheme is `http` \(or `https`\) and the host refers to a machine where the application is running. Therefore, once the application gets the request, it only cares about the remaining component: the path.
 
-In Conduit, a `Router` routes `Request`s to a `Controller` based on the request path. This process is known as *routing*. When an application starts up, routes are registered in a subclass of `ApplicationChannel`. Each registered route creates a new [channel](../application/structure.md) of `Controller`s that will handle the request.
+In Conduit, a `Router` routes `Request`s to a `Controller` based on the request path. This process is known as _routing_. When an application starts up, routes are registered in a subclass of `ApplicationChannel`. Each registered route creates a new [channel](../application/structure.md) of `Controller`s that will handle the request.
 
 ## Route Specifications Match HTTP Request Paths
 
-A route is registered by invoking `Router.route`. This method takes a *route specification* - a `String` with some syntax rules that will match the path of a request. This registration occurs when an application first starts by overriding `ApplicationChannel.entryPoint`. For example:
+A route is registered by invoking `Router.route`. This method takes a _route specification_ - a `String` with some syntax rules that will match the path of a request. This registration occurs when an application first starts by overriding `ApplicationChannel.entryPoint`. For example:
 
 ```dart
 class MyApplicationChannel extends ApplicationChannel {
@@ -31,15 +31,15 @@ class MyApplicationChannel extends ApplicationChannel {
 }
 ```
 
-The argument to `route` is the route specification string. This particular route matches the path `/users`. That is, a request for the URL `http://myserver.com/users` will be handled by the `linkFunction` closure. (Leading and trailing slashes are stripped out when routes are compiled, so including them has no effect, but it is good style to show a leading slash.)
+The argument to `route` is the route specification string. This particular route matches the path `/users`. That is, a request for the URL `http://myserver.com/users` will be handled by the `linkFunction` closure. \(Leading and trailing slashes are stripped out when routes are compiled, so including them has no effect, but it is good style to show a leading slash.\)
 
-A path can have multiple segments (the characters between slashes). For example, the path `/users/foo` has two path segments: `users` and `foo`. A route specification matches each segment of a path against each of its segments. The path and the route must also have the same number of segments. Thus, the route specification `/users/foo` would match the path `/users/foo`, but it would not match the paths `/users`, `/users/7` or `/users/foo/1`.
+A path can have multiple segments \(the characters between slashes\). For example, the path `/users/foo` has two path segments: `users` and `foo`. A route specification matches each segment of a path against each of its segments. The path and the route must also have the same number of segments. Thus, the route specification `/users/foo` would match the path `/users/foo`, but it would not match the paths `/users`, `/users/7` or `/users/foo/1`.
 
 ### Path Variables
 
-A route specification may have *path variables*. A path variable captures the value from a path segment, so that your code can use it. A path variable is most often used to uniquely identify a resource by some identifier, like `/users/1` and `/users/2`.
+A route specification may have _path variables_. A path variable captures the value from a path segment, so that your code can use it. A path variable is most often used to uniquely identify a resource by some identifier, like `/users/1` and `/users/2`.
 
-In a route specification, a path variable starts with a colon (`:`). The name of the variable follows this colon. For example, consider the following route that declares a path variable named `userID`:
+In a route specification, a path variable starts with a colon \(`:`\). The name of the variable follows this colon. For example, consider the following route that declares a path variable named `userID`:
 
 ```dart
 router.route("/users/:userID")
@@ -51,7 +51,7 @@ This route specification will match `/users/1`, `/users/2`, `/users/foo`, etc. T
 
 Routes may have optional path segments. This allows a group of routes that all refer to a resource collection and its individual resources to go to the same controller. For example, the requests `/users` and `/users/1` can both be covered by a single route specification.
 
-An optional path segment has square brackets (`[]`) around it. The brackets can go before or after slashes. For example, the following two syntaxes register a route that accepts both `/users` and `/users/:userID`:
+An optional path segment has square brackets \(`[]`\) around it. The brackets can go before or after slashes. For example, the following two syntaxes register a route that accepts both `/users` and `/users/:userID`:
 
 ```dart
 route("/users/[:userID]")
@@ -99,9 +99,9 @@ Everything in between the parentheses is evaluated as the regular expression. Th
 
 ### Matching the Remaining Path
 
-Finally, a route specification may have a special 'match-all' token, the asterisk (`*`). This token allows for any remaining request path to be matched, regardless of its contents or length. For example, the route specification `/users/*` would match the following paths:
+Finally, a route specification may have a special 'match-all' token, the asterisk \(`*`\). This token allows for any remaining request path to be matched, regardless of its contents or length. For example, the route specification `/users/*` would match the following paths:
 
-```
+```text
 /users
 /users/1
 /users/foo
@@ -129,3 +129,4 @@ The values in `variables` are always `String`s, since a request path is a `Strin
 ## Failed Matches Return 404
 
 A `Router` will return a `404 Not Found` if there is no matching route for the request. No linked controllers will handle the request. This behavior may be overridden by providing a closure to `Router`'s constructor.
+

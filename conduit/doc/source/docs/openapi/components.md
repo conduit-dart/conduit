@@ -21,7 +21,7 @@ class SourceRepository implements APIComponentDocumenter {
 }
 ```
 
-A "SourceRepository" is an object that contains two fields, "id" (an integer) and "name" (a string). This component can be used anywhere a schema object can be used. Schema objects are one type of component that document what is typically considered to be a 'model object'. You most often see schema objects in request and response bodies. By default, each of your `ManagedObject`s are registered as schema objects. The other types of components are: responses, request bodies, parameters, headers, security schemes, and callbacks.
+A "SourceRepository" is an object that contains two fields, "id" \(an integer\) and "name" \(a string\). This component can be used anywhere a schema object can be used. Schema objects are one type of component that document what is typically considered to be a 'model object'. You most often see schema objects in request and response bodies. By default, each of your `ManagedObject`s are registered as schema objects. The other types of components are: responses, request bodies, parameters, headers, security schemes, and callbacks.
 
 Components must be registered with a name, but can additionally be registered with a type. This allows users of a component to reference it by its Dart type. Including a type reference for an object is an optional argument when registering.
 
@@ -30,7 +30,7 @@ context.schema.register("SourceRepository",
     APISchemaObject.object({
       "id": APISchemaObject.integer(),
       "name": APISchemaObject.string()
-    }, representation: SourceRepository);          
+    }, representation: SourceRepository);
 ```
 
 The order in which components are registered and referenced does not matter. If you reference a component that is created later in the documentation process, it will be resolved prior to the document being completed. If a referenced component is never registered, an error is thrown and your document will fail to generate.
@@ -75,7 +75,7 @@ class RepositoryController extends ResourceController {
 
 ## Component Discovery
 
-All controllers are can document components when they are linked to the entry point. Objects other than controllers will automatically document their components if they implement `APIComponentDocumenter` *and* are declared properties of your `ApplicationChannel`. (See [this guide](cli.md) for other options.)
+All controllers are can document components when they are linked to the entry point. Objects other than controllers will automatically document their components if they implement `APIComponentDocumenter` _and_ are declared properties of your `ApplicationChannel`. \(See [this guide](cli.md) for other options.\)
 
 Built-in Conduit types will register any applicable components. This includes the types that handle OAuth2 as well as all `ManagedObject` subclasses in your application.
 
@@ -122,3 +122,4 @@ class MyController extends ResourceController {
   }
 }
 ```
+

@@ -1,4 +1,6 @@
-# Migrating from Aqueduct to Conduit
+# migration\_guide
+
+## Migrating from Aqueduct to Conduit
 
 Aqueduct is the predessor to Conduit and was developed by stablekernel who no longer support Aqueduct.
 
@@ -6,9 +8,9 @@ Conduit is the community driven fork of Aqueduct.
 
 This guide is intended to help users of Aqueduct migrate to Conduit.
 
-# Significant changes
+## Significant changes
 
-## Cli tooling
+### Cli tooling
 
 The most obvious change is the name and this is reflected in the cli tooling.
 
@@ -20,16 +22,13 @@ To install conduit you run
 dart pub global activate conduit
 ```
 
-## Test database
+### Test database
+
 In conduit the test database used for unit testing and the test harness had the following attributes:
 
-user: dart
-password: dart
-db name: dart_test
+user: dart password: dart db name: dart\_test
 
 In conduit these have been changed to:
 
-user: conduit_test_user
-password: conduit!
-db name: conduit_test_db
+user: conduit\_test\_user password: conduit! db name: conduit\_test\_db
 

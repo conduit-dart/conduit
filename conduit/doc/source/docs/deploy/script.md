@@ -1,3 +1,5 @@
+# script
+
 You may also run Conduit applications with a standalone script, instead of `conduit serve`. In fact, `conduit serve` creates a temporary Dart script to run the application. If you created your application with `conduit create`, a standalone already exists in your project named `bin/main.dart`.
 
 A sample script looks like this:
@@ -19,3 +21,4 @@ Future main() async {
 ```
 
 This script can be used in place of `conduit serve`, but you must configure all `ApplicationOptions` in this script and not through the CLI.
+

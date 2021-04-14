@@ -1,6 +1,6 @@
 # Conduit IntellIJ IDEA Templates
 
-This document describes how to install file and code templates for Conduit when using an IntelliJ IDE (e.g., IDEA, IDEA CE, Webstorm).
+This document describes how to install file and code templates for Conduit when using an IntelliJ IDE \(e.g., IDEA, IDEA CE, Webstorm\).
 
 ## Installation
 
@@ -11,7 +11,7 @@ Download the [this file](https://conduit.io/docs/files/settings.jar) and import 
 File templates are created by selecting `New` from the `File` menu or by right-clicking a directory in the project navigator. The following templates exists:
 
 | Template Name | Behavior |
-|---|---|
+| :--- | :--- |
 | Conduit ResourceController | Creates a new file with the skeleton of an `ResourceController`. |
 | Conduit ManagedObject | Creates a new file with the skeleton of a `ManagedObject` subclass |
 | Conduit Test | Creates a new file that creates and installs a `TestHarness` subclass from your project. |
@@ -23,7 +23,7 @@ Live templates are keywords that expand into a larger code block. Typing the key
 ### Live Templates: HTTP
 
 | Shortcut | Behavior |
-|---|---|
+| :--- | :--- |
 | `operation` | Creates a new operation method in a `ResourceController`. |
 | `bindbody` | Adds a body binding to an operation method. |
 | `bindheader` | Adds a header binding to an operation method. |
@@ -33,7 +33,7 @@ Live templates are keywords that expand into a larger code block. Typing the key
 ### Live Templates: ORM
 
 | Shortcut | Behavior |
-|---|---|
+| :--- | :--- |
 | `ps` | Enters the property selector syntax for `Query.where`, `Query.join` and other query configuration methods. |
 | `column` | Adds a column annotated field to a `ManagedObject`. |
 | `relate` | Adds a relationship annotated field to a `ManagedObject`. |
@@ -41,5 +41,6 @@ Live templates are keywords that expand into a larger code block. Typing the key
 ### Live Templates: Testing
 
 | Shortcut | Behavior |
-|---|---|
-| `test` |  Creates a test closure in a test file. |
+| :--- | :--- |
+| `test` | Creates a test closure in a test file. |
+

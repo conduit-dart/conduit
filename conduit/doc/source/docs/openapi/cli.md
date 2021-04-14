@@ -4,7 +4,7 @@ In this document, you'll learn how to use the `conduit` command line tool to gen
 
 ## OpenAPI Documents
 
-OpenAPI documents describe the details of every request and possible response your application has. These documents are JSON objects that follow a specification. This specification defines which properties the document can (or must) have. By following this specification, your application can take advantage of tools such as documentation viewers and source code generators.
+OpenAPI documents describe the details of every request and possible response your application has. These documents are JSON objects that follow a specification. This specification defines which properties the document can \(or must\) have. By following this specification, your application can take advantage of tools such as documentation viewers and source code generators.
 
 The two most important objects in an OpenAPI document are components and path operations. A path operation contains an expected request and possible responses. Components are reusable definitions that you can use in a path operation. For example, a 400 Bad Request response component can be reused across path operations that may send this response.
 
@@ -12,7 +12,7 @@ Most of the documentation process revolves around registering components and cre
 
 ## The conduit document Command
 
-Documents can be written by hand, but it takes a lot of time and is hard to keep in sync with your code. Conduit analyzes your code to build (most) of a document for you. You run the `conduit document` command in your project's directory, and it prints the JSON document to your console.
+Documents can be written by hand, but it takes a lot of time and is hard to keep in sync with your code. Conduit analyzes your code to build \(most\) of a document for you. You run the `conduit document` command in your project's directory, and it prints the JSON document to your console.
 
 ```bash
 cd my_project/
@@ -34,10 +34,9 @@ Much of the metadata in an OpenAPI document - such as title or version - is deri
 
 ## How Applications are Documented
 
-When you run the `conduit document` command, it creates an empty `APIDocument` that objects in your application will populate. Your application goes through its normal initialization process (i.e., `prepare` and `entryPoint`). Controllers and service objects are then told to register components. For example, all `ManagedObject`s register themselves as a reusable schema component. After components are registered, the controllers in an application are told to create path operations that define the requests they handle.
+When you run the `conduit document` command, it creates an empty `APIDocument` that objects in your application will populate. Your application goes through its normal initialization process \(i.e., `prepare` and `entryPoint`\). Controllers and service objects are then told to register components. For example, all `ManagedObject`s register themselves as a reusable schema component. After components are registered, the controllers in an application are told to create path operations that define the requests they handle.
 
-!!! note "Configuration Files"
-    Because your application goes through initialization as if it were going to run the application, you must have a valid configuration file when documenting. This defaults to 'config.yaml.src', the same file you use for running tests. See `conduit document --help` to use a different file.
+!!! note "Configuration Files" Because your application goes through initialization as if it were going to run the application, you must have a valid configuration file when documenting. This defaults to 'config.yaml.src', the same file you use for running tests. See `conduit document --help` to use a different file.
 
 ### Documenting Components
 
@@ -81,8 +80,9 @@ You can override `documentComponents` in controllers and services that you creat
 
 ### Document Path Operations
 
-A path operation is the expected request and possible responses for a path (e.g., `/users`) and its request method (e.g., `GET`). Each operation describes how to send a request to the server, like which headers or query parameters to include. Responses describe the status code, headers and body that can be sent. Each controller implements `APIOperationDocumenter.documentOperations` to define this information for the requests it handles.
+A path operation is the expected request and possible responses for a path \(e.g., `/users`\) and its request method \(e.g., `GET`\). Each operation describes how to send a request to the server, like which headers or query parameters to include. Responses describe the status code, headers and body that can be sent. Each controller implements `APIOperationDocumenter.documentOperations` to define this information for the requests it handles.
 
 Built-in controllers like `Authorizer` and `ResourceController` already implement this method. You typically only override this method when creating your own middleware. For more information on documenting middleware, see [this guide](middleware.md).
 
 When creating documentation for `ResourceController`s, request parameters are derived from your bindings, but you still need to provide the possible responses. For more information on documenting endpoint controllers, see [this guide](endpoint.md).
+

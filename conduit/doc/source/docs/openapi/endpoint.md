@@ -47,3 +47,4 @@ Map<String, APIResponse> documentOperationResponses(APIDocumentContext context, 
 While a resource controller derives the rest of its documentation from your code, you may at times want to override this behavior. Individual elements may be modified by overriding methods like `documentOperationParameters`, or you may override `documentOperations` to take over the whole process.
 
 If you are not using `ResourceController`, you must override `documentOperations` in your controller and provide all of the operation information yourself.
+

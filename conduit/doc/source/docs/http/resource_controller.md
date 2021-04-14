@@ -2,13 +2,13 @@
 
 A `ResourceController` is a [controller](controller.md) that provide conveniences for implementing endpoint controllers. A `ResourceController` must be subclassed, and in that subclass, you write a method for each operation on that type of resource. For example, a `UserController` might handle the following operations:
 
-- creating a new user (`POST /users`)
-- getting all users (`GET /users`)
-- getting an individual user (`GET /users/:id`)
-- updating an individual user (`PUT /users/:id`)
-- deleting an individual user (`DELETE /users/:id`)
+* creating a new user \(`POST /users`\)
+* getting all users \(`GET /users`\)
+* getting an individual user \(`GET /users/:id`\)
+* updating an individual user \(`PUT /users/:id`\)
+* deleting an individual user \(`DELETE /users/:id`\)
 
-These methods that are invoked for an operation are called *operation methods*.
+These methods that are invoked for an operation are called _operation methods_.
 
 ## Operation Methods
 
@@ -40,15 +40,14 @@ class CityController extends ResourceController {
 }
 ```
 
-!!! note "Path Variables"
-    This controller would be linked to the route specification `/cities/[:name]`, so that it can handle both of these operations. Read more about path variables in [Routing](routing.md).
+!!! note "Path Variables" This controller would be linked to the route specification `/cities/[:name]`, so that it can handle both of these operations. Read more about path variables in [Routing](routing.md).
 
 The named constructor of `Operation` tells us which HTTP method the operation method handles. The following named constructors exist:
 
-- `Operation.post()`
-- `Operation.get()`
-- `Operation.put()`
-- `Operation.delete()`
+* `Operation.post()`
+* `Operation.get()`
+* `Operation.put()`
+* `Operation.delete()`
 
 The canonical `Operation()` constructor takes the HTTP method as its first argument for non-standard operations, e.g.:
 
@@ -100,7 +99,7 @@ By contrast, the route `/cities/[:name/[attractions/[:id]]]`, while valid, makes
 
 ## Request Bindings
 
-Operation methods may *bind* properties of an HTTP request to its parameters. When the operation method is invoked, the value of that property is passed as an argument to the operation method. For example, the following binds the header named 'X-API-Key' to the argument `apiKey`:
+Operation methods may _bind_ properties of an HTTP request to its parameters. When the operation method is invoked, the value of that property is passed as an argument to the operation method. For example, the following binds the header named 'X-API-Key' to the argument `apiKey`:
 
 ```dart
 @Operation.get('name')
@@ -115,12 +114,12 @@ Future<Response> getCityByName(@Bind.header('x-api-key') String apiKey) async {
 
 The following table shows the possible types of bindings:
 
-Property | Binding
----|---
-Path Variable | `@Bind.path(pathVariableName)`
-URL Query Parameter | `@Bind.query(queryParameterName)`
-Header | `@Bind.header(headerName)`
-Request Body | `@Bind.body()`
+| Property | Binding |
+| :--- | :--- |
+| Path Variable | `@Bind.path(pathVariableName)` |
+| URL Query Parameter | `@Bind.query(queryParameterName)` |
+| Header | `@Bind.header(headerName)` |
+| Request Body | `@Bind.body()` |
 
 You may bind any number of HTTP request properties to a single operation method.
 
@@ -139,7 +138,7 @@ Future<Response> getAllCities({@Bind.header('x-api-key') String apiKey}) async {
 }
 ```
 
-The curly bracket syntax is a Dart language feature for optional method parameters ([see more here](https://www.dartlang.org/guides/language/language-tour#optional-parameters)). If there are multiple optional parameters, use only one pair of curly brackets and list each optional parameter in those brackets.
+The curly bracket syntax is a Dart language feature for optional method parameters \([see more here](https://www.dartlang.org/guides/language/language-tour#optional-parameters)\). If there are multiple optional parameters, use only one pair of curly brackets and list each optional parameter in those brackets.
 
 A bound parameter will be null if is not present in the request. You can provide a default value for optional parameters.
 
@@ -158,7 +157,7 @@ Query, header and path bindings can automatically be parsed into other types, su
 Future<Response> getCityByID(@Bind.query('id') int cityID)
 ```
 
-The type of a bound parameter may be `String` or any type that implements `parse` (e.g., `int`, `DateTime`). Query parameters may also be bound to `bool` parameters; a boolean query parameter will be true if the query parameter has no value (e.g. `/path?boolean`).
+The type of a bound parameter may be `String` or any type that implements `parse` \(e.g., `int`, `DateTime`\). Query parameters may also be bound to `bool` parameters; a boolean query parameter will be true if the query parameter has no value \(e.g. `/path?boolean`\).
 
 If parsing fails for any reason, an error response is sent and the operation method is not called. For example, the above example binds `int cityID` - if the path variable 'id' can't be parsed into an `int`, a 404 Not Found response is sent. If a query parameter or header value cannot be parsed, a 400 Bad Request response is sent.
 
@@ -168,7 +167,7 @@ You may also bind `List<T>` parameters to headers and query parameters, where `T
 Future<Response> getCitiesByIDs(@Bind.query('id') List<int> ids)
 ```
 
-Note that if a parameter is *not* bound to a list and there are multiple occurrences of that property in the request, a 400 Bad Request response will be sent. If you want to allow multiple values, you must bind to a `List<T>`.
+Note that if a parameter is _not_ bound to a list and there are multiple occurrences of that property in the request, a 400 Bad Request response will be sent. If you want to allow multiple values, you must bind to a `List<T>`.
 
 ### Header Bindings
 
@@ -246,25 +245,24 @@ class CityController extends ResourceController {
 }
 ```
 
-Since there is only one request body, `Bind.body()` doesn't take any identifying arguments (however, it does take optional arguments for ignoring, requiring or rejecting keys; this matches the behavior of `Serializable.read` and only works when the bound type is a `Serializable` or list of).
+Since there is only one request body, `Bind.body()` doesn't take any identifying arguments \(however, it does take optional arguments for ignoring, requiring or rejecting keys; this matches the behavior of `Serializable.read` and only works when the bound type is a `Serializable` or list of\).
 
-The bound parameter type (`City` in this example) must implement `Serializable`. Conduit will automatically decode the request body from it's content-type, create a new instance of the bound parameter type, and invoke its `read` method. In the above example, a valid request body would be the following JSON:
+The bound parameter type \(`City` in this example\) must implement `Serializable`. Conduit will automatically decode the request body from it's content-type, create a new instance of the bound parameter type, and invoke its `read` method. In the above example, a valid request body would be the following JSON:
 
-```json
+```javascript
 {
   "id": 1,
   "name": "Atlanta"
 }
 ```
 
-!!! note "HTTP Body Decoding"
-    Request bodies are decoded according to their content-type prior to being deserialized. For more information on request body decoding, including decoding content-types other than JSON, see [this guide](request_and_response.md).
+!!! note "HTTP Body Decoding" Request bodies are decoded according to their content-type prior to being deserialized. For more information on request body decoding, including decoding content-types other than JSON, see [this guide](request_and_response.md).
 
 If parsing fails or `read` throws an exception, a 400 Bad Request response will be sent and the operation method won't be called.
 
 You may also bind `List<Serializable>` parameters to the request body. Consider the following JSON that contains a list of cities:
 
-```json
+```javascript
 [
   {"id": 1, "name": "Atlanta"},
   {"id": 2, "name": "Madison"}
@@ -277,17 +275,15 @@ This body can be bound by declaring the bound parameter to be a `List` of the de
 Future<Response> addCity(@Bind.body() List<City> cities)
 ```
 
-!!! tip "List vs Object"
-    An endpoint should either take a single object or a list of objects, but not both. If the request body is a JSON list and the bound variable is not a list, a 400 Bad Request response will be sent (and vice versa). Declaring a body binding of the appropriate type validates the expected value and aids in automatically generating an OpenAPI specification for your application.
+!!! tip "List vs Object" An endpoint should either take a single object or a list of objects, but not both. If the request body is a JSON list and the bound variable is not a list, a 400 Bad Request response will be sent \(and vice versa\). Declaring a body binding of the appropriate type validates the expected value and aids in automatically generating an OpenAPI specification for your application.
 
 Note that if the request's `Content-Type` is 'x-www-form-urlencoded', its must be bound with `Bind.query` and not `Bind.body`.
 
-!!! tip "Key Filters in Bind.body()"
-      Filters can be applied to keys of the object being read. Filters can ignore keys, require keys or throw an error if a key is found. See more [here](../http/request_and_response.md).
+!!! tip "Key Filters in Bind.body\(\)" Filters can be applied to keys of the object being read. Filters can ignore keys, require keys or throw an error if a key is found. See more [here](request_and_response.md).
 
 ### Property Binding
 
-The properties of an `ResourceController`s may also have `Bind.query` and `Bind.header` metadata. This binds values from the request to the `ResourceController` instance itself, making them accessible from *all* operation methods.
+The properties of an `ResourceController`s may also have `Bind.query` and `Bind.header` metadata. This binds values from the request to the `ResourceController` instance itself, making them accessible from _all_ operation methods.
 
 ```dart
 class CityController extends ResourceController {
@@ -350,7 +346,7 @@ class UserController extends ResourceController {
 }
 ```
 
-The `responseContentType` is the *default* response content type. An individual `Response` may set its own `contentType`, which takes precedence over the `responseContentType`. For example, the following controller returns JSON by default, but if the request specifically asks for XML, that's what it will return:
+The `responseContentType` is the _default_ response content type. An individual `Response` may set its own `contentType`, which takes precedence over the `responseContentType`. For example, the following controller returns JSON by default, but if the request specifically asks for XML, that's what it will return:
 
 ```dart
 class UserController extends ResourceController {
@@ -413,21 +409,21 @@ router
 
 This controller has the following behavior:
 
-Request|Action
---|----
-POST /users|Inserts a user into the database with values from the request body
-GET /users|Fetches all users in the database
-GET /users/:id|Fetches a single user by id
-DELETE /users/:id|Deletes a single user by id
-PUT /users/:id|Updated a single user by id, using values from the request body
+| Request | Action |
+| :--- | :--- |
+| POST /users | Inserts a user into the database with values from the request body |
+| GET /users | Fetches all users in the database |
+| GET /users/:id | Fetches a single user by id |
+| DELETE /users/:id | Deletes a single user by id |
+| PUT /users/:id | Updated a single user by id, using values from the request body |
 
 The objects returned from getting the collection - e.g, `GET /users` - can be modified with query parameters. For example, the following request will return the users sorted by their name in ascending order:
 
-```
+```text
 GET /users?sortBy=name,asc
 ```
 
-The results can be paged (see [Paging in Advanced Queries](../db/advanced_queries.md)) with query parameters `offset`, `count`, `pageBy`, `pageAfter` and `pagePrior`.
+The results can be paged \(see [Paging in Advanced Queries](../db/advanced_queries.md)\) with query parameters `offset`, `count`, `pageBy`, `pageAfter` and `pagePrior`.
 
 A `ManagedObjectController<T>` can also be subclassed. A subclass allows for callbacks to be overridden to adjust the query before execution, or the results before sending the respond. Each operation - fetch, update, delete, etc. - has a pair of methods to do this. For example, the following subclass alters the query and results before any update via `PUT`:
 
@@ -449,3 +445,4 @@ class UserController extends ManagedObjectController<User> {
 ```
 
 See the chapter on [validations](../db/validations.md), which are powerful when combined with `ManagedObjectController<T>`.
+

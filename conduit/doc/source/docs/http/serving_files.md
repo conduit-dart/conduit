@@ -4,8 +4,7 @@ Conduit can serve files by returning the contents of a file as an HTTP response 
 
 ## FileController
 
-Instances of `FileController` serve a directory from the filesystem through an HTTP interface. Any route that channels requests to an `FileController` *must* contain a `*` match-all token.
-
+Instances of `FileController` serve a directory from the filesystem through an HTTP interface. Any route that channels requests to an `FileController` _must_ contain a `*` match-all token.
 
 ```dart
 @override
@@ -22,7 +21,7 @@ The argument to `FileController` is the directory on the filesystem in which req
 
 Note that `public/` does not have a leading slash - therefore, the directory `public` must be relative to the directory that the Conduit application was served from. In practice, this means you might have a directory structure like:
 
-```
+```text
 project/
   pubspec.yaml  
   lib/
@@ -49,7 +48,7 @@ var controller = FileController("public/")
   ..setContentTypeForExtension("xml", ContentType("application", "xml"));
 ```
 
-If there is no entry for an extension of a file being served, the content-type defaults to `application/octet-stream`. An `FileController` will never invoke any encoders from `CodecRegistry`, but it will GZIP data if the repository allows compression for the content-type of the file (see `CodecRegistry.add` and `CodecRegistry.setAllowsCompression`).
+If there is no entry for an extension of a file being served, the content-type defaults to `application/octet-stream`. An `FileController` will never invoke any encoders from `CodecRegistry`, but it will GZIP data if the repository allows compression for the content-type of the file \(see `CodecRegistry.add` and `CodecRegistry.setAllowsCompression`\).
 
 ## Caching
 
@@ -88,3 +87,4 @@ You may set the `CachePolicy` of any `Response`. Note that `CachePolicy` only mo
 var response = Response.ok("contents")
   ..cachePolicy = CachePolicy();
 ```
+

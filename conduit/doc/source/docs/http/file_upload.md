@@ -1,6 +1,6 @@
 # Uploading Files
 
-Files are often uploaded as part of a multipart form request. A request of this type has the content-type `multipart/form-data` and is body is made up of multiple data *parts*. These segments are typically the base64 encoded contents of a file and accompanying metadata for the upload.
+Files are often uploaded as part of a multipart form request. A request of this type has the content-type `multipart/form-data` and is body is made up of multiple data _parts_. These segments are typically the base64 encoded contents of a file and accompanying metadata for the upload.
 
 Multipart data is decoded using objects from `package:mime`. You must add this package your application's `pubspec.yaml` file:
 
@@ -40,3 +40,4 @@ class MyController extends ResourceController {
   }
 }
 ```
+

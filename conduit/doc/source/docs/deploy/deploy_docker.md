@@ -2,17 +2,17 @@
 
 For other deployment options, see [Deploying Conduit Applications](index.md).
 
-### Purpose
+## Purpose
 
 This document will describe the steps to deploy an Conduit application through Docker, Docker Compose or a container orchestration platform like Kubernetes. For Dockerfile and Kubernetes templates, see [this repository](https://github.com/conduit.dart/kubernetes).
 
 If you are unfamiliar with deploying applications in this way, this is not a good beginner's guide and will not cover the topics of Docker, Docker Compose or Kubernetes.
 
-### Dockerfiles
+## Dockerfiles
 
 The following Dockerfile will run an Conduit application.
 
-```
+```text
 FROM google/dart
 
 WORKDIR /app
@@ -27,9 +27,9 @@ EXPOSE 80
 ENTRYPOINT ["pub", "run", "conduit:conduit", "serve", "--port", "80"]
 ```
 
-### Docker Compose
+## Docker Compose
 
-To deploy your application (which uses the Conduit ORM) using Docker Compose, use this template:
+To deploy your application \(which uses the Conduit ORM\) using Docker Compose, use this template:
 
 `Dockerfile`
 
@@ -37,7 +37,7 @@ Use the `Dockerfile` specified above.
 
 `docker-compose.yml`
 
-```
+```text
 version: '3'
 services:
   my-app:
@@ -59,19 +59,17 @@ services:
 
 volumes:
   db_data: {}
-
 ```
 
-Once the service is up (using `docker-compose up -d`), you can run your database migrations using
+Once the service is up \(using `docker-compose up -d`\), you can run your database migrations using
 
 `conduit db upgrade --connect postgres://user-from-config-yaml:password-from-config-yaml@hostname:65432/db-from-config-yaml`
 
-
-### Kubernetes Objects
+## Kubernetes Objects
 
 For more Kubernetes objects - including tasks for database migrations and OAuth 2.0 client management - see [this repository](https://github.com/conduit.dart/kubernetes). The following is Kubernetes configuration file for starting an Conduit application and exposing it as a service. Replace `<APP_NAME>` with your application's name.
 
-```
+```text
 apiVersion: v1
 kind: Service
 metadata:
@@ -115,3 +113,4 @@ spec:
       securityContext:
               runAsNonRoot: true
 ```
+

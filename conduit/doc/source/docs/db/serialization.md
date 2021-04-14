@@ -15,7 +15,7 @@ object.read({
 // object.key == "value"
 ```
 
-Validation exceptions (status code: 400) are thrown is the input data is invalid: if a key doesn't have a corresponding property, the type of a value does not match the expected type or some constraint of the managed object is violated.
+Validation exceptions \(status code: 400\) are thrown is the input data is invalid: if a key doesn't have a corresponding property, the type of a value does not match the expected type or some constraint of the managed object is violated.
 
 Filters can be applied to keys of the object being read. Filters can ignore keys, require keys or throw an exception if a key is present. Here is an example, where the read will throw an exception because 'id' is required but not provided:
 
@@ -25,8 +25,7 @@ object.read({
 }, require: ["id"]);
 ```
 
-!!! tip "ManagedObjects inherit Serializable"
-    The `read` method and its filters are inherited from `Serializable` and are discussed in more detail [here](../http/request_and_response.md). Managed objects, like serializables, can be bound to operation method parameters.
+!!! tip "ManagedObjects inherit Serializable" The `read` method and its filters are inherited from `Serializable` and are discussed in more detail [here](../http/request_and_response.md). Managed objects, like serializables, can be bound to operation method parameters.
 
 Managed objects have a list of default keys that can be used as a base filter set:
 
@@ -46,20 +45,20 @@ If a property has not been set on the object, it will not be written to the map.
 The values of a `Map` equivalent of a managed object are always primitive values that can be encoded as JSON, sent across an isolate, etc. The following shows a table of the serialization format:
 
 | Dart Type | Serialized Type |
-|-----------|---------------|
-| `int` | number (`int`) |
-| `double` | number (`double`) |
-| `String` | string (`String`) |
-| `DateTime` | ISO 8601 Timestamp (`String`) |
-| `bool` | boolean (`bool`) |
-| `Document` | map or list (`Map<String, dynamic>` or `List<dynamic>`) |
-| Any `enum` | string (`String`) |
-| Belongs-To or Has-One Relationship | map (`Map<String, dynamic>`) |
-| Has-Many Relationship | list of maps (`List<Map<String, dynamic>>`) |
+| :--- | :--- |
+| `int` | number \(`int`\) |
+| `double` | number \(`double`\) |
+| `String` | string \(`String`\) |
+| `DateTime` | ISO 8601 Timestamp \(`String`\) |
+| `bool` | boolean \(`bool`\) |
+| `Document` | map or list \(`Map<String, dynamic>` or `List<dynamic>`\) |
+| Any `enum` | string \(`String`\) |
+| Belongs-To or Has-One Relationship | map \(`Map<String, dynamic>`\) |
+| Has-Many Relationship | list of maps \(`List<Map<String, dynamic>>`\) |
 
 ## Behavior of Null Values
 
-A property of a managed object can be null for two reasons: the value is actually null, or the value is not available. For example, when you create a new instance of a managed object, none of its values are available (the object is empty). When encoding an object into a map, only the available values are included and the keys for any unavailable properties are omitted:
+A property of a managed object can be null for two reasons: the value is actually null, or the value is not available. For example, when you create a new instance of a managed object, none of its values are available \(the object is empty\). When encoding an object into a map, only the available values are included and the keys for any unavailable properties are omitted:
 
 ```dart
 final myObject = MyManagedObject(); // empty object
@@ -84,7 +83,7 @@ A property value becomes available when it is set through an accessor, when usin
 
 ## Behavior of Transient Properties
 
-By default, transient properties - those declared in the managed object subclass, not the table definition - are *not* included in an object's `asMap()`. The `Serialize` annotation allows a transient property to be included in this map.
+By default, transient properties - those declared in the managed object subclass, not the table definition - are _not_ included in an object's `asMap()`. The `Serialize` annotation allows a transient property to be included in this map.
 
 ```dart
 class Employee extends ManagedObject<_Employee> implements _Employee {
@@ -124,7 +123,7 @@ A transient property's key will not be present in `asMap()` if its value is null
 
 ## Behavior of Relationship Properties
 
-When a managed object is encoded, relationship properties are represented as maps (for belongs-to or has-one relationships) or a list of maps (for has-many relationships). The same rules for property availability apply to relationship properties. The following shows an example map that mirrors a managed object with aptly named relationship properties:
+When a managed object is encoded, relationship properties are represented as maps \(for belongs-to or has-one relationships\) or a list of maps \(for has-many relationships\). The same rules for property availability apply to relationship properties. The following shows an example map that mirrors a managed object with aptly named relationship properties:
 
 ```dart
 {
@@ -143,7 +142,7 @@ When a managed object is encoded, relationship properties are represented as map
 }
 ```
 
-A belongs-to relationship is *always* a map. This is important for client applications that will often create or update an object's belongs-to relationships. For example, a client wishing to create a child named Timmy with the parent that has `id == 1` would send the following JSON:
+A belongs-to relationship is _always_ a map. This is important for client applications that will often create or update an object's belongs-to relationships. For example, a client wishing to create a child named Timmy with the parent that has `id == 1` would send the following JSON:
 
 ```dart
 {
@@ -162,3 +161,4 @@ This is different from some frameworks that would flatten this structure, e.g.:
   "parent_id": 1
 }
 ```
+

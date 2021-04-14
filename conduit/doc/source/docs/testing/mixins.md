@@ -4,10 +4,9 @@ This document describes how to set up your test code to test applications that u
 
 ## Testing Applications That Use the ORM
 
-Conduit's ORM uses PostgreSQL as its database. Before your tests run, Conduit will create your application's database tables in a local PostgreSQL database. After the tests complete, it will delete those tables. This allows you to start with an empty database for each test suite as well as control exactly which records are in your database while testing, but without having to manage database schemas or use a mock implementation (e.g., SQLite).
+Conduit's ORM uses PostgreSQL as its database. Before your tests run, Conduit will create your application's database tables in a local PostgreSQL database. After the tests complete, it will delete those tables. This allows you to start with an empty database for each test suite as well as control exactly which records are in your database while testing, but without having to manage database schemas or use a mock implementation \(e.g., SQLite\).
 
-!!! warning "You Must Install PostgreSQL Locally"
-        On macOS, [Postgres.app](https://postgresapp.com) is a simple, self-contained PostgreSQL instance that you can run as a normal application. (See [PostgreSQL installation for other platforms](https://www.postgresql.org/download/).)
+!!! warning "You Must Install PostgreSQL Locally" On macOS, [Postgres.app](https://postgresapp.com) is a simple, self-contained PostgreSQL instance that you can run as a normal application. \(See [PostgreSQL installation for other platforms](https://www.postgresql.org/download/).\)
 
 ### Local Database for Tests
 
@@ -22,7 +21,7 @@ GRANT all ON DATABASE dart_test TO dart;
 
 A database configuration in your application's `config.yaml.src` must match the following:
 
-```
+```text
 username: dart
 password: dart
 host: localhost
@@ -49,15 +48,13 @@ class Harness extends TestHarness<AppChannel> with TestHarnessORMMixin {
 }
 ```
 
-!!! tip "Seeding Data"
-          You should only seed static data in the `seed` method; this may include things like categories or country codes that cannot be changed during runtime. Data that is manipulated for specific test cases should be invoked in a test `setUp` callback or the test itself.
-
+!!! tip "Seeding Data" You should only seed static data in the `seed` method; this may include things like categories or country codes that cannot be changed during runtime. Data that is manipulated for specific test cases should be invoked in a test `setUp` callback or the test itself.
 
 ### Local Database for Running an Application
 
-A database separate from the test database should be used for *running* an application locally. You can create a database locally by running `psql` to open a PostgreSQL terminal and run the following commands:
+A database separate from the test database should be used for _running_ an application locally. You can create a database locally by running `psql` to open a PostgreSQL terminal and run the following commands:
 
-```
+```text
 CREATE DATABASE my_app_name;
 CREATE USER my_app_user WITH PASSWORD 'mypassword';
 GRANT ALL ON DATABASE my_app_name TO my_app_user;
@@ -65,7 +62,7 @@ GRANT ALL ON DATABASE my_app_name TO my_app_user;
 
 Add your schema to the local database by generating and executing migration scripts:
 
-```
+```text
 conduit db generate
 conduit db upgrade --connect postgres://my_app_user:mypassword@localhost:5432/my_app_name
 ```
@@ -103,3 +100,4 @@ class Harness extends TestHarness<AppChannel> with TestHarnessAuthMixin<AppChann
   }
 }
 ```
+

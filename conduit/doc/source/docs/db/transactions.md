@@ -6,7 +6,7 @@ Learn how to execute multiple `Query<T>`s in a database transaction.
 
 A transaction is a series of queries that are executed together. If one of the queries in that set fails, then all of the queries fail and their changes are reversed if they had already been executed.
 
-Consider an application that stores employee records. Each employee belongs to a department. Management decides to combine two departments into a totally new department. To do this, the application must insert a new department, set each employee's foreign key reference to that department, and then delete the old departments. An straightforward (but problematic) implementation would look like this:
+Consider an application that stores employee records. Each employee belongs to a department. Management decides to combine two departments into a totally new department. To do this, the application must insert a new department, set each employee's foreign key reference to that department, and then delete the old departments. An straightforward \(but problematic\) implementation would look like this:
 
 ```dart
 // Create the new department
@@ -21,7 +21,7 @@ await changeDepartmentQuery.update();
 // Delete the old ones
 final deleteDepartmentQuery = Query<Department>(ctx)
   ..where((e) => e.department.id).oneOf([1, 2]);
-await deleteDepartmentQuery.delete();      
+await deleteDepartmentQuery.delete();
 ```
 
 This change to your database is three separate queries, but they all most complete for the 'transfer' to be successful. If one of them fails, our database can be left in an inconsistent state. For example, if deleting the departments succeeds, but the employees failed to be transferred to the new department, then a lot of employees would be without a department.
@@ -46,8 +46,7 @@ await context.transaction((transaction) async {
 
 The closure has a `transaction` object that all queries in the transaction must use as their context. Queries that use this transaction context will be grouped in the same transaction. Once they have all succeeded, the `transaction` method's future completes. If an exception is thrown in the closure, the transaction is rolled back and the `transaction` method re-throws that exception.
 
-!!! warning "Failing to Use the Transaction Context will Deadlock your Application"
-      If you use the transaction's parent context in a query inside a transaction closure, the database connection will deadlock and will stop working.
+!!! warning "Failing to Use the Transaction Context will Deadlock your Application" If you use the transaction's parent context in a query inside a transaction closure, the database connection will deadlock and will stop working.
 
 ### Returning Values
 
@@ -81,3 +80,4 @@ try {
 ```
 
 When you rollback, your transaction fails, the transaction closure is aborted and all changes are reverted. The `transaction` method completes with an error, where the error object is the `Rollback`.
+

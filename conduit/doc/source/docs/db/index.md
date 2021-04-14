@@ -1,3 +1,5 @@
+# index
+
 ## Tasks
 
 Conduit's ORM stores data in database tables and maps table rows to Dart objects.
@@ -14,12 +16,13 @@ The minimum version of PostgreSQL needed to work with Conduit is 9.6.
 
 ## Guides
 
-- [Connecting to a Database](connecting.md)
-- [Modeling Data](modeling_data.md)
-- [Storage, Serialization and Deserialization](serialization.md)
-- [Executing Queries](executing_queries.md)
-- [Joins, Filtering and Paging](advanced_queries.md)
-- [Executing Queries in a Transaction](transactions.md)
-- [Adding Validations and Callbacks to ManagedObject](validations.md)
-- [Conduit Database Tool](db_tools.md)
-- [JSON Document Columns and Operations](json_columns.md)
+* [Connecting to a Database](connecting.md)
+* [Modeling Data](modeling_data.md)
+* [Storage, Serialization and Deserialization](serialization.md)
+* [Executing Queries](executing_queries.md)
+* [Joins, Filtering and Paging](advanced_queries.md)
+* [Executing Queries in a Transaction](transactions.md)
+* [Adding Validations and Callbacks to ManagedObject](validations.md)
+* [Conduit Database Tool](db_tools.md)
+* [JSON Document Columns and Operations](json_columns.md)
+

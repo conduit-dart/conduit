@@ -44,7 +44,7 @@ final doc = new Document({"key": "value"});
 assert(doc["key"] == doc.data["key"]);
 ```
 
-The argument to the subscript operator may be a string (if `data` is a map) or an integer (if `data` is a list).
+The argument to the subscript operator may be a string \(if `data` is a map\) or an integer \(if `data` is a list\).
 
 ## Basic Operations on Document Properties
 
@@ -62,7 +62,7 @@ final query = Query<Event>(context)
     "user": "bob",
     "tags": ["v1"]
   });
-final event = await query.insert();  
+final event = await query.insert();
 ```
 
 In the above, the argument to `Document` will be JSON-encoded and stored in the database for column `contents`. If the object can't be encoded as JSON, an exception will be thrown.
@@ -96,7 +96,7 @@ final query = Query<Event>(context)
     "user": "bob",
     "tags": ["v1", "new"]
   });
-final event = await query.updateOne();  
+final event = await query.updateOne();
 ```
 
 When updating in this way, the document stored in the column is replaced entirely.
@@ -141,7 +141,7 @@ final eventsWithTags = query.fetch();
 
 When using the subscript operator on a returned `Document` property, only the value for that key is returned. For example, if the above query were executed and the stored column's value were:
 
-```json
+```javascript
 {
   "type": "push",  
   "user": "bob",
@@ -151,7 +151,7 @@ When using the subscript operator on a returned `Document` property, only the va
 
 The value of `Event.contents` would only contain the array for the key "tags":
 
-```json
+```javascript
 ["v1"]
 ```
 
@@ -196,3 +196,4 @@ For operations not supported by `Query<T>`, you may use SQL directly:
 ```dart
 final eventTagCounts = await context.persistentStore.execute("SELECT jsonb_array_length(contents->'tags') from _Event");
 ```
+

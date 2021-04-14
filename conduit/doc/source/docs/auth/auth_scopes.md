@@ -1,10 +1,12 @@
-# Granular Authorization with OAuth 2.0 Scopes
+# auth\_scopes
 
-In many applications, operations have varying levels of access control. For example, a user may need special permission to create 'notes', but every user can read notes. In OAuth 2.0, permissions for operations are determined by an access token's *scope*. Operations can be defined to require certain scopes, and a request may only invoke those operations if its access token was granted with those scopes.
+## Granular Authorization with OAuth 2.0 Scopes
+
+In many applications, operations have varying levels of access control. For example, a user may need special permission to create 'notes', but every user can read notes. In OAuth 2.0, permissions for operations are determined by an access token's _scope_. Operations can be defined to require certain scopes, and a request may only invoke those operations if its access token was granted with those scopes.
 
 A scope is a string identifier, like `notes` or `notes.readonly`. When a client application authenticates on behalf of a user, it requests one or more of these scope identifiers to be granted to the access token. Valid scopes will be stored with the access token, so that the scope can be referenced by subsequent uses of the access token.
 
-# Scope Usage in Conduit
+## Scope Usage in Conduit
 
 An access token's scope is determined when a user authenticates. During authentication, a client application indicates the requested scope, and the Conduit application determines if that scope is permissible for the client application and the user. This scope information is attached to the access token.
 
@@ -13,10 +15,10 @@ When a request is made with an access token, an `Authorizer` retrieves the token
 Therefore, adding scopes to an application consists of three steps:
 
 1. Adding scope restrictions to operations.
-2. Adding permissible scopes for OAuth2 client identifiers (and optionally users).
+2. Adding permissible scopes for OAuth2 client identifiers \(and optionally users\).
 3. Updating client applications to request scope when authenticating.
 
-## Adding Scope Restrictions to Operations  
+### Adding Scope Restrictions to Operations
 
 When an `Authorizer` handles a request, it creates an `Authorization` object that is attached to the request. An `Authorization` object has a `scopes` property that contains every scope granted for the access token. This object also has a convenience method for checking if a particular scope is valid for that list of scopes:
 
@@ -33,8 +35,7 @@ class NoteController extends Controller {
 }
 ```
 
-!!! warning "Use an Authorizer"
-    The `authorization` property of `Request` is only valid after the request is handled by an `Authorizer`. It is `null` otherwise.
+!!! warning "Use an Authorizer" The `authorization` property of `Request` is only valid after the request is handled by an `Authorizer`. It is `null` otherwise.
 
 An `Authorizer` may also validate the scope of a request before letting it pass to its linked controller.
 
@@ -61,13 +62,13 @@ class NoteController extends ResourceController {
 }
 ```
 
-If a request does not have sufficient scope for the intended operation method, a 403 Forbidden response is sent. When using `Scope` annotations, you must link an `Authorizer` prior to the `ResourceController`, but it is not necessary to specify `Authorizer` scopes.  
+If a request does not have sufficient scope for the intended operation method, a 403 Forbidden response is sent. When using `Scope` annotations, you must link an `Authorizer` prior to the `ResourceController`, but it is not necessary to specify `Authorizer` scopes.
 
 If a `Scope` annotation or `Authorizer` contains multiple scope entries, an access token must have scope for each of those entries. For example, the annotation `@Scope(['notes', 'user'])` requires an access token to have both 'notes' and 'user' scope.
 
-## Defining Permissible Scope
+### Defining Permissible Scope
 
-When a client application authenticates on behalf of a user, it includes a list of request scopes for the access token. An Conduit application will grant the requested scopes to the  token if the scopes are permissible for both the authenticating client identifier and the authenticating user.
+When a client application authenticates on behalf of a user, it includes a list of request scopes for the access token. An Conduit application will grant the requested scopes to the token if the scopes are permissible for both the authenticating client identifier and the authenticating user.
 
 To add permissible scopes to an authenticating client, you use the `conduit auth` command-line tool. When creating a new client identifier, include the `--allowed-scopes` options:
 
@@ -146,11 +147,11 @@ class RoleBasedAuthDelegate extends ManagedAuthDelegate<User> {
 }
 ```
 
-## Client Application Integration
+### Client Application Integration
 
 Client applications that integrate with your scoped Conduit application must include a list of requested scopes when performing authentication. When authenticating through `AuthController`, a `scope` parameter must be added to the form data body. This parameter's value must be a space-delimited, URL-encoded list of requested scopes.
 
-```
+```text
 username=bob&password=foo&grant_type=password&scope=notes%20users
 ```
 
@@ -158,7 +159,7 @@ When authenticating via an `AuthCodeController`, this same query parameter is ad
 
 When authentication is complete, the list of granted scopes will be available in the JSON response body as a space-delimited string.
 
-```json
+```javascript
 {
   "access_token": "...",
   "refresh_token": "...",
@@ -168,25 +169,26 @@ When authentication is complete, the list of granted scopes will be available in
 }
 ```
 
-# Scope Format and Hierarchy
+## Scope Format and Hierarchy
 
 There is no definitive guide on what a scope string should look like, other than being restricted to alphanumeric characters and some symbols. Conduit, however, provides a simple scoping structure - there are two special symbols, `:` and `.`.
 
 Hierarchy is specified by the `:` character. For example, the following is a hierarchy of scopes related to a user and its sub-resources:
 
-- `user` (can read/write everything a user has)
-- `user:email` (can read/write a user's email)
-- `user:documents` (can read/write a user's documents)
-- `user:documents:spreadsheets` (can read/write a user's spreadsheet documents)
+* `user` \(can read/write everything a user has\)
+* `user:email` \(can read/write a user's email\)
+* `user:documents` \(can read/write a user's documents\)
+* `user:documents:spreadsheets` \(can read/write a user's spreadsheet documents\)
 
 Notice how these scopes form a hierarchy. Each segment makes the scope more restrictive. For example, if an access token has `user:email` scope, it only allows access to a user's email. However, if the access token has `user` scope, it allows access to everything a user has, including their email.
 
 As another example, an access token with `user:documents` scope can access all of a user's documents, but the scope `user:documents:spreadsheets` is limited to only spreadsheet documents.
 
-Scope is often used to indicate read vs. write access. At first glance, it might sound like a good idea to use the hierarchy operator, e.g. `user:email:read` and `user:email:write`. However, an access token with `user:email:write` *does not* have permission to read email and this is likely unintended.
+Scope is often used to indicate read vs. write access. At first glance, it might sound like a good idea to use the hierarchy operator, e.g. `user:email:read` and `user:email:write`. However, an access token with `user:email:write` _does not_ have permission to read email and this is likely unintended.
 
-This is where *scope modifiers* come in. A scope modifier is added after a `.` at the end of a scope string. For example, `user:email.readonly` grants readonly access to a user's email whereas `user:email` grants read and write access.
+This is where _scope modifiers_ come in. A scope modifier is added after a `.` at the end of a scope string. For example, `user:email.readonly` grants readonly access to a user's email whereas `user:email` grants read and write access.
 
-An access token without a modifier has permission *any* modifier. Thus, `user` and `user:email` can both access `user:email.readonly` protected resources and actions, but `user:email.readonly` cannot access resources protected by `user:email`.
+An access token without a modifier has permission _any_ modifier. Thus, `user` and `user:email` can both access `user:email.readonly` protected resources and actions, but `user:email.readonly` cannot access resources protected by `user:email`.
 
 A scope modifier is only valid for the last segment of a scope string. That is, `user:documents.readonly:spreadsheets` is not valid, but `user:documents:spreadsheets.readonly` is.
+

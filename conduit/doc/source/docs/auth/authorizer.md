@@ -23,13 +23,13 @@ Controller get entryPoint {
 
 An `Authorizer` parses the Authorization header of an HTTP request. The named constructors of `Authorizer` indicate the required format of Authorization header. The `Authorization.bearer()` constructor expects an OAuth 2.0 bearer token in the header, which has the following format:
 
-```
+```text
 Authorization: Bearer 768iuzjkx82jkasjkd9z9
 ```
 
-`Authorizer.basic` expects HTTP Basic Authentication, where the username and password are joined with the colon character (`:`) and Base 64-encoded:
+`Authorizer.basic` expects HTTP Basic Authentication, where the username and password are joined with the colon character \(`:`\) and Base 64-encoded:
 
-```
+```text
 // 'dXNlcjpwYXNzd29yZA==' is 'user:password'
 Authorization: Basic dXNlcjpwYXNzd29yZA==
 ```
@@ -40,11 +40,11 @@ Once parsed, an `Authorizer` sends the information - either the bearer token, or
 
 For `Authorizer.bearer`, the value in a request's header must be a valid, unexpired access token. These types of authorizers are used when an endpoint requires a logged in user.
 
-For `Authorizer.basic` authorizers, credentials are verified by finding an OAuth 2.0 client identifier and ensuring its client secret matches. Routes with this type of authorizer are known as *client authenticated* routes. These types of authorizers are used when an endpoint requires a valid client application, but not a logged in user.
+For `Authorizer.basic` authorizers, credentials are verified by finding an OAuth 2.0 client identifier and ensuring its client secret matches. Routes with this type of authorizer are known as _client authenticated_ routes. These types of authorizers are used when an endpoint requires a valid client application, but not a logged in user.
 
-### Authorizer and OAuth 2.0 Scope
+## Authorizer and OAuth 2.0 Scope
 
-An `Authorizer` may restrict access to controllers based on the scope of the request's bearer token. By default, an `Authorizer.bearer` allows any valid bearer token to pass through it. If desired, an `Authorizer` is initialized with a list of required scopes. A request may only pass the `Authorizer` if it has access to *all* scopes listed in the `Authorizer`. For example, the following requires at least `user:posts` and `location` scope:
+An `Authorizer` may restrict access to controllers based on the scope of the request's bearer token. By default, an `Authorizer.bearer` allows any valid bearer token to pass through it. If desired, an `Authorizer` is initialized with a list of required scopes. A request may only pass the `Authorizer` if it has access to _all_ scopes listed in the `Authorizer`. For example, the following requires at least `user:posts` and `location` scope:
 
 ```dart
 router
@@ -55,7 +55,7 @@ router
 
 Note that you don't have to use an `Authorizer` to restrict access based on scope. A controller has access to scope information after the request has passed through an `Authorizer`, so it can use the scope to make more granular authorization decisions.
 
-### Authorization Objects
+## Authorization Objects
 
 A bearer token represents a granted authorization - at some point in the past, a user provided their credentials and the token is the proof of that. When a bearer token is sent in the authorization header of an HTTP request, the application can look up which user the token is for and the client application it was issued for. This information is stored in an instance of `Authorization` after the token has been verified and is assigned to `Request.authorization`.
 
@@ -105,7 +105,7 @@ class NewsFeedController extends ResourceController {
 }
 ```
 
-### Using Authorizers Without AuthServer
+## Using Authorizers Without AuthServer
 
 Throughout this guide, the argument to an instance of `Authorizer` has been referred to as an `AuthServer`. This is true - but only because `AuthServer` implements `AuthValidator`. `AuthValidator` is an interface for verifying bearer tokens and username/password credentials.
 
@@ -126,4 +126,5 @@ class BasicValidator implements AuthValidator {
 }
 ```
 
-The `validate` method must return an `Authorization` if the credentials are valid, or null if they are not. The `parser` lets the validator know the format of the Authorization header (e.g., 'Basic' or 'Bearer') and `authorizationData` is the meaningful information in that header. There are two concrete types of `AuthorizationParser<T>`: `AuthorizationBasicParser` and `AuthorizationBearerParser`. The authorization data for a basic parser is an instance of `AuthBasicCredentials` that contain the username and password, while the bearer parser's authorization data is the bearer token string.
+The `validate` method must return an `Authorization` if the credentials are valid, or null if they are not. The `parser` lets the validator know the format of the Authorization header \(e.g., 'Basic' or 'Bearer'\) and `authorizationData` is the meaningful information in that header. There are two concrete types of `AuthorizationParser<T>`: `AuthorizationBasicParser` and `AuthorizationBearerParser`. The authorization data for a basic parser is an instance of `AuthBasicCredentials` that contain the username and password, while the bearer parser's authorization data is the bearer token string.
+

@@ -6,7 +6,7 @@ In Conduit, HTTP requests and responses are instances of `Request`s and `Respons
 
 A `Request` is created for each HTTP request to your application. A `Request` stores everything about the HTTP request and has some additional behavior that makes reading from them easier. You handle requests by writing code in a [controller object](controller.md) or closures.
 
-All properties of a request are available in its `raw` property (a Dart standard library `HttpRequest`). A `Request` has `attachments` that data can be attached to in a controller for use by a linked controller:
+All properties of a request are available in its `raw` property \(a Dart standard library `HttpRequest`\). A `Request` has `attachments` that data can be attached to in a controller for use by a linked controller:
 
 ```dart
 router.route("/path").linkFunction((req) {
@@ -37,7 +37,7 @@ Headers are encoded according to [dart:io.HttpHeaders.add](https://api.dartlang.
 
 ### Decoding Request Bodies
 
-Every `Request` has a `body` property. This object decodes the bytes from the request body into Dart objects. The behavior for decoding is determined by the content-type header of the request (see the section on `CodecRegistry` later in this guide). When you decode a body, you can specify the Dart object type you expect it to be. If the decoded body object is not the expected type, an exception that sends a 400 Bad Request error is thrown.
+Every `Request` has a `body` property. This object decodes the bytes from the request body into Dart objects. The behavior for decoding is determined by the content-type header of the request \(see the section on `CodecRegistry` later in this guide\). When you decode a body, you can specify the Dart object type you expect it to be. If the decoded body object is not the expected type, an exception that sends a 400 Bad Request error is thrown.
 
 ```dart
 // Ensures that the decoded body is a Map<String, dynamic>
@@ -53,21 +53,19 @@ Once a request's body has been decoded, it can be accessed through a synchronous
 final map = request.body.as<Map<String, dynamic>>();
 ```
 
-!!! tip "Inferred Types"
-    You don't need to provide a type argument to `as` or `decode` if the type can be inferred. For example, `object.read(await request.body.decode())` will infer the type of the decoded body as a `Map<String, dynamic>` without having to provide type parameters.
+!!! tip "Inferred Types" You don't need to provide a type argument to `as` or `decode` if the type can be inferred. For example, `object.read(await request.body.decode())` will infer the type of the decoded body as a `Map<String, dynamic>` without having to provide type parameters.
 
-If a body cannot be decoded according to its content-type (the data is malformed), an error is thrown that sends the appropriate error response to the client.
+If a body cannot be decoded according to its content-type \(the data is malformed\), an error is thrown that sends the appropriate error response to the client.
 
 For more request body behavior, see the API reference for `RequestBody`, the [section on body binding for ResourceControllers](resource_controller.md) and a later section in this guide on `Serializable`.
 
-!!! note "Max Body Size"
-      The size of a request body is limited to 10MB by default and can be changed by setting the value of `RequestBody.maxSize` during application initialization.
+!!! note "Max Body Size" The size of a request body is limited to 10MB by default and can be changed by setting the value of `RequestBody.maxSize` during application initialization.
 
 ### Encoding Response Body Objects
 
-An HTTP response often contains a *body*. For example, the body in response to `GET /users/1` might be JSON object that represents a user. To ensure the client understands that the body is a JSON object, it includes the header `Content-Type: application/json; charset=utf-8`.
+An HTTP response often contains a _body_. For example, the body in response to `GET /users/1` might be JSON object that represents a user. To ensure the client understands that the body is a JSON object, it includes the header `Content-Type: application/json; charset=utf-8`.
 
-When creating a `Response` that has a body, you provide a *body object* and a `contentType`. For example:
+When creating a `Response` that has a body, you provide a _body object_ and a `contentType`. For example:
 
 ```dart
 var map = {"key": "value"};
@@ -80,13 +78,13 @@ final response = Response.ok(map)
 
 Body objects are encoded according to their content-type. In the above, `map` is first encoded as a JSON string and then to a list of UTF8 bytes.
 
-![Map Encoding](../img/object_body_flow.png)
+![Map Encoding](../.gitbook/assets/object_body_flow.png)
 
 A `ContentType` is made up of three components: a primary type, a subtype and an optional character set.
 
-![Content Type Components](../img/content_type_components.png)
+![Content Type Components](../.gitbook/assets/content_type_components.png)
 
-The primary and subtype determine the first conversion step and the charset determines the next. Each step is performed by an instance of `Codec` (from `dart:convert`). For example, the content type `application/json` selects `JsonCodec`, while charset `utf-8` selects `Utf8Codec`. These two codecs are run in succession to convert the `Map` to a list of bytes. The codec is selected by your application's `CodecRegistry`; this is covered in later section.
+The primary and subtype determine the first conversion step and the charset determines the next. Each step is performed by an instance of `Codec` \(from `dart:convert`\). For example, the content type `application/json` selects `JsonCodec`, while charset `utf-8` selects `Utf8Codec`. These two codecs are run in succession to convert the `Map` to a list of bytes. The codec is selected by your application's `CodecRegistry`; this is covered in later section.
 
 The body object must be valid for the selected codec. In the above example, a `Map<String, dynamic>` can be encoded by a `JsonCodec`. But if the body object cannot be encoded, a 500 Server Error response is sent. A valid input for one `Codec` may not be valid for another; it is up to you to ensure that the body object is valid for the `contentType` of the response.
 
@@ -98,7 +96,7 @@ var response = Response.ok(html)
   ..contentType = ContentType.html;
 ```
 
-And an image body object needs no conversion at all, since it is already a list of bytes. If there is no registered codec for a content-type, the body object must be a byte array (`List<int>` where each value is between 0-255).
+And an image body object needs no conversion at all, since it is already a list of bytes. If there is no registered codec for a content-type, the body object must be a byte array \(`List<int>` where each value is between 0-255\).
 
 ```dart
 final imageFile = File("image.jpg");
@@ -118,7 +116,7 @@ See a later section for more details on content type to codec mappings. Also, se
 
 ### Streaming Response Bodies
 
-A body object may also be a `Stream<T>`. `Stream<T>` body objects are most often used when serving files. This allows the contents of the file to be streamed from disk to the HTTP client without having to load the whole file into memory first. (See also `FileController`.)
+A body object may also be a `Stream<T>`. `Stream<T>` body objects are most often used when serving files. This allows the contents of the file to be streamed from disk to the HTTP client without having to load the whole file into memory first. \(See also `FileController`.\)
 
 ```dart
 final imageFile = File("image.jpg");
@@ -135,7 +133,7 @@ In the above sections, we glossed over how a codec gets selected when preparing 
 
 `CodecRegistry` contains mappings from content types to `Codec`s. These codecs encode response bodies and decode request bodies. There are three built-in codecs for `application/json`, `application/x-www-form-urlencoded` and `text/*`. When a response is being sent, the repository is searched for an entry that exactly matches the primary and subtype of the `Response.contentType`. If an entry exists, the associated `Codec` starts the conversion. For example, if the content type is `application/json; charset=utf-8`, the built-in `application/json` codec encodes the body object.
 
-If there isn't an exact match, but there is an entry for the primary type with the wildcard (`*`) subtype, that codec is used. For example, the built-in codec for `text/*` will be selected for both `text/plain` and `text/html`. If there was something special that had to be done for `text/html`, a more specific codec may be added for that type:
+If there isn't an exact match, but there is an entry for the primary type with the wildcard \(`*`\) subtype, that codec is used. For example, the built-in codec for `text/*` will be selected for both `text/plain` and `text/html`. If there was something special that had to be done for `text/html`, a more specific codec may be added for that type:
 
 ```dart
 class MyChannel extends ApplicationChannel {
@@ -165,9 +163,9 @@ If no charset is specified when registering a codec, no charset decoding occurs 
 
 ### Compression with gzip
 
-Body objects may be compressed with `gzip` if the HTTP client allows it *and* the `CodecRegistry` has been configured to compress the content type of the response. The three built-in codecs - `application/json`, `application/x-www-form-urlencoded` and `text/*` - are all configured to allow compression. Compression occurs as the last step of conversion and only if the HTTP client sends the `Accept-Encoding: gzip` header.
+Body objects may be compressed with `gzip` if the HTTP client allows it _and_ the `CodecRegistry` has been configured to compress the content type of the response. The three built-in codecs - `application/json`, `application/x-www-form-urlencoded` and `text/*` - are all configured to allow compression. Compression occurs as the last step of conversion and only if the HTTP client sends the `Accept-Encoding: gzip` header.
 
-Content types that are not in the codec repository will not trigger compression, even if the HTTP client allows compression with the `Accept-Encoding` header. This is to prevent binary contents like images from being 'compressed', since they are likely already compressed by a content-specific algorithm. In order for Conduit to compress a content type other than the built-in types, you may add a codec to the repository with the `allowCompression` flag. (The default value is `true`.)
+Content types that are not in the codec repository will not trigger compression, even if the HTTP client allows compression with the `Accept-Encoding` header. This is to prevent binary contents like images from being 'compressed', since they are likely already compressed by a content-specific algorithm. In order for Conduit to compress a content type other than the built-in types, you may add a codec to the repository with the `allowCompression` flag. \(The default value is `true`.\)
 
 ```dart
 CodecRegistry.add(
@@ -188,7 +186,7 @@ Most request and response bodies are JSON objects and lists of objects. In Dart,
 
 ### Sending Serializable Objects as Response Bodies
 
-The body object of a response can be a `Serializable`. Before the response is sent, `asMap()` is called before the body object is encoded into JSON (or some other transmission format).
+The body object of a response can be a `Serializable`. Before the response is sent, `asMap()` is called before the body object is encoded into JSON \(or some other transmission format\).
 
 For example, a single serializable object returned in a 200 OK response:
 
@@ -208,7 +206,7 @@ final response = Response.ok(people);
 
 The flow of a body object is shown in the following diagram. Each orange item is an allowed body object type and shows the steps it will go through when being encoded to the HTTP response body. For example, a `Serializable` goes through three steps, whereas a `List<int>` goes through zero steps and is added as-is to the HTTP response.
 
-![Response Body Object Flow](../img/response_flow.png)
+![Response Body Object Flow](../.gitbook/assets/response_flow.png)
 
 ### Reading Serializable Objects from Request Bodies
 
@@ -225,7 +223,6 @@ List<Map<String, dynamic>> objects = await request.body.decode();
 final people = objects.map((o) => Person()..read(o)).toList();
 ```
 
-
 Both serializable and a list of serializable can be [bound to a operation method parameter in a ResourceController](resource_controller.md).
 
 ```dart
@@ -238,7 +235,7 @@ Future<Response> addPerson(@Bind.body() Person person) async {
 
 #### Key Filtering
 
-Both `read` and `Bind.body` (when binding a `Serializable`) support key filtering. A key filter is a list of keys that either discard keys from the body, requires keys in the body, or throws an error if a key exists in the body. Example:
+Both `read` and `Bind.body` \(when binding a `Serializable`\) support key filtering. A key filter is a list of keys that either discard keys from the body, requires keys in the body, or throws an error if a key exists in the body. Example:
 
 ```dart
 final person = Person()
@@ -293,3 +290,4 @@ final response = Response.ok(person);
 ### Serializable and OpenAPI Generation
 
 See the section on how `Serializable` types work with OpenAPI documentation generation [here](../openapi/components.md).
+

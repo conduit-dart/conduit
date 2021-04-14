@@ -37,7 +37,7 @@ class AppChannel extends ApplicationChannel {
 
 ## Add OAuth 2.0 Clients to Database
 
-```
+```text
 conduit auth add-client \
   --id com.app.test \
   --secret supersecret \
@@ -201,3 +201,4 @@ class AppChannel extends ApplicationChannel {
   }
 }
 ```
+

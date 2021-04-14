@@ -19,25 +19,25 @@ class _Article {
 }
 ```
 
-This plain Dart class is called a *table definition* because it defines a database table named `_Article`. The table has three columns, `id`, `contents`, `publishedDate`. An example of the data stored in this table might look like this:
+This plain Dart class is called a _table definition_ because it defines a database table named `_Article`. The table has three columns, `id`, `contents`, `publishedDate`. An example of the data stored in this table might look like this:
 
 | id | contents | publishedDate |
-| -- | -------- | ------------- |
-| 1  | Today, the local... | 2018-02-01 00:00:00.000 |
-| 2  | In other news, ... | 2018-03-01 04:30:00.000 |
+| :--- | :--- | :--- |
+| 1 | Today, the local... | 2018-02-01 00:00:00.000 |
+| 2 | In other news, ... | 2018-03-01 04:30:00.000 |
 
 A property in a table definition can optionally have a `Column` annotation. This annotation configures the behavior of the associated database column. If a property doesn't have an annotation, the column has default behavior. These behaviors are shown in the table below:
 
 | Option | Type | Behavior | Default |
-| ------ | ---- | -------- | ------- |
-| primaryKey | `bool` | sets primary key column | false (not primary key) |
+| :--- | :--- | :--- | :--- |
+| primaryKey | `bool` | sets primary key column | false \(not primary key\) |
 | databaseType | `ManagedPropertyType` | sets underlying column type | inferred from Dart type |
-| nullable | `bool` | toggles whether column can be null | false (not nullable) |
-| unique | `bool` | toggles whether column is unique across all rows | false (not unique) |
+| nullable | `bool` | toggles whether column can be null | false \(not nullable\) |
+| unique | `bool` | toggles whether column is unique across all rows | false \(not unique\) |
 | defaultValue | `String` | provides default value for new rows when value is undefined | null |
-| indexed | `bool` | whether an index should be created for the column | false (no index) |
-| omitByDefault | `bool` | whether this column should be left out by default | false (fetch column value) |
-| autoincrement | `bool` | whether this column's value is automatically generated from a series | false (not generated) |
+| indexed | `bool` | whether an index should be created for the column | false \(no index\) |
+| omitByDefault | `bool` | whether this column should be left out by default | false \(fetch column value\) |
+| autoincrement | `bool` | whether this column's value is automatically generated from a series | false \(not generated\) |
 
 You must use either zero or one `Column` annotation per property, and you must set all behaviors in one annotation, e.g.:
 
@@ -49,7 +49,7 @@ int field;
 The data type of a column is inferred from the Dart type of the property as shown by the following table.
 
 | Dart Type | General Column Type | PostgreSQL Column Type |
-|-----------|---------------|------|
+| :--- | :--- | :--- |
 | `int` | integer number | `INT` or `SERIAL` |
 | `double` | floating point number | `DOUBLE PRECISION` |
 | `String` | text | `TEXT` |
@@ -83,8 +83,7 @@ class _Article {
 }
 ```
 
-!!! note "Creating Tables"
-    Tables are created in a database by using the `conduit` command line tool to generate and execute migration scripts. The tool inspects your database types and automatically synchronizes a databases schema to match your them.
+!!! note "Creating Tables" Tables are created in a database by using the `conduit` command line tool to generate and execute migration scripts. The tool inspects your database types and automatically synchronizes a databases schema to match your them.
 
 By default, the name of the table definition is the name of the database table. You can configure this with the `Table` annotation.
 
@@ -101,7 +100,7 @@ class _Article {
 }
 ```
 
-It is convention that table definitions are *private classes*, that is, their name is prefixed with an underscore (`_`). This convention is discussed later in this guide.
+It is convention that table definitions are _private classes_, that is, their name is prefixed with an underscore \(`_`\). This convention is discussed later in this guide.
 
 ## Defining a Managed Object Subclass
 
@@ -111,7 +110,7 @@ A table definition by itself is just a plain Dart class. You must also declare a
 class Article extends ManagedObject<_Article> implements _Article {}
 ```
 
-A managed object subclass, also called the *instance type*, is the object type that you work with in your application code. For example, when you fetch rows from a database, you will get a list of managed objects. A managed object subclass declares its table definition in two places: once as the type argument of its superclass, and again as an interface it implements.
+A managed object subclass, also called the _instance type_, is the object type that you work with in your application code. For example, when you fetch rows from a database, you will get a list of managed objects. A managed object subclass declares its table definition in two places: once as the type argument of its superclass, and again as an interface it implements.
 
 A managed object subclass inherits all of the properties from its table definition; i.e., an `Article` has an `id`, `contents` and `publishedDate` because `_Article` declares those properties. You create and use instances of a managed object subclass like any other object:
 
@@ -121,14 +120,13 @@ article.text = "Today, ...";
 article.publishedDate = DateTime.now();
 ```
 
-!!! warning "Managed Object Constructors"
-    You can add new constructors to a managed object subclass, but you must always have a default, no-argument constructor. This default constructor is used when the ORM creates instances from rows in your database.
+!!! warning "Managed Object Constructors" You can add new constructors to a managed object subclass, but you must always have a default, no-argument constructor. This default constructor is used when the ORM creates instances from rows in your database.
 
 ## Modeling Relationships
 
-A managed object can have *relationships* to other managed objects. For example, an author can have many books, an article can belong to a newspaper, and an employee can have a manager. In a relational database, relationships between tables are established by storing the primary key of a table row in a column of the related table. This column is a *foreign key reference* to the related table.
+A managed object can have _relationships_ to other managed objects. For example, an author can have many books, an article can belong to a newspaper, and an employee can have a manager. In a relational database, relationships between tables are established by storing the primary key of a table row in a column of the related table. This column is a _foreign key reference_ to the related table.
 
-When a table has a foreign key reference, it is said to *belong to* the related table. In the example of an employee and manager, the employee *belongs to* the manager and therefore the employee table has a foreign key reference to the manager table. The inverse of this statement is also true: a manager *has* employees. A manager has-many employees - this is called a *has-many relationship*. There are also *has-one relationships* - for example, a country has-one capital.
+When a table has a foreign key reference, it is said to _belong to_ the related table. In the example of an employee and manager, the employee _belongs to_ the manager and therefore the employee table has a foreign key reference to the manager table. The inverse of this statement is also true: a manager _has_ employees. A manager has-many employees - this is called a _has-many relationship_. There are also _has-one relationships_ - for example, a country has-one capital.
 
 The following is an example of a country and a has-one relationship to a capital city:
 
@@ -153,12 +151,11 @@ class _Country {
 
 A relationship is formed between two tables by declaring properties in both table definition types. The type of those properties is the related managed object subclass - so a `Country` has a property of type `City`, and a `City` has a property of type `Country`.
 
-Exactly one of those properties must have a `Relate` annotation. The `Relate` annotation designates the underlying column as a foreign key column. In this example, the city table has a foreign key column to the country table. Conceptually, then, a city *belongs to* a country and a country has-one capital city. A city can only belong to one country through this relationship, and that is true of all belongs-to relationship properties.
+Exactly one of those properties must have a `Relate` annotation. The `Relate` annotation designates the underlying column as a foreign key column. In this example, the city table has a foreign key column to the country table. Conceptually, then, a city _belongs to_ a country and a country has-one capital city. A city can only belong to one country through this relationship, and that is true of all belongs-to relationship properties.
 
-!!! note "Foreign Key Column Names"
-    A foreign key column in the database is named by joining the name of the relationship property and the primary key of the related table with an underscore. For example, the column in the city table is named `country_id`.
+!!! note "Foreign Key Column Names" A foreign key column in the database is named by joining the name of the relationship property and the primary key of the related table with an underscore. For example, the column in the city table is named `country_id`.
 
-The property without `Relate` is the *inverse* of the relationship and is conceptually either a has-one or has-many relationship property. In this example, a country's relationship to its capital is has-one. A relationship is has-many when the type of the inverse property is a `ManagedSet`. For example, if we wanted to model a relationship between a country and all of its cities, we'd declare a `ManagedSet<City>` property in the country:
+The property without `Relate` is the _inverse_ of the relationship and is conceptually either a has-one or has-many relationship property. In this example, a country's relationship to its capital is has-one. A relationship is has-many when the type of the inverse property is a `ManagedSet`. For example, if we wanted to model a relationship between a country and all of its cities, we'd declare a `ManagedSet<City>` property in the country:
 
 ```dart
 class City extends ManagedObject<_City> implements _City {}
@@ -177,13 +174,11 @@ class _Country {
 }
 ```
 
-!!! note "ManagedSet Behavior"
-    A `Relate` property can never be a `ManagedSet`. A `ManagedSet` is a `List`, and therefore can be used in the same way a list is used.
+!!! note "ManagedSet Behavior" A `Relate` property can never be a `ManagedSet`. A `ManagedSet` is a `List`, and therefore can be used in the same way a list is used.
 
 Notice that the `Relate` annotation takes at least one argument: a symbol that matches the name of the inverse property. This is what links two relationship properties to each other. In the first example, this argument was `#capital` because the name of the inverse property is `capital`; likewise, `#cities` and `cities`. This pairing name must match or an error will be thrown.
 
-!!! note "Symbols"
-    A symbol is a name identifier in Dart; a symbol can refer to a class, method, or property. The `#name` syntax is a *symbol literal*.
+!!! note "Symbols" A symbol is a name identifier in Dart; a symbol can refer to a class, method, or property. The `#name` syntax is a _symbol literal_.
 
 The `Relate` annotation has optional arguments to further define the relationship. Like `Column`, these are optional arguments, e.g.:
 
@@ -196,8 +191,8 @@ A relationship may be be required or optional. For example, if `City.country` we
 A relationship has a delete rule. When an object is deleted, any objects that belong to its relationships are subject to this rule. The following table shows the rules and their behavior:
 
 | Rule | Behavior | Example |
-| ---- | -------- | ------- |
-| nullify (default) | inverse is set to null | When deleting an author, its articles' author becomes null |
+| :--- | :--- | :--- |
+| nullify \(default\) | inverse is set to null | When deleting an author, its articles' author becomes null |
 | cascade | related objects are also deleted | When deleting an author, its articles are deleted |
 | restrict | delete fails | When attempting to delete an author with articles, the delete operation fails |
 | default | inverse set to a default value | When deleting an author, its articles author is set to the default value of the column |
@@ -241,7 +236,7 @@ A private variable in a table definition removes it from the serialized represen
 
 ### Transient Properties
 
-Properties declared in a managed object subclass are called *transient* because they are not stored in a database. For example, consider an `Author` type that stores first and last name as separate columns. Instead of redundantly storing a 'full name' in the database, a transient property can combine the first and last name:
+Properties declared in a managed object subclass are called _transient_ because they are not stored in a database. For example, consider an `Author` type that stores first and last name as separate columns. Instead of redundantly storing a 'full name' in the database, a transient property can combine the first and last name:
 
 ```dart
 class Author extends ManagedObject<_Author> implements _Author {
@@ -260,7 +255,7 @@ class _Author {
 }
 ```
 
-By default, a transient property is ignored when reading an object from a request body or writing the object to a response body (see the guide on [serialization](serialization.md) for more details). You can annotate a transient property with `Serialize` so that it is able to be read from a request body, written to a response body, or both. For example:
+By default, a transient property is ignored when reading an object from a request body or writing the object to a response body \(see the guide on [serialization](serialization.md) for more details\). You can annotate a transient property with `Serialize` so that it is able to be read from a request body, written to a response body, or both. For example:
 
 ```dart
 class Author extends ManagedObject<_Author> implements _Author {
@@ -286,11 +281,11 @@ class Author extends ManagedObject<_Author> implements _Author {
 
 ## Project File Structure
 
-A managed object subclass and its table definition together are called an *entity*. Each entity should be declared in the same file, and the table definition should be prefixed with an `_` to prevent it from being used elsewhere in the project. It is preferable to declare one entity per file, and store all entities in the `lib/model/` directory of your project.
+A managed object subclass and its table definition together are called an _entity_. Each entity should be declared in the same file, and the table definition should be prefixed with an `_` to prevent it from being used elsewhere in the project. It is preferable to declare one entity per file, and store all entities in the `lib/model/` directory of your project.
 
 The files your model definitions are declared in must be visible to Conduit tooling. In normal circumstances, this happens automatically because of the following:
 
-1. Conduit tooling can find any file that is imported (directly or transitively) from your library file.
+1. Conduit tooling can find any file that is imported \(directly or transitively\) from your library file.
 2. Your library file, by default, can see the file your `ApplicationChannel` is declared in.
 3. Your application channel file must import any controller that it links.
 4. Your controllers must import any model file they use.
@@ -336,7 +331,7 @@ final author = await authorQuery.insert();
 final bookQuery = Query<Book>(context)
   ..values.name = "Title"
   ..values.author.id = author.id;
-final book = await bookQuery.insert();  
+final book = await bookQuery.insert();
 ```
 
 To fetch authors and their books:
@@ -440,7 +435,7 @@ final team = await query.fetchOne();
 
 The structure of this object is:
 
-```json
+```javascript
 {
   "id": 1,
   "name": "Badgers",
@@ -473,7 +468,7 @@ team.players = team.teamPlayers.map((t) => t.player.asMap()).toList();
 team.backing.removeProperty("teamPlayers");
 ```
 
-### Example: Hierarchical Relationships (Self Referencing)
+### Example: Hierarchical Relationships \(Self Referencing\)
 
 Hierarchical relationships follow the same rules as all other relationship, but declare the foreign key property and the inverse in the same type.
 
@@ -491,3 +486,4 @@ class _Person {
   Person parent;
 }
 ```
+

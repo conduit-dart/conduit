@@ -36,7 +36,7 @@ When a 500 error is encountered, the server will send the stack trace back to th
 
 Applications run with `conduit serve` default to port 8888. You may use the `--port` command-line option to pick a different port:
 
-```
+```text
 conduit serve --port 4000
 ```
 
@@ -45,3 +45,4 @@ conduit serve --port 4000
 For applications that use the ORM, you must have a locally running database with a schema that matches your application's data model.
 
 If you are using OAuth 2.0, you must have also added client identifiers to the locally running database. You may add client identifiers with the [conduit auth](../auth/cli.md) command-line tool.
+

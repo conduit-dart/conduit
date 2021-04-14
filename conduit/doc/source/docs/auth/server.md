@@ -2,9 +2,9 @@
 
 An `AuthServer` is a service that handles creating, verifying and refreshing authorization tokens. You create an `AuthServer` in your application channel and inject into types that deal with authorization. This types include:
 
-- `Authorizer`: middleware controller that protects endpoint controllers from unauthorized access
-- `AuthController`: endpoint controller that grants access tokens
-- `AuthCodeController`: endpoint controller that grants authorization codes to be exchanged for access tokens
+* `Authorizer`: middleware controller that protects endpoint controllers from unauthorized access
+* `AuthController`: endpoint controller that grants access tokens
+* `AuthCodeController`: endpoint controller that grants authorization codes to be exchanged for access tokens
 
 An `AuthServer` must persist the data it uses and creates - like client identifiers and access tokens. Storage is often performed by a database, but it can be in memory, a cache or some other medium. Because of the many different storage mediums, an `AuthServer` doesn't perform any storage itself - it relies on an instance of `AuthServerDelegate` specific to your application. This allows storage to be independent of verification logic.
 
@@ -32,7 +32,7 @@ class MyApplicationChannel extends ApplicationChannel {
 }
 ```
 
-(Notice that `ManagedAuthDelegate` has a type argument - this will be covered in the next section.)
+\(Notice that `ManagedAuthDelegate` has a type argument - this will be covered in the next section.\)
 
 While `AuthServer` has methods for handling authorization tasks, it is rarely used directly. Instead, `AuthCodeController` and `AuthController` are hooked up to routes to grant authorization tokens through your application's HTTP API. Instances of `Authorizer` secure routes in channels. All of these types invoke the appropriate methods on the `AuthServer`. Here's an example `ApplicationChannel` subclass that sets up and uses authorization:
 
@@ -78,7 +78,7 @@ For more details on authorization controllers like `AuthController`, see [Author
 
 `ManagedAuthDelegate<T>` is a concrete implementation of `AuthServerDelegate`, providing storage of authorization tokens and clients for an `AuthServer`. Storage is accomplished by Conduit's ORM. `ManagedAuthDelegate<T>`, by default, is not part of the standard `conduit` library. To use this class, an application must import `package:conduit/managed_auth.dart`.
 
-The type argument to `ManagedAuthDelegate<T>` represents the application's concept of a 'user' or 'account' - OAuth 2.0 terminology would refer to this type as a *resource owner*. A resource owner must be a `ManagedObject<T>` subclass that is specific to your application. Its table definition *must extend* `ResourceOwnerTableDefinition` and the instance type must implement `ManagedAuthResourceOwner<T>`, where `T` is the table definition. A basic definition may look like this:
+The type argument to `ManagedAuthDelegate<T>` represents the application's concept of a 'user' or 'account' - OAuth 2.0 terminology would refer to this type as a _resource owner_. A resource owner must be a `ManagedObject<T>` subclass that is specific to your application. Its table definition _must extend_ `ResourceOwnerTableDefinition` and the instance type must implement `ManagedAuthResourceOwner<T>`, where `T` is the table definition. A basic definition may look like this:
 
 ```dart
 class User extends ManagedObject<_User>
@@ -93,10 +93,10 @@ class _User extends ResourceOwnerTableDefinition {
 
 By extending `ResourceOwnerTableDefinition` in the table definition, the database table has the following four columns:
 
-- an integer primary key named `id`
-- a unique string `username`
-- a password hash
-- a salt used to generate the password hash
+* an integer primary key named `id`
+* a unique string `username`
+* a password hash
+* a salt used to generate the password hash
 
 A `ResourceOwnerTableDefinition` also has a `ManagedSet` of `tokens` for each token that has been granted on its behalf.
 
@@ -106,7 +106,7 @@ This structure allows an application to declare its own 'user' type while still 
 
 The `managed_auth` library also declares two `ManagedObject<T>` subclasses. `ManagedAuthToken` represents instances of authorization tokens and codes, and `ManagedAuthClient` represents instances of OAuth 2.0 clients. This means that an Conduit application that uses `ManagedAuthDelegate<T>` has a minimum of three database tables: users, tokens and clients.
 
-`ManagedAuthDelegate<T>` will delete authorization tokens and codes when they are no longer in use. This is determined by how many tokens a resource owner has and the tokens expiration dates. Once a resource owner acquires more than 40 tokens/codes, the oldest tokens/codes (determined by expiration date) are deleted. Effectively, the resource owner is limited to 40 tokens. This number can be changed when instantiating `ManagedAuthDelegate<T>`:
+`ManagedAuthDelegate<T>` will delete authorization tokens and codes when they are no longer in use. This is determined by how many tokens a resource owner has and the tokens expiration dates. Once a resource owner acquires more than 40 tokens/codes, the oldest tokens/codes \(determined by expiration date\) are deleted. Effectively, the resource owner is limited to 40 tokens. This number can be changed when instantiating `ManagedAuthDelegate<T>`:
 
 ```dart
 final delegate = ManagedAuthDelegate(context, tokenLimit: 20);
@@ -115,3 +115,4 @@ final delegate = ManagedAuthDelegate(context, tokenLimit: 20);
 ## Configuring the Database
 
 `ManagedAuthDelegate<T>` requires database tables for its users, tokens and clients. Use the [database command-line tool](../db/db_tools.md) on your project to generate migration scripts and execute them against a database. This tool will see the declarations for your user type, `ManagedAuthToken` and `ManagedAuthClient` and create the appropriate tables.
+

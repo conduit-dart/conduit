@@ -1,3 +1,5 @@
+# index
+
 ## Tasks
 
 An Conduit application serves HTTP clients by sending responses for requests.
@@ -12,10 +14,11 @@ Your application is run by using the `conduit serve` command or the `bin/main.da
 
 ## Guides
 
-- [Handling Requests and Sending Responsers](controller.md)
-- [Serializing Request and Response Bodies](request_and_response.md)
-- [Routing](routing.md)
-- [Request Binding with ResourceControllers](resource_controller.md)
-- [Serving Files and Caching](serving_files.md)
-- [Websockets](websockets.md)
-- [Uploading Files](file_upload.md)
+* [Handling Requests and Sending Responsers](controller.md)
+* [Serializing Request and Response Bodies](request_and_response.md)
+* [Routing](routing.md)
+* [Request Binding with ResourceControllers](resource_controller.md)
+* [Serving Files and Caching](serving_files.md)
+* [Websockets](websockets.md)
+* [Uploading Files](file_upload.md)
+

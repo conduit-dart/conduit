@@ -107,7 +107,6 @@ class RateLimiter extends RequestController {
     return request;
   }
 }
-
 ```
 
 ## Application-Wide CORS Allowed Origins
@@ -152,7 +151,7 @@ class AppChannel extends ApplicationChannel {
 }
 ```
 
-## Streaming Responses (Server Side Events with text/event-stream)
+## Streaming Responses \(Server Side Events with text/event-stream\)
 
 ```dart
 class AppChannel extends ApplicationChannel {
@@ -255,7 +254,6 @@ class AppChannel extends ApplicationChannel {
     return router;
   }
 }
-
 ```
 
 ## Proxy a File From Another Server
@@ -287,3 +285,4 @@ class AppChannel extends ApplicationChannel {
   }
 }
 ```
+

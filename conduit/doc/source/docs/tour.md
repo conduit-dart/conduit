@@ -2,13 +2,13 @@
 
 The tour demonstrates many of Conduit's features.
 
-### Command-Line Interface (CLI)
+### Command-Line Interface \(CLI\)
 
 The `conduit` command line tool creates, runs and documents Conduit applications; manages database migrations; and manages OAuth client identifiers. Install by running `pub global activate conduit` on a machine with Dart installed.
 
 Create and run an application:
 
-```
+```text
 conduit create my_app
 cd my_app/
 conduit serve
@@ -44,7 +44,7 @@ class TodoApp extends ApplicationChannel {
 
 ### Routing
 
-A [router](http/routing.md) determines which controller object should handle a request. The *route specification syntax* is a concise syntax to construct routes with variables and optional segments in a single statement.
+A [router](http/routing.md) determines which controller object should handle a request. The _route specification syntax_ is a concise syntax to construct routes with variables and optional segments in a single statement.
 
 ```dart
 @override
@@ -67,7 +67,7 @@ Controller get entryPoint {
     .linkFunction((req) async => Response.ok(null));
 
   return router;
-}    
+}
 ```
 
 ## Controllers
@@ -134,9 +134,9 @@ router
 
 ## Configuration
 
-An application's configuration is written in a YAML file. Each environment your application runs in (e.g., locally, under test, production, development) has different values for things like the port to listen on and database connection credentials. The format of a configuration file is defined by your application. An example looks like:
+An application's configuration is written in a YAML file. Each environment your application runs in \(e.g., locally, under test, production, development\) has different values for things like the port to listen on and database connection credentials. The format of a configuration file is defined by your application. An example looks like:
 
-```
+```text
 // config.yaml
 database:
   host: api.projects.com
@@ -174,11 +174,11 @@ class TodoApp extends ApplicationChannel {
 
 Conduit applications are run with the `conduit serve` command line tool. You can attach debugging and instrumentation tools and specify how many threads the application should run on:
 
-```
+```text
 conduit serve --observe --isolates 5 --port 8888
 ```
 
-Conduit applications are multi-isolate (multi-threaded). Each isolate runs a replica of the same web server with its own set of services like database connections. This makes behavior like database connection pooling implicit.
+Conduit applications are multi-isolate \(multi-threaded\). Each isolate runs a replica of the same web server with its own set of services like database connections. This makes behavior like database connection pooling implicit.
 
 ## PostgreSQL ORM
 
@@ -224,7 +224,7 @@ var newProject = await insertQuery.insert();
 final updateQuery = Query<Project>(context)
   ..where((project) => project.id).equalTo(newProject.id)
   ..values.name = "Build a miniature conduit";
-newProject = await updateQuery.updateOne();  
+newProject = await updateQuery.updateOne();
 ```
 
 `Query<T>`s can perform sorting, joining and paging queries.
@@ -300,7 +300,7 @@ class ProjectController extends ResourceController {
 
 The CLI will automatically generate database migration scripts by detecting changes to your managed objects. The following, when ran in a project directory, will generate and execute a database migration.
 
-```
+```text
 conduit db generate
 conduit db upgrade --connect postgres://user:password@host:5432/database
 ```
@@ -357,7 +357,7 @@ Controller get entryPoint {
 
 The CLI has tools to manage OAuth 2.0 client identifiers and access scopes.
 
-```
+```text
 conduit auth add-client \
   --id com.app.mobile \
   --secret foobar \
@@ -403,7 +403,7 @@ void main() {
 
 ### Testing with a Database
 
-Conduit's ORM uses PostgreSQL as its database. Before your tests run, Conduit will create your application's database tables in a local PostgreSQL database. After the tests complete, it will delete those tables. This allows you to start with an empty database for each test suite as well as control exactly which records are in your database while testing, but without having to manage database schemas or use an mock implementation (e.g., SQLite).
+Conduit's ORM uses PostgreSQL as its database. Before your tests run, Conduit will create your application's database tables in a local PostgreSQL database. After the tests complete, it will delete those tables. This allows you to start with an empty database for each test suite as well as control exactly which records are in your database while testing, but without having to manage database schemas or use an mock implementation \(e.g., SQLite\).
 
 This behavior, and behavior for managing applications with an OAuth 2.0 provider, are available as [harness mixins](testing/mixins.md).
 
@@ -412,3 +412,4 @@ This behavior, and behavior for managing applications with an OAuth 2.0 provider
 OpenAPI documents describe your application's interface. These documents can be used to generate documentation and client code. A document can be generated by reflecting on your application's codebase, just run the `conduit document` command.
 
 The `conduit document client` command creates a web page that can be used to configure issue requests specific to your application.
+
