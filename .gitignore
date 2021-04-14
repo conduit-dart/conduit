@@ -24,3 +24,4 @@ release.yaml
 tmp/
 conduit/foobar
 conduit/migrations
+conduit/tool/.settings.yaml

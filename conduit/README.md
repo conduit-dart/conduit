@@ -1,6 +1,6 @@
 ![Conduit](https://s3.amazonaws.com/conduit-collateral/conduit.png)
 
-[![OSX/Linux Build Status](https://travis-ci.org/stablekernel/conduit.svg?branch=master)](https://travis-ci.org/stablekernel/conduit) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/conduit) [![codecov](https://codecov.io/gh/stablekernel/conduit/branch/master/graph/badge.svg)](https://codecov.io/gh/stablekernel/conduit)
+[![OSX/Linux Build Status](https://travis-ci.org/conduit.dart/conduit.svg?branch=master)](https://travis-ci.org/conduit.dart/conduit) [![Windows Build status](https://ci.appveyor.com/api/projects/status/l2uy4r0yguhg4pis?svg=true)](https://ci.appveyor.com/project/joeconwaystk/conduit) [![codecov](https://codecov.io/gh/conduit.dart/conduit/branch/master/graph/badge.svg)](https://codecov.io/gh/conduit.dart/conduit)
 
 [![Slack](https://slackconduitsignup.herokuapp.com/badge.svg)](http://slackconduitsignup.herokuapp.com/)
 
@@ -31,4 +31,4 @@ You can find in-depth and conceptual guides [here](https://conduit.io/docs/).
 
 An ever-expanding repository of Conduit examples is [here](https://github.com/conduit.dart/conduit_examples).
 
-*If you are migrating from conduit 2.5 to conduit 3.0, see [the migration guide](https://conduit.io/docs/migration/).*
+*If you are migrating from Conduit 2.5 to Conduit 3.0, see [the migration guide](https://conduit.io/docs/migration/).*

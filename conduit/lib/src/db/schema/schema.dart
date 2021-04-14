@@ -29,10 +29,9 @@ class Schema {
 
   /// Creates a deep copy of [otherSchema].
   Schema.from(Schema? otherSchema) {
-    _tables = otherSchema?.tables
-            .map((table) => SchemaTable.from(table))
-            .toList() ??
-        [];
+    _tables =
+        otherSchema?.tables.map((table) => SchemaTable.from(table)).toList() ??
+            [];
   }
 
   /// Creates a instance of this type from [map].
@@ -138,7 +137,8 @@ class Schema {
   SchemaTable? tableForName(String name) {
     var lowercaseName = name.toLowerCase();
 
-    return tables.firstWhereOrNull((t) => t.name!.toLowerCase() == lowercaseName);
+    return tables
+        .firstWhereOrNull((t) => t.name!.toLowerCase() == lowercaseName);
   }
 
   /// Emits this instance as a transportable [Map].

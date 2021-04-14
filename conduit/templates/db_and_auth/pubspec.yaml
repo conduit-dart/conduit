@@ -1,14 +1,13 @@
 name: wildfire
 description: An conduit application with a database connection, data model and OAuth 2.0 endpoints.
 version: 0.0.1
-author: stable|kernel <jobs@stablekernel.com>
 
 environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  conduit: ^2.0.0-b1
+  conduit: ^2.0.0-a2
 
 dev_dependencies:
   test: ^1.16.5
-  conduit_test: ^2.0.0-b1
+  conduit_test: ^2.0.0-0

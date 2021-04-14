@@ -284,9 +284,7 @@ class ManagedEntity implements APIComponentDocumenter {
 
   APISchemaObject document(APIDocumentContext context) {
     final schemaProperties = <String, APISchemaObject>{};
-    final obj =
-        APISchemaObject.object(schemaProperties)
-          ..title = "$name";
+    final obj = APISchemaObject.object(schemaProperties)..title = "$name";
 
     final buffer = StringBuffer();
     if (uniquePropertySet != null) {

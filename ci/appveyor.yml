@@ -12,7 +12,7 @@ environment:
   matrix:
   - TEST_DIR: conduit_test
   - TEST_DIR: conduit
-  - PSQL_PORT: 5432
+  - POSTGRES_PORT: 5432
 
 install:
   - ps: wget https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dartsdk-windows-x64-release.zip -OutFile dart-sdk.zip
@@ -27,10 +27,10 @@ install:
 build: off
 
 test_script:
-  - cmd: psql -U postgres -c "create user dart with createdb;"
-  - cmd: psql -U postgres -c "alter user dart with password 'dart';"
-  - cmd: psql -U postgres -c "create database dart_test;"
-  - cmd: psql -U postgres -c "grant all on database dart_test to dart;"
+  - cmd: psql -U postgres -c "create user conduit_test_user with createdb;"
+  - cmd: psql -U postgres -c "alter user conduit_test_user with password 'conduit!';"
+  - cmd: psql -U postgres -c "create database conduit_test_db;"
+  - cmd: psql -U postgres -c "grant all on database conduit_test_db to conduit_test_user;"
   - cd %TEST_DIR%
   - pub get
   - pub run test -j1

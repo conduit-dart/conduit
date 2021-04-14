@@ -7,9 +7,8 @@ import 'package:conduit/conduit.dart';
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/mixins/database_managing.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
-
-import '../db/postgresql/postgres_test_config.dart';
 
 void main() {
   group("Cooperation", () {

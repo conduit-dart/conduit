@@ -99,10 +99,8 @@ class SerializableException implements HandlerException {
 
   @override
   Response get response {
-    return Response.badRequest(body: {
-      "error": "entity validation failed",
-      "reasons": reasons
-    });
+    return Response.badRequest(
+        body: {"error": "entity validation failed", "reasons": reasons});
   }
 
   @override

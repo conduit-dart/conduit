@@ -80,9 +80,8 @@ class SchemaTable {
   List<SchemaColumn> get columns => List.unmodifiable(_columnStorage ?? []);
 
   bool get hasForeignKeyInUniqueSet => columns
-    .where((c) => c.isForeignKey)
-    .any((c) => uniqueColumnSet?.contains(c.name) ?? false);
-
+      .where((c) => c.isForeignKey)
+      .any((c) => uniqueColumnSet?.contains(c.name) ?? false);
 
   List<SchemaColumn>? _columnStorage;
   List<String>? _uniqueColumnSet;
@@ -166,7 +165,8 @@ class SchemaTable {
   /// with [name].
   SchemaColumn? columnForName(String name) {
     var lowercaseName = name.toLowerCase();
-    return columns.firstWhereOrNull((col) => col.name.toLowerCase() == lowercaseName);
+    return columns
+        .firstWhereOrNull((col) => col.name.toLowerCase() == lowercaseName);
   }
 
   /// Returns portable representation of this table.

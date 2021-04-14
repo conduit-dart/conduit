@@ -202,7 +202,8 @@ void main() {
   });
 
   test("Can add extension", () async {
-    var response = await http.get(Uri.parse("http://localhost:8888/silly/file.silly"));
+    var response =
+        await http.get(Uri.parse("http://localhost:8888/silly/file.silly"));
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -229,8 +230,8 @@ void main() {
   });
 
   test("Provide onFileNotFound provides another response", () async {
-    var response =
-        await http.get(Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"));
+    var response = await http
+        .get(Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"));
     expect(response.statusCode, 200);
     expect(json.decode(response.body), {"k": "v"});
   });
@@ -314,7 +315,8 @@ void main() {
 
 Future<http.Response> getFile(String path,
     {Map<String, String>? headers}) async {
-  return http.get(Uri.parse("http://localhost:8888/files$path"), headers: headers);
+  return http.get(Uri.parse("http://localhost:8888/files$path"),
+      headers: headers);
 }
 
 Future<http.Response> getCacheableFile(String path,

@@ -7,7 +7,10 @@ jobs:
   conduit_test:
     env:
       TEST_DIR: conduit_test
-      PSQL_PORT: 5432
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      POSTGRES_PORT: 5432
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -18,9 +21,10 @@ jobs:
       postgres:
         image: postgres:9.6
         env:
-          POSTGRES_USER: dart
-          POSTGRES_PASSWORD: dart
-          POSTGRES_DB: dart_test
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
     steps:
@@ -38,7 +42,10 @@ jobs:
   conduit:
     env:
       TEST_DIR: conduit
-      PSQL_PORT: 5432
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      POSTGRES_PORT: 5432
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -49,9 +56,10 @@ jobs:
       postgres:
         image: postgres:9.6
         env:
-          POSTGRES_USER: dart
-          POSTGRES_PASSWORD: dart
-          POSTGRES_DB: dart_test
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
     steps:
@@ -77,9 +85,10 @@ jobs:
       postgres:
         image: postgres:9.6
         env:
-          POSTGRES_USER: dart
-          POSTGRES_PASSWORD: dart
-          POSTGRES_DB: dart_test
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 5432
         ports:
           - 5432:5432
     steps:

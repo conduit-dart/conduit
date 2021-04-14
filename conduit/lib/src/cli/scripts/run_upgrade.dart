@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:mirrors';
 
-import 'package:conduit/conduit.dart';
 import 'package:conduit/src/cli/migration_source.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/postgresql/postgresql_persistent_store.dart';
+import 'package:conduit/src/db/query/error.dart';
+import 'package:conduit/src/db/schema/schema.dart';
+import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 

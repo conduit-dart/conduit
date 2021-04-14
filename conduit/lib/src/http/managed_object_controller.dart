@@ -361,8 +361,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
-    switch (operation.method) {
+      APIDocumentContext context, Operation? operation) {
+    switch (operation!.method) {
       case "GET":
         if (operation.pathVariables.isEmpty) {
           return {

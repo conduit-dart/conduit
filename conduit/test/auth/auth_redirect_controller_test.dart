@@ -840,8 +840,13 @@ class TestChannel extends ApplicationChannel
   }
 
   @override
-  Future<String> render(AuthRedirectController forController, Uri requestUri,
-      String? responseType, String? clientID, String? state, String? scope) async {
+  Future<String> render(
+      AuthRedirectController forController,
+      Uri requestUri,
+      String? responseType,
+      String? clientID,
+      String? state,
+      String? scope) async {
     return json.encode({
       "response_type": responseType,
       "path": requestUri.path,
@@ -854,8 +859,13 @@ class TestChannel extends ApplicationChannel
 
 class BadAuthRedirectDelegate implements AuthRedirectControllerDelegate {
   @override
-  Future<String?> render(AuthRedirectController forController, Uri requestUri,
-      String? responseType, String? clientID, String? state, String? scope) async {
+  Future<String?> render(
+      AuthRedirectController forController,
+      Uri requestUri,
+      String? responseType,
+      String? clientID,
+      String? state,
+      String? scope) async {
     return null;
   }
 }

@@ -41,10 +41,12 @@ abstract class QueryController<InstanceType extends ManagedObject>
       var idValue = req.path.variables[firstVarName];
 
       if (idValue != null) {
-        var primaryKeyDesc = query!.entity!.attributes[query!.entity!.primaryKey]!;
+        var primaryKeyDesc =
+            query!.entity!.attributes[query!.entity!.primaryKey]!;
         if (primaryKeyDesc.isAssignableWith(idValue)) {
           query!.where((o) => o[query!.entity!.primaryKey]).equalTo(idValue);
-        } else if (primaryKeyDesc.type!.kind == ManagedPropertyType.bigInteger ||
+        } else if (primaryKeyDesc.type!.kind ==
+                ManagedPropertyType.bigInteger ||
             primaryKeyDesc.type!.kind == ManagedPropertyType.integer) {
           try {
             query!

@@ -230,9 +230,8 @@ void main() {
 
 Future<http.Response> postJSON(dynamic body) {
   if (body == null) {
-    return http.post(Uri.parse("http://localhost:4040"), headers: {
-      "Content-Type": "application/json"
-    }).catchError((err) {});
+    return http.post(Uri.parse("http://localhost:4040"),
+        headers: {"Content-Type": "application/json"}).catchError((err) {});
   }
   return http
       .post(Uri.parse("http://localhost:4040"),

@@ -1,9 +1,37 @@
-## conduit 2.0.0
+# 2.0.0-a3
+changed start_db.dart to always recreate the user/db.
+Added notes on the new startup_db.dart script for unit tests.
+Fixed a failed unit test as the method documentOperationResponse did not match the signature of the super it overrides.
+Fixed incorrect port mappings for the socket proxy.
+Created a script to start the postgres deamon and create the database to make it easy to run single unit tests from vscode.
+Expanded the no. of acceptable characters for the password. Migrated to using the new PostgresManager class.
+The run_unit_test script now starts and waits for postgress to be running and resets the db if required.
+replaced all references to aqueduct to conduit.
+removed the unused context_helpers.dart
+Updated all reference to the db name dart_test to be conduit_test_db. Changed the default password to conduit! to make it easier to remember given we are publishing this password anyway.
+"break" tests
+Fixed permission issues with the postgres user setup
+move dummy config to not_test
+fix up changelogs
+fix bin
+update changelog
 
-Breaking changes
-Query.values can no longer be null as such to check if the set of values are empty you need to call Query.hasValues;
+# Conduit
 
-You can no longer set Query.values to null, instead use Query.clearValues().
+## 2.0.0-a2
+
+- Small clean up and fix templates
+
+## 2.0.0-a1
+
+- Alpha release for Conduit NNBD included
+
+- Breaking changes
+    Query.values can no longer be null as such to check if the set of values are empty you need to call Query.hasValues;
+
+- You can no longer set Query.values to null, instead use Query.clearValues().
+
+# Conduit
 
 ## 3.3.0-b1
 
@@ -17,7 +45,7 @@ You can no longer set Query.values to null, instead use Query.clearValues().
 
 ## 3.2.2-dev
 
-- [#723](https://github.com/stablekernel/conduit/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
+- [#723](https://github.com/conduit.dart/conduit/pull/723) Fixes issue that prevented the `AuthServer` from granting tokens with sub-scopes when the servers `AuthServerDelegate.getAllowedScopes()` didn't return `AuthScope.any`.
 - Deprecates `AuthScope.allowsScope()`, use `AuthScope.isSubsetOrEqualTo()` instead.
 
 ## 3.2.1

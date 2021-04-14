@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';
 import 'package:conduit_common/conduit_common.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
 
@@ -115,9 +116,8 @@ class TestChannel extends ApplicationChannel {
   @override
   Future prepare() async {
     var dataModel = ManagedDataModel([TestModel]);
-    var persistentStore = PostgreSQLPersistentStore(
-        "dart", "dart", "localhost", 5432, "dart_test");
-    context = ManagedContext(dataModel, persistentStore);
+    var persistentStore = PostgresTestConfig().persistentStore;
+    context = ManagedContext(dataModel, persistentStore());
 
     var targetSchema = Schema.fromDataModel(context!.dataModel!);
     var schemaBuilder = SchemaBuilder.toSchema(

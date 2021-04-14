@@ -2,6 +2,7 @@ import 'dart:mirrors';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 
@@ -426,7 +427,7 @@ void main() {
   group("Unique column set", () {
     late PostgreSQLPersistentStore psc;
     setUp(() {
-      psc = PostgreSQLPersistentStore(null, null, null, null, null);
+      psc = PostgresTestConfig().persistentStore();
     });
 
     test("Can add unique", () {

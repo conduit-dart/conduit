@@ -11,7 +11,7 @@ Future main() async {
     agents = {};
     for (var i = 0; i < 6; i++) {
       final user = User()
-        ..username = "bob+$i@stablekernel.com"
+        ..username = "bob+$i@conduit.dart.com"
         ..password = "foobaraxegrind$i%";
       agents![i] = await harness.registerUser(user);
     }
@@ -26,7 +26,7 @@ Future main() async {
     expect(
         response,
         hasResponse(200,
-            body: partial({"username": "bob+0@stablekernel.com"})));
+            body: partial({"username": "bob+0@conduit.dart.com"})));
   });
 
   test("Updating user fails if not owner", () async {

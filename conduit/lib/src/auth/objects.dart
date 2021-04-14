@@ -422,7 +422,6 @@ class AuthScope {
       }
     }
 
-    // If we aren't restricted by modifier, let's make sure we have access.
     final thisIterator = _segments.iterator;
     for (var incomingSegment in incomingScope._segments) {
       // If the incoming scope is more restrictive than this scope,

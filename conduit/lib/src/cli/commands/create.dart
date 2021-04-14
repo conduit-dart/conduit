@@ -122,18 +122,18 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     return true;
   }
 
-  void interpretContentFile(String projectName, Directory destinationDirectory,
+  void interpretContentFile(String? projectName, Directory destinationDirectory,
       FileSystemEntity sourceFileEntity) {
     if (shouldIncludeItem(sourceFileEntity)) {
       if (sourceFileEntity is Directory) {
         copyDirectory(projectName, destinationDirectory, sourceFileEntity);
       } else if (sourceFileEntity is File) {
-        copyFile(projectName, destinationDirectory, sourceFileEntity);
+        copyFile(projectName!, destinationDirectory, sourceFileEntity);
       }
     }
   }
 
-  void copyDirectory(String projectName, Directory destinationParentDirectory,
+  void copyDirectory(String? projectName, Directory destinationParentDirectory,
       Directory sourceDirectory) {
     var sourceDirectoryName = sourceDirectory
         .uri.pathSegments[sourceDirectory.uri.pathSegments.length - 2];
@@ -204,7 +204,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   void copyProjectFiles(Directory destinationDirectory,
-      Directory sourceDirectory, String projectName) {
+      Directory sourceDirectory, String? projectName) {
     displayInfo(
         "Copying template files to project directory (${destinationDirectory.path})...");
     try {

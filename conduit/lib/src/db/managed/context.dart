@@ -80,11 +80,12 @@ class ManagedContext implements APIComponentDocumenter {
   /// [transactionBlock], roll back any changes made in the transaction, but this method will not
   /// throw.
   ///
-  /// TODO: the following statement is not true. Rollback takes a string but the transaction
+  /// TODO: the following statement is not true.
+  /// Rollback takes a string but the transaction
   /// returns <T>.  It would seem to be a better idea to still throw the manual Rollback
   /// so the user has a consistent method of handling the rollback. We could add a property
   /// to the Rollback class 'manual' which would be used to indicate a manual rollback.
-  /// For the moment I've changed the return type to Future<void> as 
+  /// For the moment I've changed the return type to Future<void> as
   /// The parameter passed to [Rollback]'s constructor will be returned from this method
   /// so that the caller can determine why the transaction was rolled back.
   ///

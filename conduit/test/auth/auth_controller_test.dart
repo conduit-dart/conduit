@@ -12,7 +12,6 @@ void main() {
   AuthServer? authenticationServer;
   Router? router;
   ////////////
-
   setUp(() async {
     var storage = InMemoryAuthStorage();
     storage.createUsers(3);
@@ -35,7 +34,6 @@ void main() {
   });
 
   ///////
-
   group("Success Cases: password", () {
     test("Confidental Client has all parameters including refresh_token",
         () async {

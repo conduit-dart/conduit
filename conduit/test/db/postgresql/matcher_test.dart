@@ -1,13 +1,13 @@
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
 import 'package:conduit/conduit.dart';
-
-import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
 
   setUpAll(() async {
-    context = await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
     var counter = 0;
     var names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
     for (var name in names) {
@@ -73,7 +73,8 @@ void main() {
       results = await q.fetch();
       expect(results.length, 0);
 
-      q = Query<TestModel>(context!)..where((o) => o.email).not.equalTo("%.com");
+      q = Query<TestModel>(context!)
+        ..where((o) => o.email).not.equalTo("%.com");
       results = await q.fetch();
       expect(results.length, 6);
 
@@ -113,7 +114,8 @@ void main() {
       results = await q.fetch();
       expect(results.length, 0);
 
-      q = Query<TestModel>(context!)..where((o) => o.email).not.equalTo("%.COM");
+      q = Query<TestModel>(context!)
+        ..where((o) => o.email).not.equalTo("%.COM");
       results = await q.fetch();
       expect(results.length, 6);
 
@@ -250,14 +252,16 @@ void main() {
   });
 
   test("Greater than equal to matcher", () async {
-    var q = Query<TestModel>(context!)..where((o) => o.id).greaterThanEqualTo(4);
+    var q = Query<TestModel>(context!)
+      ..where((o) => o.id).greaterThanEqualTo(4);
     var results = await q.fetch();
     expect(results.length, 3);
     expect(results[0].id, 4);
     expect(results[1].id, 5);
     expect(results[2].id, 6);
 
-    q = Query<TestModel>(context!)..where((o) => o.id).not.greaterThanEqualTo(4);
+    q = Query<TestModel>(context!)
+      ..where((o) => o.id).not.greaterThanEqualTo(4);
     results = await q.fetch();
     expect(results.length, 3);
     expect(results.every((tm) => tm.id! < 4), true);

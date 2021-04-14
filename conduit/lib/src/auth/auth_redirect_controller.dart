@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/http/resource_controller.dart';
+import 'package:conduit/src/http/resource_controller_bindings.dart';
+import 'package:conduit/src/http/response.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
-import '../http/http.dart';
 import 'auth.dart';
 
 /// Provides [AuthRedirectController] with application-specific behavior.
@@ -29,7 +31,7 @@ abstract class AuthRedirectControllerDelegate {
       String? responseType, String? clientID, String? state, String? scope);
 }
 
-/// [Controller] for issuing OAuth 2.0 authorization codes and tokens.
+/// Controller for issuing OAuth 2.0 authorization codes and tokens.
 ///
 /// This controller provides an endpoint for creating an OAuth 2.0 authorization code or access token. An authorization code
 /// can be exchanged for an access token with an [AuthController]. This is known as the OAuth 2.0 'Authorization Code Grant' flow.
@@ -223,8 +225,8 @@ class AuthRedirectController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
-    if (operation.method == "GET") {
+      APIDocumentContext context, Operation? operation) {
+    if (operation!.method == "GET") {
       return {
         "200": APIResponse.schema(
             "Serves a login form.", APISchemaObject.string(),

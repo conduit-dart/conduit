@@ -21,7 +21,8 @@ void main() {
       await harness.start();
 
       // default value
-      expect(harness.channel!.options!.configurationFilePath, "config.src.yaml");
+      expect(
+          harness.channel!.options!.configurationFilePath, "config.src.yaml");
 
       // provided value
       expect(harness.channel!.options!.context, {"key": "value"});
@@ -65,7 +66,6 @@ void main() {
       expect(harness.events.last.last, true);
       expect(harness.setupCount, 2);
       expect(harness.tearDownCount, 1);
-
     });
 
     test("agent is set prior to afterStart running", () async {
@@ -105,13 +105,11 @@ class HarnessSubclass extends TestHarness<Channel> {
 
   @override
   Future onSetUp() async {
-    setupCount ++;
+    setupCount++;
   }
 
   @override
   Future onTearDown() async {
-    tearDownCount ++;
+    tearDownCount++;
   }
-
-
 }

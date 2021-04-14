@@ -148,9 +148,7 @@ void main() {
     expect(user.id, 1);
     expect(user.name, "Bob");
 
-    var posts = postMap
-        .map((e) => Post()..readFromMap(washMap(e)))
-        .toList();
+    var posts = postMap.map((e) => Post()..readFromMap(washMap(e))).toList();
     expect(posts[0].id, 1);
     expect(posts[1].id, 2);
     expect(posts[0].text, "hey");

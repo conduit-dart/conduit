@@ -5,11 +5,9 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/db/query/matcher_internal.dart';
 import 'package:conduit/src/db/query/mixin.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
-
-
-import 'postgresql/postgres_test_config.dart';
 
 void main() {
   Controller.letUncaughtExceptionsEscape = true;
@@ -17,7 +15,8 @@ void main() {
   late HttpServer server;
 
   setUpAll(() async {
-    context = await PostgresTestConfig().contextWithModels([TestModel, StringModel]);
+    context =
+        await PostgresTestConfig().contextWithModels([TestModel, StringModel]);
 
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
     var router = Router();

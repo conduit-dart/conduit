@@ -1,0 +1,193 @@
+# Handling Requests: Fundamentals
+
+In Conduit, HTTP requests and responses are instances of `Request`s and `Response`s. For each HTTP request an application receives, an instance of `Request` is created. A `Response` must be created for each request. Responses are created by [controller objects](controller.md). This guide discusses the behavior and initialization of controllers. You can read more about request and response objects [here](request_and_response.md).
+
+## Overview
+
+A controller is the basic building block of an Conduit application. A controller handles an HTTP request in some way. For example, a controller could return a 200 OK response with a JSON-encoded list of city names. A controller could also check a request to make sure it had the right credentials in its authorization header.
+
+Controllers are linked together to compose their behaviors into a _channel_. A channel handles a request by performing each of its controllers' behavior in order. For example, a channel might verify the credentials of a request and then return a list of city names by composing two controllers that take each of these actions.
+
+![Conduit Channel](../.gitbook/assets/simple_controller_diagram.png)
+
+You subclass controllers to provide their request handling logic, and there are common controller subclasses in Conduit for your use.
+
+## Linking Controllers
+
+Controllers are linked with their `link` method. This method takes a closure that returns the next controller in the channel. The following shows a channel composed of two controllers:
+
+```dart
+final controller = VerifyController();
+controller.link(() => ResponseController());
+```
+
+In the above, `VerifyController` links `ResponseController`. A request handled by the verifying controller can either respond to the request or let the response controller handle it. If the verifying controller sends a respond, the response controller will never receive the request. Any number of controllers can be linked, but the last controller linked must respond to a request. Controllers that always respond to request are called _endpoint controllers_. _Middleware controllers_ verify or modify the request, and typically only respond when an error is encountered.
+
+Linking occurs in an [application channel](../application/channel.md), and is finalized during startup of your application \(i.e., once you have set up your controllers, the cannot be changed once the application starts receiving requests\).
+
+## Subclassing Controller to Handle Requests
+
+Every `Controller` implements its `handle` method to handle a request. You override this method in your controllers to provide the logic for your controllers. The following is an example of an endpoint controller, because it always sends a response:
+
+```dart
+class NoteController extends Controller {
+  @override
+  Future<RequestOrResponse> handle(Request request) async {
+    final notes = await fetchNotesFromDatabase();
+
+    return Response.ok(notes);
+  }
+}
+```
+
+This `handle` method returns a `Response` object. Any time a controller returns a response, Conduit sends a response to the client and terminates the request so that no other controllers can handle it.
+
+A middleware controller returns a response when it can provide the response or for error conditions. For example, an `Authorizer` controller returns a `401 Unauthorized` response if the request's credentials are invalid. To let the request pass to the next controller, you must return the request object.
+
+As an example, the pseudo-code for an `Authorizer` looks like this:
+
+```dart
+class Authorizer extends Controller {
+  @override
+  Future<RequestOrResponse> handle(Request request) async {
+    if (isValid(request)) {
+      return request;
+    }
+
+    return Response.unauthorized();
+  }
+}
+```
+
+!!! tip "Endpoint Controllers" In most cases, endpoint controllers are created by subclassing [ResourceController](resource_controller.md). This controller allows you to declare more than one handler method in a controller to better organize logic. For example, one method might handle POST requests, while another handles GET requests.
+
+### Modifying a Response with Middleware
+
+A middleware controller can add a _response modifier_ to a request. When an endpoint controller eventually creates a response, these modifiers are applied to the response before it is sent. Modifiers are added by invoking `addResponseModifier` on a request.
+
+```dart
+class Versioner extends Controller {
+  Future<RequestOrResponse> handle(Request request) async {
+    request.addResponseModifier((response) {
+      response.headers["x-api-version"] = "2.1";
+    });
+
+    return request;
+  }
+}
+```
+
+Any number of controllers can add a response modifier to a request; they will be processed in the order that they were added. Response modifiers are applied before the response body is encoded, allowing the body object to be manipulated. Response modifiers are invoked regardless of the response generated by the endpoint controller. If an uncaught error is thrown while adding response modifiers, any remaining response modifiers are not called and a 500 Server Error response is sent.
+
+## Linking Functions
+
+For simple behavior, functions with the same signature as `handle` can be linked to controllers:
+
+```dart
+  router
+    .route("/path")
+    .linkFunction((req) async => req);
+    .linkFunction((req) async => Response.ok(null));
+```
+
+Linking a function has all of the same behavior as `Controller.handle`: it can return a request or response, automatically handles exceptions, and can have controllers \(and functions\) linked to it.
+
+## Controller Instantiation and Recycling
+
+It is important to understand why `link` takes a closure, instead of a controller object. Conduit is an object oriented framework. Objects have both state and behavior. An application will receive multiple requests that will be handled by the same type of controller. If a mutable controller object were reused to handle multiple requests, it could retain some of its state between requests. This would create problems that are difficult to debug.
+
+Most controllers are immutable - in other words, all of their properties are final and they have no setters. This \(mostly\) ensures that the controller won't change behavior between requests. When a controller is immutable, the `link` closure is invoked once to create and link the controller object, and then the closure is discarded. The same controller object will be reused for every request.
+
+Controllers can be mutable, with the caveat that they cannot be reused for multiple requests. For example, a `ResourceController` can have properties that are bound to the values of a request, and therefore these properties will change and a new instance must be created for each request.
+
+A mutable `Controller` subclass must implement `Recyclable<T>`. The `link` closure will be invoked for each request, creating a new instance of the recyclable controller to handle the request. If a controller has an expensive initialization process, the results of that initialization can be calculated once and reused for each controller instance by implementing the methods from `Recyclable<T>`.
+
+```dart
+class MyControllerState {
+  dynamic stuff;
+}
+
+class MyController extends Controller implements Recyclable<MyControllerState> {
+  @override
+  MyControllerState get recycledState => expensiveCalculation();
+
+  @override
+  void restore(MyControllerState state) {
+    _restoredState = state;
+  }
+
+  MyControllerState _restoredState;
+
+  @override
+  FutureOr<RequestOrResponse> handle(Request request) async {
+    /* use _restoredState */
+    return new Response.ok(...);
+  }
+}
+```
+
+The `recycledState` getter is called once, when the controller is first linked. Each new instance of a recyclable controller has its `restore` method invoked prior to handling the request, and the data returned by `recycledState` is passed as an argument. As an example, `ResourceController` 'compiles' its operation methods. The compiled product is stored as recycled state so that future instances can bind request data more efficiently.
+
+## Exception Handling
+
+If an exception or error is thrown during the handling of a request, the controller currently handling the request will catch it. For the majority of values caught, a controller will send a 500 Server Response. The details of the exception or error will be [logged](../application/configure.md), and the request is removed from the channel \(it will not be passed to a linked controller\).
+
+This is the default behavior for all thrown values except `Response` and `HandlerException`.
+
+### Throwing Responses
+
+A `Response` can be thrown at any time; the controller handling the request will catch it and send it to the client. This completes the request. This might not seem useful, for example, the following shows a silly use of this behavior:
+
+```dart
+class Thrower extends Controller {
+  @override
+  Future<RequestOrResponse> handle(Request request) async {
+    if (!isForbidden(request)) {
+      throw new Response.forbidden();
+    }
+
+    return Response.ok(null);
+  }
+}
+```
+
+### Throwing HandlerExceptions
+
+Exceptions can implement `HandlerException` to provide a response other than the default when thrown. For example, an application that handles bank transactions might declare an exception for invalid withdrawals:
+
+```dart
+enum WithdrawalProblem {
+  insufficientFunds,
+  bankClosed
+}
+class WithdrawalException implements Exception {
+  WithdrawalException(this.problem);
+
+  final WithdrawalProblem problem;
+}
+```
+
+Controller code can catch this exception to return a different status code depending on the exact problem with a withdrawal. If this code has to be written in multiple places, it is useful for `WithdrawalException` to implement `HandlerException`. An implementor must provide an implementation for `response`:
+
+```dart
+class WithdrawalException implements HandlerException {
+  WithdrawalException(this.problem);
+
+  final WithdrawalProblem problem;
+
+  @override
+  Response get response {
+    switch (problem) {
+      case WithdrawalProblem.insufficientFunds:
+        return new Response.badRequest(body: {"error": "insufficient_funds"});
+      case WithdrawalProblem.bankClosed:
+        return new Response.badRequest(body: {"error": "bank_closed"});
+    }
+  }
+}
+```
+
+## CORS Headers and Preflight Requests
+
+`Controller`s have built-in behavior for handling CORS requests. They will automatically respond to `OPTIONS` preflight requests and attach CORS headers to any other response. See [the chapter on CORS](../application/configure.md) for more details.
+

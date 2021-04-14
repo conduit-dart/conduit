@@ -191,12 +191,10 @@ class PostgreSQLPersistentStore extends PersistentStore
           output = await transactionBlock(transactionContext);
         } on Rollback catch (e) {
           /// user triggered a manual rollback.
-
           /// TODO: there is currently no reliable way for a user to detect
           /// that a manual rollback occured.
           /// The documented method of checking the return value from this method
           /// does not work.
-
           rollback = e;
           dbTransactionContext.cancelTransaction(reason: rollback!.reason);
         }

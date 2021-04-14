@@ -120,7 +120,7 @@ class TableBuilder implements Returnable {
     return "t$aliasCounter";
   }
 
-  void finalize(Map<String, dynamic> variables) {
+  void finalize(Map<String?, dynamic> variables) {
     final allExpressions = [_manualPredicate]
       ..addAll(expressionBuilders.map((c) => c.predicate));
 

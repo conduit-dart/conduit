@@ -32,7 +32,7 @@ class CodecRegistry {
   Map<String, Map<String, Codec>> _fullySpecificedCodecs = {};
   Map<String, bool> _primaryTypeCompressionMap = {};
   Map<String, Map<String, bool>> _fullySpecifiedCompressionMap = {};
-  Map<String, Map<String, String>> _defaultCharsetMap = {};
+  Map<String, Map<String, String?>> _defaultCharsetMap = {};
 
   /// Adds a custom [codec] for [contentType].
   ///
@@ -186,7 +186,7 @@ class CodecRegistry {
   }
 }
 
-class _FormCodec extends Codec<Map<String, dynamic>, dynamic> {
+class _FormCodec extends Codec<Map<String, dynamic>?, dynamic> {
   const _FormCodec();
 
   @override

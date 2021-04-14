@@ -56,7 +56,7 @@ Future main(List<String> args) async {
         workingDirectory:
             ctx.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
         environment: {
-          'conduit_CI_DIR_LOCATION': Directory.current.uri
+          'CONDUIT_CI_DIR_LOCATION': Directory.current.uri
               .resolve("../")
               .resolve("ci/")
               .toFilePath(windows: Platform.isWindows)

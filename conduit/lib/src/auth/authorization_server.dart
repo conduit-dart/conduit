@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:conduit/src/utilities/token_generator.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:crypto/crypto.dart';
 
-import '../utilities/token_generator.dart';
 import 'auth.dart';
 
 /// A OAuth 2.0 authorization server.
@@ -422,7 +422,6 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   //////
   // APIDocumentable overrides
   //////
-
   @override
   void documentComponents(APIDocumentContext context) {
     final basic = APISecurityScheme.http("basic")

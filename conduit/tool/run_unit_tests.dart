@@ -3,8 +3,7 @@
 import 'dart:io';
 
 import 'package:dcli/dcli.dart';
-
-import 'common.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 
 /// This script will run the conduit unit tests
 ///
@@ -33,18 +32,29 @@ void main(List<String> args) {
   });
   DartSdk().runPubGet('..');
 
-  startPostgresDaemon();
+  var dbSettings = DbSettings.load();
+  dbSettings.createEnvironmentVariables();
 
-  print('Starting postgres docker image');
+  var postgresManager = PostgresManager(dbSettings);
+
+  if (dbSettings.useContainer) {
+    print('Starting postgres docker image');
+    postgresManager.startPostgresDaemon();
+  }
+
+  postgresManager.waitForPostgresToStart();
+
+  print('recreating database');
+  postgresManager.dropPostgresDb();
+  postgresManager.dropUser();
+
+  postgresManager.createPostgresDb();
 
   print('Staring Conduit unit tests');
-
-  env['POSTGRES_USER'] = 'conduit_test_user';
-  env['POSTGRES_PASSWORD'] = '34achfAdce';
-  env['POSTGRES_DB'] = 'conduit_test_db';
 
   /// run the tests
   'pub run test -j1'.start(workingDirectory: '..');
 
   print('Stopping posgress docker image');
+  postgresManager.stopPostgresDaemon();
 }

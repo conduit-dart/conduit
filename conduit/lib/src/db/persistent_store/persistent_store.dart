@@ -23,7 +23,6 @@ abstract class PersistentStore {
       ManagedContext context, ManagedEntity entity,
       {T? values});
 
-
   /// Executes an arbitrary command.
   Future execute(String sql, {Map<String, dynamic>? substitutionValues});
 

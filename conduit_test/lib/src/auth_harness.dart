@@ -83,7 +83,8 @@ abstract class TestHarnessAuthMixin<T extends ApplicationChannel>
       {List<String>? scopes}) async {
     final authorizationHeader = fromAgent.headers["authorization"];
     if (authorizationHeader is! String) {
-      throw ArgumentError("expected header 'Authorization' to have String type");
+      throw ArgumentError(
+          "expected header 'Authorization' to have String type");
     }
     const parser = AuthorizationBasicParser();
     final credentials = parser.parse(authorizationHeader);

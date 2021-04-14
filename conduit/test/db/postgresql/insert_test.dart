@@ -1,9 +1,7 @@
 import 'package:conduit/conduit.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
-
-
-import 'postgres_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -212,7 +210,8 @@ void main() {
     test(
         "works when given object with relationship and returns embedded object.",
         () async {
-      context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+      context =
+          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
       var u = GenUser()..name = "Joe";
       var q = Query<GenUser>(context!)..values = u;
@@ -271,7 +270,8 @@ void main() {
 
     test("works when values are read from JSON and does not insert relations.",
         () async {
-      context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+      context =
+          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
       var json = {
         "name": "Bob",

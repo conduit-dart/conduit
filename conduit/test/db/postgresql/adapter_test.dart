@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
-
-import 'postgres_test_config.dart';
 
 void main() {
   group("Behavior", () {
@@ -60,8 +59,9 @@ void main() {
 
     test("Make multiple requests at once, all fail because db connect fails",
         () async {
-      persistentStore = PostgreSQLPersistentStore(
-          "dart", "dart", "localhost", 5432, "xyzxyznotadb");
+      persistentStore =
+          PostgresTestConfig().persistentStore(dbName: 'xyzxyznotadb');
+
       var expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       var values = await Future.wait(expectedValues.map(
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
@@ -71,15 +71,14 @@ void main() {
     test(
         "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
         () async {
-      persistentStore = PostgreSQLPersistentStore(
-          "dart", "dart", "localhost", 15433, "dart_test");
+      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       var expectedValues = [1, 2, 3, 4, 5];
       var values = await Future.wait(expectedValues.map(
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy = SocketProxy(15433, 5432);
+      proxy = SocketProxy(15433, 15432);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -96,8 +95,7 @@ void main() {
 
     test("Connect to bad db fails gracefully, can then be used again",
         () async {
-      persistentStore = PostgreSQLPersistentStore(
-          "dart", "dart", "localhost", 15433, "dart_test");
+      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       try {
         await persistentStore!.executeQuery("SELECT 1", null, 20);
@@ -105,7 +103,7 @@ void main() {
         // ignore: empty_catches
       } on QueryException {}
 
-      proxy = SocketProxy(15433, 5432);
+      proxy = SocketProxy(15433, 15432);
       await proxy!.open();
 
       var x = await persistentStore!.executeQuery("SELECT 1", null, 20);
@@ -138,12 +136,12 @@ class SocketProxy {
 
   bool isEnabled = true;
 
-  late ServerSocket _server;
+  ServerSocket? _server;
   List<SocketPair> _pairs = [];
 
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);
-    _server.listen((socket) async {
+    _server!.listen((socket) async {
       // ignore: close_sinks
       final outgoing = await Socket.connect("localhost", dest);
 
@@ -164,7 +162,7 @@ class SocketProxy {
   }
 
   Future close() async {
-    await _server.close();
+    await _server?.close();
     await Future.wait(_pairs.map((sp) async {
       await sp.src.close();
       await sp.dest.close();

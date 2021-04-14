@@ -41,7 +41,7 @@ void main() {
 }
 
 Uri getCIDirectoryUri() {
-  final env = Platform.environment['conduit_CI_DIR_LOCATION'];
+  final env = Platform.environment['CONDUIT_CI_DIR_LOCATION'];
   return env != null
       ? Uri.parse(env)
       : Directory.current.uri.resolve("../").resolve("ci/");

@@ -648,7 +648,8 @@ class DateTimeController extends ResourceController {
 
 class MultiQueryParamController extends ResourceController {
   @Operation.get()
-  Future<Response> get({@Bind.query("params") required List<String> params}) async {
+  Future<Response> get(
+      {@Bind.query("params") required List<String> params}) async {
     return Response.ok(params.join(","));
   }
 }

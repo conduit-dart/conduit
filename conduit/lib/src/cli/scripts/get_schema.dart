@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:conduit/conduit.dart';
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit/src/db/managed/data_model.dart';
+import 'package:conduit/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class GetSchemaExecutable extends Executable<Map<String, dynamic>> {

@@ -7,7 +7,7 @@ void main() {
 
   test("GET /example returns simple map", () async {
     final response = await harness.agent!.get("/example");
-    expectResponse(response!, 200, body: {"key": "value"});
+    expectResponse(response, 200, body: {"key": "value"});
   });
 }
 

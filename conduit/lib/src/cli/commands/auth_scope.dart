@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:conduit/src/auth/objects.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/database_connecting.dart';
 import 'package:conduit/src/cli/mixins/database_managing.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit/managed_auth.dart';
-import 'package:conduit/conduit.dart';
 
 import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/db/managed/context.dart';
+import 'package:conduit/src/db/managed/data_model.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 class CLIAuthScopeClient extends CLICommand
     with CLIDatabaseConnectingCommand, CLIDatabaseManagingCommand, CLIProject {

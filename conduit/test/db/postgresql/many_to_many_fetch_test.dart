@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
 
 import 'package:conduit/src/dev/model_graph.dart';
-
-import 'postgres_test_config.dart';
 
 /*
   many to many should just be an extension of tests in belongs_to_fetch, tiered_where, has_many and has_one tests
@@ -377,7 +376,8 @@ void main() {
 
     test("Can implicit join from join table - one side", () async {
       // 'Games where Iowa was away'
-      var q = Query<Game>(ctx!)..where((o) => o.awayTeam!.name).contains("Iowa");
+      var q = Query<Game>(ctx!)
+        ..where((o) => o.awayTeam!.name).contains("Iowa");
       var results = await q.fetch();
       expect(
           results.map((g) => g.asMap()).toList(),
@@ -429,8 +429,8 @@ void main() {
           .contains("Minn");
       var results = await q.fetch();
       expect(results.length, 3);
-      expect(
-          results.firstWhere((t) => t.name == "Minnesota").awayGames!.length, 1);
+      expect(results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
+          1);
       expect(
           results
               .where((t) => t.name != "Minnesota")

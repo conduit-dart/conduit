@@ -15,7 +15,8 @@ class RowInstantiator {
   List<U> instancesForRows<U extends ManagedObject>(List<List<dynamic>> rows) {
     try {
       return rows
-          .map((row) => instanceFromRow(row.iterator, returningValues!.iterator))
+          .map(
+              (row) => instanceFromRow(row.iterator, returningValues!.iterator))
           .where((wrapper) => wrapper?.isNew ?? false)
           .map((wrapper) => wrapper!.instance as U)
           .toList();
@@ -97,7 +98,8 @@ class RowInstantiator {
 
     if (table.joinedBy!.relationshipType == ManagedRelationshipType.hasMany) {
       // If to many, put in a managed set.
-      final list = (instance[table.joinedBy!.name] ?? table.joinedBy!.destinationEntity!.setOf([])) as ManagedSet?;
+      final list = (instance[table.joinedBy!.name] ??
+          table.joinedBy!.destinationEntity!.setOf([])) as ManagedSet?;
 
       if (innerInstanceWrapper?.isNew ?? false) {
         list!.add(innerInstanceWrapper!.instance);

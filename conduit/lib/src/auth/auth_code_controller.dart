@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/http/resource_controller.dart';
+import 'package:conduit/src/http/resource_controller_bindings.dart';
+import 'package:conduit/src/http/response.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
-import '../http/http.dart';
 import 'auth.dart';
 
 /// Provides [AuthCodeController] with application-specific behavior.
@@ -30,7 +32,7 @@ abstract class AuthCodeControllerDelegate {
       String? responseType, String? clientID, String? state, String? scope);
 }
 
-/// [Controller] for issuing OAuth 2.0 authorization codes.
+/// Controller for issuing OAuth 2.0 authorization codes.
 ///
 /// Deprecated, use [AuthRedirectController] instead.
 ///
@@ -184,8 +186,8 @@ class AuthCodeController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
-    if (operation.method == "GET") {
+      APIDocumentContext context, Operation? operation) {
+    if (operation!.method == "GET") {
       return {
         "200": APIResponse.schema(
             "Serves a login form.", APISchemaObject.string(),

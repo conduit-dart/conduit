@@ -24,8 +24,8 @@ class QueryPredicate {
   ///
   /// The format string is the empty string and parameters is the empty map.
   QueryPredicate.empty()
-    : format = "",
-      parameters = {};
+      : format = "",
+        parameters = {};
 
   /// Combines [predicates] with 'AND' keyword.
   ///
@@ -40,8 +40,8 @@ class QueryPredicate {
   /// one predicate, that predicate is returned.
   factory QueryPredicate.and(Iterable<QueryPredicate?>? predicates) {
     var predicateList = predicates
-      ?.where((p) => p?.format != null && p!.format.isNotEmpty)
-      .toList();
+        ?.where((p) => p?.format != null && p!.format.isNotEmpty)
+        .toList();
     if (predicateList == null) {
       return QueryPredicate.empty();
     }
@@ -60,9 +60,9 @@ class QueryPredicate {
     final valueMap = <String, dynamic>{};
     for (var predicate in predicateList) {
       final duplicateKeys = predicate!.parameters?.keys
-        .where((k) => valueMap.keys.contains(k))
-        .toList() ??
-        [];
+              .where((k) => valueMap.keys.contains(k))
+              .toList() ??
+          [];
 
       if (duplicateKeys.isNotEmpty) {
         var fmt = predicate.format;

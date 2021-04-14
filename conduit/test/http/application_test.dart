@@ -58,8 +58,8 @@ void main() {
     });
 
     test("Application gzips content", () async {
-      var resp = await http
-          .get(Uri.parse("http://localhost:8888/t"), headers: {"Accept-Encoding": "gzip"});
+      var resp = await http.get(Uri.parse("http://localhost:8888/t"),
+          headers: {"Accept-Encoding": "gzip"});
       expect(resp.headers["content-encoding"], "gzip");
     });
 

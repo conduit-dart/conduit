@@ -15,8 +15,8 @@ class CLISetup extends CLICommand with CLIProject {
 
   @Flag("tests",
       help:
-          "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.", 
-          defaultsTo: true)
+          "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
+      defaultsTo: true)
   bool get shouldSetupTests => decode("tests")!;
 
   @Flag("confirm",
@@ -37,7 +37,8 @@ class CLISetup extends CLICommand with CLIProject {
   Future<int> handle() async {
     if (shouldSetupHeroku) {
       displayInfo("This option has been deprecated.");
-      displayProgress("Please see https://conduit.io/docs/deploy/deploy_heroku/ for instructions.");
+      displayProgress(
+          "Please see https://conduit.io/docs/deploy/deploy_heroku/ for instructions.");
       return 0;
     } else /*if (shouldSetupTests*/ {
       return setupTestEnvironment();
@@ -62,10 +63,10 @@ class CLISetup extends CLICommand with CLIProject {
     }
 
     var commands = [
-      "create database dart_test;",
-      "create user dart with createdb;",
-      "alter user dart with password 'dart';",
-      "grant all on database dart_test to dart;"
+      "create database conduit_test_db;",
+      "create user conduit_test_user with createdb;",
+      "alter user conduit_test_user with password 'conduit!';",
+      "grant all on database conduit_test_db to dart;"
     ];
 
     if (!confirm) {
@@ -88,21 +89,22 @@ class CLISetup extends CLICommand with CLIProject {
       final result = Process.runSync("psql", args, runInShell: true);
       final output = (result.stdout as String) + (result.stderr as String);
       if (output.contains("CREATE DATABASE")) {
-        displayProgress("Successfully created database dart_test.");
+        displayProgress("Successfully created database conduit_test_db.");
       } else if (output.contains("CREATE ROLE")) {
         displayProgress(
-            "Successfully created role 'dart' with createdb permissions.");
+            "Successfully created role 'conduit_test_user' with createdb permissions.");
       } else if (output.contains("ALTER ROLE")) {
-        displayProgress("Successfully set user 'dart' password to 'dart'.");
+        displayProgress(
+            "Successfully set user 'conduit_test_user' password to 'conduit!'.");
       } else if (output.contains("GRANT")) {
         displayProgress(
-            "Successfully granted all privileges to database dart_test to user 'dart'.");
+            "Successfully granted all privileges to database conduit_test_db to user 'conduit_test_user'.");
       }
 
-      if (output.contains("database \"dart_test\" already exists")) {
-        displayProgress("Database dart_test already exists, continuing.");
-      } else if (output.contains("role \"dart\" already exists")) {
-        displayProgress("User 'dart' already exists, continuing.");
+      if (output.contains("database \"conduit_test_db\" already exists")) {
+        displayProgress("Database conduit_test_db already exists, continuing.");
+      } else if (output.contains("role \"conduit_test_user\" already exists")) {
+        displayProgress("User 'conduit_test_user' already exists, continuing.");
       } else if (output.contains("could not connect to server")) {
         displayError(
             "Database is not accepting connections. Ensure that PostgreSQL is running locally.");

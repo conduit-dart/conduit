@@ -1,13 +1,14 @@
 version: "3.3"
    
 services:
-  postgres:
-    image: postgres:9.6
-    restart: always
-    environment:
-      POSTGRES_USER: dart
-      POSTGRES_PASSWORD: dart
-      POSTGRES_DB: dart_test
-    ports:
-      - 0.0.0.0:5432:5432
-      
+      postgres:
+        image: postgres:9.6
+        container_name: conduit_postgres
+        restart: always
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: postgres
+          POSTGRES_PORT: 15432
+        ports:
+          - 0.0.0.0:15432:5432

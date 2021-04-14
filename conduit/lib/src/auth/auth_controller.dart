@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/http/resource_controller.dart';
+import 'package:conduit/src/http/resource_controller_bindings.dart';
+import 'package:conduit/src/http/response.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
-import '../http/http.dart';
 import 'auth.dart';
 
-/// [Controller] for issuing and refreshing OAuth 2.0 access tokens.
+/// Controller for issuing and refreshing OAuth 2.0 access tokens.
 ///
 /// This controller issues and refreshes access tokens. Access tokens are issued for valid username and password (resource owner password grant)
 /// or for an authorization code (authorization code grant) from a [AuthRedirectController].
@@ -178,7 +180,7 @@ class AuthController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
+      APIDocumentContext context, Operation? operation) {
     return {
       "200": APIResponse.schema(
           "Successfully exchanged credentials for token",

@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'package:conduit/conduit.dart';
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/application/channel.dart';
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/project.dart';

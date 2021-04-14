@@ -151,7 +151,7 @@ abstract class Controller
   /// This method is the entry point of a [Request] into this [Controller].
   /// By default, it invokes this controller's [handle] method within a try-catch block
   /// that guarantees an HTTP response will be sent for [Request].
-  Future receive(Request req) async {
+  Future? receive(Request req) async {
     if (req.isPreflightRequest) {
       return _handlePreflightRequest(req);
     }
@@ -288,7 +288,7 @@ abstract class Controller
   void documentComponents(APIDocumentContext context) =>
       nextController?.documentComponents(context);
 
-  Future _handlePreflightRequest(Request req) async {
+  Future? _handlePreflightRequest(Request req) async {
     Controller controllerToDictatePolicy;
     try {
       var lastControllerInChain = _lastController;
@@ -330,7 +330,7 @@ abstract class Controller
   }
 
   Controller get _lastController {
-    var controller = this;
+    Controller controller = this;
     while (controller.nextController != null) {
       controller = controller.nextController!;
     }
@@ -387,7 +387,7 @@ class _ControllerRecycler<T> extends Controller {
   }
 
   @override
-  Future receive(Request req) {
+  Future? receive(Request req) {
     final next = nextInstanceToReceive;
     nextInstanceToReceive = generator() as Recyclable<T>;
     return next!.receive(req);
