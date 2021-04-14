@@ -232,7 +232,7 @@ When authenticating, a user is always authenticated through a client. This clien
 conduit auth add-client --id com.heroes.tutorial --connect postgres://heroes_user:password@localhost:5432/heroes
 ```
 
-!!! note "OAuth 2.0 Clients" A client must have an identifier, but it may also have a secret, redirect URI and list of allowed scopes. See the [guides on OAuth 2.0](../auth/index.md) for how these options impacts authentication. Most notably, a client identifier must have a secret to issue a _refresh token_. Clients are stored in an application's database.
+!!! note "OAuth 2.0 Clients" A client must have an identifier, but it may also have a secret, redirect URI and list of allowed scopes. See the [guides on OAuth 2.0]() for how these options impacts authentication. Most notably, a client identifier must have a secret to issue a _refresh token_. Clients are stored in an application's database.
 
 This will insert a new row into an OAuth 2.0 client table created by our last round of database migration and allow us to make authentication requests. An authentication request must meet all of the following criteria:
 

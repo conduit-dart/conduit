@@ -66,7 +66,7 @@ For more details, see the guide on [Databases]().
 
 OAuth 2.0 is a standardized authorization framework. Conduit contains a specification-compliant implementation of an OAuth 2.0 server that can be integrated directly into your application, or stood up alone to provide an authorization server for federated services. This implementation is easily customizable - it can store authorization artifacts - like tokens and client identifiers - in different types of databases or use stateless authorization mechanisms like JWT. The default implementation leverages the Conduit ORM to store artifacts in PostgreSQL.
 
-For more details, see the guide on [Authorization](auth/index.md).
+For more details, see the guide on [Authorization]().
 
 ## Documentation
 

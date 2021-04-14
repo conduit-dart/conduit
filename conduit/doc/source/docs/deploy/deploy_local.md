@@ -4,7 +4,7 @@ For other deployment options, see [Deploying Conduit Applications]().
 
 ## Purpose
 
-To run a local development version of an Conduit application with persistent storage. This is useful when developing client applications with an Conduit application. Make sure to also read [Testing Conduit Applications](../testing/index.md).
+To run a local development version of an Conduit application with persistent storage. This is useful when developing client applications with an Conduit application. Make sure to also read [Testing Conduit Applications]().
 
 ## Prerequisites
 

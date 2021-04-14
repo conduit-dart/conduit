@@ -4,7 +4,7 @@ For other deployment options, see [Deploying Conduit Applications]().
 
 ## Purpose
 
-To run a production Conduit application on Heroku. Make sure to also read [Testing Conduit Applications](../testing/index.md).
+To run a production Conduit application on Heroku. Make sure to also read [Testing Conduit Applications]().
 
 ## Prerequisites
 
