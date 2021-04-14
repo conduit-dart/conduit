@@ -42,6 +42,7 @@ Future main(List<String> args) async {
     ..addFlag("help", abbr: "h", help: "Shows this", negatable: false);
 
   var parsed = options.parse(args);
+  // ignore: unused_local_variable
   var preparer = Preparer(parsed["input"] as String, parsed["output"] as String,
       parsed["source-branch"] as String, parsed["base-ref-url"] as String);
 

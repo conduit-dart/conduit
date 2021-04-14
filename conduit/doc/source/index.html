@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aqueduct | Multi-threaded Dart Server-Side Framework</title>
+    <title>Conduit | Multi-threaded Dart Server-Side Framework</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/prism.css" type="text/css" media="all">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="favicon.ico">
-    <meta name="description" content="Aqueduct: A cohesive server-side framework for Dart, including controllers, routing, OAuth 2.0, ORM, database migrations and CLI.">
+    <meta name="description" content="Conduit: A cohesive server-side framework for Dart, including controllers, routing, OAuth 2.0, ORM, database migrations and CLI.">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="prism.js"></script>
@@ -21,14 +21,14 @@
     <!-- End of HubSpot Embed Code -->
 </head>
 
-<body class="aqueduct">
+<body class="conduit">
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-12">
                 <div id="header-container">
                     <a href="/docs/">DOCUMENTATION</a>
-                    <a target="_blank" href="https://github.com/stablekernel/aqueduct">GITHUB</a>
-                    <a target="_blank" href="http://slackaqueductsignup.herokuapp.com">SLACK</a>
+                    <a target="_blank" href="https://github.com/stablekernel/conduit">GITHUB</a>
+                    <a target="_blank" href="http://slackconduitsignup.herokuapp.com">SLACK</a>
                     <a target="_blank" href="/docs/tour/">TOUR</a>
                     <a target="_blank" href="https://stablekernel.com">STABLE KERNEL</a>
                 </div>
@@ -63,12 +63,12 @@
                 </div>
                 <div id="hero-gh-container" class="row">
                     <div class="col-xs-12">
-                        <a class="github-button" href="https://github.com/stablekernel/aqueduct" data-size="large" data-show-count="true" aria-label="Star stablekernel/aqueduct on GitHub">Star</a>
+                        <a class="github-button" href="https://github.com/stablekernel/conduit" data-size="large" data-show-count="true" aria-label="Star stablekernel/conduit on GitHub">Star</a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <p>Aqueduct is an extensible HTTP framework for building REST APIs on top of the Dart VM. It includes a statically-typed ORM, OAuth 2.0 provider, automated testing libraries and OpenAPI 3.0 integration.</p>
+                        <p>Conduit is an extensible HTTP framework for building REST APIs on top of the Dart VM. It includes a statically-typed ORM, OAuth 2.0 provider, automated testing libraries and OpenAPI 3.0 integration.</p>
                     </div>
                 </div>
             </div>
@@ -81,22 +81,22 @@
         <div id="install-command" class="row">
             <div class="col-xs-12">
                 <pre id="terminal">&#955; brew install dart
-&#955; pub global activate aqueduct
-&#955; aqueduct create my_app
+&#955; pub global activate conduit
+&#955; conduit create my_app
 &#955; cd my_app
-&#955; aqueduct serve</pre>
+&#955; conduit serve</pre>
             </div>
         </div>
         <div id="doc-callout" class="row">
             <div class="col-xs-12">
-                <p>Incredible <a href="/docs/">documentation</a> and a <a target="_blank" href="http://slackaqueductsignup.herokuapp.com">Slack</a> channel for when you get stuck.
+                <p>Incredible <a href="/docs/">documentation</a> and a <a target="_blank" href="http://slackconduitsignup.herokuapp.com">Slack</a> channel for when you get stuck.
                 For more detailed setup instructions, see <a href="/docs/getting_started/">this guide.</a></p>
             </div>
         </div>
         <div class="row feature-row">
             <div class="col-sm-6">
                 <h2><a href="/docs/http/threading/">Multi-threaded out of the box</a></h2>
-                <p>Aqueduct's memory-isolated threads leverage every CPU without writing any code. No race conditions or complicated synchronization logic to worry about.</p>
+                <p>Conduit's memory-isolated threads leverage every CPU without writing any code. No race conditions or complicated synchronization logic to worry about.</p>
             </div>
             <div class="col-sm-6">
                 <div id="thread-container" class="feature-box">
@@ -123,7 +123,7 @@
             </div>
             <div class="col-sm-6">
                 <pre class="feature-box"><code class="language-dart">final query = Query&lt;Team&gt;(context)
-  ..where((t) => t.skills).contains('aqueduct')
+  ..where((t) => t.skills).contains('conduit')
   ..join(object: (t) => t.manager)
   ..join(set: (t) => t.developers);
 
@@ -167,7 +167,7 @@ Future&lt;Response&gt; updateTeam(
         <div class="row feature-row">
             <div class="col-sm-6">
                 <h2><a href="/docs/testing/">Integrated Test Library</a></h2>
-                <p>Aqueduct was built to be tested. Know that your code works from end-to-end without fragile mocking. Use continuous integration tools like <a href="https://travis-ci.org" target="_blank">TravisCI</a> with ease.</p>
+                <p>Conduit was built to be tested. Know that your code works from end-to-end without fragile mocking. Use continuous integration tools like <a href="https://travis-ci.org" target="_blank">TravisCI</a> with ease.</p>
             </div>
             <div class="col-sm-6">
                 <pre class="feature-box"><code class="language-dart">test('GET /teams returns 200 and list of teams', () async {
@@ -191,9 +191,9 @@ Future&lt;Response&gt; updateTeam(
                 <pre class="feature-box"><code class="language-yaml">openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Aqueduct API
+  title: Conduit API
 paths:
-  /aqueduct:
+  /conduit:
     ...
 components:
   schemas:
@@ -204,20 +204,20 @@ components:
         <div class="row final-feature-row">
             <div class="col-sm-12">
                 <h2>Releases you can count on.</h2>
-                <h3>Guaranteed by over 1400 <a target="_blank" href="https://travis-ci.org/stablekernel/aqueduct">automated tests</a> and counting.</h3>
+                <h3>Guaranteed by over 1400 <a target="_blank" href="https://travis-ci.org/stablekernel/conduit">automated tests</a> and counting.</h3>
             </div>
         </div>
         <div class="row footer">
             <div class="col-xs-12">
                 <div id="af-logos">
-                    <a class="ext-logo" target="_blank" href="https://github.com/stablekernel/aqueduct"><i class="fa fa-github"></i></a>
-                    <a class="ext-logo" target="_blank" href="http://slackaqueductsignup.herokuapp.com"><i class="fa fa-slack"></i></a>
-                    <a class="ext-logo" target="_blank" href="https://stackoverflow.com/questions/tagged/aqueduct"><i class="fa fa-stack-overflow"></i></a>
+                    <a class="ext-logo" target="_blank" href="https://github.com/stablekernel/conduit"><i class="fa fa-github"></i></a>
+                    <a class="ext-logo" target="_blank" href="http://slackconduitsignup.herokuapp.com"><i class="fa fa-slack"></i></a>
+                    <a class="ext-logo" target="_blank" href="https://stackoverflow.com/questions/tagged/conduit"><i class="fa fa-stack-overflow"></i></a>
                 </div>
 
                 <!-- Begin newsletter signup form -->
                 <div id="nl_signup_wrapper">
-                    <h3>Subscribe for Aqueduct news and updates</h3>
+                    <h3>Subscribe for Conduit news and updates</h3>
                     <div id="hs_nl_signup"></div>
                     <p class="privacy-policy">* By filling out this form, I accept Stable Kernel's <a href="https://stablekernel.com/privacy-policy/">Privacy Policy</a>.</p>
                 </div>
@@ -236,7 +236,7 @@ components:
                     <p><a href="/docs/">Documentation</a></p>
                     <p><a href="/docs/tut/getting-started/">Tutorial</a></p>
                     <p><a href="/about.html">About</a></p>
-                    <p><a target="_blank" href="https://github.com/stablekernel/aqueduct/issues">Issue Tracker</a></p>
+                    <p><a target="_blank" href="https://github.com/stablekernel/conduit/issues">Issue Tracker</a></p>
                     <p><a target="_blank" href="https://stablekernel.com/jobs/">Jobs</a></p>
                 </div>
             </div>
@@ -244,7 +244,7 @@ components:
         <div class="row footer">
             <div class="col-xs-12">
                 <div id="footer-emblem-container">
-                <a href="#"><img src="images/aqueduct-reverse.png" class="footer-emblem"/></a>
+                <a href="#"><img src="images/conduit-reverse.png" class="footer-emblem"/></a>
                 <a target="_blank" href="https://stablekernel.com"><img src="images/skemblem-white.png" class="footer-emblem"></a>
                 <p id="copyright">© <script type="text/JavaScript">document.write(new Date().getFullYear());</script></p>
                 </div>

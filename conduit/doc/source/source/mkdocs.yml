@@ -1,4 +1,4 @@
-site_name: Aqueduct
+site_name: Conduit
 theme:
   name: material
   custom_dir: overrides
@@ -10,7 +10,7 @@ extra_css:
 repo_url: https://github.com/stablekernel/aqueduct
 edit_uri: edit/docs/source/source/docs/
 google_analytics: ['UA-41269877-2', 'aqueduct.io']
-site_description: Documentation for Aqueduct, a Dart server-side framework.
+site_description: Documentation for Conduit, a Dart server-side framework.
 copyright: Built by Stable Kernel
 pages:
 - Home: 'index.md'
@@ -85,7 +85,7 @@ pages:
   - 'Generating an OpenAPI/Swagger Specification': 'cli/document.md'
 - 'Guide: Deployment':
   - 'Overview': 'deploy/index.md'
-  - 'Creating an Aqueduct Executable': 'deploy/build.md'
+  - 'Creating an Conduit Executable': 'deploy/build.md'
   - 'Deploy Locally (VM)': 'deploy/deploy_local.md'
   - 'Deploying with Docker and Kubernetes (VM)': 'deploy/deploy_docker.md'
   - 'Deploy on Heroku (VM)': 'deploy/deploy_heroku.md'
