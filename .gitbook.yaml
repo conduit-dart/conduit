@@ -1,4 +1,4 @@
-root: ./doc/source
+root: ./conduit/doc/source
 
 ​structure:  
     readme: index.html  
