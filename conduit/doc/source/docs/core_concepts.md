@@ -72,5 +72,5 @@ For more details, see the guide on [Authorization]().
 
 OpenAPI 3.0 is a standardized documentation format for HTTP APIs. Many built-in Conduit objects support 'automatic' documentation. Objects that are specific to your application can build on top of this to immediately document your application for every change you make.
 
-For more details, see the guide on [OpenAPI Documentation](openapi/index.md).
+For more details, see the guide on [OpenAPI Documentation]().
 

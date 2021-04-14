@@ -1,4 +1,4 @@
-# 5. Deploying an Conduit Application
+# 6. Deploying a Conduit Application
 
 The last chapter is a quick one - we'll get our application and its database running locally. When writing tests, the harness creates temporary tables that are destroyed when the tests end. Those tables are created in a database named `dart_test` that is exclusively used for this purpose. All of your projects will use this same database for running tests.
 

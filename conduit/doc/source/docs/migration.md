@@ -67,7 +67,7 @@ The test library is now a separate library named `conduit_test` and must be adde
 
 ## Swagger -&gt; OpenAPI
 
-Conduit had experimental support for Swagger documentation generation. It now has full, tested support for OpenAPI 3 documentation generation. See the [documentation](openapi/index.md) for more details.
+Conduit had experimental support for Swagger documentation generation. It now has full, tested support for OpenAPI 3 documentation generation. See the [documentation]() for more details.
 
 ### Renames
 
