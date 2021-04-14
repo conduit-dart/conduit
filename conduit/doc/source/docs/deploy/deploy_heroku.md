@@ -12,7 +12,7 @@ To run a production Conduit application on Heroku. Make sure to also read [Testi
 2. [A Heroku account.](https://signup.heroku.com)
 3. [`git` has been installed.](https://git-scm.com/downloads)
 4. [`heroku` has been installed.](https://devcenter.heroku.com/articles/heroku-cli)
-5. [Conduit has been activated.](../index.md#getting_started)
+5. [Conduit has been activated.]()
 
 ## Overview
 

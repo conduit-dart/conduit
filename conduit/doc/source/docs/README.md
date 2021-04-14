@@ -1,4 +1,4 @@
-# index
+# Introduction
 
 ![Conduit](https://s3.amazonaws.com/conduit-collateral/conduit.png)
 

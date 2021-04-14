@@ -1,7 +1,6 @@
 # Table of contents
 
-* [Initial page](README.md)
-* [index](index.md)
+* [Introduction](README.md)
 * [migration\_guide](migration_guide.md)
 * [http](http/README.md)
   * [Serving Files and Caching](http/serving_files.md)
