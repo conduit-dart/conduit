@@ -7,7 +7,7 @@ Learn how an application is initialized so it can serve requests.
 Applications are started by running `conduit serve` or `dart bin/main.script` in an Conduit project directory. Either way, a number of threads are created and your `ApplicationChannel` subclass is instantiated on each thread. The channel subclass initializes application behavior which is often the following:
 
 * reads configuration data for environment specific setup
-* initializes service objects like [database connections](../db/index.md)
+* initializes service objects like [database connections]()
 * sets up [controller](../http/controller.md) objects to handle requests
 
 ### Initializing ApplicationChannel Controllers

@@ -1,4 +1,4 @@
-# core\_concepts
+# Core Concepts
 
 ## Resources
 
@@ -60,7 +60,7 @@ Application store information in databases for persistence. Writing database que
 
 Your application's data model is defined by creating Dart classes. Each class is mapped to a database table, and each property of that class is mapped to a column in that table. Conduit's command-line tool generates database migration files that detect changes in your data model that can be applied to a live, versioned database. A data model can also be represented as a JSON object to build tools on top of your application.
 
-For more details, see the guide on [Databases](db/index.md).
+For more details, see the guide on [Databases]().
 
 ## Authorization
 
