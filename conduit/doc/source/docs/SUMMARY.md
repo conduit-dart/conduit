@@ -2,6 +2,7 @@
 
 * [Initial page](README.md)
 * [index](index.md)
+* [migration\_guide](migration_guide.md)
 * [http](http/README.md)
   * [Serving Files and Caching](http/serving_files.md)
   * [Uploading Files](http/file_upload.md)
@@ -38,7 +39,6 @@
   * [index](db/index.md)
   * [Modeling Data](db/modeling_data.md)
   * [ManagedObject Serialization and Deserialization](db/serialization.md)
-* [migration\_guide](migration_guide.md)
 * [auth](auth/README.md)
   * [Creating AuthServers to Authenticate and Authorize](auth/server.md)
   * [Manage OAuth 2.0 Clients](auth/cli.md)
