@@ -1,6 +1,6 @@
 # Deploying an Conduit Application on a Local Machine
 
-For other deployment options, see [Deploying Conduit Applications](index.md).
+For other deployment options, see [Deploying Conduit Applications]().
 
 ## Purpose
 

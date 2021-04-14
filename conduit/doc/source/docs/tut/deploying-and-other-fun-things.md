@@ -69,7 +69,7 @@ database:
  databaseName: quiz
 ```
 
-Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running an Conduit application \(and tips for running them remotely\), see [this guide](../deploy/index.md).
+Run `conduit serve` and open a browser to `http://localhost:8888/questions` - you'll see the question in your database. For other ways of running an Conduit application \(and tips for running them remotely\), see [this guide]().
 
 !!! tip "Test and Deployment Configuration" The `configurationFilePath` defaults to `config.yaml` when using `conduit serve`. In the test harness, the `configurationFilePath` is set to `config.src.yaml`. To continue running the tests, add the database connection configuration for `dart_test` database to the file `config.src.yaml`. For more details on configuration, see [this guide](https://github.com/noojee/conduit/tree/3f4c01be85b7ff135772166173524e76a5f80c32/conduit/doc/source/source/docs/http/configure.md).
 

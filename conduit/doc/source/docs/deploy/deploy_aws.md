@@ -1,6 +1,6 @@
 # Deploying an Conduit Application on Remote VMs
 
-For other deployment options, see [Deploying Conduit Applications](index.md).
+For other deployment options, see [Deploying Conduit Applications]().
 
 ### Purpose
 
