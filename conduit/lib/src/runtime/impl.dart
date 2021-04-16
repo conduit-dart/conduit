@@ -190,7 +190,7 @@ class ControllerRuntimeImpl extends ControllerRuntime {
   bool get isMutable => ${isMutable};
 
   ResourceControllerRuntime get resourceController => _resourceController;
-  ResourceControllerRuntime _resourceController;
+  late ResourceControllerRuntime _resourceController;
 }
 
 ${(resourceController as ResourceControllerRuntimeImpl?)?.compile(ctx) ?? ""}

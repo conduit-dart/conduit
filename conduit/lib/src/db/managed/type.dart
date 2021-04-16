@@ -40,7 +40,7 @@ class ManagedType {
   ManagedType(this.type, this.kind, this.elements, this.enumerationMap);
 
   // ignore: prefer_constructors_over_static_methods
-  static ManagedType make<T>(ManagedPropertyType kind, ManagedType elements,
+  static ManagedType make<T>(ManagedPropertyType kind, ManagedType? elements,
       Map<String, dynamic> enumerationMap) {
     return ManagedType(T, kind, elements, enumerationMap);
   }

@@ -13,7 +13,7 @@ jobs:
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
-      POSTGRES_PORT: 5432
+      POSTGRES_PORT: 15432
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -26,28 +26,28 @@ jobs:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
-          POSTGRES_PORT: 5432
+          POSTGRES_PORT: 15432
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
-    - uses: actions/checkout@v2
-    - uses: dart-lang/setup-dart@v1
-      with:
-        sdk: stable
-    - name: Get Dependencies
-      working-directory: ${{ env.TEST_DIR }}
-      run: dart pub get
-    - name: Run tests
-      working-directory: ${{ env.TEST_DIR }}
-      run: ${{ env.RUNNER_CMD }}
-    
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Get Dependencies
+        working-directory: ${{ env.TEST_DIR }}
+        run: dart pub get
+      - name: Run tests
+        working-directory: ${{ env.TEST_DIR }}
+        run: ${{ env.RUNNER_CMD }}
+
   conduit:
     env:
       TEST_DIR: conduit
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
-      POSTGRES_PORT: 5432
+      POSTGRES_PORT: 15432
       RUNNER_CMD: pub run test -j 1 -r expanded
     runs-on: ubuntu-latest
     strategy:
@@ -60,9 +60,9 @@ jobs:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
-          POSTGRES_PORT: 5432
+          POSTGRES_PORT: 15432
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
@@ -74,7 +74,7 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }}
-        
+
   conduit_tool:
     env:
       TEST_DIR: conduit
@@ -86,9 +86,9 @@ jobs:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
           POSTGRES_DB: conduit_test_db
-          POSTGRES_PORT: 5432
+          POSTGRES_PORT: 15432
         ports:
-          - 5432:5432
+          - 15432:5432
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1

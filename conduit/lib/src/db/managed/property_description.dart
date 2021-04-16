@@ -400,9 +400,9 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
   static ManagedRelationshipDescription make<T>(
       ManagedEntity entity,
       String name,
-      ManagedType type,
+      ManagedType? type,
       ManagedEntity destinationEntity,
-      DeleteRule deleteRule,
+      DeleteRule? deleteRule,
       ManagedRelationshipType relationshipType,
       String inverseKey,
       {bool unique = false,

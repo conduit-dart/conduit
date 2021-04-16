@@ -25,7 +25,7 @@ String getInvokerSource(BuildContext context,
     var defaultValue = sourcifyValue(p.defaultValue);
 
     buf.writeln(
-        "    ${p.symbolName}: args.namedArguments['${p.symbolName}'] as ${p.type} ?? $defaultValue,");
+        "    ${p.symbolName}: args.namedArguments['${p.symbolName}'] as ${p.type}? ?? $defaultValue,");
   });
 
   buf.writeln("  );");
@@ -97,7 +97,7 @@ String getDecoderSource(
 
 String sourcifyFilter(List<String>? filter) {
   if (filter == null) {
-    return "null";
+    return "[]";
   }
 
   return "[${filter.map((s) => "'$s'").join(",")}]";

@@ -231,7 +231,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         : _getManagedTypeInstantiator(type.elements);
 
     final enumStr = type.enumerationMap == null
-        ? "null"
+        ? "{}"
         : "{${type.enumerationMap!.keys.map((k) {
             var vStr = sourcifyValue(type.enumerationMap![k]);
             return "'$k': $vStr";
@@ -432,7 +432,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
    _entity = $entityConstructor;
   }
 
-  ManagedEntity _entity;
+  late ManagedEntity _entity;
 
   @override
   ManagedEntity get entity => _entity;
@@ -441,14 +441,14 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
   void finalize(ManagedDataModel dataModel) {
     _entity.relationships = {$relationshipsStr};
     _entity.validators = [];
-    _entity.validators.addAll(_entity.attributes.values.expand((a) => a.validators));
-    _entity.validators.addAll(_entity.relationships.values.expand((a) => a.validators));
+    _entity.validators.addAll(_entity.attributes.values.expand((a) => a!.validators));
+    _entity.validators.addAll(_entity.relationships?.values.expand((a) => a!.validators) ?? []);
 
     entity.uniquePropertySet = $uniqueStr;
   }
 
   @override
-  ManagedObject instanceOfImplementation({ManagedBacking backing}) {
+  ManagedObject instanceOfImplementation({ManagedBacking? backing}) {
     final object = $className();
     if (backing != null) {
       object.backing = backing;
@@ -467,7 +467,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
   }
 
   @override
-  dynamic getTransientValueForKey(ManagedObject object, String key) {
+  dynamic getTransientValueForKey(ManagedObject object, String? key) {
     ${_getGetTransientValueForKeyImpl(ctx)}
   }
 
@@ -482,7 +482,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
   }
 
   @override
-  String getPropertyName(Invocation invocation, ManagedEntity entity) {
+  String? getPropertyName(Invocation invocation, ManagedEntity entity) {
     ${_getGetPropertyNameImpl(ctx)}
   }
 
