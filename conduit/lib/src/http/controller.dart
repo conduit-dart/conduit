@@ -133,7 +133,7 @@ abstract class Controller
   /// but before any requests are served. This is useful for performing any caching or optimizations for this instance.
   /// For example, [Router] overrides this method to optimize its list of routes into a more efficient data structure.
   ///
-  /// This method is invoked immediately after [ApplicationChannel.entryPoint] is completes, for each
+  /// This method is invoked immediately after [ApplicationChannel.entryPoint] completes, for each
   /// instance in the channel created by [ApplicationChannel.entryPoint]. This method will only be called once per instance.
   ///
   /// Controllers added to the channel via [link] may use this method, but any values this method stores
