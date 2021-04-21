@@ -24,8 +24,7 @@ dependencies:
   yaml: ^3.1.0
 dev_dependencies: 
   conduit_common_test: ^2.0.0-0
-  conduit_test:
-    path: ../conduit_test
+  conduit_test: ^2.0.0-0
   dcli: ^1.0.0
   fs_test_agent: ^1.0.0-b1
   http: ^0.13.0
