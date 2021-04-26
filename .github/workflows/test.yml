@@ -93,10 +93,7 @@ jobs:
           POSTGRES_PORT: 15432
         ports:
           - 15432:5432
-        options: --entrypoint "postgres -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key"
-        volumes:
-          - /workspace/conduit/conduit/tool/ssl/server.crt:/var/lib/postgresql/server.crt
-          - /workspace/conduit/conduit/tool/ssl/server.key:/var/lib/postgresql/server.key
+        options: --entrypoint "echo '${{secret.SERVER_CERT}}' > server.crt && echo '${{secret.SERVER_KEY}}' > server.key && postgres -c ssl=on -c ssl_cert_file=server.crt -c ssl_key_file=server.key"
     steps:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
