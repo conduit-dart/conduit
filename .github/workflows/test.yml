@@ -1,8 +1,6 @@
 name: Test Suite
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
@@ -74,6 +72,42 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }}
+
+  conduit-ssl:
+    env:
+      TEST_DIR: conduit
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      POSTGRES_PORT: 15432
+      RUNNER_CMD: pub run test -j 1 -r expanded
+      USE_SSL: --use-ssl
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6
+        env:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 15432
+        ports:
+          - 15432:5432
+        options: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
+        volumes:
+          - ./conduit/conduit/tool/ssl/server.crt:/var/lib/postgresql/server.crt
+          - ./conduit/conduit/tool/ssl/server.key:/var/lib/postgresql/server.key
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Get Dependencies
+        working-directory: ${{ env.TEST_DIR }}
+        run: dart pub get
+      - name: Run tests
+        working-directory: ${{ env.TEST_DIR }}
+        run: ${{ env.RUNNER_CMD }} test/command/migration_execution_test.dart
 
   conduit_tool:
     env:
