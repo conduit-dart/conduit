@@ -61,6 +61,8 @@ class ConduitCompiler extends Compiler {
       final targetPubspecFile =
           File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"));
       final pubspecContents = json.decode(targetPubspecFile.readAsStringSync());
+      print(pubspecContents["dev_dependencies"]["conduit_test"]);
+      print('aisudhaisufhiu');
       pubspecContents["dev_dependencies"]["conduit_test"]["path"] =
           "packages/conduit_test";
       pubspecContents["dependency_overrides"]["conduit"] =
