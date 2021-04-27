@@ -215,7 +215,7 @@ class _RouteController extends Controller {
             .toList();
 
       if (spec.segments.any((seg) => seg.isRemainingMatcher)) {
-        path.parameters!.add(APIParameter.path("path")
+        path.parameters.add(APIParameter.path("path")
           ..description =
               "This path variable may contain slashes '/' and may be empty.");
       }

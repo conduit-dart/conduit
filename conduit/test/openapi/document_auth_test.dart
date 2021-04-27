@@ -30,30 +30,30 @@ void main() {
         "Basic Authorizer adds oauth2 client authentication to operations for all paths",
         () {
       final noVarPath = doc.paths!["/basic"]!;
-      expect(noVarPath.operations!.length, 2);
-      expect(noVarPath.operations!["get"]!.security!.length, 1);
-      expect(noVarPath.operations!["get"]!.security!.first!.requirements,
+      expect(noVarPath.operations.length, 2);
+      expect(noVarPath.operations["get"]!.security!.length, 1);
+      expect(noVarPath.operations["get"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
-      expect(noVarPath.operations!["post"]!.security!.length, 1);
-      expect(noVarPath.operations!["post"]!.security!.first!.requirements,
+      expect(noVarPath.operations["post"]!.security!.length, 1);
+      expect(noVarPath.operations["post"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
 
       final varPath = doc.paths!["/basic/{id}"]!;
-      expect(varPath.operations!.length, 1);
-      expect(varPath.operations!["get"]!.security!.length, 1);
-      expect(varPath.operations!["get"]!.security!.first!.requirements,
+      expect(varPath.operations.length, 1);
+      expect(varPath.operations["get"]!.security!.length, 1);
+      expect(varPath.operations["get"]!.security!.first!.requirements,
           {"oauth2-client-authentication": []});
     });
 
     test("No scope bearer authorizer adds oauth2 authentication to operations",
         () {
       final noVarPath = doc.paths!["/bearer-no-scope"]!;
-      expect(noVarPath.operations!.length, 2);
-      expect(noVarPath.operations!["get"]!.security!.length, 1);
-      expect(noVarPath.operations!["get"]!.security!.first!.requirements,
+      expect(noVarPath.operations.length, 2);
+      expect(noVarPath.operations["get"]!.security!.length, 1);
+      expect(noVarPath.operations["get"]!.security!.first!.requirements,
           {"oauth2": []});
-      expect(noVarPath.operations!["post"]!.security!.length, 1);
-      expect(noVarPath.operations!["post"]!.security!.first!.requirements,
+      expect(noVarPath.operations["post"]!.security!.length, 1);
+      expect(noVarPath.operations["post"]!.security!.first!.requirements,
           {"oauth2": []});
     });
 
@@ -61,13 +61,13 @@ void main() {
         "Scoped bearer authorizer adds oauth2 authentication to operations w/ scope",
         () {
       final noVarPath = doc.paths!["/bearer-scope"]!;
-      expect(noVarPath.operations!.length, 2);
-      expect(noVarPath.operations!["get"]!.security!.length, 1);
-      expect(noVarPath.operations!["get"]!.security!.first!.requirements, {
+      expect(noVarPath.operations.length, 2);
+      expect(noVarPath.operations["get"]!.security!.length, 1);
+      expect(noVarPath.operations["get"]!.security!.first!.requirements, {
         "oauth2": ["scope"]
       });
-      expect(noVarPath.operations!["post"]!.security!.length, 1);
-      expect(noVarPath.operations!["post"]!.security!.first!.requirements, {
+      expect(noVarPath.operations["post"]!.security!.length, 1);
+      expect(noVarPath.operations["post"]!.security!.first!.requirements, {
         "oauth2": ["scope"]
       });
     });
@@ -107,29 +107,29 @@ void main() {
     test("Bearer Authorizer adds 401 and 403 response to operations", () {
       final noVarPath = doc.paths!["/bearer-no-scope"]!;
       expect(
-          noVarPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
+          noVarPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
       expect(
-          noVarPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
+          noVarPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
       expect(
-          noVarPath.operations!["get"]!.responses!["400"]!.referenceURI!.path,
+          noVarPath.operations["get"]!.responses!["400"]!.referenceURI!.path,
           "/components/responses/MalformedAuthorizationHeader");
     });
 
     test("Basic Authorizer adds 401 and 403 response to operations", () {
       final noVarPath = doc.paths!["/basic"]!;
       expect(
-          noVarPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
+          noVarPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
       expect(
-          noVarPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
+          noVarPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
 
       final varPath = doc.paths!["/basic/{id}"]!;
-      expect(varPath.operations!["get"]!.responses!["403"]!.referenceURI!.path,
+      expect(varPath.operations["get"]!.responses!["403"]!.referenceURI!.path,
           "/components/responses/InsufficientScope");
-      expect(varPath.operations!["get"]!.responses!["401"]!.referenceURI!.path,
+      expect(varPath.operations["get"]!.responses!["401"]!.referenceURI!.path,
           "/components/responses/InsufficientAccess");
     });
   });

@@ -16,8 +16,8 @@ void main() {
 
   test("Bound properties are part of every operation and carry documentation",
       () {
-    final collectionOperations = document.paths!["/a"]!.operations!.values;
-    final idOperations = document.paths!["/a/{id}"]!.operations!.values;
+    final collectionOperations = document.paths!["/a"]!.operations.values;
+    final idOperations = document.paths!["/a/{id}"]!.operations.values;
     expect(collectionOperations.length, 3);
     expect(idOperations.length, 2);
     for (var op in [collectionOperations, idOperations].expand((i) => i)) {
@@ -45,11 +45,11 @@ void main() {
         {"get": isNotNull, "post": isNotNull, "put": isNotNull});
     expect(idOperations, {"get": isNotNull, "put": isNotNull});
 
-    expect(collectionOperations!["get"]!.id, "getAllAs");
+    expect(collectionOperations["get"]!.id, "getAllAs");
 
     expect(collectionOperations["post"]!.id, "createA");
 
-    expect(idOperations!["get"]!.id, "getOneA");
+    expect(idOperations["get"]!.id, "getOneA");
 
     expect(idOperations["put"]!.id, "undocumented");
   });
@@ -57,7 +57,7 @@ void main() {
   test("Method parameters are configured appropriately", () {
     final collectionOperations = document.paths!["/a"]!.operations;
 
-    expect(collectionOperations!["get"]!.parameters!.length, 4);
+    expect(collectionOperations["get"]!.parameters!.length, 4);
 
     expect(
         collectionOperations["get"]!
@@ -139,7 +139,7 @@ void main() {
     final comps = document.components!.schemas;
     expect(comps.containsKey("AModel"), true);
     expect(
-        collectionOperations!["post"]!
+        collectionOperations["post"]!
             .requestBody!
             .content!["application/json"]!
             .schema!
@@ -152,7 +152,7 @@ void main() {
       "Binding request body to a list of serializable generates a request body of array[schema]",
       () {
     final collectionOperations = document.paths!["/a"]!.operations;
-    final putSchema = collectionOperations!["put"]!
+    final putSchema = collectionOperations["put"]!
         .requestBody!
         .content!["application/json"]!
         .schema!;
@@ -166,7 +166,7 @@ void main() {
       () {
     final collectionOperations = document.paths!["/b"]!.operations;
     expect(
-        collectionOperations!["post"]!
+        collectionOperations["post"]!
             .requestBody!
             .content!["application/json"]!
             .schema!
@@ -179,7 +179,7 @@ void main() {
   });
 
   test("Inherited operation methods are available in document", () {
-    final subclassOperations = document.paths!["/b_subclass"]!.operations!;
+    final subclassOperations = document.paths!["/b_subclass"]!.operations;
     expect(subclassOperations.length, 3);
     expect(subclassOperations["get"]!.id, "get");
     expect(subclassOperations["post"]!.id, "post");

@@ -288,7 +288,7 @@ Future runMigrationCases(List<String?> migrationNames,
     );
   }
 
-  String useSsl = Platform.environment["USE_SSL"]!;
+  String useSsl = Platform.environment["USE_SSL"] ?? "";
 
   final res =
       await cli.run("db", ["upgrade", useSsl, "--connect", connectString]);
