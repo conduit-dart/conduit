@@ -60,28 +60,29 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     copyProjectFiles(destDirectory, templateSourceDirectory, projectName!);
 
     createProjectSpecificFiles(destDirectory.path);
-    if (conduitPackageRef?.sourceType == "path") {
+    try {
       final conduitLocation = conduitPackageRef!.resolve()!.location;
-
-      if (!addDependencyOverridesToPackage(destDirectory.path, {
-        "conduit": conduitLocation.uri,
-        "conduit_test": _packageUri(conduitLocation, 'test_harness'),
-        "conduit_codable": _packageUri(conduitLocation, 'codable'),
-        "conduit_common": _packageUri(conduitLocation, 'common'),
-        "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
-        "conduit_config": _packageUri(conduitLocation, 'config'),
-        "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
-        "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
-        "conduit_password_hash": _packageUri(conduitLocation, 'password_hash'),
-        "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
-      })) {
-        displayError(
-            'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.');
-        return 1;
+      if (conduitPackageRef?.sourceType == "path") {
+        if (!addDependencyOverridesToPackage(destDirectory.path, {
+          "conduit": conduitLocation.uri,
+          "conduit_test": _packageUri(conduitLocation, 'test_harness'),
+          "conduit_codable": _packageUri(conduitLocation, 'codable'),
+          "conduit_common": _packageUri(conduitLocation, 'common'),
+          "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
+          "conduit_config": _packageUri(conduitLocation, 'config'),
+          "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
+          "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
+          "conduit_password_hash":
+              _packageUri(conduitLocation, 'password_hash'),
+          "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
+        })) {
+          displayError(
+              'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.');
+          throw StateError;
+        }
       }
-    } else {
-      displayError(
-          "We can't find conduit in the pub cache. Check that your PUB_CACHE is set correctly.");
+    } catch (e) {
+      displayError(e.toString());
       return 1;
     }
 
