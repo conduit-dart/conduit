@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      reflectable:
+        generate_for:
+          - test/**_test.dart
+          - source_generator_artifact.dart
+        options:
+          formatted: true

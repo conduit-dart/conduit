@@ -274,7 +274,7 @@ class _DefaultItem {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('defaultItems'))
+  @Relate('defaultItems')
   Container? container;
 }
 
@@ -287,8 +287,7 @@ class _LoadedItem {
   @Column(indexed: true)
   String? someIndexedThing;
 
-  @Relate(Symbol('loadedItems'),
-      onDelete: DeleteRule.restrict, isRequired: false)
+  @Relate('loadedItems', onDelete: DeleteRule.restrict, isRequired: false)
   Container? container;
 
   LoadedSingleItem? loadedSingleItem;
@@ -300,8 +299,7 @@ class _LoadedSingleItem {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('loadedSingleItem'),
-      onDelete: DeleteRule.cascade, isRequired: true)
+  @Relate('loadedSingleItem', onDelete: DeleteRule.cascade, isRequired: true)
   LoadedItem? loadedItem;
 }
 

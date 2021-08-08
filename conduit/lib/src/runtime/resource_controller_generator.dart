@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:conduit/src/http/resource_controller_bindings.dart';
 import 'package:conduit/src/http/resource_controller_interfaces.dart';
 import 'package:conduit/src/runtime/resource_controller/documenter.dart';
@@ -10,7 +8,7 @@ import 'package:conduit_runtime/runtime.dart';
 String getInvokerSource(BuildContext context,
     ResourceControllerRuntimeImpl controller, ResourceControllerOperation op) {
   final buf = StringBuffer();
-  final subclassName = MirrorSystem.getName(controller.type.simpleName);
+  final subclassName = controller.type.simpleName;
 
   buf.writeln("(rc, args) {");
   buf.writeln("  return (rc as $subclassName).${op.dartMethodName}(");
@@ -37,7 +35,7 @@ String getInvokerSource(BuildContext context,
 String getApplyRequestPropertiesSource(
     BuildContext context, ResourceControllerRuntimeImpl runtime) {
   StringBuffer buf = StringBuffer();
-  final subclassName = MirrorSystem.getName(runtime.type.simpleName);
+  final subclassName = runtime.type.simpleName;
 
   runtime.ivarParameters!.forEach((f) {
     buf.writeln("(untypedController as $subclassName).${f.symbolName} "
@@ -127,7 +125,7 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
       }
 
       final iterable = bodyList.map((object) {
-        return ${reflectType(p.type).typeArguments.first.reflectedType}()
+        return ${runtimeReflector.reflectType(p.type).typeArguments.first.reflectedType}()
           ..read(object,
             accept: $accept,
             ignore: $ignore,
@@ -146,9 +144,13 @@ String getBodyDecoderSource(ResourceControllerParameter p) {
 
 String getElementDecoderSource(Type type) {
   final className = "${type}";
-  if (reflectType(type).isSubtypeOf(reflectType(bool))) {
+  if (runtimeReflector
+      .reflectType(type)
+      .isSubtypeOf(runtimeReflector.reflectType(bool))) {
     return "(v) { return true; }";
-  } else if (reflectType(type).isSubtypeOf(reflectType(String))) {
+  } else if (runtimeReflector
+      .reflectType(type)
+      .isSubtypeOf(runtimeReflector.reflectType(String))) {
     return "(v) { return v as String; }";
   }
 
@@ -163,9 +165,11 @@ String getElementDecoderSource(Type type) {
 }
 
 String getListDecoderSource(ResourceControllerParameter p) {
-  if (reflectType(p.type).isSubtypeOf(reflectType(List))) {
+  if (runtimeReflector
+      .reflectType(p.type)
+      .isSubtypeOf(runtimeReflector.reflectType(List))) {
     final mapper = getElementDecoderSource(
-        reflectType(p.type).typeArguments.first.reflectedType);
+        runtimeReflector.reflectType(p.type).typeArguments.first.reflectedType);
     return """(v) {
   return ${p.type}.from((v as List).map($mapper));  
 }  """;

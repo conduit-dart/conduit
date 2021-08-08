@@ -219,7 +219,7 @@ class _RefModel {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('ref'), isRequired: false, onDelete: DeleteRule.nullify)
+  @Relate('ref', isRequired: false, onDelete: DeleteRule.nullify)
   TestModel? test;
 }
 
@@ -241,7 +241,7 @@ class _GRestrict {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.restrict)
+  @Relate('test', isRequired: false, onDelete: DeleteRule.restrict)
   GRestrictInverse? test;
 }
 
@@ -263,6 +263,6 @@ class _GCascade {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.cascade)
+  @Relate('test', isRequired: false, onDelete: DeleteRule.cascade)
   GCascadeInverse? test;
 }

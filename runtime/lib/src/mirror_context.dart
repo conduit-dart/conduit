@@ -1,15 +1,15 @@
-import 'dart:mirrors';
+import 'context.dart';
+import 'compiler.dart';
+import 'mirror_coerce.dart';
+import 'package:reflectable/reflectable.dart';
 
-import 'package:conduit_runtime/src/context.dart';
-import 'package:conduit_runtime/src/compiler.dart';
-import 'package:conduit_runtime/src/mirror_coerce.dart';
+import 'reflector.dart';
 
 RuntimeContext instance = MirrorContext._();
 
 class MirrorContext extends RuntimeContext {
   MirrorContext._() {
     final m = <String, dynamic>{};
-
     for (final c in compilers) {
       final compiledRuntimes = c.compile(this);
       if (m.keys.any((k) => compiledRuntimes.keys.contains(k))) {
@@ -23,10 +23,11 @@ class MirrorContext extends RuntimeContext {
     runtimes = RuntimeCollection(m);
   }
 
-  final List<ClassMirror> types = currentMirrorSystem()
-      .libraries
-      .values
-      .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
+  final List<ClassMirror> types = runtimeReflector.libraries.values
+      .where((lib) =>
+          lib.uri.scheme == "package" ||
+          lib.uri.scheme == "file" ||
+          lib.uri.scheme == "reflectable")
       .expand((lib) => lib.declarations.values)
       .whereType<ClassMirror>()
       .where((cm) => firstMetadataOfType<PreventCompilation>(cm) == null)
@@ -34,19 +35,22 @@ class MirrorContext extends RuntimeContext {
 
   List<Compiler> get compilers {
     return types
-        .where((b) => b.isSubclassOf(reflectClass(Compiler)) && !b.isAbstract)
-        .map((b) => b.newInstance(const Symbol(''), []).reflectee as Compiler)
+        .where((b) =>
+            b.isSubclassOf(
+                runtimeReflector.reflectType(Compiler) as ClassMirror) &&
+            !b.isAbstract)
+        .map((b) => b.newInstance("", []) as Compiler)
         .toList();
   }
 
   List<ClassMirror> getSubclassesOf(Type type) {
-    final mirror = reflectClass(type);
+    final mirror = runtimeReflector.reflectType(type);
     return types.where((decl) {
       if (decl.isAbstract) {
         return false;
       }
 
-      if (!decl.isSubclassOf(mirror)) {
+      if (!decl.isSubclassOf(mirror as ClassMirror)) {
         return false;
       }
 
@@ -62,16 +66,15 @@ class MirrorContext extends RuntimeContext {
 
   @override
   T coerce<T>(dynamic input) {
-    return runtimeCast(input, reflectType(T)) as T;
+    return runtimeCast(input, T) as T;
   }
 }
 
 T? firstMetadataOfType<T>(DeclarationMirror dm, {TypeMirror? dynamicType}) {
-  final tMirror = dynamicType ?? reflectType(T);
+  final tMirror = dynamicType ?? runtimeReflector.reflectType(T);
   try {
-    return dm.metadata
-        .firstWhere((im) => im.type.isSubtypeOf(tMirror))
-        .reflectee as T?;
+    return dm.metadata.firstWhere(
+        (im) => runtimeReflector.reflect(im).type.isSubtypeOf(tMirror)) as T?;
     // ignore: avoid_catching_errors
   } on StateError catch (_) {
     return null;

@@ -532,6 +532,6 @@ class _InnerModel {
 
   String? name;
 
-  @Relate(Symbol('inner'))
+  @Relate('inner')
   TestModel? owner;
 }

@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit_runtime/runtime.dart';
+import 'build_test.reflectable.dart';
 import 'package:test/test.dart';
 
 /*
@@ -11,30 +11,32 @@ need to test for local (relative), in pub cache (absolute)
 */
 
 void main() {
+  initializeReflectable();
+  final testPackagesUri =
+      Directory.current.parent.uri.resolve('runtime_test_packages/');
+  final tmp =
+      Directory.current.parent.uri.resolve("tmp/").resolve('application/');
+
   setUpAll(() async {
-    var cmd;
+    String cmd;
     if (Platform.isWindows) {
       cmd = (await Process.run("where", ["pub.bat"])).stdout;
     } else {
       cmd = (await Process.run("which", ["pub"])).stdout;
     }
+    cmd = cmd.replaceAll('\n', '');
 
-    final testPackagesUri =
-        Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
+    final appDir = testPackagesUri.resolve("application/");
     await Process.run(cmd, ["get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("application/")
-            .toFilePath(windows: Platform.isWindows),
+        workingDirectory: appDir.toFilePath(windows: Platform.isWindows),
         runInShell: true);
     await Process.run(cmd, ["get", "--offline"],
         workingDirectory: testPackagesUri
             .resolve("dependency/")
             .toFilePath(windows: Platform.isWindows),
         runInShell: true);
-
-    final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");
-    final tmp = Directory.current.uri.resolve("tmp/");
+
     final ctx = BuildContext(
         appLib,
         tmp,
@@ -45,16 +47,23 @@ void main() {
     await bm.build();
   });
 
-  tearDownAll(() {
-    Directory.fromUri(Directory.current.uri.resolve("tmp/"))
-        .deleteSync(recursive: true);
-  });
+  // tearDownAll(() {
+  //   final tmpDir = Directory(tmp.toFilePath(windows: Platform.isWindows));
+  //   if (tmpDir.existsSync()) {
+  //     tmpDir.deleteSync(recursive: true);
+  //   }
+  // });
 
-  test("Non-compiled version returns mirror runtimes", () async {
-    final output = await dart(Directory.current.uri
-        .resolve("../")
-        .resolve("runtime_test_packages/")
-        .resolve("application/"));
+  // tearDown(() {
+  //   final tmpDir =
+  //       Directory(tmp.resolve('../').toFilePath(windows: Platform.isWindows));
+  //   if (tmpDir.existsSync()) {
+  //     tmpDir.deleteSync(recursive: true);
+  //   }
+  // });
+
+  test("Non-compiled version returns mirror runtimes", () {
+    final output = dart(testPackagesUri.resolve("application/"));
     expect(json.decode(output), {
       "Consumer": "mirrored",
       "ConsumerSubclass": "mirrored",
@@ -62,37 +71,37 @@ void main() {
     });
   });
 
-  test(
-      "Compiled version of application returns source generated runtimes and can be AOT compiled",
-      () async {
-    final output = await runExecutable(
-        Directory.current.uri.resolve("tmp/").resolve("app.aot"),
-        Directory.current.uri
-            .resolve("../")
-            .resolve("runtime_test_packages/")
-            .resolve("application/"));
+  test("Application can be AOT compiled", () {
+    final output = runExecutable(
+        tmp.resolve("app.aot"), testPackagesUri.resolve("application/"));
     expect(json.decode(output), {
-      "Consumer": "generated",
-      "ConsumerSubclass": "generated",
-      "ConsumerScript": "generated",
+      "Consumer": "mirrored",
+      "ConsumerSubclass": "mirrored",
+      "ConsumerScript": "mirrored",
     });
   });
 }
 
-Future<String> dart(Uri workingDir) async {
-  final result = await Process.run(
+String dart(Uri workingDir) {
+  final result = Process.runSync(
     "dart",
     ["bin/main.dart"],
     workingDirectory: workingDir.toFilePath(windows: Platform.isWindows),
     runInShell: true,
   );
+  if (result.exitCode != 0) {
+    throw StateError('Running dart failed with: ${result.stderr}');
+  }
   return result.stdout.toString();
 }
 
-Future<String> runExecutable(Uri buildUri, Uri workingDir) async {
-  final result = await Process.run(
+String runExecutable(Uri buildUri, Uri workingDir) {
+  final result = Process.runSync(
       buildUri.toFilePath(windows: Platform.isWindows), [],
       workingDirectory: workingDir.toFilePath(windows: Platform.isWindows),
       runInShell: true);
+  if (result.exitCode != 0) {
+    throw StateError('Running executable failed with: ${result.stderr}');
+  }
   return result.stdout.toString();
 }

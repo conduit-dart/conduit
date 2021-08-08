@@ -20,7 +20,7 @@ void main() {
 class MultiUniqueFailureRelationship
     extends ManagedObject<_MultiUniqueFailureRelationship> {}
 
-@Table.unique([Symbol('a'), Symbol('b')])
+@Table.unique(['a', 'b'])
 class _MultiUniqueFailureRelationship {
   @primaryKey
   int? id;
@@ -36,6 +36,6 @@ class _MultiUniqueFailureRelationshipInverse {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('a'))
+  @Relate('a')
   MultiUniqueFailureRelationship? rel;
 }

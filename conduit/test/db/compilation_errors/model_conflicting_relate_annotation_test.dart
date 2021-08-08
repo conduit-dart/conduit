@@ -7,7 +7,7 @@ class _InvalidCyclicLeft {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('ref'))
+  @Relate('ref')
   InvalidCyclicRight? ref;
 }
 
@@ -17,7 +17,7 @@ class _InvalidCyclicRight {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('ref'))
+  @Relate('ref')
   InvalidCyclicLeft? ref;
 }
 

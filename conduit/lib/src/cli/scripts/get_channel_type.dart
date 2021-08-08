@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:mirrors';
 
 import 'package:conduit/src/application/channel.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
@@ -19,7 +18,7 @@ class GetChannelExecutable extends Executable<String> {
     }
     var runtime = channels.first;
 
-    return MirrorSystem.getName(reflectClass(runtime.channelType).simpleName);
+    return runtimeReflector.reflectType(runtime.channelType).simpleName;
   }
 
   static List<String> importsForPackage(String? packageName) => [

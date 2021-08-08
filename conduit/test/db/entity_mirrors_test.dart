@@ -1,7 +1,7 @@
-import 'dart:mirrors';
-
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
+import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -76,5 +76,7 @@ class TypeRepo {
 }
 
 TypeMirror typeOf(Symbol symbol) {
-  return (reflectClass(TypeRepo).declarations[symbol] as VariableMirror).type;
+  return ((runtimeReflector.reflectType(TypeRepo) as ClassMirror)
+          .declarations[symbol] as VariableMirror)
+      .type;
 }

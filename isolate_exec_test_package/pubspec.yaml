@@ -1,5 +1,11 @@
 name: test_package
 version: 3.0.11
 description: test dependency
-environment: 
-  sdk: '>=2.12.0-0 <3.0.0'
+environment:
+  sdk: ">=2.13.0 <3.0.0"
+dependencies:
+  conduit_isolate_exec:
+    path: ../isolate_exec
+
+dev_dependencies:
+  build_runner:

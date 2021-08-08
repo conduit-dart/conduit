@@ -29,9 +29,9 @@ class _DupInverse {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('inverse'))
+  @Relate('inverse')
   DupInverseHas? foo;
 
-  @Relate(Symbol('inverse'))
+  @Relate('inverse')
   DupInverseHas? bar;
 }

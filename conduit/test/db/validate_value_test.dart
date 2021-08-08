@@ -501,7 +501,7 @@ class _Constant {
   String? constantString;
 
   @Validate.constant()
-  @Relate(#constant)
+  @Relate('constant')
   ConstantRef? constantRef;
 }
 
@@ -540,7 +540,7 @@ class _FK {
   int? id;
 
   @Validate.compare(greaterThan: 1)
-  @Relate(#fk)
+  @Relate('fk')
   late Parent parent;
 }
 
@@ -571,7 +571,7 @@ class _PresenceBelongsTo {
   int? id;
 
   @Validate.present(onInsert: true)
-  @Relate(#present)
+  @Relate('present')
   PresenceHas? present;
 }
 
@@ -592,7 +592,7 @@ class _AbsenceBelongsTo {
   int? id;
 
   @Validate.absent(onInsert: true)
-  @Relate(#absent)
+  @Relate('absent')
   AbsenceHas? absent;
 }
 

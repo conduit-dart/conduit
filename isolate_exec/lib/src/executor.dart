@@ -3,8 +3,13 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:conduit_isolate_exec/src/executable.dart';
+import 'package:conduit_isolate_exec/src/reflector.dart';
 import 'package:conduit_isolate_exec/src/source_generator.dart';
 
+const sourceName = '../isolate_exec/lib/src/executor.dart';
+
+@isolateReflector
+@sourceName
 class IsolateExecutor<U> {
   IsolateExecutor(
     this.generator, {
@@ -66,6 +71,7 @@ class IsolateExecutor<U> {
       final dataUri = Uri.parse(
         "data:application/dart;charset=utf-8,$scriptSource",
       );
+
       if (packageConfigURI != null) {
         await Isolate.spawnUri(
           dataUri,
@@ -101,12 +107,14 @@ class IsolateExecutor<U> {
     List<Type> additionalTypes = const [],
     void Function(dynamic event)? eventHandler,
     void Function(String line)? logHandler,
+    String? targetDirectory,
   }) async {
     final source = SourceGenerator(
       executable.runtimeType,
       imports: imports,
       additionalContents: additionalContents,
       additionalTypes: additionalTypes,
+      targetDirectory: targetDirectory,
     );
 
     final executor = IsolateExecutor<T>(

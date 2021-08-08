@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/db/managed/attributes.dart';
 import 'package:conduit/src/db/managed/data_model.dart';
@@ -11,17 +9,18 @@ import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit_runtime/runtime.dart' show runtimeReflector;
 import 'package:logging/logging.dart';
+import 'package:reflectable/reflectable.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
-      : instanceType = reflectClass(type),
+      : instanceType = runtimeReflector.reflectType(type) as ClassMirror,
         tableDefinitionType = getTableDefinitionForType(type),
         metadata = firstMetadataOfType(getTableDefinitionForType(type)) {
     name = _getName();
 
-    entity = ManagedEntity(
-        name, type, MirrorSystem.getName(tableDefinitionType.simpleName))
+    entity = ManagedEntity(name, type, tableDefinitionType.simpleName)
       ..validators = [];
 
     runtime = ManagedEntityRuntimeImpl(instanceType, entity);
@@ -50,18 +49,16 @@ class EntityBuilder {
   Map<String?, ManagedAttributeDescription?> attributes = {};
   Map<String?, ManagedRelationshipDescription?> relationships = {};
 
-  String get instanceTypeName => MirrorSystem.getName(instanceType.simpleName);
+  String get instanceTypeName => instanceType.simpleName;
 
-  String get tableDefinitionTypeName =>
-      MirrorSystem.getName(tableDefinitionType.simpleName);
+  String get tableDefinitionTypeName => tableDefinitionType.simpleName;
 
   void compile(List<EntityBuilder>? entityBuilders) {
     properties.forEach((p) {
       p.compile(entityBuilders);
     });
 
-    uniquePropertySet =
-        metadata?.uniquePropertySet?.map(MirrorSystem.getName).toList();
+    uniquePropertySet = metadata?.uniquePropertySet?.toList();
   }
 
   void validate(List<EntityBuilder>? entityBuilders) {
@@ -152,7 +149,8 @@ class EntityBuilder {
     if (foreignKey.relate!.isDeferred) {
       finder = (p) {
         final propertyType = p.getDeclarationType();
-        if (propertyType.isSubtypeOf(reflectType(ManagedSet))) {
+        if (propertyType.isSubtypeOf(
+            runtimeReflector.reflectType(ManagedSet) as ClassMirror)) {
           return propertyType.typeArguments.first
               .isSubtypeOf(foreignKey.parent.tableDefinitionType);
         }
@@ -175,7 +173,7 @@ class EntityBuilder {
     throw ManagedDataModelError(
         "The relationship '${foreignKey.name}' on '${foreignKey.parent.tableDefinitionTypeName}' "
         "has multiple inverse candidates. There must be exactly one property that is a subclass of the expected type "
-        "('${MirrorSystem.getName(foreignKey.getDeclarationType().simpleName)}'), but the following are all possible:"
+        "('${foreignKey.getDeclarationType().simpleName}'), but the following are all possible:"
         " ${candidates.map((p) => p.name).join(", ")}");
   }
 
@@ -193,7 +191,7 @@ class EntityBuilder {
 
     Logger("conduit").warning(
         "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.");
-    return declaredTableNameClass.invoke(#tableName, []).reflectee as String?;
+    return declaredTableNameClass.invoke('tableName', []) as String?;
   }
 
   List<PropertyBuilder> _getProperties() {
@@ -236,11 +234,13 @@ class EntityBuilder {
 
   static ClassMirror getTableDefinitionForType(Type instanceType) {
     final ifNotFoundException = ManagedDataModelError(
-        "Invalid instance type '$instanceType' '${reflectClass(instanceType).simpleName}' is not subclass of 'ManagedObject'.");
+        "Invalid instance type '$instanceType' '${runtimeReflector.reflectType(instanceType).simpleName}' is not subclass of 'ManagedObject'.");
 
-    return classHierarchyForClass(reflectClass(instanceType))
+    return classHierarchyForClass(
+            runtimeReflector.reflectType(instanceType) as ClassMirror)
         .firstWhere(
-            (cm) => !cm.superclass!.isSubtypeOf(reflectType(ManagedObject)),
+            (cm) => !cm.superclass!
+                .isSubtypeOf(runtimeReflector.reflectType(ManagedObject)),
             orElse: () => throw ifNotFoundException)
         .typeArguments
         .first as ClassMirror;

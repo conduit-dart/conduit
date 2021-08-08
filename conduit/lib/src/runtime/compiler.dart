@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:conduit/src/application/channel.dart';
 import 'package:conduit/src/db/managed/object.dart';
@@ -9,6 +8,7 @@ import 'package:conduit/src/http/serializable.dart';
 import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:yaml/yaml.dart';
 
 class ConduitCompiler extends Compiler {
@@ -32,24 +32,15 @@ class ConduitCompiler extends Compiler {
   }
 
   String _getClassName(ClassMirror mirror) {
-    return MirrorSystem.getName(mirror.simpleName);
+    return mirror.simpleName;
   }
 
   @override
   List<Uri> getUrisToResolve(BuildContext context) {
     return context.context
         .getSubclassesOf(ManagedObject)
-        .map((c) => c.location!.sourceUri)
+        .map((c) => c.location.sourceUri)
         .toList();
-  }
-
-  @override
-  void deflectPackage(Directory destinationDirectory) {
-    final libFile = File.fromUri(
-        destinationDirectory.uri.resolve("lib/").resolve("conduit.dart"));
-    final contents = libFile.readAsStringSync();
-    libFile.writeAsStringSync(contents.replaceFirst(
-        "export 'package:conduit/src/runtime/compiler.dart';", ""));
   }
 
   @override

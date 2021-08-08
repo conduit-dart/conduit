@@ -152,7 +152,7 @@ class _ManagedAuthToken {
   ResourceOwnerTableDefinition? resourceOwner;
 
   /// The client this token was issued for.
-  @Relate(Symbol('tokens'), onDelete: DeleteRule.cascade, isRequired: true)
+  @Relate('tokens', onDelete: DeleteRule.cascade, isRequired: true)
   late ManagedAuthClient client;
 
   /// The value 'bearer'.

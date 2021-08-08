@@ -506,7 +506,7 @@ class _Child {
   int? cid;
   String? name;
 
-  @Relate(Symbol('children'))
+  @Relate('children')
   Parent? parent;
 
   Toy? toy;
@@ -522,7 +522,7 @@ class _Toy {
 
   String? name;
 
-  @Relate(Symbol('toy'))
+  @Relate('toy')
   Child? child;
 }
 
@@ -533,7 +533,7 @@ class _Vaccine {
   int? vid;
   String? kind;
 
-  @Relate(Symbol('vaccinations'))
+  @Relate('vaccinations')
   Child? child;
 }
 

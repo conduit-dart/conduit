@@ -537,7 +537,7 @@ class _GenPost {
 
   String? text;
 
-  @Relate(Symbol('posts'), onDelete: DeleteRule.cascade, isRequired: false)
+  @Relate('posts', onDelete: DeleteRule.cascade, isRequired: false)
   GenUser? owner;
 }
 

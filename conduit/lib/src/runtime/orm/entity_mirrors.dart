@@ -1,39 +1,40 @@
-import 'dart:mirrors';
-
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/validation/metadata.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit_runtime/runtime.dart' show runtimeReflector;
+import 'package:reflectable/reflectable.dart';
 
 ManagedType getManagedTypeFromType(TypeMirror type) {
   ManagedPropertyType kind;
   ManagedType? elements;
   Map<String, dynamic> enumerationMap = {};
 
-  if (type.isAssignableTo(reflectType(int))) {
+  if (type.isAssignableTo(runtimeReflector.reflectType(int))) {
     kind = ManagedPropertyType.integer;
-  } else if (type.isAssignableTo(reflectType(String))) {
+  } else if (type.isAssignableTo(runtimeReflector.reflectType(String))) {
     kind = ManagedPropertyType.string;
-  } else if (type.isAssignableTo(reflectType(DateTime))) {
+  } else if (type.isAssignableTo(runtimeReflector.reflectType(DateTime))) {
     kind = ManagedPropertyType.datetime;
-  } else if (type.isAssignableTo(reflectType(bool))) {
+  } else if (type.isAssignableTo(runtimeReflector.reflectType(bool))) {
     kind = ManagedPropertyType.boolean;
-  } else if (type.isAssignableTo(reflectType(double))) {
+  } else if (type.isAssignableTo(runtimeReflector.reflectType(double))) {
     kind = ManagedPropertyType.doublePrecision;
-  } else if (type.isSubtypeOf(reflectType(Map))) {
-    if (!type.typeArguments.first.isAssignableTo(reflectType(String))) {
+  } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
+    if (!type.typeArguments.first
+        .isAssignableTo(runtimeReflector.reflectType(String))) {
       throw UnsupportedError(
           "Invalid type '${type.reflectedType}' for 'ManagedType'. Key is invalid; must be 'String'.");
     }
     kind = ManagedPropertyType.map;
     elements = getManagedTypeFromType(type.typeArguments.last);
-  } else if (type.isSubtypeOf(reflectType(List))) {
+  } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
     kind = ManagedPropertyType.list;
     elements = getManagedTypeFromType(type.typeArguments.first);
-  } else if (type.isAssignableTo(reflectType(Document))) {
+  } else if (type.isAssignableTo(runtimeReflector.reflectType(Document))) {
     kind = ManagedPropertyType.document;
   } else if (type is ClassMirror && type.isEnum) {
     kind = ManagedPropertyType.string;
-    final enumeratedCases = type.getField(#values).reflectee as List<dynamic>;
+    final enumeratedCases = type.invokeGetter('values') as List<dynamic>;
     for (final v in enumeratedCases) {
       enumerationMap[v.toString().split(".").last] = v;
     }
@@ -67,7 +68,7 @@ bool classHasDefaultConstructor(ClassMirror type) {
   return type.declarations.values.any((dm) {
     return dm is MethodMirror &&
         dm.isConstructor &&
-        dm.constructorName == const Symbol('') &&
+        dm.constructorName == '' &&
         dm.parameters.every((p) => p.isOptional == true);
   });
 }

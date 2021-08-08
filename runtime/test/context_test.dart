@@ -5,40 +5,37 @@ import 'package:path/path.dart';
 import 'package:test/test.dart';
 
 void main() {
-  print(absolute(Directory.current.uri.toFilePath()));
-  final absolutePathToAppLib = normalize(absolute(join(Directory.current.uri
-      .resolve("../")
-      .resolve("runtime_test_packages/")
+  final testPackagesUri =
+      Directory.current.parent.uri.resolve('runtime_test_packages/');
+  final tmp =
+      Directory.current.parent.uri.resolve("tmp/").resolve('application/');
+
+  final absolutePathToAppLib = normalize(absolute(join(testPackagesUri
       .resolve("application/")
       .resolve("lib/")
       .toFilePath(windows: Platform.isWindows))));
   late BuildContext ctx;
 
-  setUpAll(() async {
-    var cmd;
+  setUpAll(() {
+    String cmd;
     if (Platform.isWindows) {
-      cmd = (await Process.run("where", ["pub.bat"])).stdout;
+      cmd = (Process.runSync("where", ["pub.bat"])).stdout;
     } else {
-      cmd = (await Process.run("which", ["pub"])).stdout;
+      cmd = (Process.runSync("which", ["pub"])).stdout;
     }
+    cmd = cmd.replaceAll('\n', '');
 
-    print(Directory.current.uri);
-    final testPackagesUri =
-        Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
-    await Process.run(cmd, ["get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("application/")
-            .toFilePath(windows: Platform.isWindows),
+    final appDir = testPackagesUri.resolve("application/");
+    Process.runSync(cmd, ["get", "--offline"],
+        workingDirectory: appDir.toFilePath(windows: Platform.isWindows),
         runInShell: true);
-    await Process.run(cmd, ["get", "--offline"],
+
+    Process.runSync(cmd, ["get", "--offline"],
         workingDirectory: testPackagesUri
             .resolve("dependency/")
             .toFilePath(windows: Platform.isWindows),
         runInShell: true);
-
-    final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");
-    final tmp = Directory.current.uri.resolve("tmp/");
     ctx = BuildContext(
         appLib,
         tmp,
@@ -46,6 +43,22 @@ void main() {
         File.fromUri(appDir.resolve("bin/").resolve("main.dart"))
             .readAsStringSync());
   });
+
+  // tearDownAll(() {
+  //   final tmpDir = Directory(tmp.toFilePath(windows: Platform.isWindows));
+  //   if (tmpDir.existsSync()) {
+  //     tmpDir.deleteSync(recursive: true);
+  //   }
+  // });
+
+  // tearDown(() {
+  //   final tmpDir =
+  //       Directory(tmp.resolve('../').toFilePath(windows: Platform.isWindows));
+  //   if (tmpDir.existsSync()) {
+  //     tmpDir.deleteSync(recursive: true);
+  //   }
+  // });
+
   test("Get import directives using single quotes", () {
     final imports = ctx.getImportDirectives(
         source:
@@ -63,13 +76,12 @@ void main() {
 
   test("Find in file", () {
     final imports = ctx.getImportDirectives(
-        uri: Directory.current.uri
-            .resolve("../")
-            .resolve("runtime_test_packages/")
+        uri: testPackagesUri
             .resolve("application/")
             .resolve("lib/")
             .resolve("application.dart"));
     expect(imports, [
+      "import 'package:conduit_runtime/runtime.dart';",
       "import 'package:dependency/dependency.dart';",
       "import 'file:${absolutePathToAppLib}/src/file.dart';"
     ]);
@@ -79,6 +91,7 @@ void main() {
     final imports = ctx.getImportDirectives(
         uri: Uri.parse("package:application/application.dart"));
     expect(imports, [
+      "import 'package:conduit_runtime/runtime.dart';",
       "import 'package:dependency/dependency.dart';",
       "import 'file:${absolutePathToAppLib}/src/file.dart';"
     ]);

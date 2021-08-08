@@ -714,7 +714,7 @@ class _SelfRef {
 
   ManagedSet<SelfRef>? children;
 
-  @Relate(#children)
+  @Relate('children')
   SelfRef? parent;
 }
 
@@ -728,7 +728,7 @@ class _Left {
 
   Right? right;
 
-  @Relate(#left)
+  @Relate('left')
   Right? belongsToRight;
 }
 
@@ -742,6 +742,6 @@ class _Right {
 
   Left? left;
 
-  @Relate(#right)
+  @Relate('right')
   late Left belongsToLeft;
 }

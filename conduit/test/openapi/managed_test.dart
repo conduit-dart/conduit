@@ -267,7 +267,7 @@ class Model1 extends ManagedObject<_Model1> implements _Model1 {
   DateTime? field;
 }
 
-@Table(uniquePropertySet: [Symbol('string'), Symbol('dateTime')])
+@Table(uniquePropertySet: ['string', 'dateTime'])
 class _Model1 {
   @primaryKey
   int? id;
@@ -296,13 +296,13 @@ class _Model2 {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('model2s'))
+  @Relate('model2s')
   Model1? model1;
 }
 
 class Model3 extends ManagedObject<_Model3> implements _Model3 {}
 
-@Table(uniquePropertySet: [Symbol('matches'), Symbol('lessThan')])
+@Table(uniquePropertySet: ['matches', 'lessThan'])
 class _Model3 {
   @primaryKey
   int? id;
@@ -343,7 +343,7 @@ class _Model3 {
   @Validate.compare(greaterThan: "hello")
   String? nonNumCompare;
 
-  @Relate(Symbol('model3'))
+  @Relate('model3')
   Model1? model1;
 
   MOEnum? options;

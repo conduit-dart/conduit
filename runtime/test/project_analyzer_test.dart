@@ -1,16 +1,19 @@
 import 'dart:io';
 
 import 'package:conduit_runtime/src/analyzer.dart';
+import 'package:path/path.dart';
 import 'package:test/test.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 
 void main() {
   test("ProjectAnalyzer can find a specific class declaration in project",
       () async {
-    final terminal = DartProjectAgent.existing(Directory.current.uri
-        .resolve("../")
+    final terminal = DartProjectAgent.existing(Uri.file(absolute(Directory
+        .current.parent.uri
         .resolve("runtime_test_packages/")
-        .resolve("application/"));
+        .resolve("application/")
+        .path)));
+
     await terminal.getDependencies();
 
     final path = terminal.workingDirectory.absolute.uri;

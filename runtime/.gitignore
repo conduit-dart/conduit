@@ -13,3 +13,4 @@ doc/api/
 *.iml
 .idea/
 .failed_tracker
+*.reflectable.dart

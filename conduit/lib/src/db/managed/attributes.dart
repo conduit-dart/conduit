@@ -31,13 +31,13 @@ class Table {
   /// must be unique for the combined properties in [properties]. [properties] must contain symbolic names of
   /// properties declared in the table definition, and those properties must be either attributes
   /// or belongs-to relationship properties. See [Table] for example.
-  const Table.unique(List<Symbol> properties)
+  const Table.unique(List<String> properties)
       : this(uniquePropertySet: properties);
 
   /// Each instance of the associated table definition is unique for these properties.
   ///
   /// null if not set.
-  final List<Symbol>? uniquePropertySet;
+  final List<String>? uniquePropertySet;
 
   /// The name of the underlying database table.
   ///
@@ -78,7 +78,7 @@ class Relate {
   ///
   /// This value must be the symbol for the property in the related [ManagedObject]. This creates the link between
   /// two sides of a relationship between a [ManagedObject].
-  final Symbol inversePropertyName;
+  final String inversePropertyName;
 
   /// The delete rule to use when a related instance is deleted.
   ///
@@ -97,7 +97,7 @@ class Relate {
     return inversePropertyName == _deferredSymbol;
   }
 
-  static const Symbol _deferredSymbol = #mdrDeferred;
+  static const String _deferredSymbol = 'mdrDeferred';
 }
 
 /// Metadata to describe the behavior of the underlying database column of a persistent property in [ManagedObject] subclasses.

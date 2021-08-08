@@ -1,16 +1,16 @@
-import 'dart:mirrors';
-
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/intermediate_exception.dart';
+import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 
 class MirrorTypeCodec {
   MirrorTypeCodec(this.type) {
-    if (type.isSubtypeOf(reflectType(Configuration))) {
+    if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
       final klass = type as ClassMirror;
       final classHasDefaultConstructor = klass.declarations.values.any((dm) {
         return dm is MethodMirror &&
             dm.isConstructor &&
-            dm.constructorName == const Symbol('') &&
+            dm.constructorName == '' &&
             dm.parameters.every((p) => p.isOptional == true);
       });
 
@@ -27,15 +27,15 @@ class MirrorTypeCodec {
   final TypeMirror type;
 
   dynamic _decodeValue(dynamic value) {
-    if (type.isSubtypeOf(reflectType(int))) {
+    if (type.isSubtypeOf(runtimeReflector.reflectType(int))) {
       return _decodeInt(value);
-    } else if (type.isSubtypeOf(reflectType(bool))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
       return _decodeBool(value);
-    } else if (type.isSubtypeOf(reflectType(Configuration))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
       return _decodeConfig(value);
-    } else if (type.isSubtypeOf(reflectType(List))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
       return _decodeList(value as List);
-    } else if (type.isSubtypeOf(reflectType(Map))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
       return _decodeMap(value as Map);
     }
 
@@ -59,8 +59,7 @@ class MirrorTypeCodec {
   }
 
   Configuration _decodeConfig(dynamic object) {
-    final item = (type as ClassMirror)
-        .newInstance(const Symbol(""), []).reflectee as Configuration;
+    final item = (type as ClassMirror).newInstance("", []) as Configuration;
 
     item.decode(object);
 
@@ -68,8 +67,7 @@ class MirrorTypeCodec {
   }
 
   List<dynamic> _decodeList(List value) {
-    final out = (type as ClassMirror)
-        .newInstance(const Symbol(''), []).reflectee as List;
+    final out = (type as ClassMirror).newInstance('', []) as List;
     final innerDecoder = MirrorTypeCodec(type.typeArguments.first);
     for (var i = 0; i < value.length; i++) {
       try {
@@ -86,8 +84,7 @@ class MirrorTypeCodec {
   }
 
   Map<dynamic, dynamic> _decodeMap(Map value) {
-    final map = (type as ClassMirror)
-        .newInstance(const Symbol(""), []).reflectee as Map;
+    final map = (type as ClassMirror).newInstance("", []) as Map;
 
     final innerDecoder = MirrorTypeCodec(type.typeArguments.last);
     value.forEach((key, val) {
@@ -113,15 +110,15 @@ class MirrorTypeCodec {
   }
 
   String get source {
-    if (type.isSubtypeOf(reflectType(int))) {
+    if (type.isSubtypeOf(runtimeReflector.reflectType(int))) {
       return _decodeIntSource;
-    } else if (type.isSubtypeOf(reflectType(bool))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
       return _decodeBoolSource;
-    } else if (type.isSubtypeOf(reflectType(Configuration))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Configuration))) {
       return _decodeConfigSource;
-    } else if (type.isSubtypeOf(reflectType(List))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
       return _decodeListSource;
-    } else if (type.isSubtypeOf(reflectType(Map))) {
+    } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
       return _decodeMapSource;
     }
 
@@ -214,17 +211,19 @@ class MirrorConfigurationProperty {
   final VariableMirror property;
   final MirrorTypeCodec codec;
 
-  String get key => MirrorSystem.getName(property.simpleName);
+  String get key => property.simpleName;
   bool get isRequired => _isVariableRequired(property);
 
   String get source => codec.source;
 
   static bool _isVariableRequired(VariableMirror m) {
     try {
-      final attribute = m.metadata
-          .firstWhere((im) =>
-              im.type.isSubtypeOf(reflectType(ConfigurationItemAttribute)))
-          .reflectee as ConfigurationItemAttribute;
+      final attribute = m.metadata.firstWhere((im) => runtimeReflector
+              .reflect(im)
+              .type
+              .isSubtypeOf(
+                  runtimeReflector.reflectType(ConfigurationItemAttribute)))
+          as ConfigurationItemAttribute;
 
       return attribute.type == ConfigurationItemAttributeType.required;
     } catch (_) {

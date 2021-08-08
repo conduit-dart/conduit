@@ -30,6 +30,6 @@ class _MissingInverseWrongSymbol {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('foobar'))
+  @Relate('foobar')
   MissingInverse1? has;
 }

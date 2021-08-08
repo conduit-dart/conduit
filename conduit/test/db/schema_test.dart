@@ -712,7 +712,7 @@ class _DefaultItem {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('defaultItems'))
+  @Relate('defaultItems')
   Container? container;
 }
 
@@ -725,8 +725,7 @@ class _LoadedItem {
   @Column(indexed: true)
   String? someIndexedThing;
 
-  @Relate(Symbol('loadedItems'),
-      onDelete: DeleteRule.restrict, isRequired: false)
+  @Relate('loadedItems', onDelete: DeleteRule.restrict, isRequired: false)
   Container? container;
 
   LoadedSingleItem? loadedSingleItem;
@@ -738,8 +737,7 @@ class _LoadedSingleItem {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('loadedSingleItem'),
-      onDelete: DeleteRule.cascade, isRequired: true)
+  @Relate('loadedSingleItem', onDelete: DeleteRule.cascade, isRequired: true)
   LoadedItem? loadedItem;
 }
 
@@ -806,7 +804,7 @@ class PartialModel {
 
 class Unique extends ManagedObject<_Unique> implements _Unique {}
 
-@Table.unique([Symbol('a'), Symbol('b')])
+@Table.unique(['a', 'b'])
 class _Unique {
   @primaryKey
   int? id;
@@ -826,7 +824,7 @@ class _SelfRef {
 
   ManagedSet<SelfRef>? children;
 
-  @Relate(#children)
+  @Relate('children')
   SelfRef? parent;
 }
 
@@ -840,7 +838,7 @@ class _Left {
 
   Right? right;
 
-  @Relate(#left)
+  @Relate('left')
   Right? belongsToRight;
 }
 
@@ -854,6 +852,6 @@ class _Right {
 
   Left? left;
 
-  @Relate(#right)
+  @Relate('right')
   Left? belongsToLeft;
 }

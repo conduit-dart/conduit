@@ -225,10 +225,10 @@ class _Child {
 
   String? name;
 
-  @Relate(Symbol('children'))
+  @Relate('children')
   late Root parent;
 
-  @Relate(Symbol('child'))
+  @Relate('child')
   Root? parentHasOne;
 }
 

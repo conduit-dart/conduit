@@ -1,49 +1,46 @@
 import 'dart:convert';
-import 'dart:mirrors';
 
 import 'package:conduit_runtime/runtime.dart';
 import 'package:conduit_runtime/src/mirror_coerce.dart';
-import 'package:conduit_runtime/slow_coerce.dart';
 import 'package:test/test.dart';
 
+import 'coerce_test.reflectable.dart';
+
 void main() {
-  T mirrorCoerce<T>(dynamic input) {
-    return runtimeCast(input, reflectType(T)) as T;
+  initializeReflectable();
+  T? mirrorCoerce<T>(dynamic input) {
+    return runtimeCast(input, T) as T?;
   }
 
-  T slowCoerce<T>(dynamic input) {
-    return cast<T>(input);
-  }
-
-  void testInvocation(String suiteName, T Function<T>(dynamic input) coerce) {
+  void testInvocation(String suiteName, T? Function<T>(dynamic input) coerce) {
     group("($suiteName) Primitive Types (success)", () {
       test("dynamic", () {
-        expect(coerce<dynamic>(wash("foo")), "foo");
-        expect(coerce<dynamic>(null), null);
+        expect(coerce(wash("foo")), "foo");
+        expect(coerce(null), null);
       });
 
       test("int", () {
         expect(coerce<int>(wash(2)), 2);
-        expect(coerce<int?>(null), null);
+        expect(coerce<int>(null), null);
       });
 
       test("String", () {
         expect(coerce<String>(wash("string")), "string");
-        expect(coerce<String?>(null), null);
+        expect(coerce<String>(null), null);
       });
       test("bool", () {
         expect(coerce<bool>(wash(true)), true);
-        expect(coerce<bool?>(null), null);
+        expect(coerce<bool>(null), null);
       });
       test("num", () {
         expect(coerce<num>(wash(3.2)), 3.2);
-        expect(coerce<num?>(null), null);
+        expect(coerce<num>(null), null);
 
         expect(coerce<int>(wash(3)), 3);
       });
       test("double", () {
         expect(coerce<double>(wash(3.2)), 3.2);
-        expect(coerce<double?>(null), null);
+        expect(coerce<double>(null), null);
       });
     });
 
@@ -155,16 +152,6 @@ void main() {
           fail('unreachable');
         } on TypeCoercionException catch (e) {
           expect(e.expectedType.toString(), "List<int>");
-          expect(e.actualType.toString(), "List<dynamic>");
-        }
-      });
-
-      test("homogenous, wrong type", () {
-        try {
-          cast<List<String>>(wash([4]));
-          fail('unreachable');
-        } on TypeCoercionException catch (e) {
-          expect(e.expectedType.toString(), "List<String>");
           expect(e.actualType.toString(), "List<dynamic>");
         }
       });
@@ -291,7 +278,6 @@ void main() {
   }
 
   testInvocation("mirrored", mirrorCoerce);
-  testInvocation("stringified", slowCoerce);
 }
 
 dynamic wash(dynamic input) {

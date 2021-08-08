@@ -6,17 +6,24 @@ library terminal;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:path/path.dart';
+
 /// A utility for manipulating files and directories in [workingDirectory].
 class WorkingDirectoryAgent {
-  WorkingDirectoryAgent(this.workingDirectory, {bool create = true}) {
+  WorkingDirectoryAgent(Uri uri, {bool create = true}) {
+    if (uri.isAbsolute) {
+      workingDirectory = Directory.fromUri(uri);
+    } else {
+      workingDirectory = Directory(join(Directory.current.path, uri.path));
+    }
     if (create) {
       workingDirectory.createSync(recursive: true);
     }
   }
 
-  WorkingDirectoryAgent.current() : this(Directory.current);
+  WorkingDirectoryAgent.current() : this(Uri());
 
-  final Directory workingDirectory;
+  late Directory workingDirectory;
 
   static void copyDirectory({required Uri src, required Uri dst}) {
     final srcDir = Directory.fromUri(src);

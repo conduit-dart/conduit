@@ -1,16 +1,19 @@
 import 'dart:io';
-import 'dart:mirrors';
 import 'package:path/path.dart';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:pubspec/pubspec.dart';
-import 'package:conduit_runtime/src/analyzer.dart';
-import 'package:conduit_runtime/src/context.dart';
-import 'package:conduit_runtime/src/file_system.dart';
-import 'package:conduit_runtime/src/mirror_context.dart';
+import 'analyzer.dart';
+import 'context.dart';
+import 'file_system.dart';
+import 'mirror_context.dart';
+import 'package:reflectable/reflectable.dart';
 import 'package:yaml/yaml.dart';
 
+import 'reflector.dart';
+
 /// Configuration and context values used during [Build.execute].
+@runtimeReflector
 class BuildContext {
   BuildContext(
     this.rootLibraryFileUri,
@@ -64,7 +67,7 @@ class BuildContext {
       ? getDirectory(buildDirectoryUri.resolve("test/"))
           .uri
           .resolve("main_test.dart")
-      : buildDirectoryUri.resolve("main.dart");
+      : buildDirectoryUri.resolve('bin/').resolve("main.dart");
 
   PubSpec get sourceApplicationPubspec => PubSpec.fromYamlString(
         File.fromUri(sourceApplicationDirectory.uri.resolve("pubspec.yaml"))
@@ -86,24 +89,10 @@ class BuildContext {
   /// The directory where build artifacts are stored.
   Directory get buildDirectory => getDirectory(buildDirectoryUri);
 
-  /// The generated runtime directory
-  Directory get buildRuntimeDirectory =>
-      getDirectory(buildDirectoryUri.resolve("generated_runtime/"));
-
-  /// Directory for compiled packages
-  Directory get buildPackagesDirectory =>
-      getDirectory(buildDirectoryUri.resolve("packages/"));
-
-  /// Directory for compiled application
-  Directory get buildApplicationDirectory => getDirectory(
-      buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"));
-
   /// Gets dependency package location relative to [sourceApplicationDirectory].
-  Map<String, Uri> get resolvedPackages {
-    return getResolvedPackageUris(
-        sourceApplicationDirectory.uri.resolve(".packages"),
-        relativeTo: sourceApplicationDirectory.uri);
-  }
+  Map<String, Uri> get resolvedPackages => getResolvedPackageUris(
+      sourceApplicationDirectory.uri.resolve(".packages"),
+      relativeTo: sourceApplicationDirectory.uri);
 
   /// Returns a [Directory] at [uri], creates it recursively if it doesn't exist.
   Directory getDirectory(Uri uri) {
@@ -191,15 +180,15 @@ class BuildContext {
   }
 
   ClassDeclaration getClassDeclarationFromType(Type type) {
-    final classMirror = reflectType(type);
+    final classMirror = runtimeReflector.reflectType(type);
     return analyzer.getClassFromFile(
-      MirrorSystem.getName(classMirror.simpleName),
-      resolveUri(classMirror.location!.sourceUri)!,
+      classMirror.simpleName,
+      resolveUri(classMirror.location.sourceUri)!,
     );
   }
 
   List<Annotation> getAnnotationsFromField(Type _type, String propertyName) {
-    var type = reflectClass(_type);
+    var type = runtimeReflector.reflectType(_type) as ClassMirror;
     var field =
         getClassDeclarationFromType(type.reflectedType).getField(propertyName);
     while (field == null) {

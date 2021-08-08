@@ -1,8 +1,7 @@
-import 'dart:mirrors';
-
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/mirror_property.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 
 class ConfigurationRuntimeImpl extends ConfigurationRuntime
     implements SourceCompiler {
@@ -33,13 +32,16 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
         return;
       }
 
-      if (!reflect(decodedValue).type.isAssignableTo(property.property.type)) {
+      if (!runtimeReflector
+          .reflect(decodedValue as Object)
+          .type
+          .isAssignableTo(property.property.type)) {
         throw ConfigurationException(configuration, "input is wrong type",
             keyPath: [name]);
       }
 
-      final mirror = reflect(configuration);
-      mirror.setField(property.property.simpleName, decodedValue);
+      final mirror = runtimeReflector.reflect(configuration);
+      mirror.invokeSetter(property.property.simpleName, decodedValue);
     });
 
     if (values.isNotEmpty) {
@@ -81,11 +83,11 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
 
   @override
   void validate(Configuration configuration) {
-    final configMirror = reflect(configuration);
+    final configMirror = runtimeReflector.reflect(configuration);
     final requiredValuesThatAreMissing = properties.values
         .where((v) {
           try {
-            final value = configMirror.getField(Symbol(v.key)).reflectee;
+            final value = configMirror.invokeGetter(v.key);
             return v.isRequired && value == null;
           } catch (e) {
             return true;
@@ -104,7 +106,8 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     final declarations = <VariableMirror>[];
 
     var ptr = type;
-    while (ptr.isSubclassOf(reflectClass(Configuration))) {
+    while (ptr
+        .isSubclassOf(runtimeReflector.reflect(Configuration) as ClassMirror)) {
       declarations.addAll(ptr.declarations.values
           .whereType<VariableMirror>()
           .where((vm) => !vm.isStatic && !vm.isPrivate));
@@ -113,7 +116,7 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
 
     final m = <String, MirrorConfigurationProperty>{};
     for (final vm in declarations) {
-      final name = MirrorSystem.getName(vm.simpleName);
+      final name = vm.simpleName;
       m[name] = MirrorConfigurationProperty(vm);
     }
     return m;
@@ -150,7 +153,7 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
   @override
   String compile(BuildContext ctx) {
     final directives = ctx.getImportDirectives(
-        uri: type.originalDeclaration.location!.sourceUri,
+        uri: type.originalDeclaration.location.sourceUri,
         alsoImportOriginalFile: true)
       ..add("import 'package:conduit_config/src/intermediate_exception.dart';");
     return """

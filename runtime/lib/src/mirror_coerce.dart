@@ -1,36 +1,41 @@
-// ignore_for_file: avoid_catching_errors
-import 'dart:mirrors';
+import 'package:reflectable/reflectable.dart';
+import 'exceptions.dart';
+import 'reflector.dart';
 
-import 'package:conduit_runtime/src/exceptions.dart';
+dynamic runtimeCast(dynamic object, Type type) {
+  if (type == dynamic || object == null) {
+    return object;
+  }
 
-dynamic runtimeCast(dynamic object, TypeMirror intoType) {
+  final intoType = runtimeReflector.reflectType(type);
   final exceptionToThrow =
       TypeCoercionException(intoType.reflectedType, object.runtimeType);
 
   try {
-    final objectType = reflect(object).type;
+    final objectType = runtimeReflector.reflect(object).type;
     if (objectType.isAssignableTo(intoType)) {
       return object;
     }
 
-    if (intoType.isSubtypeOf(reflectType(List))) {
+    if (intoType.isSubtypeOf(runtimeReflector.reflectType(List))) {
       if (object is! List) {
         throw exceptionToThrow;
       }
 
       final elementType = intoType.typeArguments.first;
-      final elements = object.map((e) => runtimeCast(e, elementType));
-      return (intoType as ClassMirror).newInstance(#from, [elements]).reflectee;
-    } else if (intoType.isSubtypeOf(reflectType(Map, [String, dynamic]))) {
+      final elements =
+          object.map((e) => runtimeCast(e, elementType.reflectedType));
+      return (intoType as ClassMirror).newInstance("from", [elements]);
+    } else if (intoType.isSubtypeOf(runtimeReflector.reflectType(Map))) {
       if (object is! Map<String, dynamic>) {
         throw exceptionToThrow;
       }
 
-      final output = (intoType as ClassMirror)
-          .newInstance(const Symbol(""), []).reflectee as Map<String, dynamic>;
+      final output =
+          (intoType as ClassMirror).newInstance("", []) as Map<String, dynamic>;
       final valueType = intoType.typeArguments.last;
       object.forEach((key, val) {
-        output[key] = runtimeCast(val, valueType);
+        output[key] = runtimeCast(val, valueType.reflectedType);
       });
       return output;
     }
@@ -44,26 +49,26 @@ dynamic runtimeCast(dynamic object, TypeMirror intoType) {
 }
 
 bool isTypeFullyPrimitive(TypeMirror type) {
-  if (type == reflectType(dynamic)) {
+  if (type == dynamic) {
     return true;
   }
 
-  if (type.isSubtypeOf(reflectType(List))) {
+  if (type.isSubtypeOf(runtimeReflector.reflectType(List))) {
     return isTypeFullyPrimitive(type.typeArguments.first);
-  } else if (type.isSubtypeOf(reflectType(Map))) {
+  } else if (type.isSubtypeOf(runtimeReflector.reflectType(Map))) {
     return isTypeFullyPrimitive(type.typeArguments.first) &&
         isTypeFullyPrimitive(type.typeArguments.last);
   }
 
-  if (type.isSubtypeOf(reflectType(num))) {
+  if (type.isSubtypeOf(runtimeReflector.reflectType(num))) {
     return true;
   }
 
-  if (type.isSubtypeOf(reflectType(String))) {
+  if (type.isSubtypeOf(runtimeReflector.reflectType(String))) {
     return true;
   }
 
-  if (type.isSubtypeOf(reflectType(bool))) {
+  if (type.isSubtypeOf(runtimeReflector.reflectType(bool))) {
     return true;
   }
 

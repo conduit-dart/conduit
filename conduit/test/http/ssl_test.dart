@@ -44,7 +44,7 @@ Uri getCIDirectoryUri() {
   final env = Platform.environment['CONDUIT_CI_DIR_LOCATION'];
   return env != null
       ? Uri.parse(env)
-      : Directory.current.uri.resolve("../").resolve("ci/");
+      : Directory.current.parent.uri.resolve("ci/");
 }
 
 class TestChannel extends ApplicationChannel {

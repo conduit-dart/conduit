@@ -795,7 +795,7 @@ class _Post {
 
   String? text;
 
-  @Relate(Symbol('posts'))
+  @Relate('posts')
   User? owner;
 }
 
@@ -1034,7 +1034,7 @@ class _TransientBelongsTo {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('t'))
+  @Relate('t')
   TransientOwner? owner;
 }
 
@@ -1092,7 +1092,7 @@ class _Middle {
   @Column(primaryKey: true)
   int? id;
 
-  @Relate(#middles)
+  @Relate('middles')
   Top? top;
 
   late Bottom bottom;
@@ -1105,10 +1105,10 @@ class _Bottom {
   @Column(primaryKey: true)
   int? id;
 
-  @Relate(#bottom)
+  @Relate('bottom')
   Middle? middle;
 
-  @Relate(#bottoms)
+  @Relate('bottoms')
   Middle? middles;
 }
 

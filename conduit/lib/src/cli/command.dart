@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:mirrors';
 
 import 'package:args/args.dart' as args;
 import 'package:collection/collection.dart' show IterableExtension;
@@ -27,13 +26,20 @@ enum CLIColor { red, green, blue, boldRed, boldGreen, boldBlue, boldNone, none }
 /// A command line interface command.
 abstract class CLICommand {
   CLICommand() {
-    final arguments = reflect(this).type.instanceMembers.values.where((m) =>
-        m.metadata.any((im) => im.type.isAssignableTo(reflectType(Argument))));
+    final arguments = runtimeReflector
+        .reflect(this)
+        .type
+        .instanceMembers
+        .values
+        .where((m) => m.metadata.any((im) => runtimeReflector
+            .reflect(im)
+            .type
+            .isAssignableTo(runtimeReflector.reflectType(Argument))));
 
     arguments.forEach((arg) {
       if (!arg.isGetter) {
         throw StateError("Declaration "
-            "${MirrorSystem.getName(arg.owner!.simpleName)}.${MirrorSystem.getName(arg.simpleName)} "
+            "${arg.owner.simpleName}.${arg.simpleName} "
             "has CLI annotation, but is not a getter.");
       }
 
@@ -237,7 +243,7 @@ abstract class CLICommand {
   Future determineToolVersion() async {
     try {
       var toolLibraryFilePath = (await Isolate.resolvePackageUri(
-              currentMirrorSystem().findLibrary(#conduit).uri))!
+              runtimeReflector.findLibrary('conduit').uri))!
           .toFilePath(windows: Platform.isWindows);
       var conduitDirectory = Directory(FileSystemEntity.parentOf(
           FileSystemEntity.parentOf(toolLibraryFilePath)));

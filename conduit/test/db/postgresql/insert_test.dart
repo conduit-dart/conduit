@@ -602,7 +602,7 @@ class _GenPost {
   int? id;
   String? text;
 
-  @Relate(#posts)
+  @Relate('posts')
   late GenUser owner;
 }
 
@@ -666,7 +666,7 @@ class _EnumObject {
 
 class MultiUnique extends ManagedObject<_MultiUnique> implements _MultiUnique {}
 
-@Table.unique([Symbol('a'), Symbol('b')])
+@Table.unique(['a', 'b'])
 class _MultiUnique {
   @primaryKey
   int? id;

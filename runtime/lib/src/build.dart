@@ -1,12 +1,11 @@
 // ignore_for_file: avoid_print
-import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 
-import 'package:conduit_runtime/src/build_context.dart';
-import 'package:conduit_runtime/src/compiler.dart';
-import 'package:conduit_runtime/src/file_system.dart';
-import 'package:conduit_runtime/src/generator.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'build_context.dart';
+import 'file_system.dart';
+import 'package:json2yaml/json2yaml.dart';
+import 'package:path/path.dart';
 
 class Build {
   Build(this.context);
@@ -27,75 +26,51 @@ class Build {
       (astUri) => context.analyzer.resolveUnitAt(context.resolveUri(astUri)!),
     );
 
-    print("Generating runtime...");
-
-    final runtimeGenerator = RuntimeGenerator();
-    context.context.runtimes.map.forEach((typeName, runtime) {
-      if (runtime is SourceCompiler) {
-        runtimeGenerator.addRuntime(
-            name: typeName, source: runtime.compile(context));
-      }
-    });
-
-    await runtimeGenerator.writeTo(context.buildRuntimeDirectory.uri);
-    print("Generated runtime at '${context.buildRuntimeDirectory.uri}'.");
-
-    final nameOfPackageBeingCompiled = context.sourceApplicationPubspec.name;
     final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
       'environment': {'sdk': '>=2.12.0 <3.0.0'},
-      'dependency_overrides': {}
+      'dependencies': {},
+      'dev_dependencies':
+          context.sourceApplicationPubspecMap['dev_dependencies'],
+      'dependency_overrides':
+          context.sourceApplicationPubspecMap['dependency_overrides']
     };
-    final overrides = pubspecMap['dependency_overrides'] as Map;
-    var sourcePackageIsCompiled = false;
 
-    for (final compiler in compilers) {
-      final packageInfo = _getPackageInfoForCompiler(compiler);
-      final sourceDirUri = packageInfo.uri;
-      final targetDirUri =
-          context.buildPackagesDirectory.uri.resolve("${packageInfo.name}/");
-
-      print("Compiling package '${packageInfo.name}'...");
-      copyPackage(sourceDirUri, targetDirUri);
-      compiler.deflectPackage(Directory.fromUri(targetDirUri));
-
-      if (packageInfo.name != nameOfPackageBeingCompiled) {
-        overrides[packageInfo.name] = {
-          "path": targetDirUri.toFilePath(windows: Platform.isWindows)
+    final sourceDirectory = context.rootLibraryFileUri
+        .resolve('../')
+        .toFilePath(windows: Platform.isWindows);
+    final sourceDependencies =
+        context.sourceApplicationPubspecMap['dependencies'];
+    for (final key in sourceDependencies.keys) {
+      if (sourceDependencies[key] is Map &&
+          sourceDependencies[key]['path'] != null) {
+        pubspecMap['dependencies'][key] = {
+          'path':
+              normalize(join(sourceDirectory, sourceDependencies[key]['path']))
         };
       } else {
-        sourcePackageIsCompiled = true;
-      }
-      print("Package '${packageInfo.name} compiled to '$targetDirUri'.");
-    }
-
-    final appDst = context.buildApplicationDirectory.uri;
-    if (!sourcePackageIsCompiled) {
-      print(
-          "Copying application package (from '${context.sourceApplicationDirectory.uri}')...");
-      copyPackage(context.sourceApplicationDirectory.uri, appDst);
-      print("Application packaged copied to '$appDst'.");
-    }
-    pubspecMap['dependencies'] = {
-      nameOfPackageBeingCompiled: {
-        "path": appDst.toFilePath(windows: Platform.isWindows)
-      }
-    };
-
-    if (context.forTests) {
-      final devDeps = context.sourceApplicationPubspecMap['dev_dependencies'];
-      if (devDeps != null) {
-        pubspecMap['dev_dependencies'] = devDeps;
+        pubspecMap['dependencies'][key] = sourceDependencies[key];
       }
     }
+    pubspecMap['dependencies']
+        [context.sourceApplicationPubspec.name] = {'path': sourceDirectory};
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
-        .writeAsStringSync(json.encode(pubspecMap));
+        .writeAsStringSync(
+            json2yaml(pubspecMap, yamlStyle: YamlStyle.pubspecYaml));
 
+    Directory(context.buildDirectoryUri.resolve('bin/').path).createSync();
     context
         .getFile(context.targetScriptFileUri)
         .writeAsStringSync(context.source);
+
+    context
+        .getFile(context.buildDirectoryUri.resolve('build.yaml'))
+        .writeAsStringSync(File(context.sourceApplicationDirectory.uri
+                .resolve('build.yaml')
+                .toFilePath(windows: Platform.isWindows))
+            .readAsStringSync());
 
     for (final compiler in context.context.compilers) {
       compiler.didFinishPackageGeneration(context);
@@ -104,21 +79,35 @@ class Build {
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();
     print("Finished fetching dependencies.");
-
+    runBuildRunner(targetDirectory: context.buildDirectory.path);
     if (!context.forTests) {
       print("Compiling...");
+
       await compile(context.targetScriptFileUri, context.executableUri);
       print("Success. Executable is located at '${context.executableUri}'.");
     }
   }
 
-  Future getDependencies() async {
-    final cmd = Platform.isWindows ? "pub.bat" : "pub";
+  void _deleteDir(String path) {
+    final current = Directory(path);
+    if (current.existsSync()) {
+      current.deleteSync(recursive: true);
+    }
+  }
 
-    final res = await Process.run(cmd, ["get", "--offline", "--no-precompile"],
-        workingDirectory:
-            context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
-        runInShell: true);
+  Future getDependencies() async {
+    _deleteDir(context.buildDirectoryUri.resolve('.packages').path);
+    _deleteDir(context.buildDirectoryUri.resolve('pubspec.lock').path);
+    _deleteDir(context.buildDirectoryUri.resolve('.dart_tool/').path);
+    String cmd;
+    if (Platform.isWindows) {
+      cmd = (await Process.run("where", ["pub.bat"])).stdout as String;
+    } else {
+      cmd = (await Process.run("which", ["pub"])).stdout as String;
+    }
+    cmd = cmd.replaceAll('\n', '');
+    final res =
+        Process.runSync(cmd, ['get', '--no-precompile'], runInShell: true);
     if (res.exitCode != 0) {
       print("${res.stdout}");
       print("${res.stderr}");
@@ -129,19 +118,22 @@ class Build {
 
   Future compile(Uri srcUri, Uri dstUri) async {
     final res = await Process.run(
-        "dart2native",
+        "dart",
         [
-          "-v",
+          "compile",
+          "exe",
+          "--sound-null-safety",
           srcUri.toFilePath(windows: Platform.isWindows),
           "-o",
           dstUri.toFilePath(windows: Platform.isWindows)
         ],
-        workingDirectory: context.buildApplicationDirectory.uri
+        workingDirectory: context.rootLibraryFileUri
+            .resolve('../')
             .toFilePath(windows: Platform.isWindows),
         runInShell: true);
     if (res.exitCode != 0) {
       throw StateError(
-          "'dart2native' failed with the following message: ${res.stderr}");
+          "Failed to compile pacakage <${context.sourceApplicationPubspec.name}> with the following message: ${res.stderr}");
     }
     print("${res.stdout}");
   }
@@ -151,36 +143,4 @@ class Build {
     context.getFile(srcUri.resolve("pubspec.yaml")).copySync(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
   }
-
-  _PackageInfo _getPackageInfoForName(String packageName) {
-    final packageUri = packageMap[packageName];
-    if (packageUri == null) {
-      throw StateError(
-          'Package "$packageName" not found in package map. Make sure it is in dependencies and run "pub get".');
-    }
-
-    return _PackageInfo(packageName, packageUri);
-  }
-
-  _PackageInfo _getPackageInfoForCompiler(Compiler compiler) {
-    final compilerUri = reflect(compiler).type.location!.sourceUri;
-    final parser = RegExp(r"package\:([^\/]+)");
-    final parsed = parser.firstMatch(compilerUri.toString());
-    if (parsed == null) {
-      throw StateError(
-        "Could not identify package of Compiler '${compiler.runtimeType}' "
-        "(from URI '$compilerUri').",
-      );
-    }
-
-    final packageName = parsed.group(1);
-    return _getPackageInfoForName(packageName!);
-  }
-}
-
-class _PackageInfo {
-  _PackageInfo(this.name, this.uri);
-
-  final String name;
-  final Uri uri;
 }

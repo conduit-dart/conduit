@@ -1,9 +1,13 @@
-import 'dart:async';
 import 'dart:isolate';
-import 'dart:mirrors';
+import 'package:conduit_isolate_exec/src/reflector.dart';
+import 'package:reflectable/reflectable.dart';
 
+const sourceName = '../isolate_exec/lib/src/executable.dart';
+
+@isolateReflector
+@sourceName
 abstract class Executable<T extends Object?> {
-  Executable(this.message) : _sendPort = message["_sendPort"];
+  Executable(this.message) : _sendPort = message["_sendPort"] as SendPort?;
 
   Future<T> execute();
 
@@ -14,33 +18,28 @@ abstract class Executable<T extends Object?> {
     String typeName, {
     List positionalArguments = const [],
     Map<Symbol, dynamic> namedArguments = const {},
-    Symbol constructorName = const Symbol(""),
+    String constructorName = "",
   }) {
-    ClassMirror? typeMirror = currentMirrorSystem()
-        .isolate
-        .rootLibrary
-        .declarations[Symbol(typeName)] as ClassMirror?;
+    ClassMirror? typeMirror = isolateReflector
+        .libraries[0]?.declarations[Symbol(typeName)] as ClassMirror?;
 
-    typeMirror ??= currentMirrorSystem()
-        .libraries
-        .values
-        .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
+    typeMirror ??= isolateReflector.libraries.values
+        .where((lib) =>
+            lib.uri.scheme == "package" ||
+            lib.uri.scheme == "file" ||
+            lib.uri.scheme == "reflectable")
         .expand((lib) => lib.declarations.values)
         .firstWhere(
-          (decl) =>
-              decl is ClassMirror &&
-              MirrorSystem.getName(decl.simpleName) == typeName,
+          (decl) => decl is ClassMirror && decl.simpleName == typeName,
           orElse: () => throw ArgumentError(
               "Unknown type '$typeName'. Did you forget to import it?"),
         ) as ClassMirror?;
 
-    return typeMirror!
-        .newInstance(
-          constructorName,
-          positionalArguments,
-          namedArguments,
-        )
-        .reflectee as U;
+    return typeMirror!.newInstance(
+      constructorName,
+      positionalArguments,
+      namedArguments,
+    ) as U;
   }
 
   void send(dynamic message) {

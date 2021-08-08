@@ -530,7 +530,7 @@ class _Item {
   @Column(primaryKey: true)
   String? name;
 
-  @Relate(Symbol('items'), onDelete: DeleteRule.cascade, isRequired: true)
+  @Relate('items', onDelete: DeleteRule.cascade, isRequired: true)
   User? user;
 }
 
@@ -542,7 +542,7 @@ class _Manager {
 
   String? name;
 
-  @Relate(Symbol('manager'))
+  @Relate('manager')
   User? worker;
 }
 
@@ -656,10 +656,10 @@ class _DoubleRelationshipForeignKeyModel {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('hasManyOf'))
+  @Relate('hasManyOf')
   DoubleRelationshipHasModel? isManyOf;
 
-  @Relate(Symbol('hasOneOf'))
+  @Relate('hasOneOf')
   DoubleRelationshipHasModel? isOneOf;
 
   @Relate.deferred(DeleteRule.cascade)
@@ -714,10 +714,10 @@ class _JoinMany {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   LeftMany? left;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   RightMany? right;
 }
 
@@ -727,7 +727,7 @@ class _CyclicLeft {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('from'))
+  @Relate('from')
   CyclicRight? leftRef;
 
   CyclicRight? from;
@@ -739,7 +739,7 @@ class _CyclicRight {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('from'))
+  @Relate('from')
   CyclicLeft? rightRef;
 
   CyclicLeft? from;
@@ -758,7 +758,7 @@ enum EnumValues { abcd, efgh, other18 }
 
 class MultiUnique extends ManagedObject<_MultiUnique> {}
 
-@Table.unique([Symbol('a'), Symbol('b')])
+@Table.unique(['a', 'b'])
 class _MultiUnique {
   @primaryKey
   int? id;
@@ -769,12 +769,12 @@ class _MultiUnique {
 
 class MultiUniqueBelongsTo extends ManagedObject<_MultiUniqueBelongsTo> {}
 
-@Table.unique([Symbol('rel'), Symbol('b')])
+@Table.unique(['rel', 'b'])
 class _MultiUniqueBelongsTo {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('a'))
+  @Relate('a')
   MultiUniqueHasA? rel;
 
   String? b;
@@ -815,7 +815,7 @@ class _SelfReferential {
 
   String? name;
 
-  @Relate(#child)
+  @Relate('child')
   SelfReferential? parent;
 
   SelfReferential? child;

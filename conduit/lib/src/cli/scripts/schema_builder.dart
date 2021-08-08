@@ -36,7 +36,7 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
           source.name!,
           positionalArguments: const [],
           namedArguments: const <Symbol, dynamic>{},
-          constructorName: const Symbol(""),
+          constructorName: "",
         );
         instance.database = SchemaBuilder(null, outputSchema);
         await instance.upgrade();

@@ -66,10 +66,10 @@ class _ChildObject {
   ManagedSet<GrandChildObject>? grandChildren;
   GrandChildObject? grandChild;
 
-  @Relate(Symbol('children'))
+  @Relate('children')
   RootObject? parents;
 
-  @Relate(Symbol('child'))
+  @Relate('child')
   RootObject? parent;
 }
 
@@ -99,10 +99,10 @@ class _GrandChildObject {
   int? value1;
   int? value2;
 
-  @Relate(Symbol('grandChildren'))
+  @Relate('grandChildren')
   ChildObject? parents;
 
-  @Relate(Symbol('grandChild'))
+  @Relate('grandChild')
   ChildObject? parent;
 }
 
@@ -150,10 +150,10 @@ class _RootJoinObject {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   OtherRootObject? other;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   RootObject? root;
 }
 

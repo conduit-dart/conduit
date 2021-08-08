@@ -1,9 +1,8 @@
-import 'dart:mirrors';
-
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:test/test.dart';
 
 // These tests verifying that the raw persistent store migration commands are mapped to one or more specific SQL statements
@@ -248,7 +247,7 @@ void main() {
       var propDesc = ManagedAttributeDescription(
           dm.entityForType(GeneratorModel1),
           "foobar",
-          getManagedTypeFromType(reflectType(int)),
+          getManagedTypeFromType(runtimeReflector.reflectType(int)),
           null,
           nullable: true);
       var cmds = psc.addColumn(
@@ -263,7 +262,7 @@ void main() {
       var propDesc = ManagedAttributeDescription(
           dm.entityForType(GeneratorModel1),
           "foobar",
-          getManagedTypeFromType(reflectType(int)),
+          getManagedTypeFromType(runtimeReflector.reflectType(int)),
           null,
           defaultValue: "4",
           unique: true,
@@ -285,7 +284,7 @@ void main() {
       var propDesc = ManagedRelationshipDescription(
           dm.entityForType(GeneratorModel1),
           "foobar",
-          getManagedTypeFromType(reflectType(String)),
+          getManagedTypeFromType(runtimeReflector.reflectType(String)),
           null,
           dm.entityForType(GeneratorModel2),
           DeleteRule.cascade,
@@ -534,7 +533,7 @@ class _GenPost {
 
   String? text;
 
-  @Relate(Symbol('posts'), isRequired: false, onDelete: DeleteRule.restrict)
+  @Relate('posts', isRequired: false, onDelete: DeleteRule.restrict)
   GenUser? owner;
 }
 
@@ -561,7 +560,7 @@ class _GenAuth {
   @Column(primaryKey: true)
   int? id;
 
-  @Relate(Symbol('auth'), isRequired: false, onDelete: DeleteRule.cascade)
+  @Relate('auth', isRequired: false, onDelete: DeleteRule.cascade)
   GenOwner? owner;
 }
 
@@ -589,10 +588,10 @@ class _GenJoin {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   GenLeft? left;
 
-  @Relate(Symbol('join'))
+  @Relate('join')
   GenRight? right;
 }
 
@@ -612,7 +611,7 @@ class _GenNotNullable {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('gen'), onDelete: DeleteRule.nullify, isRequired: false)
+  @Relate('gen', onDelete: DeleteRule.nullify, isRequired: false)
   GenObj? ref;
 }
 
@@ -645,7 +644,7 @@ class _EnumObject {
 
 class Unique extends ManagedObject<_Unique> {}
 
-@Table.unique([Symbol('a'), Symbol('b')])
+@Table.unique(['a', 'b'])
 class _Unique {
   @primaryKey
   int? id;
@@ -666,12 +665,12 @@ class _UniqueContainer {
 
 class UniqueBelongsTo extends ManagedObject<_UniqueBelongsTo> {}
 
-@Table.unique([Symbol('a'), Symbol('container')])
+@Table.unique(['a', 'container'])
 class _UniqueBelongsTo {
   @primaryKey
   int? id;
 
   int? a;
-  @Relate(Symbol('contains'))
+  @Relate('contains')
   UniqueContainer? container;
 }

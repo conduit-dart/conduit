@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
@@ -7,6 +5,8 @@ import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/validator_builder.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit_runtime/runtime.dart' show runtimeReflector;
+import 'package:reflectable/reflectable.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)
@@ -174,7 +174,8 @@ class PropertyBuilder {
     relatedProperty = foreignKey;
     includeInDefaultResultSet = false;
 
-    if (getDeclarationType().isSubtypeOf(reflectType(ManagedSet))) {
+    if (getDeclarationType()
+        .isSubtypeOf(runtimeReflector.reflectType(ManagedSet))) {
       relationshipType = ManagedRelationshipType.hasMany;
     } else {
       relationshipType = ManagedRelationshipType.hasOne;
@@ -196,7 +197,7 @@ class PropertyBuilder {
 
     if (type is! ClassMirror) {
       throw ManagedDataModelError(
-          "Invalid type for field '${MirrorSystem.getName(declaration.simpleName)}' "
+          "Invalid type for field '${declaration.simpleName}' "
           "in table definition '${parent.tableDefinitionTypeName}'.");
     }
 
@@ -220,13 +221,13 @@ class PropertyBuilder {
   String _getName() {
     if (declaration is MethodMirror) {
       if ((declaration as MethodMirror).isGetter) {
-        return MirrorSystem.getName(declaration.simpleName);
+        return declaration.simpleName;
       } else if ((declaration as MethodMirror).isSetter) {
-        var name = MirrorSystem.getName(declaration.simpleName);
+        var name = declaration.simpleName;
         return name.substring(0, name.length - 1);
       }
     } else if (declaration is VariableMirror) {
-      return MirrorSystem.getName(declaration.simpleName);
+      return declaration.simpleName;
     }
 
     throw ManagedDataModelError(

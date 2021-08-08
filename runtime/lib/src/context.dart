@@ -1,4 +1,5 @@
-import 'package:conduit_runtime/src/mirror_context.dart' as context;
+import 'mirror_context.dart' as context;
+import 'reflector.dart';
 
 /// Contextual values used during runtime.
 abstract class RuntimeContext {
@@ -45,13 +46,13 @@ class RuntimeCollection {
 
     final genericIndex = typeName.indexOf("<");
     if (genericIndex == -1) {
-      throw ArgumentError("Runtime not found for type '$t'.");
+      throw ArgumentError("Runtime not found for type '$t' $map.");
     }
 
     final genericTypeName = typeName.substring(0, genericIndex);
     final out = map[genericTypeName];
     if (out == null) {
-      throw ArgumentError("Runtime not found for type '$t'.");
+      throw ArgumentError("Runtime not found for type '$t' $map.");
     }
 
     return out;
@@ -62,6 +63,7 @@ class RuntimeCollection {
 ///
 /// Annotate a type with the const instance of this type to prevent its
 /// compilation.
+@runtimeReflector
 class PreventCompilation {
   const PreventCompilation();
 }

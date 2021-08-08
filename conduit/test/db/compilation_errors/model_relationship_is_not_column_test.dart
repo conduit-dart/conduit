@@ -20,7 +20,7 @@ class _InvalidMetadata {
   @Column(primaryKey: true)
   int? id;
 
-  @Relate(Symbol('foo'))
+  @Relate('foo')
   @Column(indexed: true)
   InvalidMetadata1? bar;
 }

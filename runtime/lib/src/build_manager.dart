@@ -4,10 +4,14 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
-import 'package:conduit_runtime/runtime.dart';
-
+import 'analyzer.dart';
+import 'build.dart';
 import 'build_context.dart';
 
+const sourceName = '../runtime/lib/src/build_manager.dart';
+
+@isolateReflector
+@sourceName
 class BuildExecutable extends Executable<Null> {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
     context = BuildContext.fromMap(message);
@@ -32,7 +36,7 @@ class BuildManager {
 
   Future build() async {
     if (!context.buildDirectory.existsSync()) {
-      context.buildDirectory.createSync();
+      context.buildDirectory.createSync(recursive: true);
     }
 
     // Here is where we need to provide a temporary copy of the script file with the main function stripped;
@@ -55,6 +59,8 @@ class BuildManager {
     }
 
     strippedScriptFile.writeAsStringSync(scriptSource);
+    final targetDirectory =
+        File.fromUri(context.rootLibraryFileUri).parent.parent.path;
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
       packageConfigURI: sourceDirectoryUri.resolve(".packages"),
@@ -62,7 +68,8 @@ class BuildManager {
         "package:conduit_runtime/runtime.dart",
         context.targetScriptFileUri.toString()
       ],
-      logHandler: (s) => print(s), //ignore: avoid_print
+      logHandler: print, //ignore: avoid_print
+      targetDirectory: targetDirectory,
     );
   }
 

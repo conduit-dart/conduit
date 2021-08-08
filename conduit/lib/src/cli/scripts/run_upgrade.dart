@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:mirrors';
 
 import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit/src/db/persistent_store/persistent_store.dart';
@@ -7,8 +6,10 @@ import 'package:conduit/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit/src/db/query/error.dart';
 import 'package:conduit/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
+import 'package:reflectable/reflectable.dart';
 
 class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
   RunUpgradeExecutable(Map<String, dynamic> message)
@@ -49,21 +50,17 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
           timeZone: dbInfo.timeZone, useSSL: dbInfo.useSSL);
     }
 
-    var migrationTypes = currentMirrorSystem()
-        .isolate
-        .rootLibrary
-        .declarations
-        .values
+    var migrationTypes = runtimeReflector.libraries[0]!.declarations.values
         .where((dm) =>
-            dm is ClassMirror && dm.isSubclassOf(reflectClass(Migration)));
+            dm is ClassMirror &&
+            dm.isSubclassOf(
+                runtimeReflector.reflectType(Migration) as ClassMirror));
 
     final instances = sources.map((s) {
       final type = migrationTypes.firstWhere((cm) {
-        return cm is ClassMirror &&
-            MirrorSystem.getName(cm.simpleName) == s.name;
+        return cm is ClassMirror && cm.simpleName == s.name;
       }) as ClassMirror;
-      final migration =
-          type.newInstance(const Symbol(""), []).reflectee as Migration;
+      final migration = type.newInstance("", []) as Migration;
       migration.version = s.versionNumber;
       return migration;
     }).toList();

@@ -1,4 +1,3 @@
-import 'dart:mirrors';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -8,6 +7,7 @@ import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit/src/utilities/sourcify.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 
 class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     implements SourceCompiler {
@@ -20,8 +20,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
 
   @override
   ManagedObject instanceOfImplementation({ManagedBacking? backing}) {
-    final object = instanceType.newInstance(const Symbol(""), []).reflectee
-        as ManagedObject?;
+    final object = instanceType.newInstance("", []) as ManagedObject?;
 
     if (object == null) {
       throw StateError('No implementation found for $instanceType');
@@ -35,16 +34,13 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
   @override
   void setTransientValueForKey(
       ManagedObject object, String key, dynamic value) {
-    reflect(object).setField(Symbol(key), value);
+    runtimeReflector.reflect(object).invokeSetter(key, value);
   }
 
   @override
   ManagedSet setOfImplementation(Iterable<dynamic> objects) {
-    final type =
-        reflectType(ManagedSet, [instanceType.reflectedType]) as ClassMirror;
-    final set =
-        type.newInstance(const Symbol("fromDynamic"), [objects]).reflectee
-            as ManagedSet?;
+    final type = runtimeReflector.reflectType(ManagedSet) as ClassMirror;
+    final set = type.newInstance("fromDynamic", [objects]) as ManagedSet?;
 
     if (set == null) {
       throw StateError('No set implementation found for $instanceType');
@@ -55,19 +51,29 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
 
   @override
   dynamic getTransientValueForKey(ManagedObject object, String? key) {
-    return reflect(object).getField(Symbol(key!)).reflectee;
+    return runtimeReflector.reflect(object).invokeGetter(key!);
   }
 
   @override
   bool isValueInstanceOf(dynamic value) {
-    return reflect(value).type.isAssignableTo(instanceType);
+    if (value == null) {
+      return instanceType.simpleName.endsWith('?') ||
+          instanceType.simpleName == 'dynamic';
+    }
+    return runtimeReflector
+        .reflect(value as Object)
+        .type
+        .isAssignableTo(instanceType);
   }
 
   @override
   bool isValueListOf(dynamic value) {
-    final type = reflect(value).type;
+    if (value != null) {
+      return false;
+    }
+    final type = runtimeReflector.reflect(value as Object).type;
 
-    if (!type.isSubtypeOf(reflectType(List))) {
+    if (!type.isSubtypeOf(runtimeReflector.reflectType(List))) {
       return false;
     }
 
@@ -79,13 +85,13 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     // It memberName is not in symbolMap, it may be because that property doesn't exist for this object's entity.
     // But it also may occur for private ivars, in which case, we reconstruct the symbol and try that.
     return entity.symbolMap[invocation.memberName] ??
-        entity.symbolMap[Symbol(MirrorSystem.getName(invocation.memberName))];
+        entity.symbolMap[invocation.memberName];
   }
 
   @override
   dynamic dynamicConvertFromPrimitiveValue(
       ManagedPropertyDescription property, dynamic value) {
-    return runtimeCast(value, reflectType(property.type!.type));
+    return runtimeCast(value, property.type!.type);
   }
 
   List<String> _getValidatorConstructionFromAnnotation(BuildContext buildCtx,
@@ -94,16 +100,19 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     // For every annotation, grab the name of the type and find the corresponding type mirror in our list of type mirrors.
     // Documentation mismatch: `annotation.name.name` is NOT the class name, it is the entire constructor name.
     final typeOfAnnotationName = annotation.name.name.split(".").first;
-    final mirrorOfAnnotationType = buildCtx.context.types.firstWhereOrNull(
-        (t) => MirrorSystem.getName(t.simpleName) == typeOfAnnotationName);
+    final mirrorOfAnnotationType = buildCtx.context.types
+        .firstWhereOrNull((t) => t.simpleName == typeOfAnnotationName);
 
     // Following cases: @Validate, @Column(validators: [Validate]), or a const variable reference
-    if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Validate)) ?? false) {
+    if (mirrorOfAnnotationType
+            ?.isSubtypeOf(runtimeReflector.reflectType(Validate)) ??
+        false) {
       // If the annotation is a const Validate instantiation, we just copy it directly
       // and import the file where the const constructor is declared.
       importUris.add(annotation.element!.source!.uri);
       return [annotation.toSource().substring(1)];
-    } else if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Column)) ??
+    } else if (mirrorOfAnnotationType
+            ?.isSubtypeOf(runtimeReflector.reflectType(Column)) ??
         false) {
       // This is a direct column constructor and potentially has instances of Validate in its constructor
       // We should be able to navigate the unresolved AST to copy this text.
@@ -125,7 +134,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
           type.getDisplayString(withNullability: true) == "Validate" ||
               buildCtx.context.getSubclassesOf(Validate).any(
                 (subclass) {
-                  return MirrorSystem.getName(subclass.simpleName) ==
+                  return subclass.simpleName ==
                       type.getDisplayString(withNullability: true);
                 },
               );
@@ -392,8 +401,8 @@ return entity.symbolMap[Symbol(symbolName)];
   String compile(BuildContext ctx) {
     final importUris = <Uri>[];
 
-    final className = "${MirrorSystem.getName(instanceType.simpleName)}";
-    final originalFileUri = instanceType.location!.sourceUri.toString();
+    final className = "${instanceType.simpleName}";
+    final originalFileUri = instanceType.location.sourceUri.toString();
     final relationshipsStr = entity.relationships!.keys.map((name) {
       return "'$name': ${_getRelationshipInstantiator(ctx, entity.relationships![name]!, importUris: importUris)}";
     }).join(", ");
@@ -408,12 +417,12 @@ return entity.symbolMap[Symbol(symbolName)];
     // Need to import any relationships types and metadata types
     // todo: limit import of importUris to only show symbols required to replicate metadata
     final directives = entity.relationships!.values.map((r) {
-      var mirror = reflectType(r!.declaredType!);
-      if (mirror.isSubtypeOf(reflectType(ManagedSet))) {
+      var mirror = runtimeReflector.reflectType(r!.declaredType!);
+      if (mirror.isSubtypeOf(runtimeReflector.reflectType(ManagedSet))) {
         mirror = mirror.typeArguments.first;
       }
 
-      final uri = mirror.location!.sourceUri;
+      final uri = mirror.location.sourceUri;
       return "import '$uri' show ${mirror.reflectedType};";
     }).toList()
       ..addAll(Set.from(importUris).map((uri) => "import '$uri';"));

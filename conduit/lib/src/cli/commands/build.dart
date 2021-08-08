@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:args/args.dart' as arg_package;
 import 'package:conduit/src/application/application.dart';
@@ -9,6 +8,7 @@ import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 
 class CLIBuild extends CLICommand with CLIProject {
   @Flag("retain-build-artifacts",
@@ -61,7 +61,8 @@ class CLIBuild extends CLICommand with CLIProject {
   }
 
   String getScriptSource(String channelName) {
-    final method = (reflect(_runnerFunc) as ClosureMirror).function;
+    final method =
+        (runtimeReflector.reflect(_runnerFunc) as ClosureMirror).function;
 
     return """
 import 'dart:async';

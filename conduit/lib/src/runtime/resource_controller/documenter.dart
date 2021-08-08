@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/auth/objects.dart';
 import 'package:conduit/src/http/resource_controller.dart';
@@ -8,29 +6,37 @@ import 'package:conduit/src/http/resource_controller_interfaces.dart';
 import 'package:conduit/src/http/serializable.dart';
 import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit/src/runtime/resource_controller_impl.dart';
-import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit/src/utilities/mirror_helpers.dart' as helpers;
 import 'package:conduit_common/conduit_common.dart';
-
 import 'package:conduit_open_api/v3.dart';
+import 'package:conduit_runtime/runtime.dart';
+import 'package:reflectable/reflectable.dart';
 
 bool isSerializable(Type type) {
-  return reflectType(type).isSubtypeOf(reflectType(Serializable));
+  return runtimeReflector
+      .reflectType(type)
+      .isSubtypeOf(runtimeReflector.reflectType(Serializable));
 }
 
 bool isListSerializable(Type type) {
-  final boundType = reflectType(type);
-  return boundType.isSubtypeOf(reflectType(List)) &&
-      boundType.typeArguments.first.isSubtypeOf(reflectType(Serializable));
+  final boundType = runtimeReflector.reflectType(type);
+  return boundType.isSubtypeOf(runtimeReflector.reflectType(List)) &&
+      boundType.typeArguments.first
+          .isSubtypeOf(runtimeReflector.reflectType(Serializable));
 }
 
 APISchemaObject? getSchemaObjectReference(
     APIDocumentContext context, Type type) {
   if (isListSerializable(type)) {
     return APISchemaObject.array(
-        ofSchema: context.schema.getObjectWithType(
-            reflectType(type).typeArguments.first.reflectedType));
+        ofSchema: context.schema.getObjectWithType(runtimeReflector
+            .reflectType(type)
+            .typeArguments
+            .first
+            .reflectedType));
   } else if (isSerializable(type)) {
-    return context.schema.getObjectWithType(reflectType(type).reflectedType);
+    return context.schema
+        .getObjectWithType(runtimeReflector.reflectType(type).reflectedType);
   }
 
   return null;
@@ -48,7 +54,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
           .expand((b) => b)
           .where((b) => b.location == BindingType.body)
           .forEach((b) {
-        final boundType = reflectType(b.type);
+        final boundType = runtimeReflector.reflectType(b.type);
         if (isSerializable(b.type)) {
           _registerType(context, boundType);
         } else if (isListSerializable(b.type)) {
@@ -128,9 +134,9 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
         (operation) => path.containsPathParameters(operation.pathVariables));
 
     return opsForPath.fold(<String, APIOperation>{}, (prev, opObj) {
-      final instanceMembers = reflect(rc).type.instanceMembers;
-      Operation? metadata =
-          firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
+      final instanceMembers = runtimeReflector.reflect(rc).type.instanceMembers;
+      Operation? metadata = helpers
+          .firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
 
       final operationDoc = APIOperation(opObj.dartMethodName,
           rc.documentOperationResponses(context, metadata!),
@@ -192,8 +198,8 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
 
   APIParameter _documentParameter(APIDocumentContext context,
       Operation? operation, ResourceControllerParameter param) {
-    final schema =
-        SerializableRuntimeImpl.documentType(context, reflectType(param.type));
+    final schema = SerializableRuntimeImpl.documentType(
+        context, runtimeReflector.reflectType(param.type));
     final documentedParameter = APIParameter(param.name, param.apiLocation,
         schema: schema,
         isRequired: param.isRequired,
@@ -211,20 +217,20 @@ void _registerType(APIDocumentContext context, TypeMirror typeMirror) {
   final classMirror = typeMirror;
   if (!context.schema.hasRegisteredType(classMirror.reflectedType) &&
       _shouldDocumentSerializable(classMirror.reflectedType)!) {
-    final instance =
-        classMirror.newInstance(const Symbol(''), []).reflectee as Serializable;
-    context.schema.register(MirrorSystem.getName(classMirror.simpleName),
-        instance.documentSchema(context),
+    final instance = classMirror.newInstance('', []) as Serializable;
+    context.schema.register(
+        classMirror.simpleName, instance.documentSchema(context),
         representation: classMirror.reflectedType);
   }
 }
 
 bool? _shouldDocumentSerializable(Type type) {
-  final hierarchy = classHierarchyForClass(reflectClass(type));
+  final hierarchy = helpers.classHierarchyForClass(
+      runtimeReflector.reflectType(type) as ClassMirror);
   final definingType = hierarchy.firstWhereOrNull(
       (cm) => cm.staticMembers.containsKey(#shouldAutomaticallyDocument));
   if (definingType == null) {
     return Serializable.shouldAutomaticallyDocument;
   }
-  return definingType.getField(#shouldAutomaticallyDocument).reflectee as bool?;
+  return definingType.invokeGetter('shouldAutomaticallyDocument') as bool?;
 }
