@@ -261,13 +261,13 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
   Future<int> fetchProjectDependencies(Directory workingDirectory,
       {bool offline = false}) async {
-    var args = ["get"];
+    var args = ["pub", "get"];
     if (offline) {
       args.add("--offline");
     }
 
     try {
-      final cmd = Platform.isWindows ? "pub.bat" : "pub";
+      const cmd = "dart";
       var process = await Process.start(cmd, args,
               workingDirectory: workingDirectory.absolute.path,
               runInShell: true)
