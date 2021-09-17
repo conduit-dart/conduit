@@ -88,6 +88,7 @@ class Build {
       if (devDeps != null) {
         pubspecMap['dev_dependencies'] = devDeps;
       }
+      overrides['conduit'] = {'path': '../conduit'};
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))

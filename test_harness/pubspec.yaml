@@ -2,12 +2,15 @@ name: conduit_test
 version: 3.0.11
 homepage: https://github.com/conduit-dart/conduit
 description: Utilities for writing automated tests for Conduit applications
-environment: 
-  sdk: '>=2.12.0 <3.0.0'
-dependencies: 
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+dependencies:
   test: ^1.16.5
-  matcher: '>=0.12.3 <0.14.0'
+  matcher: ">=0.12.3 <0.14.0"
   conduit: ^3.0.11
-dev_dependencies: 
-  conduit_common_test: 
+dev_dependencies:
+  conduit_common_test:
     path: ../common_test
+dependency_overrides:
+  conduit:
+    path: ../conduit

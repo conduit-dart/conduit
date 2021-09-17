@@ -107,7 +107,7 @@ void main() {
     int? idIndex = 0;
     for (TestModel m in result) {
       int? next = m.id;
-      expect(next, greaterThan(idIndex));
+      expect(next, greaterThan(idIndex!));
       idIndex = next;
     }
   });
