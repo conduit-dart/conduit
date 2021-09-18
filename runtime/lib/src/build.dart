@@ -89,6 +89,7 @@ class Build {
         pubspecMap['dev_dependencies'] = devDeps;
       }
       overrides['conduit'] = {'path': '../conduit'};
+      overrides['conduit_password_hash'] = {'path': '../password_hash'};
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
