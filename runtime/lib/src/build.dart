@@ -94,6 +94,7 @@ class Build {
       overrides['conduit_codable'] = {'path': '../codable'};
       overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
       overrides['conduit_config'] = {'path': '../config'};
+      overrides['conduit_common'] = {'path': '../common'};
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
