@@ -91,6 +91,7 @@ class Build {
       overrides['conduit'] = {'path': '../conduit'};
       overrides['conduit_password_hash'] = {'path': '../password_hash'};
       overrides['conduit_open_api'] = {'path': '../open_api'};
+      overrides['conduit_codable'] = {'path': '../codable'};
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
