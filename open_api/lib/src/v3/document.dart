@@ -75,7 +75,8 @@ class APIDocument extends APIObject {
 
     if (!info.isValid || paths == null) {
       throw ArgumentError(
-          "APIDocument must have values for: 'version', 'info' and 'paths'.");
+        "APIDocument must have values for: 'version', 'info' and 'paths'.",
+      );
     }
 
     object.encode("openapi", version);

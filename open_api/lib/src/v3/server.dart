@@ -38,7 +38,8 @@ class APIServerDescription extends APIObject {
 
     if (url == null) {
       throw ArgumentError(
-          "APIServerDescription must have non-null values for: 'url'.");
+        "APIServerDescription must have non-null values for: 'url'.",
+      );
     }
 
     object.encode("url", url);
@@ -49,8 +50,11 @@ class APIServerDescription extends APIObject {
 
 /// An object representing a Server Variable for server URL template substitution.
 class APIServerVariable extends APIObject {
-  APIServerVariable(this.defaultValue,
-      {this.availableValues, this.description});
+  APIServerVariable(
+    this.defaultValue, {
+    this.availableValues,
+    this.description,
+  });
 
   APIServerVariable.empty();
 
@@ -83,7 +87,8 @@ class APIServerVariable extends APIObject {
 
     if (defaultValue == null) {
       throw ArgumentError(
-          "APIServerVariable must have non-null values for: 'defaultValue'.");
+        "APIServerVariable must have non-null values for: 'defaultValue'.",
+      );
     }
 
     object.encode("enum", availableValues);

@@ -56,8 +56,10 @@ class KeyedArchive extends Object
   ///
   /// If [allowReferences] is true, JSON Schema references in the emitted document will be validated.
   /// Defaults to false.
-  static Map<String, dynamic> archive(Coding root,
-      {bool allowReferences = false}) {
+  static Map<String, dynamic> archive(
+    Coding root, {
+    bool allowReferences = false,
+  }) {
     final archive = KeyedArchive({});
     root.encode(archive);
     if (allowReferences) {
@@ -190,7 +192,8 @@ class KeyedArchive extends Object
       _objectReference = coder.resolve(referenceURI!);
       if (_objectReference == null) {
         throw ArgumentError(
-            "Invalid document. Reference '#${referenceURI!.path}' does not exist in document.");
+          "Invalid document. Reference '#${referenceURI!.path}' does not exist in document.",
+        );
       }
     }
 
@@ -206,7 +209,9 @@ class KeyedArchive extends Object
   /* decode */
 
   T? _decodedObject<T extends Coding?>(
-      KeyedArchive? raw, T Function() inflate) {
+    KeyedArchive? raw,
+    T Function() inflate,
+  ) {
     if (raw == null) {
       return null;
     }
@@ -256,7 +261,8 @@ class KeyedArchive extends Object
 
     if (val is! KeyedArchive) {
       throw ArgumentError(
-          "Cannot decode key '$key' into '$T', because the value is not a Map. Actual value: '$val'.");
+        "Cannot decode key '$key' into '$T', because the value is not a Map. Actual value: '$val'.",
+      );
     }
 
     return _decodedObject(val, inflate);
@@ -275,7 +281,8 @@ class KeyedArchive extends Object
     }
     if (val is! List) {
       throw ArgumentError(
-          "Cannot decode key '$key' as 'List<$T>', because value is not a List. Actual value: '$val'.");
+        "Cannot decode key '$key' as 'List<$T>', because value is not a List. Actual value: '$val'.",
+      );
     }
 
     return val
@@ -291,7 +298,9 @@ class KeyedArchive extends Object
   /// For each key-value pair of the archived map, [inflate] is invoked and
   /// each value is decoded into the instance of [T].
   Map<String, T?>? decodeObjectMap<T extends Coding>(
-      String key, T Function() inflate) {
+    String key,
+    T Function() inflate,
+  ) {
     final v = _getValue(key);
     if (v == null) {
       return null;
@@ -299,7 +308,8 @@ class KeyedArchive extends Object
 
     if (v is! Map<String, dynamic>) {
       throw ArgumentError(
-          "Cannot decode key '$key' as 'Map<String, $T>', because value is not a Map. Actual value: '$v'.");
+        "Cannot decode key '$key' as 'Map<String, $T>', because value is not a Map. Actual value: '$v'.",
+      );
     }
 
     return {

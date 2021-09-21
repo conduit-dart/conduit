@@ -66,45 +66,49 @@ class APIParameterLocationCodec {
 ///
 /// A unique parameter is defined by a combination of a [name] and [location].
 class APIParameter extends APIObject {
-  APIParameter(this.name, this.location,
-      {this.description,
-      this.schema,
-      this.content,
-      this.style,
-      bool? isRequired,
-      this.deprecated,
-      this.allowEmptyValue,
-      this.explode,
-      this.allowReserved})
-      : _required = isRequired;
+  APIParameter(
+    this.name,
+    this.location, {
+    this.description,
+    this.schema,
+    this.content,
+    this.style,
+    bool? isRequired,
+    this.deprecated,
+    this.allowEmptyValue,
+    this.explode,
+    this.allowReserved,
+  }) : _required = isRequired;
 
   APIParameter.empty();
 
-  APIParameter.header(this.name,
-      {this.description,
-      this.schema,
-      this.content,
-      this.style,
-      bool? isRequired,
-      this.deprecated,
-      this.allowEmptyValue,
-      this.explode,
-      this.allowReserved})
-      : _required = isRequired {
+  APIParameter.header(
+    this.name, {
+    this.description,
+    this.schema,
+    this.content,
+    this.style,
+    bool? isRequired,
+    this.deprecated,
+    this.allowEmptyValue,
+    this.explode,
+    this.allowReserved,
+  }) : _required = isRequired {
     location = APIParameterLocation.header;
   }
 
-  APIParameter.query(this.name,
-      {this.description,
-      this.schema,
-      this.content,
-      this.style,
-      bool? isRequired,
-      this.deprecated,
-      this.allowEmptyValue,
-      this.explode,
-      this.allowReserved})
-      : _required = isRequired {
+  APIParameter.query(
+    this.name, {
+    this.description,
+    this.schema,
+    this.content,
+    this.style,
+    bool? isRequired,
+    this.deprecated,
+    this.allowEmptyValue,
+    this.explode,
+    this.allowReserved,
+  }) : _required = isRequired {
     location = APIParameterLocation.query;
   }
 
@@ -113,17 +117,18 @@ class APIParameter extends APIObject {
         schema = APISchemaObject.string(),
         _required = true;
 
-  APIParameter.cookie(this.name,
-      {this.description,
-      this.schema,
-      this.content,
-      this.style,
-      bool? isRequired,
-      this.deprecated,
-      this.allowEmptyValue,
-      this.explode,
-      this.allowReserved})
-      : _required = isRequired {
+  APIParameter.cookie(
+    this.name, {
+    this.description,
+    this.schema,
+    this.content,
+    this.style,
+    bool? isRequired,
+    this.deprecated,
+    this.allowEmptyValue,
+    this.explode,
+    this.allowReserved,
+  }) : _required = isRequired {
     location = APIParameterLocation.cookie;
   }
 
@@ -218,7 +223,8 @@ class APIParameter extends APIObject {
 
     if (name == null || location == null) {
       throw ArgumentError(
-          "APIParameter must have non-null values for: 'name', 'location'.");
+        "APIParameter must have non-null values for: 'name', 'location'.",
+      );
     }
 
     object.encode("name", name);

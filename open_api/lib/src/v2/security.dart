@@ -55,8 +55,12 @@ class APISecurityScheme extends APIObject {
     type = "apiKey";
   }
 
-  APISecurityScheme.oauth2(this.oauthFlow,
-      {this.authorizationURL, this.tokenURL, this.scopes = const {}}) {
+  APISecurityScheme.oauth2(
+    this.oauthFlow, {
+    this.authorizationURL,
+    this.tokenURL,
+    this.scopes = const {},
+  }) {
     type = "oauth2";
   }
 

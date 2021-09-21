@@ -8,9 +8,12 @@ import 'package:conduit_open_api/src/v3/schema.dart';
 class APIResponse extends APIObject {
   APIResponse(this.description, {this.content, this.headers});
   APIResponse.empty();
-  APIResponse.schema(this.description, APISchemaObject schema,
-      {Iterable<String> contentTypes = const ["application/json"],
-      this.headers}) {
+  APIResponse.schema(
+    this.description,
+    APISchemaObject schema, {
+    Iterable<String> contentTypes = const ["application/json"],
+    this.headers,
+  }) {
     content = contentTypes.fold({}, (prev, elem) {
       prev![elem] = APIMediaType(schema: schema);
       return prev;
@@ -86,7 +89,8 @@ class APIResponse extends APIObject {
 
     if (description == null) {
       throw ArgumentError(
-          "APIResponse must have non-null values for: 'description'.");
+        "APIResponse must have non-null values for: 'description'.",
+      );
     }
 
     object.encode("description", description);

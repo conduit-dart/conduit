@@ -90,7 +90,10 @@ abstract class APIOperationDocumenter {
   ///         return ops;
   ///       }
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path);
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  );
 }
 
 /// An object that contains information about [APIDocument] being generated.
@@ -104,19 +107,33 @@ class APIDocumentContext {
   /// Creates a new context.
   APIDocumentContext(this.document)
       : schema = APIComponentCollection<APISchemaObject>._(
-            "schemas", document.components!.schemas),
+          "schemas",
+          document.components!.schemas,
+        ),
         responses = APIComponentCollection<APIResponse>._(
-            "responses", document.components!.responses),
+          "responses",
+          document.components!.responses,
+        ),
         parameters = APIComponentCollection<APIParameter>._(
-            "parameters", document.components!.parameters),
+          "parameters",
+          document.components!.parameters,
+        ),
         requestBodies = APIComponentCollection<APIRequestBody>._(
-            "requestBodies", document.components!.requestBodies),
+          "requestBodies",
+          document.components!.requestBodies,
+        ),
         headers = APIComponentCollection<APIHeader>._(
-            "headers", document.components!.headers),
+          "headers",
+          document.components!.headers,
+        ),
         securitySchemes = APIComponentCollection<APISecurityScheme>._(
-            "securitySchemes", document.components!.securitySchemes),
+          "securitySchemes",
+          document.components!.securitySchemes,
+        ),
         callbacks = APIComponentCollection<APICallback>._(
-            "callbacks", document.components!.callbacks);
+          "callbacks",
+          document.components!.callbacks,
+        );
 
   /// The document being created.
   final APIDocument document;

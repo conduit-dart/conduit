@@ -72,8 +72,19 @@ void main() {
 
     test("Can encode list of Coding objects", () {
       final out = encode((object) {
-        object.encodeObject("key",
-            Parent("Bob", children: [Child("Fred"), null, Child("Sally")]));
+        object.encodeObject(
+          "key",
+          Parent(
+            "Bob",
+            children: [
+              Child("Fred"),
+              null,
+              Child(
+                "Sally",
+              ),
+            ],
+          ),
+        );
       });
 
       expect(out, {
@@ -91,12 +102,16 @@ void main() {
     test("Can encode map of Coding objects", () {
       final out = encode((object) {
         object.encodeObject(
-            "key",
-            Parent("Bob", childMap: {
+          "key",
+          Parent(
+            "Bob",
+            childMap: {
               "fred": Child("Fred"),
               "null": null,
               "sally": Child("Sally")
-            }));
+            },
+          ),
+        );
       });
 
       expect(out, {
@@ -115,9 +130,17 @@ void main() {
   group("Coding object references", () {
     test("Parent can contain reference to child in single object encode", () {
       final container = Container(
-          Parent("Bob",
-              child: Child._()..referenceURI = Uri(path: "/definitions/child")),
-          {"child": Child("Sally")});
+        Parent(
+          "Bob",
+          child: Child._()
+            ..referenceURI = Uri(
+              path: "/definitions/child",
+            ),
+        ),
+        {
+          "child": Child("Sally"),
+        },
+      );
 
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
@@ -135,9 +158,15 @@ void main() {
         "If reference doesn't exist, an error is thrown when creating document",
         () {
       final container = Container(
-          Parent("Bob",
-              child: Child._()..referenceURI = Uri(path: "/definitions/child")),
-          {});
+        Parent(
+          "Bob",
+          child: Child._()
+            ..referenceURI = Uri(
+              path: "/definitions/child",
+            ),
+        ),
+        {},
+      );
 
       try {
         KeyedArchive.archive(container, allowReferences: true);
@@ -152,10 +181,14 @@ void main() {
         "If reference doesn't exist in objectMap, an error is thrown when creating document",
         () {
       final container = Container(
-          Parent("Bob", childMap: {
+        Parent(
+          "Bob",
+          childMap: {
             "c": Child._()..referenceURI = Uri(path: "/definitions/child")
-          }),
-          {});
+          },
+        ),
+        {},
+      );
 
       try {
         KeyedArchive.archive(container, allowReferences: true);
@@ -170,10 +203,12 @@ void main() {
         "If reference doesn't exist in objectList, an error is thrown when creating document",
         () {
       final container = Container(
-          Parent("Bob", children: [
-            Child._()..referenceURI = Uri(path: "/definitions/child")
-          ]),
-          {});
+        Parent(
+          "Bob",
+          children: [Child._()..referenceURI = Uri(path: "/definitions/child")],
+        ),
+        {},
+      );
 
       try {
         KeyedArchive.archive(container, allowReferences: true);
@@ -186,11 +221,15 @@ void main() {
 
     test("Parent can contain reference to child in a list of objects", () {
       final container = Container(
-          Parent("Bob", children: [
+        Parent(
+          "Bob",
+          children: [
             Child("Sally"),
             Child._()..referenceURI = Uri(path: "/definitions/child")
-          ]),
-          {"child": Child("Fred")});
+          ],
+        ),
+        {"child": Child("Fred")},
+      );
 
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
@@ -209,11 +248,17 @@ void main() {
 
     test("Parent can contain reference to child in a map of objects", () {
       final container = Container(
-          Parent("Bob", childMap: {
+        Parent(
+          "Bob",
+          childMap: {
             "sally": Child("Sally"),
             "ref": Child._()..referenceURI = Uri(path: "/definitions/child")
-          }),
-          {"child": Child("Fred")});
+          },
+        ),
+        {
+          "child": Child("Fred"),
+        },
+      );
 
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
@@ -232,14 +277,20 @@ void main() {
 
     test("Cyclical references are resolved", () {
       final container = Container(
-          Parent("Bob", children: [
+        Parent(
+          "Bob",
+          children: [
             Child("Sally"),
             Child._()..referenceURI = Uri(path: "/definitions/child")
-          ]),
-          {
-            "child": Child("Fred",
-                parent: Parent._()..referenceURI = Uri(path: "/root"))
-          });
+          ],
+        ),
+        {
+          "child": Child(
+            "Fred",
+            parent: Parent._()..referenceURI = Uri(path: "/root"),
+          )
+        },
+      );
 
       final out = KeyedArchive.archive(container, allowReferences: true);
       final expected = {

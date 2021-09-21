@@ -10,29 +10,34 @@ Future main(List<String> args) async {
       .listSync(recursive: true)
       .whereType<File>()
       .where((f) => f.path.endsWith("_test.dart"))
-      .where((f) => blacklist
-          .where((blacklisted) => f.uri.path.endsWith(blacklisted))
-          .isEmpty)
+      .where(
+        (f) => blacklist
+            .where((blacklisted) => f.uri.path.endsWith(blacklisted))
+            .isEmpty,
+      )
       .toList();
 
   var remainingCounter = testFiles.length;
   var passCounter = 0;
   var failCounter = 0;
-  void prompt() => print("""
+  void prompt() => print(
+        """
 Test Files:
   Pass  : $passCounter
   Fail  : $failCounter
   Remain: $remainingCounter
-  """);
+  """,
+      );
   for (final f in testFiles) {
     prompt();
     print("Loading test ${f.path}...");
     final ctx = BuildContext(
-        Directory.current.uri.resolve("lib/").resolve("conduit_config.dart"),
-        Directory.current.uri.resolve("build/"),
-        Directory.current.uri.resolve("run"),
-        f.readAsStringSync(),
-        forTests: true);
+      Directory.current.uri.resolve("lib/").resolve("conduit_config.dart"),
+      Directory.current.uri.resolve("build/"),
+      Directory.current.uri.resolve("run"),
+      f.readAsStringSync(),
+      forTests: true,
+    );
     final bm = BuildManager(ctx);
     await bm.build();
 

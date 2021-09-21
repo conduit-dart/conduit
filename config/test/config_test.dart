@@ -104,12 +104,13 @@ void main() {
       fail('unreachable');
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("TopLevelConfiguration"),
-            contains("unexpected keys found"),
-            contains("'extraKey'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("TopLevelConfiguration"),
+          contains("unexpected keys found"),
+          contains("'extraKey'")
+        ]),
+      );
     }
 
     try {
@@ -129,12 +130,13 @@ void main() {
       fail('unreachable');
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("TopLevelConfiguration"),
-            contains("unexpected keys found"),
-            contains("'extraKey'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("TopLevelConfiguration"),
+          contains("unexpected keys found"),
+          contains("'extraKey'")
+        ]),
+      );
     }
   });
 
@@ -152,12 +154,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("TopLevelConfiguration"),
-            contains("'port'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("TopLevelConfiguration"),
+          contains("'port'")
+        ]),
+      );
     }
 
     try {
@@ -175,12 +178,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("TopLevelConfiguration"),
-            contains("'port'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("TopLevelConfiguration"),
+          contains("'port'")
+        ]),
+      );
     }
   });
 
@@ -192,12 +196,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("TopLevelConfiguration"),
-            contains("'database'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("TopLevelConfiguration"),
+          contains("'database'")
+        ]),
+      );
     }
 
     try {
@@ -206,12 +211,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("TopLevelConfiguration"),
-            contains("'database'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("TopLevelConfiguration"),
+          contains("'database'")
+        ]),
+      );
     }
   });
 
@@ -255,12 +261,13 @@ void main() {
       fail("unreachable");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'port'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'port'")
+        ]),
+      );
     }
 
     try {
@@ -280,12 +287,15 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
+        e.toString(),
+        allOf(
+          [
             contains("missing required"),
             contains("ConfigurationSubclass"),
             contains("'port'")
-          ]));
+          ],
+        ),
+      );
     }
   });
 
@@ -305,12 +315,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'extraValue'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'extraValue'")
+        ]),
+      );
     }
 
     try {
@@ -330,12 +341,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'extraValue'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'extraValue'")
+        ]),
+      );
     }
   });
 
@@ -355,12 +367,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'port'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'port'")
+        ]),
+      );
     }
 
     try {
@@ -380,12 +393,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'port'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'port'")
+        ]),
+      );
     }
   });
 
@@ -405,12 +419,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'extraDatabaseValue'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'extraDatabaseValue'")
+        ]),
+      );
     }
 
     try {
@@ -430,12 +445,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing required"),
-            contains("ConfigurationSubclass"),
-            contains("'extraDatabaseValue'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing required"),
+          contains("ConfigurationSubclass"),
+          contains("'extraDatabaseValue'")
+        ]),
+      );
     }
   });
 
@@ -454,11 +470,12 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("ConfigurationSubclassWithValidation"),
-            contains("not a host.com")
-          ]));
+        e.toString(),
+        allOf([
+          contains("ConfigurationSubclassWithValidation"),
+          contains("not a host.com")
+        ]),
+      );
     }
 
     try {
@@ -477,11 +494,12 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("ConfigurationSubclassWithValidation"),
-            contains("not a host.com")
-          ]));
+        e.toString(),
+        allOf([
+          contains("ConfigurationSubclassWithValidation"),
+          contains("not a host.com")
+        ]),
+      );
     }
   });
 
@@ -574,12 +592,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing"),
-            contains("TopLevelConfiguration"),
-            contains("'databaseName'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing"),
+          contains("TopLevelConfiguration"),
+          contains("'databaseName'")
+        ]),
+      );
     }
 
     try {
@@ -596,12 +615,13 @@ void main() {
       fail("Should not succeed");
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing"),
-            contains("TopLevelConfiguration"),
-            contains("'databaseName'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing"),
+          contains("TopLevelConfiguration"),
+          contains("'databaseName'")
+        ]),
+      );
     }
   });
 
@@ -757,12 +777,13 @@ void main() {
       expect(true, false);
     } on ConfigurationException catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("missing"),
-            contains("OptionalEmbeddedContainer"),
-            contains("'databaseName'")
-          ]));
+        e.toString(),
+        allOf([
+          contains("missing"),
+          contains("OptionalEmbeddedContainer"),
+          contains("'databaseName'")
+        ]),
+      );
     }
   });
 
@@ -998,7 +1019,8 @@ class DatabaseConfigurationSubclassWithValidation
   void validate() {
     super.validate();
     final RegExp validHost = RegExp(
-        r"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$");
+      r"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$",
+    );
     if (!validHost.hasMatch(host)) {
       throw ConfigurationException(this, host, keyPath: ["host"]);
     }

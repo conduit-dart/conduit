@@ -118,7 +118,10 @@ class StringMap<V> extends Cast<core.Map<core.String, V>> {
   const StringMap(Cast<V> value) : _value = value;
   @override
   core.Map<core.String, V> _cast(
-      dynamic from, core.String context, dynamic key) {
+    dynamic from,
+    core.String context,
+    dynamic key,
+  ) {
     if (from is core.Map) {
       final result = <core.String, V>{};
       for (final core.String key in from.keys as core.Iterable<core.String>) {

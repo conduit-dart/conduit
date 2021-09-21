@@ -9,10 +9,12 @@ class APIRequestBody extends APIObject {
 
   APIRequestBody.empty();
 
-  APIRequestBody.schema(APISchemaObject schema,
-      {Iterable<String> contentTypes = const ["application/json"],
-      this.description,
-      this.isRequired = false}) {
+  APIRequestBody.schema(
+    APISchemaObject schema, {
+    Iterable<String> contentTypes = const ["application/json"],
+    this.description,
+    this.isRequired = false,
+  }) {
     content = contentTypes.fold({}, (prev, elem) {
       prev![elem] = APIMediaType(schema: schema);
       return prev;
@@ -49,7 +51,8 @@ class APIRequestBody extends APIObject {
 
     if (content == null) {
       throw ArgumentError(
-          "APIRequestBody must have non-null values for: 'content'.");
+        "APIRequestBody must have non-null values for: 'content'.",
+      );
     }
 
     object.encode("description", description);

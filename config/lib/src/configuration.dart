@@ -37,7 +37,9 @@ abstract class Configuration {
   void decode(dynamic value) {
     if (value is! Map) {
       throw ConfigurationException(
-          this, "input is not an object (is a '${value.runtimeType}')");
+        this,
+        "input is not an object (is a '${value.runtimeType}')",
+      );
     }
 
     _runtime.decode(this, value);
@@ -202,8 +204,10 @@ class ConfigurationException {
   });
 
   ConfigurationException.missingKeys(
-      this.configuration, List<String> missingKeys, {this.keyPath = const []})
-      : message =
+    this.configuration,
+    List<String> missingKeys, {
+    this.keyPath = const [],
+  }) : message =
             "missing required key(s): ${missingKeys.map((s) => "'$s'").join(", ")}";
 
   /// The [Configuration] in which this exception occurred.

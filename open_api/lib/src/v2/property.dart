@@ -103,7 +103,9 @@ class APIProperty extends APIObject {
     object.encode("type", APITypeCodec.encode(type));
     object.encode("format", format);
     object.encode(
-        "collectionFormat", APICollectionFormatCodec.encode(collectionFormat));
+      "collectionFormat",
+      APICollectionFormatCodec.encode(collectionFormat),
+    );
     object.encode("default", defaultValue);
     object.encode("maximum", maximum);
     object.encode("exclusiveMaximum", exclusiveMaximum);

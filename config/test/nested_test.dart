@@ -48,7 +48,9 @@ void main() {
       ]
     });
     expect(
-        msg, contains("Failed to read key 'peers[0].peers[0]' for 'Parent'"));
+      msg,
+      contains("Failed to read key 'peers[0].peers[0]' for 'Parent'"),
+    );
 
     msg = getMessage({
       "id": "1",
@@ -63,7 +65,9 @@ void main() {
       ]
     });
     expect(
-        msg, contains("Failed to read key 'peers[0].peers[1]' for 'Parent'"));
+      msg,
+      contains("Failed to read key 'peers[0].peers[1]' for 'Parent'"),
+    );
 
     msg = getMessage({
       "id": "1",
@@ -77,8 +81,12 @@ void main() {
         }
       ]
     });
-    expect(msg,
-        contains("Failed to read key 'peers[0].peers[1].id' for 'Parent'"));
+    expect(
+      msg,
+      contains(
+        "Failed to read key 'peers[0].peers[1].id' for 'Parent'",
+      ),
+    );
   });
 
   test("Root.Map", () {
@@ -93,7 +101,11 @@ void main() {
       "namedChildren": {"key": 0}
     });
     expect(
-        msg, contains("Failed to read key 'namedChildren.key' for 'Parent'"));
+      msg,
+      contains(
+        "Failed to read key 'namedChildren.key' for 'Parent'",
+      ),
+    );
 
     msg = getMessage({
       "id": "1",
@@ -112,8 +124,12 @@ void main() {
         "key": {"id": "2", "peers": 0}
       }
     });
-    expect(msg,
-        contains("Failed to read key 'namedChildren.key.peers' for 'Parent'"));
+    expect(
+      msg,
+      contains(
+        "Failed to read key 'namedChildren.key.peers' for 'Parent'",
+      ),
+    );
 
     msg = getMessage({
       "id": "1",
@@ -127,9 +143,11 @@ void main() {
       }
     });
     expect(
-        msg,
-        contains(
-            "Failed to read key 'namedChildren.key.peers[0].id' for 'Parent'"));
+      msg,
+      contains(
+        "Failed to read key 'namedChildren.key.peers[0].id' for 'Parent'",
+      ),
+    );
   });
 
   test("Root.Map.Array.Config.Array", () {
@@ -148,9 +166,11 @@ void main() {
       }
     });
     expect(
-        msg,
-        contains(
-            "Failed to read key 'namedChildren.k1.parent.peers[0].id' for 'Parent'"));
+      msg,
+      contains(
+        "Failed to read key 'namedChildren.k1.parent.peers[0].id' for 'Parent'",
+      ),
+    );
   });
 
   test("Root.List.List", () {
@@ -167,9 +187,11 @@ void main() {
     });
 
     expect(
-        msg,
-        contains(
-            "Failed to read key 'listOfListOfParents[0][1]' for 'Parent'"));
+      msg,
+      contains(
+        "Failed to read key 'listOfListOfParents[0][1]' for 'Parent'",
+      ),
+    );
   });
 }
 

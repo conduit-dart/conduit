@@ -64,8 +64,10 @@ class DatabaseConfiguration extends Configuration {
     }
 
     if (value is! String) {
-      throw ConfigurationException(this,
-          "'${value.runtimeType}' is not assignable; must be a object or string");
+      throw ConfigurationException(
+        this,
+        "'${value.runtimeType}' is not assignable; must be a object or string",
+      );
     }
 
     final uri = Uri.parse(value);

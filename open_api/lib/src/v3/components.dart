@@ -49,12 +49,14 @@ class APIComponents extends APIObject {
     final segments = uri.pathSegments;
     if (segments.length != 3) {
       throw ArgumentError(
-          "Invalid reference URI. Must be a path URI of the form: '/components/<type>/<name>'");
+        "Invalid reference URI. Must be a path URI of the form: '/components/<type>/<name>'",
+      );
     }
 
     if (segments.first != "components") {
       throw ArgumentError(
-          "Invalid reference URI: does not begin with /components/");
+        "Invalid reference URI: does not begin with /components/",
+      );
     }
 
     Map<String, APIObject?>? namedMap;
@@ -84,7 +86,8 @@ class APIComponents extends APIObject {
 
     if (namedMap == null) {
       throw ArgumentError(
-          "Invalid reference URI: component type '${segments[1]}' does not exist.");
+        "Invalid reference URI: component type '${segments[1]}' does not exist.",
+      );
     }
 
     final result = namedMap[segments.last];
@@ -105,22 +108,29 @@ class APIComponents extends APIObject {
     super.decode(object);
 
     schemas = removeNullsFromMap(
-        object.decodeObjectMap("schemas", () => APISchemaObject()));
+      object.decodeObjectMap("schemas", () => APISchemaObject()),
+    );
     responses = removeNullsFromMap(
-        object.decodeObjectMap("responses", () => APIResponse.empty()));
+      object.decodeObjectMap("responses", () => APIResponse.empty()),
+    );
     parameters = removeNullsFromMap(
-        object.decodeObjectMap("parameters", () => APIParameter.empty()));
+      object.decodeObjectMap("parameters", () => APIParameter.empty()),
+    );
 //    examples = object.decodeObjectMap("examples", () => APIExample());
     requestBodies = removeNullsFromMap(
-        object.decodeObjectMap("requestBodies", () => APIRequestBody.empty()));
+      object.decodeObjectMap("requestBodies", () => APIRequestBody.empty()),
+    );
     headers = removeNullsFromMap(
-        object.decodeObjectMap("headers", () => APIHeader()));
+      object.decodeObjectMap("headers", () => APIHeader()),
+    );
 
     securitySchemes = removeNullsFromMap(
-        object.decodeObjectMap("securitySchemes", () => APISecurityScheme()));
+      object.decodeObjectMap("securitySchemes", () => APISecurityScheme()),
+    );
 //    links = object.decodeObjectMap("links", () => APILink());
     callbacks = removeNullsFromMap(
-        object.decodeObjectMap("callbacks", () => APICallback()));
+      object.decodeObjectMap("callbacks", () => APICallback()),
+    );
   }
 
   @override

@@ -7,11 +7,12 @@ import 'package:conduit_open_api/src/v3/parameter.dart';
 ///
 /// An [APIPath] MAY be empty, due to ACL constraints. The path itself is still exposed to the documentation viewer but they will not know which operations and parameters are available.
 class APIPath extends APIObject {
-  APIPath(
-      {this.summary,
-      this.description,
-      List<APIParameter?>? parameters,
-      Map<String, APIOperation?>? operations}) {
+  APIPath({
+    this.summary,
+    this.description,
+    List<APIParameter?>? parameters,
+    Map<String, APIOperation?>? operations,
+  }) {
     this.parameters = parameters ?? [];
     this.operations = operations ?? {};
   }

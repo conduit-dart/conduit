@@ -6,8 +6,14 @@ import 'package:conduit_open_api/src/object.dart';
 /// The metadata MAY be used by the clients if needed, and MAY be presented in editing or documentation generation tools for convenience.
 class APIInfo extends APIObject {
   /// Creates empty metadata for specification.
-  APIInfo(this.title, this.version,
-      {this.description, this.termsOfServiceURL, this.license, this.contact});
+  APIInfo(
+    this.title,
+    this.version, {
+    this.description,
+    this.termsOfServiceURL,
+    this.license,
+    this.contact,
+  });
 
   APIInfo.empty();
 
@@ -57,7 +63,8 @@ class APIInfo extends APIObject {
 
     if (title == null || version == null) {
       throw ArgumentError(
-          "APIInfo must have non-null values for: 'title', 'version'.");
+        "APIInfo must have non-null values for: 'title', 'version'.",
+      );
     }
 
     object.encode("title", title);

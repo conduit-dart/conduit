@@ -31,7 +31,8 @@ abstract class Executable<T extends Object?> {
               decl is ClassMirror &&
               MirrorSystem.getName(decl.simpleName) == typeName,
           orElse: () => throw ArgumentError(
-              "Unknown type '$typeName'. Did you forget to import it?"),
+            "Unknown type '$typeName'. Did you forget to import it?",
+          ),
         ) as ClassMirror?;
 
     return typeMirror!

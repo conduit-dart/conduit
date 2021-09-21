@@ -34,8 +34,11 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
       }
 
       if (!reflect(decodedValue).type.isAssignableTo(property.property.type)) {
-        throw ConfigurationException(configuration, "input is wrong type",
-            keyPath: [name]);
+        throw ConfigurationException(
+          configuration,
+          "input is wrong type",
+          keyPath: [name],
+        );
       }
 
       final mirror = reflect(configuration);
@@ -43,8 +46,10 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     });
 
     if (values.isNotEmpty) {
-      throw ConfigurationException(configuration,
-          "unexpected keys found: ${values.keys.map((s) => "'$s'").join(", ")}.");
+      throw ConfigurationException(
+        configuration,
+        "unexpected keys found: ${values.keys.map((s) => "'$s'").join(", ")}.",
+      );
     }
   }
 
@@ -55,26 +60,32 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     properties.forEach((k, v) {
       buf.writeln("{");
       buf.writeln(
-          "final v = Configuration.getEnvironmentOrValue(valuesCopy.remove('$k'));");
+        "final v = Configuration.getEnvironmentOrValue(valuesCopy.remove('$k'));",
+      );
       buf.writeln("if (v != null) {");
       buf.writeln(
-          "  final decodedValue = tryDecode(configuration, '$k', () { ${v.source} });");
+        "  final decodedValue = tryDecode(configuration, '$k', () { ${v.source} });",
+      );
       buf.writeln("  if (decodedValue is! ${v.codec.expectedType}) {");
       buf.writeln(
-          "    throw ConfigurationException(configuration, 'input is wrong type', keyPath: ['$k']);");
+        "    throw ConfigurationException(configuration, 'input is wrong type', keyPath: ['$k']);",
+      );
       buf.writeln("  }");
       buf.writeln(
-          "  (configuration as ${type.reflectedType.toString()}).$k = decodedValue as ${v.codec.expectedType};");
+        "  (configuration as ${type.reflectedType.toString()}).$k = decodedValue as ${v.codec.expectedType};",
+      );
       buf.writeln("}");
       buf.writeln("}");
     });
 
-    buf.writeln("""
+    buf.writeln(
+      """
     if (valuesCopy.isNotEmpty) {
       throw ConfigurationException(configuration,
           "unexpected keys found: \${valuesCopy.keys.map((s) => "'\$s'").join(", ")}.");
     }
-    """);
+    """,
+    );
 
     return buf.toString();
   }
@@ -96,7 +107,9 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
 
     if (requiredValuesThatAreMissing.isNotEmpty) {
       throw ConfigurationException.missingKeys(
-          configuration, requiredValuesThatAreMissing);
+        configuration,
+        requiredValuesThatAreMissing,
+      );
     }
   }
 
@@ -105,9 +118,11 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
 
     var ptr = type;
     while (ptr.isSubclassOf(reflectClass(Configuration))) {
-      declarations.addAll(ptr.declarations.values
-          .whereType<VariableMirror>()
-          .where((vm) => !vm.isStatic && !vm.isPrivate));
+      declarations.addAll(
+        ptr.declarations.values
+            .whereType<VariableMirror>()
+            .where((vm) => !vm.isStatic && !vm.isPrivate),
+      );
       ptr = ptr.superclass!;
     }
 
@@ -150,9 +165,9 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
   @override
   String compile(BuildContext ctx) {
     final directives = ctx.getImportDirectives(
-        uri: type.originalDeclaration.location!.sourceUri,
-        alsoImportOriginalFile: true)
-      ..add("import 'package:conduit_config/src/intermediate_exception.dart';");
+      uri: type.originalDeclaration.location!.sourceUri,
+      alsoImportOriginalFile: true,
+    )..add("import 'package:conduit_config/src/intermediate_exception.dart';");
     return """
     ${directives.join("\n")}
     final instance = ConfigurationRuntimeImpl();

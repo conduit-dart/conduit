@@ -37,14 +37,16 @@ class SourceGenerator {
     for (final anImport in imports) {
       builder.writeln("import '$anImport';");
     }
-    builder.writeln("""
+    builder.writeln(
+      """
 Future main (List<String> args, Map<String, dynamic> message) async {
   final sendPort = message['_sendPort'];
   final executable = $typeName(message);
   final result = await executable.execute();
   sendPort.send({"_result": result});
 }
-    """);
+    """,
+    );
     builder.writeln(typeSource);
 
     builder.writeln((await _getClass(Executable)).toSource());

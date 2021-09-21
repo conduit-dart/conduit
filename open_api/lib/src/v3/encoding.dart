@@ -5,12 +5,13 @@ import 'package:conduit_open_api/src/v3/parameter.dart';
 
 /// A single encoding definition applied to a single schema property.
 class APIEncoding extends APIObject {
-  APIEncoding(
-      {this.contentType,
-      this.headers,
-      this.style,
-      this.allowReserved = false,
-      this.explode = false});
+  APIEncoding({
+    this.contentType,
+    this.headers,
+    this.style,
+    this.allowReserved = false,
+    this.explode = false,
+  });
 
   APIEncoding.empty()
       : allowReserved = false,

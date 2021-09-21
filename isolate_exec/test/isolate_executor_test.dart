@@ -13,29 +13,39 @@ void main() {
   });
 
   test("Can run an Executable and get its return value", () async {
-    final result = await IsolateExecutor.run(SimpleReturner({}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")));
+    final result = await IsolateExecutor.run(
+      SimpleReturner({}),
+      packageConfigURI: Uri.file(join(projDir, ".packages")),
+    );
     expect(result, 1);
   });
 
   test("Logged messages are available through logger stream", () async {
     final msgs = [];
-    await IsolateExecutor.run(SimpleReturner({}),
-        logHandler: (msg) => msgs.add(msg),
-        packageConfigURI: Uri.file(join(projDir, ".packages")));
+    await IsolateExecutor.run(
+      SimpleReturner({}),
+      logHandler: (msg) => msgs.add(msg),
+      packageConfigURI: Uri.file(join(projDir, ".packages")),
+    );
     expect(msgs, ["hello"]);
   });
 
   test("Send values to Executable and use them", () async {
-    final result = await IsolateExecutor.run(Echo({'echo': 'hello'}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")));
+    final result = await IsolateExecutor.run(
+      Echo({'echo': 'hello'}),
+      packageConfigURI: Uri.file(
+        join(projDir, ".packages"),
+      ),
+    );
     expect(result, 'hello');
   });
 
   test("Run from another package", () async {
-    final result = await IsolateExecutor.run(InPackage({}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")),
-        imports: ["package:test_package/lib.dart"]);
+    final result = await IsolateExecutor.run(
+      InPackage({}),
+      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      imports: ["package:test_package/lib.dart"],
+    );
 
     expect(result, {
       "def": "default",
@@ -53,29 +63,35 @@ void main() {
       completers[2].future
     ];
 
-    final result = await IsolateExecutor.run(Streamer({}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")),
-        eventHandler: (event) {
-      completers.last.complete(event);
-      completers.removeLast();
-    });
+    final result = await IsolateExecutor.run(
+      Streamer({}),
+      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      eventHandler: (event) {
+        completers.last.complete(event);
+        completers.removeLast();
+      },
+    );
     expect(result, 0);
 
     final completed = await Future.wait(futures);
     expect(completed.any((i) => i == 1), true);
     expect(completed.any((i) => i is Map && i["key"] == "value"), true);
     expect(
-        completed.any(
-            (i) => i is Map && i["key1"] == "value1" && i["key2"] == "value2"),
-        true);
+      completed.any(
+        (i) => i is Map && i["key1"] == "value1" && i["key2"] == "value2",
+      ),
+      true,
+    );
   });
 
   test("Can instantiate types including in additionalContents", () async {
-    final result = await IsolateExecutor.run(AdditionalContentsInstantiator({}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")),
-        additionalContents: """
+    final result = await IsolateExecutor.run(
+      AdditionalContentsInstantiator({}),
+      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      additionalContents: """
 class AdditionalContents { int get id => 10; }
-    """);
+    """,
+    );
 
     expect(result, 10);
   });
@@ -84,8 +100,10 @@ class AdditionalContents { int get id => 10; }
       "If error is thrown, it is made available to consumer and the stack trace has been trimmed of script source",
       () async {
     try {
-      await IsolateExecutor.run(Thrower({}),
-          packageConfigURI: Uri.file(join(projDir, ".packages")));
+      await IsolateExecutor.run(
+        Thrower({}),
+        packageConfigURI: Uri.file(join(projDir, ".packages")),
+      );
       fail('unreachable');
 
       //ignore: avoid_catching_errors

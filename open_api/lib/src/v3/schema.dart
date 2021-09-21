@@ -23,9 +23,11 @@ class APISchemaObject extends APIObject {
   APISchemaObject.number() : type = APIType.number;
   APISchemaObject.integer() : type = APIType.integer;
   APISchemaObject.boolean() : type = APIType.boolean;
-  APISchemaObject.map(
-      {APIType? ofType, APISchemaObject? ofSchema, bool any = false})
-      : type = APIType.object {
+  APISchemaObject.map({
+    APIType? ofType,
+    APISchemaObject? ofSchema,
+    bool any = false,
+  }) : type = APIType.object {
     if (ofType != null) {
       additionalPropertySchema = APISchemaObject()..type = ofType;
     } else if (ofSchema != null) {
@@ -33,7 +35,8 @@ class APISchemaObject extends APIObject {
     } else if (any) {
     } else {
       throw ArgumentError(
-          "Invalid 'APISchemaObject.map' with neither 'ofType', 'any' or 'ofSchema' specified.");
+        "Invalid 'APISchemaObject.map' with neither 'ofType', 'any' or 'ofSchema' specified.",
+      );
     }
   }
   APISchemaObject.array({APIType? ofType, APISchemaObject? ofSchema})
@@ -44,7 +47,8 @@ class APISchemaObject extends APIObject {
       items = ofSchema;
     } else {
       throw ArgumentError(
-          "Invalid 'APISchemaObject.array' with neither 'ofType' or 'ofSchema' specified.");
+        "Invalid 'APISchemaObject.array' with neither 'ofType' or 'ofSchema' specified.",
+      );
     }
   }
   APISchemaObject.object(this.properties) : type = APIType.object;

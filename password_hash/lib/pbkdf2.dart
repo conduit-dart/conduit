@@ -33,7 +33,11 @@ class PBKDF2 {
   ///
   /// See also [generateBase64Key], which base64 encodes the key returned from this method for storage.
   List<int> generateKey(
-      String password, String salt, int rounds, int keyLength) {
+    String password,
+    String salt,
+    int rounds,
+    int keyLength,
+  ) {
     if (keyLength > (pow(2, 32) - 1) * _blockSize) {
       throw PBKDF2Exception("Derived key too long");
     }
@@ -71,7 +75,11 @@ class PBKDF2 {
   ///
   /// This method invokes [generateKey] and base64 encodes the result.
   String generateBase64Key(
-      String password, String salt, int rounds, int keyLength) {
+    String password,
+    String salt,
+    int rounds,
+    int keyLength,
+  ) {
     const converter = Base64Encoder();
 
     return converter.convert(generateKey(password, salt, rounds, keyLength));

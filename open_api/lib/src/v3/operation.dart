@@ -12,15 +12,18 @@ import 'package:conduit_open_api/src/v3/server.dart';
 
 /// Describes a single API operation on a path.
 class APIOperation extends APIObject {
-  APIOperation(this.id, this.responses,
-      {this.tags,
-      this.summary,
-      this.description,
-      this.parameters,
-      this.security,
-      this.requestBody,
-      this.callbacks,
-      this.deprecated});
+  APIOperation(
+    this.id,
+    this.responses, {
+    this.tags,
+    this.summary,
+    this.description,
+    this.parameters,
+    this.security,
+    this.requestBody,
+    this.callbacks,
+    this.deprecated,
+  });
 
   APIOperation.empty();
 
@@ -157,7 +160,8 @@ class APIOperation extends APIObject {
 
     if (responses == null) {
       throw ArgumentError(
-          "Invalid specification. APIOperation must have non-null values for: 'responses'.");
+        "Invalid specification. APIOperation must have non-null values for: 'responses'.",
+      );
     }
 
     object.encode("tags", tags);

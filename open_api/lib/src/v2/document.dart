@@ -71,7 +71,9 @@ class APIDocument extends APIObject {
     definitions =
         object.decodeObjectMap("definitions", () => APISchemaObject());
     securityDefinitions = object.decodeObjectMap(
-        "securityDefinitions", () => APISecurityScheme());
+      "securityDefinitions",
+      () => APISecurityScheme(),
+    );
   }
 
   @override

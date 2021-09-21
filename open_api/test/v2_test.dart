@@ -58,13 +58,15 @@ void main() {
       expect(getNamespace.produces, contains("application/yaml"));
       expect(getNamespace.parameters!.length, 8);
       expect(
-          getNamespace.parameters!
-              .firstWhere((p) => p!.name == "limit")!
-              .location,
-          APIParameterLocation.query);
+        getNamespace.parameters!
+            .firstWhere((p) => p!.name == "limit")!
+            .location,
+        APIParameterLocation.query,
+      );
       expect(
-          getNamespace.parameters!.firstWhere((p) => p!.name == "limit")!.type,
-          APIType.integer);
+        getNamespace.parameters!.firstWhere((p) => p!.name == "limit")!.type,
+        APIType.integer,
+      );
       expect(getNamespace.responses!.keys, contains("401"));
       expect(getNamespace.responses!.keys, contains("200"));
 
@@ -72,7 +74,9 @@ void main() {
       expect(postNamespace!.parameters!.length, 1);
       expect(postNamespace.parameters!.first!.name, "body");
       expect(
-          postNamespace.parameters!.first!.location, APIParameterLocation.body);
+        postNamespace.parameters!.first!.location,
+        APIParameterLocation.body,
+      );
     });
 
     test("Sample - Reference", () {
@@ -83,9 +87,10 @@ void main() {
       expect(schema!.description, contains("APIVersions lists the"));
       expect(schema.isRequired, ["versions", "serverAddressByClientCIDRs"]);
       expect(
-          schema.properties!["serverAddressByClientCIDRs"]!.items!
-              .properties!["clientCIDR"]!.description,
-          contains("The CIDR"));
+        schema.properties!["serverAddressByClientCIDRs"]!.items!
+            .properties!["clientCIDR"]!.description,
+        contains("The CIDR"),
+      );
     });
 
     test("Can encode as JSON", () {

@@ -120,7 +120,9 @@ class APISecurityScheme extends APIObject {
       case APISecuritySchemeType.oauth2:
         {
           flows = object.decodeObjectMap(
-              "flows", () => APISecuritySchemeOAuth2Flow.empty());
+            "flows",
+            () => APISecuritySchemeOAuth2Flow.empty(),
+          );
         }
         break;
       case APISecuritySchemeType.http:
@@ -136,7 +138,8 @@ class APISecurityScheme extends APIObject {
         break;
       default:
         throw ArgumentError(
-            "APISecurityScheme must have non-null values for: 'type'.");
+          "APISecurityScheme must have non-null values for: 'type'.",
+        );
     }
   }
 
@@ -146,7 +149,8 @@ class APISecurityScheme extends APIObject {
 
     if (type == null) {
       throw ArgumentError(
-          "APISecurityScheme must have non-null values for: 'type'.");
+        "APISecurityScheme must have non-null values for: 'type'.",
+      );
     }
 
     object.encode("type", APISecuritySchemeTypeCodec.encode(type));
@@ -157,7 +161,8 @@ class APISecurityScheme extends APIObject {
         {
           if (name == null || location == null) {
             throw ArgumentError(
-                "APISecurityScheme with 'apiKey' type must have non-null values for: 'name', 'location'.");
+              "APISecurityScheme with 'apiKey' type must have non-null values for: 'name', 'location'.",
+            );
           }
 
           object.encode("name", name);
@@ -168,7 +173,8 @@ class APISecurityScheme extends APIObject {
         {
           if (flows == null) {
             throw ArgumentError(
-                "APISecurityScheme with 'oauth2' type must have non-null values for: 'flows'.");
+              "APISecurityScheme with 'oauth2' type must have non-null values for: 'flows'.",
+            );
           }
 
           object.encodeObjectMap("flows", flows);
@@ -178,7 +184,8 @@ class APISecurityScheme extends APIObject {
         {
           if (scheme == null) {
             throw ArgumentError(
-                "APISecurityScheme with 'http' type must have non-null values for: 'scheme'.");
+              "APISecurityScheme with 'http' type must have non-null values for: 'scheme'.",
+            );
           }
 
           object.encode("scheme", scheme);
@@ -189,14 +196,16 @@ class APISecurityScheme extends APIObject {
         {
           if (connectURL == null) {
             throw ArgumentError(
-                "APISecurityScheme with 'openID' type must have non-null values for: 'connectURL'.");
+              "APISecurityScheme with 'openID' type must have non-null values for: 'connectURL'.",
+            );
           }
           object.encode("openIdConnectUrl", connectURL);
         }
         break;
       default:
         throw ArgumentError(
-            "APISecurityScheme must have non-null values for: 'type'.");
+          "APISecurityScheme must have non-null values for: 'type'.",
+        );
     }
   }
 }
@@ -205,13 +214,26 @@ class APISecurityScheme extends APIObject {
 class APISecuritySchemeOAuth2Flow extends APIObject {
   APISecuritySchemeOAuth2Flow.empty();
   APISecuritySchemeOAuth2Flow.code(
-      this.authorizationURL, this.tokenURL, this.refreshURL, this.scopes);
+    this.authorizationURL,
+    this.tokenURL,
+    this.refreshURL,
+    this.scopes,
+  );
   APISecuritySchemeOAuth2Flow.implicit(
-      this.authorizationURL, this.refreshURL, this.scopes);
+    this.authorizationURL,
+    this.refreshURL,
+    this.scopes,
+  );
   APISecuritySchemeOAuth2Flow.password(
-      this.tokenURL, this.refreshURL, this.scopes);
+    this.tokenURL,
+    this.refreshURL,
+    this.scopes,
+  );
   APISecuritySchemeOAuth2Flow.client(
-      this.tokenURL, this.refreshURL, this.scopes);
+    this.tokenURL,
+    this.refreshURL,
+    this.scopes,
+  );
 
   /// The authorization URL to be used for this flow.
   ///

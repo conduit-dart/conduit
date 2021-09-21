@@ -24,7 +24,8 @@ class APIObject extends Coding {
         .toList();
     if (invalidKeys.isNotEmpty) {
       throw ArgumentError(
-          "extension keys must start with 'x-'. The following keys are invalid: ${invalidKeys.join(", ")}");
+        "extension keys must start with 'x-'. The following keys are invalid: ${invalidKeys.join(", ")}",
+      );
     }
 
     extensions.forEach((key, value) {

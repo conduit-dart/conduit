@@ -22,7 +22,8 @@ class APICallback extends APIObject {
     object.forEach((key, dynamic value) {
       if (value is! KeyedArchive) {
         throw ArgumentError(
-            "Invalid specification. Callback contains non-object value.");
+          "Invalid specification. Callback contains non-object value.",
+        );
       }
       paths![key] = value.decodeObject(key, () => APIPath())!;
     });
