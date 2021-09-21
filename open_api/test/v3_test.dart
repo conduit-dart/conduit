@@ -356,6 +356,7 @@ void main() {
 }
 
 Future<String> fetchStripExample() async {
+  // TODO replace with the new pubignore feature
   // Spec file is too large for pub, and no other way to remove from pub publish
   // than putting in .gitignore. Therefore, this file must be downloaded locally
   // to this path, from this path: https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json
