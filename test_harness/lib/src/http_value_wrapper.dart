@@ -48,7 +48,8 @@ class HTTPValueMatcherWrapper extends Matcher {
     try {
       return onSuccess(HttpDate.parse(item));
       // ignore: empty_catches
-    } on FormatException {} on HttpException {}
+    } on FormatException {
+    } on HttpException {}
 
     try {
       return onSuccess(DateTime.parse(item));

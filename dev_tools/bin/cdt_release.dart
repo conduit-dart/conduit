@@ -104,4 +104,3 @@ void runEx(String exeName,
       progress: Progress.print(),
       terminal: true);
 }
-

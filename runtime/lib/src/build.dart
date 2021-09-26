@@ -88,14 +88,17 @@ class Build {
       if (devDeps != null) {
         pubspecMap['dev_dependencies'] = devDeps;
       }
-      overrides['conduit'] = {'path': '../conduit'};
-      overrides['conduit_password_hash'] = {'path': '../password_hash'};
-      overrides['conduit_open_api'] = {'path': '../open_api'};
-      overrides['conduit_codable'] = {'path': '../codable'};
-      overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
-      overrides['conduit_config'] = {'path': '../config'};
-      overrides['conduit_common'] = {'path': '../common'};
-      overrides['conduit_runtime'] = {'path': '../runtime'};
+
+      overrides['conduit'] = {
+        'path': appDst.toFilePath(windows: Platform.isWindows)
+      };
+      // overrides['conduit_password_hash'] = {'path': '../password_hash'};
+      // overrides['conduit_open_api'] = {'path': '../open_api'};
+      // overrides['conduit_codable'] = {'path': '../codable'};
+      // overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
+      // overrides['conduit_config'] = {'path': '../config'};
+      // overrides['conduit_common'] = {'path': '../common'};
+      // overrides['conduit_runtime'] = {'path': '../runtime'};
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
