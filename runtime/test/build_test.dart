@@ -12,21 +12,16 @@ need to test for local (relative), in pub cache (absolute)
 
 void main() {
   setUpAll(() async {
-    var cmd;
-    if (Platform.isWindows) {
-      cmd = (await Process.run("where", ["pub.bat"])).stdout;
-    } else {
-      cmd = (await Process.run("which", ["pub"])).stdout;
-    }
+    const String cmd = "dart";
 
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
-    await Process.run(cmd, ["get", "--offline"],
+    await Process.run(cmd, ["pub", "get", "--offline"],
         workingDirectory: testPackagesUri
             .resolve("application/")
             .toFilePath(windows: Platform.isWindows),
         runInShell: true);
-    await Process.run(cmd, ["get", "--offline"],
+    await Process.run(cmd, ["pub", "get", "--offline"],
         workingDirectory: testPackagesUri
             .resolve("dependency/")
             .toFilePath(windows: Platform.isWindows),

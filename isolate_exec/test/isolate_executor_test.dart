@@ -180,6 +180,6 @@ class AdditionalContentsInstantiator extends Executable {
 }
 
 Future<ProcessResult> _getDependencies(String projectDir) {
-  final cmd = Platform.isWindows ? "pub.bat" : "pub";
-  return Process.run(cmd, ["get"], workingDirectory: projectDir);
+  const String cmd = "dart";
+  return Process.run(cmd, ["pub", "get"], workingDirectory: projectDir);
 }

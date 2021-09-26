@@ -30,15 +30,15 @@ class CLIClient {
   StringBuffer _output = StringBuffer();
 
   static Future activateCLI({String path = "."}) {
-    final cmd = Platform.isWindows ? "pub.bat" : "pub";
+    const String cmd = "dart";
 
-    return Process.run(cmd, ["global", "activate", "-spath", path]);
+    return Process.run(cmd, ["pub", "global", "activate", "-spath", path]);
   }
 
   static Future deactivateCLI() {
-    final cmd = Platform.isWindows ? "pub.bat" : "pub";
+    const String cmd = "dart";
 
-    return Process.run(cmd, ["global", "deactivate", "conduit"]);
+    return Process.run(cmd, ["pub", "global", "deactivate", "conduit"]);
   }
 
   Directory get defaultMigrationDirectory {

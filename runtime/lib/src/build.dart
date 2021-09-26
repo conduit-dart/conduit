@@ -124,9 +124,10 @@ class Build {
   }
 
   Future getDependencies() async {
-    final cmd = Platform.isWindows ? "pub.bat" : "pub";
+    const String cmd = "dart";
 
-    final res = await Process.run(cmd, ["get", "--offline", "--no-precompile"],
+    final res = await Process.run(
+        cmd, ["pub", "get", "--offline", "--no-precompile"],
         workingDirectory:
             context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
         runInShell: true);
@@ -140,8 +141,10 @@ class Build {
 
   Future compile(Uri srcUri, Uri dstUri) async {
     final res = await Process.run(
-        "dart2native",
+        "dart",
         [
+          "compilie",
+          "exe",
           "-v",
           srcUri.toFilePath(windows: Platform.isWindows),
           "-o",

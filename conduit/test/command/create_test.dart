@@ -166,15 +166,10 @@ void main() {
           isZero,
         );
 
-        String cmd;
-        if (Platform.isWindows) {
-          cmd = (await Process.run("where", ["pub.bat"])).stdout as String;
-        } else {
-          cmd = (await Process.run("which", ["pub"])).stdout as String;
-        }
+        const String cmd = 'dart';
         var res = Process.runSync(
           cmd,
-          ["run", "test", "-j", "1"],
+          ["pub", "run", "test", "-j", "1"],
           runInShell: true,
           workingDirectory: cli.agent.workingDirectory.uri
               .resolve("test_project")
