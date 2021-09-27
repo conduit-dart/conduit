@@ -92,15 +92,20 @@ class Build {
       overrides['conduit'] = {
         'path': appDst.toFilePath(windows: Platform.isWindows)
       };
-      overrides['conduit_password_hash'] = {'path': '../password_hash'};
-      overrides['conduit_open_api'] = {'path': '../open_api'};
-      overrides['conduit_codable'] = {'path': '../codable'};
-      overrides['conduit_config'] = {'path': '../config'};
-      overrides['conduit_common'] = {'path': '../common'};
-      overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
+      // overrides['conduit_password_hash'] = {'path': '../password_hash'};
+      // overrides['conduit_open_api'] = {'path': '../open_api'};
+      // overrides['conduit_codable'] = {'path': '../codable'};
+      // overrides['conduit_config'] = {
+      //   'path': appDst
+      //       .resolve('../conduit_config')
+      //       .toFilePath(windows: Platform.isWindows)
+      // };
+      // overrides['conduit_common'] = {'path': '../common'};
+      // overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
       overrides['conduit_runtime'] = {
-        'path':
-            appDst.resolve('../runtime').toFilePath(windows: Platform.isWindows)
+        'path': appDst
+            .resolve('../conduit_runtime')
+            .toFilePath(windows: Platform.isWindows)
       };
     }
 
@@ -114,8 +119,6 @@ class Build {
     for (final compiler in context.context.compilers) {
       compiler.didFinishPackageGeneration(context);
     }
-
-    print(pubspecMap);
 
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();
