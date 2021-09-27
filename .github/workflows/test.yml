@@ -76,7 +76,7 @@ jobs:
   conduit_tool:
     env:
       TEST_DIR: ci
-      PATH: "${PATH}:${PUB_CACHE}/bin"
+      PATH: "$PATH:$PUB_CACHE/bin"
     runs-on: ubuntu-latest
     services:
       postgres:
