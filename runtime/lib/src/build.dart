@@ -92,13 +92,16 @@ class Build {
       overrides['conduit'] = {
         'path': appDst.toFilePath(windows: Platform.isWindows)
       };
-      // overrides['conduit_password_hash'] = {'path': '../password_hash'};
-      // overrides['conduit_open_api'] = {'path': '../open_api'};
-      // overrides['conduit_codable'] = {'path': '../codable'};
-      // overrides['conduit_config'] = {'path': '../config'};
-      // overrides['conduit_common'] = {'path': '../common'};
-      // overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
-      // overrides['conduit_runtime'] = {'path': '../runtime'};
+      overrides['conduit_password_hash'] = {'path': '../password_hash'};
+      overrides['conduit_open_api'] = {'path': '../open_api'};
+      overrides['conduit_codable'] = {'path': '../codable'};
+      overrides['conduit_config'] = {'path': '../config'};
+      overrides['conduit_common'] = {'path': '../common'};
+      overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
+      overrides['conduit_runtime'] = {
+        'path':
+            appDst.resolve('../runtime').toFilePath(windows: Platform.isWindows)
+      };
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
