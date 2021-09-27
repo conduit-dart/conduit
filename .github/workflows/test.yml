@@ -76,7 +76,7 @@ jobs:
   conduit_tool:
     env:
       TEST_DIR: ci
-      PUB_CACHE: "${HOME}/.pub-cache"
+      # PUB_CACHE: "${HOME}/.pub-cache"
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -99,6 +99,7 @@ jobs:
       - name: Get Conduit Dependencies
         working-directory: conduit
         run: dart pub get
+      - run: echo $PUB_CACHE && ls ..
       - name: Activate Conduit
         run: dart pub global activate --source path conduit/
       - name: Run tests
