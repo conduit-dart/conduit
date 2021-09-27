@@ -101,3 +101,4 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: export PATH=$PATH:$PUB_CACHE/bin && dart generated_test_runner.dart
+      - run: cat _build/packages/conduit/pubspec.yaml
