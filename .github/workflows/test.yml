@@ -99,9 +99,10 @@ jobs:
       - name: Get Conduit Dependencies
         working-directory: conduit
         run: dart pub get
-      - run: echo $PUB_CACHE && ls ..
       - name: Activate Conduit
-        run: dart pub global activate --source path conduit/
+        run: |
+          dart pub global activate --source path conduit/
+          dart pub global activate --source path conduit_password_hash/
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: dart generated_test_runner.dart
