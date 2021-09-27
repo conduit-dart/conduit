@@ -101,5 +101,5 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: dart generated_test_runner.dart
-      - run: cat _build/packages/conduit/pubspec.yaml
+      - run: cat _build/packages/conduit/pubspec.yaml && ls _build/packages
         if: always()
