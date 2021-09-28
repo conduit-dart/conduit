@@ -102,11 +102,11 @@ class Build {
       // };
       // overrides['conduit_common'] = {'path': '../common'};
       // overrides['conduit_isolate_exec'] = {'path': '../isolate_exec'};
-      // overrides['conduit_runtime'] = {
-      //   'path': appDst
-      //       .resolve('../conduit_runtime')
-      //       .toFilePath(windows: Platform.isWindows)
-      // };
+      overrides['conduit_runtime'] = {
+        'path': appDst
+            .resolve('../conduit_runtime')
+            .toFilePath(windows: Platform.isWindows)
+      };
     }
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
