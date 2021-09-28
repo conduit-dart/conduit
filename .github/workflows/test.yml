@@ -92,9 +92,9 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-      # - name: Get Dependencies
-      #   working-directory: ${{ env.TEST_DIR }}
-      #   run: dart pub get
+      - name: Get Dependencies
+        working-directory: ${{ env.TEST_DIR }}
+        run: dart pub get
       - name: Get Conduit Dependencies
         working-directory: conduit
         run: dart pub get
