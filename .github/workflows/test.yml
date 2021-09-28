@@ -106,7 +106,6 @@ jobs:
           dart pub global activate --source path isolate_exec
           dart pub global activate --source path open_api
           dart pub global activate --source path password_hash
-          dart pub global activate --source path runtime
           dart pub global activate --source path test_harness
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
