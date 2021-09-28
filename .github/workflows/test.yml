@@ -92,12 +92,22 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
-      - name: Get Dependencies
-        working-directory: ${{ env.TEST_DIR }}
-        run: dart pub get
-      - name: Get Conduit Dependencies
-        working-directory: conduit
-        run: dart pub get
+      # - name: Get Dependencies
+      #   working-directory: ${{ env.TEST_DIR }}
+      #   run: dart pub get
+      # - name: Get Conduit Dependencies
+      #   working-directory: conduit
+      #   run: dart pub get
+      - name: Global Activate
+        run: |
+          dart pub global activate --source path codable
+          dart pub global activate --source path common
+          dart pub global activate --source path config
+          dart pub global activate --source path isolate_exec
+          dart pub global activate --source path open_api
+          dart pub global activate --source path password_hash
+          dart pub global activate --source path runtime
+          dart pub global activate --source path test_harness
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: ls $PUB_CACHE/* && export PATH=$PATH:$PUB_CACHE/bin:$PUB_CACHE && dart generated_test_runner.dart
