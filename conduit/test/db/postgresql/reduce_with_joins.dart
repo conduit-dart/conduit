@@ -143,7 +143,7 @@ Future populate() async {
   company1 = await (Query<Company>(ctx)..values.budget = 200000).insert();
   company2 = await (Query<Company>(ctx)..values.budget = 300000).insert();
 
-  Future addEmploies(Company company) async {
+  Future addEmployees(Company company) async {
     for (var i = 1; i <= 10; ++i) {
       final employee = await (Query<Employee>(ctx)
             ..values.salary = i * 100
@@ -159,8 +159,8 @@ Future populate() async {
     }
   }
 
-  await addEmploies(company1);
-  await addEmploies(company2);
+  await addEmployees(company1);
+  await addEmployees(company2);
 }
 
 class Company extends ManagedObject<_Company> implements _Company {}
@@ -207,7 +207,7 @@ class _Report {
   @primaryKey
   int? id;
 
-  int? ernings;
+  int? earnings;
 
   @Relate(#quarterlyReports)
   Company? company;
