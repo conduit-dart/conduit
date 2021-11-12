@@ -1,3 +1,5 @@
+import 'package:meta/meta_meta.dart';
+
 import '../query/query.dart';
 import 'managed.dart';
 
@@ -225,6 +227,7 @@ class Column {
 }
 
 /// An annotation used to specify how a field is serialized in API responses.
+@Target({TargetKind.field, TargetKind.getter, TargetKind.setter})
 class ResponseKey {
   const ResponseKey({this.name});
 

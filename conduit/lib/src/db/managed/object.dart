@@ -252,7 +252,7 @@ abstract class ManagedObject<T> extends Serializable {
             throw ValidationException(["invalid input type for key '$key'"]);
           }
 
-          entity.runtime!.setTransientValueForKey(this, key, decodedValue);
+          entity.runtime!.setTransientValueForKey(this, property.name, decodedValue);
         }
       } else {
         backing.setValueForProperty(
@@ -285,7 +285,7 @@ abstract class ManagedObject<T> extends Serializable {
         .forEach((attr) {
       var value = entity.runtime!.getTransientValueForKey(this, attr!.name);
       if (value != null) {
-        outputMap[mapKeyName(attr.name)] = value;
+        outputMap[mapKeyName(attr.responseKey?.name ?? attr.name)] = value;
       }
     });
 
