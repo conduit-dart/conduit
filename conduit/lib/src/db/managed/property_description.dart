@@ -4,10 +4,8 @@ import 'package:conduit_runtime/runtime.dart';
 
 import '../persistent_store/persistent_store.dart';
 import '../query/query.dart';
-import 'exception.dart';
 import 'managed.dart';
 import 'relationship_type.dart';
-import 'type.dart';
 
 /// Contains database column information and metadata for a property of a [ManagedObject] object.
 ///
@@ -22,7 +20,8 @@ abstract class ManagedPropertyDescription {
       bool nullable = false,
       bool includedInDefaultResultSet = true,
       bool autoincrement = false,
-      List<ManagedValidator?> validators = const []})
+      List<ManagedValidator?> validators = const [],
+      this.responseKey,})
       : isUnique = unique,
         isIndexed = indexed,
         isNullable = nullable,
@@ -84,6 +83,8 @@ abstract class ManagedPropertyDescription {
   List<ManagedValidator?> get validators => _validators;
 
   final List<ManagedValidator?> _validators;
+
+  final ResponseKey? responseKey;
 
   /// Whether or not a the argument can be assigned to this property.
   bool isAssignableWith(dynamic dartValue) => type!.isAssignableWith(dartValue);
@@ -159,7 +160,8 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       bool nullable = false,
       bool includedInDefaultResultSet = true,
       bool autoincrement = false,
-      List<ManagedValidator?> validators = const []})
+      List<ManagedValidator?> validators = const [],
+      ResponseKey? responseKey})
       : isPrimaryKey = primaryKey,
         defaultValue = defaultValue,
         transientStatus = transientStatus,
@@ -169,10 +171,13 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
             nullable: nullable,
             includedInDefaultResultSet: includedInDefaultResultSet,
             autoincrement: autoincrement,
-            validators: validators);
+            validators: validators,
+            responseKey: responseKey,
+      );
 
   ManagedAttributeDescription.transient(ManagedEntity entity, String name,
-      ManagedType type, Type declaredType, this.transientStatus)
+      ManagedType type, Type declaredType, this.transientStatus,
+      {ResponseKey? responseKey})
       : isPrimaryKey = false,
         defaultValue = null,
         super(entity, name, type, declaredType,
@@ -181,7 +186,9 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
             nullable: false,
             includedInDefaultResultSet: false,
             autoincrement: false,
-            validators: []);
+            validators: [],
+            responseKey: responseKey
+      );
 
   // ignore: prefer_constructors_over_static_methods
   static ManagedAttributeDescription make<T>(
@@ -388,13 +395,16 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       bool indexed = false,
       bool nullable = false,
       bool includedInDefaultResultSet = true,
-      List<ManagedValidator> validators = const []})
+      List<ManagedValidator> validators = const [],
+      ResponseKey? responseKey})
       : super(entity, name, type, declaredType,
             unique: unique,
             indexed: indexed,
             nullable: nullable,
             includedInDefaultResultSet: includedInDefaultResultSet,
-            validators: validators);
+            validators: validators,
+            responseKey: responseKey,
+  );
 
   // ignore: prefer_constructors_over_static_methods
   static ManagedRelationshipDescription make<T>(

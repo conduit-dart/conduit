@@ -1,10 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:conduit/src/db/managed/attributes.dart';
-import 'package:conduit/src/db/managed/data_model.dart';
 import 'package:conduit/src/db/managed/managed.dart';
-import 'package:conduit/src/db/managed/object.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
@@ -12,6 +9,7 @@ import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';
+import 'package:recase/recase.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
@@ -42,7 +40,7 @@ class EntityBuilder {
 
   ManagedEntityRuntime? runtime;
 
-  String? name;
+  late String name;
   late ManagedEntity entity;
   List<String>? uniquePropertySet;
   late PropertyBuilder primaryKeyProperty;
@@ -179,21 +177,27 @@ class EntityBuilder {
         " ${candidates.map((p) => p.name).join(", ")}");
   }
 
-  String? _getName() {
+  String _getName() {
     if (metadata?.name != null) {
-      return metadata!.name;
+      return metadata!.name!;
     }
 
-    var declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
-        .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
+    String mirrorName() {
+      var declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
+          .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
 
-    if (declaredTableNameClass == null) {
-      return tableDefinitionTypeName;
+      if (declaredTableNameClass == null) {
+        return tableDefinitionTypeName;
+      }
+
+      Logger("conduit").warning(
+          "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.");
+      return declaredTableNameClass.invoke(#tableName, []).reflectee as String? ?? tableDefinitionTypeName;
     }
 
-    Logger("conduit").warning(
-        "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.");
-    return declaredTableNameClass.invoke(#tableName, []).reflectee as String?;
+    final name = mirrorName();
+
+    return (metadata ?? const Table()).legacyNaming ? name : name.snakeCase;
   }
 
   List<PropertyBuilder> _getProperties() {

@@ -23,7 +23,11 @@ class Table {
   /// the name of the underlying table matches the name of the table definition class.
   ///
   /// See also [Table.unique] for the behavior of [uniquePropertySet].
-  const Table({this.name, this.uniquePropertySet});
+  const Table(
+      {this.legacyNaming = true,
+      this.name,
+      this.uniquePropertySet,
+      this.columnLegacyNaming = true});
 
   /// Configures each instance of a table definition to be unique for the combination of [properties].
   ///
@@ -39,10 +43,18 @@ class Table {
   /// null if not set.
   final List<Symbol>? uniquePropertySet;
 
+  /// Useful to avoid/allow using new snake_case naming convention if [name] is not set
+  /// This property defaults to true to avoid breaking change ensuring backward compatibility
+  final bool legacyNaming;
+
   /// The name of the underlying database table.
   ///
-  /// If this value is not set, the name defaults to the name of the table definition class.
+  /// If this value is not set, the name defaults to the name of the table definition class using snake_case naming convention without the prefix '_' underscore.
   final String? name;
+
+  /// Useful to avoid/allow using new snake_case naming convention for columns if [Column.name] is not set
+  /// This property defaults to true to avoid breaking change ensuring backward compatibility
+  final bool columnLegacyNaming;
 }
 
 /// Possible values for a delete rule in a [Relate].
@@ -128,7 +140,9 @@ class Column {
       bool indexed = false,
       bool omitByDefault = false,
       bool autoincrement = false,
-      List<Validate> validators = const []})
+      List<Validate> validators = const [],
+      this.legacyNaming,
+      this.name})
       : isPrimaryKey = primaryKey,
         databaseType = databaseType,
         isNullable = nullable,
@@ -197,6 +211,27 @@ class Column {
   /// When the data model is compiled, this list is combined with any `Validate` annotations on the annotated property.
   ///
   final List<Validate> validators;
+
+  /// Useful to avoid/allow using new snake_case naming convention if [name] is not set
+  ///
+  /// This property defaults to null to delegate to [Table.columnLegacyNaming]
+  /// If true or false is set then [Table.columnLegacyNaming] will be ignored
+  final bool? legacyNaming;
+
+  /// The name of the underlying column in table.
+  ///
+  /// If this value is not set, the name defaults to the name of the model attribute using snake_case naming convention.
+  final String? name;
+}
+
+/// An annotation used to specify how a field is serialized in API responses.
+class ResponseKey {
+  const ResponseKey({this.name});
+
+  /// The name to be used when serializing this field.
+  ///
+  /// If this value is not set, the name defaults to [Column.name].
+  final String? name;
 }
 
 /// Annotation for [ManagedObject] properties that allows them to participate in [ManagedObject.asMap] and/or [ManagedObject.readFromMap].

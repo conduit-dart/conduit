@@ -7,11 +7,13 @@ import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/validator_builder.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:recase/recase.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)
       : relate = firstMetadataOfType(declaration),
         column = firstMetadataOfType(declaration),
+        responseKey = firstMetadataOfType(declaration),
         serialize = _getTransienceForProperty(declaration) {
     name = _getName();
     type = _getType();
@@ -39,6 +41,7 @@ class PropertyBuilder {
   final DeclarationMirror declaration;
   final Relate? relate;
   final Column? column;
+  final ResponseKey? responseKey;
 
   List<ValidatorBuilder>? get validators => _validators;
   Serialize? serialize;
@@ -85,6 +88,7 @@ class PropertyBuilder {
       nullable = column?.isNullable ?? false;
       includeInDefaultResultSet = !(column?.shouldOmitByDefault ?? false);
       autoincrement = column?.autoincrement ?? false;
+      name = column?.name ?? name;
     }
 
     validators!.forEach((vb) => vb.compile(entityBuilders));
@@ -153,7 +157,8 @@ class PropertyBuilder {
               .map((v) => v.managedValidator)
               .where((v) => v != null)
               .cast<ManagedValidator>()
-              .toList());
+              .toList(),
+          responseKey: responseKey,);
     } else {
       final dartType = getDeclarationType().reflectedType;
       attribute = ManagedAttributeDescription(
@@ -166,7 +171,8 @@ class PropertyBuilder {
           nullable: nullable,
           includedInDefaultResultSet: includeInDefaultResultSet,
           autoincrement: autoincrement,
-          validators: validators!.map((v) => v.managedValidator).toList());
+          validators: validators!.map((v) => v.managedValidator).toList(),
+          responseKey: responseKey,);
     }
   }
 
@@ -218,20 +224,40 @@ class PropertyBuilder {
   }
 
   String _getName() {
-    if (declaration is MethodMirror) {
-      if ((declaration as MethodMirror).isGetter) {
-        return MirrorSystem.getName(declaration.simpleName);
-      } else if ((declaration as MethodMirror).isSetter) {
-        var name = MirrorSystem.getName(declaration.simpleName);
-        return name.substring(0, name.length - 1);
-      }
-    } else if (declaration is VariableMirror) {
-      return MirrorSystem.getName(declaration.simpleName);
+    if (column?.name != null) {
+      return column!.name!;
     }
 
-    throw ManagedDataModelError(
-        "Tried getting property type description from non-property. This is an internal error, "
-        "as this method shouldn't be invoked on non-property or non-accessors.");
+    String? mirrorName() {
+      if (declaration is MethodMirror) {
+        if ((declaration as MethodMirror).isGetter) {
+          return MirrorSystem.getName(declaration.simpleName);
+        } else if ((declaration as MethodMirror).isSetter) {
+          var name = MirrorSystem.getName(declaration.simpleName);
+          return name.substring(0, name.length - 1);
+        }
+      } else if (declaration is VariableMirror) {
+        return MirrorSystem.getName(declaration.simpleName);
+      }
+      return null;
+    }
+
+    final name = mirrorName();
+
+    if(name == null) {
+      throw ManagedDataModelError(
+          "Tried getting property type description from non-property. This is an internal error, "
+              "as this method shouldn't be invoked on non-property or non-accessors.");
+    }
+
+    final bool useLegacyNaming;
+    if(column?.legacyNaming != null) {
+      useLegacyNaming = column!.legacyNaming!;
+    } else {
+      useLegacyNaming = (parent.metadata ?? const Table()).columnLegacyNaming;
+    }
+
+    return useLegacyNaming ? name : name.snakeCase;
   }
 
   EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder>? builders) {
