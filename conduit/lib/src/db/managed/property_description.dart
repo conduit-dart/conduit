@@ -21,6 +21,7 @@ abstract class ManagedPropertyDescription {
       bool includedInDefaultResultSet = true,
       bool autoincrement = false,
       List<ManagedValidator?> validators = const [],
+      this.responseModel,
       this.responseKey,})
       : isUnique = unique,
         isIndexed = indexed,
@@ -84,6 +85,7 @@ abstract class ManagedPropertyDescription {
 
   final List<ManagedValidator?> _validators;
 
+  final ResponseModel? responseModel;
   final ResponseKey? responseKey;
 
   /// Whether or not a the argument can be assigned to this property.
@@ -161,7 +163,8 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       bool includedInDefaultResultSet = true,
       bool autoincrement = false,
       List<ManagedValidator?> validators = const [],
-      ResponseKey? responseKey})
+      ResponseModel? responseModel,
+      ResponseKey? responseKey,})
       : isPrimaryKey = primaryKey,
         defaultValue = defaultValue,
         transientStatus = transientStatus,
@@ -172,6 +175,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
             includedInDefaultResultSet: includedInDefaultResultSet,
             autoincrement: autoincrement,
             validators: validators,
+            responseModel: responseModel,
             responseKey: responseKey,
       );
 
@@ -396,13 +400,15 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       bool nullable = false,
       bool includedInDefaultResultSet = true,
       List<ManagedValidator> validators = const [],
-      ResponseKey? responseKey})
+      ResponseModel? responseModel,
+      ResponseKey? responseKey,})
       : super(entity, name, type, declaredType,
             unique: unique,
             indexed: indexed,
             nullable: nullable,
             includedInDefaultResultSet: includedInDefaultResultSet,
             validators: validators,
+            responseModel: responseModel,
             responseKey: responseKey,
   );
 

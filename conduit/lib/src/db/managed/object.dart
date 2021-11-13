@@ -87,6 +87,16 @@ abstract class ManagedObject<T> extends Serializable {
     return _responseKeyProperties!;
   }
 
+  bool? _modelFieldIncludeIfNull;
+  bool get modelFieldIncludeIfNull {
+    if(_modelFieldIncludeIfNull == null) {
+      if(properties.isNotEmpty)
+        _modelFieldIncludeIfNull = properties.values.first?.responseModel?.fieldIncludeIfNull ?? true;
+    }
+    return _modelFieldIncludeIfNull ??= true;
+  }
+
+
   String mapKeyName(String propertyName) {
     final property = properties[propertyName];
     return property?.responseKey?.name ?? property?.name ?? propertyName;
@@ -276,7 +286,12 @@ abstract class ManagedObject<T> extends Serializable {
 
     backing.contents!.forEach((k, v) {
       if (!_isPropertyPrivate(k!)) {
-        outputMap[mapKeyName(k)] = properties[k]!.convertToPrimitiveValue(v);
+        final property = properties[k];
+        final value = property!.convertToPrimitiveValue(v);
+        if(value == null && !_includeIfNull(property)) {
+          return;
+        }
+        outputMap[mapKeyName(k)] = value;
       }
     });
 
@@ -298,4 +313,16 @@ abstract class ManagedObject<T> extends Serializable {
 
   static bool _isPropertyPrivate(String propertyName) =>
       propertyName.startsWith("_");
+
+  bool _includeIfNull(ManagedPropertyDescription property) {
+    final bool includeIfNull;
+    final propertyIncludeIfNull = property.responseKey?.includeIfNull;
+    if(propertyIncludeIfNull != null) {
+      includeIfNull = propertyIncludeIfNull;
+    } else {
+      includeIfNull = modelFieldIncludeIfNull;
+    }
+    return includeIfNull;
+  }
+
 }

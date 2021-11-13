@@ -1,6 +1,7 @@
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -550,6 +551,42 @@ void main() {
       expect(outputMap['CrEaTiOn_DaTe'], isNotNull);
     });
   });
+
+  group("ResponseModel and ResponseKey includeIfNull", () {
+    late ManagedDataModel dm;
+    late ManagedContext context;
+
+    setUp(() {
+      dm = ManagedDataModel([AccessPoint]);
+      context = ManagedContext(dm, DefaultPersistentStore());
+    });
+
+    tearDown(() async {
+      await context.close();
+    });
+
+    test("ResponseModel fieldIncludeIfNull with ResponseKey includeIfNull override", () {
+      final inputMap = {
+        'id': 1,
+        'venue_location': "Theater",
+        'info': null,
+        'CrEaTiOn_DaTe': null,
+        'SHORT_DESCRIPTION': null,
+        'extraDescription': null,
+      };
+
+      final ap = AccessPoint();
+      ap.readFromMap(inputMap);
+      final outputMap = ap.asMap();
+      expect(outputMap['venue_location'], isNotNull);
+      expect(outputMap.containsKey('info'), true);
+      expect(outputMap, partial({
+        'CrEaTiOn_DaTe': isNotPresent,
+        'SHORT_DESCRIPTION': isNotPresent,
+        'extraDescription': isNotPresent
+      }));
+    });
+  });
 }
 
 class AccessPoint extends ManagedObject<_AccessPoint> implements _AccessPoint {
@@ -562,11 +599,13 @@ class AccessPoint extends ManagedObject<_AccessPoint> implements _AccessPoint {
   set extraInfo(String? extra) => info = '$info $extra';
 }
 
+@ResponseModel(fieldIncludeIfNull: false)
 @Table(legacyNaming: false, columnLegacyNaming: false)
 class _AccessPoint {
   @primaryKey
   int? id;
 
+  @ResponseKey(includeIfNull: true)
   @Column(nullable: true)
   String? info;
 

@@ -54,8 +54,11 @@ class Table {
   /// If this value is not set, the name defaults to the name of the table definition class using snake_case naming convention without the prefix '_' underscore.
   final String? name;
 
-  /// Useful to avoid/allow using new snake_case naming convention for columns if [Column.name] is not set
+  /// Useful to avoid/allow using new snake_case naming convention for columns.
   /// This property defaults to true to avoid breaking change ensuring backward compatibility
+  ///
+  /// If a column is annotated with `@Column()` with a non-`null` value for
+  /// `name` or `legacyNaming`, that value takes precedent.
   final bool columnLegacyNaming;
 }
 
@@ -217,7 +220,9 @@ class Column {
   /// Useful to avoid/allow using new snake_case naming convention if [name] is not set
   ///
   /// This property defaults to null to delegate to [Table.columnLegacyNaming]
-  /// If true or false is set then [Table.columnLegacyNaming] will be ignored
+  /// The default value, `null`, indicates that the behavior should be
+  /// acquired from the [Table.columnLegacyNaming] annotation on the
+  /// enclosing class.
   final bool? legacyNaming;
 
   /// The name of the underlying column in table.
@@ -226,15 +231,42 @@ class Column {
   final String? name;
 }
 
+/// An annotation used to specify how a Model is serialized in API responses.
+@Target({TargetKind.classType})
+class ResponseModel {
+  const ResponseModel({this.fieldIncludeIfNull = true});
+
+  /// Whether the serializer should include fields with `null` values in the
+  /// serialized Model output.
+  ///
+  /// If `true` (the default), all fields in the Model are written to JSON, even if they are
+  /// `null`.
+  ///
+  /// If a field is annotated with `@ResponseKey()` with a non-`null` value for
+  /// `includeIfNull`, that value takes precedent.
+  final bool fieldIncludeIfNull;
+}
+
 /// An annotation used to specify how a field is serialized in API responses.
 @Target({TargetKind.field, TargetKind.getter, TargetKind.setter})
 class ResponseKey {
-  const ResponseKey({this.name});
+  const ResponseKey({this.name, this.includeIfNull});
 
   /// The name to be used when serializing this field.
   ///
   /// If this value is not set, the name defaults to [Column.name].
   final String? name;
+
+  /// Whether the serializer should include the field with `null` value in the
+  /// serialized output.
+  ///
+  /// If `true`, the serializer should include the field in the serialized
+  /// output, even if the value is `null`.
+  ///
+  /// The default value, `null`, indicates that the behavior should be
+  /// acquired from the [ResponseModel.fieldIncludeIfNull] annotation on the
+  /// enclosing class.
+  final bool? includeIfNull;
 }
 
 /// Annotation for [ManagedObject] properties that allows them to participate in [ManagedObject.asMap] and/or [ManagedObject.readFromMap].

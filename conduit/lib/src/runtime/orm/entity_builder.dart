@@ -15,7 +15,8 @@ class EntityBuilder {
   EntityBuilder(Type type)
       : instanceType = reflectClass(type),
         tableDefinitionType = getTableDefinitionForType(type),
-        metadata = firstMetadataOfType(getTableDefinitionForType(type)) {
+        metadata = firstMetadataOfType(getTableDefinitionForType(type),),
+        responseModel = firstMetadataOfType(getTableDefinitionForType(type),) {
     name = _getName();
 
     entity = ManagedEntity(
@@ -37,6 +38,7 @@ class EntityBuilder {
   final ClassMirror instanceType;
   final ClassMirror tableDefinitionType;
   final Table? metadata;
+  final ResponseModel? responseModel;
 
   ManagedEntityRuntime? runtime;
 

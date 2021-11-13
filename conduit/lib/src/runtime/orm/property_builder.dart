@@ -158,6 +158,7 @@ class PropertyBuilder {
               .where((v) => v != null)
               .cast<ManagedValidator>()
               .toList(),
+          responseModel: parent.responseModel,
           responseKey: responseKey,);
     } else {
       final dartType = getDeclarationType().reflectedType;
@@ -172,6 +173,7 @@ class PropertyBuilder {
           includedInDefaultResultSet: includeInDefaultResultSet,
           autoincrement: autoincrement,
           validators: validators!.map((v) => v.managedValidator).toList(),
+          responseModel: parent.responseModel,
           responseKey: responseKey,);
     }
   }
