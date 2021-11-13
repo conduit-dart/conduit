@@ -68,34 +68,16 @@ abstract class ManagedBacking {
 abstract class ManagedObject<T> extends Serializable {
 
   /// IMPROVEMENT: Cache of entity.properties to reduce property loading time
-  Map<String?, ManagedPropertyDescription?>? _properties;
-  Map<String?, ManagedPropertyDescription?> get properties =>
-      _properties ??= entity.properties;
+  late Map<String?, ManagedPropertyDescription?> properties = entity.properties;
 
   /// Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
-  Map<String?, ManagedPropertyDescription?>? _responseKeyProperties;
-  Map<String?, ManagedPropertyDescription?> get responseKeyProperties {
-    if(_responseKeyProperties == null) {
-      _responseKeyProperties = {};
-      properties.forEach((key, value) {
-        if(key == null) {
-          return;
-        }
-        _responseKeyProperties![mapKeyName(key)] = value;
-      });
-    }
-    return _responseKeyProperties!;
-  }
+  late Map<String?, ManagedPropertyDescription?> responseKeyProperties = {
+    for (final entry in properties.entries)
+      if (entry.key != null) mapKeyName(entry.key!): entry.value
+  };
 
-  bool? _modelFieldIncludeIfNull;
-  bool get modelFieldIncludeIfNull {
-    if(_modelFieldIncludeIfNull == null) {
-      if(properties.isNotEmpty)
-        _modelFieldIncludeIfNull = properties.values.first?.responseModel?.fieldIncludeIfNull ?? true;
-    }
-    return _modelFieldIncludeIfNull ??= true;
-  }
-
+  late final bool modelFieldIncludeIfNull = properties.isEmpty ||
+      (properties.values.first?.responseModel?.fieldIncludeIfNull ?? true);
 
   String mapKeyName(String propertyName) {
     final property = properties[propertyName];
@@ -314,15 +296,6 @@ abstract class ManagedObject<T> extends Serializable {
   static bool _isPropertyPrivate(String propertyName) =>
       propertyName.startsWith("_");
 
-  bool _includeIfNull(ManagedPropertyDescription property) {
-    final bool includeIfNull;
-    final propertyIncludeIfNull = property.responseKey?.includeIfNull;
-    if(propertyIncludeIfNull != null) {
-      includeIfNull = propertyIncludeIfNull;
-    } else {
-      includeIfNull = modelFieldIncludeIfNull;
-    }
-    return includeIfNull;
-  }
-
+  bool _includeIfNull(ManagedPropertyDescription property) =>
+      property.responseKey?.includeIfNull ?? modelFieldIncludeIfNull;
 }
