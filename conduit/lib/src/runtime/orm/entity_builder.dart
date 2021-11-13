@@ -41,7 +41,7 @@ class EntityBuilder {
 
   ManagedEntityRuntime? runtime;
 
-  late String name;
+  late final String name = _getName();
   late ManagedEntity entity;
   List<String>? uniquePropertySet;
   late PropertyBuilder primaryKeyProperty;
