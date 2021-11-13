@@ -17,7 +17,6 @@ class EntityBuilder {
         tableDefinitionType = getTableDefinitionForType(type),
         metadata = firstMetadataOfType(getTableDefinitionForType(type),),
         responseModel = firstMetadataOfType(getTableDefinitionForType(type),) {
-    name = _getName();
 
     entity = ManagedEntity(
         name, type, MirrorSystem.getName(tableDefinitionType.simpleName))
