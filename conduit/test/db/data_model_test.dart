@@ -497,6 +497,90 @@ void main() {
       expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
     });
   });
+
+  group("Naming conventions and ResponseKey", () {
+    late ManagedDataModel dm;
+    late ManagedEntity e;
+    late ManagedContext context;
+    late Schema schema;
+    late SchemaTable tableSchema;
+
+    setUp(() {
+      dm = ManagedDataModel([AccessPoint]);
+      schema = Schema.fromDataModel(dm);
+      context = ManagedContext(dm, DefaultPersistentStore());
+      e = dm.entityForType(AccessPoint);
+      tableSchema = schema.tables.first;
+    });
+
+    tearDown(() async {
+      await context.close();
+    });
+
+    test("Table snake_case naming", () {
+      expect(e.tableName, 'access_point');
+      expect(e.tableDefinition, '_AccessPoint');
+      expect(tableSchema.name, 'access_point');
+    });
+
+    test("Column snake_case naming", () {
+      expect(e.properties['venue_location'], isNotNull);
+      expect(tableSchema.columnForName('venue_location'), isNotNull);
+    });
+
+    test("Column custom naming", () {
+      expect(e.properties['SHORT_DESCRIPTION'], isNotNull);
+      expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
+    });
+
+    test("Column legacy naming override", () {
+      expect(e.properties['extraDescription'], isNotNull);
+      expect(tableSchema.columnForName('extradescription'), isNotNull);
+    });
+
+    test("API response JSON field custom naming", () {
+      final inputMap = {
+        'id': 1,
+        'CrEaTiOn_DaTe': "2021-11-10T00:02:37.472299Z",
+      };
+
+      final ap = AccessPoint();
+      ap.readFromMap(inputMap);
+      final outputMap = ap.asMap();
+      expect(outputMap['CrEaTiOn_DaTe'], isNotNull);
+    });
+  });
+}
+
+class AccessPoint extends ManagedObject<_AccessPoint> implements _AccessPoint {
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  String? get extraInfo => info == null ? null : '$info Some extra info';
+
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  set extraInfo(String? extra) => info = '$info $extra';
+}
+
+@Table(legacyNaming: false, columnLegacyNaming: false)
+class _AccessPoint {
+  @primaryKey
+  int? id;
+
+  @Column(nullable: true)
+  String? info;
+
+  @ResponseKey(name: 'CrEaTiOn_DaTe')
+  DateTime? creationDate;
+
+  @Column(nullable: true, )
+  String? venueLocation;
+
+  @Column(nullable: true, name: 'SHORT_DESCRIPTION')
+  String? shortDescription;
+
+  @Column(nullable: true, legacyNaming: true)
+  String? extraDescription;
 }
 
 class User extends ManagedObject<_User> implements _User {
