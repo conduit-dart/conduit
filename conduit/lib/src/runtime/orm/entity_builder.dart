@@ -198,7 +198,7 @@ class EntityBuilder {
 
     final name = mirrorName();
 
-    return (metadata ?? const Table()).legacyNaming ? name : name.snakeCase;
+    return (metadata ?? const Table()).useSnakeCaseName ? name.snakeCase : name;
   }
 
   List<PropertyBuilder> _getProperties() {

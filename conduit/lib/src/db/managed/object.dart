@@ -77,7 +77,7 @@ abstract class ManagedObject<T> extends Serializable {
   };
 
   late final bool modelFieldIncludeIfNull = properties.isEmpty ||
-      (properties.values.first?.responseModel?.fieldIncludeIfNull ?? true);
+      (properties.values.first?.responseModel?.includeIfNullField ?? true);
 
   String mapKeyName(String propertyName) {
     final property = properties[propertyName];

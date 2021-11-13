@@ -26,10 +26,10 @@ class Table {
   ///
   /// See also [Table.unique] for the behavior of [uniquePropertySet].
   const Table(
-      {this.legacyNaming = true,
+      {this.useSnakeCaseName = false,
       this.name,
       this.uniquePropertySet,
-      this.columnLegacyNaming = true});
+      this.useSnakeCaseColumnName = false});
 
   /// Configures each instance of a table definition to be unique for the combination of [properties].
   ///
@@ -45,21 +45,21 @@ class Table {
   /// null if not set.
   final List<Symbol>? uniquePropertySet;
 
-  /// Useful to avoid/allow using new snake_case naming convention if [name] is not set
-  /// This property defaults to true to avoid breaking change ensuring backward compatibility
-  final bool legacyNaming;
+  /// Useful to indicate using new snake_case naming convention if [name] is not set
+  /// This property defaults to false to avoid breaking change ensuring backward compatibility
+  final bool useSnakeCaseName;
 
   /// The name of the underlying database table.
   ///
   /// If this value is not set, the name defaults to the name of the table definition class using snake_case naming convention without the prefix '_' underscore.
   final String? name;
 
-  /// Useful to avoid/allow using new snake_case naming convention for columns.
-  /// This property defaults to true to avoid breaking change ensuring backward compatibility
+  /// Useful to indicate using new snake_case naming convention for columns.
+  /// This property defaults to false to avoid breaking change ensuring backward compatibility
   ///
   /// If a column is annotated with `@Column()` with a non-`null` value for
-  /// `name` or `legacyNaming`, that value takes precedent.
-  final bool columnLegacyNaming;
+  /// `name` or `useSnakeCaseName`, that value takes precedent.
+  final bool useSnakeCaseColumnName;
 }
 
 /// Possible values for a delete rule in a [Relate].
@@ -146,7 +146,7 @@ class Column {
       bool omitByDefault = false,
       bool autoincrement = false,
       List<Validate> validators = const [],
-      this.legacyNaming,
+      this.useSnakeCaseName,
       this.name})
       : isPrimaryKey = primaryKey,
         databaseType = databaseType,
@@ -217,13 +217,13 @@ class Column {
   ///
   final List<Validate> validators;
 
-  /// Useful to avoid/allow using new snake_case naming convention if [name] is not set
+  /// Useful to indicate using new snake_case naming convention if [name] is not set
   ///
-  /// This property defaults to null to delegate to [Table.columnLegacyNaming]
+  /// This property defaults to null to delegate to [Table.useSnakeCaseColumnName]
   /// The default value, `null`, indicates that the behavior should be
-  /// acquired from the [Table.columnLegacyNaming] annotation on the
+  /// acquired from the [Table.useSnakeCaseColumnName] annotation on the
   /// enclosing class.
-  final bool? legacyNaming;
+  final bool? useSnakeCaseName;
 
   /// The name of the underlying column in table.
   ///
@@ -234,7 +234,7 @@ class Column {
 /// An annotation used to specify how a Model is serialized in API responses.
 @Target({TargetKind.classType})
 class ResponseModel {
-  const ResponseModel({this.fieldIncludeIfNull = true});
+  const ResponseModel({this.includeIfNullField = true});
 
   /// Whether the serializer should include fields with `null` values in the
   /// serialized Model output.
@@ -244,7 +244,7 @@ class ResponseModel {
   ///
   /// If a field is annotated with `@ResponseKey()` with a non-`null` value for
   /// `includeIfNull`, that value takes precedent.
-  final bool fieldIncludeIfNull;
+  final bool includeIfNullField;
 }
 
 /// An annotation used to specify how a field is serialized in API responses.
@@ -264,7 +264,7 @@ class ResponseKey {
   /// output, even if the value is `null`.
   ///
   /// The default value, `null`, indicates that the behavior should be
-  /// acquired from the [ResponseModel.fieldIncludeIfNull] annotation on the
+  /// acquired from the [ResponseModel.includeIfNullField] annotation on the
   /// enclosing class.
   final bool? includeIfNull;
 }

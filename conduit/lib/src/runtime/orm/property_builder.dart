@@ -252,14 +252,10 @@ class PropertyBuilder {
               "as this method shouldn't be invoked on non-property or non-accessors.");
     }
 
-    final bool useLegacyNaming;
-    if(column?.legacyNaming != null) {
-      useLegacyNaming = column!.legacyNaming!;
-    } else {
-      useLegacyNaming = (parent.metadata ?? const Table()).columnLegacyNaming;
-    }
-
-    return useLegacyNaming ? name : name.snakeCase;
+    return (column?.useSnakeCaseName ??
+            (parent.metadata ?? const Table()).useSnakeCaseColumnName)
+        ? name.snakeCase
+        : name;
   }
 
   EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder>? builders) {
