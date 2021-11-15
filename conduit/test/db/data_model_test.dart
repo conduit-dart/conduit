@@ -602,7 +602,7 @@ void main() {
     late final Map<String, dynamic> outputMap;
 
     setUpAll(() {
-      dm = ManagedDataModel([AccessPoint, StadiumVenue, Ticket]);
+      dm = ManagedDataModel([AccessPoint]);
       schema = Schema.fromDataModel(dm);
       context = ManagedContext(dm, DefaultPersistentStore());
       e = dm.entityForType(AccessPoint);
@@ -640,101 +640,7 @@ void main() {
     test("ResponseModel includeIfNullField with ResponseKey includeIfNull override", () {
       expect(outputMap['venue_location'], isNotNull);
       expect(outputMap.containsKey('info'), true);
-      expect(outputMap, partial({
-        'CrEaTiOn_DaTe': isNotPresent,
-        'SHORT_DESCRIPTION': isNotPresent,
-        'extraDescription': isNotPresent
-      }));
-    });
-  });
-
-
-
-
-
-
-
-  group("Naming conventions and ResponseKey", () {
-    late ManagedDataModel dm;
-    late ManagedEntity e;
-    late ManagedContext context;
-    late Schema schema;
-    late SchemaTable tableSchema;
-
-    setUpAll(() {
-      dm = ManagedDataModel([AccessPoint, StadiumVenue, Ticket]);
-      schema = Schema.fromDataModel(dm);
-      context = ManagedContext(dm, DefaultPersistentStore());
-      e = dm.entityForType(AccessPoint);
-      tableSchema = schema.tables.first;
-    });
-
-    tearDownAll(() async {
-      await context.close();
-    });
-
-    test("Table snake_case naming", () {
-      expect(e.tableName, 'access_point');
-      expect(e.tableDefinition, '_AccessPoint');
-      expect(tableSchema.name, 'access_point');
-    });
-
-    test("Column snake_case naming", () {
-      expect(e.properties['venue_location'], isNotNull);
-      expect(tableSchema.columnForName('venue_location'), isNotNull);
-    });
-
-    test("Column custom naming", () {
-      expect(e.properties['SHORT_DESCRIPTION'], isNotNull);
-      expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
-    });
-
-    test("Column legacy naming override", () {
-      expect(e.properties['extraDescription'], isNotNull);
-      expect(tableSchema.columnForName('extradescription'), isNotNull);
-    });
-
-    test("API response JSON field custom naming", () {
-      final inputMap = {
-        'id': 1,
-        'CrEaTiOn_DaTe': "2021-11-10T00:02:37.472299Z",
-      };
-
-      final ap = AccessPoint();
-      ap.readFromMap(inputMap);
-      final outputMap = ap.asMap();
-      expect(outputMap['CrEaTiOn_DaTe'], isNotNull);
-    });
-  });
-
-  group("ResponseModel and ResponseKey includeIfNull", () {
-    late ManagedDataModel dm;
-    late ManagedContext context;
-
-    setUpAll(() {
-      dm = ManagedDataModel([AccessPoint, StadiumVenue, Ticket]);
-      context = ManagedContext(dm, DefaultPersistentStore());
-    });
-
-    tearDownAll(() async {
-      await context.close();
-    });
-
-    test("ResponseModel fieldIncludeIfNull with ResponseKey includeIfNull override", () {
-      final inputMap = {
-        'id': 1,
-        'venue_location': "Theater",
-        'info': null,
-        'CrEaTiOn_DaTe': null,
-        'SHORT_DESCRIPTION': null,
-        'extraDescription': null,
-      };
-
-      final ap = AccessPoint();
-      ap.readFromMap(inputMap);
-      final outputMap = ap.asMap();
-      expect(outputMap['venue_location'], isNotNull);
-      expect(outputMap.containsKey('info'), true);
+      expect(outputMap.containsKey('extra_info'), true);
       expect(outputMap, partial({
         'CrEaTiOn_DaTe': isNotPresent,
         'SHORT_DESCRIPTION': isNotPresent,
@@ -810,7 +716,7 @@ class _Event {
 class AccessPoint extends ManagedObject<_AccessPoint> implements _AccessPoint {
   @Serialize()
   @ResponseKey(name: 'extra_info')
-  String? get extraInfo => info == null ? null : '$info Some extra info';
+  String? get extraInfo => '$info Some extra info';
 
   @Serialize()
   @ResponseKey(name: 'extra_info')

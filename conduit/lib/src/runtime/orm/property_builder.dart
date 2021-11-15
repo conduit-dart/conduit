@@ -252,6 +252,10 @@ class PropertyBuilder {
               "as this method shouldn't be invoked on non-property or non-accessors.");
     }
 
+    if(serialize != null) {
+      return name;
+    }
+
     return (column?.useSnakeCaseName ??
             (parent.metadata ?? const Table()).useSnakeCaseColumnName)
         ? name.snakeCase
