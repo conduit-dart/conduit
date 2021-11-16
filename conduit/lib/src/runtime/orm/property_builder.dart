@@ -15,6 +15,7 @@ class PropertyBuilder {
         column = firstMetadataOfType(declaration),
         responseKey = firstMetadataOfType(declaration),
         serialize = _getTransienceForProperty(declaration) {
+    propertyName = _getPropertyName();
     name = _getName();
     type = _getType();
 
@@ -50,6 +51,7 @@ class PropertyBuilder {
   ManagedRelationshipDescription? relationship;
   List<ManagedValidator> managedValidators = [];
 
+  late String propertyName;
   late String name;
   ManagedType? type;
 
@@ -225,32 +227,29 @@ class PropertyBuilder {
     }
   }
 
+  String _getPropertyName() {
+    if (declaration is MethodMirror) {
+      if ((declaration as MethodMirror).isGetter) {
+        return MirrorSystem.getName(declaration.simpleName);
+      } else if ((declaration as MethodMirror).isSetter) {
+        var name = MirrorSystem.getName(declaration.simpleName);
+        return name.substring(0, name.length - 1);
+      }
+    } else if (declaration is VariableMirror) {
+      return MirrorSystem.getName(declaration.simpleName);
+    }
+
+    throw ManagedDataModelError(
+        "Tried getting property type description from non-property. This is an internal error, "
+            "as this method shouldn't be invoked on non-property or non-accessors.");
+  }
+
   String _getName() {
     if (column?.name != null) {
       return column!.name!;
     }
 
-    String? mirrorName() {
-      if (declaration is MethodMirror) {
-        if ((declaration as MethodMirror).isGetter) {
-          return MirrorSystem.getName(declaration.simpleName);
-        } else if ((declaration as MethodMirror).isSetter) {
-          var name = MirrorSystem.getName(declaration.simpleName);
-          return name.substring(0, name.length - 1);
-        }
-      } else if (declaration is VariableMirror) {
-        return MirrorSystem.getName(declaration.simpleName);
-      }
-      return null;
-    }
-
-    final name = mirrorName();
-
-    if(name == null) {
-      throw ManagedDataModelError(
-          "Tried getting property type description from non-property. This is an internal error, "
-              "as this method shouldn't be invoked on non-property or non-accessors.");
-    }
+    final name = _getPropertyName();
 
     if(serialize != null) {
       return name;

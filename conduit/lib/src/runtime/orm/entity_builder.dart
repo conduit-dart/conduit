@@ -125,6 +125,9 @@ class EntityBuilder {
       entity.symbolMap[Symbol(p.name)] = p.name;
       entity.symbolMap[Symbol("${p.name}=")] = p.name;
 
+      entity.symbolMap[Symbol(p.propertyName)] = p.name;
+      entity.symbolMap[Symbol("${p.propertyName}=")] = p.name;
+
       if (p.isRelationship) {
         relationships[p.name] = p.relationship;
       } else {
