@@ -7,7 +7,7 @@ import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/validator_builder.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
-import 'package:recase/recase.dart';
+import 'package:conduit/src/utilities/text_case.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)

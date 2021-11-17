@@ -9,7 +9,7 @@ import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';
-import 'package:recase/recase.dart';
+import 'package:conduit/src/utilities/text_case.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
