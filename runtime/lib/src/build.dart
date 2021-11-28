@@ -136,7 +136,7 @@ class Build {
     final res = await Process.run(
         "dart",
         [
-          "compilie",
+          "compile",
           "exe",
           "-v",
           srcUri.toFilePath(windows: Platform.isWindows),
