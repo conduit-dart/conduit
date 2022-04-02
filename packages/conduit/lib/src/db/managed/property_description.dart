@@ -456,8 +456,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       if (relationshipType == ManagedRelationshipType.belongsTo &&
           value.backing.contents!.length == 1 &&
           value.backing.contents!.containsKey(destinationEntity.primaryKey)) {
-        return {
-          destinationEntity.primaryKey: value[destinationEntity.primaryKey]
+        return <String, dynamic>{
+          destinationEntity.primaryKey!: value[destinationEntity.primaryKey]
         };
       }
 
