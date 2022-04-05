@@ -14,10 +14,20 @@
             "name": "All Conduit Tests",
             "type": "dart",
             "request": "launch",
+            "program": "dart",
             "args": [
-                "test"
+                "test",
+                "-j1"
             ],
             "env": {
+                "POSTGRES_HOST": "localhost",
+                "POSTGRES_PORT": "15432",
+                "POSTGRES_ADMIN_USER": "conduit_test_user",
+                "POSTGRES_ADMIN_PASSWORD": "conduit!",
+                "POSTGRES_USER": "conduit_test_user",
+                "POSTGRES_PASSWORD": "conduit!",
+                "POSTGRES_DB": "conduit_test_db",
+                "TEST_DB_ENV_VAR": "postgres://user:password@host:5432/dbname",
                 "TEST_VALUE": 1,
                 "TEST_BOOL": true
             }

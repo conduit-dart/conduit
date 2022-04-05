@@ -9,15 +9,11 @@ jobs:
   test_harness:
     env:
       TEST_DIR: packages/test_harness
-      POSTGRES_USER: conduit_test_user
-      POSTGRES_PASSWORD: conduit!
-      POSTGRES_DB: conduit_test_db
-      POSTGRES_PORT: 15432
       RUNNER_CMD: dart test -r expanded
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:14.5
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
@@ -29,29 +25,25 @@ jobs:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: dev
       - name: Get Dependencies
         working-directory: ${{ env.TEST_DIR }}
         run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: ${{ env.RUNNER_CMD }}
+        run: . ../../ci/.env && ${{ env.RUNNER_CMD }}
 
   conduit:
     env:
       TEST_DIR: packages/conduit
-      POSTGRES_USER: conduit_test_user
-      POSTGRES_PASSWORD: conduit!
-      POSTGRES_DB: conduit_test_db
-      POSTGRES_PORT: 15432
       RUNNER_CMD: dart test -r expanded
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         runner_args: [-t cli, -x cli]
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:14.5
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
@@ -63,21 +55,21 @@ jobs:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: dev
       - name: Get Dependencies
         working-directory: ${{ env.TEST_DIR }}
         run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }}
+        run: . ../../ci/.env && ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }}
 
   conduit_tool:
     env:
       TEST_DIR: packages/conduit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:14.5
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
@@ -89,15 +81,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
+          sdk: dev
       - name: Prep Packages
         run: |
           dart pub global activate melos
           melos bootstrap
           melos cache-source
-      - name: Get Dependencies
-        working-directory: ${{ env.TEST_DIR }}
-        run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: dart tool/generated_test_runner.dart
+        run: . ../../ci/.env && dart tool/generated_test_runner.dart

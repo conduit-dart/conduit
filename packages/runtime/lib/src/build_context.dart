@@ -3,10 +3,10 @@ import 'dart:mirrors';
 import 'package:path/path.dart';
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:package_config/package_config.dart';
 import 'package:pubspec/pubspec.dart';
 import 'package:conduit_runtime/src/analyzer.dart';
 import 'package:conduit_runtime/src/context.dart';
-import 'package:conduit_runtime/src/file_system.dart';
 import 'package:conduit_runtime/src/mirror_context.dart';
 import 'package:yaml/yaml.dart';
 
@@ -57,6 +57,8 @@ class BuildContext {
   /// Whether dev dependencies of the application package are included in the dependencies of the compiled executable.
   final bool forTests;
 
+  PackageConfig? _packageConfig = null;
+
   /// The [RuntimeContext] available during the build process.
   MirrorContext get context => RuntimeContext.current as MirrorContext;
 
@@ -99,10 +101,11 @@ class BuildContext {
       buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"));
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].
-  Map<String, Uri> get resolvedPackages {
-    return getResolvedPackageUris(
-        sourceApplicationDirectory.uri.resolve(".packages"),
-        relativeTo: sourceApplicationDirectory.uri);
+  Future<PackageConfig> get packageConfig async {
+    if (_packageConfig == null) {
+      _packageConfig = (await findPackageConfig(sourceApplicationDirectory))!;
+    }
+    return _packageConfig!;
   }
 
   /// Returns a [Directory] at [uri], creates it recursively if it doesn't exist.
@@ -124,33 +127,24 @@ class BuildContext {
     return file;
   }
 
-  Uri? resolveUri(Uri? uri) {
+  Future<Package?> getPackageFromUri(Uri? uri) async {
     if (uri == null) {
       return null;
     }
-    var outputUri = uri;
-    if (outputUri.scheme == "package") {
-      final segments = outputUri.pathSegments;
-      outputUri = resolvedPackages[segments.first]!.resolve("lib/");
-      for (var i = 1; i < segments.length; i++) {
-        if (i < segments.length - 1) {
-          outputUri = outputUri.resolve("${segments[i]}/");
-        } else {
-          outputUri = outputUri.resolve(segments[i]);
-        }
-      }
-    } else if (!outputUri.isAbsolute) {
+    if (uri.scheme == "package") {
+      final segments = uri.pathSegments;
+      return (await packageConfig)[segments.first]!;
+    } else if (!uri.isAbsolute) {
       throw ArgumentError("'uri' must be absolute or a package URI");
     }
-
-    return outputUri;
+    return null;
   }
 
-  List<String> getImportDirectives({
+  Future<List<String>> getImportDirectives({
     Uri? uri,
     String? source,
     bool alsoImportOriginalFile = false,
-  }) {
+  }) async {
     if (uri != null && source != null) {
       throw ArgumentError(
           "either uri or source must be non-null, but not both");
@@ -165,8 +159,10 @@ class BuildContext {
       throw ArgumentError(
           "flag 'alsoImportOriginalFile' may only be set if 'uri' is also set");
     }
-
-    final fileUri = resolveUri(uri);
+    Package? package = await getPackageFromUri(uri);
+    String? trailingSegments = uri?.pathSegments.sublist(1).join('/');
+    final fileUri =
+        package?.packageUriRoot.resolve(trailingSegments ?? '') ?? uri;
     final text = source ?? File.fromUri(fileUri!).readAsStringSync();
     final importRegex = RegExp("import [\\'\\\"]([^\\'\\\"]*)[\\'\\\"];");
 
@@ -174,10 +170,10 @@ class BuildContext {
       final importedUri = Uri.parse(m.group(1)!);
 
       if (!importedUri.isAbsolute) {
-        final path = fileUri!
-            .resolve(importedUri.path)
+        final path = fileUri
+            ?.resolve(importedUri.path)
             .toFilePath(windows: Platform.isWindows);
-        return "import 'file:${absolute(path)}';";
+        return "import 'file:${absolute(path!)}';";
       }
 
       return text.substring(m.start, m.end);
@@ -190,27 +186,35 @@ class BuildContext {
     return imports;
   }
 
-  ClassDeclaration getClassDeclarationFromType(Type type) {
+  Future<ClassDeclaration?> getClassDeclarationFromType(Type type) async {
     final classMirror = reflectType(type);
+    Uri uri = classMirror.location!.sourceUri;
+    if (!classMirror.location!.sourceUri.isAbsolute) {
+      Package? package = await getPackageFromUri(uri);
+      uri = package!.packageUriRoot;
+    }
     return analyzer.getClassFromFile(
-      MirrorSystem.getName(classMirror.simpleName),
-      resolveUri(classMirror.location!.sourceUri)!,
-    );
+        MirrorSystem.getName(classMirror.simpleName), uri);
   }
 
-  List<Annotation> getAnnotationsFromField(Type _type, String propertyName) {
+  Future<List<Annotation>> getAnnotationsFromField(
+      Type _type, String propertyName) async {
     var type = reflectClass(_type);
-    var field =
-        getClassDeclarationFromType(type.reflectedType).getField(propertyName);
+    var field = (await getClassDeclarationFromType(type.reflectedType))
+        ?.getField(propertyName);
     while (field == null) {
       type = type.superclass!;
       if (type.reflectedType == Object) {
         break;
       }
-      field = getClassDeclarationFromType(type.reflectedType)
-          .getField(propertyName);
+      field = (await getClassDeclarationFromType(type.reflectedType))
+          ?.getField(propertyName);
     }
 
-    return (field!.parent!.parent! as FieldDeclaration).metadata.toList();
+    if (field == null) {
+      return [];
+    }
+
+    return (field.parent!.parent! as FieldDeclaration).metadata.toList();
   }
 }

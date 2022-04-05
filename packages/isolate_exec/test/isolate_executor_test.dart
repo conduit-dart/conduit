@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final projDir = join('..', 'isolate_exec_test_package');
+  final projDir = join('..', 'isolate_exec_test_packages/test_package');
 
   setUpAll(() async {
     _getDependencies(projDir);
@@ -15,7 +15,8 @@ void main() {
   test("Can run an Executable and get its return value", () async {
     final result = await IsolateExecutor.run(
       SimpleReturner({}),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
     );
     expect(result, 1);
   });
@@ -25,7 +26,8 @@ void main() {
     await IsolateExecutor.run(
       SimpleReturner({}),
       logHandler: (msg) => msgs.add(msg),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
     );
     expect(msgs, ["hello"]);
   });
@@ -33,7 +35,8 @@ void main() {
   test("Send values to Executable and use them", () async {
     final result = await IsolateExecutor.run(
       Echo({'echo': 'hello'}),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
     );
     expect(result, 'hello');
   });
@@ -41,7 +44,8 @@ void main() {
   test("Run from another package", () async {
     final result = await IsolateExecutor.run(
       InPackage({}),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
       imports: ["package:test_package/lib.dart"],
     );
 
@@ -63,7 +67,8 @@ void main() {
 
     final result = await IsolateExecutor.run(
       Streamer({}),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
       eventHandler: (event) {
         completers.last.complete(event);
         completers.removeLast();
@@ -85,7 +90,8 @@ void main() {
   test("Can instantiate types including in additionalContents", () async {
     final result = await IsolateExecutor.run(
       AdditionalContentsInstantiator({}),
-      packageConfigURI: Uri.file(join(projDir, ".packages")),
+      packageConfigURI:
+          Uri.file(join(projDir, ".dart_tool/package_config.json")),
       additionalContents: """
 class AdditionalContents { int get id => 10; }
     """,
@@ -100,7 +106,8 @@ class AdditionalContents { int get id => 10; }
     try {
       await IsolateExecutor.run(
         Thrower({}),
-        packageConfigURI: Uri.file(join(projDir, ".packages")),
+        packageConfigURI:
+            Uri.file(join(projDir, ".dart_tool/package_config.json")),
       );
       fail('unreachable');
 

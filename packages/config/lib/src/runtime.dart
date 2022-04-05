@@ -163,11 +163,12 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
   }
 
   @override
-  String compile(BuildContext ctx) {
-    final directives = ctx.getImportDirectives(
+  Future<String> compile(BuildContext ctx) async {
+    final directives = await ctx.getImportDirectives(
       uri: type.originalDeclaration.location!.sourceUri,
       alsoImportOriginalFile: true,
-    )..add("import 'package:conduit_config/src/intermediate_exception.dart';");
+    )
+      ..add("import 'package:conduit_config/src/intermediate_exception.dart';");
     return """
     ${directives.join("\n")}
     final instance = ConfigurationRuntimeImpl();

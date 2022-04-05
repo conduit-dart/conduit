@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:conduit/conduit.dart';
 
-import 'db_settings.dart';
-
 /// This class is used to define the default configuration used
 /// by Unit Tests to connect to the postgres db.
 ///
@@ -20,13 +18,6 @@ import 'db_settings.dart';
 /// default values
 /// If no environment variable exists and the .settings.yaml file doesn't
 /// exist then the default value is used.
-///
-/// Default values are contained in:
-/// [DbSettings.defaultHost]
-/// [DbSettings.defaultPort]
-/// [DbSettings.defaultUsername]
-/// [DbSettings.defaultPassword]
-/// [DbSettings.defaultDbName]
 ///
 class PostgresTestConfig {
   factory PostgresTestConfig() => _self;
@@ -117,36 +108,29 @@ class PostgresTestConfig {
           throw ArgumentError(
               "The Environment Variable $_key does not contain a valid integer. Found: $value");
         }
-      } else {
-        _port = DbSettings.defaultPort;
       }
     }
     return _port!;
   }
 
-  late final DbSettings _dbSettings = DbSettings.load();
-
   String? _host;
-  String get host => _host ??= _fromEnv('POSTGRES_HOST') ?? _dbSettings.host;
+  String get host => _host ??= _fromEnv('POSTGRES_HOST')!;
 
   String? _username;
-  String get username =>
-      _username ??= _fromEnv('POSTGRES_USER') ?? _dbSettings.username;
+  String get username => _username ??= _fromEnv('POSTGRES_USER')!;
 
   String? _password;
-  String get password =>
-      _password ??= _fromEnv('POSTGRES_PASSWORD') ?? _dbSettings.password;
+  String get password => _password ??= _fromEnv('POSTGRES_PASSWORD')!;
 
   String? _dbName;
-  String get dbName =>
-      _dbName ??= _fromEnv('POSTGRES_DB') ?? _dbSettings.dbName;
+  String get dbName => _dbName ??= _fromEnv('POSTGRES_DB')!;
 
   String? _fromEnv(String key) {
     String? value;
 
     /// Check for an environment variable.
     if (Platform.environment.containsKey(key)) {
-      var value = Platform.environment[key];
+      value = Platform.environment[key];
       if (value != null) {
         value = value.trim();
       }
@@ -155,7 +139,6 @@ class PostgresTestConfig {
             "The Environment Variable $key does not contain a valid String. Found null or an empty string.");
       }
     }
-
     return value;
   }
 }

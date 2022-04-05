@@ -10,7 +10,7 @@ class AppChannel extends ApplicationChannel {
 
     router.route("/hello_world").linkFunction((request) async {
       return Response.ok("Hello, world!")
-        ..contentType = ContentType.TEXT;
+        ..contentType = ContentType.text;
     });
 
     return router;

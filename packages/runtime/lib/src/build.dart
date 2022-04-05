@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
+import 'package:package_config/package_config.dart';
 import 'package:conduit_runtime/src/build_context.dart';
 import 'package:conduit_runtime/src/compiler.dart';
 import 'package:conduit_runtime/src/file_system.dart';
@@ -13,8 +14,6 @@ class Build {
 
   final BuildContext context;
 
-  late final Map<String, Uri> packageMap = context.resolvedPackages;
-
   Future execute() async {
     final compilers = context.context.compilers;
 
@@ -24,18 +23,22 @@ class Build {
     };
     await Future.forEach<Uri>(
       astsToResolve,
-      (astUri) => context.analyzer.resolveUnitAt(context.resolveUri(astUri)!),
+      (astUri) async {
+        Uri package =
+            (await context.getPackageFromUri(astUri))?.packageUriRoot ?? astUri;
+        return context.analyzer.resolveUnitOrLibraryAt(package);
+      },
     );
 
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
-    context.context.runtimes.map.forEach((typeName, runtime) {
-      if (runtime is SourceCompiler) {
-        runtimeGenerator.addRuntime(
-            name: typeName, source: runtime.compile(context));
+    for (MapEntry entry in context.context.runtimes.map.entries) {
+      if (entry.value is SourceCompiler) {
+        await entry.value.compile(context).then((source) =>
+            runtimeGenerator.addRuntime(name: entry.key, source: source));
       }
-    });
+    }
 
     await runtimeGenerator.writeTo(context.buildRuntimeDirectory.uri);
     print("Generated runtime at '${context.buildRuntimeDirectory.uri}'.");
@@ -51,11 +54,10 @@ class Build {
     var sourcePackageIsCompiled = false;
 
     for (final compiler in compilers) {
-      final packageInfo = _getPackageInfoForCompiler(compiler);
-      final sourceDirUri = packageInfo.uri;
+      final packageInfo = await _getPackageInfoForCompiler(compiler);
+      final sourceDirUri = packageInfo.root;
       final targetDirUri =
           context.buildPackagesDirectory.uri.resolve("${packageInfo.name}/");
-
       print("Compiling package '${packageInfo.name}'...");
       copyPackage(sourceDirUri, targetDirUri);
       compiler.deflectPackage(Directory.fromUri(targetDirUri));
@@ -154,40 +156,14 @@ class Build {
   }
 
   void copyPackage(Uri srcUri, Uri dstUri) {
-    copyDirectory(src: srcUri.resolve("lib/"), dst: dstUri.resolve("lib/"));
+    copyDirectory(src: srcUri, dst: dstUri);
     context.getFile(srcUri.resolve("pubspec.yaml")).copySync(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
   }
 
-  _PackageInfo _getPackageInfoForName(String packageName) {
-    final packageUri = packageMap[packageName];
-    if (packageUri == null) {
-      throw StateError(
-          'Package "$packageName" not found in package map. Make sure it is in dependencies and run "pub get".');
-    }
-
-    return _PackageInfo(packageName, packageUri);
-  }
-
-  _PackageInfo _getPackageInfoForCompiler(Compiler compiler) {
+  Future<Package> _getPackageInfoForCompiler(Compiler compiler) async {
     final compilerUri = reflect(compiler).type.location!.sourceUri;
-    final parser = RegExp(r"package\:([^\/]+)");
-    final parsed = parser.firstMatch(compilerUri.toString());
-    if (parsed == null) {
-      throw StateError(
-        "Could not identify package of Compiler '${compiler.runtimeType}' "
-        "(from URI '$compilerUri').",
-      );
-    }
 
-    final packageName = parsed.group(1);
-    return _getPackageInfoForName(packageName!);
+    return (await context.packageConfig)[compilerUri.pathSegments.first]!;
   }
-}
-
-class _PackageInfo {
-  _PackageInfo(this.name, this.uri);
-
-  final String name;
-  final Uri uri;
 }

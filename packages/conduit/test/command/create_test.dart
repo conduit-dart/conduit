@@ -1,5 +1,6 @@
 // ignore: unnecessary_const
 @Tags(["cli"])
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
@@ -116,15 +117,15 @@ void main() {
       var res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      var conduitLocationString = File(join(
-              cli.agent.workingDirectory.path, "test_project", ".packages"))
-          .readAsStringSync()
-          .split("\n")
-          .firstWhere((p) => p.startsWith("conduit:"))
-          .split("conduit:")
-          .last;
+      List packages = jsonDecode(File(join(cli.agent.workingDirectory.path,
+              "test_project", ".dart_tool/package_config.json"))
+          .readAsStringSync())['packages'] as List;
+      final conduitPacakge =
+          packages.firstWhere((element) => element['name'] == 'conduit');
+      final conduitLocation = Uri.parse(conduitPacakge['rootUri'] as String)
+          .resolve(conduitPacakge['packageUri'] as String);
 
-      var path = path_lib.normalize(path_lib.fromUri(conduitLocationString));
+      final path = path_lib.normalize(path_lib.fromUri(conduitLocation));
       expect(path, path_lib.join(Directory.current.path, "lib"));
     });
 

@@ -115,7 +115,7 @@ Future<String> fetchKubernetesExample() async {
         'https://raw.githubusercontent.com/kubernetes/kubernetes/f091073b0fb4d3a550e7f182eb5465338c8b7cbf/api/openapi-spec/swagger.json';
     final request = await HttpClient().getUrl(Uri.parse(url));
     final response = await request.close();
-    response.pipe(File(config).openWrite());
+    await response.pipe(configFile.openWrite());
   }
   return config;
 }

@@ -2,7 +2,7 @@ version: "3.3"
    
 services:
   postgres:
-    image: postgres:9.6
+    image: postgres:11
     # command: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
     container_name: conduit_postgres
     restart: always

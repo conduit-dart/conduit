@@ -11,6 +11,7 @@ need to test for local (relative), in pub cache (absolute)
 */
 
 void main() {
+  final tmp = Directory.current.uri.resolve("../tmp/");
   setUpAll(() async {
     const String cmd = "dart";
 
@@ -29,20 +30,19 @@ void main() {
 
     final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");
-    final tmp = Directory.current.uri.resolve("tmp/");
     final ctx = BuildContext(
-        appLib,
-        tmp,
-        tmp.resolve("app.aot"),
-        File.fromUri(appDir.resolve("bin/").resolve("main.dart"))
-            .readAsStringSync());
+      appLib,
+      tmp,
+      tmp.resolve("app.aot"),
+      File.fromUri(appDir.resolve("bin/").resolve("main.dart"))
+          .readAsStringSync(),
+    );
     final bm = BuildManager(ctx);
     await bm.build();
   });
 
   tearDownAll(() {
-    Directory.fromUri(Directory.current.uri.resolve("tmp/"))
-        .deleteSync(recursive: true);
+    // Directory.fromUri(tmp).deleteSync(recursive: true);
   });
 
   test("Non-compiled version returns mirror runtimes", () async {
@@ -61,7 +61,7 @@ void main() {
       "Compiled version of application returns source generated runtimes and can be AOT compiled",
       () async {
     final output = await runExecutable(
-        Directory.current.uri.resolve("tmp/").resolve("app.aot"),
+        tmp.resolve("app.aot"),
         Directory.current.uri
             .resolve("../")
             .resolve("runtime_test_packages/")
@@ -89,5 +89,6 @@ Future<String> runExecutable(Uri buildUri, Uri workingDir) async {
       buildUri.toFilePath(windows: Platform.isWindows), [],
       workingDirectory: workingDir.toFilePath(windows: Platform.isWindows),
       runInShell: true);
+  print(result.stderr.toString());
   return result.stdout.toString();
 }

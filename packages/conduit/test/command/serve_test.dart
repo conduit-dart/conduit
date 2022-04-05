@@ -210,7 +210,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     projectUnderTestCli.agent.addOrReplaceFile("foobar.yaml", "key: value");
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
       var newContents = c.replaceAll('return Response.ok({"key": "value"});',
-          "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
+          "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.text;");
       return "import 'dart:io';\n$newContents";
     });
 
@@ -226,7 +226,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     projectUnderTestCli.agent.addOrReplaceFile("foobar.yaml", "key: value");
     projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
       var newContents = c.replaceAll('return Response.ok({"key": "value"});',
-          "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.TEXT;");
+          "return Response.ok(File(options!.configurationFilePath!).readAsStringSync())..contentType = ContentType.text;");
       return "import 'dart:io';\n$newContents";
     });
 

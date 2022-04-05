@@ -1,9 +1,0 @@
-# SettingsYaml settings file
-POSTGRES_HOST: "localhost"
-POSTGRES_PORT: "15432"
-POSTGRES_USER: "conduit_test_user"
-POSTGRES_PASSWORD: "conduit!"
-POSTGRES_DB: "conduit_test_db"
-useContainer: true
-POSTGRES_ADMIN_USER: "conduit_test_user"
-POSTGRES_ADMIN_PASSWORD: "conduit!"

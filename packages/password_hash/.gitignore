@@ -12,5 +12,5 @@ pubspec.lock
 doc/api/
 .idea/
 
-.dart_tool/.failed_tracker
+.dart_tool/
 .failed_tracker

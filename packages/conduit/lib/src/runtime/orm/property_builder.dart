@@ -247,7 +247,8 @@ class PropertyBuilder {
     }
 
     final possibleEntities = builders!.where((e) {
-      return e.tableDefinitionType.isSubtypeOf(expectedInstanceType);
+      return e.tableDefinitionType == expectedInstanceType ||
+          e.tableDefinitionType.isSubtypeOf(expectedInstanceType);
     }).toList();
 
     if (possibleEntities.length > 1) {

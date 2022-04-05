@@ -33,7 +33,7 @@ class ConsumerRuntimeImpl extends ConsumerRuntime implements SourceCompiler {
   String get message => "mirrored";
 
   @override
-  String compile(BuildContext ctx) => """
+  Future<String> compile(BuildContext ctx) async => """
 import 'package:dependency/dependency.dart';
 
 final instance = ConsumerRuntimeImpl();

@@ -40,8 +40,6 @@ run the unit test against those scripts.
 If you have to create your own postgres install (not recommended) then you need to configure
 it to run on port 15432.
 
-You can override each of the db connection args via environment variables or by creating a .settings.yaml file in the conduit/tool directory.
-
 Environment variables:
 
 POSTGRES_HOST

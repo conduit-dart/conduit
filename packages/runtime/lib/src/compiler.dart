@@ -25,5 +25,7 @@ abstract class Compiler {
 /// Runtimes that generate source code implement this method.
 abstract class SourceCompiler {
   /// The source code, including directives, that declare a class that is equivalent in behavior to this runtime.
-  String compile(BuildContext ctx);
+  Future<String> compile(BuildContext ctx) async {
+    throw UnimplementedError();
+  }
 }

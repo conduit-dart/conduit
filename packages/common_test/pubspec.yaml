@@ -8,7 +8,6 @@ environment:
 dependencies:
   conduit: ^3.1.2
   conduit_common: ^3.1.1
-  settings_yaml: ^3.0.3
 dependency_overrides:
   conduit:
     path: ../conduit

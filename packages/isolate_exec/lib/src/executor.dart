@@ -59,7 +59,6 @@ class IsolateExecutor<U> {
         }
         _eventListener.add(results);
       });
-
     try {
       message["_sendPort"] = controlPort.sendPort;
 
@@ -83,7 +82,6 @@ class IsolateExecutor<U> {
           automaticPackageResolution: true,
         );
       }
-
       return await completer.future;
     } finally {
       onErrorPort.close();

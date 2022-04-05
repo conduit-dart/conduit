@@ -154,9 +154,9 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     return [];
   }
 
-  String _getValidators(
+  Future<String> _getValidators(
       BuildContext context, ManagedPropertyDescription property,
-      {required List<Uri> importUris}) {
+      {required List<Uri> importUris}) async {
     // For the property we are looking at, grab all of its annotations from the analyzer.
     // We also have all of the instances created by these annotations available in some
     // way or another in the [property].
@@ -164,8 +164,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         EntityBuilder.getTableDefinitionForType(property.entity.instanceType)
             .reflectedType,
         property.name);
-
-    final constructorInvocations = fieldAnnotations
+    final constructorInvocations = (await fieldAnnotations)
         .map((annotation) => _getValidatorConstructionFromAnnotation(
             context, annotation, property,
             importUris: importUris))
@@ -185,7 +184,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     final inverseType = property is ManagedRelationshipDescription
         ? "${property.destinationEntity.instanceType}"
         : "null";
-
+    print(constructorInvocations);
     return """() {
   return [${constructorInvocations.join(",")}].map((v) {
     final state = v.compile(${_getManagedTypeInstantiator(property.type)}, relationshipInverseType: $inverseType);
@@ -247,16 +246,15 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
             "contains both double and single quotes");
   }
 
-  String _getAttributeInstantiator(
+  Future<String> _getAttributeInstantiator(
       BuildContext ctx, ManagedAttributeDescription attribute,
-      {required List<Uri> importUris}) {
+      {required List<Uri> importUris}) async {
     final transienceStr = attribute.isTransient
         ? "Serialize(input: ${attribute.transientStatus!.isAvailableAsInput}, output: ${attribute.transientStatus!.isAvailableAsOutput})"
         : null;
     final validatorStr = attribute.isTransient
         ? "[]"
-        : "[${_getValidators(ctx, attribute, importUris: importUris)}]";
-
+        : "[${await _getValidators(ctx, attribute, importUris: importUris)}]";
     return """
 ManagedAttributeDescription.make<${attribute.declaredType}>(entity, '${attribute.name}',
     ${_getManagedTypeInstantiator(attribute.type)},
@@ -272,9 +270,9 @@ ManagedAttributeDescription.make<${attribute.declaredType}>(entity, '${attribute
     """;
   }
 
-  String _getRelationshipInstantiator(
+  Future<String> _getRelationshipInstantiator(
       BuildContext ctx, ManagedRelationshipDescription relationship,
-      {required List<Uri> importUris}) {
+      {required List<Uri> importUris}) async {
     return """
 ManagedRelationshipDescription.make<${relationship.declaredType}>(
   entity,
@@ -288,16 +286,17 @@ ManagedRelationshipDescription.make<${relationship.declaredType}>(
   indexed: ${relationship.isIndexed},
   nullable: ${relationship.isNullable},
   includedInDefaultResultSet: ${relationship.isIncludedInDefaultResultSet},
-  validators: [${_getValidators(ctx, relationship, importUris: importUris)}].expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList())
+  validators: [${await _getValidators(ctx, relationship, importUris: importUris)}].expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList())
     """;
   }
 
-  String _getEntityConstructor(BuildContext context,
-      {required List<Uri> importUris}) {
-    final attributesStr = entity.attributes.keys.map((name) {
-      return "'$name': ${_getAttributeInstantiator(context, entity.attributes[name]!, importUris: importUris)}";
-    }).join(", ");
-
+  Future<String> _getEntityConstructor(BuildContext context,
+      {required List<Uri> importUris}) async {
+    final attributesStr =
+        (await Future.wait(entity.attributes.keys.map((name) async {
+      return "'$name': ${await _getAttributeInstantiator(context, entity.attributes[name]!, importUris: importUris)}";
+    })))
+            .join(", ");
     final symbolMapBuffer = StringBuffer();
     entity.properties.forEach((str, val) {
       final sourcifiedKey = sourcifyValue(str);
@@ -389,21 +388,23 @@ return entity.symbolMap[Symbol(symbolName)];
   }
 
   @override
-  String compile(BuildContext ctx) {
+  Future<String> compile(BuildContext ctx) async {
     final importUris = <Uri>[];
 
     final className = "${MirrorSystem.getName(instanceType.simpleName)}";
     final originalFileUri = instanceType.location!.sourceUri.toString();
-    final relationshipsStr = entity.relationships!.keys.map((name) {
-      return "'$name': ${_getRelationshipInstantiator(ctx, entity.relationships![name]!, importUris: importUris)}";
-    }).join(", ");
+    final relationshipsStr =
+        (await Future.wait(entity.relationships!.keys.map((name) async {
+      return "'$name': ${await _getRelationshipInstantiator(ctx, entity.relationships![name]!, importUris: importUris)}";
+    })))
+            .join(", ");
 
     final uniqueStr = entity.uniquePropertySet == null
         ? "null"
         : "[${entity.uniquePropertySet!.map((u) => "'${u!.name}'").join(",")}].map((k) => entity.properties[k]).toList()";
 
     final entityConstructor =
-        _getEntityConstructor(ctx, importUris: importUris);
+        await _getEntityConstructor(ctx, importUris: importUris);
 
     // Need to import any relationships types and metadata types
     // todo: limit import of importUris to only show symbols required to replicate metadata

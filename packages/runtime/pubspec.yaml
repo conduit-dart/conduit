@@ -8,6 +8,7 @@ dependencies:
   analyzer: ^1.2.0
   args: ^2.0.0
   conduit_isolate_exec: ^3.1.1
+  package_config: ^2.1.0
   path: ^1.8.0
   pubspec: ^2.0.1
   yaml: ^3.1.0

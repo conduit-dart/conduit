@@ -130,7 +130,8 @@ class CLIServer extends CLICommand with CLIProject {
     final isolate = await Isolate.spawnUri(dataUri, [], messagePort!.sendPort,
         errorsAreFatal: true,
         onError: errorPort!.sendPort,
-        packageConfig: fileInProjectDirectory(".packages").uri,
+        packageConfig:
+            fileInProjectDirectory(".dart_tool/package_config.json").uri,
         paused: true);
 
     errorPort!.listen((msg) {

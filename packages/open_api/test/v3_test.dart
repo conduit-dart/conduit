@@ -437,7 +437,7 @@ Future<String> fetchStripExample() async {
         'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json';
     final request = await HttpClient().getUrl(Uri.parse(url));
     final response = await request.close();
-    response.pipe(File(config).openWrite());
+    await response.pipe(File(config).openWrite());
   }
   return config;
 }

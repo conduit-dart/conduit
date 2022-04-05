@@ -66,7 +66,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   }
 
   @override
-  String compile(BuildContext ctx) {
+  Future<String> compile(BuildContext ctx) async {
     final className = MirrorSystem.getName(type!.simpleName);
     final originalFileUri = type!.location!.sourceUri.toString();
     final globalInitBody = hasGlobalInitializationMethod
@@ -171,7 +171,7 @@ class ControllerRuntimeImpl extends ControllerRuntime
   }
 
   @override
-  String compile(BuildContext ctx) {
+  Future<String> compile(BuildContext ctx) async {
     final originalFileUri = type.location!.sourceUri.toString();
 
     return """
