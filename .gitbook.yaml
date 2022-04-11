@@ -1,8 +1,8 @@
-root: ./conduit/doc/source/docs
+root: ./packages/conduit/doc/source/docs
 
-​structure:  
-    readme: ./README.md  
+​structure:
+    readme: ./README.md
     summary: SUMMARY.md​
-    
-redirects:  
+
+redirects:
     previous/page: new-folder/page.md
