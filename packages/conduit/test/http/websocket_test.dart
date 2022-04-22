@@ -25,29 +25,9 @@ void main() {
       final socket = WebSocketChannel.connect(url);
       const msg = 'this message is transfered over WebSocket connection';
       socket.sink.add(msg);
-      socket.sink.add('stop');
       var response = await socket.stream
           .first; //the TestChannel should respond with hash code of the message
       expect(response.toString(), msg.hashCode.toString());
-    });
-
-    test("Send stream of messages", () async {
-      final url = Uri.parse('$urlPrefix/test');
-      final socket = WebSocketChannel.connect(url);
-      final messages = <String>[for (var x = 0; x < 100; ++x) 'message $x'];
-      messages.forEach(socket.sink.add);
-      socket.sink.add('stop');
-      var i = 0;
-      final stopHash = 'stop'.hashCode.toString();
-      await for (var rx in socket.stream) {
-        var hash = rx.toString();
-        if (hash == stopHash) {
-          break;
-        }
-
-        expect(messages[i++].hashCode.toString(),
-            rx.toString()); //check confirmation of each message
-      }
     });
   });
 }
@@ -68,14 +48,11 @@ class TestChannel extends ApplicationChannel {
 }
 
 class TestController extends ResourceController {
-  Future _processConnection(WebSocket socket) async {
-    await for (var message in socket) {
+  Future _processConnection(WebSocket socket) {
+    socket.listen((message) {
       socket.add('${message.hashCode}');
-      if (message == 'stop') {
-        break;
-      }
-    }
-    await socket.close(WebSocketStatus.normalClosure, 'request to stop');
+      socket.close(WebSocketStatus.normalClosure, 'request to stop');
+    });
     return Future.value();
   }
 
