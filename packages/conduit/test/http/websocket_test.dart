@@ -25,6 +25,7 @@ void main() {
       final socket = WebSocketChannel.connect(url);
       const msg = 'this message is transfered over WebSocket connection';
       socket.sink.add(msg);
+      socket.sink.add('stop');
       var response = await socket.stream
           .first; //the TestChannel should respond with hash code of the message
       expect(response.toString(), msg.hashCode.toString());
