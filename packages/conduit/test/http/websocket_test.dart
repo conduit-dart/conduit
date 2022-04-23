@@ -29,7 +29,7 @@ void main() {
       var response = await socket.stream
           .first; //the TestChannel should respond with hash code of the message
       expect(response.toString(), msg.hashCode.toString());
-      exit(0);
+      await socket.sink.close(WebSocketStatus.normalClosure, 'all is good');
     });
 
     test("Send stream of messages", () async {
@@ -49,7 +49,7 @@ void main() {
         expect(messages[i++].hashCode.toString(),
             rx.toString()); //check confirmation of each message
       }
-      exit(0);
+      await socket.sink.close(WebSocketStatus.normalClosure, 'all is good');
     });
   });
 }
