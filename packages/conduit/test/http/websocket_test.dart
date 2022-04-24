@@ -21,7 +21,7 @@ void main() {
       return await app.stop();
     });
 
-    test("Send single message. Await broadcast incoming stream", () async {
+    test("Single message, use broadcast stream", () async {
       final url = Uri.parse('$urlPrefix/test');
       final socket = WebSocketChannel.connect(url);
       final incoming = socket.stream.asBroadcastStream();
@@ -32,8 +32,35 @@ void main() {
       //the TestChannel should respond with hash code of the message
       var response = await incoming.first;
       expect(response.toString(), msg.hashCode.toString());
+      //incoming is broadcast stream - still listenable after the await
+
+      //wait for the server to close the connection. We will receive its status code
       await socket.sink.done;
       expect(socket.closeReason, 'stop acknowledged');
+    });
+
+    test("Send single message. Await single subscription stream", () async {
+      final url = Uri.parse('$urlPrefix/test');
+      final socket = WebSocketChannel.connect(url);
+      const msg = 'this message is transfered over WebSocket connection';
+      socket.sink.add(msg);
+
+      //the TestChannel should respond with hash code of the message
+      var response = await socket.stream.first;
+      expect(response.toString(), msg.hashCode.toString());
+
+      //the socket stream is now complete. We can't listen for events any more
+      socket.sink.add('we can send another message');
+      await Future.delayed(const Duration(milliseconds: 100));
+      socket.sink.add('even more messages are being sent');
+      //but there is no way that we receive data - we've already listened to the stream
+
+      socket.sink.add('stop'); //the server will stop the connection
+      //but we can't get that info. No status code is sent to us
+      //if we try to wait for socket.sink.done notification from the server
+      //we will block forever - no data from the server is available
+      //close our side for cleanup
+      await socket.sink.close();
     });
 
     test("Send stream of messages", () async {
@@ -42,7 +69,7 @@ void main() {
 
       var i = 0;
       final stopHash = 'stop'.hashCode.toString();
-      final messages = <String>[for (var x = 0; x < 100; ++x) 'message $x'];
+      final messages = <String>[for (var x = 0; x < 50; ++x) 'message $x'];
       socket.stream.listen((rx) async {
         var hash = rx.toString();
         if (hash == stopHash) {
@@ -56,6 +83,8 @@ void main() {
       messages.forEach(socket.sink.add);
       socket.sink.add('stop');
 
+      //we didn't close the listening stream as in the await case
+      //its OK to listen for server accepting the stop
       await socket.sink.done;
       expect(socket.closeReason, 'stop acknowledged');
     });
@@ -115,6 +144,7 @@ class TestController extends ResourceController {
   final _stopwatch = Stopwatch();
   Future _processConnection(WebSocket socket) async {
     await for (var message in socket) {
+      //await the response for more realistic async behaviour
       await Future.delayed(const Duration(milliseconds: 5));
       socket.add('${message.hashCode}');
       if (message == 'stop') {
@@ -122,7 +152,6 @@ class TestController extends ResourceController {
       }
     }
     await socket.close(WebSocketStatus.normalClosure, 'stop acknowledged');
-    print('test controller closed the connection');
     return Future.value();
   }
 
