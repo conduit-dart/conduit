@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart';
 
 void main() async {
-  final port = await getUnusedPort();
   group("Agent instantiation", () {
     Application? app;
 
@@ -16,12 +16,12 @@ void main() async {
     });
 
     test("Create from app, explicit port", () async {
-      final portLocal = await getUnusedPort();
+      final port = await getUnusedPort((port) => port);
 
-      app = Application<SomeChannel>()..options.port = portLocal;
+      app = Application<SomeChannel>()..options.port = port;
       await app!.startOnCurrentIsolate();
       final client = Agent(app);
-      expect(client.baseURL, "http://localhost:$portLocal");
+      expect(client.baseURL, "http://localhost:$port");
     });
 
     test("Create from app, assigned port", () async {
@@ -69,8 +69,9 @@ void main() async {
   });
 
   group("Request building", () {
-    final server = MockHTTPServer(port);
+    late MockHTTPServer server;
     setUp(() async {
+      server = await getUnusedPort((port) => MockHTTPServer(port));
       await server.open();
     });
 
@@ -79,8 +80,8 @@ void main() async {
     });
 
     test("Host created correctly", () async {
-      final portLocal = await getUnusedPort();
-      final defaultTestClient = Agent.onPort(port);
+      final portLocal = await getUnusedPort((port) => port);
+      final defaultTestClient = Agent.onPort(server.port);
       final portConfiguredClient =
           Agent.fromOptions(ApplicationOptions()..port = portLocal);
       final hostPortConfiguredClient = Agent.fromOptions(ApplicationOptions()
@@ -91,7 +92,7 @@ void main() async {
             ..port = portLocal
             ..address = "foobar.com",
           useHTTPS: true);
-      expect(defaultTestClient.baseURL, "http://localhost:$port");
+      expect(defaultTestClient.baseURL, "http://localhost:${server.port}");
       expect(portConfiguredClient.baseURL, "http://localhost:$portLocal");
       expect(hostPortConfiguredClient.baseURL, "http://localhost:$portLocal");
       expect(
@@ -99,35 +100,35 @@ void main() async {
     });
 
     test("Request URLs are created correctly", () {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       expect(defaultTestClient.request("/foo").requestURL,
-          "http://localhost:$port/foo");
+          "http://localhost:${server.port}/foo");
       expect(defaultTestClient.request("foo").requestURL,
-          "http://localhost:$port/foo");
+          "http://localhost:${server.port}/foo");
       expect(defaultTestClient.request("foo/bar").requestURL,
-          "http://localhost:$port/foo/bar");
+          "http://localhost:${server.port}/foo/bar");
 
       expect(
           (defaultTestClient.request("/foo")..query = {"baz": "bar"})
               .requestURL,
-          "http://localhost:$port/foo?baz=bar");
+          "http://localhost:${server.port}/foo?baz=bar");
       expect((defaultTestClient.request("/foo")..query = {"baz": 2}).requestURL,
-          "http://localhost:$port/foo?baz=2");
+          "http://localhost:${server.port}/foo?baz=2");
       expect(
           (defaultTestClient.request("/foo")..query = {"baz": null}).requestURL,
-          "http://localhost:$port/foo?baz");
+          "http://localhost:${server.port}/foo?baz");
       expect(
           (defaultTestClient.request("/foo")..query = {"baz": true}).requestURL,
-          "http://localhost:$port/foo?baz");
+          "http://localhost:${server.port}/foo?baz");
       expect(
           (defaultTestClient.request("/foo")..query = {"baz": true, "boom": 7})
               .requestURL,
-          "http://localhost:$port/foo?baz&boom=7");
+          "http://localhost:${server.port}/foo?baz&boom=7");
     });
 
     test("HTTP requests are issued", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       await defaultTestClient.request("/foo").get();
       Request msg = await server.next();
       expect(msg.path.string, "/foo");
@@ -167,7 +168,7 @@ void main() async {
     });
 
     test("Default headers are added to requests", () async {
-      final defaultTestClient = Agent.onPort(port)
+      final defaultTestClient = Agent.onPort(server.port)
         ..headers["X-Int"] = 1
         ..headers["X-String"] = "1";
 
@@ -180,7 +181,7 @@ void main() async {
     });
 
     test("Default headers can be overridden", () async {
-      final defaultTestClient = Agent.onPort(port)
+      final defaultTestClient = Agent.onPort(server.port)
         ..headers["X-Int"] = 1
         ..headers["X-String"] = "1";
 
@@ -196,7 +197,7 @@ void main() async {
     });
 
     test("Client can expect array of JSON", () async {
-      final portLocal = await getUnusedPort();
+      final portLocal = await getUnusedPort((port) => port);
       final client = Agent.onPort(portLocal);
       final server = await HttpServer.bind("localhost", portLocal,
           v6Only: false, shared: false);
@@ -213,7 +214,7 @@ void main() async {
     });
 
     test("Query parameters are provided when using execute", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       await defaultTestClient.get("/foo", query: {"k": "v"});
 
@@ -223,7 +224,7 @@ void main() async {
     });
 
     test("Basic authorization adds header to all requests", () async {
-      final defaultTestClient = Agent.onPort(port)
+      final defaultTestClient = Agent.onPort(server.port)
         ..headers["k"] = "v"
         ..setBasicAuthorization("username", "password");
 
@@ -237,7 +238,7 @@ void main() async {
     });
 
     test("Bearer authorization adds header to all requests", () async {
-      final defaultTestClient = Agent.onPort(port)
+      final defaultTestClient = Agent.onPort(server.port)
         ..headers["k"] = "v"
         ..bearerAuthorization = "token";
 
@@ -258,7 +259,7 @@ void main() async {
     });
 
     test("Responses have body", () async {
-      final portLocal = await getUnusedPort();
+      final portLocal = await getUnusedPort((port) => port);
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, portLocal);
       server.listen((req) {
         final resReq = Request(req);
@@ -274,7 +275,7 @@ void main() async {
     });
 
     test("Responses with no body don't return one", () async {
-      final portLocal = await getUnusedPort();
+      final portLocal = await getUnusedPort((port) => port);
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, portLocal);
       server.listen((req) {
         req.response.statusCode = 200;
@@ -287,7 +288,7 @@ void main() async {
     });
 
     test("Request with accept adds header", () async {
-      final portLocal = await getUnusedPort();
+      final portLocal = await getUnusedPort((port) => port);
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, portLocal);
       server.listen((req) {
         final resReq = Request(req);

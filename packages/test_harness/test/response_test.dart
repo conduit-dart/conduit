@@ -3,15 +3,15 @@ import 'package:conduit_test/conduit_test.dart';
 import 'package:conduit_test/src/body_matcher.dart';
 import 'package:conduit_test/src/response_matcher.dart';
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart';
 
 void main() async {
-  final port = await getUnusedPort();
-
   late MockHTTPServer server;
-  final agent = Agent.onPort(port);
+  late Agent agent;
 
-  setUp(() async {
-    server = MockHTTPServer(port);
+  setUpAll(() async {
+    server = await getUnusedPort((port) => MockHTTPServer(port));
+    agent = Agent.onPort(server.port);
     await server.open();
   });
 

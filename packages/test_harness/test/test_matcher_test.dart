@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart';
 
 void main() async {
-  final port = await getUnusedPort();
   group("Matcher Basics", () {
-    final server = MockHTTPServer(port);
+    late MockHTTPServer server;
     setUpAll(() async {
+      server = await getUnusedPort((port) => MockHTTPServer(port));
       await server.open();
       server.defaultResponse = Response.ok(null);
     });
@@ -30,13 +31,13 @@ void main() async {
     });
 
     test("Status code matcher succeeds when correct", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasStatus(200));
     });
 
     test("Status code matcher fails with useful message when wrong", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
 
       expectFailureFor(() {
@@ -56,8 +57,9 @@ void main() async {
 
     late HttpServer server;
     setUpAll(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, port,
-          shared: true);
+      server = await getUnusedPort((port) async => await HttpServer.bind(
+          InternetAddress.loopbackIPv4, port,
+          shared: true));
       server.listen((req) {
         req.response.statusCode = 200;
 
@@ -78,7 +80,7 @@ void main() async {
     });
 
     test("Ensure existence of some headers", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
           response,
@@ -96,7 +98,7 @@ void main() async {
     });
 
     test("Ensure values of some headers w/ matcher", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
           response,
@@ -117,7 +119,7 @@ void main() async {
     });
 
     test("Ensure non-existence of header", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasHeaders({"invalid": isNotPresent}));
 
@@ -132,7 +134,7 @@ void main() async {
     });
 
     test("Ensure any headers other than those specified", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
           response,
@@ -153,14 +155,14 @@ void main() async {
     });
 
     test("Match an integer", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo?num").get();
       expect(response, hasHeaders({"x-num": greaterThan(5)}));
       expect(response, hasHeaders({"x-num": 10}));
     });
 
     test("DateTime isBefore,isAfter, etc.", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo?timestamp").get();
       expect(
           response,
@@ -259,7 +261,7 @@ void main() async {
 
     test("HttpDate", () async {
       // Don't need to test variants of HttpDate, only that it gets parsed correctly
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo?date").get();
 
       expect(response, hasHeaders({"x-date": isSameMomentAs(xDate)}));
@@ -267,8 +269,9 @@ void main() async {
   });
 
   group("Body, content-type matchers", () {
-    final server = MockHTTPServer(port);
+    late MockHTTPServer server;
     setUp(() async {
+      server = await getUnusedPort((port) => MockHTTPServer(port));
       await server.open();
     });
 
@@ -277,7 +280,7 @@ void main() async {
     });
 
     test("Can match empty body", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok(null));
       var response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody(isNull));
@@ -296,7 +299,7 @@ void main() async {
     });
 
     test("Can match text object", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(Response.ok("text")..contentType = ContentType.text);
       var response = await defaultTestClient.request("/foo").get();
@@ -311,7 +314,7 @@ void main() async {
     });
 
     test("Can match JSON Object", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
           Response.ok({"foo": "bar"})..contentType = ContentType.json);
@@ -334,8 +337,9 @@ void main() async {
   });
 
   group("Body, value matchers", () {
-    final server = MockHTTPServer(port);
+    late MockHTTPServer server;
     setUpAll(() async {
+      server = await getUnusedPort((port) => MockHTTPServer(port));
       await server.open();
     });
 
@@ -344,7 +348,7 @@ void main() async {
     });
 
     test("List of terms", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok([1, 2, 3]));
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody([1, 2, 3]));
@@ -370,7 +374,7 @@ void main() async {
     });
 
     test("Exact map", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok({"foo": "bar", "x": "y"}));
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody({"foo": "bar", "x": "y"}));
@@ -385,7 +389,7 @@ void main() async {
     });
 
     test("Map with matchers", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok({"foo": "bar", "x": 5}));
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody({"foo": isString, "x": greaterThan(0)}));
@@ -405,7 +409,7 @@ void main() async {
     });
 
     test("Partial match, one level", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok({"foo": "bar", "x": 5}));
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody(partial({"foo": "bar"})));
@@ -427,7 +431,7 @@ void main() async {
     });
 
     test("Partial match, null and not present", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(Response.ok({"foo": null, "bar": "boo"}));
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody(partial({"bar": "boo"})));
@@ -453,9 +457,9 @@ void main() async {
   });
 
   group("Total matcher", () {
-    final server = MockHTTPServer(port);
-
+    late MockHTTPServer server;
     setUpAll(() async {
+      server = await getUnusedPort((port) => MockHTTPServer(port));
       await server.open();
     });
 
@@ -464,7 +468,7 @@ void main() async {
     });
 
     test("Succeeds on fully specificed spec", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(
           Response.ok({"a": "b"})..contentType = ContentType.json);
       final resp = expectResponse(
@@ -475,7 +479,7 @@ void main() async {
     });
 
     test("Omit status code from matcher, matching ignores it", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
           Response.ok({"foo": "bar"})..contentType = ContentType.json);
@@ -489,7 +493,7 @@ void main() async {
     });
 
     test("Omit headers from matcher, matching ignores them", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(Response.ok({"foo": "bar"},
           headers: {"content-type": "application/json; charset=utf-8"}));
@@ -499,7 +503,7 @@ void main() async {
     });
 
     test("Omit body ignores them", () async {
-      final defaultTestClient = Agent.onPort(port);
+      final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
           Response.ok({"foo": "bar"})..contentType = ContentType.json);

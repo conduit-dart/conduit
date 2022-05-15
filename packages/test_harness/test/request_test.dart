@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:conduit/conduit.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart';
 
 void main() async {
-  final port = await getUnusedPort();
   late MockHTTPServer server;
-  final agent = Agent.onPort(port);
+  late Agent agent;
 
   setUp(() async {
-    server = MockHTTPServer(port);
+    server = await getUnusedPort((port) => MockHTTPServer(port));
+    agent = Agent.onPort(server.port);
     await server.open();
   });
 
@@ -83,28 +84,28 @@ void main() async {
 
   test("Path and baseURL negotiate path delimeters", () async {
     var req = agent.request("/")
-      ..baseURL = "http://localhost:$port"
+      ..baseURL = "http://localhost:${server.port}"
       ..path = "path";
-    expect(req.requestURL, "http://localhost:$port/path");
+    expect(req.requestURL, "http://localhost:${server.port}/path");
 
     req = agent.request("/")
-      ..baseURL = "http://localhost:$port/"
+      ..baseURL = "http://localhost:${server.port}/"
       ..path = "path";
-    expect(req.requestURL, "http://localhost:$port/path");
+    expect(req.requestURL, "http://localhost:${server.port}/path");
 
     req = agent.request("/")
-      ..baseURL = "http://localhost:$port/"
+      ..baseURL = "http://localhost:${server.port}/"
       ..path = "/path";
-    expect(req.requestURL, "http://localhost:$port/path");
+    expect(req.requestURL, "http://localhost:${server.port}/path");
 
     req = agent.request("/")
-      ..baseURL = "http://localhost:$port/base/"
+      ..baseURL = "http://localhost:${server.port}/base/"
       ..path = "path";
-    expect(req.requestURL, "http://localhost:$port/base/path");
+    expect(req.requestURL, "http://localhost:${server.port}/base/path");
 
     req = agent.request("/")
-      ..baseURL = "http://localhost:$port/base/"
+      ..baseURL = "http://localhost:${server.port}/base/"
       ..path = "/path";
-    expect(req.requestURL, "http://localhost:$port/base/path");
+    expect(req.requestURL, "http://localhost:${server.port}/base/path");
   });
 }
