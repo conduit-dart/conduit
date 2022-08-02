@@ -6,7 +6,7 @@ Conduit is a fork of Stablekernel's Aqueduct, a modern Dart HTTP server framewor
 
 ## Getting Started
 
-1. [Install Dart](https://www.dartlang.org/install).
+1. [Install Dart](https://dart.dev/get-dart).
 2. Activate Conduit
 
         pub global activate conduit
@@ -17,6 +17,6 @@ Conduit is a fork of Stablekernel's Aqueduct, a modern Dart HTTP server framewor
 
 ## Tutorials, Documentation and Examples
 
-We are currently in the process of collating helpful resources for your edification. Our main docs live [here](https://gitbook.theconduit.dev/contributing).
+We are currently in the process of collating helpful resources for your edification. Our main docs live [here](https://gitbook.theconduit.dev/).
 
 Conduit is a close fork to Aqueduct, so Aqueduct examples can be tweaked to work with Conduit [here](https://github.com/stablekernel/aqueduct_examples). The major concern is updating the code to use null-safety.
