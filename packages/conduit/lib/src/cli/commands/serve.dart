@@ -130,7 +130,7 @@ class CLIServer extends CLICommand with CLIProject {
     final isolate = await Isolate.spawnUri(dataUri, [], messagePort!.sendPort,
         errorsAreFatal: true,
         onError: errorPort!.sendPort,
-        packageConfig: fileInProjectDirectory(".packages").uri,
+        // packageConfig: fileInProjectDirectory(".packages").uri,
         paused: true);
 
     errorPort!.listen((msg) {

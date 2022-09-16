@@ -42,7 +42,8 @@ abstract class CLIProject implements CLICommand {
   File get projectSpecificationFile =>
       File.fromUri(projectDirectory!.uri.resolve("pubspec.yaml"));
 
-  Uri get packageConfigUri => projectDirectory!.uri.resolve(".packages");
+  // Uri get packageConfigUri => projectDirectory!.uri.resolve(".packages");
+  Uri? get packageConfigUri => null;
 
   String? get libraryName => packageName;
 
@@ -103,7 +104,7 @@ abstract class CLIProject implements CLICommand {
   Future<String> getChannelName() async {
     try {
       final name = await IsolateExecutor.run(GetChannelExecutable({}),
-          // packageConfigURI: packageConfigUri,
+          packageConfigURI: packageConfigUri,
           imports: GetChannelExecutable.importsForPackage(libraryName),
           logHandler: displayProgress);
       return name;
