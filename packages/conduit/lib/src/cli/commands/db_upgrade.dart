@@ -79,7 +79,7 @@ class CLIDatabaseUpgrade extends CLICommand
     final schemaMap = await IsolateExecutor.run(
         RunUpgradeExecutable.input(
             fromSchema, _storeConnectionInfo!, migrations, fromVersion),
-        // packageConfigURI: packageConfigUri,
+        packageConfigURI: packageConfigUri,
         imports: RunUpgradeExecutable.imports,
         additionalContents: MigrationSource.combine(migrations),
         additionalTypes: [DBInfo],
