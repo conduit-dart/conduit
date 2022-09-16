@@ -103,7 +103,7 @@ abstract class CLIProject implements CLICommand {
   Future<String> getChannelName() async {
     try {
       final name = await IsolateExecutor.run(GetChannelExecutable({}),
-          packageConfigURI: packageConfigUri,
+          // packageConfigURI: packageConfigUri,
           imports: GetChannelExecutable.importsForPackage(libraryName),
           logHandler: displayProgress);
       return name;
