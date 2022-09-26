@@ -101,7 +101,8 @@ class BuildContext {
   /// Gets dependency package location relative to [sourceApplicationDirectory].
   Map<String, Uri> get resolvedPackages {
     return getResolvedPackageUris(
-        sourceApplicationDirectory.uri.resolve(".packages"),
+        sourceApplicationDirectory.uri
+            .resolve(".dart_tool/package_config.json"),
         relativeTo: sourceApplicationDirectory.uri);
   }
 

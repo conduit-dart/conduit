@@ -55,7 +55,8 @@ class BuildManager {
     strippedScriptFile.writeAsStringSync(scriptSource);
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
-      packageConfigURI: sourceDirectoryUri.resolve(".packages"),
+      packageConfigURI:
+          sourceDirectoryUri.resolve(".dart_tool/package_config.json"),
       imports: [
         "package:conduit_runtime/runtime.dart",
         context.targetScriptFileUri.toString()
