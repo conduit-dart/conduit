@@ -44,7 +44,8 @@ class _TestObject {
       projectUnderTestCli.agent.workingDirectory.uri.resolve("pubspec.lock"),
     ).deleteSync();
     File.fromUri(
-      projectUnderTestCli.agent.workingDirectory.uri.resolve(".packages"),
+      projectUnderTestCli.agent.workingDirectory.uri
+          .resolve(".dart_tool/package_config.json"),
     ).deleteSync();
 
     var res = await projectUnderTestCli.run("db", ["generate"]);

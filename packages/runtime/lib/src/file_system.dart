@@ -24,7 +24,7 @@ void copyDirectory({required Uri src, required Uri dst}) {
   });
 }
 
-/// Reads .packages file from [packagesFileUri] and returns map of package name to its location on disk.
+/// Reads .dart_tool/package_config.json file from [packagesFileUri] and returns map of package name to its location on disk.
 ///
 /// If locations on disk are relative Uris, they are resolved by [relativeTo]. [relativeTo] defaults
 /// to the CWD.
@@ -37,7 +37,7 @@ Map<String, Uri> getResolvedPackageUris(
   final packagesFile = File.fromUri(packagesFileUri);
   if (!packagesFile.existsSync()) {
     throw StateError(
-      "No .packages file found at '$packagesFileUri'. "
+      "No .dart_tool/package_config.json file found at '$packagesFileUri'. "
       "Run 'pub get' in directory '${packagesFileUri.resolve('../')}'.",
     );
   }

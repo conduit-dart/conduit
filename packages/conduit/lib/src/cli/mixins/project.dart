@@ -42,7 +42,6 @@ abstract class CLIProject implements CLICommand {
   File get projectSpecificationFile =>
       File.fromUri(projectDirectory!.uri.resolve("pubspec.yaml"));
 
-  // Uri get packageConfigUri => projectDirectory!.uri.resolve(".packages");
   Uri? get packageConfigUri =>
       projectDirectory!.uri.resolve(".dart_tool/package_config.json");
 

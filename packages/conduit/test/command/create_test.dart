@@ -116,8 +116,8 @@ void main() {
       var res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      var conduitLocationString = File(join(
-              cli.agent.workingDirectory.path, "test_project", ".packages"))
+      var conduitLocationString = File(join(cli.agent.workingDirectory.path,
+              "test_project", ".dart_tool/package_config.json"))
           .readAsStringSync()
           .split("\n")
           .firstWhere((p) => p.startsWith("conduit:"))
