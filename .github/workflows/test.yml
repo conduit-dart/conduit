@@ -51,7 +51,9 @@ jobs:
         with:
           sdk: dev
       - name: Get Dependencies
-        run: melos bootstrap
+        run: |
+          dart pub global activate melos
+          melos bootstrap
       - name: Run tests
         run: . ./ci/.env && melos test-unit
 
