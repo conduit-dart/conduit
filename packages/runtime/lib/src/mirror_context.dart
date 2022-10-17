@@ -10,8 +10,6 @@ class MirrorContext extends RuntimeContext {
   MirrorContext._() {
     final m = <String, dynamic>{};
 
-    print((currentMirrorSystem().libraries.length));
-
     for (final c in compilers) {
       final compiledRuntimes = c.compile(this);
       if (m.keys.any((k) => compiledRuntimes.keys.contains(k))) {
