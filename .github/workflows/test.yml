@@ -33,14 +33,32 @@ jobs:
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && ${{ env.RUNNER_CMD }}
 
-  conduit:
+  all_unit:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14.5
+        env:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 15432
+        ports:
+          - 15432:5432
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: dev
+      - name: Get Dependencies
+        run: melos bootstrap
+      - name: Run tests
+        run: . ./ci/.env && melos test-unit
+
+  conduit_cli:
     env:
       TEST_DIR: packages/conduit
-      RUNNER_CMD: dart test -r expanded
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        runner_args: [-t cli, -x cli]
     services:
       postgres:
         image: postgres:14.5
@@ -61,7 +79,7 @@ jobs:
         run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && ${{ env.RUNNER_CMD }} ${{ matrix.runner_args }} test/* #TODO: file a bug report with dart:mirrors
+        run: . ../../ci/.env && dart test -r expanded -j1 -t cli
 
   conduit_tool:
     env:

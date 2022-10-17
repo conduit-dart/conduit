@@ -184,7 +184,6 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     final inverseType = property is ManagedRelationshipDescription
         ? "${property.destinationEntity.instanceType}"
         : "null";
-    print(constructorInvocations);
     return """() {
   return [${constructorInvocations.join(",")}].map((v) {
     final state = v.compile(${_getManagedTypeInstantiator(property.type)}, relationshipInverseType: $inverseType);

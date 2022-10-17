@@ -27,6 +27,8 @@ jobs:
         git config --local user.name "github-actions[bot]"
     - name: Install melos
       run: dart pub global activate melos
+    - name: Changelog
+      run: git diff master packages/conduit/CHANGELOG.md > CHANGES.txt
     - name: Strip overrides
       run: melos run strip-overrides
     - name: Uptick versions
@@ -41,3 +43,7 @@ jobs:
         branch: master
     - name: Publish package
       run: melos publish --no-dry-run --git-tag-version --yes
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: CHANGES.txt

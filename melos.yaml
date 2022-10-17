@@ -12,7 +12,7 @@ command:
     linkToCommits: true
 scripts:
   test-unit:
-    run: . ci/.env && melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli"
+    run: . ci/.env && melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
     select-pacakge:
       no-private: true
   test-with-coverage:
