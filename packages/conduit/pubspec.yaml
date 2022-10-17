@@ -34,6 +34,7 @@ dev_dependencies:
     path: ../common_test
   conduit_test:
     path: ../test_harness
+  web_socket_channel: ^2.2.0
 dependency_overrides:
   conduit_codable:
     path: ../codable

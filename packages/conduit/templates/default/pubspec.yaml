@@ -7,8 +7,8 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  conduit: ^3.0.0
+  conduit: ^3.2.0
 
 dev_dependencies:
   test: ^1.16.5
-  conduit_test: ^3.0.0
+  conduit_test: ^3.2.0

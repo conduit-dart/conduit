@@ -1,22 +1,45 @@
-name: Test Suite
+name: Release
 
 on:
-  release:
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
+  publish:
+    if: |
+      startsWith(github.event.head_commit.message, 'feat')
+      || startsWith(github.event.head_commit.message, 'fix')
+      || startsWith(github.event.head_commit.message, 'BREAKING CHANGE')
     runs-on: ubuntu-latest
-    container:
-      image:  google/dart:latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
     - name: Prepare pub credentials
-      run: echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      run: |
+        mkdir -p "$XDG_CONFIG_HOME/dart"
+        echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+    - name: Git config
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
     - name: Install melos
       run: dart pub global activate melos
     - name: Strip overrides
       run: melos run strip-overrides
+    - name: Uptick versions
+      run: melos version --yes
     - name: Dry run
-      run: melos publish --dry-run
+      run: melos publish --dry-run --yes
+    - name: Push tags
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tags: true
     - name: Publish package
       run: melos publish --no-dry-run
