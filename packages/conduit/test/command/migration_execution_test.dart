@@ -263,7 +263,7 @@ List<MigrationSource> getOrderedTestMigrations(
   final analyzer = CodeAnalyzer(uri);
   final migrations = analyzer
       .getSubclassesFromFile("Migration", analyzer.uri)
-      .where((cu) => names.contains(cu.name.name))
+      .where((cu) => names.contains(cu.name.value()))
       .map(migrationSourceFromClassDeclaration)
       .toList();
 

@@ -54,6 +54,7 @@ jobs:
         run: |
           dart pub global activate melos
           melos bootstrap
+          melos cache-source
           cd packages/isolate_exec_test_packages/test_package && dart pub get
       - name: Run tests
         run: . ./ci/.env && melos test-unit
