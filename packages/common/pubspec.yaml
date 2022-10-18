@@ -8,3 +8,8 @@ dependencies:
   conduit_open_api: ^3.2.2
 dev_dependencies:
   lint: ^1.0.0
+dependency_overrides:
+  conduit_codable:
+    path: ../codable
+  conduit_open_api:
+    path: ../open_api

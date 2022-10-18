@@ -10,4 +10,9 @@ dependencies:
   yaml: ^3.1.0
 dev_dependencies:
   lint: ^1.5.0
-  test: ^1.16.5
+  test: ^1.21.6
+dependency_overrides:
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_runtime:
+    path: ../runtime

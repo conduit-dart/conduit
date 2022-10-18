@@ -5,10 +5,27 @@ description: Utilities for writing automated tests for Conduit applications
 environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
-  test: ^1.16.5
-  matcher: ">=0.12.3 <0.14.0"
+  test: ^1.21.6
+  matcher: ^0.12.12
   conduit: ^3.2.3
 dev_dependencies:
   conduit_common_test:
     path: ../common_test
-  test_core: ^0.3.29
+  test_core: ^0.4.18
+dependency_overrides:
+  conduit:
+    path: ../conduit
+  conduit_codable:
+    path: ../codable
+  conduit_common:
+    path: ../common
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_open_api:
+    path: ../open_api
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime

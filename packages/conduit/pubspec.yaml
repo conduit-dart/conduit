@@ -6,7 +6,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
   args: ^2.1.1
-  analyzer: ^1.3.0
+  analyzer: ^5.1.0
   collection: ^1.15.0
   conduit_common: ^3.2.2
   conduit_config: ^3.2.2
@@ -14,7 +14,7 @@ dependencies:
   conduit_open_api: ^3.2.2
   conduit_password_hash: ^3.2.2
   conduit_runtime: ^3.2.2
-  crypto: ^3.0.0
+  crypto: ^3.0.2
   logging: ^1.0.0
   meta: ^1.1.5
   path: ^1.6.1
@@ -24,10 +24,10 @@ dependencies:
   yaml: ^3.1.0
 dev_dependencies:
   http: ^0.13.0
-  matcher: ">=0.12.3 <0.14.0"
-  mockito: ^5.0.0
+  matcher: ^0.12.12
+  mockito: ^5.3.2
   pedantic: ^1.0.0
-  test: ^1.16.5
+  test: ^1.21.6
   fs_test_agent:
     path: ../fs_test_agent
   conduit_common_test:
@@ -37,3 +37,20 @@ dev_dependencies:
   web_socket_channel: ^2.2.0
 executables:
   conduit: conduit
+dependency_overrides:
+  conduit_codable:
+    path: ../codable
+  conduit_common:
+    path: ../common
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_open_api:
+    path: ../open_api
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime
+  conduit_test:
+    path: ../test_harness

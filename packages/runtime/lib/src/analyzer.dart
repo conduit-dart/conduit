@@ -46,11 +46,9 @@ class CodeAnalyzer {
         return _resolvedAsts[path]! as ResolvedLibraryResult;
       }
 
-      final output = await ctx.currentSession.getResolvedLibrary2(path)
+      final output = await ctx.currentSession.getResolvedLibrary(path)
           as ResolvedLibraryResult;
-      if (output.state == ResultState.VALID) {
-        return _resolvedAsts[path] = output;
-      }
+      return _resolvedAsts[path] = output;
     }
 
     throw ArgumentError("'uri' could not be resolved (contexts: "
@@ -67,10 +65,8 @@ class CodeAnalyzer {
       }
 
       final output =
-          await ctx.currentSession.getResolvedUnit2(path) as ResolvedUnitResult;
-      if (output.state == ResultState.VALID) {
-        return _resolvedAsts[path] = output;
-      }
+          await ctx.currentSession.getResolvedUnit(path) as ResolvedUnitResult;
+      return _resolvedAsts[path] = output;
     }
 
     throw ArgumentError("'uri' could not be resolved (contexts: "
@@ -82,7 +78,7 @@ class CodeAnalyzer {
       return _getFileAstRoot(fileUri)
           .declarations
           .whereType<ClassDeclaration>()
-          .firstWhere((c) => c.name.name == className);
+          .firstWhere((c) => c.name.value() == className);
     } catch (e) {
       if (e is StateError || e is TypeError) {
         print(e);
@@ -107,7 +103,7 @@ class CodeAnalyzer {
     try {
       final path = getPath(fileUri);
       if (_resolvedAsts.containsKey(path)) {
-        return (_resolvedAsts[path]! as ResolvedUnitResult).unit!;
+        return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
     } catch (e) {
       print(e);
@@ -115,13 +111,7 @@ class CodeAnalyzer {
     final unit = contexts
         .contextFor(path)
         .currentSession
-        .getParsedUnit2(fileUri.path) as ParsedUnitResult;
-    if (unit.errors.isNotEmpty) {
-      throw StateError(
-        "Project file '$path' could not be analysed for the "
-        "following reasons:\n\t${unit.errors.join('\n\t')}",
-      );
-    }
+        .getParsedUnit(fileUri.path) as ParsedUnitResult;
     return unit.unit;
   }
 

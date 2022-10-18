@@ -69,12 +69,12 @@ Future main (List<String> args, Map<String, dynamic> message) async {
 
     final context = _createContext(path);
     final session = context.currentSession;
-    final unit = session.getParsedUnit2(path) as ParsedUnitResult;
+    final unit = session.getParsedUnit(path) as ParsedUnitResult;
     final typeName = MirrorSystem.getName(reflectClass(type).simpleName);
 
     return unit.unit.declarations
         .whereType<ClassDeclaration>()
-        .firstWhere((classDecl) => classDecl.name.name == typeName);
+        .firstWhere((classDecl) => classDecl.name.value() == typeName);
   }
 }
 

@@ -137,7 +137,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         return [annotation.toSource().substring(1)];
       } else if (isInstanceOfColumn) {
         final originatingLibrary = element.session!
-            .getParsedLibraryByElement2(element.library) as ParsedLibraryResult;
+            .getParsedLibraryByElement(element.library) as ParsedLibraryResult;
         final elementDeclaration = originatingLibrary
             .getElementDeclaration(element.variable)!
             .node as VariableDeclaration;

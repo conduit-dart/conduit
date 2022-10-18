@@ -201,14 +201,14 @@ class BuildContext {
       Type _type, String propertyName) async {
     var type = reflectClass(_type);
     var field = (await getClassDeclarationFromType(type.reflectedType))
-        ?.getField(propertyName);
+        ?.getProperty(propertyName);
     while (field == null) {
       type = type.superclass!;
       if (type.reflectedType == Object) {
         break;
       }
       field = (await getClassDeclarationFromType(type.reflectedType))
-          ?.getField(propertyName);
+          ?.getProperty(propertyName);
     }
 
     if (field == null) {

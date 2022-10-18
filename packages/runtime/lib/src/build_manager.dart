@@ -42,11 +42,11 @@ class BuildManager {
     final analyzer = CodeAnalyzer(strippedScriptFile.absolute.uri);
     final analyzerContext = analyzer.contexts.contextFor(analyzer.path);
     final parsedUnit = analyzerContext.currentSession
-        .getParsedUnit2(analyzer.path) as ParsedUnitResult;
+        .getParsedUnit(analyzer.path) as ParsedUnitResult;
 
     final mainFunctions = parsedUnit.unit.declarations
         .whereType<FunctionDeclaration>()
-        .where((f) => f.name.name == "main")
+        .where((f) => f.name == "main")
         .toList();
 
     for (final f in mainFunctions.reversed) {
