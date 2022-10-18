@@ -21,13 +21,17 @@ scripts:
       no-private: true
   analyze: melos exec -- pub global run tuneup check
   cache-source:
-    run: melos exec -- "dart pub global activate '\$MELOS_PACKAGE_NAME' && cp -r '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
+    run: melos exec -- "dart pub global activate '\$MELOS_PACKAGE_NAME' || cp -r '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
       no-private: true
   strip-overrides:
     run: melos exec -- "yq -i 'del(.dependency_overrides)' '\$MELOS_PACKAGE_PATH/pubspec.yaml'"
     select-pacakge:
       no-private: true
+  apply-overrides:
+    run: melos exec -- "if [ -f '\$MELOS_PACKAGE_PATH/overrides.yaml' ]; then yq -i '. *= load(\"\$MELOS_PACKAGE_PATH/overrides.yaml\")' '\$MELOS_PACKAGE_PATH/pubspec.yaml'; fi"
+  hard-clean:
+    run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
 environment:
   sdk: ">=2.12.0 <3.0.0"
   
