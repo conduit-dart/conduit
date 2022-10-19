@@ -6,34 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  test_harness:
-    env:
-      TEST_DIR: packages/test_harness
-      RUNNER_CMD: dart test -r expanded
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14.5
-        env:
-          POSTGRES_USER: conduit_test_user
-          POSTGRES_PASSWORD: conduit!
-          POSTGRES_DB: conduit_test_db
-          POSTGRES_PORT: 15432
-        ports:
-          - 15432:5432
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: dev
-      - name: Get Dependencies
-        working-directory: ${{ env.TEST_DIR }}
-        run: |
-          dart pub get
-      - name: Run tests
-        working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && ${{ env.RUNNER_CMD }}
-
   all_unit:
     runs-on: ubuntu-latest
     services:
@@ -56,8 +28,8 @@ jobs:
           dart pub global activate melos
           melos bootstrap
           cd packages/isolate_exec_test_packages/test_package && dart pub get
-          melos cache-source
           melos hard-clean
+          melos cache-source
       - name: Run tests
         run: . ./ci/.env && melos test-unit
 
@@ -85,8 +57,8 @@ jobs:
         run: |
           dart pub global activate melos
           dart pub get
-          melos cache-source
           melos hard-clean
+          melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
@@ -113,8 +85,9 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
-          melos cache-source
           melos hard-clean
+          melos cache-source
+          dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
