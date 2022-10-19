@@ -186,7 +186,7 @@ class BuildContext {
     return imports;
   }
 
-  Future<ClassDeclaration> getClassDeclarationFromType(Type type) async {
+  Future<ClassDeclaration?> getClassDeclarationFromType(Type type) async {
     final classMirror = reflectType(type);
     Uri uri = classMirror.location!.sourceUri;
     if (!classMirror.location!.sourceUri.isAbsolute) {
@@ -194,13 +194,13 @@ class BuildContext {
       uri = package!.packageUriRoot;
     }
     return analyzer.getClassFromFile(
-        MirrorSystem.getName(classMirror.simpleName), uri)!;
+        MirrorSystem.getName(classMirror.simpleName), uri);
   }
 
   Future<FieldDeclaration?> _getField(ClassMirror type, String propertyName) {
     return getClassDeclarationFromType(type.reflectedType).then((cd) {
       try {
-        return cd.members.firstWhere((m) => (m as FieldDeclaration)
+        return cd!.members.firstWhere((m) => (m as FieldDeclaration)
             .fields
             .variables
             .any((v) => v.name.value() == propertyName)) as FieldDeclaration;
