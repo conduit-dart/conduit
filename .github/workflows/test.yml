@@ -56,7 +56,7 @@ jobs:
         working-directory: ${{ env.TEST_DIR }}
         run: |
           dart pub global activate melos
-          dart pub get
+          melos bootstrap
           melos hard-clean
           melos cache-source
       - name: Run tests
@@ -85,9 +85,9 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
+          melos bootstrap
           melos hard-clean
           melos cache-source
-          dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
