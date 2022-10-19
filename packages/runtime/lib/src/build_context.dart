@@ -186,7 +186,7 @@ class BuildContext {
     return imports;
   }
 
-  Future<ClassDeclaration?> getClassDeclarationFromType(Type type) async {
+  Future<ClassDeclaration> getClassDeclarationFromType(Type type) async {
     final classMirror = reflectType(type);
     Uri uri = classMirror.location!.sourceUri;
     if (!classMirror.location!.sourceUri.isAbsolute) {
@@ -194,30 +194,38 @@ class BuildContext {
       uri = package!.packageUriRoot;
     }
     return analyzer.getClassFromFile(
-        MirrorSystem.getName(classMirror.simpleName), uri);
+        MirrorSystem.getName(classMirror.simpleName), uri)!;
+  }
+
+  Future<FieldDeclaration?> _getField(ClassMirror type, String propertyName) {
+    return getClassDeclarationFromType(type.reflectedType).then((cd) {
+      try {
+        return cd.members.firstWhere((m) => (m as FieldDeclaration)
+            .fields
+            .variables
+            .any((v) => v.name.value() == propertyName)) as FieldDeclaration;
+      } catch (e) {
+        return null;
+      }
+    });
   }
 
   Future<List<Annotation>> getAnnotationsFromField(
       Type _type, String propertyName) async {
     var type = reflectClass(_type);
-    var field = (await getClassDeclarationFromType(type.reflectedType))
-        ?.getProperty(propertyName);
-    print(
-        (await getClassDeclarationFromType(type.reflectedType))?.members.first);
-    var node = await getClassDeclarationFromType(type.reflectedType);
-    while (node == null) {
+    FieldDeclaration? field = await _getField(type, propertyName);
+    while (field == null) {
       type = type.superclass!;
       if (type.reflectedType == Object) {
         break;
       }
-      field = (await getClassDeclarationFromType(type.reflectedType))
-          ?.getProperty(propertyName);
+      field = await _getField(type, propertyName);
     }
 
     if (field == null) {
       return [];
     }
 
-    return (field.parent!.parent! as FieldDeclaration).metadata.toList();
+    return field.metadata;
   }
 }
