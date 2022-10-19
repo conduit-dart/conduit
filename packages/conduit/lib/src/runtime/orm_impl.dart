@@ -160,11 +160,11 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     // For the property we are looking at, grab all of its annotations from the analyzer.
     // We also have all of the instances created by these annotations available in some
     // way or another in the [property].
-    final fieldAnnotations = context.getAnnotationsFromField(
+    final fieldAnnotations = await context.getAnnotationsFromField(
         EntityBuilder.getTableDefinitionForType(property.entity.instanceType)
             .reflectedType,
         property.name);
-    final constructorInvocations = (await fieldAnnotations)
+    final constructorInvocations = fieldAnnotations
         .map((annotation) => _getValidatorConstructionFromAnnotation(
             context, annotation, property,
             importUris: importUris))

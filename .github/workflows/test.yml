@@ -83,7 +83,7 @@ jobs:
         run: dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && dart test -r expanded -j1 -t cli
+        run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
 
   conduit_tool:
     env:

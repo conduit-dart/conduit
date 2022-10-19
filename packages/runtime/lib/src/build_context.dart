@@ -202,7 +202,10 @@ class BuildContext {
     var type = reflectClass(_type);
     var field = (await getClassDeclarationFromType(type.reflectedType))
         ?.getProperty(propertyName);
-    while (field == null) {
+    print(
+        (await getClassDeclarationFromType(type.reflectedType))?.members.first);
+    var node = await getClassDeclarationFromType(type.reflectedType);
+    while (node == null) {
       type = type.superclass!;
       if (type.reflectedType == Object) {
         break;
