@@ -178,10 +178,9 @@ void main() {
         );
 
         print(res.stderr);
-        print(res.stdout);
 
         expect(res.exitCode, 0);
-        expect(res.stdout, contains("All tests passed"));
+        expect(res.stdout, contains("tests passed."));
       });
     }
   });

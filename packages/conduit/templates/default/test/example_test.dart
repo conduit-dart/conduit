@@ -5,6 +5,6 @@ Future main() async {
 
   test("GET /example returns 200 {'key': 'value'}", () async {
     expectResponse(await harness.agent?.get("/example"), 200,
-        body: {"key": "value1"});
+        body: {"key": "value"});
   });
 }
