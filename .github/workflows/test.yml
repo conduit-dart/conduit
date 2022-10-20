@@ -54,8 +54,8 @@ jobs:
       - name: Get Dependencies
         working-directory: ${{ env.TEST_DIR }}
         run: |
-          dart pub get
           dart pub global activate melos
+          melos bootstrap
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
