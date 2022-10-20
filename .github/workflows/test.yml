@@ -83,6 +83,7 @@ jobs:
         run: |
           dart pub global activate melos
           melos cache-source
+          melos bootstrap
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
