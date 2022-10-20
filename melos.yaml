@@ -25,7 +25,7 @@ scripts:
     select-pacakge:
       no-private: true
   cache-source:
-    run: melos exec -- "cp -R '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/global_packages/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; cp -R '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
+    run: melos exec -- "cp -R '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/global_packages/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; mkdir -p '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; cp -R '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
       no-private: true
   strip-overrides:
