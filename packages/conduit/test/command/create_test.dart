@@ -180,7 +180,7 @@ void main() {
         print(res.stderr);
 
         expect(res.exitCode, 0);
-        expect(res.stdout, contains("tests passed."));
+        expect(res.stdout, contains(" passed."));
       });
     }
   });
