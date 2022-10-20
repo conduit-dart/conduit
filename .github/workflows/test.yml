@@ -29,8 +29,6 @@ jobs:
           cd packages/isolate_exec_test_packages/test_package && dart pub get
           melos bootstrap
           melos cache-source
-          melos hard-clean
-          cat $PUB_CACHE/hosted/pub.dartlang.org/conduit_isolate_exec-3.2.2/pubspec.yaml
       - name: Run tests
         run: . ./ci/.env && melos test-unit
 
@@ -58,7 +56,7 @@ jobs:
         run: |
           dart pub get
           dart pub global activate melos
-          melos hard-clean
+          melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
@@ -86,8 +84,6 @@ jobs:
         run: |
           dart pub global activate melos
           melos cache-source
-          melos hard-clean
-          melos bootstrap
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
