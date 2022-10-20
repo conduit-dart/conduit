@@ -7,7 +7,7 @@ on:
 
 jobs:
   all_unit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:14.5
@@ -35,7 +35,7 @@ jobs:
   conduit_cli:
     env:
       TEST_DIR: packages/conduit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:14.5
@@ -65,7 +65,7 @@ jobs:
   conduit_tool:
     env:
       TEST_DIR: packages/conduit
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       postgres:
         image: postgres:14.5
