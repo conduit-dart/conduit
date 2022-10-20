@@ -21,7 +21,7 @@ scripts:
       no-private: true
   analyze: melos exec -- pub global run tuneup check
   cache-source:
-    run: melos exec -- "rm -rf '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION/*'; cp -r '\$MELOS_PACKAGE_PATH'/ '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
+    run: melos exec -- "rm -rf '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION/*'; mkdir -p '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; cp -r '\$MELOS_PACKAGE_PATH'/ '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
       no-private: true
   strip-overrides:
