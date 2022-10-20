@@ -7,7 +7,7 @@ on:
 
 jobs:
   all_unit:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:14.5
@@ -27,6 +27,7 @@ jobs:
         run: |
           dart pub global activate melos
           cd packages/isolate_exec_test_packages/test_package && dart pub get
+          melos bootstrap
           melos cache-source
       - name: Run tests
         run: . ./ci/.env && melos test-unit
@@ -34,7 +35,7 @@ jobs:
   conduit_cli:
     env:
       TEST_DIR: packages/conduit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:14.5
@@ -55,6 +56,7 @@ jobs:
         run: |
           dart pub global activate melos
           cd packages/isolate_exec_test_packages/test_package && dart pub get
+          melos bootstrap
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
@@ -63,7 +65,7 @@ jobs:
   conduit_tool:
     env:
       TEST_DIR: packages/conduit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:14.5
@@ -82,8 +84,8 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
-          melos cache-source
           melos bootstrap
+          melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
