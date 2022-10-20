@@ -83,6 +83,7 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
+          melos bootstrap
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
