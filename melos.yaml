@@ -20,6 +20,10 @@ scripts:
     select-pacakge:
       no-private: true
   analyze: melos exec -- pub global run tuneup check
+  activate-all:
+    run: melos exec -- "dart pub global activate '\$MELOS_PACKAGE_NAME'"
+    select-pacakge:
+      no-private: true
   cache-source:
     run: melos exec -- "rm -rf '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION/*'; mkdir -p '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; cp -R '\$MELOS_PACKAGE_PATH' '$PUB_CACHE/hosted/pub.dartlang.org/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
