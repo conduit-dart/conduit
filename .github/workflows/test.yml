@@ -28,6 +28,7 @@ jobs:
           dart pub global activate melos
           cd packages/isolate_exec_test_packages/test_package && dart pub get
           melos bootstrap
+          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
       - name: Run tests
         run: . ./ci/.env && melos test-unit
@@ -53,7 +54,9 @@ jobs:
           sdk: dev
       - name: Get Dependencies
         working-directory: ${{ env.TEST_DIR }}
-        run: dart pub get
+        run: |
+          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
+          dart pub get
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
@@ -81,6 +84,7 @@ jobs:
         run: |
           dart pub global activate melos
           melos bootstrap
+          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
