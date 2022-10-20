@@ -56,8 +56,8 @@ jobs:
         run: |
           dart pub global activate melos
           cd packages/isolate_exec_test_packages/test_package && dart pub get
-          melos bootstrap
           melos cache-source
+          melos bootstrap
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
