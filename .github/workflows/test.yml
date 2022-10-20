@@ -28,9 +28,9 @@ jobs:
           dart pub global activate melos
           cd packages/isolate_exec_test_packages/test_package && dart pub get
           melos bootstrap
-          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
           melos hard-clean
+          cat $PUB_CACHE/hosted/pub.dartlang.org/conduit_isolate_exec-3.2.2/pubspec.yaml
       - name: Run tests
         run: . ./ci/.env && melos test-unit
 
@@ -56,8 +56,8 @@ jobs:
       - name: Get Dependencies
         working-directory: ${{ env.TEST_DIR }}
         run: |
-          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           dart pub get
+          dart pub global activate melos
           melos hard-clean
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
@@ -85,7 +85,6 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
-          rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
           melos hard-clean
           melos bootstrap
