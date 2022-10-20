@@ -30,6 +30,7 @@ jobs:
           melos bootstrap
           rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
+          melos hard-clean
       - name: Run tests
         run: . ./ci/.env && melos test-unit
 
@@ -57,6 +58,7 @@ jobs:
         run: |
           rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           dart pub get
+          melos hard-clean
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
@@ -83,9 +85,10 @@ jobs:
       - name: Prep Packages
         run: |
           dart pub global activate melos
-          melos bootstrap
           rm -rf $PUB_CACHE/hosted/pub.dartlang.org/file-6.1.2
           melos cache-source
+          melos hard-clean
+          melos bootstrap
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart tool/generated_test_runner.dart
