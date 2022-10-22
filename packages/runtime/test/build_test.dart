@@ -42,7 +42,7 @@ void main() {
   });
 
   tearDownAll(() {
-    // Directory.fromUri(tmp).deleteSync(recursive: true);
+    Directory.fromUri(tmp).deleteSync(recursive: true);
   });
 
   test("Non-compiled version returns mirror runtimes", () async {
