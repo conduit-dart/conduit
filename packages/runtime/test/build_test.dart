@@ -17,20 +17,16 @@ void main() {
 
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
-    print(File(testPackagesUri
-            .resolve("application/.dart_tool/package_config.json")
-            .toFilePath(windows: Platform.isWindows))
-        .readAsStringSync());
-    await Process.run(cmd, ["pub", "get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("application/")
-            .toFilePath(windows: Platform.isWindows),
-        runInShell: true);
-    await Process.run(cmd, ["pub", "get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("dependency/")
-            .toFilePath(windows: Platform.isWindows),
-        runInShell: true);
+    // await Process.run(cmd, ["pub", "get", "--offline"],
+    //     workingDirectory: testPackagesUri
+    //         .resolve("application/")
+    //         .toFilePath(windows: Platform.isWindows),
+    //     runInShell: true);
+    // await Process.run(cmd, ["pub", "get", "--offline"],
+    //     workingDirectory: testPackagesUri
+    //         .resolve("dependency/")
+    //         .toFilePath(windows: Platform.isWindows),
+    //     runInShell: true);
 
     final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");

@@ -17,4 +17,4 @@ dev_dependencies:
 
 dependency_overrides:
   conduit_isolate_exec:
-    path: ../../../isolate_exec  
+    path: ../../isolate_exec  
