@@ -17,6 +17,7 @@ void main() {
 
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
+    print(File(testPackagesUri.path).readAsStringSync());
     await Process.run(cmd, ["pub", "get", "--offline"],
         workingDirectory: testPackagesUri
             .resolve("application/")
