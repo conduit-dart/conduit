@@ -118,4 +118,4 @@ jobs:
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ./ci/.env && melos test-unit
+        run: . ../../ci/.env && melos test-unit
