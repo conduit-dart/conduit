@@ -15,8 +15,9 @@ void main() {
   setUpAll(() async {
     const String cmd = "dart";
 
-    final testPackagesUri =
-        Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
+    final testPackagesUri = Directory.current.uri
+        .resolve("../../")
+        .resolve("runtime_test_packages/");
     print(File(testPackagesUri
             .resolve("application/.dart_tool/package_config.json")
             .toFilePath(windows: Platform.isWindows))
