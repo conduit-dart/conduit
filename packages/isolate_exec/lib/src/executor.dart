@@ -65,23 +65,15 @@ class IsolateExecutor<U> {
       final dataUri = Uri.parse(
         "data:application/dart;charset=utf-8,$scriptSource",
       );
-      if (packageConfigURI != null) {
-        await Isolate.spawnUri(
-          dataUri,
-          [],
-          message,
-          onError: onErrorPort.sendPort,
-          packageConfig: packageConfigURI,
-        );
-      } else {
-        await Isolate.spawnUri(
-          dataUri,
-          [],
-          message,
-          onError: onErrorPort.sendPort,
-          automaticPackageResolution: true,
-        );
-      }
+
+      await Isolate.spawnUri(
+        dataUri,
+        [],
+        message,
+        onError: onErrorPort.sendPort,
+        packageConfig: packageConfigURI,
+        automaticPackageResolution: packageConfigURI == null,
+      );
       return await completer.future;
     } finally {
       onErrorPort.close();

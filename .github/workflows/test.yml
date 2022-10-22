@@ -113,9 +113,8 @@ jobs:
       - name: Get Dependencies
         run: |
           dart pub global activate melos
-          cd packages/isolate_exec_test_packages/test_package && dart pub get
-          # melos bootstrap
+          melos bootstrap
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && dart pub get && cat .dart_tool/package_config.json && dart test
+        run: . ../../ci/.env && dart test
