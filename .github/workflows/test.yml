@@ -118,4 +118,4 @@ jobs:
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && dart test
+        run: . ../../ci/.env && cat .dart_tool/package_config.json && dart test
