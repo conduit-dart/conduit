@@ -29,7 +29,7 @@ jobs:
           melos cache-source
           melos hard-clean
           melos bootstrap
-          cat packages/isolate_exec/.dart_tool/package.json
+          cat packages/isolate_exec/.dart_tool/package_config.json
           cd packages/isolate_exec_test_packages/test_package && dart pub get
       - name: Run tests
         run: . ./ci/.env && melos test-unit
