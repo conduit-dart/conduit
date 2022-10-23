@@ -30,12 +30,15 @@ jobs:
           melos bootstrap
           melos cache-source
       - name: Run tests
-        run: . ./ci/.env && melos test-unit
+        run: melos test-unit
 
   conduit_cli:
     env:
       TEST_DIR: packages/conduit
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -r expanded -j1 -t cli test/*, dart tool/generated_test_runner.dart]
     services:
       postgres:
         image: postgres:14.5
@@ -59,35 +62,7 @@ jobs:
           melos cache-source
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && dart test -r expanded -j1 -t cli test/*
-
-  conduit_tool:
-    env:
-      TEST_DIR: packages/conduit
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14.5
-        env:
-          POSTGRES_USER: conduit_test_user
-          POSTGRES_PASSWORD: conduit!
-          POSTGRES_DB: conduit_test_db
-          POSTGRES_PORT: 15432
-        ports:
-          - 15432:5432
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: dev
-      - name: Prep Packages
-        run: |
-          dart pub global activate melos
-          melos bootstrap
-          melos cache-source
-      - name: Run tests
-        working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && dart tool/generated_test_runner.dart
+        run: . ../../ci/.env && ${{ matrix.runner_args }}
 
   # For help debugging CI problems should normally be commented out
   # single_unit:
