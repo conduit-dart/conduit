@@ -45,7 +45,7 @@ class CLIBuild extends CLICommand with CLIProject {
   @override
   Future cleanup() async {
     if (retainBuildArtifacts) {
-      copyPathSync(buildDirectory.path, './');
+      copyPathSync(buildDirectory.path, './_build');
     }
     if (buildDirectory.existsSync()) {
       buildDirectory.deleteSync(recursive: true);
