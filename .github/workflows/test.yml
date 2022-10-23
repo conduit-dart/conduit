@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runner_args: [dart test -r expanded -j1 -t cli test/*, dart tool/generated_test_runner.dart]
+        runner_args: [dart test -j1 -t cli, dart tool/generated_test_runner.dart]
     services:
       postgres:
         image: postgres:14.5
