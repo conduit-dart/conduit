@@ -98,7 +98,7 @@ class BuildContext {
 
   /// Directory for compiled application
   Directory get buildApplicationDirectory => getDirectory(
-      buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"));
+      buildDirectoryUri.resolve("${sourceApplicationPubspec.name}/"));
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].
   Future<PackageConfig> get packageConfig async {

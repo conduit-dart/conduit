@@ -9,6 +9,7 @@ import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:io/io.dart';
 
 class CLIBuild extends CLICommand with CLIProject {
   @Flag("retain-build-artifacts",
@@ -20,7 +21,7 @@ class CLIBuild extends CLICommand with CLIProject {
   @Option("build-directory",
       help:
           "The directory to store build artifacts during compilation. By default, this directory is deleted when this command completes. See 'retain-build-artifacts' flag.",
-      defaultsTo: "build")
+      defaultsTo: "/tmp/build")
   Directory get buildDirectory =>
       Directory(decode<String>("build-directory")).absolute;
 
@@ -43,10 +44,11 @@ class CLIBuild extends CLICommand with CLIProject {
 
   @override
   Future cleanup() async {
-    if (!retainBuildArtifacts) {
-      if (buildDirectory.existsSync()) {
-        buildDirectory.deleteSync(recursive: true);
-      }
+    if (retainBuildArtifacts) {
+      copyPathSync(buildDirectory.path, './');
+    }
+    if (buildDirectory.existsSync()) {
+      buildDirectory.deleteSync(recursive: true);
     }
   }
 

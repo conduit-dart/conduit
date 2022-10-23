@@ -80,8 +80,7 @@ class CodeAnalyzer {
           .whereType<ClassDeclaration>()
           .firstWhere((c) => c.name.value() == className);
     } catch (e) {
-      if (e is StateError || e is TypeError) {
-        print(e);
+      if (e is StateError || e is TypeError || e is ArgumentError) {
         return null;
       }
       throw e;
@@ -106,7 +105,10 @@ class CodeAnalyzer {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
     } catch (e) {
-      print(e);
+      if (e is ArgumentError) {
+      } else {
+        print(e);
+      }
     }
     final unit = contexts
         .contextFor(path)

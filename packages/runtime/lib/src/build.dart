@@ -6,8 +6,8 @@ import 'dart:mirrors';
 import 'package:package_config/package_config.dart';
 import 'package:conduit_runtime/src/build_context.dart';
 import 'package:conduit_runtime/src/compiler.dart';
-import 'package:conduit_runtime/src/file_system.dart';
 import 'package:conduit_runtime/src/generator.dart';
+import 'package:io/io.dart';
 
 class Build {
   Build(this.context);
@@ -59,7 +59,7 @@ class Build {
       final targetDirUri =
           context.buildPackagesDirectory.uri.resolve("${packageInfo.name}/");
       print("Compiling package '${packageInfo.name}'...");
-      copyPackage(sourceDirUri, targetDirUri);
+      await copyPackage(sourceDirUri, targetDirUri);
       compiler.deflectPackage(Directory.fromUri(targetDirUri));
 
       if (packageInfo.name != nameOfPackageBeingCompiled) {
@@ -76,7 +76,7 @@ class Build {
     if (!sourcePackageIsCompiled) {
       print(
           "Copying application package (from '${context.sourceApplicationDirectory.uri}')...");
-      copyPackage(context.sourceApplicationDirectory.uri, appDst);
+      await copyPackage(context.sourceApplicationDirectory.uri, appDst);
       print("Application packaged copied to '$appDst'.");
     }
     pubspecMap['dependencies'] = {
@@ -155,9 +155,13 @@ class Build {
     print("${res.stdout}");
   }
 
-  void copyPackage(Uri srcUri, Uri dstUri) {
-    copyDirectory(src: srcUri, dst: dstUri);
-    context.getFile(srcUri.resolve("pubspec.yaml")).copySync(
+  Future copyPackage(Uri srcUri, Uri dstUri) async {
+    final dstDir = Directory.fromUri(dstUri);
+    if (!dstDir.existsSync()) {
+      dstDir.createSync(recursive: true);
+    }
+    await copyPath(srcUri.path, dstUri.path);
+    return context.getFile(srcUri.resolve("pubspec.yaml")).copy(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
   }
 

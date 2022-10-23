@@ -9,6 +9,7 @@ import 'package:conduit/src/http/serializable.dart';
 import 'package:conduit/src/runtime/impl.dart';
 import 'package:conduit/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:io/io.dart';
 import 'package:yaml/yaml.dart';
 
 class ConduitCompiler extends Compiler {
@@ -67,11 +68,12 @@ class ConduitCompiler extends Compiler {
         pubspecContents["dev_dependencies"]
             [package['name']!] = {"path": "packages/${package['path']!}"};
 
-        copyDirectory(
-            src: context.sourceApplicationDirectory.uri
+        copyPathSync(
+            context.sourceApplicationDirectory.uri
                 .resolve("../")
-                .resolve(package['path']!),
-            dst: context.buildPackagesDirectory.uri.resolve(package['path']!));
+                .resolve(package['path']!)
+                .path,
+            context.buildPackagesDirectory.uri.resolve(package['path']!).path);
       }
 
       pubspecContents["dependency_overrides"]["conduit"] =
@@ -121,11 +123,12 @@ class ConduitCompiler extends Compiler {
     for (final package in packages) {
       jsonContents["dependencies"]
           [package['name']!] = {"path": "../${package['path']!}"};
-      copyDirectory(
-          src: context.sourceApplicationDirectory.uri
+      copyPathSync(
+          context.sourceApplicationDirectory.uri
               .resolve("../")
-              .resolve(package['path']!),
-          dst: context.buildPackagesDirectory.uri.resolve(package['path']!));
+              .resolve(package['path']!)
+              .path,
+          context.buildPackagesDirectory.uri.resolve(package['path']!).path);
     }
     pubspecFile.writeAsStringSync(json.encode(jsonContents));
   }

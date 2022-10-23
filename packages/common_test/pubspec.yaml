@@ -8,3 +8,20 @@ environment:
 dependencies:
   conduit: ^3.2.4
   conduit_common: ^3.2.3
+dependency_overrides:
+  conduit:
+    path: ../conduit
+  conduit_common:
+    path: ../common
+  conduit_open_api:
+    path: ../open_api
+  conduit_codable:
+    path: ../codable
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime

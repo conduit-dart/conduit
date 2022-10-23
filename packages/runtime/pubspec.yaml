@@ -17,3 +17,6 @@ dev_dependencies:
   test: ^1.21.6
   fs_test_agent:
     path: ../fs_test_agent
+dependency_overrides:
+  conduit_isolate_exec:
+    path: ../isolate_exec
