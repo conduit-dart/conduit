@@ -72,7 +72,7 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
       );
       buf.writeln("  }");
       buf.writeln(
-        "  (configuration as ${type.reflectedType.toString()}).$k = decodedValue as ${v.codec.expectedType};",
+        "  (configuration as ${type.reflectedType}).$k = decodedValue as ${v.codec.expectedType};",
       );
       buf.writeln("}");
       buf.writeln("}");
@@ -144,7 +144,7 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     properties.forEach((name, property) {
       final propCheck = """
     try {
-      final $name = (configuration as ${type.reflectedType.toString()}).$name;
+      final $name = (configuration as ${type.reflectedType}).$name;
       if (${property.isRequired} && $name == null) {
         missingKeys.add('$name');
       }

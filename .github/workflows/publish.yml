@@ -38,7 +38,7 @@ jobs:
     - name: Uptick versions
       run: melos version --yes
     - name: Changelog
-      run: git diff $GITHUB_SHA packages/conduit/CHANGELOG.md > CHANGES.txt
+      run: git diff --unified=0 $GITHUB_SHA packages/conduit/CHANGELOG.md > CHANGES.txt
     - name: Cache Source
       run: melos cache-source
     - name: Push tags
@@ -56,4 +56,4 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.release_tag }}
-        files: CHANGES.txt
+        body_path: CHANGES.txt
