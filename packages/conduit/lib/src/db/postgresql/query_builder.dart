@@ -54,7 +54,7 @@ class PostgresQueryBuilder extends TableBuilder {
   }
 
   ColumnValueBuilder? _createColumnValueBuilder(String? key, dynamic value) {
-    var property = entity.properties[key];
+    final property = entity.properties[key];
     if (property == null) {
       throw ArgumentError("Invalid query. Column '$key' does "
           "not exist for table '${entity.tableName}'");
@@ -125,9 +125,9 @@ class PostgresQueryBuilder extends TableBuilder {
   }
 
   String get sqlOrderBy {
-    var allSorts = List<ColumnSortBuilder>.from(columnSortBuilders);
+    final allSorts = List<ColumnSortBuilder>.from(columnSortBuilders);
 
-    var nestedSorts =
+    final nestedSorts =
         returning.whereType<TableBuilder>().expand((m) => m.columnSortBuilders);
     allSorts.addAll(nestedSorts);
 

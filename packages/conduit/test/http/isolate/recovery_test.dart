@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 void main() {
   group("Recovers", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
 
     tearDown(() async {
       print("stopping");
@@ -26,10 +26,11 @@ void main() {
       await app.start(numberOfInstances: 1);
 
       // This request will generate an uncaught exception
-      var failFuture = http.get(Uri.parse("http://localhost:8888/?crash=true"));
+      final failFuture =
+          http.get(Uri.parse("http://localhost:8888/?crash=true"));
 
       // This request will come in right after the failure but should succeed
-      var successFuture = http.get(Uri.parse("http://localhost:8888/"));
+      final successFuture = http.get(Uri.parse("http://localhost:8888/"));
 
       // Ensure both requests respond with 200, since the failure occurs asynchronously AFTER the response has been generated
       // for the failure case.
@@ -53,9 +54,9 @@ void main() {
 
     test("Application with multiple isolates reports uncaught error, recovers",
         () async {
-      var contents = <String>[];
+      final contents = <String>[];
       int counter = 0;
-      var completer = Completer();
+      final completer = Completer();
       app.logger.onRecord.listen((rec) {
         print("got msg");
         contents.add(rec.message);
@@ -68,10 +69,11 @@ void main() {
       await app.start(numberOfInstances: 2);
 
       // Throw some deferred crashers then some success messages at the server
-      var failFutures = Iterable.generate(5)
+      final failFutures = Iterable.generate(5)
           .map((_) => http.get(Uri.parse("http://localhost:8888/?crash=true")));
 
-      var successResponse = await http.get(Uri.parse("http://localhost:8888/"));
+      final successResponse =
+          await http.get(Uri.parse("http://localhost:8888/"));
       expect(successResponse.statusCode, 200);
       expect((await Future.wait(failFutures)).map((r) => r.statusCode),
           everyElement(200));

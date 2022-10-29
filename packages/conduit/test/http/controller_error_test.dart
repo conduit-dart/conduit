@@ -62,7 +62,7 @@ void main() {
 }
 
 Future<HttpServer> enableController(Controller controller) async {
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
 
   controller.didAddToChannel();
 

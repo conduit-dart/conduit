@@ -44,7 +44,7 @@ class CachePolicy {
       return "no-cache, no-store";
     }
 
-    var items = [];
+    final items = [];
 
     if (preventIntermediateProxyCaching) {
       items.add("private");

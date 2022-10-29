@@ -88,7 +88,7 @@ class Request implements RequestOrResponse {
   List<ContentType> get acceptableContentTypes {
     if (_cachedAcceptableTypes == null) {
       try {
-        var contentTypes = raw.headers[HttpHeaders.acceptHeader]
+        final contentTypes = raw.headers[HttpHeaders.acceptHeader]
                 ?.expand((h) => h.split(",").map((s) => s.trim()))
                 .where((h) => h.isNotEmpty)
                 .map(ContentType.parse)
@@ -96,10 +96,10 @@ class Request implements RequestOrResponse {
             [];
 
         contentTypes.sort((c1, c2) {
-          num q1 = num.parse(c1.parameters["q"] ?? "1.0");
-          num q2 = num.parse(c2.parameters["q"] ?? "1.0");
+          final num q1 = num.parse(c1.parameters["q"] ?? "1.0");
+          final q2 = num.parse(c2.parameters["q"] ?? "1.0");
 
-          var comparison = q1.compareTo(q2);
+          final comparison = q1.compareTo(q2);
           if (comparison == 0) {
             if (c1.primaryType == "*" && c2.primaryType != "*") {
               return 1;
@@ -207,7 +207,7 @@ class Request implements RequestOrResponse {
   }
 
   String get _sanitizedHeaders {
-    StringBuffer buf = StringBuffer("{");
+    final StringBuffer buf = StringBuffer("{");
 
     raw.headers.forEach((k, v) {
       buf.write("${_truncatedString(k)} : ${_truncatedString(v.join(","))}\\n");
@@ -243,7 +243,7 @@ class Request implements RequestOrResponse {
       modifier(conduitResponse);
     });
 
-    _Reference<String> compressionType = _Reference(null);
+    final _Reference<String> compressionType = _Reference(null);
     var body = conduitResponse.body;
     if (body is! Stream) {
       // Note: this pre-encodes the body in memory, such that encoding fails this will throw and we can return a 500
@@ -314,7 +314,7 @@ class Request implements RequestOrResponse {
     // todo(joeconwaystk): Set minimum threshold on number of bytes needed to perform gzip, do not gzip otherwise.
     // There isn't a great way of doing this that I can think of except splitting out gzip from the fused codec,
     // have to measure the value of fusing vs the cost of gzipping smaller data.
-    var canGzip = CodecRegistry.defaultInstance
+    final canGzip = CodecRegistry.defaultInstance
             .isContentTypeCompressable(resp.contentType) &&
         _acceptsGzipResponseBody;
 
@@ -348,7 +348,7 @@ class Request implements RequestOrResponse {
           CodecRegistry.defaultInstance.codecForContentType(resp.contentType);
     }
 
-    var canGzip = CodecRegistry.defaultInstance
+    final canGzip = CodecRegistry.defaultInstance
             .isContentTypeCompressable(resp.contentType) &&
         _acceptsGzipResponseBody;
     if (codec == null) {
@@ -396,7 +396,7 @@ class Request implements RequestOrResponse {
       bool includeStatusCode = true,
       bool includeContentSize = false,
       bool includeHeaders = false}) {
-    var builder = StringBuffer();
+    final builder = StringBuffer();
     if (includeRequestIP) {
       builder.write("${raw.connectionInfo?.remoteAddress.address} ");
     }

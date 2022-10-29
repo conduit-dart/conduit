@@ -13,7 +13,7 @@ void main() {
   });
 
   test("Transaction returns value of closure", () async {
-    String? v = await context.transaction((t) async {
+    final String? v = await context.transaction((t) async {
       final o = await Query.insertObject(t, Model()..name = "Bob");
       return o.name;
     });

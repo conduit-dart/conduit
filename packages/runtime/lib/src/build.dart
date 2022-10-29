@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'package:package_config/package_config.dart';
 import 'package:conduit_runtime/src/build_context.dart';
 import 'package:conduit_runtime/src/compiler.dart';
 import 'package:conduit_runtime/src/generator.dart';
 import 'package:io/io.dart';
+import 'package:package_config/package_config.dart';
 
 class Build {
   Build(this.context);
@@ -24,7 +24,7 @@ class Build {
     await Future.forEach<Uri>(
       astsToResolve,
       (astUri) async {
-        Uri package =
+        final Uri package =
             (await context.getPackageFromUri(astUri))?.packageUriRoot ?? astUri;
         return context.analyzer.resolveUnitOrLibraryAt(package);
       },
@@ -33,10 +33,13 @@ class Build {
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
-    for (MapEntry entry in context.context.runtimes.map.entries) {
+    for (final MapEntry<String, dynamic> entry
+        in context.context.runtimes.map.entries) {
       if (entry.value is SourceCompiler) {
-        await entry.value.compile(context).then((source) =>
-            runtimeGenerator.addRuntime(name: entry.key, source: source));
+        await (entry.value as SourceCompiler).compile(context).then(
+              (source) =>
+                  runtimeGenerator.addRuntime(name: entry.key, source: source),
+            );
       }
     }
 
@@ -75,7 +78,8 @@ class Build {
     final appDst = context.buildApplicationDirectory.uri;
     if (!sourcePackageIsCompiled) {
       print(
-          "Copying application package (from '${context.sourceApplicationDirectory.uri}')...");
+        "Copying application package (from '${context.sourceApplicationDirectory.uri}')...",
+      );
       await copyPackage(context.sourceApplicationDirectory.uri, appDst);
       print("Application packaged copied to '$appDst'.");
     }
@@ -122,35 +126,40 @@ class Build {
     const String cmd = "dart";
 
     final res = await Process.run(
-        cmd, ["pub", "get", "--offline", "--no-precompile"],
-        workingDirectory:
-            context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
-        runInShell: true);
+      cmd,
+      ["pub", "get", "--offline", "--no-precompile"],
+      workingDirectory:
+          context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
+      runInShell: true,
+    );
     if (res.exitCode != 0) {
       print("${res.stdout}");
       print("${res.stderr}");
       throw StateError(
-          "'pub get' failed with the following message: ${res.stderr}");
+        "'pub get' failed with the following message: ${res.stderr}",
+      );
     }
   }
 
   Future compile(Uri srcUri, Uri dstUri) async {
     final res = await Process.run(
-        "dart",
-        [
-          "compile",
-          "exe",
-          "-v",
-          srcUri.toFilePath(windows: Platform.isWindows),
-          "-o",
-          dstUri.toFilePath(windows: Platform.isWindows)
-        ],
-        workingDirectory: context.buildApplicationDirectory.uri
-            .toFilePath(windows: Platform.isWindows),
-        runInShell: true);
+      "dart",
+      [
+        "compile",
+        "exe",
+        "-v",
+        srcUri.toFilePath(windows: Platform.isWindows),
+        "-o",
+        dstUri.toFilePath(windows: Platform.isWindows)
+      ],
+      workingDirectory: context.buildApplicationDirectory.uri
+          .toFilePath(windows: Platform.isWindows),
+      runInShell: true,
+    );
     if (res.exitCode != 0) {
       throw StateError(
-          "'dart2native' failed with the following message: ${res.stderr}");
+        "'dart2native' failed with the following message: ${res.stderr}",
+      );
     }
     print("${res.stdout}");
   }
@@ -162,7 +171,10 @@ class Build {
     }
     await copyPath(srcUri.path, dstUri.path);
     return context.getFile(srcUri.resolve("pubspec.yaml")).copy(
-        dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
+          dstUri
+              .resolve("pubspec.yaml")
+              .toFilePath(windows: Platform.isWindows),
+        );
   }
 
   Future<Package> _getPackageInfoForCompiler(Compiler compiler) async {

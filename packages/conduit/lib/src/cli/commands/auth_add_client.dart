@@ -64,7 +64,7 @@ class CLIAuthAddClient extends CLICommand
           "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
       defaultsTo: "")
   List<String>? get allowedScopes {
-    String v = decode<String>("allowed-scopes");
+    final String v = decode<String>("allowed-scopes");
     if (v.isEmpty) {
       return null;
     }
@@ -80,17 +80,17 @@ class CLIAuthAddClient extends CLICommand
       return 1;
     }
 
-    var dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+    final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     context = ManagedContext(dataModel, persistentStore);
 
-    var credentials = AuthUtility.generateAPICredentialPair(clientID, secret,
+    final credentials = AuthUtility.generateAPICredentialPair(clientID, secret,
         redirectURI: redirectUri,
         hashLength: hashLength,
         hashRounds: hashRounds,
         hashFunction: hashFunction)
       ..allowedScopes = allowedScopes?.map((s) => AuthScope(s)).toList();
 
-    var managedCredentials = ManagedAuthClient.fromClient(credentials);
+    final managedCredentials = ManagedAuthClient.fromClient(credentials);
 
     final query = Query<ManagedAuthClient>(context!)
       ..values = managedCredentials;

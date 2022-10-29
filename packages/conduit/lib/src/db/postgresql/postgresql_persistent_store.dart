@@ -149,14 +149,14 @@ class PostgreSQLPersistentStore extends PersistentStore
   Future<dynamic> execute(String sql,
       {Map<String, dynamic>? substitutionValues, Duration? timeout}) async {
     timeout ??= const Duration(seconds: 30);
-    var now = DateTime.now().toUtc();
-    var dbConnection = await executionContext;
+    final now = DateTime.now().toUtc();
+    final dbConnection = await executionContext;
     try {
-      var rows = await dbConnection!.query(sql,
+      final rows = await dbConnection!.query(sql,
           substitutionValues: substitutionValues,
           timeoutInSeconds: timeout.inSeconds);
 
-      var mappedRows = rows.map((row) => row.toList()).toList();
+      final mappedRows = rows.map((row) => row.toList()).toList();
       logger.finest(() =>
           "Query:execute (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $sql -> $mappedRows");
       return mappedRows;
@@ -220,7 +220,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<int> get schemaVersion async {
     try {
-      var values = await execute(
+      final values = await execute(
               "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC")
           as List<List<dynamic>>;
       if (values.isEmpty) {
@@ -240,7 +240,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<Schema?> upgrade(Schema? fromSchema, List<Migration> withMigrations,
       {bool temporary = false}) async {
-    var connection = await getDatabaseConnection();
+    final connection = await getDatabaseConnection();
 
     Schema? schema = fromSchema;
 
@@ -256,7 +256,7 @@ class PostgreSQLPersistentStore extends PersistentStore
             SchemaBuilder(transactionStore, schema, isTemporary: temporary);
         migration.database.store = transactionStore;
 
-        var existingVersionRows = await ctx.query(
+        final existingVersionRows = await ctx.query(
             "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= @v:int4",
             substitutionValues: {"v": migration.version});
         if (existingVersionRows.isNotEmpty) {
@@ -295,9 +295,9 @@ class PostgreSQLPersistentStore extends PersistentStore
       String formatString, Map<String?, dynamic>? values, int timeoutInSeconds,
       {PersistentStoreQueryReturnType? returnType =
           PersistentStoreQueryReturnType.rows}) async {
-    var now = DateTime.now().toUtc();
+    final now = DateTime.now().toUtc();
     try {
-      var dbConnection = await executionContext;
+      final dbConnection = await executionContext;
       dynamic results;
 
       if (returnType == PersistentStoreQueryReturnType.rows) {

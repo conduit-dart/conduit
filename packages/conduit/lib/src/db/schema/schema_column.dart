@@ -364,7 +364,7 @@ class SchemaColumnDifference {
     }).toList();
   }
 
-  List<_PropertyDifference> _differingProperties = [];
+  final List<_PropertyDifference> _differingProperties = [];
 }
 
 class _PropertyDifference {

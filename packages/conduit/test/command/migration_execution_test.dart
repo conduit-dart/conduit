@@ -46,7 +46,7 @@ void main() {
   });
 
   tearDown(() async {
-    var tables = [
+    final tables = [
       "_conduit_version_pgsql",
       "_foo",
       "_testobject",
@@ -67,7 +67,7 @@ void main() {
 
   test("Generate and execute initial schema makes workable DB", () async {
     expect(await runMigrationCases(["Case1"]), isZero);
-    var version =
+    final version =
         await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
@@ -84,7 +84,7 @@ void main() {
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
       ) as List<List<dynamic>>;
       expect(versionRow.first.first, 1);
-      var updateDate = versionRow.first.last;
+      final updateDate = versionRow.first.last;
 
       cli.clearOutput();
       expect(await runMigrationCases(["Case2"]), isZero);
@@ -100,7 +100,7 @@ void main() {
   test("Multiple migration files are ran", () async {
     expect(await runMigrationCases(["Case31", "Case32"]), isZero);
 
-    var version =
+    final version =
         await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
@@ -207,7 +207,7 @@ void main() {
   test(
     "If migration fails because adding a new non-nullable column to an table, a friendly error is emitted",
     () async {
-      StringBuffer buf = StringBuffer();
+      final StringBuffer buf = StringBuffer();
       expect(
           await runMigrationCases(["Case81", "Case82"], log: buf), isNonZero);
       expect(buf.toString(), contains("adding or altering"));
@@ -288,7 +288,7 @@ Future runMigrationCases(List<String?> migrationNames,
     );
   }
 
-  String useSsl = Platform.environment["USE_SSL"] ?? "";
+  final String useSsl = Platform.environment["USE_SSL"] ?? "";
 
   final res =
       await cli.run("db", ["upgrade", useSsl, "--connect", connectString]);

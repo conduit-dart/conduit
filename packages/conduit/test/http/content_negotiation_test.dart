@@ -5,7 +5,7 @@ import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
 void main() {
-  ClientServer clientServer = ClientServer();
+  final ClientServer clientServer = ClientServer();
 
   setUp(() async {
     await clientServer.open();
@@ -171,7 +171,7 @@ class ClientServer {
   Future<Request> getWithTypes(List<String>? contentTypeStrings) async {
     assert(_requests.isEmpty);
 
-    var req = await client.openUrl("GET", Uri.parse("http://localhost:8123"));
+    final req = await client.openUrl("GET", Uri.parse("http://localhost:8123"));
     if (contentTypeStrings != null) {
       if (contentTypeStrings.isEmpty) {
         req.headers.set(HttpHeaders.acceptHeader, "");
@@ -181,7 +181,7 @@ class ClientServer {
       }
     }
 
-    var response = await req.close();
+    final response = await req.close();
     await response.drain();
 
     return _requests.removeAt(0);

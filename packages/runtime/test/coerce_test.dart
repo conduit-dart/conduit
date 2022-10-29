@@ -130,11 +130,13 @@ void main() {
 
       test("list of map", () {
         expect(
-            coerce<List<Map<String, dynamic>?>>(wash([
-              {"a": "b"},
-              null,
-              {"a": 1}
-            ])),
+            coerce<List<Map<String, dynamic>?>>(
+              wash([
+                {"a": "b"},
+                null,
+                {"a": 1}
+              ]),
+            ),
             [
               {"a": "b"},
               null,
@@ -143,7 +145,9 @@ void main() {
 
         expect(coerce<List<Map<String, dynamic>>?>(null), null);
         expect(
-            coerce<List<Map<String, dynamic>>>([]), <Map<String, dynamic>>[]);
+          coerce<List<Map<String, dynamic>>>([]),
+          <Map<String, dynamic>>[],
+        );
       });
     });
 
@@ -170,10 +174,12 @@ void main() {
 
       test("outer list ok, inner list not ok", () {
         try {
-          coerce<List<List<String>>>(wash([
-            ["foo", 3],
-            ["baz"]
-          ]));
+          coerce<List<List<String>>>(
+            wash([
+              ["foo", 3],
+              ["baz"]
+            ]),
+          );
           fail('unreachable');
         } on TypeCoercionException catch (e) {
           expect(e.expectedType.toString(), "List<List<String>>");
@@ -183,10 +189,12 @@ void main() {
 
       test("list of map, inner map not ok", () {
         try {
-          coerce<List<Map<String, int>>>(wash([
-            {"a": 1},
-            {"a": "b"}
-          ]));
+          coerce<List<Map<String, int>>>(
+            wash([
+              {"a": 1},
+              {"a": "b"}
+            ]),
+          );
           fail('unreachable');
         } on TypeCoercionException catch (e) {
           expect(e.expectedType.toString(), "List<Map<String, int>>");
@@ -257,9 +265,11 @@ void main() {
 
       test("nested list has invalid element", () {
         try {
-          coerce<Map<String, List<String>>>(wash({
-            "a": [2]
-          }));
+          coerce<Map<String, List<String>>>(
+            wash({
+              "a": [2]
+            }),
+          );
           fail('unreachable');
         } on TypeCoercionException catch (e) {
           expect(e.expectedType.toString(), "Map<String, List<String>>");
@@ -277,9 +287,11 @@ void main() {
         }
 
         try {
-          coerce<Map<String, Map<String, int>>>(wash({
-            "a": {"b": "foo"}
-          }));
+          coerce<Map<String, Map<String, int>>>(
+            wash({
+              "a": {"b": "foo"}
+            }),
+          );
           fail('unreachable');
         } on TypeCoercionException catch (e) {
           expect(e.expectedType.toString(), "Map<String, Map<String, int>>");

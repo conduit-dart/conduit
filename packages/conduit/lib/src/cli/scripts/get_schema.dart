@@ -12,8 +12,8 @@ class GetSchemaExecutable extends Executable<Map<String, dynamic>> {
   @override
   Future<Map<String, dynamic>> execute() async {
     try {
-      var dataModel = ManagedDataModel.fromCurrentMirrorSystem();
-      var schema = Schema.fromDataModel(dataModel);
+      final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
+      final schema = Schema.fromDataModel(dataModel);
       return schema.asMap();
     } on SchemaException catch (e) {
       return {"error": e.message};

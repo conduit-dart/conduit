@@ -6,7 +6,7 @@ abstract class RuntimeContext {
   ///
   /// Is either a `MirrorContext` or a `GeneratedContext`,
   /// depending on the execution type.
-  static late final RuntimeContext current = context.instance;
+  static final RuntimeContext current = context.instance;
 
   /// The runtimes available to the executing application.
   late RuntimeCollection runtimes;

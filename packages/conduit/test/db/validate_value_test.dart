@@ -80,7 +80,7 @@ void main() {
 
   group("Validate.matches", () {
     test("Valid regex reports match", () {
-      var t = T()
+      final t = T()
         ..regex = "OIASDJKASD"
         ..contain = "XcontainY";
       expect(t.validate().isValid, true);
@@ -97,7 +97,7 @@ void main() {
 
   group("Validate.compare", () {
     test("lessThan/int", () {
-      var t = T()..compareIntLessThan1 = 0;
+      final t = T()..compareIntLessThan1 = 0;
       expect(t.validate().isValid, true);
       t.compareIntLessThan1 = 1;
       expect(t.validate().isValid, false);
@@ -106,7 +106,7 @@ void main() {
     });
 
     test("lessThanEqual/string", () {
-      var t = T()..compareStringLessThanEqualToBar = "abc";
+      final t = T()..compareStringLessThanEqualToBar = "abc";
       expect(t.validate().isValid, true);
       t.compareStringLessThanEqualToBar = "bar";
       expect(t.validate().isValid, true);
@@ -115,7 +115,7 @@ void main() {
     });
 
     test("greaterThan/double", () {
-      var t = T()..compareDoubleGreaterThan1 = 2.0;
+      final t = T()..compareDoubleGreaterThan1 = 2.0;
       expect(t.validate().isValid, true);
       t.compareDoubleGreaterThan1 = 1.0;
       expect(t.validate().isValid, false);
@@ -124,7 +124,7 @@ void main() {
     });
 
     test("greaterThanEqual/date", () {
-      var t = T()..compareDateGreaterThanEqualTo1990 = DateTime.utc(2000);
+      final t = T()..compareDateGreaterThanEqualTo1990 = DateTime.utc(2000);
       expect(t.validate().isValid, true);
       t.compareDateGreaterThanEqualTo1990 = DateTime.utc(1990);
       expect(t.validate().isValid, true);
@@ -133,14 +133,14 @@ void main() {
     });
 
     test("equal", () {
-      var t = T()..compareIntEqualTo5 = 5;
+      final t = T()..compareIntEqualTo5 = 5;
       expect(t.validate().isValid, true);
       t.compareIntEqualTo5 = 4;
       expect(t.validate().isValid, false);
     });
 
     test("Combine two yields and of both", () {
-      var t = T()..compareIntBetween6And10 = 6;
+      final t = T()..compareIntBetween6And10 = 6;
       expect(t.validate().isValid, true);
       t.compareIntBetween6And10 = 10;
       expect(t.validate().isValid, true);
@@ -154,7 +154,7 @@ void main() {
 
   group("Validate.length", () {
     test("lessThan", () {
-      var t = T()..lengthLessThan5 = "abc";
+      final t = T()..lengthLessThan5 = "abc";
       expect(t.validate().isValid, true);
       t.lengthLessThan5 = "abcde";
       expect(t.validate().isValid, false);
@@ -163,7 +163,7 @@ void main() {
     });
 
     test("lessThanEqual", () {
-      var t = T()..lengthLessThanEqualTo5 = "abc";
+      final t = T()..lengthLessThanEqualTo5 = "abc";
       expect(t.validate().isValid, true);
       t.lengthLessThanEqualTo5 = "abcde";
       expect(t.validate().isValid, true);
@@ -172,7 +172,7 @@ void main() {
     });
 
     test("greaterThan", () {
-      var t = T()..lengthGreaterThan5 = "abcdefghi";
+      final t = T()..lengthGreaterThan5 = "abcdefghi";
       expect(t.validate().isValid, true);
       t.lengthGreaterThan5 = "abcde";
       expect(t.validate().isValid, false);
@@ -181,7 +181,7 @@ void main() {
     });
 
     test("greaterThanEqual", () {
-      var t = T()..lengthGreaterThanEqualTo5 = "abcdefgh";
+      final t = T()..lengthGreaterThanEqualTo5 = "abcdefgh";
       expect(t.validate().isValid, true);
       t.lengthGreaterThanEqualTo5 = "abcde";
       expect(t.validate().isValid, true);
@@ -190,14 +190,14 @@ void main() {
     });
 
     test("equal", () {
-      var t = T()..lengthEqualTo2 = "ab";
+      final t = T()..lengthEqualTo2 = "ab";
       expect(t.validate().isValid, true);
       t.lengthEqualTo2 = "c";
       expect(t.validate().isValid, false);
     });
 
     test("Combine two yields and of both", () {
-      var t = T()..lengthBetween6And10 = "abcdef";
+      final t = T()..lengthBetween6And10 = "abcdef";
       expect(t.validate().isValid, true);
       t.lengthBetween6And10 = "abcdefghij";
       expect(t.validate().isValid, true);
@@ -211,14 +211,14 @@ void main() {
 
   group("Validate.present", () {
     test("Ensures key exists", () {
-      var u = U();
+      final u = U();
       expect(u.validate().isValid, false);
       u.present = 1;
       expect(u.validate().isValid, true);
     });
 
     test("Does not care about null, as long as present", () {
-      var u = U()..present = null;
+      final u = U()..present = null;
       expect(u.validate().isValid, true);
     });
 
@@ -252,14 +252,14 @@ void main() {
 
   group("Validate.absent", () {
     test("Ensures key is absent", () {
-      var u = U()..present = 1;
+      final u = U()..present = 1;
       expect(u.validate().isValid, true);
       u.absent = 1;
       expect(u.validate().isValid, false);
     });
 
     test("Does not treat null as absent", () {
-      var u = U()
+      final u = U()
         ..present = 1
         ..absent = null;
       expect(u.validate().isValid, false);
@@ -281,21 +281,21 @@ void main() {
 
   group("Validate.oneOf", () {
     test("Works with String", () {
-      var t = T()..oneOfAB = "A";
+      final t = T()..oneOfAB = "A";
       expect(t.validate().isValid, true);
       t.oneOfAB = "C";
       expect(t.validate().isValid, false);
     });
 
     test("Works with int", () {
-      var t = T()..oneOf12 = 1;
+      final t = T()..oneOf12 = 1;
       expect(t.validate().isValid, true);
       t.oneOf12 = 3;
       expect(t.validate().isValid, false);
     });
 
     test("Implicitly added to enum types", () {
-      var e = EnumObject()..backing.contents!["enumValues"] = "foobar";
+      final e = EnumObject()..backing.contents!["enumValues"] = "foobar";
       expect(e.validate().isValid, false);
       e.enumValues = EnumValues.abcd;
       expect(e.validate().isValid, true);
@@ -304,14 +304,14 @@ void main() {
 
   group("Validate.constant", () {
     test("Allows attributes during insert, not update", () {
-      var t = Constant()..constantString = "A";
+      final t = Constant()..constantString = "A";
       expect(t.validate(forEvent: Validating.insert).isValid, true);
 
       expect(t.validate(forEvent: Validating.update).isValid, false);
     });
 
     test("Allows relationships during insert, not update", () {
-      var t = Constant()
+      final t = Constant()
         ..constantRef = ConstantRef()
         ..id = 1;
       expect(t.validate(forEvent: Validating.insert).isValid, true);
@@ -321,7 +321,7 @@ void main() {
 
   group("Operation", () {
     test("Specify update only, only runs on update", () {
-      var t = T()..mustBeZeroOnUpdate = 10;
+      final t = T()..mustBeZeroOnUpdate = 10;
       expect(ManagedValidator.run(t, event: Validating.insert).isValid, true);
 
       t.mustBeZeroOnUpdate = 10;
@@ -332,7 +332,7 @@ void main() {
     });
 
     test("Specify insert only, only runs on insert", () {
-      var t = T()..mustBeZeroOnInsert = 10;
+      final t = T()..mustBeZeroOnInsert = 10;
       expect(ManagedValidator.run(t, event: Validating.update).isValid, true);
 
       t.mustBeZeroOnInsert = 10;
@@ -343,7 +343,7 @@ void main() {
     });
 
     test("More than one matcher", () {
-      var t = T()..mustBeBayOrBaz = "bay";
+      final t = T()..mustBeBayOrBaz = "bay";
       expect(t.validate().isValid, true);
       t.mustBeBayOrBaz = "baz";
       expect(t.validate().isValid, true);
@@ -355,7 +355,7 @@ void main() {
 
     test("ManagedObject can provide add'l validations by overriding validate",
         () async {
-      var v = V()..aOrbButReallyOnlyA = "a";
+      final v = V()..aOrbButReallyOnlyA = "a";
       expect(v.validate().isValid, true);
       v.aOrbButReallyOnlyA = "b";
       expect(v.validate().isValid, false);
@@ -364,7 +364,7 @@ void main() {
 
   group("Custom validator verify", () {
     test("Custom validator correctly validates a value", () {
-      var t = T()..mustByXYZ = "XYZ";
+      final t = T()..mustByXYZ = "XYZ";
       expect(t.validate().isValid, true);
       t.mustByXYZ = "not";
       expect(t.validate().isValid, false);

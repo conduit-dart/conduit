@@ -4,17 +4,17 @@ import 'package:test/test.dart';
 void main() {
   group("QueryPredicate.and", () {
     test("Duplicate keys are replaced", () {
-      var p1 = QueryPredicate("p=@p", {"p": 1});
-      var p2 = QueryPredicate("p=@p", {"p": 2});
+      final p1 = QueryPredicate("p=@p", {"p": 1});
+      final p2 = QueryPredicate("p=@p", {"p": 2});
       final combined = QueryPredicate.and([p1, p2]);
       expect(combined.format, "(p=@p AND p=@p0)");
       expect(combined.parameters, {"p": 1, "p0": 2});
     });
 
     test("Multiple duplicate keys are replaced", () {
-      var p1 = QueryPredicate("p=@p", {"p": 1});
-      var p2 = QueryPredicate("p=@p", {"p": 2});
-      var p3 = QueryPredicate("p=@p", {"p": 3});
+      final p1 = QueryPredicate("p=@p", {"p": 1});
+      final p2 = QueryPredicate("p=@p", {"p": 2});
+      final p3 = QueryPredicate("p=@p", {"p": 3});
       final combined = QueryPredicate.and([p1, p2, p3]);
       expect(combined.format, "(p=@p AND p=@p0 AND p=@p1)");
       expect(combined.parameters, {"p": 1, "p0": 2, "p1": 3});

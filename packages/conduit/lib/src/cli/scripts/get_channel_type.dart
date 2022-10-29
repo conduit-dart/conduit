@@ -17,7 +17,7 @@ class GetChannelExecutable extends Executable<String> {
           "No ApplicationChannel subclass was found for this project. "
           "Make sure it is imported in your application library file.");
     }
-    var runtime = channels.first;
+    final runtime = channels.first;
 
     return MirrorSystem.getName(reflectClass(runtime.channelType).simpleName);
   }

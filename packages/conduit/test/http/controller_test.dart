@@ -50,7 +50,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.statusCode, 201);
     });
 
@@ -61,7 +61,7 @@ void main() {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers.containsKey("x-foo"), false);
     });
 
@@ -72,7 +72,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -83,7 +83,7 @@ void main() {
         return Response.ok(null, headers: {"x-foo": "foo"});
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -94,7 +94,7 @@ void main() {
         return Response.ok({"x": "a"});
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(json.decode(resp.body), {"foo": "y", "x": "a"});
     });
 
@@ -107,7 +107,7 @@ void main() {
         return Response.ok(null);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.statusCode, 500);
     });
   });
@@ -143,7 +143,7 @@ void main() {
         return null;
       });
 
-      var response = await http.get(Uri.parse("http://localhost:4111"));
+      final response = await http.get(Uri.parse("http://localhost:4111"));
       expect(response.statusCode, 200);
       expect(set, false);
     });
@@ -216,15 +216,15 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.linkFunction((req) async {
-          var obj = SomeObject()..name = "Bob";
+          final obj = SomeObject()..name = "Bob";
           return Response.ok(obj);
         });
         await next.receive(req);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"name": "Bob"});
     });
@@ -234,14 +234,14 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok({"a": "b"});
         });
         await next.receive(req);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"a": "b"});
     });
@@ -251,14 +251,14 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok(DateTime.now());
         });
         await next.receive(req);
       });
 
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.statusCode, 500);
       expect(resp.headers["content-type"], isNull);
       expect(resp.body.isEmpty, true);
@@ -269,13 +269,13 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok(null);
         });
         await next.receive(req);
       });
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
       expect(resp.statusCode, 200);
       expect(resp.headers["content-length"], "0");
       expect(resp.headers["content-type"], isNull);
@@ -287,7 +287,7 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.link(() => Always200Controller());
         await next.receive(req);
       });
@@ -324,7 +324,7 @@ void main() {
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.link(() => Always200Controller());
         await next.receive(req);
       });
@@ -355,7 +355,7 @@ void main() {
     test("Failure to decode request body as appropriate type is 400", () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
       server.map((req) => Request(req)).listen((req) async {
-        var next = PassthruController();
+        final next = PassthruController();
         next.linkFunction((r) async {
           await r.body.decode<Map<String, dynamic>>();
           return Response.ok(null);
@@ -363,7 +363,7 @@ void main() {
         await next.receive(req);
       });
 
-      var resp = await http.post(Uri.parse("http://localhost:8888"),
+      final resp = await http.post(Uri.parse("http://localhost:8888"),
           headers: {"content-type": "application/json"},
           body: json.encode(["a"]));
 
@@ -391,7 +391,7 @@ class Always200Controller extends Controller {
 
   @override
   Future<RequestOrResponse> handle(Request req) async {
-    var q = req.raw.uri.queryParameters["q"];
+    final q = req.raw.uri.queryParameters["q"];
     if (q == "http_response_exception") {
       throw Response.badRequest(body: {"error": "ok"});
     } else if (q == "query_exception") {
@@ -404,7 +404,7 @@ class Always200Controller extends Controller {
 
   @override
   void willSendResponse(Response resp) {
-    var originalMap = {"statusCode": resp.statusCode};
+    final originalMap = {"statusCode": resp.statusCode};
     resp.statusCode = 200;
     resp.body = originalMap;
     resp.contentType = ContentType.json;
@@ -419,7 +419,7 @@ class OutlierChannel extends ApplicationChannel {
     final r = Router();
     r.route("/detach").linkFunction((Request req) async {
       if (count == 0) {
-        var socket = await req.raw.response.detachSocket();
+        final socket = await req.raw.response.detachSocket();
         socket.destroy();
 
         req.toDebugString(

@@ -159,7 +159,7 @@ class APIDocumentContext {
   /// Reusable [APICallback] components.
   final APIComponentCollection<APICallback> callbacks;
 
-  List<Function> _deferredOperations = [];
+  List<Future> _deferredOperations = [];
 
   /// Allows asynchronous code during documentation.
   ///
@@ -167,7 +167,7 @@ class APIDocumentContext {
   /// in [document]. All [document] closures will be executes and awaited on before finishing [document].
   /// These closures are called in the order they were added.
   void defer(FutureOr Function() document) {
-    _deferredOperations.add(document);
+    _deferredOperations.add(Future(document));
   }
 
   /// Finalizes [document] and returns it as a serializable [Map].
@@ -176,7 +176,7 @@ class APIDocumentContext {
   Future<Map<String, dynamic>> finalize() async {
     final dops = _deferredOperations;
     _deferredOperations = [];
-    await Future.forEach(dops, (Function dop) => dop());
+    await Future.wait(dops);
 
     document.paths!.values
         .expand((p) => p!.operations.values)

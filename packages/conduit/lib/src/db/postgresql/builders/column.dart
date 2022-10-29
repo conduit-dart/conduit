@@ -40,7 +40,7 @@ class ColumnBuilder extends Returnable {
 
   static ManagedPropertyDescription propertyForName(
       ManagedEntity entity, String? propertyName) {
-    var property = entity.properties[propertyName];
+    final property = entity.properties[propertyName];
 
     if (property == null) {
       throw ArgumentError(
@@ -125,7 +125,7 @@ class ColumnBuilder extends Returnable {
   }
 
   String get sqlTypeSuffix {
-    var type = PostgreSQLFormat.dataTypeStringForDataType(
+    final type = PostgreSQLFormat.dataTypeStringForDataType(
         typeMap[property!.type!.kind]);
     if (type != null) {
       return ":$type";
@@ -141,7 +141,7 @@ class ColumnBuilder extends Returnable {
     var name = property!.name;
 
     if (property is ManagedRelationshipDescription) {
-      var relatedPrimaryKey = (property as ManagedRelationshipDescription)
+      final relatedPrimaryKey = (property as ManagedRelationshipDescription)
           .destinationEntity
           .primaryKey;
       name = "${name}_$relatedPrimaryKey";

@@ -93,7 +93,7 @@ class CLIDatabaseUpgrade extends CLICommand
   }
 
   DBInfo? get _storeConnectionInfo {
-    var s = persistentStore;
+    final s = persistentStore;
     if (s is PostgreSQLPersistentStore) {
       return DBInfo("postgres", s.username, s.password, s.host, s.port,
           s.databaseName, s.timeZone,

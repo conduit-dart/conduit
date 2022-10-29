@@ -29,9 +29,9 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   Future<InstanceType> insert() async {
     validateInput(Validating.insert);
 
-    var builder = PostgresQueryBuilder(this);
+    final builder = PostgresQueryBuilder(this);
 
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write("INSERT INTO ${builder.sqlTableName} ");
 
     if (builder.columnValueBuilders.isNotEmpty) {
@@ -58,7 +58,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       return [];
     }
 
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
 
     final allColumns = <String?>{};
     final builders = <PostgresQueryBuilder>[];
@@ -105,9 +105,9 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   Future<List<InstanceType>> update() async {
     validateInput(Validating.update);
 
-    var builder = PostgresQueryBuilder(this);
+    final builder = PostgresQueryBuilder(this);
 
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write("UPDATE ${builder.sqlTableName} ");
     buffer.write("SET ${builder.sqlColumnsAndValuesToUpdate} ");
 
@@ -129,7 +129,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
   @override
   Future<InstanceType?> updateOne() async {
-    var results = await update();
+    final results = await update();
     if (results.length == 1) {
       return results.first;
     } else if (results.isEmpty) {
@@ -144,9 +144,9 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
   @override
   Future<int?> delete() async {
-    var builder = PostgresQueryBuilder(this);
+    final builder = PostgresQueryBuilder(this);
 
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write("DELETE FROM ${builder.sqlTableName} ");
 
     if (builder.sqlWhereClause != null) {
@@ -163,13 +163,13 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
   @override
   Future<InstanceType?> fetchOne() async {
-    var builder = createFetchBuilder();
+    final builder = createFetchBuilder();
 
     if (!builder.containsJoins) {
       fetchLimit = 1;
     }
 
-    var results = await _fetch(builder);
+    final results = await _fetch(builder);
     if (results.length == 1) {
       return results.first;
     } else if (results.length > 1) {
@@ -190,7 +190,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   //////
 
   PostgresQueryBuilder createFetchBuilder() {
-    var builder = PostgresQueryBuilder(this);
+    final builder = PostgresQueryBuilder(this);
 
     if (pageDescriptor != null) {
       validatePageDescriptor();
@@ -205,7 +205,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   }
 
   Future<List<InstanceType>> _fetch(PostgresQueryBuilder builder) async {
-    var buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write("SELECT ${builder.sqlColumnsToReturn} ");
     buffer.write("FROM ${builder.sqlTableName} ");
 
@@ -234,7 +234,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   }
 
   void validatePageDescriptor() {
-    var prop = entity.attributes[pageDescriptor!.propertyName];
+    final prop = entity.attributes[pageDescriptor!.propertyName];
     if (prop == null) {
       throw StateError(
           "Invalid query page descriptor. Column '${pageDescriptor!.propertyName}' does not exist for table '${entity.tableName}'");

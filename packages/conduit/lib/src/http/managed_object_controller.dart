@@ -93,14 +93,14 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @Operation.get("id")
   Future<Response> getObject(@Bind.path("id") String id) async {
-    var primaryKey = _query!.entity.primaryKey;
+    final primaryKey = _query!.entity.primaryKey;
     final parsedIdentifier =
         _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
 
     _query = await willFindObjectWithQuery(_query);
 
-    InstanceType? result = await _query?.fetchOne();
+    final InstanceType? result = await _query?.fetchOne();
 
     if (result == null) {
       return didNotFindObject();
@@ -133,7 +133,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
     _query!.values = instance;
 
     _query = await willInsertObjectWithQuery(_query);
-    InstanceType result = (await _query?.insert())!;
+    final InstanceType result = (await _query?.insert())!;
 
     return didInsertObject(result);
   }
@@ -164,14 +164,14 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @Operation.delete("id")
   Future<Response> deleteObject(@Bind.path("id") String id) async {
-    var primaryKey = _query!.entity.primaryKey;
+    final primaryKey = _query!.entity.primaryKey;
     final parsedIdentifier =
         _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
 
     _query = await willDeleteObjectWithQuery(_query);
 
-    var result = await _query?.delete();
+    final result = await _query?.delete();
 
     if (result == 0) {
       return didNotFindObjectToDeleteWithID(id);
@@ -206,7 +206,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @Operation.put("id")
   Future<Response> updateObject(@Bind.path("id") String id) async {
-    var primaryKey = _query!.entity.primaryKey;
+    final primaryKey = _query!.entity.primaryKey;
     final parsedIdentifier =
         _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
@@ -217,7 +217,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
     _query = await willUpdateObjectWithQuery(_query);
 
-    InstanceType? results = await _query?.updateOne();
+    final InstanceType? results = await _query?.updateOne();
     if (results == null) {
       return didNotFindObjectToUpdateWithID(id);
     } else {
@@ -301,19 +301,19 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         });
       }
 
-      var pageByProperty = _query!.entity.properties[pageBy];
+      final pageByProperty = _query!.entity.properties[pageBy];
       if (pageByProperty == null) {
         throw Response.badRequest(body: {"error": "cannot page by '$pageBy'"});
       }
 
-      dynamic parsed = _parseValueForProperty(pageValue, pageByProperty);
+      final parsed = _parseValueForProperty(pageValue, pageByProperty);
       _query!.pageBy((t) => t[pageBy], direction,
           boundingValue: parsed == "null" ? null : parsed);
     }
 
     if (sortBy != null) {
       sortBy.forEach((sort) {
-        var split = sort.split(",").map((str) => str.trim()).toList();
+        final split = sort.split(",").map((str) => str.trim()).toList();
         if (split.length != 2) {
           throw Response.badRequest(body: {
             "error":
@@ -330,7 +330,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
                 "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'."
           });
         }
-        var sortOrder = split.last == "asc"
+        final sortOrder = split.last == "asc"
             ? QuerySortOrder.ascending
             : QuerySortOrder.descending;
         _query!.sortBy((t) => t[split.first], sortOrder);
@@ -339,7 +339,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
     _query = await willFindObjectsWithQuery(_query);
 
-    var results = (await _query?.fetch())!;
+    final results = (await _query?.fetch())!;
 
     return didFindObjects(results);
   }

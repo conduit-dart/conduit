@@ -7,24 +7,24 @@ import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 void main() {
-  var client = HttpClient();
-  var fileDirectory = Directory("temp_files");
-  var jsonContents = {"key": "value"};
-  var cssContents = "a { color: red; }";
-  var jsContents = "f() {}";
-  var htmlContents = "<html><h3>Conduit</h3></html>";
-  var jsonFile = File.fromUri(fileDirectory.uri.resolve("file.json"));
-  var cssFile = File.fromUri(fileDirectory.uri.resolve("file.css"));
-  var jsFile = File.fromUri(fileDirectory.uri.resolve("file.js"));
-  var htmlFile = File.fromUri(fileDirectory.uri.resolve("file.html"));
-  var indexFile = File.fromUri(fileDirectory.uri.resolve("index.html"));
-  var unknownFileExtension =
+  final client = HttpClient();
+  final fileDirectory = Directory("temp_files");
+  final jsonContents = {"key": "value"};
+  const cssContents = "a { color: red; }";
+  const jsContents = "f() {}";
+  const htmlContents = "<html><h3>Conduit</h3></html>";
+  final jsonFile = File.fromUri(fileDirectory.uri.resolve("file.json"));
+  final cssFile = File.fromUri(fileDirectory.uri.resolve("file.css"));
+  final jsFile = File.fromUri(fileDirectory.uri.resolve("file.js"));
+  final htmlFile = File.fromUri(fileDirectory.uri.resolve("file.html"));
+  final indexFile = File.fromUri(fileDirectory.uri.resolve("index.html"));
+  final unknownFileExtension =
       File.fromUri(fileDirectory.uri.resolve("file.unk"));
-  var noFileExtension = File.fromUri(fileDirectory.uri.resolve("file"));
-  var sillyFileExtension =
+  final noFileExtension = File.fromUri(fileDirectory.uri.resolve("file"));
+  final sillyFileExtension =
       File.fromUri(fileDirectory.uri.resolve("file.silly"));
-  var subdir = Directory.fromUri(fileDirectory.uri.resolve("subdir/"));
-  var subdirFile = File.fromUri(subdir.uri.resolve("index.html"));
+  final subdir = Directory.fromUri(fileDirectory.uri.resolve("subdir/"));
+  final subdirFile = File.fromUri(subdir.uri.resolve("index.html"));
 
   late HttpServer server;
 
@@ -42,7 +42,7 @@ void main() {
     cssFile.writeAsBytesSync(utf8.encode(cssContents));
     jsFile.writeAsBytesSync(utf8.encode(jsContents));
 
-    var cachingController = FileController("temp_files")
+    final cachingController = FileController("temp_files")
       ..addCachePolicy(const CachePolicy(requireConditionalRequest: true),
           (path) => path.endsWith(".html"))
       ..addCachePolicy(
@@ -59,7 +59,7 @@ void main() {
                 ".otf"
               ].any((suffix) => path.endsWith(suffix)));
 
-    var router = Router()
+    final router = Router()
       ..route("/files/*").link(() => FileController("temp_files"))
       ..route("/redirect/*").link(
           () => FileController("temp_files", onFileNotFound: (c, r) async {
@@ -72,9 +72,7 @@ void main() {
     router.didAddToChannel();
 
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-    server.map((r) => Request(r)).listen((req) {
-      router.receive(req);
-    });
+    server.map((r) => Request(r)).listen(router.receive);
   });
 
   tearDownAll(() {
@@ -84,7 +82,7 @@ void main() {
   });
 
   test("Can serve json file", () async {
-    var response = await getFile("/file.json");
+    final response = await getFile("/file.json");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "application/json; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -95,7 +93,7 @@ void main() {
   });
 
   test("Can serve html file", () async {
-    var response = await getFile("/file.html");
+    final response = await getFile("/file.html");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -106,7 +104,7 @@ void main() {
   });
 
   test("Missing files returns 404", () async {
-    var response = await getFile("/file.foobar");
+    final response = await getFile("/file.foobar");
     expect(response.headers["last-modified"], isNull);
     expect(response.headers["cache-control"], isNull);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
@@ -118,7 +116,7 @@ void main() {
   test(
       "If 404 response to request without Accept: text/html, do not include HTML body",
       () async {
-    var response = await getFile("/file.foobar",
+    final response = await getFile("/file.foobar",
         headers: {HttpHeaders.acceptHeader: "text/plain"});
     expect(response.headers["last-modified"], isNull);
     expect(response.headers["cache-control"], isNull);
@@ -129,7 +127,7 @@ void main() {
   });
 
   test("Unknown extension-content type is application/octet-stream", () async {
-    var response = await getFile("/file.unk");
+    final response = await getFile("/file.unk");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "application/octet-stream");
     expect(response.headers["content-encoding"], isNull);
@@ -140,7 +138,7 @@ void main() {
   });
 
   test("No file extension is application/octet-stream", () async {
-    var response = await getFile("/file");
+    final response = await getFile("/file");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "application/octet-stream");
     expect(response.headers["content-encoding"], isNull);
@@ -152,7 +150,7 @@ void main() {
   });
 
   test("If no file specified, serve index.html", () async {
-    var response = await getFile("/");
+    final response = await getFile("/");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -164,7 +162,7 @@ void main() {
   });
 
   test("Serve out of subdir", () async {
-    var response = await getFile("/subdir/index.html");
+    final response = await getFile("/subdir/index.html");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -175,7 +173,7 @@ void main() {
   });
 
   test("Subdir with trailing/ serves index.html", () async {
-    var response = await getFile("/subdir/");
+    final response = await getFile("/subdir/");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -186,12 +184,12 @@ void main() {
   });
 
   test("Attempt to reference file as directory yields 404", () async {
-    var response = await getFile("/index.html/");
+    final response = await getFile("/index.html/");
     expect(response.statusCode, 404);
   });
 
   test("Subdir without trailing/ serves index.html", () async {
-    var response = await getFile("/subdir");
+    final response = await getFile("/subdir");
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -202,7 +200,7 @@ void main() {
   });
 
   test("Can add extension", () async {
-    var response =
+    final response =
         await http.get(Uri.parse("http://localhost:8888/silly/file.silly"));
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
@@ -215,14 +213,14 @@ void main() {
 
   test("Client connection closed before data is sent still shuts down stream",
       () async {
-    var socket = await Socket.connect("localhost", 8888);
-    var request =
+    final socket = await Socket.connect("localhost", 8888);
+    const request =
         "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
     socket.add(request.codeUnits);
     await socket.flush();
     socket.destroy();
 
-    var response = await getFile("/file.html");
+    final response = await getFile("/file.html");
     expect(response.statusCode, 200);
     expect(response.body, htmlContents);
 
@@ -230,7 +228,7 @@ void main() {
   });
 
   test("Provide onFileNotFound provides another response", () async {
-    var response = await http
+    final response = await http
         .get(Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"));
     expect(response.statusCode, 200);
     expect(json.decode(response.body), {"k": "v"});
@@ -238,7 +236,7 @@ void main() {
 
   group("Default caching", () {
     test("Uncached file has no cache-control", () async {
-      var response = await getCacheableFile("/file.json");
+      final response = await getCacheableFile("/file.json");
       expect(response.statusCode, 200);
       expect(
           response.headers["content-type"], "application/json; charset=utf-8");
@@ -250,7 +248,7 @@ void main() {
     });
 
     test("HTML file has no-cache", () async {
-      var response = await getCacheableFile("/file.html");
+      final response = await getCacheableFile("/file.html");
       expect(response.statusCode, 200);
       expect(response.headers["content-type"], "text/html; charset=utf-8");
       expect(response.headers["content-encoding"], "gzip");
@@ -263,7 +261,7 @@ void main() {
     test(
         "Fetch file with If-Modified-Since before last modified date, returns file",
         () async {
-      var response =
+      final response =
           await getCacheableFile("/file.html", ifModifiedSince: DateTime(2000));
       expect(response.statusCode, 200);
       expect(response.headers["content-type"], "text/html; charset=utf-8");
@@ -277,7 +275,7 @@ void main() {
     test(
         "Fetch file with If-Modified-Since after last modified date, returns 304 with no body",
         () async {
-      var response = await getCacheableFile("/file.html",
+      final response = await getCacheableFile("/file.html",
           ifModifiedSince: DateTime.now().add(const Duration(hours: 1)));
       expect(response.statusCode, 304);
       expect(response.headers["content-type"], isNull);
@@ -289,7 +287,7 @@ void main() {
     });
 
     test("JS file has large max-age", () async {
-      var response = await getCacheableFile("/file.js");
+      final response = await getCacheableFile("/file.js");
       expect(response.statusCode, 200);
       expect(response.headers["content-type"],
           "application/javascript; charset=utf-8");
@@ -301,7 +299,7 @@ void main() {
     });
 
     test("CSS file has large max-age", () async {
-      var response = await getCacheableFile("/file.css");
+      final response = await getCacheableFile("/file.css");
       expect(response.statusCode, 200);
       expect(response.headers["content-type"], "text/css; charset=utf-8");
       expect(response.headers["content-encoding"], "gzip");

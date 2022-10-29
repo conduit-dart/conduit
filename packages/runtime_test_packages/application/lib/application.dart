@@ -3,8 +3,7 @@
 /// More dartdocs go here.
 library application;
 
+import 'package:application/src/file.dart'; // ignore: unused_import
 import 'package:dependency/dependency.dart';
-
-import 'src/file.dart'; // ignore: unused_import
 
 class ConsumerSubclass extends Consumer {}

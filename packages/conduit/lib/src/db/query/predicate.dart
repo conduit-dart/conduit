@@ -39,7 +39,7 @@ class QueryPredicate {
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
   factory QueryPredicate.and(Iterable<QueryPredicate?>? predicates) {
-    var predicateList = predicates
+    final predicateList = predicates
         ?.where((p) => p?.format != null && p!.format.isNotEmpty)
         .toList();
     if (predicateList == null) {
@@ -66,7 +66,7 @@ class QueryPredicate {
 
       if (duplicateKeys.isNotEmpty) {
         var fmt = predicate.format;
-        Map<String?, String> dupeMap = {};
+        final Map<String?, String> dupeMap = {};
         duplicateKeys.forEach((key) {
           final replacementKey = "$key$dupeCounter";
           fmt = fmt.replaceAll("@$key", "@$replacementKey");

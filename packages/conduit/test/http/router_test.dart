@@ -17,7 +17,7 @@ void main() {
     });
 
     test("Router Handles Requests", () async {
-      Router router = Router();
+      final Router router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -25,12 +25,13 @@ void main() {
 
       server = await enableRouter(router);
 
-      var response = await http.get(Uri.parse("http://localhost:4040/player"));
+      final response =
+          await http.get(Uri.parse("http://localhost:4040/player"));
       expect(response.statusCode, equals(200));
     });
 
     test("Router 404s on no match", () async {
-      Router router = Router();
+      final Router router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -38,7 +39,7 @@ void main() {
 
       server = await enableRouter(router);
 
-      var response =
+      final response =
           await http.get(Uri.parse("http://localhost:4040/notplayer"));
       expect(response.statusCode, equals(404));
       // No Accept header, so allow HTML
@@ -46,7 +47,7 @@ void main() {
     });
 
     test("Router 404 but does not accept html, no body", () async {
-      Router router = Router();
+      final Router router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -54,7 +55,7 @@ void main() {
 
       server = await enableRouter(router);
 
-      var response = await http.get(
+      final response = await http.get(
           Uri.parse("http://localhost:4040/notplayer"),
           headers: {HttpHeaders.acceptHeader: "application/json"});
       expect(response.statusCode, equals(404));
@@ -63,7 +64,7 @@ void main() {
     });
 
     test("Router delivers path values", () async {
-      Router router = Router();
+      final Router router = Router();
 
       router.route("/player/:id").linkFunction((req) async {
         return Response.ok("${req.path.variables["id"]}");
@@ -71,14 +72,14 @@ void main() {
 
       server = await enableRouter(router);
 
-      var response =
+      final response =
           await http.get(Uri.parse("http://localhost:4040/player/foobar"));
       expect(response.statusCode, equals(200));
       expect(response.body, equals('"foobar"'));
     });
 
     test("Base API adds to path", () async {
-      var router = Router(basePath: "/api");
+      final router = Router(basePath: "/api");
       router.route("/player/").link(() => Handler());
 
       server = await enableRouter(router);
@@ -94,15 +95,15 @@ void main() {
     });
 
     test("Change Base API Path after adding routes still succeeds", () async {
-      var router = Router(basePath: "/api");
+      final router = Router(basePath: "/api");
       router.route("/a").link(() => Handler());
       server = await enableRouter(router);
-      var response = await http.get(Uri.parse("http://localhost:4040/api/a"));
+      final response = await http.get(Uri.parse("http://localhost:4040/api/a"));
       expect(response.statusCode, equals(202));
     });
 
     test("Router matches right route when many are similar", () async {
-      var router = Router();
+      final router = Router();
       router.route("/a/[:id]").linkFunction((req) async {
         // ignore: unawaited_futures
         req.respond(Response(200, null, null));
@@ -144,7 +145,7 @@ void main() {
 
   group("Router ordering", () {
     HttpServer? server;
-    var router = Router();
+    final router = Router();
     setUpAll(() async {
       router.route("/").linkFunction((req) async {
         return Response(200, null, "/");
@@ -240,7 +241,7 @@ void main() {
 
   group("Disambiguate *", () {
     HttpServer? server;
-    var router = Router();
+    final router = Router();
     setUpAll(() async {
       router.route("/*").linkFunction(
           (req) async => Response.ok("*${req.path.remainingPath}"));
@@ -254,11 +255,11 @@ void main() {
     });
 
     test("Disambiguate *", () async {
-      var r1 = await http.get(Uri.parse("http://localhost:4040/a"));
-      var r2 = await http.get(Uri.parse("http://localhost:4040/b"));
-      var r3 = await http.get(Uri.parse("http://localhost:4040/ab"));
-      var r4 = await http.get(Uri.parse("http://localhost:4040/a/b"));
-      var r5 = await http.get(Uri.parse("http://localhost:4040/"));
+      final r1 = await http.get(Uri.parse("http://localhost:4040/a"));
+      final r2 = await http.get(Uri.parse("http://localhost:4040/b"));
+      final r3 = await http.get(Uri.parse("http://localhost:4040/ab"));
+      final r4 = await http.get(Uri.parse("http://localhost:4040/a/b"));
+      final r5 = await http.get(Uri.parse("http://localhost:4040/"));
 
       expect(r1.body, "\"a\"");
       expect(r2.body, "\"*b\"");
@@ -292,8 +293,8 @@ void main() {
     });
 
     test("Router delivers prepare to all controllers", () async {
-      Completer c1 = Completer();
-      Completer c2 = Completer();
+      final Completer c1 = Completer();
+      final Completer c2 = Completer();
       final root = OKController();
       final router = Router()
         ..route("/a").link(() => PrepareTailController(c1))
@@ -310,7 +311,7 @@ void main() {
 
 Future<HttpServer> enableRouter(Router router) async {
   router.didAddToChannel();
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
   server.map((httpReq) => Request(httpReq)).listen(router.receive);
   return server;
 }

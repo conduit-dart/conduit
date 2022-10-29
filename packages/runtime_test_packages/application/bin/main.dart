@@ -9,7 +9,7 @@ void main() {
     "Consumer": Consumer().message,
     "ConsumerSubclass": ConsumerSubclass().message,
     "ConsumerScript": ConsumerScript().message
-  }));
+  }),);
 }
 
 class ConsumerScript extends Consumer {}

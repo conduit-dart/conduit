@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 
 void main() {
   late Application<TestChannel> application;
-  Agent client = Agent.onPort(8888);
+  final Agent client = Agent.onPort(8888);
 
   final codeResponse = (Map<String, String?> form) {
     final m = Map<String, String>.from(form);

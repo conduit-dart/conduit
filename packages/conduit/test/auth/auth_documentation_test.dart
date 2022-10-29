@@ -16,7 +16,7 @@ void main() {
         ..components = APIComponents());
       final authServer = AuthServer(InMemoryAuthStorage());
       authServer.documentComponents(context);
-      AuthController ac = AuthController(authServer);
+      final AuthController ac = AuthController(authServer);
       ac.restore(ac.recycledState);
       ac.didAddToChannel();
       operations = ac.documentOperations(context, "/", APIPath());
@@ -134,7 +134,7 @@ void main() {
         ..info = APIInfo("title", "1.0.0")
         ..paths = {}
         ..components = APIComponents());
-      AuthRedirectController ac =
+      final AuthRedirectController ac =
           AuthRedirectController(AuthServer(InMemoryAuthStorage()));
       ac.restore(ac.recycledState);
       ac.didAddToChannel();

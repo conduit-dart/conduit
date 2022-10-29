@@ -61,12 +61,12 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
     }
 
     try {
-      var config = ApplicationOptions()..configurationFilePath = configPath;
+      final config = ApplicationOptions()..configurationFilePath = configPath;
 
       final yaml = (loadYaml(pubspecContents!) as Map<dynamic, dynamic>)
           .cast<String, dynamic>();
 
-      var document =
+      final document =
           await Application.document(channels.first.channelType, config, yaml);
 
       document.servers = hosts;

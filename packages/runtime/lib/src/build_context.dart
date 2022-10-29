@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'dart:mirrors';
-import 'package:path/path.dart';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:package_config/package_config.dart';
-import 'package:pubspec/pubspec.dart';
 import 'package:conduit_runtime/src/analyzer.dart';
 import 'package:conduit_runtime/src/context.dart';
 import 'package:conduit_runtime/src/mirror_context.dart';
+import 'package:package_config/package_config.dart';
+import 'package:path/path.dart';
+import 'package:pubspec/pubspec.dart';
 import 'package:yaml/yaml.dart';
 
 /// Configuration and context values used during [Build.execute].
@@ -57,7 +57,7 @@ class BuildContext {
   /// Whether dev dependencies of the application package are included in the dependencies of the compiled executable.
   final bool forTests;
 
-  PackageConfig? _packageConfig = null;
+  PackageConfig? _packageConfig;
 
   /// The [RuntimeContext] available during the build process.
   MirrorContext get context => RuntimeContext.current as MirrorContext;
@@ -73,10 +73,11 @@ class BuildContext {
             .readAsStringSync(),
       );
 
-  Map<dynamic, dynamic> get sourceApplicationPubspecMap =>
-      loadYaml(File.fromUri(
-        sourceApplicationDirectory.uri.resolve("pubspec.yaml"),
-      ).readAsStringSync()) as Map<dynamic, dynamic>;
+  Map<dynamic, dynamic> get sourceApplicationPubspecMap => loadYaml(
+        File.fromUri(
+          sourceApplicationDirectory.uri.resolve("pubspec.yaml"),
+        ).readAsStringSync(),
+      ) as Map<dynamic, dynamic>;
 
   /// The directory of the application being compiled.
   Directory get sourceApplicationDirectory =>
@@ -98,13 +99,12 @@ class BuildContext {
 
   /// Directory for compiled application
   Directory get buildApplicationDirectory => getDirectory(
-      buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"));
+        buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"),
+      );
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].
   Future<PackageConfig> get packageConfig async {
-    if (_packageConfig == null) {
-      _packageConfig = (await findPackageConfig(sourceApplicationDirectory))!;
-    }
+    _packageConfig ??= (await findPackageConfig(sourceApplicationDirectory))!;
     return _packageConfig!;
   }
 
@@ -147,20 +147,23 @@ class BuildContext {
   }) async {
     if (uri != null && source != null) {
       throw ArgumentError(
-          "either uri or source must be non-null, but not both");
+        "either uri or source must be non-null, but not both",
+      );
     }
 
     if (uri == null && source == null) {
       throw ArgumentError(
-          "either uri or source must be non-null, but not both");
+        "either uri or source must be non-null, but not both",
+      );
     }
 
     if (alsoImportOriginalFile == true && uri == null) {
       throw ArgumentError(
-          "flag 'alsoImportOriginalFile' may only be set if 'uri' is also set");
+        "flag 'alsoImportOriginalFile' may only be set if 'uri' is also set",
+      );
     }
-    Package? package = await getPackageFromUri(uri);
-    String? trailingSegments = uri?.pathSegments.sublist(1).join('/');
+    final Package? package = await getPackageFromUri(uri);
+    final String? trailingSegments = uri?.pathSegments.sublist(1).join('/');
     final fileUri =
         package?.packageUriRoot.resolve(trailingSegments ?? '') ?? uri;
     final text = source ?? File.fromUri(fileUri!).readAsStringSync();
@@ -190,20 +193,24 @@ class BuildContext {
     final classMirror = reflectType(type);
     Uri uri = classMirror.location!.sourceUri;
     if (!classMirror.location!.sourceUri.isAbsolute) {
-      Package? package = await getPackageFromUri(uri);
+      final Package? package = await getPackageFromUri(uri);
       uri = package!.packageUriRoot;
     }
     return analyzer.getClassFromFile(
-        MirrorSystem.getName(classMirror.simpleName), uri);
+      MirrorSystem.getName(classMirror.simpleName),
+      uri,
+    );
   }
 
   Future<FieldDeclaration?> _getField(ClassMirror type, String propertyName) {
     return getClassDeclarationFromType(type.reflectedType).then((cd) {
       try {
-        return cd!.members.firstWhere((m) => (m as FieldDeclaration)
-            .fields
-            .variables
-            .any((v) => v.name.value() == propertyName)) as FieldDeclaration;
+        return cd!.members.firstWhere(
+          (m) => (m as FieldDeclaration)
+              .fields
+              .variables
+              .any((v) => v.name.value() == propertyName),
+        ) as FieldDeclaration;
       } catch (e) {
         return null;
       }
@@ -211,8 +218,10 @@ class BuildContext {
   }
 
   Future<List<Annotation>> getAnnotationsFromField(
-      Type _type, String propertyName) async {
-    var type = reflectClass(_type);
+    Type type1,
+    String propertyName,
+  ) async {
+    var type = reflectClass(type1);
     FieldDeclaration? field = await _getField(type, propertyName);
     while (field == null) {
       type = type.superclass!;

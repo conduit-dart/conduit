@@ -41,7 +41,6 @@ linter:
     - file_names
     - hash_and_equals
     - implementation_imports
-    - invariant_booleans
     - iterable_contains_unrelated_type
     - join_return_with_assignment
     - library_names
@@ -66,8 +65,8 @@ linter:
     - prefer_constructors_over_static_methods
     - prefer_contains
     - prefer_equal_for_default_values
-#    - prefer_final_fields
-#    - prefer_final_locals
+    - prefer_final_fields
+    - prefer_final_locals
     - prefer_foreach
     - prefer_generic_function_type_aliases
     - prefer_interpolation_to_compose_strings

@@ -26,13 +26,13 @@ class CodecRegistry {
   ///
   /// Custom codecs must be added to this instance. This value is guaranteed to be non-null.
   static CodecRegistry get defaultInstance => _defaultInstance;
-  static CodecRegistry _defaultInstance = CodecRegistry._();
+  static final CodecRegistry _defaultInstance = CodecRegistry._();
 
-  Map<String, Codec> _primaryTypeCodecs = {};
-  Map<String, Map<String, Codec>> _fullySpecificedCodecs = {};
-  Map<String, bool> _primaryTypeCompressionMap = {};
-  Map<String, Map<String, bool>> _fullySpecifiedCompressionMap = {};
-  Map<String, Map<String, String?>> _defaultCharsetMap = {};
+  final Map<String, Codec> _primaryTypeCodecs = {};
+  final Map<String, Map<String, Codec>> _fullySpecificedCodecs = {};
+  final Map<String, bool> _primaryTypeCompressionMap = {};
+  final Map<String, Map<String, bool>> _fullySpecifiedCompressionMap = {};
+  final Map<String, Map<String, String?>> _defaultCharsetMap = {};
 
   /// Adds a custom [codec] for [contentType].
   ///
@@ -71,18 +71,18 @@ class CodecRegistry {
       _primaryTypeCodecs[contentType.primaryType] = codec;
       _primaryTypeCompressionMap[contentType.primaryType] = allowCompression;
     } else {
-      var innerCodecs = _fullySpecificedCodecs[contentType.primaryType] ?? {};
+      final innerCodecs = _fullySpecificedCodecs[contentType.primaryType] ?? {};
       innerCodecs[contentType.subType] = codec;
       _fullySpecificedCodecs[contentType.primaryType] = innerCodecs;
 
-      var innerCompress =
+      final innerCompress =
           _fullySpecifiedCompressionMap[contentType.primaryType] ?? {};
       innerCompress[contentType.subType] = allowCompression;
       _fullySpecifiedCompressionMap[contentType.primaryType] = innerCompress;
     }
 
     if (contentType.charset != null) {
-      var innerCodecs = _defaultCharsetMap[contentType.primaryType] ?? {};
+      final innerCodecs = _defaultCharsetMap[contentType.primaryType] ?? {};
       innerCodecs[contentType.subType] = contentType.charset!;
       _defaultCharsetMap[contentType.primaryType] = innerCodecs;
     }
@@ -97,7 +97,7 @@ class CodecRegistry {
     if (contentType.subType == "*") {
       _primaryTypeCompressionMap[contentType.primaryType] = allowed;
     } else {
-      var innerCompress =
+      final innerCompress =
           _fullySpecifiedCompressionMap[contentType.primaryType] ?? {};
       innerCompress[contentType.subType] = allowed;
       _fullySpecifiedCompressionMap[contentType.primaryType] = innerCompress;
@@ -108,7 +108,7 @@ class CodecRegistry {
   ///
   /// See also [setAllowsCompression].
   bool isContentTypeCompressable(ContentType? contentType) {
-    var subtypeCompress =
+    final subtypeCompress =
         _fullySpecifiedCompressionMap[contentType?.primaryType];
     if (subtypeCompress != null) {
       if (subtypeCompress.containsKey(contentType?.subType)) {
@@ -130,7 +130,7 @@ class CodecRegistry {
     Codec? contentCodec;
     Codec<String, List<int>>? charsetCodec;
 
-    var subtypes = _fullySpecificedCodecs[contentType.primaryType];
+    final subtypes = _fullySpecificedCodecs[contentType.primaryType];
     if (subtypes != null) {
       contentCodec = subtypes[contentType.subType];
     }
@@ -163,7 +163,7 @@ class CodecRegistry {
   }
 
   Codec<String, List<int>> _codecForCharset(String? charset) {
-    var encoding = Encoding.getByName(charset);
+    final encoding = Encoding.getByName(charset);
     if (encoding == null) {
       throw Response(415, null, {"error": "invalid charset '$charset'"});
     }
@@ -172,12 +172,12 @@ class CodecRegistry {
   }
 
   Codec<String, List<int>>? _defaultCharsetCodecForType(ContentType type) {
-    var inner = _defaultCharsetMap[type.primaryType];
+    final inner = _defaultCharsetMap[type.primaryType];
     if (inner == null) {
       return null;
     }
 
-    var encodingName = inner[type.subType] ?? inner["*"];
+    final encodingName = inner[type.subType] ?? inner["*"];
     if (encodingName == null) {
       return null;
     }

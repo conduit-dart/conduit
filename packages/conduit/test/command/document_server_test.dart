@@ -44,7 +44,7 @@ void main() {
             .existsSync(),
         true);
 
-    var response = await http.get(Uri.parse("http://localhost:8111"));
+    final response = await http.get(Uri.parse("http://localhost:8111"));
     expect(response.body, contains("redoc spec-url='openapi.json'"));
 
     // ignore: unawaited_futures

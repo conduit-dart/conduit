@@ -45,7 +45,7 @@ class BuildManager {
 
     final mainFunctions = parsedUnit.unit.declarations
         .whereType<FunctionDeclaration>()
-        .where((f) => f.name == "main")
+        .where((f) => f.name.value() == "main")
         .toList();
 
     for (final f in mainFunctions.reversed) {

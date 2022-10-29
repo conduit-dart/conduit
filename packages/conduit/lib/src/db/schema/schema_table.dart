@@ -19,7 +19,7 @@ class SchemaTable {
   SchemaTable.fromEntity(ManagedEntity entity) {
     name = entity.tableName;
 
-    var validProperties = entity.properties.values
+    final validProperties = entity.properties.values
         .where((p) =>
             (p is ManagedAttributeDescription && !p.isTransient) ||
             (p is ManagedRelationshipDescription &&
@@ -153,7 +153,7 @@ class SchemaTable {
           "Column ${existingColumn.name} does not exist on $name.");
     }
 
-    var index = _columnStorage!.indexOf(existingColumn);
+    final index = _columnStorage!.indexOf(existingColumn);
     _columnStorage![index] = newColumn;
     newColumn.table = this;
     existingColumn.table = null;
@@ -164,7 +164,7 @@ class SchemaTable {
   /// Case-insensitively compares names of [columns] with [name]. Returns null if no column exists
   /// with [name].
   SchemaColumn? columnForName(String name) {
-    var lowercaseName = name.toLowerCase();
+    final lowercaseName = name.toLowerCase();
     return columns
         .firstWhereOrNull((col) => col.name.toLowerCase() == lowercaseName);
   }
@@ -195,7 +195,7 @@ class SchemaTableDifference {
         if (actualColumn == null) {
           _differingColumns.add(SchemaColumnDifference(expectedColumn, null));
         } else {
-          var diff = expectedColumn.differenceFrom(actualColumn);
+          final diff = expectedColumn.differenceFrom(actualColumn);
           if (diff.hasDifferences) {
             _differingColumns.add(diff);
           }
@@ -248,7 +248,8 @@ class SchemaTableDifference {
       ];
     }
 
-    var diffs = _differingColumns.expand((diff) => diff.errorMessages).toList();
+    final diffs =
+        _differingColumns.expand((diff) => diff.errorMessages).toList();
     diffs.addAll(uniqueSetDifference?.errorMessages ?? []);
 
     return diffs;
@@ -280,7 +281,7 @@ class SchemaTableDifference {
         .toList();
   }
 
-  List<SchemaColumnDifference> _differingColumns = [];
+  final List<SchemaColumnDifference> _differingColumns = [];
 }
 
 /// Difference between two [SchemaTable.uniqueColumnSet]s.
@@ -323,8 +324,8 @@ class SchemaTableUniqueSetDifference {
     }
 
     if (hasDifferences) {
-      var expectedColumns = expectedColumnNames.map((c) => "'$c'").join(", ");
-      var actualColumns = actualColumnNames.map((c) => "'$c'").join(", ");
+      final expectedColumns = expectedColumnNames.map((c) => "'$c'").join(", ");
+      final actualColumns = actualColumnNames.map((c) => "'$c'").join(", ");
 
       return [
         "Multi-column unique constraint on table '$_tableName' "

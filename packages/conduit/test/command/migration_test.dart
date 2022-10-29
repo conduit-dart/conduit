@@ -27,7 +27,7 @@ void main() {
         () async {
       // Note that the permutations of operations are covered in different tests, this is just to ensure that
       // executing a migration/upgrade all work together.
-      var schema = Schema([
+      final schema = Schema([
         SchemaTable("tableToKeep", [
           SchemaColumn("columnToEdit", ManagedPropertyType.string),
           SchemaColumn("columnToDelete", ManagedPropertyType.integer)
@@ -38,13 +38,13 @@ void main() {
             [SchemaColumn("whocares", ManagedPropertyType.integer)])
       ]);
 
-      var initialBuilder =
+      final initialBuilder =
           SchemaBuilder.toSchema(store, schema, isTemporary: true);
       for (var cmd in initialBuilder.commands) {
         await store.execute(cmd);
       }
 
-      var mig = Migration1();
+      final mig = Migration1();
       mig.version = 1;
       // ignore: unnecessary_cast
       final outSchema = await (store.upgrade(schema, [mig], temporary: true)
@@ -68,7 +68,7 @@ void main() {
 
       expect(outSchema!.differenceFrom(schema).hasDifferences, false);
 
-      var insertResults = await store.execute(
+      final insertResults = await store.execute(
           "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn");
       expect(insertResults, [
         ['1', 2]
@@ -110,8 +110,8 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
       addFiles(["foobar.txt", ".DS_Store", "a.dart", "migration.dart"]);
       expect(migrationsDirectory.listSync().length, 6);
 
-      var mock = MockMigratable(temporaryDirectory);
-      var files = mock.projectMigrations;
+      final mock = MockMigratable(temporaryDirectory);
+      final files = mock.projectMigrations;
       expect(files.length, 1);
       expect(files.first.uri!.pathSegments.last, "00000001.migration.dart");
     });
@@ -126,8 +126,8 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
       ]);
       expect(migrationsDirectory.listSync().length, 5);
 
-      var mock = MockMigratable(temporaryDirectory);
-      var files = mock.projectMigrations;
+      final mock = MockMigratable(temporaryDirectory);
+      final files = mock.projectMigrations;
       expect(files.length, 5);
       expect(files[0].uri!.pathSegments.last, "00000001.migration.dart");
       expect(files[1].uri!.pathSegments.last, "2.migration.dart");

@@ -73,7 +73,7 @@ class Router extends Controller {
   ///         /files/*
   ///
   Linkable route(String pattern) {
-    var routeController = _RouteController(
+    final routeController = _RouteController(
         RouteSpecification.specificationsForRoutePattern(pattern));
     _routeControllers.add(routeController);
     return routeController;
@@ -167,7 +167,7 @@ class Router extends Controller {
     if (_unmatchedController != null) {
       return _unmatchedController!(req);
     }
-    var response = Response.notFound();
+    final response = Response.notFound();
     if (req.acceptsContentType(ContentType.html)) {
       response
         ..body = "<html><h3>404 Not Found</h3></html>"

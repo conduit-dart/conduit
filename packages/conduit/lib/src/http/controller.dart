@@ -260,8 +260,8 @@ abstract class Controller
 
   void applyCORSHeadersIfNecessary(Request req, Response resp) {
     if (req.isCORSRequest && !req.isPreflightRequest) {
-      var lastPolicyController = _lastController;
-      var p = lastPolicyController.policy;
+      final lastPolicyController = _lastController;
+      final p = lastPolicyController.policy;
       if (p != null) {
         if (p.isRequestOriginAllowed(req.raw)) {
           resp.headers.addAll(p.headersForRequest(req));
@@ -291,7 +291,7 @@ abstract class Controller
   Future? _handlePreflightRequest(Request req) async {
     Controller controllerToDictatePolicy;
     try {
-      var lastControllerInChain = _lastController;
+      final lastControllerInChain = _lastController;
       if (lastControllerInChain != this) {
         controllerToDictatePolicy = lastControllerInChain;
       } else {

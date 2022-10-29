@@ -77,7 +77,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// The string key is the name of the property, case-sensitive. Values will be instances of either [ManagedAttributeDescription]
   /// or [ManagedRelationshipDescription]. This is the concatenation of [attributes] and [relationships].
   Map<String?, ManagedPropertyDescription?> get properties {
-    var all = Map<String?, ManagedPropertyDescription?>.from(attributes);
+    final all = Map<String?, ManagedPropertyDescription?>.from(attributes);
     if (relationships != null) {
       all.addAll(relationships!);
     }
@@ -153,7 +153,7 @@ class ManagedEntity implements APIComponentDocumenter {
     return _tableName;
   }
 
-  String? _tableName;
+  final String? _tableName;
   List<String>? _defaultProperties;
 
   /// Derived from this' [tableName].
@@ -203,7 +203,7 @@ class ManagedEntity implements APIComponentDocumenter {
     }
 
     final propertyName = elements.first!.name;
-    var attribute = attributes[propertyName];
+    final attribute = attributes[propertyName];
     if (attribute == null) {
       if (relationships!.containsKey(propertyName)) {
         throw ArgumentError(
@@ -246,7 +246,7 @@ class ManagedEntity implements APIComponentDocumenter {
     }
 
     final propertyName = elements.first!.name;
-    var desc = relationships![propertyName];
+    final desc = relationships![propertyName];
     if (desc == null) {
       throw ArgumentError(
           "Invalid property selection. Relationship named '$propertyName' on table '$tableName' is not a relationship.");
@@ -277,7 +277,7 @@ class ManagedEntity implements APIComponentDocumenter {
   List<KeyPath> identifyProperties<T, U extends ManagedObject>(
       T propertiesIdentifier(U x)) {
     final tracker = ManagedAccessTrackingBacking();
-    var obj = instanceOf<U>(backing: tracker);
+    final obj = instanceOf<U>(backing: tracker);
     propertiesIdentifier(obj);
 
     return tracker.keyPaths;

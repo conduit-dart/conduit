@@ -17,16 +17,22 @@ void main() {
 
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
-    await Process.run(cmd, ["pub", "get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("application/")
-            .toFilePath(windows: Platform.isWindows),
-        runInShell: true);
-    await Process.run(cmd, ["pub", "get", "--offline"],
-        workingDirectory: testPackagesUri
-            .resolve("dependency/")
-            .toFilePath(windows: Platform.isWindows),
-        runInShell: true);
+    await Process.run(
+      cmd,
+      ["pub", "get", "--offline"],
+      workingDirectory: testPackagesUri
+          .resolve("application/")
+          .toFilePath(windows: Platform.isWindows),
+      runInShell: true,
+    );
+    await Process.run(
+      cmd,
+      ["pub", "get", "--offline"],
+      workingDirectory: testPackagesUri
+          .resolve("dependency/")
+          .toFilePath(windows: Platform.isWindows),
+      runInShell: true,
+    );
 
     final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");
@@ -46,10 +52,12 @@ void main() {
   });
 
   test("Non-compiled version returns mirror runtimes", () async {
-    final output = await dart(Directory.current.uri
-        .resolve("../")
-        .resolve("runtime_test_packages/")
-        .resolve("application/"));
+    final output = await dart(
+      Directory.current.uri
+          .resolve("../")
+          .resolve("runtime_test_packages/")
+          .resolve("application/"),
+    );
     expect(json.decode(output), {
       "Consumer": "mirrored",
       "ConsumerSubclass": "mirrored",
@@ -61,11 +69,12 @@ void main() {
       "Compiled version of application returns source generated runtimes and can be AOT compiled",
       () async {
     final output = await runExecutable(
-        tmp.resolve("app.aot"),
-        Directory.current.uri
-            .resolve("../")
-            .resolve("runtime_test_packages/")
-            .resolve("application/"));
+      tmp.resolve("app.aot"),
+      Directory.current.uri
+          .resolve("../")
+          .resolve("runtime_test_packages/")
+          .resolve("application/"),
+    );
     expect(json.decode(output), {
       "Consumer": "generated",
       "ConsumerSubclass": "generated",
@@ -86,9 +95,10 @@ Future<String> dart(Uri workingDir) async {
 
 Future<String> runExecutable(Uri buildUri, Uri workingDir) async {
   final result = await Process.run(
-      buildUri.toFilePath(windows: Platform.isWindows), [],
-      workingDirectory: workingDir.toFilePath(windows: Platform.isWindows),
-      runInShell: true);
-  print(result.stderr.toString());
+    buildUri.toFilePath(windows: Platform.isWindows),
+    [],
+    workingDirectory: workingDir.toFilePath(windows: Platform.isWindows),
+    runInShell: true,
+  );
   return result.stdout.toString();
 }

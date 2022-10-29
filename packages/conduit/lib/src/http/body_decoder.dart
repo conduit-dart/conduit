@@ -134,8 +134,6 @@ abstract class BodyDecoder {
   }
 
   Future<List<int>> _readBytes(Stream<List<int>> stream) async {
-    var bytes = await stream.fold(
-        BytesBuilder(), (BytesBuilder builder, data) => builder..add(data));
-    return bytes.takeBytes();
+    return (await stream.toList()).expand((e) => e).toList();
   }
 }

@@ -163,7 +163,7 @@ class Response implements RequestOrResponse {
       return _contentType;
     }
 
-    var inHeaders = _headers[HttpHeaders.contentTypeHeader];
+    final inHeaders = _headers[HttpHeaders.contentTypeHeader];
     if (inHeaders == null) {
       return defaultContentType;
     }
@@ -203,7 +203,7 @@ class Response implements RequestOrResponse {
 
   static Map<String, dynamic> _headersWith(
       Map<String, dynamic>? inputHeaders, Map<String, dynamic> otherHeaders) {
-    var m = LowercaseMap.fromMap(inputHeaders ?? {});
+    final m = LowercaseMap.fromMap(inputHeaders ?? {});
     m.addAll(otherHeaders);
     return m;
   }

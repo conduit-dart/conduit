@@ -49,46 +49,46 @@ void main() {
   // Success allows
 
   test("Single element equal scopes match", () {
-    var scope = AuthScope("user");
+    final scope = AuthScope("user");
     expect(scope.allows("user"), true);
     expect(scope.isExactly("user"), true);
   });
 
   test("Single element with modifier equal scopes match", () {
-    var scope = AuthScope("user.readonly");
+    final scope = AuthScope("user.readonly");
     expect(scope.allows("user.readonly"), true);
     expect(scope.isExactly("user.readonly"), true);
   });
 
   test("Single element scope with modifier allows scope without", () {
-    var scope = AuthScope("user.readonly");
+    final scope = AuthScope("user.readonly");
     expect(scope.allows("user"), true);
   });
 
   test("Multiple element equal scopes match", () {
-    var scope = AuthScope("user:location:equipment");
+    final scope = AuthScope("user:location:equipment");
     expect(scope.allows("user:location:equipment"), true);
     expect(scope.isExactly("user:location:equipment"), true);
   });
 
   test("Multiple element equal scopes match, with modifier", () {
-    var scope = AuthScope("user:location:equipment.readonly");
+    final scope = AuthScope("user:location:equipment.readonly");
     expect(scope.allows("user:location:equipment.readonly"), true);
     expect(scope.isExactly("user:location:equipment.readonly"), true);
   });
 
   test("Multiple element scope with modifier allows scope without", () {
-    var scope = AuthScope("user:location:equipment.readonly");
+    final scope = AuthScope("user:location:equipment.readonly");
     expect(scope.allows("user:location:equipment"), true);
   });
 
   test("Multiple element scope allows less restrictive scope", () {
-    var scope = AuthScope("user:location:equipment");
+    final scope = AuthScope("user:location:equipment");
     expect(scope.allows("user:location"), true);
   });
 
   test("Very restrictive scope allows root scope", () {
-    var scope = AuthScope("user:location:equipment:blah:de:blah");
+    final scope = AuthScope("user:location:equipment:blah:de:blah");
     expect(scope.allows("user"), true);
     expect(scope.allows("user:location"), true);
     expect(scope.allows("user:location:equipment"), true);
@@ -96,62 +96,62 @@ void main() {
 
   // Failures
   test("Single element scopes with different roots fail", () {
-    var scope = AuthScope("user");
+    final scope = AuthScope("user");
     expect(scope.allows("notuser"), false);
   });
 
   test("Single element scopes with different modifiers fail", () {
-    var scope = AuthScope("user.readonly");
+    final scope = AuthScope("user.readonly");
     expect(scope.allows("user.actions"), false);
   });
 
   test("Single element scope without modifier does not allow one with", () {
-    var scope = AuthScope("user");
+    final scope = AuthScope("user");
     expect(scope.allows("user.readonly"), false);
   });
 
   test(
       "Single element scope does not allow more restrictive multiple element scope",
       () {
-    var scope = AuthScope("user");
+    final scope = AuthScope("user");
     expect(scope.allows("user:location"), false);
   });
 
   test(
       "Single element scope with modifier does not allow more restrictive multiple element scope even though it has same modifier",
       () {
-    var scope = AuthScope("user.readonly");
+    final scope = AuthScope("user.readonly");
     expect(scope.allows("user:location.readonly"), false);
   });
 
   test(
       "Multiple element scope does not allow multiple element, even if root is same",
       () {
-    var scope = AuthScope("user:location");
+    final scope = AuthScope("user:location");
     expect(scope.allows("user:posts"), false);
   });
 
   test(
       "Multiple element scope does not allow modifier restricted, even though elements are the same",
       () {
-    var scope = AuthScope("user:location");
+    final scope = AuthScope("user:location");
     expect(scope.allows("user:location.readonly"), false);
   });
 
   test(
       "Multiple element scope does not allow different modifier, even though elements are the same",
       () {
-    var scope = AuthScope("user:location.something");
+    final scope = AuthScope("user:location.something");
     expect(scope.allows("user:location.readonly"), false);
   });
 
   test("Multiple element scope that does not allow more restrictive scope", () {
-    var scope = AuthScope("user:location");
+    final scope = AuthScope("user:location");
     expect(scope.allows("user:location:equipment"), false);
   });
 
   test("Can contain all valid characters", () {
-    var scope = AuthScope(
+    final scope = AuthScope(
         "ABC:DEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzz0123456789!#\$%&'`()*+,./;<=>?@[]^_{|}-");
     expect(
         scope.allows(
@@ -162,14 +162,14 @@ void main() {
 
   test("Cannot contain invalid characters", () {
     try {
-      var _ = AuthScope("abdef\"xz");
+      final _ = AuthScope("abdef\"xz");
       expect(true, false);
     } on FormatException catch (e) {
       expect(e.toString(), contains("Invalid authorization scope"));
     }
 
     try {
-      var _ = AuthScope("abdef\\xz");
+      final _ = AuthScope("abdef\\xz");
       expect(true, false);
     } on FormatException catch (e) {
       expect(e.toString(), contains("Invalid authorization scope"));
@@ -177,7 +177,7 @@ void main() {
   });
 
   test("Verify isSubsetOrEqualTo", () {
-    var scope = AuthScope("users:foo");
+    final scope = AuthScope("users:foo");
     expect(scope.isSubsetOrEqualTo(AuthScope("users")), true);
     expect(scope.isSubsetOrEqualTo(AuthScope("users:foo")), true);
     expect(scope.isSubsetOrEqualTo(AuthScope("users:foo.readonly")), false);

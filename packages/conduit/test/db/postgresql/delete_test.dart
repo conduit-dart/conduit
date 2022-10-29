@@ -15,24 +15,24 @@ void main() {
     context =
         await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..email = "a@a.com"
       ..name = "joe";
     var req = Query<TestModel>(context!)..values = m;
 
-    var inserted = await req.insert();
+    final inserted = await req.insert();
     expect(inserted.id, greaterThan(0));
 
     req = Query<TestModel>(context!)
       ..predicate = QueryPredicate("id = @id", {"id": inserted.id});
 
-    var count = await req.delete();
+    final count = await req.delete();
     expect(count, 1);
 
     req = Query<TestModel>(context!)
       ..predicate = QueryPredicate("id = @id", {"id": inserted.id});
 
-    var result = await req.fetch();
+    final result = await req.fetch();
 
     expect(result.length, 0);
   });
@@ -43,11 +43,11 @@ void main() {
         await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel()
+      final m = TestModel()
         ..email = "$i@a.com"
         ..name = "joe";
 
-      var req = Query<TestModel>(context!)..values = m;
+      final req = Query<TestModel>(context!)..values = m;
 
       await req.insert();
     }
@@ -58,7 +58,7 @@ void main() {
 
     req = Query<TestModel>(context!)
       ..predicate = QueryPredicate("id = @id", {"id": 1});
-    var count = await req.delete();
+    final count = await req.delete();
     expect(count, 1);
 
     req = Query<TestModel>(context!);
@@ -72,11 +72,11 @@ void main() {
         await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel()
+      final m = TestModel()
         ..email = "$i@a.com"
         ..name = "joe";
 
-      var req = Query<TestModel>(context!)..values = m;
+      final req = Query<TestModel>(context!)..values = m;
 
       await req.insert();
     }
@@ -86,7 +86,7 @@ void main() {
     expect(result.length, 10);
 
     req = Query<TestModel>(context!)..canModifyAllInstances = true;
-    var count = await req.delete();
+    final count = await req.delete();
     expect(count, 10);
 
     req = Query<TestModel>(context!);
@@ -100,11 +100,11 @@ void main() {
         await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
     for (int i = 0; i < 10; i++) {
-      var m = TestModel()
+      final m = TestModel()
         ..email = "$i@a.com"
         ..name = "joe";
 
-      var req = Query<TestModel>(context!)..values = m;
+      final req = Query<TestModel>(context!)..values = m;
 
       await req.insert();
     }
@@ -129,16 +129,16 @@ void main() {
     context =
         await PostgresTestConfig().contextWithModels([TestModel, RefModel]);
 
-    var testModelObject = TestModel()..name = "a";
+    final testModelObject = TestModel()..name = "a";
     var testModelReq = Query<TestModel>(context!)..values = testModelObject;
-    var testObj = await testModelReq.insert();
+    final testObj = await testModelReq.insert();
 
-    var refModelObject = RefModel()..test = testObj;
+    final refModelObject = RefModel()..test = testObj;
     var refModelReq = Query<RefModel>(context!)..values = refModelObject;
     var refObj = await refModelReq.insert();
 
     testModelReq = Query<TestModel>(context!)..canModifyAllInstances = true;
-    var count = await testModelReq.delete();
+    final count = await testModelReq.delete();
     expect(count, 1);
 
     refModelReq = Query<RefModel>(context!)
@@ -151,12 +151,12 @@ void main() {
     context = await PostgresTestConfig()
         .contextWithModels([GRestrict, GRestrictInverse]);
 
-    var griObject = GRestrictInverse()..name = "a";
+    final griObject = GRestrictInverse()..name = "a";
     var griReq = Query<GRestrictInverse>(context!)..values = griObject;
-    var testObj = await griReq.insert();
+    final testObj = await griReq.insert();
 
-    var grObject = GRestrict()..test = testObj;
-    var grReq = Query<GRestrict>(context!)..values = grObject;
+    final grObject = GRestrict()..test = testObj;
+    final grReq = Query<GRestrict>(context!)..values = grObject;
     await grReq.insert();
 
     var successful = false;
@@ -175,20 +175,20 @@ void main() {
     context = await PostgresTestConfig()
         .contextWithModels([GCascade, GCascadeInverse]);
 
-    var obj = GCascadeInverse()..name = "a";
+    final obj = GCascadeInverse()..name = "a";
     var req = Query<GCascadeInverse>(context!)..values = obj;
-    var testObj = await req.insert();
+    final testObj = await req.insert();
 
-    var cascadeObj = GCascade()..test = testObj;
+    final cascadeObj = GCascade()..test = testObj;
     var cascadeReq = Query<GCascade>(context!)..values = cascadeObj;
     await cascadeReq.insert();
 
     req = Query<GCascadeInverse>(context!)..canModifyAllInstances = true;
-    var count = await req.delete();
+    final count = await req.delete();
     expect(count, 1);
 
     cascadeReq = Query<GCascade>(context!);
-    var res = await cascadeReq.fetch();
+    final res = await cascadeReq.fetch();
     expect(res.length, 0);
   });
 }

@@ -15,7 +15,7 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var q = Query<TestModel>(context!)..values.id = 1;
+    final q = Query<TestModel>(context!)..values.id = 1;
 
     expect(q.values.id, 1);
   });
@@ -43,9 +43,9 @@ void main() {
     test("fails when no value is set for a required field.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()..emailAddress = "required@a.com";
+      final m = TestModel()..emailAddress = "required@a.com";
 
-      var insertReq = Query<TestModel>(context!)..values = m;
+      final insertReq = Query<TestModel>(context!)..values = m;
 
       try {
         await insertReq.insert();
@@ -58,7 +58,7 @@ void main() {
     test("fails when `null` is set as a value for a required field.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()
+      final m = TestModel()
         ..name = null
         ..emailAddress = "dup@a.com";
 
@@ -75,7 +75,7 @@ void main() {
     test("fails when a non-existent value is set to the `valueMap`.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var insertReq = Query<TestModel>(context!)
+      final insertReq = Query<TestModel>(context!)
         ..valueMap = {
           "name": "bob",
           "emailAddress": "bk@a.com",
@@ -95,14 +95,14 @@ void main() {
         () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()
+      final m = TestModel()
         ..name = "bob"
         ..emailAddress = "dup@a.com";
 
-      var insertReq = Query<TestModel>(context!)..values = m;
+      final insertReq = Query<TestModel>(context!)..values = m;
       await insertReq.insert();
 
-      var insertReqDup = Query<TestModel>(context!)..values = m;
+      final insertReqDup = Query<TestModel>(context!)..values = m;
 
       try {
         await insertReqDup.insert();
@@ -112,9 +112,9 @@ void main() {
       }
 
       m.emailAddress = "dup1@a.com";
-      var insertReqFollowup = Query<TestModel>(context!)..values = m;
+      final insertReqFollowup = Query<TestModel>(context!)..values = m;
 
-      var result = await insertReqFollowup.insert();
+      final result = await insertReqFollowup.insert();
 
       expect(result.emailAddress, "dup1@a.com");
     });
@@ -150,13 +150,13 @@ void main() {
     test("works given an object and returns is as a result.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()
+      final m = TestModel()
         ..name = "bob"
         ..emailAddress = "1@a.com";
 
-      var insertReq = Query<TestModel>(context!)..values = m;
+      final insertReq = Query<TestModel>(context!)..values = m;
 
-      var result = await insertReq.insert();
+      final result = await insertReq.insert();
 
       expect(result, isA<TestModel>());
       expect(result.id, greaterThan(0));
@@ -167,19 +167,19 @@ void main() {
     test("works given an object into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()
+      final m = TestModel()
         ..name = "bob"
         ..emailAddress = "2@a.com";
 
-      var insertReq = Query<TestModel>(context!)..values = m;
+      final insertReq = Query<TestModel>(context!)..values = m;
 
       await insertReq.insert();
 
-      var readReq = Query<TestModel>(context!)
+      final readReq = Query<TestModel>(context!)
         ..predicate =
             QueryPredicate("emailAddress = @email", {"email": "2@a.com"});
 
-      var checkInsert = await readReq.fetchOne();
+      final checkInsert = await readReq.fetchOne();
       expect(checkInsert, isNotNull);
       expect(checkInsert!.name, "bob");
     });
@@ -214,13 +214,13 @@ void main() {
           await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
       var u = GenUser()..name = "Joe";
-      var q = Query<GenUser>(context!)..values = u;
+      final q = Query<GenUser>(context!)..values = u;
       u = await q.insert();
 
       var p = GenPost()
         ..owner = u
         ..text = "1";
-      var pq = Query<GenPost>(context!)..values = p;
+      final pq = Query<GenPost>(context!)..values = p;
       p = await pq.insert();
 
       expect(p.id, greaterThan(0));
@@ -231,11 +231,11 @@ void main() {
         () async {
       context = await PostgresTestConfig().contextWithModels([GenTime]);
 
-      var t = GenTime()..text = "hey";
+      final t = GenTime()..text = "hey";
 
-      var q = Query<GenTime>(context!)..values = t;
+      final q = Query<GenTime>(context!)..values = t;
 
-      var result = await q.insert();
+      final result = await q.insert();
 
       expect(result.dateCreated, isA<DateTime>());
       expect(result.dateCreated!.difference(DateTime.now()).inMilliseconds,
@@ -245,14 +245,14 @@ void main() {
     test("works when timestamp is set manually.", () async {
       context = await PostgresTestConfig().contextWithModels([GenTime]);
 
-      var dt = DateTime.now();
-      var t = GenTime()
+      final dt = DateTime.now();
+      final t = GenTime()
         ..dateCreated = dt
         ..text = "hey";
 
-      var q = Query<GenTime>(context!)..values = t;
+      final q = Query<GenTime>(context!)..values = t;
 
-      var result = await q.insert();
+      final result = await q.insert();
 
       expect(result.dateCreated, isA<DateTime>());
       expect(result.dateCreated!.difference(dt).inMilliseconds, 0);
@@ -261,10 +261,10 @@ void main() {
     test("works properly given a model with transient value.", () async {
       context = await PostgresTestConfig().contextWithModels([TransientModel]);
 
-      var t = TransientModel()..value = "foo";
+      final t = TransientModel()..value = "foo";
 
-      var q = Query<TransientModel>(context!)..values = t;
-      var result = await q.insert();
+      final q = Query<TransientModel>(context!)..values = t;
+      final result = await q.insert();
       expect(result.transientValue, isNull);
     });
 
@@ -273,31 +273,31 @@ void main() {
       context =
           await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
-      var json = {
+      final json = {
         "name": "Bob",
         "posts": [
           {"text": "Post"}
         ]
       };
 
-      var u = GenUser()..readFromMap(json);
+      final u = GenUser()..readFromMap(json);
 
-      var q = Query<GenUser>(context!)..values = u;
+      final q = Query<GenUser>(context!)..values = u;
 
-      var result = await q.insert();
+      final result = await q.insert();
       expect(result.id, greaterThan(0));
       expect(result.name, "Bob");
       expect(result.posts, isNull);
 
-      var pq = Query<GenPost>(context!);
+      final pq = Query<GenPost>(context!);
       expect(await pq.fetch(), hasLength(0));
     });
 
     test("works given an object with no keys.", () async {
       context = await PostgresTestConfig().contextWithModels([BoringObject]);
 
-      var q = Query<BoringObject>(context!);
-      var result = await q.insert();
+      final q = Query<BoringObject>(context!);
+      final result = await q.insert();
       expect(result.id, greaterThan(0));
     });
 
@@ -305,26 +305,27 @@ void main() {
       context = await PostgresTestConfig().contextWithModels([PrivateField]);
 
       await (Query<PrivateField>(context!)..values.public = "abc").insert();
-      var q = Query<PrivateField>(context!);
-      var result = await q.fetch();
+      final q = Query<PrivateField>(context!);
+      final result = await q.fetch();
       expect(result.first.public, "abc");
     });
 
     test("works when an enum is set as a value for enum field.", () async {
       context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
-      var q = Query<EnumObject>(context!)..values.enumValues = EnumValues.efgh;
+      final q = Query<EnumObject>(context!)
+        ..values.enumValues = EnumValues.efgh;
 
-      var result = await q.insert();
+      final result = await q.insert();
       expect(result.enumValues, EnumValues.efgh);
     });
 
     test("works when an enum field is set to `null`.", () async {
       context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
-      var q = Query<EnumObject>(context!)..values.enumValues = null;
+      final q = Query<EnumObject>(context!)..values.enumValues = null;
 
-      var result = await q.insert();
+      final result = await q.insert();
       expect(result.enumValues, isNull);
     });
 
@@ -356,11 +357,11 @@ void main() {
         () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var m = TestModel()
+      final m = TestModel()
         ..name = "bob"
         ..emailAddress = "1@a.com";
 
-      var n = TestModel()
+      final n = TestModel()
         ..name = "jay"
         ..emailAddress = "2@a.com";
 
@@ -384,11 +385,11 @@ void main() {
         () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var goodModel = TestModel()
+      final goodModel = TestModel()
         ..name = "bob"
         ..emailAddress = "1@a.com";
 
-      var badModel = TestModel()
+      final badModel = TestModel()
         ..name = null
         ..emailAddress = "2@a.com";
 
@@ -408,7 +409,7 @@ void main() {
     test("works given an empty list.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var q = Query<TestModel>(context!);
+      final q = Query<TestModel>(context!);
 
       final models = await q.insertMany([]);
       expect(models, isEmpty);
@@ -420,7 +421,7 @@ void main() {
     test("works given a list with one element.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var q = Query<TestModel>(context!);
+      final q = Query<TestModel>(context!);
 
       final models = await q.insertMany([TestModel()..name = "a"]);
       expect(models, hasLength(1));
@@ -434,11 +435,11 @@ void main() {
     test("works given a list with two elements.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var goodModel = TestModel()
+      final goodModel = TestModel()
         ..name = "alice"
         ..emailAddress = "a@a.com";
 
-      var conflicModel = TestModel()
+      final conflicModel = TestModel()
         ..name = "bob"
         ..emailAddress = "b@a.com";
 
@@ -503,11 +504,11 @@ void main() {
         () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var goodModel = TestModel()
+      final goodModel = TestModel()
         ..name = "bob"
         ..emailAddress = "1@a.com";
 
-      var badModel = TestModel()
+      final badModel = TestModel()
         ..name = null
         ..emailAddress = "2@a.com";
 
@@ -527,11 +528,11 @@ void main() {
         "and does not insert any objects into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      var goodModel = TestModel()
+      final goodModel = TestModel()
         ..name = "alice"
         ..emailAddress = "1@a.com";
 
-      var conflicModel = TestModel()
+      final conflicModel = TestModel()
         ..name = "bob"
         ..emailAddress = "1@a.com";
 

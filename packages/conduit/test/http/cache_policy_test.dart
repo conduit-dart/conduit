@@ -16,24 +16,24 @@ void main() {
   });
 
   test("Prevent intermediate caching", () async {
-    var policy = const CachePolicy(preventIntermediateProxyCaching: true);
+    const policy = CachePolicy(preventIntermediateProxyCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    var result = await http.get(Uri.parse("http://localhost:8888/"));
+    final result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "private");
   });
 
   test("Prevent caching altogether", () async {
-    var policy = const CachePolicy(preventCaching: true);
+    const policy = CachePolicy(preventCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    var result = await http.get(Uri.parse("http://localhost:8888/"));
+    final result = await http.get(Uri.parse("http://localhost:8888/"));
     expect(result.headers["cache-control"], "no-cache, no-store");
   });
 }
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
   server.map((req) => Request(req)).listen((req) async {
-    var next = PassthruController();
+    final next = PassthruController();
     next.linkFunction((req) async {
       return response;
     });

@@ -101,7 +101,7 @@ class TestToken implements AuthToken, AuthCode {
 
   @override
   Map<String, dynamic> asMap() {
-    var map = {
+    final map = {
       "access_token": accessToken,
       "token_type": type,
       "expires_in":
@@ -130,8 +130,8 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   void createUsers(int count) {
     for (int i = 0; i < count; i++) {
-      var salt = AuthUtility.generateRandomSalt();
-      var u = TestUser()
+      final salt = AuthUtility.generateRandomSalt();
+      final u = TestUser()
         ..id = i + 1
         ..username = "bob+$i@stablekernel.com"
         ..salt = salt
@@ -143,7 +143,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   }
 
   void reset() {
-    var salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+    const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
     clients = {
       "com.stablekernel.app1": AuthClient("com.stablekernel.app1",
           AuthUtility.generatePasswordHash("kilimanjaro", salt), salt),
@@ -228,9 +228,9 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   FutureOr addToken(AuthServer server, AuthToken token,
       {AuthCode? issuedFrom}) {
     if (issuedFrom != null) {
-      var existingIssued =
+      final existingIssued =
           tokens.firstWhereOrNull((t) => t.code == issuedFrom.code);
-      var replacement = TestToken.from(token);
+      final replacement = TestToken.from(token);
       replacement.code = issuedFrom.code;
       replacement.scopes = issuedFrom.requestedScopes;
 
@@ -250,10 +250,10 @@ class InMemoryAuthStorage extends AuthServerDelegate {
       String? newAccessToken,
       DateTime? newIssueDate,
       DateTime? newExpirationDate) {
-    var existing =
+    final existing =
         tokens.firstWhereOrNull((e) => e.accessToken == oldAccessToken);
     if (existing != null) {
-      var replacement = TestToken.from(existing)
+      final replacement = TestToken.from(existing)
         ..expirationDate = newExpirationDate
         ..issueDate = newIssueDate
         ..accessToken = newAccessToken
@@ -275,7 +275,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   @override
   FutureOr<AuthCode>? getCode(AuthServer server, String code) {
-    var existing = tokens.firstWhereOrNull((t) => t.code == code);
+    final existing = tokens.firstWhereOrNull((t) => t.code == code);
     if (existing == null) {
       return null;
     }

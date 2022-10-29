@@ -32,7 +32,7 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
     try {
       Schema? outputSchema = inputSchema;
       for (var source in sources) {
-        Migration instance = instanceOf(
+        final Migration instance = instanceOf(
           source.name!,
           positionalArguments: const [],
           namedArguments: const <Symbol, dynamic>{},

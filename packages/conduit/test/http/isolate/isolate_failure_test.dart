@@ -12,7 +12,7 @@ void main() {
     test(
         "Application start fails and logs appropriate message if request stream doesn't open",
         () async {
-      var crashingApp = Application<CrashChannel>();
+      final crashingApp = Application<CrashChannel>();
 
       try {
         crashingApp.options.context = {"crashIn": "addRoutes"};
@@ -32,7 +32,7 @@ void main() {
 
       crashingApp.options.context = {"crashIn": "dontCrash"};
       await crashingApp.start(consoleLogging: true);
-      var response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });
@@ -40,10 +40,10 @@ void main() {
     test(
         "Application that fails to open because port is bound fails gracefully",
         () async {
-      var server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
+      final server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
       server.listen((req) {});
 
-      var conflictingApp = Application<TestChannel>();
+      final conflictingApp = Application<TestChannel>();
       conflictingApp.options.port = 8888;
 
       try {
@@ -58,7 +58,7 @@ void main() {
 
     test("Isolate timeout kills application when first isolate fails",
         () async {
-      var timeoutApp = Application<TimeoutChannel>()
+      final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
         ..options.context = {"timeout1": 10};
 
@@ -76,7 +76,7 @@ void main() {
     test(
         "Isolate timeout kills application when first isolate succeeds, but next fails",
         () async {
-      var timeoutApp = Application<TimeoutChannel>()
+      final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
         ..options.context = {"timeout2": 10};
 
@@ -109,7 +109,7 @@ class TimeoutChannel extends ApplicationChannel {
       return;
     }
 
-    var completer = Completer();
+    final completer = Completer();
     var elapsed = 0;
     timer = Timer.periodic(const Duration(milliseconds: 500), (t) {
       elapsed += 500;
@@ -172,7 +172,7 @@ class TestChannel extends ApplicationChannel {
     router.route("/t").linkFunction((req) async => Response.ok("t_ok"));
     router.route("/r").linkFunction((req) async => Response.ok("r_ok"));
     router.route("startup").linkFunction((r) async {
-      var total = options!.context["startup"].fold(0, (a, b) => a + b);
+      final total = options!.context["startup"].fold(0, (a, b) => a + b);
       return Response.ok("$total");
     });
     return router;

@@ -10,7 +10,7 @@ void main() {
   const urlPrefix = 'ws://localhost:$port';
 
   group("Upgrade to WebSocket", () {
-    var app = Application<TestChannel>();
+    final app = Application<TestChannel>();
     app.options.port = port;
 
     setUpAll(() async {
@@ -30,7 +30,7 @@ void main() {
       socket.sink.add('stop'); //the server will stop the connection
 
       //the TestChannel should respond with hash code of the message
-      var response = await incoming.first;
+      final response = await incoming.first;
       expect(response.toString(), msg.hashCode.toString());
       //incoming is broadcast stream - still listenable after the await
 
@@ -46,7 +46,7 @@ void main() {
       socket.sink.add(msg);
 
       //the TestChannel should respond with hash code of the message
-      var response = await socket.stream.first;
+      final response = await socket.stream.first;
       expect(response.toString(), msg.hashCode.toString());
 
       //the socket stream is now complete. We can't listen for events any more
@@ -71,7 +71,7 @@ void main() {
       final stopHash = 'stop'.hashCode.toString();
       final messages = <String>[for (var x = 0; x < 50; ++x) 'message $x'];
       socket.stream.listen((rx) async {
-        var hash = rx.toString();
+        final hash = rx.toString();
         if (hash == stopHash) {
           await socket.sink.done;
         } else {

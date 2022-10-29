@@ -1,7 +1,7 @@
 import 'dart:mirrors';
 
-import 'package:conduit_runtime/src/context.dart';
 import 'package:conduit_runtime/src/compiler.dart';
+import 'package:conduit_runtime/src/context.dart';
 import 'package:conduit_runtime/src/mirror_coerce.dart';
 
 RuntimeContext instance = MirrorContext._();
@@ -15,7 +15,8 @@ class MirrorContext extends RuntimeContext {
       if (m.keys.any((k) => compiledRuntimes.keys.contains(k))) {
         final matching = m.keys.where((k) => compiledRuntimes.keys.contains(k));
         throw StateError(
-            'Could not compile. Type conflict for the following types: ${matching.join(", ")}.');
+          'Could not compile. Type conflict for the following types: ${matching.join(", ")}.',
+        );
       }
       m.addAll(compiledRuntimes);
     }
@@ -35,7 +36,7 @@ class MirrorContext extends RuntimeContext {
   List<Compiler> get compilers {
     return types
         .where((b) => b.isSubclassOf(reflectClass(Compiler)) && !b.isAbstract)
-        .map((b) => b.newInstance(const Symbol(''), []).reflectee as Compiler)
+        .map((b) => b.newInstance(Symbol.empty, []).reflectee as Compiler)
         .toList();
   }
 

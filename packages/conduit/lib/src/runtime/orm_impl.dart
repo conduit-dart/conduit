@@ -230,7 +230,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         : _getManagedTypeInstantiator(type.elements);
 
     final enumStr = "{${type.enumerationMap.keys.map((k) {
-      var vStr = sourcifyValue(type.enumerationMap[k]);
+      final vStr = sourcifyValue(type.enumerationMap[k]);
       return "'$k': $vStr";
     }).join(",")}}";
 

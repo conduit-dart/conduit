@@ -198,7 +198,7 @@ class _RootJoinObject {
  */
 
 Future<List<RootObject>> populateModelGraph(ManagedContext? ctx) async {
-  var rootObjects = <RootObject>[
+  final rootObjects = <RootObject>[
     RootObject.withCounter() // 1
       ..join = ManagedSet.from([
         RootJoinObject() // 1
@@ -247,27 +247,27 @@ Future<List<RootObject>> populateModelGraph(ManagedContext? ctx) async {
   ];
 
   for (var root in rootObjects) {
-    var q = Query<RootObject>(ctx!)..values = root;
-    var r = await q.insert();
+    final q = Query<RootObject>(ctx!)..values = root;
+    final r = await q.insert();
     root.rid = r.rid;
 
     if (root.child != null) {
-      var child = root.child!;
+      final child = root.child!;
       child.parent = root;
-      var cQ = Query<ChildObject>(ctx)..values = child;
+      final cQ = Query<ChildObject>(ctx)..values = child;
       child.cid = (await cQ.insert()).cid;
 
       if (child.grandChild != null) {
-        var gc = child.grandChild!;
+        final gc = child.grandChild!;
         gc.parent = child;
-        var gq = Query<GrandChildObject>(ctx)..values = gc;
+        final gq = Query<GrandChildObject>(ctx)..values = gc;
         gc.gid = (await gq.insert()).gid;
       }
 
       if (child.grandChildren != null) {
         for (var gc in child.grandChildren!) {
           gc.parents = child;
-          var gq = Query<GrandChildObject>(ctx)..values = gc;
+          final gq = Query<GrandChildObject>(ctx)..values = gc;
           gc.gid = (await gq.insert()).gid;
         }
       }
@@ -276,20 +276,20 @@ Future<List<RootObject>> populateModelGraph(ManagedContext? ctx) async {
     if (root.children != null) {
       for (var child in root.children!) {
         child.parents = root;
-        var cQ = Query<ChildObject>(ctx)..values = child;
+        final cQ = Query<ChildObject>(ctx)..values = child;
         child.cid = (await cQ.insert()).cid;
 
         if (child.grandChild != null) {
-          var gc = child.grandChild!;
+          final gc = child.grandChild!;
           gc.parent = child;
-          var gq = Query<GrandChildObject>(ctx)..values = gc;
+          final gq = Query<GrandChildObject>(ctx)..values = gc;
           gc.gid = (await gq.insert()).gid;
         }
 
         if (child.grandChildren != null) {
           for (var gc in child.grandChildren!) {
             gc.parents = child;
-            var gq = Query<GrandChildObject>(ctx)..values = gc;
+            final gq = Query<GrandChildObject>(ctx)..values = gc;
             gc.gid = (await gq.insert()).gid;
           }
         }
@@ -298,12 +298,12 @@ Future<List<RootObject>> populateModelGraph(ManagedContext? ctx) async {
 
     if (root.join != null) {
       for (var join in root.join!) {
-        var otherQ = Query<OtherRootObject>(ctx)..values = join.other!;
+        final otherQ = Query<OtherRootObject>(ctx)..values = join.other!;
         join.other!.id = (await otherQ.insert()).id;
 
         join.root = RootObject()..rid = root.rid;
 
-        var joinQ = Query<RootJoinObject>(ctx)..values = join;
+        final joinQ = Query<RootJoinObject>(ctx)..values = join;
         await joinQ.insert();
       }
     }
@@ -321,7 +321,7 @@ Map fullObjectMap(Type t, dynamic v, {Map<String, dynamic>? and}) {
   } else if (t == GrandChildObject) {
     idName = "gid";
   }
-  var m = {idName: v, "value1": v, "value2": v};
+  final m = {idName: v, "value1": v, "value2": v};
   if (and != null) {
     m.addAll(and);
   }

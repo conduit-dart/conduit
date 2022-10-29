@@ -5,7 +5,7 @@ import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var store = PostgresTestConfig().persistentStore();
+  final store = PostgresTestConfig().persistentStore();
 
   setUp(() async {});
 
@@ -24,7 +24,7 @@ void main() {
     await store.upgrade(Schema.empty(), [EmptyMigration()..version = 1],
         temporary: true);
 
-    var rows = await store.execute(
+    final rows = await store.execute(
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql");
     expect(rows.length, 1);
     expect(rows.first.first, 1);
@@ -38,7 +38,7 @@ void main() {
         temporary: true);
     await store.upgrade(s1, [EmptyMigration()..version = 2], temporary: true);
 
-    var rows = await store.execute(
+    final rows = await store.execute(
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql");
     expect(rows.length, 2);
     expect(rows.first.first, 1);

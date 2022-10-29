@@ -9,9 +9,9 @@ void main() {
     context =
         await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
     var counter = 0;
-    var names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
+    final names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
     for (var name in names) {
-      var q = Query<TestModel>(context!)
+      final q = Query<TestModel>(context!)
         ..values.name = name
         ..values.email = "$counter@a.com";
       await q.insert();
@@ -502,7 +502,8 @@ void main() {
 
   group("not matcher", () {
     test("can invert back to identity", () async {
-      var q = Query<TestModel>(context!)..where((o) => o.id).not.not.equalTo(1);
+      final q = Query<TestModel>(context!)
+        ..where((o) => o.id).not.not.equalTo(1);
       final results = await q.fetch();
       expect(results.length, 1);
       expect(results.first.id, 1);

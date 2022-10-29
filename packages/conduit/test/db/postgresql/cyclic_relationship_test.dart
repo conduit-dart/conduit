@@ -381,7 +381,7 @@ void main() {
     test("Insert an object that references an existing object", () async {
       final l = await Query.insertObject(context!, Left()..name = "l1");
 
-      var q = Query<Right>(context!)
+      final q = Query<Right>(context!)
         ..values.name = "r1"
         ..values.belongsToLeft = l;
       final r = await q.insert();

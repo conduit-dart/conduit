@@ -49,7 +49,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
           timeZone: dbInfo.timeZone, useSSL: dbInfo.useSSL);
     }
 
-    var migrationTypes = currentMirrorSystem()
+    final migrationTypes = currentMirrorSystem()
         .isolate
         .rootLibrary
         .declarations

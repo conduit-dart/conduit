@@ -80,7 +80,7 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
         File.fromUri(_hostedDirectory.uri.resolve("openapi.json"));
     jsonSpecFile.writeAsStringSync(documentJSON);
 
-    var htmlFile = File.fromUri(_hostedDirectory.uri.resolve("index.html"));
+    final htmlFile = File.fromUri(_hostedDirectory.uri.resolve("index.html"));
     htmlFile.writeAsStringSync(_htmlSource);
   }
 

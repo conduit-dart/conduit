@@ -80,7 +80,7 @@ class SchemaBuilder {
 
   /// Validates and renames a table in [schema].
   void renameTable(String currentTableName, String newName) {
-    var table = schema!.tableForName(currentTableName);
+    final table = schema!.tableForName(currentTableName);
     if (table == null) {
       throw SchemaException("Table $currentTableName does not exist.");
     }
@@ -95,7 +95,7 @@ class SchemaBuilder {
 
   /// Validates and deletes a table in [schema].
   void deleteTable(String tableName) {
-    var table = schema!.tableForName(tableName);
+    final table = schema!.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
@@ -111,12 +111,12 @@ class SchemaBuilder {
 
   /// Alters a table in [schema].
   void alterTable(String tableName, void modify(SchemaTable targetTable)) {
-    var existingTable = schema!.tableForName(tableName);
+    final existingTable = schema!.tableForName(tableName);
     if (existingTable == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
-    var newTable = SchemaTable.from(existingTable);
+    final newTable = SchemaTable.from(existingTable);
     modify(newTable);
     schema!.replaceTable(existingTable, newTable);
 
@@ -165,7 +165,7 @@ class SchemaBuilder {
   /// Validates and adds a column to a table in [schema].
   void addColumn(String tableName, SchemaColumn column,
       {String? unencodedInitialValue}) {
-    var table = schema!.tableForName(tableName);
+    final table = schema!.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
@@ -182,12 +182,12 @@ class SchemaBuilder {
 
   /// Validates and deletes a column in a table in [schema].
   void deleteColumn(String tableName, String columnName) {
-    var table = schema!.tableForName(tableName);
+    final table = schema!.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
-    var column = table.columnForName(columnName);
+    final column = table.columnForName(columnName);
     if (column == null) {
       throw SchemaException("Column $columnName does not exists.");
     }
@@ -203,12 +203,12 @@ class SchemaBuilder {
 
   /// Validates and renames a column in a table in [schema].
   void renameColumn(String tableName, String columnName, String newName) {
-    var table = schema!.tableForName(tableName);
+    final table = schema!.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
-    var column = table.columnForName(columnName);
+    final column = table.columnForName(columnName);
     if (column == null) {
       throw SchemaException("Column $columnName does not exists.");
     }
@@ -238,17 +238,17 @@ class SchemaBuilder {
   void alterColumn(String tableName, String columnName,
       void modify(SchemaColumn targetColumn),
       {String? unencodedInitialValue}) {
-    var table = schema!.tableForName(tableName);
+    final table = schema!.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
-    var existingColumn = table[columnName];
+    final existingColumn = table[columnName];
     if (existingColumn == null) {
       throw SchemaException("Column $columnName does not exist.");
     }
 
-    var newColumn = SchemaColumn.from(existingColumn);
+    final newColumn = SchemaColumn.from(existingColumn);
     modify(newColumn);
 
     if (existingColumn.type != newColumn.type) {
@@ -430,13 +430,13 @@ class SchemaBuilder {
   }
 
   static String _getNewTableExpression(SchemaTable table) {
-    var builder = StringBuffer();
+    final builder = StringBuffer();
     builder.write('database.createTable(SchemaTable("${table.name}", [');
     builder.write(table.columns.map(_getNewColumnExpression).join(","));
     builder.write("]");
 
     if (table.uniqueColumnSet != null) {
-      var set = table.uniqueColumnSet!.map((p) => '"$p"').join(",");
+      final set = table.uniqueColumnSet!.map((p) => '"$p"').join(",");
       builder.write(", uniqueColumnSetNames: [$set]");
     }
 
@@ -445,7 +445,7 @@ class SchemaBuilder {
   }
 
   static String _getNewColumnExpression(SchemaColumn column) {
-    var builder = StringBuffer();
+    final builder = StringBuffer();
     if (column.relatedTableName != null) {
       builder
           .write('SchemaColumn.relationship("${column.name}", ${column.type}');

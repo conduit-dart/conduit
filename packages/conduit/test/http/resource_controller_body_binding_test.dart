@@ -22,34 +22,34 @@ void main() {
   group("Happy path", () {
     test("Can read Map body object into Serializable", () async {
       server = await enableController("/", () => TestController());
-      var m = {"name": "Bob"};
-      var response = await postJSON(m);
+      final m = {"name": "Bob"};
+      final response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
     });
 
     test("Can read List<Map> body object into List<Serializable>", () async {
       server = await enableController("/", () => ListTestController());
-      var m = [
+      final m = [
         {"name": "Bob"},
         {"name": "Fred"}
       ];
-      var response = await postJSON(m);
+      final response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
     });
 
     test("Can read empty List body", () async {
       server = await enableController("/", () => ListTestController());
-      var m = [];
-      var response = await postJSON(m);
+      final m = [];
+      final response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
     });
 
     test("Body arg can be optional", () async {
       server = await enableController("/", () => OptionalTestController());
-      var m = {"name": "Bob"};
+      final m = {"name": "Bob"};
       var response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
@@ -62,8 +62,8 @@ void main() {
 
     test("Can read body object declared as property", () async {
       server = await enableController("/", () => PropertyTestController());
-      var m = {"name": "Bob"};
-      var response = await postJSON(m);
+      final m = {"name": "Bob"};
+      final response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
     });
@@ -142,8 +142,8 @@ void main() {
 
     test("Can bind primitive map", () async {
       server = await enableController("/", () => MapController());
-      var m = {"name": "Bob"};
-      var response = await postJSON(m);
+      final m = {"name": "Bob"};
+      final response = await postJSON(m);
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
     });
@@ -163,8 +163,8 @@ void main() {
   group("Programmer error cases", () {
     test("fromMap throws uncaught error should return a 500", () async {
       server = await enableController("/", () => CrashController());
-      var m = {"id": 1, "name": "Crash"};
-      var response = await postJSON(m);
+      final m = {"id": 1, "name": "Crash"};
+      final response = await postJSON(m);
       expect(response.statusCode, 500);
     });
   });
@@ -172,8 +172,8 @@ void main() {
   group("Input error cases", () {
     test("Provide unknown key returns 400", () async {
       server = await enableController("/", () => TestController());
-      var m = {"name": "Bob", "job": "programmer"};
-      var response = await postJSON(m);
+      final m = {"name": "Bob", "job": "programmer"};
+      final response = await postJSON(m);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"], "entity validation failed");
       expect(json.decode(response.body)["reasons"].join(","), contains("job"));
@@ -181,8 +181,8 @@ void main() {
 
     test("Body is empty returns 400", () async {
       server = await enableController("/", () => TestController());
-      var m = {"name": "Bob", "job": "programmer"};
-      var response = await postJSON(m);
+      final m = {"name": "Bob", "job": "programmer"};
+      final response = await postJSON(m);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"], "entity validation failed");
       expect(json.decode(response.body)["reasons"].join(","), contains("job"));
@@ -190,10 +190,10 @@ void main() {
 
     test("Is List when expecting Map returns 400", () async {
       server = await enableController("/", () => TestController());
-      var m = [
+      final m = [
         {"id": 2, "name": "Bob"}
       ];
-      var response = await postJSON(m);
+      final response = await postJSON(m);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"],
           contains("request entity was unexpected type"));
@@ -201,8 +201,8 @@ void main() {
 
     test("Is Map when expecting List returns 400", () async {
       server = await enableController("/", () => ListTestController());
-      var m = {"id": 2, "name": "Bob"};
-      var response = await postJSON(m);
+      final m = {"id": 2, "name": "Bob"};
+      final response = await postJSON(m);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"],
           contains("request entity was unexpected type"));
@@ -210,7 +210,7 @@ void main() {
 
     test("If required body and no body included, return 400", () async {
       server = await enableController("/", () => TestController());
-      var response = await postJSON(null);
+      final response = await postJSON(null);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"],
           contains("missing required body"));
@@ -218,7 +218,7 @@ void main() {
 
     test("Expect list of objects, got list of strings", () async {
       server = await enableController("/", () => ListTestController());
-      var response = await postJSON(["a", "b"]);
+      final response = await postJSON(["a", "b"]);
       expect(response.statusCode, 400);
       expect(json.decode(response.body)["error"],
           contains("request entity was unexpected type"));
@@ -372,11 +372,11 @@ class ByteListController extends ResourceController {
 
 Future<HttpServer> enableController(
     String pattern, Controller instantiate()) async {
-  var router = Router();
+  final router = Router();
   router.route(pattern).link(instantiate);
   router.didAddToChannel();
 
-  var server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
   server.map((httpReq) => Request(httpReq)).listen(router.receive);
 
   return server;

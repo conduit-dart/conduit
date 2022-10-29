@@ -43,7 +43,7 @@ class _TestObject {
   });
 
   test("If validating with no migration dir, get error", () async {
-    var res = await projectUnderTestCli.run("db", ["validate"]);
+    final res = await projectUnderTestCli.run("db", ["validate"]);
 
     expect(res, isNot(0));
     expect(projectUnderTestCli.output, contains("No migration files found"));
@@ -105,7 +105,7 @@ class _TestObject {
       res = await projectUnderTestCli.run("db", ["generate"]);
       expect(res, 0);
 
-      var secondMigrationFile = File.fromUri(
+      final secondMigrationFile = File.fromUri(
         projectUnderTestCli.defaultMigrationDirectory.uri
             .resolve("00000002_unnamed.migration.dart"),
       );

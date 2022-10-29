@@ -6,7 +6,7 @@ import 'package:conduit/src/utilities/mirror_helpers.dart';
 ManagedType getManagedTypeFromType(TypeMirror type) {
   ManagedPropertyType kind;
   ManagedType? elements;
-  Map<String, dynamic> enumerationMap = {};
+  final Map<String, dynamic> enumerationMap = {};
 
   if (type.isAssignableTo(reflectType(int))) {
     kind = ManagedPropertyType.integer;
@@ -87,7 +87,7 @@ bool isTransientAccessorMethod(DeclarationMirror declMir) {
     return false;
   }
 
-  var methodMirror = declMir;
+  final methodMirror = declMir;
   if (methodMirror.isStatic) {
     return false;
   }
@@ -97,7 +97,7 @@ bool isTransientAccessorMethod(DeclarationMirror declMir) {
     return false;
   }
 
-  var mapMetadata = transientMetadataFromDeclaration(declMir);
+  final mapMetadata = transientMetadataFromDeclaration(declMir);
   if (mapMetadata == null) {
     return false;
   }

@@ -8,9 +8,9 @@ class RouteSegment {
       return;
     }
 
-    var regexIndex = segment.indexOf("(");
+    final regexIndex = segment.indexOf("(");
     if (regexIndex != -1) {
-      var regexText = segment.substring(regexIndex + 1, segment.length - 1);
+      final regexText = segment.substring(regexIndex + 1, segment.length - 1);
       matcher = RegExp(regexText);
 
       segment = segment.substring(0, regexIndex);
@@ -81,7 +81,7 @@ class RouteNode {
   RouteNode(List<RouteSpecification?> specs, {int depth = 0, RegExp? matcher}) {
     patternMatcher = matcher;
 
-    var terminatedAtThisDepth =
+    final terminatedAtThisDepth =
         specs.where((spec) => spec?.segments.length == depth).toList();
     if (terminatedAtThisDepth.length > 1) {
       throw ArgumentError(
@@ -93,7 +93,7 @@ class RouteNode {
     final remainingSpecifications = List<RouteSpecification?>.from(
         specs.where((spec) => depth != spec?.segments.length));
 
-    Set<String> childEqualitySegments = Set.from(remainingSpecifications
+    final Set<String> childEqualitySegments = Set.from(remainingSpecifications
         .where((spec) => spec?.segments[depth].isLiteralMatcher ?? false)
         .map((spec) => spec!.segments[depth].literal));
 
@@ -107,7 +107,7 @@ class RouteNode {
           .removeWhere(childrenBeginningWithThisSegment.contains);
     });
 
-    var takeAllSegment = remainingSpecifications.firstWhere(
+    final takeAllSegment = remainingSpecifications.firstWhere(
         (spec) => spec?.segments[depth].isRemainingMatcher ?? false,
         orElse: () => null);
     if (takeAllSegment != null) {
@@ -116,11 +116,11 @@ class RouteNode {
           (spec) => spec?.segments[depth].isRemainingMatcher ?? false);
     }
 
-    Set<String?> childPatternedSegments = Set.from(remainingSpecifications
+    final Set<String?> childPatternedSegments = Set.from(remainingSpecifications
         .map((spec) => spec?.segments[depth].matcher?.pattern));
 
     patternedChildren = childPatternedSegments.map((pattern) {
-      var childrenWithThisPattern = remainingSpecifications
+      final childrenWithThisPattern = remainingSpecifications
           .where((spec) => spec?.segments[depth].matcher?.pattern == pattern)
           .toList();
 
@@ -160,7 +160,7 @@ class RouteNode {
       return this;
     }
 
-    var nextSegment = requestSegments.current;
+    final nextSegment = requestSegments.current;
 
     if (equalityChildren.containsKey(nextSegment)) {
       return equalityChildren[nextSegment]!
@@ -186,7 +186,7 @@ class RouteNode {
 
   @override
   String toString({int depth = 0}) {
-    var buf = StringBuffer();
+    final buf = StringBuffer();
     for (var i = 0; i < depth; i++) {
       buf.write("\t");
     }

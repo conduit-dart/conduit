@@ -9,7 +9,7 @@ import "package:test/test.dart";
 // These tests are based on the specification found at http://www.w3.org/TR/cors/.
 void main() {
   Controller.letUncaughtExceptionsEscape = true;
-  var app = Application<CORSChannel>();
+  final app = Application<CORSChannel>();
   app.options.port = 8000;
 
   setUpAll(() async {
@@ -26,27 +26,28 @@ void main() {
     // This group ensures that if a controller has or doesn't have a policy, if it is not a CORS request,
     // no CORS headers/processing occurs.
     test("Controller with no policy returns correctly", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/nopolicy"));
+      final resp = await http.get(Uri.parse("http://localhost:8000/nopolicy"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Controller with permissive default policy returns correctly",
         () async {
-      var resp =
+      final resp =
           await http.get(Uri.parse("http://localhost:8000/defaultpolicy"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Controller with restrict policy returns correctly", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"));
+      final resp =
+          await http.get(Uri.parse("http://localhost:8000/restrictive"));
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Invalid resource 404s", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/foobar"));
+      final resp = await http.get(Uri.parse("http://localhost:8000/foobar"));
       expect(resp.statusCode, 404);
       expectThatNoCORSProcessingOccurred(resp);
     });
@@ -57,14 +58,16 @@ void main() {
       () {
     // This group ensures that if the Origin is invalid for a resource, that CORS processing aborts.
     test("Valid endpoint returns correctly, mis-matched origin", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
+      final resp = await http.get(
+          Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "not this"});
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("Valid endpoint, case match failure", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
+      final resp = await http.get(
+          Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "http://Exclusive.com"});
       expect(resp.statusCode, 200);
       expectThatNoCORSProcessingOccurred(resp);
@@ -73,7 +76,7 @@ void main() {
     test("Invalid resource gets CORS headers to expose 404 to calling client",
         () async {
       // In this case, there is no 'resource', so we add the origin so the calling client can see the 404. Not sure on this behavior.
-      var resp = await http.get(Uri.parse("http://localhost:8000/foobar"),
+      final resp = await http.get(Uri.parse("http://localhost:8000/foobar"),
           headers: {"Origin": "http://abc.com"});
       expect(resp.statusCode, 404);
       expect(resp.headers["access-control-allow-origin"], "http://abc.com");
@@ -86,7 +89,7 @@ void main() {
     test(
         "Unauthorized resource with invalid origin does not attach CORS headers",
         () async {
-      var resp = await http
+      final resp = await http
           .get(Uri.parse("http://localhost:8000/restrictive_auth"), headers: {
         "Origin": "http://Exclusive.com",
         "Authorization": "Bearer noauth"
@@ -103,7 +106,8 @@ void main() {
     test(
         "Origin and credentials are returned if credentials are supported and origin is specific, origin must be non-*",
         () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
+      final resp = await http.get(
+          Uri.parse("http://localhost:8000/restrictive"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
       expect(
@@ -117,7 +121,7 @@ void main() {
     test(
         "Normal/Simple Requests: Origin and credentials are returned if credentials are supported and origin is catch-all, origin must be non-*",
         () async {
-      var resp = await http.get(
+      final resp = await http.get(
           Uri.parse("http://localhost:8000/defaultpolicy"),
           headers: {"Origin": "http://foobar.com"});
       expect(resp.statusCode, 200);
@@ -131,7 +135,7 @@ void main() {
     test(
         "Normal/Simple Requests: If credentials are not supported and origin is valid, only set origin",
         () async {
-      var resp = await http.get(
+      final resp = await http.get(
           Uri.parse("http://localhost:8000/restrictive_nocreds"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
@@ -149,7 +153,7 @@ void main() {
       () {
     // This group ensures that headers are exposed correctly
     test("Empty exposed headers returns no header to indicate them", () async {
-      var resp = await http.get(
+      final resp = await http.get(
           Uri.parse("http://localhost:8000/defaultpolicy"),
           headers: {"Origin": "http://foobar.com"});
       expect(resp.statusCode, 200);
@@ -161,7 +165,7 @@ void main() {
     });
 
     test("If one exposed header, return it in ACEH", () async {
-      var resp = await http.get(
+      final resp = await http.get(
           Uri.parse("http://localhost:8000/restrictive_nocreds"),
           headers: {"Origin": "http://exclusive.com"});
       expect(resp.statusCode, 200);
@@ -174,11 +178,11 @@ void main() {
     });
 
     test("If multiple exposed headers, return them in ACEH", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8000/restrictive"),
-          headers: {
-            "Authorization": "Bearer auth",
-            "Origin": "http://exclusive.com"
-          });
+      final resp = await http
+          .get(Uri.parse("http://localhost:8000/restrictive"), headers: {
+        "Authorization": "Bearer auth",
+        "Origin": "http://exclusive.com"
+      });
 
       expect(resp.statusCode, 200);
       expect(
@@ -196,9 +200,9 @@ void main() {
     test(
         "Return 200 if there is an actual endpoint for OPTIONS (No CORS Headers)",
         () async {
-      var req = await HttpClient().open("OPTIONS", "localhost", 8000, "opts");
+      final req = await HttpClient().open("OPTIONS", "localhost", 8000, "opts");
       req.headers.set("Authorization", "Bearer auth");
-      var resp = await req.close();
+      final resp = await req.close();
       await resp.drain();
 
       expect(resp.statusCode, 200);
@@ -208,8 +212,8 @@ void main() {
     test(
         "Return 401 if there is an actual endpoint for OPTIONS and request is unauthorized (No CORS Headers)",
         () async {
-      var req = await HttpClient().open("OPTIONS", "localhost", 8000, "opts");
-      var resp = await req.close();
+      final req = await HttpClient().open("OPTIONS", "localhost", 8000, "opts");
+      final resp = await req.close();
       await resp.drain();
 
       expect(resp.statusCode, 401);
@@ -218,8 +222,9 @@ void main() {
 
     test("Return 404 if there is no endpoint for OPTIONS (No CORS Headers)",
         () async {
-      var req = await HttpClient().open("OPTIONS", "localhost", 8000, "foobar");
-      var resp = await req.close();
+      final req =
+          await HttpClient().open("OPTIONS", "localhost", 8000, "foobar");
+      final resp = await req.close();
       await resp.drain();
 
       expect(resp.statusCode, 404);
@@ -229,9 +234,9 @@ void main() {
     test(
         "Return 405 if there is an endpoint, but OPTIONS not supported (No CORS Headers)",
         () async {
-      var req =
+      final req =
           await HttpClient().open("OPTIONS", "localhost", 8000, "nopolicy");
-      var resp = await req.close();
+      final resp = await req.close();
       await resp.drain();
 
       expect(resp.statusCode, 405);
@@ -245,11 +250,11 @@ void main() {
     // This group ensures that if the Origin is invalid, we return a 403.
 
     test("If origin is correct, get 200 from OPTIONS", () async {
-      var req =
+      final req =
           await HttpClient().open("OPTIONS", "localhost", 8000, "restrictive");
       req.headers.set("Origin", "http://exclusive.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -265,33 +270,33 @@ void main() {
     test(
         "If origin is invalid because of case-sensitivity, get 403 from OPTIONS",
         () async {
-      var req =
+      final req =
           await HttpClient().open("OPTIONS", "localhost", 8000, "restrictive");
       req.headers.set("Origin", "http://Exclusive.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("If origin is invalid, get 403 from OPTIONS", () async {
-      var req =
+      final req =
           await HttpClient().open("OPTIONS", "localhost", 8000, "restrictive");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("If no policy defined, return 403", () async {
-      var req =
+      final req =
           await HttpClient().open("OPTIONS", "localhost", 8000, "nopolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
@@ -301,22 +306,22 @@ void main() {
   group("Preflight: Validate headers and methods", () {
     // This group ensures that if the Origin is valid, but there is no Access-Control-Request-Method, we return a 403.
     test("If allow method is not available", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "PATCH");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
     });
 
     test("If allow method is available", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -330,11 +335,11 @@ void main() {
     });
 
     test("Just one allowed method returns that", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "single_method");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "GET");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -348,12 +353,12 @@ void main() {
     });
 
     test("If one allow header is available", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers", "authorization");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -367,13 +372,13 @@ void main() {
     });
 
     test("Headers are case insensitive", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers",
           "Authorization, X-Requested-With, X-Forwarded-For, Content-Type");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -387,13 +392,13 @@ void main() {
     });
 
     test("If multiple allow header is available", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers",
           "authorization, x-requested-with, x-forwarded-for, content-type");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -407,13 +412,13 @@ void main() {
     });
 
     test("If allow header is a simple header, return 200", () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers
           .set("Access-Control-Request-Headers", "accept, authorization");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -428,13 +433,13 @@ void main() {
 
     test("If one allow header is not available, but others are, get a 403",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers",
           "authorization, x-requested-with, x-forwarded-for, content-type, x-foo");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
@@ -442,12 +447,12 @@ void main() {
 
     test("If one specified allow headers are not available, get a 403",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers", "x-foo");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
@@ -455,12 +460,12 @@ void main() {
 
     test("If all specified allow headers are not available, get a 403",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set("Access-Control-Request-Headers", "x-foo, x-bar");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 403);
       expectThatNoCORSProcessingOccurred(resp);
@@ -474,13 +479,13 @@ void main() {
     test(
         "If valid origin and endpoint allows credentials, add allow origin/creds",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers
           .set("Access-Control-Request-Headers", "accept, authorization");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -496,11 +501,11 @@ void main() {
     test(
         "If valid origin and endpoint do not allow credentials, add allow origin but not creds",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "restrictive_nocreds");
       req.headers.set("Origin", "http://exclusive.com");
       req.headers.set("Access-Control-Request-Method", "POST");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),
@@ -519,13 +524,13 @@ void main() {
     test(
         "If valid origin and endpoint allows credentials, add allow origin/creds",
         () async {
-      var req = await HttpClient()
+      final req = await HttpClient()
           .open("OPTIONS", "localhost", 8000, "defaultpolicy");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers
           .set("Access-Control-Request-Headers", "accept, authorization");
-      var resp = await req.close();
+      final resp = await req.close();
 
       expect(resp.statusCode, 200);
       expect(resp.headers.value("access-control-allow-origin"),

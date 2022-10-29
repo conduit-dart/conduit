@@ -37,7 +37,7 @@ class QueryException<T> implements HandlerException {
 
   static Map<String, String> _getBody(
       String? message, List<String>? offendingItems) {
-    var body = {
+    final body = {
       "error": message ?? "query failed",
     };
 

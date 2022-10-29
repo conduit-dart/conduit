@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   test("Two entities with same tableName should throw exception", () {
     try {
-      var _ = ManagedDataModel([SameNameOne, SameNameTwo]);
+      final _ = ManagedDataModel([SameNameOne, SameNameTwo]);
       expect(true, false);
     } on ManagedDataModelError catch (e) {
       expect(e.message, contains("SameNameOne"));

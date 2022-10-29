@@ -101,7 +101,7 @@ class CLIServer extends CLICommand with CLIProject {
   /////
 
   Future<StoppableProcess> _start() async {
-    var replacements = {
+    final replacements = {
       "PACKAGE_NAME": packageName,
       "LIBRARY_NAME": libraryName,
       "CHANNEL_TYPE": channelType,
@@ -209,7 +209,7 @@ class CLIServer extends CLICommand with CLIProject {
       keyString = "";
     }
 
-    var contents = """
+    final contents = """
 import 'dart:async';
 import 'dart:io';
 
@@ -250,8 +250,8 @@ Future main(List<String> args, dynamic sendPort) async {
 }
 
 Future<bool> supportsLaunchObservatory() async {
-  String locator = Platform.isWindows ? "where" : "which";
-  var result = await Process.run(locator, ["open"]);
+  final String locator = Platform.isWindows ? "where" : "which";
+  final result = await Process.run(locator, ["open"]);
 
   return result.exitCode == 0;
 }

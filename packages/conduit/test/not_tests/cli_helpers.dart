@@ -27,7 +27,7 @@ class CLIClient {
     return _output.toString();
   }
 
-  StringBuffer _output = StringBuffer();
+  final StringBuffer _output = StringBuffer();
 
   static Future activateCLI({String path = "."}) {
     const String cmd = "dart";
@@ -160,8 +160,8 @@ class TestChannel extends ApplicationChannel {
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
 
-    var cmd = Runner()..outputSink = _output;
-    var results = cmd.options.parse(args);
+    final cmd = Runner()..outputSink = _output;
+    final results = cmd.options.parse(args);
 
     final exitCode = await cmd.process(results);
     if (exitCode != 0) {
@@ -182,8 +182,8 @@ class TestChannel extends ApplicationChannel {
     final saved = Directory.current;
     Directory.current = agent.workingDirectory;
 
-    var cmd = Runner()..outputSink = _output;
-    var results = cmd.options.parse(args);
+    final cmd = Runner()..outputSink = _output;
+    final results = cmd.options.parse(args);
 
     final task = CLITask();
     var elapsed = 0.0;
@@ -237,6 +237,6 @@ class CLITask {
 
   Future<int> get exitCode => _processFinished.future;
 
-  Completer<int> _processFinished = Completer<int>();
-  Completer<bool> _processStarted = Completer<bool>();
+  final Completer<int> _processFinished = Completer<int>();
+  final Completer<bool> _processStarted = Completer<bool>();
 }

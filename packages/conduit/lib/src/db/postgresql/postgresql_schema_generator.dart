@@ -5,14 +5,14 @@ class PostgreSQLSchemaGenerator {
   String get versionTableName => "_conduit_version_pgsql";
 
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) {
-    var commands = <String>[];
+    final commands = <String>[];
 
     // Create table command
-    var columnString = table.columns.map(_columnStringForColumn).join(",");
+    final columnString = table.columns.map(_columnStringForColumn).join(",");
     commands.add(
         "CREATE${isTemporary ? " TEMPORARY " : " "}TABLE ${table.name} ($columnString)");
 
-    var indexCommands = table.columns
+    final indexCommands = table.columns
         .where((col) =>
             col.isIndexed! &&
             !col.isPrimaryKey!) // primary keys are auto-indexed
@@ -42,7 +42,7 @@ class PostgreSQLSchemaGenerator {
   }
 
   List<String> addTableUniqueColumnSet(SchemaTable table) {
-    var colNames = table.uniqueColumnSet!
+    final colNames = table.uniqueColumnSet!
         .map((name) => _columnNameForColumn(table[name]!))
         .join(",");
     return [
@@ -56,7 +56,7 @@ class PostgreSQLSchemaGenerator {
 
   List<String> addColumn(SchemaTable table, SchemaColumn column,
       {String? unencodedInitialValue}) {
-    var commands = <String>[];
+    final commands = <String>[];
 
     if (unencodedInitialValue != null) {
       column.defaultValue = unencodedInitialValue;
@@ -136,7 +136,7 @@ class PostgreSQLSchemaGenerator {
   }
 
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) {
-    var allCommands = <String>[];
+    final allCommands = <String>[];
     allCommands.add(
         "ALTER TABLE ONLY ${table.name} DROP CONSTRAINT ${_foreignKeyName(table.name, column)}");
     allCommands.addAll(_addConstraintsForColumn(table.name, column));
@@ -151,7 +151,7 @@ class PostgreSQLSchemaGenerator {
 
   List<String> renameIndex(
       SchemaTable table, SchemaColumn column, String newIndexName) {
-    var existingIndexName = _indexNameForColumn(table.name, column);
+    final existingIndexName = _indexNameForColumn(table.name, column);
     return ["ALTER INDEX $existingIndexName RENAME TO $newIndexName"];
   }
 
@@ -187,7 +187,7 @@ class PostgreSQLSchemaGenerator {
   }
 
   String _columnStringForColumn(SchemaColumn col) {
-    var elements = [_columnNameForColumn(col), _postgreSQLTypeForColumn(col)];
+    final elements = [_columnNameForColumn(col), _postgreSQLTypeForColumn(col)];
     if (col.isPrimaryKey!) {
       elements.add("PRIMARY KEY");
     } else {

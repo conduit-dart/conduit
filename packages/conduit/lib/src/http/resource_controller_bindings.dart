@@ -1,3 +1,5 @@
+// ignore_for_file: comment_references
+
 import 'request_path.dart';
 import 'resource_controller.dart';
 import 'serializable.dart';

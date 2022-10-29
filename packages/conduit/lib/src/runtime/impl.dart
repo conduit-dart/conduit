@@ -227,7 +227,7 @@ class SerializableRuntimeImpl extends SerializableRuntime {
 
   static APISchemaObject documentVariable(
       APIDocumentContext context, VariableMirror mirror) {
-    APISchemaObject object = documentType(context, mirror.type)
+    final APISchemaObject object = documentType(context, mirror.type)
       ..title = MirrorSystem.getName(mirror.simpleName);
 
     return object;

@@ -14,7 +14,7 @@ class RequestPath {
   RequestPath(this.segments);
 
   void setSpecification(RouteSpecification spec, {int segmentOffset = 0}) {
-    var requestIterator = segments.iterator;
+    final requestIterator = segments.iterator;
     for (var i = 0; i < segmentOffset; i++) {
       requestIterator.moveNext();
     }
@@ -30,7 +30,7 @@ class RequestPath {
         variables[segment.variableName.toString()] = requestSegment;
         orderedVariableNames.add(segment.variableName!);
       } else if (segment.isRemainingMatcher) {
-        var remaining = [];
+        final remaining = [];
         remaining.add(requestIterator.current);
         while (requestIterator.moveNext()) {
           remaining.add(requestIterator.current);

@@ -48,7 +48,7 @@ class CLISetup extends CLICommand with CLIProject {
       return -1;
     }
 
-    var commands = [
+    final commands = [
       "create database conduit_test_db;",
       "create user conduit_test_user with createdb;",
       "alter user conduit_test_user with password 'conduit!';",
@@ -70,7 +70,7 @@ class CLISetup extends CLICommand with CLIProject {
 
     displayInfo("Connecting to database...");
     for (var cmd in commands) {
-      List<String> args = ["-c", cmd, "-U", grantingUser];
+      final List<String> args = ["-c", cmd, "-U", grantingUser];
 
       final result = Process.runSync("psql", args, runInShell: true);
       final output = (result.stdout as String) + (result.stderr as String);

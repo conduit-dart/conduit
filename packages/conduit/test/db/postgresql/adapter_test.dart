@@ -36,16 +36,16 @@ void main() {
     test(
         "Ask for multiple connections at once, yield one successful connection",
         () async {
-      var connections = await Future.wait([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      final connections = await Future.wait([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
           .map((_) => persistentStore!.getDatabaseConnection()));
-      var first = connections.first;
+      final first = connections.first;
       expect(connections, everyElement(first));
     });
 
     test("Make multiple requests at once, yield one successful connection",
         () async {
-      var expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var values = await Future.wait(
+      final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      final values = await Future.wait(
           expectedValues.map((i) => persistentStore!.execute("select $i")));
 
       expect(
@@ -62,8 +62,8 @@ void main() {
       persistentStore =
           PostgresTestConfig().persistentStore(dbName: 'xyzxyznotadb');
 
-      var expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var values = await Future.wait(expectedValues.map(
+      final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      final values = await Future.wait(expectedValues.map(
           (i) => persistentStore!.execute("select $i").catchError((e) => e)));
       expect(values, everyElement(const TypeMatcher<QueryException>()));
     });
@@ -106,7 +106,7 @@ void main() {
       proxy = SocketProxy(15433, 15432);
       await proxy!.open();
 
-      var x = await persistentStore!.executeQuery("SELECT 1", null, 20);
+      final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
       expect(x, [
         [1]
       ]);
@@ -116,7 +116,7 @@ void main() {
   group("Registration", () {
     test("Create with default constructor registers and handles shutdown",
         () async {
-      var store = PostgresTestConfig().persistentStore();
+      final store = PostgresTestConfig().persistentStore();
 
       await store.execute("SELECT 1");
       expect(store.isConnected, true);
@@ -137,7 +137,7 @@ class SocketProxy {
   bool isEnabled = true;
 
   ServerSocket? _server;
-  List<SocketPair> _pairs = [];
+  final List<SocketPair> _pairs = [];
 
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);

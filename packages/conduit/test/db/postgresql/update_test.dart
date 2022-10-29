@@ -13,7 +13,7 @@ void main() {
   test("Updating existing object works", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
 
@@ -28,8 +28,8 @@ void main() {
       ..predicate = QueryPredicate("name = @name", {"name": "Bob"})
       ..values = m;
 
-    var response = await req.update();
-    var result = response.first;
+    final response = await req.update();
+    final result = response.first;
 
     expect(result.name, "Fred");
     expect(result.emailAddress, "2@a.com");
@@ -40,7 +40,7 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
 
@@ -68,7 +68,7 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([Child, Parent]);
 
     var q = Query<Parent>(context!)..values.name = "Bob";
-    var parent = await q.insert();
+    final parent = await q.insert();
 
     var childQuery = Query<Child>(context!)
       ..values.name = "Fred"
@@ -78,7 +78,7 @@ void main() {
     expect(child.parent!.id, parent.id);
 
     q = Query<Parent>(context!)..values.name = "Sally";
-    var newParent = await q.insert();
+    final newParent = await q.insert();
 
     childQuery = Query<Child>(context!)
       ..where((o) => o.id).equalTo(child.id)
@@ -91,7 +91,7 @@ void main() {
     context = await PostgresTestConfig().contextWithModels([Child, Parent]);
 
     var parent = Parent()..name = "Bob";
-    var q = Query<Parent>(context!)..values = parent;
+    final q = Query<Parent>(context!)..values = parent;
     parent = await q.insert();
 
     var child = Child()
@@ -111,7 +111,7 @@ void main() {
   test("Updating non-existent object does nothing", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
 
@@ -126,11 +126,11 @@ void main() {
       ..predicate = QueryPredicate("name = @name", {"name": "John"})
       ..values = m;
 
-    var response = await req.update();
+    final response = await req.update();
     expect(response.length, 0);
 
     req = Query<TestModel>(context!);
-    var fetchResponse = await req.fetchOne();
+    final fetchResponse = await req.fetchOne();
     expect(fetchResponse, isNotNull);
     expect(fetchResponse!.name, "Bob");
     expect(fetchResponse.emailAddress, "1@a.com");
@@ -146,18 +146,18 @@ void main() {
     var req = Query<TestModel>(context!)..values = m1;
     m1 = await req.insert();
 
-    var m2 = TestModel()
+    final m2 = TestModel()
       ..name = "Fred"
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)..values = m2;
     await req.insert();
 
-    var q = Query<TestModel>(context!)
+    final q = Query<TestModel>(context!)
       ..where((o) => o.name).equalTo("Bob")
       ..values = (TestModel()..emailAddress = "3@a.com");
 
-    List<TestModel> results = await q.update();
+    final List<TestModel> results = await q.update();
     expect(results, hasLength(1));
     expect(results.first.id, m1.id);
     expect(results.first.emailAddress, "3@a.com");
@@ -178,14 +178,14 @@ void main() {
             ..emailAddress = "2@a.com"))
         .insert();
 
-    var updateQuery = Query<TestModel>(context!)
+    final updateQuery = Query<TestModel>(context!)
       ..where((o) => o.emailAddress).equalTo("1@a.com")
       ..values.emailAddress = "3@a.com";
-    var updatedObject = (await updateQuery.update()).first;
+    final updatedObject = (await updateQuery.update()).first;
 
     expect(updatedObject.emailAddress, "3@a.com");
 
-    var allUsers = await Query<TestModel>(context!).fetch();
+    final allUsers = await Query<TestModel>(context!).fetch();
     expect(allUsers.length, 2);
     expect(allUsers.firstWhere((m) => m.id == m1.id).emailAddress, "3@a.com");
     expect(allUsers.firstWhere((m) => m.id != m1.id).emailAddress, "2@a.com");
@@ -194,7 +194,7 @@ void main() {
   test("updateOne returns updated object if found, null if not", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
 
@@ -222,10 +222,10 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
-    var fred = TestModel()
+    final fred = TestModel()
       ..name = "Fred"
       ..emailAddress = "2@a.com";
 
@@ -239,7 +239,7 @@ void main() {
       ..values.name = "Joe";
 
     try {
-      var _ = await req.updateOne();
+      final _ = await req.updateOne();
       expect(true, false);
     } on StateError catch (e) {
       expect(e.toString(),
@@ -250,10 +250,10 @@ void main() {
   test("Update all without safeguard fails", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
-    var fred = TestModel()
+    final fred = TestModel()
       ..name = "Fred"
       ..emailAddress = "2@a.com";
 
@@ -265,7 +265,7 @@ void main() {
     req = Query<TestModel>(context!)..values.name = "Joe";
 
     try {
-      var _ = await req.update();
+      final _ = await req.update();
       expect(true, false);
     } on StateError catch (e) {
       expect(
@@ -278,10 +278,10 @@ void main() {
   test("Update all WITH safeguard succeeds", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var m = TestModel()
+    final m = TestModel()
       ..name = "Bob"
       ..emailAddress = "1@a.com";
-    var fred = TestModel()
+    final fred = TestModel()
       ..name = "Fred"
       ..emailAddress = "2@a.com";
 
@@ -294,7 +294,7 @@ void main() {
       ..canModifyAllInstances = true
       ..values.name = "Fred";
 
-    var res = await req.update();
+    final res = await req.update();
     expect(res.map((tm) => tm.name), everyElement("Fred"));
   });
 
@@ -303,7 +303,7 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    var objects = [
+    final objects = [
       TestModel()
         ..name = "Bob"
         ..emailAddress = "1@a.com",
@@ -312,12 +312,12 @@ void main() {
         ..emailAddress = "2@a.com"
     ];
     for (var o in objects) {
-      var req = Query<TestModel>(context!)..values = o;
+      final req = Query<TestModel>(context!)..values = o;
       await req.insert();
     }
 
     try {
-      var q = Query<TestModel>(context!)
+      final q = Query<TestModel>(context!)
         ..where((o) => o.emailAddress).equalTo("2@a.com")
         ..values.emailAddress = "1@a.com";
       await q.updateOne();
@@ -342,7 +342,7 @@ void main() {
       ..values.enumValues = EnumValues.other18Letters
       ..where((o) => o.enumValues).equalTo(EnumValues.efgh);
 
-    var result = await q.update();
+    final result = await q.update();
     expect(result.length, 1);
     expect(result.first.enumValues, EnumValues.other18Letters);
   });

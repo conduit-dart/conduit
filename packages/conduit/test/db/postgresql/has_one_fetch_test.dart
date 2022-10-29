@@ -30,11 +30,11 @@ void main() {
 
     test("Fetch has-one relationship that is null returns null for property",
         () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..join(object: (p) => p.child)
         ..where((o) => o.name).equalTo("D");
 
-      var verifier = (Parent? p) {
+      final verifier = (Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
@@ -48,13 +48,13 @@ void main() {
     test(
         "Fetch has-one relationship that is null returns null for property, and more nested has relationships are ignored",
         () async {
-      var q = Query<Parent>(context!)..where((o) => o.name).equalTo("D");
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("D");
 
       q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      var verifier = (Parent? p) {
+      final verifier = (Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
@@ -68,11 +68,11 @@ void main() {
     test(
         "Fetch has-one relationship that is non-null returns value for property with scalar values only",
         () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..join(object: (p) => p.child)
         ..where((o) => o.name).equalTo("C");
 
-      var verifier = (Parent? p) {
+      final verifier = (Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "C");
         expect(p.pid, isNotNull);
@@ -88,13 +88,13 @@ void main() {
     test(
         "Fetch has-one relationship, include has-one and has-many in that has-one, where bottom of graph has valid object for hasmany but not for hasone",
         () async {
-      var q = Query<Parent>(context!)..where((o) => o.name).equalTo("B");
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("B");
 
       q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      var verifier = (Parent? p) {
+      final verifier = (Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "B");
         expect(p.pid, isNotNull);
@@ -114,13 +114,13 @@ void main() {
     test(
         "Fetch has-one relationship, include has-one and has-many in that has-one, where bottom of graph is all null/empty",
         () async {
-      var q = Query<Parent>(context!)..where((o) => o.name).equalTo("C");
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("C");
 
       q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      var verifier = (Parent? p) {
+      final verifier = (Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "C");
         expect(p.pid, isNotNull);
@@ -138,11 +138,11 @@ void main() {
     test(
         "Fetching multiple top-level instances and including next-level hasOne",
         () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..join(object: (p) => p.child)
         ..where((o) => o.name).oneOf(["C", "D"]);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(results.first.pid, isNotNull);
       expect(results.first.name, "C");
       expect(results.first.child!.name, "C3");
@@ -154,14 +154,14 @@ void main() {
     });
 
     test("Fetch entire graph", () async {
-      var q = Query<Parent>(context!);
+      final q = Query<Parent>(context!);
       q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      var all = await q.fetch();
+      final all = await q.fetch();
 
-      var originalIterator = truth.iterator;
+      final originalIterator = truth.iterator;
       for (var p in all) {
         originalIterator.moveNext();
         expect(p.pid, originalIterator.current.pid);
@@ -171,8 +171,9 @@ void main() {
         expect(p.child?.toy?.tid, originalIterator.current.child?.toy?.tid);
         expect(p.child?.toy?.name, originalIterator.current.child?.toy?.name);
 
-        var vacIter = originalIterator.current.child?.vaccinations?.iterator ??
-            <Vaccine>[].iterator;
+        final vacIter =
+            originalIterator.current.child?.vaccinations?.iterator ??
+                <Vaccine>[].iterator;
         p.child?.vaccinations?.forEach((v) {
           vacIter.moveNext();
           expect(v.vid, vacIter.current.vid);
@@ -199,17 +200,17 @@ void main() {
 
     test("Predicate impacts top-level objects when fetching object graph",
         () async {
-      var q = Query<Parent>(context!)..where((o) => o.name).equalTo("A");
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("A");
       q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations)
             .sortBy((v) => v.vid, QuerySortOrder.ascending);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(results.length, 1);
 
-      var p = results.first;
+      final p = results.first;
       expect(p.name, "A");
       expect(p.child!.name, "C1");
       expect(p.child!.toy!.name, "T1");
@@ -219,18 +220,18 @@ void main() {
 
     test("Predicate impacts 2nd level objects when fetching object graph",
         () async {
-      var q = Query<Parent>(context!);
+      final q = Query<Parent>(context!);
       q.join(object: (p) => p.child)
         ..where((o) => o.name).equalTo("C1")
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations)
             .sortBy((v) => v.vid, QuerySortOrder.ascending);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(results.length, 4);
 
-      var p = results.first;
+      final p = results.first;
       expect(p.name, "A");
       expect(p.child!.name, "C1");
       expect(p.child!.toy!.name, "T1");
@@ -245,19 +246,19 @@ void main() {
 
     test("Predicate impacts 3rd level objects when fetching object graph",
         () async {
-      var q = Query<Parent>(context!);
-      var childJoin = q.join(object: (p) => p.child)
+      final q = Query<Parent>(context!);
+      final childJoin = q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy);
       childJoin
           .join(set: (c) => c.vaccinations)
           .where((o) => o.kind)
           .equalTo("V1");
 
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(results.length, 4);
 
-      var p = results.first;
+      final p = results.first;
       expect(p.name, "A");
       expect(p.child!.name, "C1");
       expect(p.child!.toy!.name, "T1");
@@ -272,22 +273,22 @@ void main() {
     test(
         "Predicate that omits top-level objects but would include lower level object return no results",
         () async {
-      var q = Query<Parent>(context!)..where((o) => o.pid).equalTo(5);
+      final q = Query<Parent>(context!)..where((o) => o.pid).equalTo(5);
 
-      var childJoin = q.join(object: (p) => p.child)
+      final childJoin = q.join(object: (p) => p.child)
         ..join(object: (c) => c.toy);
       childJoin
           .join(set: (c) => c.vaccinations)
           .where((o) => o.kind)
           .equalTo("V1");
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(results.length, 0);
     });
 
     test(
         "Can use two 'where' criteria on the child object when not joining child object explicitly",
         () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..where((o) => o.child!.name).equalTo("C1")
         ..where((o) => o.child!.cid).equalTo(1);
       final res1 = await q.fetchOne();
@@ -295,7 +296,7 @@ void main() {
       expect(res1!.pid, 1);
       expect(res1.backing.contents!.containsKey("child"), false);
 
-      var q2 = Query<Parent>(context!)
+      final q2 = Query<Parent>(context!)
         ..where((o) => o.child!.name).equalTo("C1")
         ..where((o) => o.child!.cid).equalTo(2);
       final res2 = await q2.fetch();
@@ -318,15 +319,15 @@ void main() {
 
     test("Can fetch graph when omitting foreign or primary keys from query",
         () async {
-      var q = Query<Parent>(context!)..returningProperties((p) => [p.name]);
+      final q = Query<Parent>(context!)..returningProperties((p) => [p.name]);
 
-      var childQuery = q.join(object: (p) => p.child)
+      final childQuery = q.join(object: (p) => p.child)
         ..returningProperties((c) => [c.name]);
       childQuery
           .join(set: (c) => c.vaccinations)
           .returningProperties((v) => [v.kind]);
 
-      var parents = await q.fetch();
+      final parents = await q.fetch();
       for (var p in parents) {
         expect(p.name, isNotNull);
         expect(p.pid, isNotNull);
@@ -346,16 +347,16 @@ void main() {
     });
 
     test("Can specify result keys for all joined objects", () async {
-      var q = Query<Parent>(context!)..returningProperties((p) => [p.pid]);
+      final q = Query<Parent>(context!)..returningProperties((p) => [p.pid]);
 
-      var childQuery = q.join(object: (p) => p.child)
+      final childQuery = q.join(object: (p) => p.child)
         ..returningProperties((c) => [c.cid]);
 
       childQuery
           .join(set: (c) => c.vaccinations)
           .returningProperties((v) => [v.vid]);
 
-      var parents = await q.fetch();
+      final parents = await q.fetch();
       for (var p in parents) {
         expect(p.pid, isNotNull);
         expect(p.backing.contents!.length, 2);
@@ -387,11 +388,11 @@ void main() {
     });
 
     test("Objects returned in join are not the same instance", () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..where((o) => o.pid).equalTo(1)
         ..join(object: (p) => p.child);
 
-      var o = await q.fetchOne();
+      final o = await q.fetchOne();
       expect(o, isNotNull);
       expect(identical(o!.child!.parent, o), false);
     });
@@ -423,7 +424,7 @@ void main() {
       }
 
       try {
-        var q = Query<Parent>(context!);
+        final q = Query<Parent>(context!);
         q
             .join(object: (p) => p.child)
             .returningProperties((c) => [c.cid, c.toy]);
@@ -437,7 +438,7 @@ void main() {
     });
 
     test("Including paging on a join fails", () async {
-      var q = Query<Parent>(context!)
+      final q = Query<Parent>(context!)
         ..join(object: (p) => p.child)
         ..pageBy((p) => p.pid, QuerySortOrder.ascending);
 
@@ -509,8 +510,8 @@ Future<List<Parent>> populate(ManagedContext? context) async {
               T1  V1,V2       V3
 
    */
-  var modelGraph = <Parent>[];
-  var parents = [
+  final modelGraph = <Parent>[];
+  final parents = [
     Parent()
       ..name = "A"
       ..child = (Child()
@@ -532,18 +533,18 @@ Future<List<Parent>> populate(ManagedContext? context) async {
   ];
 
   for (var p in parents) {
-    var q = Query<Parent>(context!)..values.name = p.name;
-    var insertedParent = await q.insert();
+    final q = Query<Parent>(context!)..values.name = p.name;
+    final insertedParent = await q.insert();
     modelGraph.add(insertedParent);
 
     if (p.child != null) {
-      var childQ = Query<Child>(context)
+      final childQ = Query<Child>(context)
         ..values.name = p.child!.name
         ..values.parent = insertedParent;
       insertedParent.child = await childQ.insert();
 
       if (p.child!.toy != null) {
-        var toyQ = Query<Toy>(context)
+        final toyQ = Query<Toy>(context)
           ..values.name = p.child!.toy!.name
           ..values.child = insertedParent.child;
         insertedParent.child!.toy = await toyQ.insert();
@@ -552,7 +553,7 @@ Future<List<Parent>> populate(ManagedContext? context) async {
       if (p.child!.vaccinations != null) {
         insertedParent.child!.vaccinations = ManagedSet<Vaccine>.from(
             await Future.wait(p.child!.vaccinations!.map((v) {
-          var vQ = Query<Vaccine>(context)
+          final vQ = Query<Vaccine>(context)
             ..values.kind = v.kind
             ..values.child = insertedParent.child;
           return vQ.insert();

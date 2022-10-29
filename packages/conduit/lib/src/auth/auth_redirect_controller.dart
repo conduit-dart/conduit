@@ -56,7 +56,7 @@ class AuthRedirectController extends ResourceController {
     ];
   }
 
-  static Response _unsupportedResponseTypeResponse = Response.badRequest(
+  static final Response _unsupportedResponseTypeResponse = Response.badRequest(
       body: "<h1>Error</h1><p>unsupported_response_type</p>")
     ..contentType = ContentType.html;
 

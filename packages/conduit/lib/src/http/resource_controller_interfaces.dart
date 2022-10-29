@@ -162,8 +162,8 @@ class ResourceControllerParameter {
     switch (location) {
       case BindingType.query:
         {
-          var queryParameters = request!.raw.uri.queryParametersAll;
-          var value = request.body.isFormData
+          final queryParameters = request!.raw.uri.queryParametersAll;
+          final value = request.body.isFormData
               ? request.body.as<Map<String, List<String>>>()[name!]
               : queryParameters[name!];
           if (value == null) {

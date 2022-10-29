@@ -81,7 +81,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   @override
   Query<T> join<T extends ManagedObject>(
       {T? object(InstanceType x)?, ManagedSet<T>? set(InstanceType x)?}) {
-    var relationship = object ?? set!;
+    final relationship = object ?? set!;
     final desc = entity.identifyRelationship(relationship);
 
     return _createSubquery<T>(desc);
@@ -143,7 +143,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
     var parent = _parentQuery;
     while (parent != null) {
       if (parent.subQueries!.containsKey(fromRelationship.inverse)) {
-        var validJoins = fromRelationship.entity.relationships!.values
+        final validJoins = fromRelationship.entity.relationships!.values
             .where((r) => !identical(r, fromRelationship))
             .map((r) => "'${r!.name}'")
             .join(", ");
@@ -162,7 +162,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
 
     subQueries ??= {};
 
-    var subquery = Query<T>(context);
+    final subquery = Query<T>(context);
     (subquery as QueryMixin)._parentQuery = this;
     subQueries![fromRelationship] = subquery;
 

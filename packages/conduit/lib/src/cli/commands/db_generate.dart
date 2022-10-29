@@ -53,7 +53,7 @@ class CLIDatabaseGenerate extends CLICommand
 
   @override
   Future<int> handle() async {
-    var existingMigrations = projectMigrations;
+    final existingMigrations = projectMigrations;
 
     var newMigrationFile = File.fromUri(migrationDirectory!.uri.resolve(
         "00000001_${migrationName != "unnamed" ? migrationName : "initial"}.migration.dart"));

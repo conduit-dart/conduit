@@ -14,7 +14,7 @@ abstract class CLIProject implements CLICommand {
       abbr: "d", help: "Project directory to execute command in")
   Directory? get projectDirectory {
     if (_projectDirectory == null) {
-      String? dir = decodeOptional("directory");
+      final String? dir = decodeOptional("directory");
       if (dir == null) {
         _projectDirectory = Directory.current.absolute;
       } else {
@@ -31,7 +31,7 @@ abstract class CLIProject implements CLICommand {
         throw CLIException(
             "Failed to locate pubspec.yaml in project directory '${projectDirectory!.path}'");
       }
-      var yamlContents = file.readAsStringSync();
+      final yamlContents = file.readAsStringSync();
       final yaml = loadYaml(yamlContents) as Map<dynamic, dynamic>;
       _pubspec = yaml.cast<String, dynamic>();
     }
@@ -51,7 +51,7 @@ abstract class CLIProject implements CLICommand {
 
   Version? get projectVersion {
     if (_projectVersion == null) {
-      var lockFile =
+      final lockFile =
           File.fromUri(projectDirectory!.uri.resolve("pubspec.lock"));
       if (!lockFile.existsSync()) {
         throw CLIException("No pubspec.lock file. Run `pub get`.");

@@ -45,20 +45,20 @@ void main() {
     });
 
     test("Application responds to request", () async {
-      var response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
     });
 
     test("Application properly routes request", () async {
-      var tResponse = await http.get(Uri.parse("http://localhost:8888/t"));
-      var rResponse = await http.get(Uri.parse("http://localhost:8888/r"));
+      final tResponse = await http.get(Uri.parse("http://localhost:8888/t"));
+      final rResponse = await http.get(Uri.parse("http://localhost:8888/r"));
 
       expect(tResponse.body, '"t_ok"');
       expect(rResponse.body, '"r_ok"');
     });
 
     test("Application gzips content", () async {
-      var resp = await http.get(Uri.parse("http://localhost:8888/t"),
+      final resp = await http.get(Uri.parse("http://localhost:8888/t"),
           headers: {"Accept-Encoding": "gzip"});
       expect(resp.headers["content-encoding"], "gzip");
     });
@@ -68,7 +68,7 @@ void main() {
 
       var successful = false;
       try {
-        var _ = await http.get(Uri.parse("http://localhost:8888/t"));
+        final _ = await http.get(Uri.parse("http://localhost:8888/t"));
         successful = true;
       } catch (e) {
         expect(e, isNotNull);
@@ -76,7 +76,7 @@ void main() {
       expect(successful, false);
 
       await app.startOnCurrentIsolate();
-      var resp = await http.get(Uri.parse("http://localhost:8888/t"));
+      final resp = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(resp.statusCode, 200);
     });
 
@@ -85,7 +85,8 @@ void main() {
         () async {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
-        var result = await http.get(Uri.parse("http://localhost:8888/startup"));
+        final result =
+            await http.get(Uri.parse("http://localhost:8888/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);
@@ -96,7 +97,7 @@ void main() {
     test(
         "Application (on main thread) start fails and logs appropriate message if request stream doesn't open",
         () async {
-      var crashingApp = Application<CrashingTestChannel>();
+      final crashingApp = Application<CrashingTestChannel>();
 
       try {
         crashingApp.options.context = {"crashIn": "addRoutes"};
@@ -116,7 +117,7 @@ void main() {
 
       crashingApp.options.context = {"crashIn": "dontCrash"};
       await crashingApp.startOnCurrentIsolate();
-      var response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });
@@ -164,7 +165,7 @@ class TestChannel extends ApplicationChannel {
     router.route("/t").link(() => TController());
     router.route("/r").link(() => RController());
     router.route("startup").linkFunction((r) async {
-      var total = options!.context["startup"].fold(0, (a, b) => a + b);
+      final total = options!.context["startup"].fold(0, (a, b) => a + b);
       return Response.ok("$total");
     });
     return router;

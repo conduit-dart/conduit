@@ -68,8 +68,8 @@ class ManagedDataModel extends Object
   }
 
   Iterable<ManagedEntity> get entities => _entities.values;
-  Map<Type, ManagedEntity> _entities = {};
-  Map<String, ManagedEntity> _tableDefinitionToEntityMap = {};
+  final Map<Type, ManagedEntity> _entities = {};
+  final Map<String, ManagedEntity> _tableDefinitionToEntityMap = {};
 
   /// Returns a [ManagedEntity] for a [Type].
   ///

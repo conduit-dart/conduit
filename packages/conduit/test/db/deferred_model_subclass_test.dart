@@ -3,11 +3,11 @@ import 'package:test/test.dart';
 
 void main() {
   test("Can override property in partial and modify attrs/validators", () {
-    var dataModel =
+    final dataModel =
         ManagedDataModel([OverriddenTotalModel, PartialReferenceModel]);
 
-    var entity = dataModel.entityForType(OverriddenTotalModel);
-    var field = entity.attributes["field"]!;
+    final entity = dataModel.entityForType(OverriddenTotalModel);
+    final field = entity.attributes["field"]!;
     expect(field.isUnique, true);
     expect(field.validators.length, 1);
   });

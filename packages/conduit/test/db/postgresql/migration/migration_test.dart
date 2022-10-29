@@ -604,7 +604,7 @@ void main() {
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -629,7 +629,7 @@ void main() {
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -655,7 +655,7 @@ void main() {
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -681,7 +681,7 @@ void main() {
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["t"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -712,7 +712,7 @@ void main() {
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
-      var defs = await TableDefinition.get(store, ["t", "u", "v"]);
+      final defs = await TableDefinition.get(store, ["t", "u", "v"]);
       defs["t"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "u",
@@ -753,7 +753,7 @@ void main() {
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
 
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -785,7 +785,7 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -818,7 +818,7 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -851,7 +851,7 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       defs["u"]!.expectColumn("ref_id", "integer",
           nullable: true,
           relatedTableName: "t",
@@ -885,7 +885,7 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       expect(defs["u"]!.columns.length, 1);
       expect(defs["u"]!.columns.first.name, "id");
     });
@@ -918,7 +918,7 @@ void main() {
       await store.execute("INSERT INTO t (id) VALUES (1)");
       await store.execute("INSERT INTO u (id, ref_id) VALUES (1,1)");
       await applyDifference(store, schemas[1], schemas[2]);
-      var defs = await TableDefinition.get(store, ["t", "u"]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
       expect(defs["u"]!.columns.length, 1);
       expect(defs["u"]!.columns.first.name, "id");
     });

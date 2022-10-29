@@ -4,9 +4,9 @@ import 'package:test/test.dart';
 
 void main() {
   test('command invalid value', () async {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--flavor=test'];
+    final args = ['--flavor=test'];
 
     expect(
         () => cmd.options.parse(args),
@@ -16,9 +16,9 @@ void main() {
   });
 
   test('command invalid key', () async {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--bad=test'];
+    final args = ['--bad=test'];
 
     expect(
         () => cmd.options.parse(args),
@@ -27,31 +27,31 @@ void main() {
   });
 
   test('Command empty value', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--flavor=postgres'];
+    final args = ['--flavor=postgres'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
     expect(cmd.scopes, null);
   });
 
   test('Command list of values', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--scopes=a b c d'];
+    final args = ['--scopes=a b c d'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
     expect(cmd.scopes, ['a', 'b', 'c', 'd']);
   });
 
   test('Command invalid decode key', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--scopes=a b c d'];
+    final args = ['--scopes=a b c d'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
     expect(
         () => cmd.decode('invalid'),
@@ -60,11 +60,11 @@ void main() {
   });
 
   test('Command required key', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--scopes=a b c d'];
+    final args = ['--scopes=a b c d'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
 
     expect(
@@ -74,21 +74,21 @@ void main() {
   });
 
   test('Command int conversion', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--count=10'];
+    final args = ['--count=10'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
     expect(cmd.count, equals(10));
   });
 
   test('Command missing optional arg', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = <String>[];
+    final args = <String>[];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
     expect(cmd.people, isNull);
   });
@@ -110,11 +110,11 @@ void main() {
   });
 
   test('Command invalid int conversion', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--count=aa'];
+    final args = ['--count=aa'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
 
     expect(
@@ -124,22 +124,22 @@ void main() {
   });
 
   test('Command bool conversion ', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--useSSL'];
+    final args = ['--useSSL'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
 
     expect(cmd.useSSl, equals(true));
   });
 
   test('Command bool conversion - negated ', () {
-    var cmd = TestCLICommand();
+    final cmd = TestCLICommand();
 
-    var args = ['--no-useSSL'];
+    final args = ['--no-useSSL'];
 
-    var results = cmd.options.parse(args);
+    final results = cmd.options.parse(args);
     cmd.process(results);
 
     expect(cmd.useSSl, equals(false));
@@ -192,8 +192,8 @@ class TestCLICommand extends CLICommand {
           "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
       defaultsTo: "")
   List<String>? get scopes {
-    String? v = decode("scopes");
-    if (v.isEmpty) {
+    final String? v = decode("scopes");
+    if (v!.isEmpty) {
       return null;
     }
     return v.split(" ").toList();

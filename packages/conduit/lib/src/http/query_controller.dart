@@ -37,11 +37,11 @@ abstract class QueryController<InstanceType extends ManagedObject>
   @override
   FutureOr<RequestOrResponse> willProcessRequest(Request req) {
     if (req.path.orderedVariableNames.isNotEmpty) {
-      var firstVarName = req.path.orderedVariableNames.first;
-      var idValue = req.path.variables[firstVarName];
+      final firstVarName = req.path.orderedVariableNames.first;
+      final idValue = req.path.variables[firstVarName];
 
       if (idValue != null) {
-        var primaryKeyDesc =
+        final primaryKeyDesc =
             query!.entity.attributes[query!.entity.primaryKey]!;
         if (primaryKeyDesc.isAssignableWith(idValue)) {
           query!.where((o) => o[query!.entity.primaryKey]).equalTo(idValue);

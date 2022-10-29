@@ -13,7 +13,7 @@ void main() {
     });
 
     test("Start with HTTPS", () async {
-      var ciDirUri = getCIDirectoryUri();
+      final ciDirUri = getCIDirectoryUri();
 
       app = Application<TestChannel>()
         ..options.certificateFilePath = ciDirUri
@@ -25,15 +25,15 @@ void main() {
 
       await app.start(numberOfInstances: 1);
 
-      var completer = Completer<List<int>>();
-      var socket = await SecureSocket.connect("localhost", 8888,
+      final completer = Completer<List<int>>();
+      final socket = await SecureSocket.connect("localhost", 8888,
           onBadCertificate: (_) => true);
-      var request =
+      const request =
           "GET /r HTTP/1.1\r\nConnection: close\r\nHost: localhost\r\n\r\n";
       socket.add(request.codeUnits);
 
-      socket.listen((bytes) => completer.complete(bytes));
-      var httpResult = String.fromCharCodes(await completer.future);
+      socket.listen(completer.complete);
+      final httpResult = String.fromCharCodes(await completer.future);
       expect(httpResult, contains("200 OK"));
       await socket.close();
     });

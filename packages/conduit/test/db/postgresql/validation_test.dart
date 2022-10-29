@@ -14,7 +14,7 @@ void main() {
 
   test("update runs update validations", () async {
     var q = Query<T>(ctx)..values.aOrb = "a";
-    var objectID = (await q.insert()).id;
+    final objectID = (await q.insert()).id;
 
     q = Query<T>(ctx)
       ..where((o) => o.id).equalTo(objectID)
@@ -57,7 +57,7 @@ void main() {
   });
 
   test("updateOne runs update validations", () async {
-    var q = Query<T>(ctx)
+    final q = Query<T>(ctx)
       ..where((o) => o.id).equalTo(1)
       ..values.equalTo2OnUpdate = 3;
     try {
@@ -107,8 +107,8 @@ void main() {
   });
 
   test("valueMap ignores validations", () async {
-    var q = Query<T>(ctx)..valueMap = {"aOrb": "c", "equalTo1OnInsert": 10};
-    var o = await q.insert();
+    final q = Query<T>(ctx)..valueMap = {"aOrb": "c", "equalTo1OnInsert": 10};
+    final o = await q.insert();
     expect(o.aOrb, "c");
     expect(o.equalTo1OnInsert, 10);
   });
@@ -122,15 +122,15 @@ void main() {
   });
 
   test("willInsert runs prior to insert", () async {
-    var q = Query<U>(ctx);
-    var o = await q.insert();
+    final q = Query<U>(ctx);
+    final o = await q.insert();
     expect(o.id, isNotNull);
     expect(o.q, "willInsert");
   });
 
   test("ManagedObject onUpdate is subject to all validations", () async {
     var q = Query<V>(ctx);
-    var o = await q.insert();
+    final o = await q.insert();
 
     q = Query<V>(ctx)..where((o) => o.id).equalTo(o.id);
     try {
@@ -143,7 +143,7 @@ void main() {
   });
 
   test("ManagedObject onInsert is subject to all validations", () async {
-    var q = Query<W>(ctx);
+    final q = Query<W>(ctx);
     try {
       await q.insert();
       expect(true, false);

@@ -103,8 +103,8 @@ void main() {
       // If you are adding a template, just add it to this list. If you are renaming/deleting a template,
       // make sure there is still a 'default' template.
       await cli.run("create", ["list-templates"]);
-      var names = ["db", "db_and_auth", "default"];
-      var lines = cli.output.split("\n");
+      final names = ["db", "db_and_auth", "default"];
+      final lines = cli.output.split("\n");
 
       expect(lines.length, names.length + 4);
       for (var n in names) {
@@ -114,11 +114,13 @@ void main() {
 
     test("Template gets generated from local path, project points to it",
         () async {
-      var res = await cli.run("create", ["test_project", "--offline"]);
+      final res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      List packages = jsonDecode(File(join(cli.agent.workingDirectory.path,
-              "test_project", ".dart_tool/package_config.json"))
+      final List packages = jsonDecode(File(join(
+              cli.agent.workingDirectory.path,
+              "test_project",
+              ".dart_tool/package_config.json"))
           .readAsStringSync())['packages'] as List;
       final conduitPacakge =
           packages.firstWhere((element) => element['name'] == 'conduit');
@@ -142,9 +144,9 @@ void main() {
       test(
         "Templates can use 'this' version of Conduit in their dependencies",
         () {
-          var projectDir = Directory(join("templates", template));
-          var pubspec = File(join(projectDir.path, "pubspec.yaml"));
-          var contents = loadYaml(pubspec.readAsStringSync());
+          final projectDir = Directory(join("templates", template));
+          final pubspec = File(join(projectDir.path, "pubspec.yaml"));
+          final contents = loadYaml(pubspec.readAsStringSync());
           final projectVersionConstraint = VersionConstraint.parse(
             contents["dependencies"]["conduit"] as String,
           );
@@ -168,7 +170,7 @@ void main() {
         );
 
         const String cmd = 'dart';
-        var res = Process.runSync(
+        final res = Process.runSync(
           cmd,
           ["pub", "run", "test", "-j", "1"],
           runInShell: true,
@@ -180,7 +182,11 @@ void main() {
         print(res.stderr);
 
         expect(res.exitCode, 0);
-        expect(res.stdout, contains(" passed."));
+        try {
+          expect(res.stdout, contains("All tests passed!"));
+        } catch (_) {
+          expect(res.stdout, contains(" passed."));
+        }
       });
     }
   });

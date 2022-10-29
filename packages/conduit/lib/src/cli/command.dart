@@ -112,13 +112,12 @@ abstract class CLICommand {
   T decode<T extends Object>(
     String key,
   ) {
-    T? val = decodeOptional(key);
+    final T? val = decodeOptional(key);
 
-    if (val == null) {
-      throw CLIException('The required argument "$key" was not passed.');
+    if (val != null) {
+      return val;
     }
-
-    return val;
+    throw CLIException('The required argument "$key" was not passed.');
   }
 
   /// Use this method to extract an optional value for the command line argument for [key].
@@ -143,12 +142,11 @@ abstract class CLICommand {
       }
 
       if (T == int && val is String) {
-        var t = int.tryParse(val);
-        if (t == null) {
-          throw CLIException(
-              'Invalid integer value "$val" for argument "$key".');
-        } else
+        final t = int.tryParse(val);
+        if (t != null) {
           return t as T;
+        }
+        throw CLIException('Invalid integer value "$val" for argument "$key".');
       }
       return RuntimeContext.current.coerce<T>(val);
     } on TypeCoercionException catch (_) {
@@ -158,10 +156,7 @@ abstract class CLICommand {
   }
 
   T? _orElse<T>(T? Function()? orElse) {
-    if (orElse != null)
-      return orElse();
-    else
-      return null;
+    return (orElse != null) ? orElse() : null;
   }
 
   void registerCommand(CLICommand cmd) {
@@ -236,12 +231,12 @@ abstract class CLICommand {
 
   Future determineToolVersion() async {
     try {
-      var toolLibraryFilePath = (await Isolate.resolvePackageUri(
+      final toolLibraryFilePath = (await Isolate.resolvePackageUri(
               currentMirrorSystem().findLibrary(#conduit).uri))!
           .toFilePath(windows: Platform.isWindows);
-      var conduitDirectory = Directory(FileSystemEntity.parentOf(
+      final conduitDirectory = Directory(FileSystemEntity.parentOf(
           FileSystemEntity.parentOf(toolLibraryFilePath)));
-      var toolPubspecFile =
+      final toolPubspecFile =
           File.fromUri(conduitDirectory.absolute.uri.resolve("pubspec.yaml"));
 
       final toolPubspecContents =
@@ -287,7 +282,7 @@ abstract class CLICommand {
   String get detailedDescription => "";
 
   String get usage {
-    var buf = StringBuffer(name);
+    final buf = StringBuffer(name);
     if (_commandMap.isNotEmpty) {
       buf.write(" <command>");
     }
@@ -331,19 +326,20 @@ abstract class CLICommand {
     if (options.commands.isNotEmpty) {
       print("Available sub-commands:");
 
-      var commandNames = options.commands.keys.toList();
+      final commandNames = options.commands.keys.toList();
       commandNames.sort((a, b) => b.length.compareTo(a.length));
-      var length = commandNames.first.length + 3;
+      final length = commandNames.first.length + 3;
       commandNames.forEach((command) {
-        var desc = _commandMap[command]?.description;
+        final desc = _commandMap[command]?.description;
         print("  ${command.padRight(length, " ")}$desc");
       });
     }
   }
 
   bool isExecutableInShellPath(String name) {
-    String locator = Platform.isWindows ? "where" : "which";
-    ProcessResult results = Process.runSync(locator, [name], runInShell: true);
+    final String locator = Platform.isWindows ? "where" : "which";
+    final ProcessResult results =
+        Process.runSync(locator, [name], runInShell: true);
 
     return results.exitCode == 0;
   }

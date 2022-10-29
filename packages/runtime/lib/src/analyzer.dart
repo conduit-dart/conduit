@@ -30,16 +30,20 @@ class CodeAnalyzer {
 
   Future<AnalysisResult> resolveUnitOrLibraryAt(Uri uri) async {
     if (FileSystemEntity.isFileSync(
-        uri.toFilePath(windows: Platform.isWindows))) {
-      return await resolveUnitAt(uri);
+      uri.toFilePath(windows: Platform.isWindows),
+    )) {
+      return resolveUnitAt(uri);
     } else {
-      return await resolveLibraryAt(uri);
+      return resolveLibraryAt(uri);
     }
   }
 
   Future<ResolvedLibraryResult> resolveLibraryAt(Uri uri) async {
-    assert(FileSystemEntity.isDirectorySync(
-        uri.toFilePath(windows: Platform.isWindows)));
+    assert(
+      FileSystemEntity.isDirectorySync(
+        uri.toFilePath(windows: Platform.isWindows),
+      ),
+    );
     for (final ctx in contexts.contexts) {
       final path = getPath(uri);
       if (_resolvedAsts.containsKey(path)) {
@@ -56,8 +60,11 @@ class CodeAnalyzer {
   }
 
   Future<ResolvedUnitResult> resolveUnitAt(Uri uri) async {
-    assert(FileSystemEntity.isFileSync(
-        uri.toFilePath(windows: Platform.isWindows)));
+    assert(
+      FileSystemEntity.isFileSync(
+        uri.toFilePath(windows: Platform.isWindows),
+      ),
+    );
     for (final ctx in contexts.contexts) {
       final path = getPath(uri);
       if (_resolvedAsts.containsKey(path)) {
@@ -83,12 +90,14 @@ class CodeAnalyzer {
       if (e is StateError || e is TypeError || e is ArgumentError) {
         return null;
       }
-      throw e;
+      rethrow;
     }
   }
 
   List<ClassDeclaration> getSubclassesFromFile(
-      String superclassName, Uri fileUri) {
+    String superclassName,
+    Uri fileUri,
+  ) {
     return _getFileAstRoot(fileUri)
         .declarations
         .whereType<ClassDeclaration>()
@@ -97,19 +106,18 @@ class CodeAnalyzer {
   }
 
   CompilationUnit _getFileAstRoot(Uri fileUri) {
-    assert(FileSystemEntity.isFileSync(
-        fileUri.toFilePath(windows: Platform.isWindows)));
+    assert(
+      FileSystemEntity.isFileSync(
+        fileUri.toFilePath(windows: Platform.isWindows),
+      ),
+    );
     try {
       final path = getPath(fileUri);
       if (_resolvedAsts.containsKey(path)) {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
-    } catch (e) {
-      if (e is ArgumentError) {
-      } else {
-        print(e);
-      }
-    }
+      // ignore: empty_catches
+    } catch (e) {}
     final unit = contexts
         .contextFor(path)
         .currentSession
@@ -119,6 +127,7 @@ class CodeAnalyzer {
 
   static String getPath(dynamic inputUri) {
     return PhysicalResourceProvider.INSTANCE.pathContext.normalize(
-        PhysicalResourceProvider.INSTANCE.pathContext.fromUri(inputUri));
+      PhysicalResourceProvider.INSTANCE.pathContext.fromUri(inputUri),
+    );
   }
 }

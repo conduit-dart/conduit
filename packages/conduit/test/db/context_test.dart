@@ -22,7 +22,7 @@ void main() {
     });
 
     test("Queries are sent to the correct database", () async {
-      var q = Query<T>(ctx1!)..values.name = "bob";
+      final q = Query<T>(ctx1!)..values.name = "bob";
       await q.insert();
 
       final t1 = await Query<T>(ctx1!).fetch();
@@ -110,11 +110,11 @@ class _U {
 class U extends ManagedObject<_U> implements _U {}
 
 Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
-  var persistentStore = PostgresTestConfig().persistentStore();
+  final persistentStore = PostgresTestConfig().persistentStore();
 
-  var commands =
+  final commands =
       PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
-  var context = ManagedContext(dataModel, persistentStore);
+  final context = ManagedContext(dataModel, persistentStore);
 
   for (var cmd in commands) {
     await persistentStore.execute(cmd);

@@ -23,7 +23,7 @@ void main() {
       ..where((o) => o.d).equalTo(1.0)
       ..where((o) => o.doc).equalTo(Document({"k": "v"}));
 
-    var builder = (q as PostgresQuery).createFetchBuilder();
+    final builder = (q as PostgresQuery).createFetchBuilder();
     expect(builder.predicate!.format, contains("id:int8"));
     expect(builder.predicate!.format, contains("n:text"));
     expect(builder.predicate!.format, contains("t:timestamp"));
@@ -45,8 +45,8 @@ void main() {
       ..values.d = 1.0
       ..values.doc = Document({"k": "v"});
 
-    var builder = PostgresQueryBuilder(q as PostgresQuery);
-    var insertString = builder.sqlValuesToInsert;
+    final builder = PostgresQueryBuilder(q as PostgresQuery);
+    final insertString = builder.sqlValuesToInsert;
     expect(insertString, contains("id:int8"));
     expect(insertString, contains("n:text"));
     expect(insertString, contains("t:timestamp"));

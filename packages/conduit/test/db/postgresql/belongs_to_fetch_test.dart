@@ -29,13 +29,14 @@ void main() {
 
   group("Assign non-join matchers to belongsToProperty", () {
     test("Can use identifiedBy", () async {
-      var q = Query<ChildObject>(ctx!)..where((o) => o.parents).identifiedBy(1);
-      var results = await q.fetch();
+      final q = Query<ChildObject>(ctx!)
+        ..where((o) => o.parents).identifiedBy(1);
+      final results = await q.fetch();
 
       expect(results.length,
           rootObjects.firstWhere((r) => r.rid == 1).children!.length);
       for (var child in rootObjects.first.children!) {
-        var matching = results.firstWhere((c) => c.cid == child.cid);
+        final matching = results.firstWhere((c) => c.cid == child.cid);
         expect(child.value1, matching.value1);
         expect(child.value2, matching.value2);
         expect(child.parents!.rid, 1);
@@ -45,13 +46,14 @@ void main() {
     test(
         "Can match on belongsTo relationship's primary key, does not cause join",
         () async {
-      var q = Query<ChildObject>(ctx!)..where((o) => o.parents!.rid).equalTo(1);
-      var results = await q.fetch();
+      final q = Query<ChildObject>(ctx!)
+        ..where((o) => o.parents!.rid).equalTo(1);
+      final results = await q.fetch();
 
       expect(results.length,
           rootObjects.firstWhere((r) => r.rid == 1).children!.length);
       for (var child in rootObjects.first.children!) {
-        var matching = results.firstWhere((c) => c.cid == child.cid);
+        final matching = results.firstWhere((c) => c.cid == child.cid);
         expect(child.value1, matching.value1);
         expect(child.value2, matching.value2);
         expect(child.parents!.rid, 1);
@@ -62,7 +64,7 @@ void main() {
       var q = Query<ChildObject>(ctx!)..where((o) => o.parents).isNull();
       var results = await q.fetch();
 
-      var childNotChildren =
+      final childNotChildren =
           rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
 
       expect(results.length, childNotChildren.length);
@@ -74,7 +76,7 @@ void main() {
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNull();
       results = await q.fetch();
 
-      var childrenNotChild =
+      final childrenNotChild =
           rootObjects.expand((r) => r.children ?? []).toList();
 
       expect(results.length, childrenNotChild.length);
@@ -88,7 +90,7 @@ void main() {
       var q = Query<ChildObject>(ctx!)..where((o) => o.parents).isNotNull();
       var results = await q.fetch();
 
-      var childrenNotChild = rootObjects
+      final childrenNotChild = rootObjects
           .expand((r) => r.children ?? [])
           .where((c) => c != null)
           .toList();
@@ -101,7 +103,7 @@ void main() {
 
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNotNull();
       results = await q.fetch();
-      var childNotChildren =
+      final childNotChildren =
           rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
 
       expect(results.length, childNotChildren.length);
@@ -113,11 +115,11 @@ void main() {
   });
 
   test("Multiple joins from same table", () async {
-    var q = Query<ChildObject>(ctx!)
+    final q = Query<ChildObject>(ctx!)
       ..sortBy((c) => c.cid, QuerySortOrder.ascending)
       ..join(object: (c) => c.parent)
       ..join(object: (c) => c.parents);
-    var results = await q.fetch();
+    final results = await q.fetch();
 
     expect(
         results.map((c) => c.asMap()).toList(),
@@ -145,8 +147,8 @@ void main() {
 
   group("Join on parent of hasMany relationship", () {
     test("Standard join", () async {
-      var q = Query<ChildObject>(ctx!)..join(object: (c) => c.parents);
-      var results = await q.fetch();
+      final q = Query<ChildObject>(ctx!)..join(object: (c) => c.parents);
+      final results = await q.fetch();
 
       expect(
           results.map((c) => c.asMap()).toList(),
@@ -179,9 +181,9 @@ void main() {
     });
 
     test("Nested join", () async {
-      var q = Query<GrandChildObject>(ctx!);
+      final q = Query<GrandChildObject>(ctx!);
       q.join(object: (c) => c.parents).join(object: (c) => c.parents);
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((g) => g.asMap()).toList(),
@@ -237,13 +239,13 @@ void main() {
     });
 
     test("Bidirectional join", () async {
-      var q = Query<ChildObject>(ctx!)
+      final q = Query<ChildObject>(ctx!)
         ..sortBy((c) => c.cid, QuerySortOrder.ascending)
         ..join(set: (c) => c.grandChildren)
             .sortBy((g) => g.gid, QuerySortOrder.descending)
         ..join(object: (c) => c.parents);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((c) => c.asMap()).toList(),
@@ -322,14 +324,14 @@ void main() {
     test(
         "Can use two 'where' criteria on parent object when not joining parent object explicitly",
         () async {
-      var q = Query<ChildObject>(ctx!)
+      final q = Query<ChildObject>(ctx!)
         ..where((o) => o.parent!.value1).equalTo(1)
         ..where((o) => o.parent!.value2).equalTo(1);
       final res1 = await q.fetchOne();
       expect(res1, isNotNull);
       expect(res1!.cid, 1);
 
-      var q2 = Query<ChildObject>(ctx!)
+      final q2 = Query<ChildObject>(ctx!)
         ..where((o) => o.parent!.value1).equalTo(1)
         ..where((o) => o.parent!.value2).equalTo(2);
       final res2 = await q2.fetch();
@@ -339,10 +341,10 @@ void main() {
 
   group("Join on parent of hasOne relationship", () {
     test("Standard join", () async {
-      var q = Query<ChildObject>(ctx!)
+      final q = Query<ChildObject>(ctx!)
         ..sortBy((c) => c.cid, QuerySortOrder.ascending)
         ..join(object: (c) => c.parent);
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((c) => c.asMap()).toList(),
@@ -381,12 +383,12 @@ void main() {
     });
 
     test("Nested join", () async {
-      var q = Query<GrandChildObject>(ctx!)
+      final q = Query<GrandChildObject>(ctx!)
         ..sortBy((g) => g.gid, QuerySortOrder.ascending);
 
       q.join(object: (c) => c.parent).join(object: (c) => c.parent);
 
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((g) => g.asMap()).toList(),
@@ -438,9 +440,9 @@ void main() {
 
   group("Implicit joins", () {
     test("Standard implicit join", () async {
-      var q = Query<ChildObject>(ctx!)
+      final q = Query<ChildObject>(ctx!)
         ..where((c) => c.parents!.value1).equalTo(1);
-      var results = await q.fetch();
+      final results = await q.fetch();
 
       expect(
           results.map((c) => c.asMap()).toList(),
@@ -512,10 +514,10 @@ void main() {
     });
 
     test("Bidirectional implicit join", () async {
-      var q = Query<ChildObject>(ctx!)
+      final q = Query<ChildObject>(ctx!)
         ..where((o) => o.parents!.rid).equalTo(1)
         ..where((o) => o.grandChild).isNotNull();
-      var results = await q.fetch();
+      final results = await q.fetch();
       expect(
           results.map((c) => c.asMap()).toList(),
           equals([

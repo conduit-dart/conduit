@@ -220,7 +220,7 @@ abstract class ManagedObject<T> extends Serializable {
             throw ValidationException(["invalid input key '$key'"]);
           }
 
-          var decodedValue = property.convertFromPrimitiveValue(v);
+          final decodedValue = property.convertFromPrimitiveValue(v);
 
           if (!property.isAssignableWith(decodedValue)) {
             throw ValidationException(["invalid input type for key '$key'"]);
@@ -246,7 +246,7 @@ abstract class ManagedObject<T> extends Serializable {
   ///     var json = json.encode(model.asMap());
   @override
   Map<String, dynamic> asMap() {
-    var outputMap = <String, dynamic>{};
+    final outputMap = <String, dynamic>{};
 
     backing.contents!.forEach((k, v) {
       if (!_isPropertyPrivate(k!)) {
@@ -257,7 +257,7 @@ abstract class ManagedObject<T> extends Serializable {
     entity.attributes.values
         .where((attr) => attr!.transientStatus?.isAvailableAsOutput ?? false)
         .forEach((attr) {
-      var value = entity.runtime!.getTransientValueForKey(this, attr!.name);
+      final value = entity.runtime!.getTransientValueForKey(this, attr!.name);
       if (value != null) {
         outputMap[attr.name] = value;
       }

@@ -129,10 +129,10 @@ void main() {
 
     test("Can subscript top-level object and return array", () async {
       // {"key": [1, 2]},
-      var q = Query<Obj>(context!)
+      final q = Query<Obj>(context!)
         ..where((o) => o.id).equalTo(2)
         ..returningProperties((obj) => [obj.id, obj.document!["key"]]);
-      var o = await q.fetchOne();
+      final o = await q.fetchOne();
       expect(o!.document!.data, [1, 2]);
     });
 

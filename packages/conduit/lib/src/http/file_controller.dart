@@ -46,7 +46,7 @@ class FileController extends Controller {
       : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
         _onFileNotFound = onFileNotFound;
 
-  static Map<String, ContentType> _defaultExtensionMap = {
+  static final Map<String, ContentType> _defaultExtensionMap = {
     /* Web content */
     "html": ContentType("text", "html", charset: "utf-8"),
     "css": ContentType("text", "css", charset: "utf-8"),
@@ -151,8 +151,8 @@ class FileController extends Controller {
       return Response(HttpStatus.methodNotAllowed, null, null);
     }
 
-    var relativePath = request.path.remainingPath;
-    var fileUri = _servingDirectory.resolve(relativePath ?? "");
+    final relativePath = request.path.remainingPath;
+    final fileUri = _servingDirectory.resolve(relativePath ?? "");
     File file;
     if (FileSystemEntity.isDirectorySync(fileUri.toFilePath())) {
       file = File.fromUri(fileUri.resolve("index.html"));
@@ -165,7 +165,7 @@ class FileController extends Controller {
         return _onFileNotFound!(this, request);
       }
 
-      var response = Response.notFound();
+      final response = Response.notFound();
       if (request.acceptsContentType(ContentType.html)) {
         response
           ..body = "<html><h3>404 Not Found</h3></html>"
@@ -174,20 +174,20 @@ class FileController extends Controller {
       return response;
     }
 
-    var lastModifiedDate = file.lastModifiedSync();
-    var ifModifiedSince =
+    final lastModifiedDate = file.lastModifiedSync();
+    final ifModifiedSince =
         request.raw.headers.value(HttpHeaders.ifModifiedSinceHeader);
     if (ifModifiedSince != null) {
-      var date = HttpDate.parse(ifModifiedSince);
+      final date = HttpDate.parse(ifModifiedSince);
       if (!lastModifiedDate.isAfter(date)) {
         return Response.notModified(lastModifiedDate, _policyForFile(file));
       }
     }
 
-    var lastModifiedDateStringValue = HttpDate.format(lastModifiedDate);
-    var contentType = contentTypeForExtension(path.extension(file.path)) ??
+    final lastModifiedDateStringValue = HttpDate.format(lastModifiedDate);
+    final contentType = contentTypeForExtension(path.extension(file.path)) ??
         ContentType("application", "octet-stream");
-    var byteStream = file.openRead();
+    final byteStream = file.openRead();
 
     return Response.ok(byteStream,
         headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue})
