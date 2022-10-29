@@ -1,95 +1,39 @@
 # Contributing
-- For bug fixes, please file an issue or submit a pull request to master. 
-- For documentation improvements (typos, errors, etc.), please submit a pull request to the branch `docs/source`.
-- For new features that are not already identified in issues, please file a new issue to discuss.
+Welcome to the project. All PRs are welcome, though I will be critical of PRs to the best of my ability. I want to find developers who can help check my work and also help foster newcomers so that they can help keep me accountable as well. Thank you for your support. If you have any questions, please reach out on the (discord server)[https://discord.gg/FyJj45NXPx]. If I don't respond on the server, feel free to reach out to me (frosty#1337).
 
-## Pull Request Requirements
+## Branching
+If you have a change you want to commit create a branch with the below naming conventions and topic names.
+`docs/<description>`
+`fix/<username>-<description>`
+`feature/<username>-<description>`
+`refactor/<username>-<description>`
+If the scope of the issue changes for any reason, please rebranch and use the appropriate anming convention.
 
-Please document the intent of the pull request. All non-documentation pull requests must also include automated tests that cover the new code, including failure cases. If applicable, please update the documentation in the `docs/source` branch.
-
-## Running Tests
-
-Tests will automatically be run when you submit a pull request (PR), but you will need to run tests locally before submitting your PR.
-
-The Conduit repo contains scripts to make running the unit tests easier.
-
-The scripts a written using dcli so you need to install dcli first:
-
+## Local Testing
+While we do provide CI/CD through github actions, it is slow to get results on the CI. You should set up your environment in order to run tests locally before pushing commits
+### Setup
+To set up your testing environment, a general rule is to follow what is provided in the CI configurations:
 ```bash
-pub global activate dcli
+# This can be found in .github/workflows/test.yml
+dart pub global activate melos
+cd packages/isolate_exec_test_packages/test_package && dart pub get
+melos bootstrap
+melos cache-source
+. ./ci/.env
 ```
-
-
-To configure unit tests, including install a docker based postgres image run:
-
+Provide a database with the appropriate configurations. I highly recommend that you (install docker)[https://docs.docker.com/get-docker/] and use the provided docker compose file at [ci/docker-compose.yaml] which sets up a similar database used in the github CI.
+### Running Tests
+Currently there are three tests that need to be run to hit all the tests:
 ```bash
-tool/setup_unit_tests.dart
-
+melos test-unit
+# These two need to be run inside packages/conduit
+dart test -j1 -t cli test/*
+dart tool/generated_test_runner.dart
 ```
+The first will run all the unit tests in conduit and all its dependencies. The last two test cli components and string-compiled code respectively.
 
-To run the unit tests:
+## PR Acceptance Requirements
+Please document the intent of the pull request. All non-documentation pull requests must also include automated tests that cover the new code, including failure cases. In the case that tests work locally, but not on the CI, please mention @j4qfrost on the PR. If I don't respond, the best way to contact me is through discord.
 
-```
-tool/run_unit_tests.dart
-```
-
-These scripts install a docker container running postgres on an alternate port 15432 and then
-run the unit test against those scripts.
-
-### Manual db configuration
-If you have to create your own postgres install (not recommended) then you need to configure
-it to run on port 15432.
-
-Environment variables:
-
-POSTGRES_HOST
-POSTGRES_PORT
-POSTGRES_USER
-POSTGRES_PASSWORD
-POSTGRES_DB
-POSTGRES_PORT
-
-
-tool/.setting.yaml
-
-```yaml
-# SettingsYaml settings file
-POSTGRES_HOST: localhost
-POSTGRES_PORT: 15432
-POSTGRES_USER: conduit_test_user
-POSTGRES_PASSWORD: conduit!
-POSTGRES_DB: conduit_test_db
-```
-
-
-
-If you have installed postgres yourself then you will need to create the test db:
-
-```bash
-psql -c 'create user conduit_test_user with createdb;' -U postgres
-psql -c "alter user conduit_test_user with password 'conduit!';" -U postgres
-psql -c 'create database conduit_test_db;' -U postgres
-psql -c 'grant all on database conduit_test_db to conduit_test_user;' -U postgres
-```
-
-# Running unit tests manually
-
-Before you can manually run the unit tests you MUST have configured your postgres db as described above.
-
-
-Run all tests with the following command:
-
-```
-pub run test -j 1
-```
-
-
-# Running individual unit tests
-
-If you need to run an individual unit tests that requires the test postgres db, can use:
-
-```
-tool/start_db.dart
-```
-
-You need to have either run tool/setup_unit_tests.dart to correctly configure the db settings.
+## Commits
+The project uses [melos](https://pub.dev/packages/melos) for tooling, which provides autoversioning based on [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). Commits to `master` will usually be squashed from PRs, so make sure that the PR name uses conventional commits to trigger the versioning and publishing CI; you do NOT need to use conventional commits on each commit to your branch.

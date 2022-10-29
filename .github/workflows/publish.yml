@@ -8,9 +8,13 @@ on:
 jobs:
   publish:
     if: |
-      startsWith(github.event.head_commit.message, 'feat')
+      startsWith(github.event.head_commit.message, 'docs')
+      || startsWith(github.event.head_commit.message, 'feat')
       || startsWith(github.event.head_commit.message, 'fix')
-      || startsWith(github.event.head_commit.message, 'BREAKING CHANGE')
+      || startsWith(github.event.head_commit.message, 'bug')
+      || startsWith(github.event.head_commit.message, 'perf')
+      || startsWith(github.event.head_commit.message, 'refactor')
+      || startsWith(github.event.head_commit.message, 'revert')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -34,7 +38,7 @@ jobs:
     - name: Uptick versions
       run: melos version --yes
     - name: Changelog
-      run: git diff master packages/conduit/CHANGELOG.md > CHANGES.txt
+      run: git diff $GITHUB_SHA packages/conduit/CHANGELOG.md > CHANGES.txt
     - name: Cache Source
       run: melos cache-source
     - name: Push tags

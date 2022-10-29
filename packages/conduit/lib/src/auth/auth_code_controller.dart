@@ -10,7 +10,7 @@ import 'package:conduit_open_api/v3.dart';
 import 'auth.dart';
 
 /// Provides [AuthCodeController] with application-specific behavior.
-@deprecated
+@Deprecated('AuthCodeController is deprecated. See docs.')
 abstract class AuthCodeControllerDelegate {
   /// Returns an HTML representation of a login form.
   ///
@@ -47,7 +47,7 @@ abstract class AuthCodeControllerDelegate {
 ///         .route("/auth/code")
 ///         .link(() => new AuthCodeController(authServer));
 ///
-@deprecated
+@Deprecated('Use AuthRedirectController instead.')
 class AuthCodeController extends ResourceController {
   /// Creates a new instance of an [AuthCodeController].
   ///

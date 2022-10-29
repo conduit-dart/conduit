@@ -7,6 +7,10 @@ on:
 
 jobs:
   all_unit:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -33,6 +37,10 @@ jobs:
         run: melos test-unit
 
   conduit_cli:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
     env:
       TEST_DIR: packages/conduit
     runs-on: ubuntu-latest
