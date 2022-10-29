@@ -167,7 +167,7 @@ class APIDocumentContext {
   /// in [document]. All [document] closures will be executes and awaited on before finishing [document].
   /// These closures are called in the order they were added.
   void defer(FutureOr Function() document) {
-    _deferredOperations.add(document as Future);
+    _deferredOperations.add(Future(document));
   }
 
   /// Finalizes [document] and returns it as a serializable [Map].
