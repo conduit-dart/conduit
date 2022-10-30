@@ -55,6 +55,7 @@ void main() {
       }
 
       await Future.wait(reqs);
+      sleep(const Duration(seconds: 1));
 
       expect(
           responses.any(
