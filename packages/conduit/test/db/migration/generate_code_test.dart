@@ -1,3 +1,5 @@
+// ignore_for_file: missing_whitespace_between_adjacent_strings
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
@@ -61,10 +63,9 @@ void main() {
       expect(builder.commands.length, 1);
       expect(
           builder.commands.first,
-          // ignore: missing_whitespace_between_adjacent_strings
           'database.createTable(SchemaTable("foo", ['
-          'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false), '
-          'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false) '
+          'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false),'
+          'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false)'
           '], uniqueColumnSetNames: ["id","x"]));');
     });
   });
