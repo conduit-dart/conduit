@@ -16,7 +16,8 @@ void main() {
     } on StateError catch (e) {
       expect(
         e.toString(),
-        "Bad state: Invalid binding 'x' on 'ErrorDefault.get1': "
+        // ignore: missing_whitespace_between_adjacent_strings
+        "Bad state: Invalid binding 'x' on 'ErrorDefault.get1':"
         "Parameter type does not implement static parse method.",
       );
     }

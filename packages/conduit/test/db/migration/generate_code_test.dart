@@ -61,7 +61,8 @@ void main() {
       expect(builder.commands.length, 1);
       expect(
           builder.commands.first,
-          'database.createTable(SchemaTable("foo", [ '
+          // ignore: missing_whitespace_between_adjacent_strings
+          'database.createTable(SchemaTable("foo", ['
           'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false), '
           'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false) '
           '], uniqueColumnSetNames: ["id","x"]));');
