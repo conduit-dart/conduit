@@ -54,7 +54,7 @@ abstract class TestHarnessORMMixin {
   /// This method should be invoked in [TestHarness.afterStart] and typically is invoked
   /// in [tearDown] for your test suite.
   Future resetData({Logger? logger}) async {
-    await context?.persistentStore?.close();
+    await context?.persistentStore.close();
     await addSchema(logger: logger);
     await seed();
   }
