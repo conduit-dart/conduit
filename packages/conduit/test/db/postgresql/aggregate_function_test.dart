@@ -33,11 +33,13 @@ void main() {
       test("Reduce functions work correctly in a tansaction", () async {
         int? result;
         await ctx.transaction((t) async {
-          await t.insertObject(Test()
-            ..i = 1
-            ..d = 2.0
-            ..dt = DateTime.now()
-            ..s = "x");
+          await t.insertObject(
+            Test()
+              ..i = 1
+              ..d = 2.0
+              ..dt = DateTime.now()
+              ..s = "x",
+          );
           final q = Query<Test>(t);
           result = await q.reduce.count();
         });
@@ -53,21 +55,27 @@ void main() {
         final q = Query<Test>(ctx);
         final result = await q.reduce.average((t) => t.i);
         expect(
-            result, objects.fold<int>(0, (p, n) => p + n.i!) / objects.length);
+          result,
+          objects.fold<int>(0, (p, n) => p + n.i!) / objects.length,
+        );
       });
 
       test("produces average for double type", () async {
         final q = Query<Test>(ctx);
         final result = await q.reduce.average((t) => t.d);
-        expect(result,
-            objects.fold<double>(0, (p, n) => p + n.d!) / objects.length);
+        expect(
+          result,
+          objects.fold<double>(0, (p, n) => p + n.d!) / objects.length,
+        );
       });
 
       test("with predicate", () async {
         final q = Query<Test>(ctx)..where((p) => p.id).lessThanEqualTo(5);
         final result = await q.reduce.average((t) => t.i);
         expect(
-            result, objects.sublist(0, 5).fold<int>(0, (p, n) => p + n.i!) / 5);
+          result,
+          objects.sublist(0, 5).fold<int>(0, (p, n) => p + n.i!) / 5,
+        );
       });
 
       test("with no values", () async {
@@ -254,18 +262,20 @@ Future<List<Test>> populate(ManagedContext ctx, {bool overflow = false}) async {
     i = 100000000000;
   }
 
-  return Future.wait(List.generate(10, (_) {
-    final q = Query<Test>(ctx)
-      ..values.s = s
-      ..values.dt = dt
-      ..values.d = d
-      ..values.i = i;
+  return Future.wait(
+    List.generate(10, (_) {
+      final q = Query<Test>(ctx)
+        ..values.s = s
+        ..values.dt = dt
+        ..values.d = d
+        ..values.i = i;
 
-    s += "a";
-    dt = dt.add(const Duration(seconds: 10));
-    d += 10.0;
-    i += 10;
+      s += "a";
+      dt = dt.add(const Duration(seconds: 10));
+      d += 10.0;
+      i += 10;
 
-    return q.insert();
-  }));
+      return q.insert();
+    }),
+  );
 }

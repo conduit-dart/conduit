@@ -6,9 +6,11 @@ import 'package:conduit/src/db/query/query.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
   ColumnExpressionBuilder(
-      TableBuilder table, ManagedPropertyDescription? property, this.expression,
-      {this.prefix = ""})
-      : super(table, property);
+    TableBuilder table,
+    ManagedPropertyDescription? property,
+    this.expression, {
+    this.prefix = "",
+  }) : super(table, property);
 
   final String? prefix;
   PredicateExpression? expression;
@@ -26,33 +28,42 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     } else if (expr is SetMembershipExpression) {
       return containsPredicate(expr.values, within: expr.within);
     } else if (expr is StringExpression) {
-      return stringPredicate(expr.operator, expr.value,
-          caseSensitive: expr.caseSensitive,
-          invertOperator: expr.invertOperator,
-          allowSpecialCharacters: expr.allowSpecialCharacters);
+      return stringPredicate(
+        expr.operator,
+        expr.value,
+        caseSensitive: expr.caseSensitive,
+        invertOperator: expr.invertOperator,
+        allowSpecialCharacters: expr.allowSpecialCharacters,
+      );
     }
 
     throw UnsupportedError(
-        "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by 'PostgreSQL'.");
+      "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by 'PostgreSQL'.",
+    );
   }
 
   QueryPredicate comparisonPredicate(
-      PredicateOperator? operator, dynamic value) {
+    PredicateOperator? operator,
+    dynamic value,
+  ) {
     final name = sqlColumnName(withTableNamespace: true);
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
     return QueryPredicate(
-        "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName$sqlTypeSuffix",
-        {variableName: convertValueForStorage(value)});
+      "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName$sqlTypeSuffix",
+      {variableName: convertValueForStorage(value)},
+    );
   }
 
-  QueryPredicate containsPredicate(Iterable<dynamic> values,
-      {bool within = true}) {
+  QueryPredicate containsPredicate(
+    Iterable<dynamic> values, {
+    bool within = true,
+  }) {
     final tokenList = [];
     final pairedMap = <String, dynamic>{};
 
     var counter = 0;
-    values.forEach((value) {
+    for (final value in values) {
       final prefix = "$defaultPrefix${counter}_";
 
       final variableName = sqlColumnName(withPrefix: prefix);
@@ -60,7 +71,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
       pairedMap[variableName] = convertValueForStorage(value);
 
       counter++;
-    });
+    }
 
     final name = sqlColumnName(withTableNamespace: true);
     final keyword = within ? "IN" : "NOT IN";
@@ -72,8 +83,11 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     return QueryPredicate("$name ${isNull ? "ISNULL" : "NOTNULL"}", {});
   }
 
-  QueryPredicate rangePredicate(dynamic lhsValue, dynamic rhsValue,
-      {bool insideRange = true}) {
+  QueryPredicate rangePredicate(
+    dynamic lhsValue,
+    dynamic rhsValue, {
+    bool insideRange = true,
+  }) {
     final name = sqlColumnName(withTableNamespace: true);
     final lhsName = sqlColumnName(withPrefix: "${defaultPrefix}lhs_");
     final rhsName = sqlColumnName(withPrefix: "${defaultPrefix}rhs_");
@@ -87,10 +101,13 @@ class ColumnExpressionBuilder extends ColumnBuilder {
         });
   }
 
-  QueryPredicate stringPredicate(PredicateStringOperator operator, String value,
-      {bool caseSensitive = true,
-      bool invertOperator = false,
-      bool allowSpecialCharacters = true}) {
+  QueryPredicate stringPredicate(
+    PredicateStringOperator operator,
+    String value, {
+    bool caseSensitive = true,
+    bool invertOperator = false,
+    bool allowSpecialCharacters = true,
+  }) {
     final n = sqlColumnName(withTableNamespace: true);
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
@@ -114,12 +131,16 @@ class ColumnExpressionBuilder extends ColumnBuilder {
         break;
     }
 
-    return QueryPredicate("$n $operation @$variableName$sqlTypeSuffix",
-        {variableName: matchValue});
+    return QueryPredicate(
+      "$n $operation @$variableName$sqlTypeSuffix",
+      {variableName: matchValue},
+    );
   }
 
   String escapeLikeString(String input) {
     return input.replaceAllMapped(
-        RegExp(r"(\\|%|_)"), (Match m) => "\\${m[0]}");
+      RegExp(r"(\\|%|_)"),
+      (Match m) => "\\${m[0]}",
+    );
   }
 }

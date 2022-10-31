@@ -28,7 +28,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   IsolateEntryFunction get isolateEntryPoint => isolateServerEntryPoint;
 
   @override
-  Uri get libraryUri => (type!.owner as LibraryMirror).uri;
+  Uri get libraryUri => (type!.owner! as LibraryMirror).uri;
 
   bool get hasGlobalInitializationMethod {
     return type!.staticMembers[_globalStartSymbol] != null;
@@ -53,12 +53,15 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
 
   @override
   Iterable<APIComponentDocumenter?> getDocumentableChannelComponents(
-      ApplicationChannel channel) {
+    ApplicationChannel channel,
+  ) {
     final documenter = reflectType(APIComponentDocumenter);
     return type!.declarations.values
         .whereType<VariableMirror>()
-        .where((member) =>
-            !member.isStatic && member.type.isAssignableTo(documenter))
+        .where(
+          (member) =>
+              !member.isStatic && member.type.isAssignableTo(documenter),
+        )
         .map((dm) {
       return reflect(channel).getField(dm.simpleName).reflectee
           as APIComponentDocumenter?;
@@ -134,9 +137,13 @@ void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
 
   final runtime = ChannelRuntimeImpl(channelType);
 
-  final server = ApplicationIsolateServer(runtime.channelType,
-      params.configuration, params.identifier, params.parentMessagePort,
-      logToConsole: params.logToConsole);
+  final server = ApplicationIsolateServer(
+    runtime.channelType,
+    params.configuration,
+    params.identifier,
+    params.parentMessagePort,
+    logToConsole: params.logToConsole,
+  );
 
   server.start(shareHttpServer: true);
 }
@@ -188,7 +195,7 @@ class ControllerRuntimeImpl extends ControllerRuntime {
   }
   
   @override
-  bool get isMutable => ${isMutable};
+  bool get isMutable => $isMutable;
 
   ResourceControllerRuntime get resourceController => _resourceController;
   late ResourceControllerRuntime _resourceController;
@@ -219,14 +226,16 @@ class SerializableRuntimeImpl extends SerializableRuntime {
     } catch (e) {
       obj.additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.freeForm;
       obj.description =
-          "Failed to auto-document type '${MirrorSystem.getName(mirror.simpleName)}': ${e.toString()}";
+          "Failed to auto-document type '${MirrorSystem.getName(mirror.simpleName)}': $e";
     }
 
     return obj;
   }
 
   static APISchemaObject documentVariable(
-      APIDocumentContext context, VariableMirror mirror) {
+    APIDocumentContext context,
+    VariableMirror mirror,
+  ) {
     final APISchemaObject object = documentType(context, mirror.type)
       ..title = MirrorSystem.getName(mirror.simpleName);
 
@@ -234,7 +243,9 @@ class SerializableRuntimeImpl extends SerializableRuntime {
   }
 
   static APISchemaObject documentType(
-      APIDocumentContext context, TypeMirror type) {
+    APIDocumentContext context,
+    TypeMirror type,
+  ) {
     if (type.isAssignableTo(reflectType(int))) {
       return APISchemaObject.integer();
     } else if (type.isAssignableTo(reflectType(double))) {
@@ -247,7 +258,8 @@ class SerializableRuntimeImpl extends SerializableRuntime {
       return APISchemaObject.string(format: "date-time");
     } else if (type.isAssignableTo(reflectType(List))) {
       return APISchemaObject.array(
-          ofSchema: documentType(context, type.typeArguments.first));
+        ofSchema: documentType(context, type.typeArguments.first),
+      );
     } else if (type.isAssignableTo(reflectType(Map))) {
       if (!type.typeArguments.first.isAssignableTo(reflectType(String))) {
         throw ArgumentError("Unsupported type 'Map' with non-string keys.");
@@ -258,7 +270,7 @@ class SerializableRuntimeImpl extends SerializableRuntime {
             documentType(context, type.typeArguments.last);
     } else if (type.isAssignableTo(reflectType(Serializable))) {
       final instance = (type as ClassMirror)
-          .newInstance(const Symbol(''), []).reflectee as Serializable;
+          .newInstance(Symbol.empty, []).reflectee as Serializable;
       return instance.documentSchema(context);
     }
 

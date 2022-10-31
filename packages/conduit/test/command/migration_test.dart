@@ -1,4 +1,6 @@
 // ignore: unnecessary_const
+// ignore_for_file: always_declare_return_types
+
 @Tags(["cli"])
 import 'dart:async';
 import 'dart:io';
@@ -32,15 +34,19 @@ void main() {
           SchemaColumn("columnToEdit", ManagedPropertyType.string),
           SchemaColumn("columnToDelete", ManagedPropertyType.integer)
         ]),
-        SchemaTable("tableToDelete",
-            [SchemaColumn("whocares", ManagedPropertyType.integer)]),
-        SchemaTable("tableToRename",
-            [SchemaColumn("whocares", ManagedPropertyType.integer)])
+        SchemaTable(
+          "tableToDelete",
+          [SchemaColumn("whocares", ManagedPropertyType.integer)],
+        ),
+        SchemaTable(
+          "tableToRename",
+          [SchemaColumn("whocares", ManagedPropertyType.integer)],
+        )
       ]);
 
       final initialBuilder =
           SchemaBuilder.toSchema(store, schema, isTemporary: true);
-      for (var cmd in initialBuilder.commands) {
+      for (final cmd in initialBuilder.commands) {
         await store.execute(cmd);
       }
 
@@ -54,22 +60,29 @@ void main() {
 
       // 'Sync up' that schema to compare it
       final tableToKeep = schema.tableForName("tableToKeep")!;
-      tableToKeep.addColumn(SchemaColumn(
-          "addedColumn", ManagedPropertyType.integer,
-          defaultValue: "2"));
+      tableToKeep.addColumn(
+        SchemaColumn(
+          "addedColumn",
+          ManagedPropertyType.integer,
+          defaultValue: "2",
+        ),
+      );
       tableToKeep.removeColumn(tableToKeep.columnForName("columnToDelete")!);
       tableToKeep.columnForName("columnToEdit")!.defaultValue = "'foo'";
 
       schema.removeTable(schema.tableForName("tableToDelete")!);
 
-      schema.addTable(SchemaTable("foo", [
-        SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
-      ]));
+      schema.addTable(
+        SchemaTable("foo", [
+          SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
+        ]),
+      );
 
       expect(outSchema!.differenceFrom(schema).hasDifferences, false);
 
       final insertResults = await store.execute(
-          "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn");
+        "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn",
+      );
       expect(insertResults, [
         ['1', 2]
       ]);
@@ -80,20 +93,21 @@ void main() {
     final temporaryDirectory = Directory("migration_tmp");
     final migrationsDirectory =
         Directory.fromUri(temporaryDirectory.uri.resolve("migrations"));
-    final addFiles = (List<String> filenames) {
-      filenames.forEach((name) {
+    addFiles(List<String> filenames) {
+      for (final name in filenames) {
         File.fromUri(migrationsDirectory.uri.resolve(name))
             .writeAsStringSync(" ");
-      });
-    };
-    final addValidMigrationFile = (List<String> filenames) {
-      filenames.forEach((name) {
+      }
+    }
+
+    addValidMigrationFile(List<String> filenames) {
+      for (final name in filenames) {
         File.fromUri(migrationsDirectory.uri.resolve(name))
             .writeAsStringSync("""
 class Migration1 extends Migration { @override Future upgrade() async {} @override Future downgrade() async {} @override Future seed() async {} }
         """);
-      });
-    };
+      }
+    }
 
     setUp(() {
       temporaryDirectory.createSync();
@@ -106,7 +120,8 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
 
     test("Ignores not .migration.dart files", () async {
       addValidMigrationFile(
-          ["00000001.migration.dart", "a_foo.migration.dart"]);
+        ["00000001.migration.dart", "a_foo.migration.dart"],
+      );
       addFiles(["foobar.txt", ".DS_Store", "a.dart", "migration.dart"]);
       expect(migrationsDirectory.listSync().length, 6);
 
@@ -141,17 +156,23 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
 class Migration1 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable("foo", [
-      SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
-    ]));
+    database.createTable(
+      SchemaTable("foo", [
+        SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
+      ]),
+    );
 
     //database.renameTable(currentSchema["tableToRename"], "renamedTable");
     database.deleteTable("tableToDelete");
 
     database.addColumn(
-        "tableToKeep",
-        SchemaColumn("addedColumn", ManagedPropertyType.integer,
-            defaultValue: "2"));
+      "tableToKeep",
+      SchemaColumn(
+        "addedColumn",
+        ManagedPropertyType.integer,
+        defaultValue: "2",
+      ),
+    );
     database.deleteColumn("tableToKeep", "columnToDelete");
     //database.renameColumn()
     database.alterColumn("tableToKeep", "columnToEdit", (col) {

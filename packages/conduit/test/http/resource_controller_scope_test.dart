@@ -63,8 +63,11 @@ void main() {
       "If token does not have sufficient scope for method, return 403 and include required scope in body",
       () async {
     client.headers["authorization"] = "Bearer level1";
-    expectResponse(await client.request("/level1-authorizer").post(), 403,
-        body: {"error": "insufficient_scope", "scope": "level1 level2"});
+    expectResponse(
+      await client.request("/level1-authorizer").post(),
+      403,
+      body: {"error": "insufficient_scope", "scope": "level1 level2"},
+    );
   });
 
   test(
@@ -78,16 +81,22 @@ void main() {
       "If token has sufficient scope for only ONE of required scopes, do not allow it",
       () async {
     client.headers["authorization"] = "Bearer level1";
-    expectResponse(await client.request("/level1-authorizer").delete(), 403,
-        body: {"error": "insufficient_scope", "scope": "level1 level2"});
+    expectResponse(
+      await client.request("/level1-authorizer").delete(),
+      403,
+      body: {"error": "insufficient_scope", "scope": "level1 level2"},
+    );
   });
 
   test(
       "If token does not have any sufficient scopes for method requiring multiple scopes, do not allow it",
       () async {
     client.headers["authorization"] = "Bearer no-scope";
-    expectResponse(await client.request("/authorizer").delete(), 403,
-        body: {"error": "insufficient_scope", "scope": "level1 level2"});
+    expectResponse(
+      await client.request("/authorizer").delete(),
+      403,
+      body: {"error": "insufficient_scope", "scope": "level1 level2"},
+    );
   });
 }
 

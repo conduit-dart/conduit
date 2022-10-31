@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:isolate';
 
@@ -9,7 +11,10 @@ import 'package:conduit/src/application/channel.dart';
 
  */
 Future startApplication<T extends ApplicationChannel>(
-    Application<T> app, int isolateCount, SendPort parentPort) async {
+  Application<T> app,
+  int isolateCount,
+  SendPort parentPort,
+) async {
   final port = ReceivePort();
 
   port.listen((msg) {

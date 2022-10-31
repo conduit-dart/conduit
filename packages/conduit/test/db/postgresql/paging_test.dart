@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors, always_declare_return_types
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -55,13 +57,13 @@ void main() {
   group("Paging", () {
     ManagedContext? context;
 
-    final check = (List checkIDs, List<PageableTestModel> values) {
+    check(List checkIDs, List<PageableTestModel> values) {
       expect(checkIDs.length, values.length);
       final ids = values.map((v) => v.id).toList();
       for (int i = 0; i < ids.length; i++) {
         expect(ids[i], checkIDs[i]);
       }
-    };
+    }
 
     setUpAll(() async {
       context =
@@ -274,13 +276,13 @@ void main() {
 
   group("Failure cases", () {
     ManagedContext? context;
-    final check = (List checkIDs, List<PageableTestModel> values) {
+    check(List checkIDs, List<PageableTestModel> values) {
       expect(checkIDs.length, values.length);
       final ids = values.map((v) => v.id).toList();
       for (int i = 0; i < ids.length; i++) {
         expect(ids[i], checkIDs[i]);
       }
-    };
+    }
 
     setUpAll(() async {
       context = await PostgresTestConfig()
@@ -304,23 +306,30 @@ void main() {
         final _ = await req.fetch();
         expect(true, false);
       } on StateError catch (e) {
-        expect(e.toString(),
-            contains("Bounding value for column 'value' has invalid type"));
+        expect(
+          e.toString(),
+          contains("Bounding value for column 'value' has invalid type"),
+        );
       }
     });
 
     test("Page property doesn't exist throws error", () async {
       try {
         final _ = Query<PageableTestModel>(context!)
-          ..pageBy((p) => p["foobar"], QuerySortOrder.ascending,
-              boundingValue: "0");
+          ..pageBy(
+            (p) => p["foobar"],
+            QuerySortOrder.ascending,
+            boundingValue: "0",
+          );
 
         expect(true, false);
       } on ArgumentError catch (e) {
         expect(
-            e.toString(),
-            contains(
-                "Property 'foobar' does not exist on 'PageableTestModel'"));
+          e.toString(),
+          contains(
+            "Property 'foobar' does not exist on 'PageableTestModel'",
+          ),
+        );
       }
     });
 
@@ -339,8 +348,10 @@ void main() {
             .pageBy((p) => p.objects, QuerySortOrder.ascending);
         expect(true, false);
       } on ArgumentError catch (e) {
-        expect(e.toString(),
-            contains("Property 'objects' on 'HasMany' is a relationship"));
+        expect(
+          e.toString(),
+          contains("Property 'objects' on 'HasMany' is a relationship"),
+        );
       }
     });
   });

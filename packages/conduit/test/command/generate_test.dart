@@ -14,7 +14,7 @@ void main() {
     templateCli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createTestProject();
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   tearDownAll(DartProjectAgent.tearDownAll);
@@ -85,7 +85,9 @@ class _TestObject {
     // Let's add an index
     projectUnderTestCli.agent.modifyFile("lib/application_test.dart", (prev) {
       return prev.replaceFirst(
-          "String? foo;", "@Column(indexed: true) String? foo;");
+        "String? foo;",
+        "@Column(indexed: true) String? foo;",
+      );
     });
 
     res = await projectUnderTestCli.run("db", ["generate"]);
@@ -99,15 +101,17 @@ class _TestObject {
       hasLength(2),
     );
     expect(
-      File.fromUri(projectUnderTestCli.defaultMigrationDirectory.uri
-              .resolve("00000001_initial.migration.dart"))
-          .existsSync(),
+      File.fromUri(
+        projectUnderTestCli.defaultMigrationDirectory.uri
+            .resolve("00000001_initial.migration.dart"),
+      ).existsSync(),
       isTrue,
     );
     expect(
-      File.fromUri(projectUnderTestCli.defaultMigrationDirectory.uri
-              .resolve("00000002_unnamed.migration.dart"))
-          .existsSync(),
+      File.fromUri(
+        projectUnderTestCli.defaultMigrationDirectory.uri
+            .resolve("00000002_unnamed.migration.dart"),
+      ).existsSync(),
       isTrue,
     );
 
@@ -127,7 +131,9 @@ class _TestObject {
       "lib/application_test.dart",
       (prev) {
         return prev.replaceFirst(
-            "String? foo;", "@Column(indexed: true) String? foo;");
+          "String? foo;",
+          "@Column(indexed: true) String? foo;",
+        );
       },
     );
 
@@ -143,15 +149,17 @@ class _TestObject {
       hasLength(2),
     );
     expect(
-      File.fromUri(projectUnderTestCli.defaultMigrationDirectory.uri
-              .resolve("00000001_initialize_database.migration.dart"))
-          .existsSync(),
+      File.fromUri(
+        projectUnderTestCli.defaultMigrationDirectory.uri
+            .resolve("00000001_initialize_database.migration.dart"),
+      ).existsSync(),
       isTrue,
     );
     expect(
-      File.fromUri(projectUnderTestCli.defaultMigrationDirectory.uri
-              .resolve("00000002_add_index.migration.dart"))
-          .existsSync(),
+      File.fromUri(
+        projectUnderTestCli.defaultMigrationDirectory.uri
+            .resolve("00000002_add_index.migration.dart"),
+      ).existsSync(),
       isTrue,
     );
 
@@ -167,7 +175,8 @@ class _TestObject {
       expect(res, isZero);
 
       final migDir = Directory.fromUri(
-          projectUnderTestCli.agent.workingDirectory.uri.resolve("foobar/"));
+        projectUnderTestCli.agent.workingDirectory.uri.resolve("foobar/"),
+      );
       final files = migDir.listSync();
       expect(
         files.any((fse) => fse is File && fse.path.endsWith("migration.dart")),
@@ -209,15 +218,17 @@ class _TestObject {
         "lib/application_test.dart",
         (prev) {
           return prev.replaceFirst(
-              "String? foo;", "String? foo;\nString? bar;");
+            "String? foo;",
+            "String? foo;\nString? bar;",
+          );
         },
       );
       res = await projectUnderTestCli.run("db", ["generate"]);
       expect(res, isZero);
 
       expect(projectUnderTestCli.output, contains("may fail"));
-      expect(projectUnderTestCli.output, contains("\"_TestObject\""));
-      expect(projectUnderTestCli.output, contains("\"bar\""));
+      expect(projectUnderTestCli.output, contains('"_TestObject"'));
+      expect(projectUnderTestCli.output, contains('"bar"'));
     },
   );
 }

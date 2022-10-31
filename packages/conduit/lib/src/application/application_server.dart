@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/application/application.dart';
 import 'package:conduit/src/application/channel.dart';
+import 'package:conduit/src/http/controller.dart';
+import 'package:conduit/src/http/request.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
-
-import '../http/controller.dart';
-import '../http/request.dart';
-import 'application.dart';
 
 /// Listens for HTTP requests and delivers them to its [ApplicationChannel] instance.
 ///
@@ -74,15 +73,22 @@ class ApplicationServer {
       _requiresHTTPS = true;
 
       server = await HttpServer.bindSecure(
-          options.address, options.port, securityContext,
-          requestClientCertificate: options.isUsingClientCertificate,
-          v6Only: options.isIpv6Only,
-          shared: shareHttpServer);
+        options.address,
+        options.port,
+        securityContext,
+        requestClientCertificate: options.isUsingClientCertificate,
+        v6Only: options.isIpv6Only,
+        shared: shareHttpServer,
+      );
     } else {
       _requiresHTTPS = false;
 
-      server = await HttpServer.bind(options.address, options.port,
-          v6Only: options.isIpv6Only, shared: shareHttpServer);
+      server = await HttpServer.bind(
+        options.address,
+        options.port,
+        v6Only: options.isIpv6Only,
+        shared: shareHttpServer,
+      );
     }
 
     logger.fine("ApplicationServer($identifier).start bound HTTP");

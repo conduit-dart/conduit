@@ -1,8 +1,9 @@
+// ignore_for_file: avoid_dynamic_calls
+
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
-
-import 'http.dart';
 
 /// Interface for serializable instances to be decoded from an HTTP request body and encoded to an HTTP response body.
 ///
@@ -43,11 +44,13 @@ abstract class Serializable {
   ///     var values = json.decode(await request.body.decode());
   ///     var user = User()
   ///       ..read(values, ignore: ["id"]);
-  void read(Map<String, dynamic> object,
-      {Iterable<String>? accept,
-      Iterable<String>? ignore,
-      Iterable<String>? reject,
-      Iterable<String>? require}) {
+  void read(
+    Map<String, dynamic> object, {
+    Iterable<String>? accept,
+    Iterable<String>? ignore,
+    Iterable<String>? reject,
+    Iterable<String>? require,
+  }) {
     if (accept == null && ignore == null && reject == null && require == null) {
       readFromMap(object);
       return;
@@ -55,7 +58,7 @@ abstract class Serializable {
 
     final copy = Map<String, dynamic>.from(object);
     final stillRequired = require?.toList();
-    object.keys.forEach((key) {
+    for (final key in object.keys) {
       if (reject?.contains(key) ?? false) {
         throw SerializableException(["invalid input key '$key'"]);
       }
@@ -64,11 +67,12 @@ abstract class Serializable {
         copy.remove(key);
       }
       stillRequired?.remove(key);
-    });
+    }
 
     if (stillRequired?.isNotEmpty ?? false) {
       throw SerializableException(
-          ["missing required input key(s): '${stillRequired!.join(", ")}'"]);
+        ["missing required input key(s): '${stillRequired!.join(", ")}'"],
+      );
     }
 
     readFromMap(copy);
@@ -100,7 +104,8 @@ class SerializableException implements HandlerException {
   @override
   Response get response {
     return Response.badRequest(
-        body: {"error": "entity validation failed", "reasons": reasons});
+      body: {"error": "entity validation failed", "reasons": reasons},
+    );
   }
 
   @override

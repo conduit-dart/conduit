@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/http/route_node.dart';
+import 'package:conduit/src/http/route_specification.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
-
-import 'http.dart';
-import 'route_node.dart';
-import 'route_specification.dart';
 
 /// Determines which [Controller] should receive a [Request] based on its path.
 ///
@@ -21,7 +20,7 @@ import 'route_specification.dart';
 /// a [Router] is the [ApplicationChannel.entryPoint].
 class Router extends Controller {
   /// Creates a new [Router].
-  Router({String? basePath, Future notFoundHandler(Request request)?})
+  Router({String? basePath, Future Function(Request)? notFoundHandler})
       : _unmatchedController = notFoundHandler,
         _basePathSegments =
             basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
@@ -31,7 +30,7 @@ class Router extends Controller {
   final _RootNode _root = _RootNode();
   final List<_RouteController> _routeControllers = [];
   final List<String> _basePathSegments;
-  final Function? _unmatchedController;
+  final Function(Request)? _unmatchedController;
 
   /// A prefix for all routes on this instance.
   ///
@@ -74,7 +73,8 @@ class Router extends Controller {
   ///
   Linkable route(String pattern) {
     final routeController = _RouteController(
-        RouteSpecification.specificationsForRoutePattern(pattern));
+      RouteSpecification.specificationsForRoutePattern(pattern),
+    );
     _routeControllers.add(routeController);
     return routeController;
   }
@@ -84,22 +84,26 @@ class Router extends Controller {
     _root.node =
         RouteNode(_routeControllers.expand((rh) => rh.specifications).toList());
 
-    for (var c in _routeControllers) {
+    for (final c in _routeControllers) {
       c.didAddToChannel();
     }
   }
 
   /// Routers override this method to throw an exception. Use [route] instead.
   @override
-  Linkable? link(Controller generatorFunction()) {
+  Linkable? link(Controller Function() generatorFunction) {
     throw ArgumentError(
-        "Invalid link. 'Router' cannot directly link to controllers. Use 'route'.");
+      "Invalid link. 'Router' cannot directly link to controllers. Use 'route'.",
+    );
   }
 
   @override
-  Linkable? linkFunction(FutureOr<RequestOrResponse?> handle(Request request)) {
+  Linkable? linkFunction(
+    FutureOr<RequestOrResponse?> Function(Request request) handle,
+  ) {
     throw ArgumentError(
-        "Invalid link. 'Router' cannot directly link to functions. Use 'route'.");
+      "Invalid link. 'Router' cannot directly link to functions. Use 'route'.",
+    );
   }
 
   @override
@@ -126,8 +130,10 @@ class Router extends Controller {
         await _handleUnhandledRequest(req);
         return null;
       }
-      req.path.setSpecification(node!.specification!,
-          segmentOffset: _basePathSegments.length);
+      req.path.setSpecification(
+        node!.specification!,
+        segmentOffset: _basePathSegments.length,
+      );
       next = node.controller!;
     } catch (any, stack) {
       return handleError(req, any, stack);
@@ -153,9 +159,9 @@ class Router extends Controller {
 
   @override
   void documentComponents(APIDocumentContext context) {
-    _routeControllers.forEach((_RouteController controller) {
+    for (final controller in _routeControllers) {
       controller.documentComponents(context);
-    });
+    }
   }
 
   @override
@@ -176,7 +182,7 @@ class Router extends Controller {
 
     applyCORSHeadersIfNecessary(req, response);
     await req.respond(response);
-    logger.info("${req.toDebugString()}");
+    logger.info(req.toDebugString());
   }
 }
 
@@ -186,9 +192,9 @@ class _RootNode {
 
 class _RouteController extends Controller {
   _RouteController(this.specifications) {
-    specifications.forEach((p) {
+    for (final p in specifications) {
       p.controller = this;
-    });
+    }
   }
 
   /// Route specifications for this controller.
@@ -215,9 +221,11 @@ class _RouteController extends Controller {
             .toList();
 
       if (spec.segments.any((seg) => seg.isRemainingMatcher)) {
-        path.parameters.add(APIParameter.path("path")
-          ..description =
-              "This path variable may contain slashes '/' and may be empty.");
+        path.parameters.add(
+          APIParameter.path("path")
+            ..description =
+                "This path variable may contain slashes '/' and may be empty.",
+        );
       }
 
       path.operations =

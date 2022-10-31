@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'http.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// Objects that represent a request body, and can be decoded into Dart objects.
 ///
@@ -40,8 +40,11 @@ class RequestBody extends BodyDecoder {
     // and just return the original stream.
     if (_hasContentLength) {
       if (_request.headers.contentLength > maxSize) {
-        throw Response(HttpStatus.requestEntityTooLarge, null,
-            {"error": "entity length exceeds maximum"});
+        throw Response(
+          HttpStatus.requestEntityTooLarge,
+          null,
+          {"error": "entity length exceeds maximum"},
+        );
       }
 
       return _originalByteStream;
@@ -53,26 +56,34 @@ class RequestBody extends BodyDecoder {
     if (_bufferingController == null) {
       _bufferingController = StreamController<List<int>>(sync: true);
 
-      _originalByteStream.listen((chunk) {
-        _bytesRead += chunk.length;
-        if (_bytesRead > maxSize) {
-          _bufferingController!.addError(Response(
-              HttpStatus.requestEntityTooLarge,
-              null,
-              {"error": "entity length exceeds maximum"}));
-          _bufferingController!.close();
-          return;
-        }
+      _originalByteStream.listen(
+        (chunk) {
+          _bytesRead += chunk.length;
+          if (_bytesRead > maxSize) {
+            _bufferingController!.addError(
+              Response(
+                HttpStatus.requestEntityTooLarge,
+                null,
+                {"error": "entity length exceeds maximum"},
+              ),
+            );
+            _bufferingController!.close();
+            return;
+          }
 
-        _bufferingController!.add(chunk);
-      }, onDone: () {
-        _bufferingController!.close();
-      }, onError: (Object e, StackTrace st) {
-        if (!_bufferingController!.isClosed) {
-          _bufferingController!.addError(e, st);
+          _bufferingController!.add(chunk);
+        },
+        onDone: () {
           _bufferingController!.close();
-        }
-      }, cancelOnError: true);
+        },
+        onError: (Object e, StackTrace st) {
+          if (!_bufferingController!.isClosed) {
+            _bufferingController!.addError(e, st);
+            _bufferingController!.close();
+          }
+        },
+        cancelOnError: true,
+      );
     }
 
     return _bufferingController!.stream;

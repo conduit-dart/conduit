@@ -30,8 +30,12 @@ class PropertyBuilder {
     }
 
     if (type?.isEnumerated ?? false) {
-      _validators!.add(ValidatorBuilder(
-          this, Validate.oneOf(type!.enumerationMap.values.toList())));
+      _validators!.add(
+        ValidatorBuilder(
+          this,
+          Validate.oneOf(type!.enumerationMap.values.toList()),
+        ),
+      );
     }
   }
 
@@ -87,7 +91,9 @@ class PropertyBuilder {
       autoincrement = column?.autoincrement ?? false;
     }
 
-    validators!.forEach((vb) => vb.compile(entityBuilders));
+    for (final vb in validators!) {
+      vb.compile(entityBuilders);
+    }
   }
 
   void validate(List<EntityBuilder>? entityBuilders) {
@@ -95,21 +101,26 @@ class PropertyBuilder {
       if (!isRelationship ||
           relationshipType == ManagedRelationshipType.belongsTo) {
         throw ManagedDataModelErrorImpl.invalidType(
-            declaration.owner!.simpleName, declaration.simpleName);
+          declaration.owner!.simpleName,
+          declaration.simpleName,
+        );
       }
     }
 
     if (isRelationship) {
       if (column != null) {
         throw ManagedDataModelErrorImpl.invalidMetadata(
-            parent.tableDefinitionTypeName, declaration.simpleName);
+          parent.tableDefinitionTypeName,
+          declaration.simpleName,
+        );
       }
       if (relate != null && relatedProperty!.relate != null) {
         throw ManagedDataModelErrorImpl.dualMetadata(
-            parent.tableDefinitionTypeName,
-            declaration.simpleName,
-            relatedProperty!.parent.tableDefinitionTypeName,
-            relatedProperty!.name);
+          parent.tableDefinitionTypeName,
+          declaration.simpleName,
+          relatedProperty!.parent.tableDefinitionTypeName,
+          relatedProperty!.name,
+        );
       }
     } else {
       if (defaultValue != null && autoincrement) {
@@ -122,14 +133,20 @@ class PropertyBuilder {
     if (relate?.onDelete == DeleteRule.nullify &&
         (relate?.isRequired ?? false)) {
       throw ManagedDataModelErrorImpl.incompatibleDeleteRule(
-          parent.tableDefinitionTypeName, declaration.simpleName);
+        parent.tableDefinitionTypeName,
+        declaration.simpleName,
+      );
     }
 
-    validators!.forEach((vb) => vb.validate(entityBuilders));
+    for (final vb in validators!) {
+      vb.validate(entityBuilders);
+    }
   }
 
   void link(List<ManagedEntity> others) {
-    validators!.forEach((v) => v.link(others));
+    for (final v in validators!) {
+      v.link(others);
+    }
     if (isRelationship) {
       final destinationEntity =
           others.firstWhere((e) => e == relatedProperty!.parent.entity);
@@ -137,36 +154,41 @@ class PropertyBuilder {
       final dartType =
           ((declaration as VariableMirror).type as ClassMirror).reflectedType;
       relationship = ManagedRelationshipDescription(
-          parent.entity,
-          name,
-          type,
-          dartType,
-          destinationEntity,
-          deleteRule,
-          relationshipType,
-          relatedProperty!.name,
-          unique: unique,
-          indexed: true,
-          nullable: nullable,
-          includedInDefaultResultSet: includeInDefaultResultSet,
-          validators: validators!
-              .map((v) => v.managedValidator)
-              .where((v) => v != null)
-              .cast<ManagedValidator>()
-              .toList());
+        parent.entity,
+        name,
+        type,
+        dartType,
+        destinationEntity,
+        deleteRule,
+        relationshipType,
+        relatedProperty!.name,
+        unique: unique,
+        indexed: true,
+        nullable: nullable,
+        includedInDefaultResultSet: includeInDefaultResultSet,
+        validators: validators!
+            .map((v) => v.managedValidator)
+            .where((v) => v != null)
+            .cast<ManagedValidator>()
+            .toList(),
+      );
     } else {
       final dartType = getDeclarationType().reflectedType;
       attribute = ManagedAttributeDescription(
-          parent.entity, name, type!, dartType,
-          primaryKey: primaryKey,
-          transientStatus: serialize,
-          defaultValue: defaultValue,
-          unique: unique,
-          indexed: indexed,
-          nullable: nullable,
-          includedInDefaultResultSet: includeInDefaultResultSet,
-          autoincrement: autoincrement,
-          validators: validators!.map((v) => v.managedValidator).toList());
+        parent.entity,
+        name,
+        type!,
+        dartType,
+        primaryKey: primaryKey,
+        transientStatus: serialize,
+        defaultValue: defaultValue,
+        unique: unique,
+        indexed: indexed,
+        nullable: nullable,
+        includedInDefaultResultSet: includeInDefaultResultSet,
+        autoincrement: autoincrement,
+        validators: validators!.map((v) => v.managedValidator).toList(),
+      );
     }
   }
 
@@ -208,11 +230,15 @@ class PropertyBuilder {
     try {
       if (column?.databaseType != null) {
         return ManagedType(
-            declType.reflectedType, column!.databaseType!, null, {});
+          declType.reflectedType,
+          column!.databaseType!,
+          null,
+          {},
+        );
       }
 
       return getManagedTypeFromType(declType);
-    } on UnsupportedError {
+    } catch (_) {
       return null;
     }
   }
@@ -237,13 +263,16 @@ class PropertyBuilder {
   EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder>? builders) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
-      return builders!.firstWhere((b) => b.instanceType == expectedInstanceType,
-          orElse: () {
-        throw ManagedDataModelErrorImpl.noDestinationEntity(
+      return builders!.firstWhere(
+        (b) => b.instanceType == expectedInstanceType,
+        orElse: () {
+          throw ManagedDataModelErrorImpl.noDestinationEntity(
             parent.tableDefinitionTypeName,
             declaration.simpleName,
-            expectedInstanceType.simpleName);
-      });
+            expectedInstanceType.simpleName,
+          );
+        },
+      );
     }
 
     final possibleEntities = builders!.where((e) {
@@ -253,18 +282,20 @@ class PropertyBuilder {
 
     if (possibleEntities.length > 1) {
       throw ManagedDataModelErrorImpl.multipleDestinationEntities(
-          parent.tableDefinitionTypeName,
-          declaration.simpleName,
-          possibleEntities.map((e) => e.instanceTypeName).toList(),
-          getDeclarationType().simpleName);
+        parent.tableDefinitionTypeName,
+        declaration.simpleName,
+        possibleEntities.map((e) => e.instanceTypeName).toList(),
+        getDeclarationType().simpleName,
+      );
     } else if (possibleEntities.length == 1) {
       return possibleEntities.first;
     }
 
     throw ManagedDataModelErrorImpl.noDestinationEntity(
-        parent.tableDefinitionTypeName,
-        declaration.simpleName,
-        expectedInstanceType.simpleName);
+      parent.tableDefinitionTypeName,
+      declaration.simpleName,
+      expectedInstanceType.simpleName,
+    );
   }
 
   static Serialize? _getTransienceForProperty(DeclarationMirror declaration) {
@@ -275,9 +306,9 @@ class PropertyBuilder {
 
     final m = declaration as MethodMirror;
     if (m.isGetter && metadata!.isAvailableAsOutput) {
-      return const Serialize(output: true, input: false);
+      return const Serialize(input: false);
     } else if (m.isSetter && metadata!.isAvailableAsInput) {
-      return const Serialize(input: true, output: false);
+      return const Serialize(output: false);
     }
 
     return null;

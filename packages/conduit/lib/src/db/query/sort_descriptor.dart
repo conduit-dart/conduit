@@ -1,4 +1,4 @@
-import 'query.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 /// The order in which a collection of objects should be sorted when returned from a database.
 ///

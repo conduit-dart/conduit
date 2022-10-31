@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'managed.dart';
+import 'package:conduit/src/db/managed/managed.dart';
 
 /// Instances of this type contain zero or more instances of [ManagedObject] and represent has-many relationships.
 ///

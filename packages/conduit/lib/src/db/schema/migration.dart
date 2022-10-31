@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../persistent_store/persistent_store.dart';
-import 'schema.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/schema/schema.dart';
 
 /// Thrown when [Migration] encounters an error.
 class MigrationException implements Exception {
@@ -55,8 +55,11 @@ abstract class Migration {
   Future seed();
 
   static String sourceForSchemaUpgrade(
-      Schema existingSchema, Schema newSchema, int? version,
-      {List<String>? changeList}) {
+    Schema existingSchema,
+    Schema newSchema,
+    int? version, {
+    List<String>? changeList,
+  }) {
     final diff = existingSchema.differenceFrom(newSchema);
     final source =
         SchemaBuilder.fromDifference(null, diff, changeList: changeList)

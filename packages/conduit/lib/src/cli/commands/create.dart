@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -15,14 +17,20 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     registerCommand(CLITemplateList());
   }
 
-  @Option("template",
-      abbr: "t", help: "Name of the template to use", defaultsTo: "default")
+  @Option(
+    "template",
+    abbr: "t",
+    help: "Name of the template to use",
+    defaultsTo: "default",
+  )
   String get templateName => decode("template");
 
-  @Flag("offline",
-      negatable: false,
-      help: "Will fetch dependencies from a local cache if they exist.",
-      defaultsTo: false)
+  @Flag(
+    "offline",
+    negatable: false,
+    help: "Will fetch dependencies from a local cache if they exist.",
+    defaultsTo: false,
+  )
   bool get offline => decode("offline");
 
   String? get projectName =>
@@ -57,7 +65,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
     displayProgress("Template source is: ${templateSourceDirectory.path}");
     displayProgress("See more templates with 'conduit create list-templates'");
-    copyProjectFiles(destDirectory, templateSourceDirectory, projectName!);
+    copyProjectFiles(destDirectory, templateSourceDirectory, projectName);
 
     createProjectSpecificFiles(destDirectory.path);
     try {
@@ -77,7 +85,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
           "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
         })) {
           displayError(
-              'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.');
+            'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.',
+          );
           throw StateError;
         }
       }
@@ -87,13 +96,15 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     }
 
     displayInfo(
-        "Fetching project dependencies (pub get ${offline ? "--offline" : ""})...");
+      "Fetching project dependencies (pub get ${offline ? "--offline" : ""})...",
+    );
     displayInfo("Please wait...");
     try {
       await fetchProjectDependencies(destDirectory, offline: offline);
     } on TimeoutException {
       displayInfo(
-          "Fetching dependencies timed out. Run 'pub get' in your project directory.");
+        "Fetching dependencies timed out. Run 'pub get' in your project directory.",
+      );
     }
 
     displayProgress("Success.");
@@ -101,7 +112,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     displayProgress("Project is located at ${destDirectory.path}");
     displayProgress("Open this directory in IntelliJ IDEA, Atom or VS Code.");
     displayProgress(
-        "See ${destDirectory.path}${path_lib.separator}README.md for more information.");
+      "See ${destDirectory.path}${path_lib.separator}README.md for more information.",
+    );
 
     return 0;
   }
@@ -144,8 +156,11 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     return true;
   }
 
-  void interpretContentFile(String? projectName, Directory destinationDirectory,
-      FileSystemEntity sourceFileEntity) {
+  void interpretContentFile(
+    String? projectName,
+    Directory destinationDirectory,
+    FileSystemEntity sourceFileEntity,
+  ) {
     if (shouldIncludeItem(sourceFileEntity)) {
       if (sourceFileEntity is Directory) {
         copyDirectory(projectName, destinationDirectory, sourceFileEntity);
@@ -155,12 +170,16 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     }
   }
 
-  void copyDirectory(String? projectName, Directory destinationParentDirectory,
-      Directory sourceDirectory) {
+  void copyDirectory(
+    String? projectName,
+    Directory destinationParentDirectory,
+    Directory sourceDirectory,
+  ) {
     final sourceDirectoryName = sourceDirectory
         .uri.pathSegments[sourceDirectory.uri.pathSegments.length - 2];
     final destDir = Directory(
-        path_lib.join(destinationParentDirectory.path, sourceDirectoryName));
+      path_lib.join(destinationParentDirectory.path, sourceDirectoryName),
+    );
 
     destDir.createSync();
 
@@ -170,9 +189,14 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   void copyFile(
-      String projectName, Directory destinationDirectory, File sourceFile) {
+    String projectName,
+    Directory destinationDirectory,
+    File sourceFile,
+  ) {
     final path = path_lib.join(
-        destinationDirectory.path, fileNameForFile(projectName, sourceFile));
+      destinationDirectory.path,
+      fileNameForFile(projectName, sourceFile),
+    );
     var contents = sourceFile.readAsStringSync();
 
     contents = contents.replaceAll("wildfire", projectName);
@@ -206,7 +230,9 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   bool addDependencyOverridesToPackage(
-      String packageDirectoryPath, Map<String, Uri> overrides) {
+    String packageDirectoryPath,
+    Map<String, Uri> overrides,
+  ) {
     final pubspecFile =
         File(path_lib.join(packageDirectoryPath, "pubspec.yaml"));
     final contents = pubspecFile.readAsStringSync();
@@ -221,7 +247,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
-          "    path:  ${location.toFilePath(windows: Platform.isWindows)}");
+        "    path:  ${location.toFilePath(windows: Platform.isWindows)}",
+      );
     });
 
     pubspecFile.writeAsStringSync("$contents\n$overrideBuffer");
@@ -229,10 +256,14 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     return valid;
   }
 
-  void copyProjectFiles(Directory destinationDirectory,
-      Directory sourceDirectory, String? projectName) {
+  void copyProjectFiles(
+    Directory destinationDirectory,
+    Directory sourceDirectory,
+    String? projectName,
+  ) {
     displayInfo(
-        "Copying template files to project directory (${destinationDirectory.path})...");
+      "Copying template files to project directory (${destinationDirectory.path})...",
+    );
     try {
       destinationDirectory.createSync();
 
@@ -257,11 +288,13 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
       final firstChar = str.substring(0, 1);
       final remainingString = str.substring(1, str.length);
       return firstChar.toUpperCase() + remainingString;
-    }).join("");
+    }).join();
   }
 
-  Future<int> fetchProjectDependencies(Directory workingDirectory,
-      {bool offline = false}) async {
+  Future<int> fetchProjectDependencies(
+    Directory workingDirectory, {
+    bool offline = false,
+  }) async {
     final args = ["pub", "get"];
     if (offline) {
       args.add("--offline");
@@ -269,10 +302,12 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
     try {
       const cmd = "dart";
-      final process = await Process.start(cmd, args,
-              workingDirectory: workingDirectory.absolute.path,
-              runInShell: true)
-          .timeout(const Duration(seconds: 60));
+      final process = await Process.start(
+        cmd,
+        args,
+        workingDirectory: workingDirectory.absolute.path,
+        runInShell: true,
+      ).timeout(const Duration(seconds: 60));
       process.stdout
           .transform(utf8.decoder)
           .listen((output) => outputSink.write(output));
@@ -284,13 +319,15 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
       if (exitCode != 0) {
         throw CLIException(
-            "If you are offline, try using `pub get --offline`.");
+          "If you are offline, try using `pub get --offline`.",
+        );
       }
 
       return exitCode;
     } on TimeoutException {
       displayError(
-          "Timed out fetching dependencies. Reconnect to the internet or use `pub get --offline`.");
+        "Timed out fetching dependencies. Reconnect to the internet or use `pub get --offline`.",
+      );
       rethrow;
     }
   }
@@ -327,7 +364,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     final String packagePath = _truepath(testPath);
     if (!_exists(packagePath)) {
       displayError(
-          "The source for path '$packageName' doesn't exists. Expected to find it at '$packagePath'");
+        "The source for path '$packageName' doesn't exists. Expected to find it at '$packagePath'",
+      );
       return false;
     }
     return true;

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_setters_without_getters
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -47,10 +49,14 @@ void main() {
       expect(entity.properties!["boolean"]!.type, APIType.boolean);
 
       expect(entity.properties!["id"]!.isReadOnly, false);
-      expect(entity.properties!["id"]!.description,
-          contains("This is the primary identifier"));
-      expect(entity.properties!["string"]!.description,
-          contains("No two objects may have the same value for this field"));
+      expect(
+        entity.properties!["id"]!.description,
+        contains("This is the primary identifier"),
+      );
+      expect(
+        entity.properties!["string"]!.description,
+        contains("No two objects may have the same value for this field"),
+      );
     });
 
     test("Schema object contains all transient attributes", () {
@@ -73,15 +79,19 @@ void main() {
       final entity = doc.components!.schemas["Model1"]!;
       expect(entity.properties!["model2s"]!.type, APIType.array);
       expect(entity.properties!["model2s"]!.isReadOnly, true);
-      expect(entity.properties!["model2s"]!.items!.referenceURI!.path,
-          "/components/schemas/Model2");
+      expect(
+        entity.properties!["model2s"]!.items!.referenceURI!.path,
+        "/components/schemas/Model2",
+      );
     });
 
     test("Schema contains to-one relationships", () {
       final entity = doc.components!.schemas["Model1"]!;
       expect(entity.properties!["model3"]!.isReadOnly, true);
-      expect(entity.properties!["model3"]!.referenceURI!.path,
-          "/components/schemas/Model3");
+      expect(
+        entity.properties!["model3"]!.referenceURI!.path,
+        "/components/schemas/Model3",
+      );
     });
 
     test("Entity with uniquePropertySet is included in description", () {
@@ -95,15 +105,19 @@ void main() {
       expect(model2.properties!["model1"]!.type, APIType.object);
       expect(model2.properties!["model1"]!.isReadOnly, false);
       expect(model2.properties!["model1"]!.properties!.length, 1);
-      expect(model2.properties!["model1"]!.properties!["id"]!.type,
-          APIType.integer);
+      expect(
+        model2.properties!["model1"]!.properties!["id"]!.type,
+        APIType.integer,
+      );
 
       final model3 = doc.components!.schemas["Model3"]!;
       expect(model3.properties!["model1"]!.type, APIType.object);
       expect(model2.properties!["model1"]!.isReadOnly, false);
       expect(model3.properties!["model1"]!.properties!.length, 1);
-      expect(model3.properties!["model1"]!.properties!["id"]!.type,
-          APIType.integer);
+      expect(
+        model3.properties!["model1"]!.properties!["id"]!.type,
+        APIType.integer,
+      );
     });
 
     test(
@@ -169,10 +183,14 @@ void main() {
         () {
       expect(schema!.properties!["greaterThanEqualTo"]!.maximum, isNull);
       expect(
-          schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum, isNull);
+        schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum,
+        isNull,
+      );
       expect(schema!.properties!["greaterThanEqualTo"]!.minimum, 1);
       expect(
-          schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum, false);
+        schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum,
+        false,
+      );
     });
 
     test("Schema object contains range if range validator", () {
@@ -226,17 +244,20 @@ void main() {
     test("Can emit document for ManagedObjectController", () {
       expect(doc.paths!["/model"]!.operations.length, 2);
       expect(
-          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
-              .content!["application/json"]!.schema!.type,
-          APIType.array);
+        doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
+            .content!["application/json"]!.schema!.type,
+        APIType.array,
+      );
       expect(
-          doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
-              .content!["application/json"]!.schema!.items!.referenceURI!.path,
-          "/components/schemas/Model1");
+        doc.paths!["/model"]!.operations["get"]!.responses!["200"]!
+            .content!["application/json"]!.schema!.items!.referenceURI!.path,
+        "/components/schemas/Model1",
+      );
       expect(
-          doc.paths!["/model"]!.operations["post"]!.requestBody!
-              .content!["application/json"]!.schema!.referenceURI!.path,
-          "/components/schemas/Model1");
+        doc.paths!["/model"]!.operations["post"]!.requestBody!
+            .content!["application/json"]!.schema!.referenceURI!.path,
+        "/components/schemas/Model1",
+      );
 
       expect(doc.paths!["/model/{id}"]!.operations.length, 3);
 
@@ -359,7 +380,9 @@ class CustomValidate extends Validate {
 
   @override
   void constrainSchemaObject(
-      APIDocumentContext context, APISchemaObject object) {
+    APIDocumentContext context,
+    APISchemaObject object,
+  ) {
     object.maxProperties = 2;
   }
 }

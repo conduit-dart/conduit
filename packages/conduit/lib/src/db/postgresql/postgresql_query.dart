@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import '../db.dart';
-import '../query/mixin.dart';
-import 'postgresql_query_reduce.dart';
-import 'query_builder.dart';
+import 'package:conduit/src/db/db.dart';
+import 'package:conduit/src/db/postgresql/postgresql_query_reduce.dart';
+import 'package:conduit/src/db/postgresql/query_builder.dart';
+import 'package:conduit/src/db/query/mixin.dart';
 
 class PostgresQuery<InstanceType extends ManagedObject> extends Object
     with QueryMixin<InstanceType>
@@ -44,7 +44,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builder.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore!
+    final results = await context.persistentStore
         .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
 
     return builder
@@ -94,7 +94,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builders.first.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore!
+    final results = await context.persistentStore
         .executeQuery(buffer.toString(), allVariables, timeoutInSeconds);
 
     return builders.first
@@ -121,7 +121,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builder.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore!
+    final results = await context.persistentStore
         .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
 
     return builder.instancesForRows(results as List<List<dynamic>>);
@@ -155,9 +155,12 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       throw canModifyAllInstancesError;
     }
 
-    final result = await context.persistentStore!.executeQuery(
-        buffer.toString(), builder.variables, timeoutInSeconds,
-        returnType: PersistentStoreQueryReturnType.rowCount);
+    final result = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+      returnType: PersistentStoreQueryReturnType.rowCount,
+    );
     return result as int?;
   }
 
@@ -198,7 +201,8 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
     if (builder.containsJoins && pageDescriptor != null) {
       throw StateError(
-          "Invalid query. Cannot set both 'pageDescription' and use 'join' in query.");
+        "Invalid query. Cannot set both 'pageDescription' and use 'join' in query.",
+      );
     }
 
     return builder;
@@ -227,7 +231,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("OFFSET $offset ");
     }
 
-    final results = await context.persistentStore!
+    final results = await context.persistentStore
         .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
 
     return builder.instancesForRows(results as List<List<dynamic>>);
@@ -237,16 +241,19 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     final prop = entity.attributes[pageDescriptor!.propertyName];
     if (prop == null) {
       throw StateError(
-          "Invalid query page descriptor. Column '${pageDescriptor!.propertyName}' does not exist for table '${entity.tableName}'");
+        "Invalid query page descriptor. Column '${pageDescriptor!.propertyName}' does not exist for table '${entity.tableName}'",
+      );
     }
 
     if (pageDescriptor!.boundingValue != null &&
         !prop.isAssignableWith(pageDescriptor!.boundingValue)) {
       throw StateError(
-          "Invalid query page descriptor. Bounding value for column '${pageDescriptor!.propertyName}' has invalid type.");
+        "Invalid query page descriptor. Bounding value for column '${pageDescriptor!.propertyName}' has invalid type.",
+      );
     }
   }
 
   static final StateError canModifyAllInstancesError = StateError(
-      "Invalid Query<T>. Query is either update or delete query with no WHERE clause. To confirm this query is correct, set 'canModifyAllInstances' to true.");
+    "Invalid Query<T>. Query is either update or delete query with no WHERE clause. To confirm this query is correct, set 'canModifyAllInstances' to true.",
+  );
 }

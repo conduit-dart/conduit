@@ -1,5 +1,5 @@
-import '../http/request.dart';
-import 'auth.dart';
+import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/request.dart';
 
 /// Represents an OAuth 2.0 client ID and secret pair.
 ///
@@ -15,22 +15,39 @@ class AuthClient {
   ///
   /// If this client supports scopes, [allowedScopes] must contain a list of scopes that tokens may request when authorized
   /// by this client.
-  AuthClient(String? id, String? hashedSecret, String? salt,
-      {List<AuthScope>? allowedScopes})
-      : this.withRedirectURI(id, hashedSecret, salt, null,
-            allowedScopes: allowedScopes);
+  AuthClient(
+    String? id,
+    String? hashedSecret,
+    String? salt, {
+    List<AuthScope>? allowedScopes,
+  }) : this.withRedirectURI(
+          id,
+          hashedSecret,
+          salt,
+          null,
+          allowedScopes: allowedScopes,
+        );
 
   /// Creates an instance of a public [AuthClient].
   AuthClient.public(String id, {List<AuthScope>? allowedScopes})
-      : this.withRedirectURI(id, null, null, null,
-            allowedScopes: allowedScopes);
+      : this.withRedirectURI(
+          id,
+          null,
+          null,
+          null,
+          allowedScopes: allowedScopes,
+        );
 
   /// Creates an instance of [AuthClient] that uses the authorization code grant flow.
   ///
   /// All values must be non-null. This is confidential client.
   AuthClient.withRedirectURI(
-      this.id, this.hashedSecret, this.salt, this.redirectURI,
-      {List<AuthScope>? allowedScopes}) {
+    this.id,
+    this.hashedSecret,
+    this.salt,
+    this.redirectURI, {
+    List<AuthScope>? allowedScopes,
+  }) {
     this.allowedScopes = allowedScopes;
   }
 
@@ -62,8 +79,10 @@ class AuthClient {
   List<AuthScope>? get allowedScopes => _allowedScopes;
   set allowedScopes(List<AuthScope>? scopes) {
     _allowedScopes = scopes?.where((s) {
-      return !scopes.any((otherScope) =>
-          s.isSubsetOrEqualTo(otherScope) && !s.isExactlyScope(otherScope));
+      return !scopes.any(
+        (otherScope) =>
+            s.isSubsetOrEqualTo(otherScope) && !s.isExactlyScope(otherScope),
+      );
     }).toList();
   }
 
@@ -206,8 +225,13 @@ class AuthCode {
 /// about the validity of the credentials in a request.
 class Authorization {
   /// Creates an instance of a [Authorization].
-  Authorization(this.clientID, this.ownerID, this.validator,
-      {this.credentials, this.scopes});
+  Authorization(
+    this.clientID,
+    this.ownerID,
+    this.validator, {
+    this.credentials,
+    this.scopes,
+  });
 
   /// The client ID the permission was granted under.
   final String? clientID;
@@ -298,16 +322,19 @@ class AuthScope {
   factory AuthScope._parse(String scopeString) {
     if (scopeString.isEmpty) {
       throw FormatException(
-          "Invalid AuthScope. May not an empty string.", scopeString);
+        "Invalid AuthScope. May not an empty string.",
+        scopeString,
+      );
     }
 
-    for (var c in scopeString.codeUnits) {
+    for (final c in scopeString.codeUnits) {
       if (!(c == 33 || (c >= 35 && c <= 91) || (c >= 93 && c <= 126))) {
         throw FormatException(
-            "Invalid authorization scope. May only contain "
-            "the following characters: A-Za-z0-9!#\$%&'`()*+,./:;<=>?@[]^_{|}-",
-            scopeString,
-            scopeString.codeUnits.indexOf(c));
+          "Invalid authorization scope. May only contain "
+          "the following characters: A-Za-z0-9!#\$%&'`()*+,./:;<=>?@[]^_{|}-",
+          scopeString,
+          scopeString.codeUnits.indexOf(c),
+        );
       }
     }
 
@@ -332,7 +359,9 @@ class AuthScope {
   /// that scope for this method to return true. If [requiredScopes] is null, this method
   /// return true regardless of [providedScopes].
   static bool verify(
-      List<AuthScope>? requiredScopes, List<AuthScope>? providedScopes) {
+    List<AuthScope>? requiredScopes,
+    List<AuthScope>? providedScopes,
+  ) {
     if (requiredScopes == null) {
       return true;
     }
@@ -365,7 +394,9 @@ class AuthScope {
   static List<_AuthScopeSegment> _parseSegments(String scopeString) {
     if (scopeString.isEmpty) {
       throw FormatException(
-          "Invalid AuthScope. May not be empty string.", scopeString);
+        "Invalid AuthScope. May not be empty string.",
+        scopeString,
+      );
     }
 
     final elements =
@@ -375,16 +406,18 @@ class AuthScope {
     for (var i = 0; i < elements.length - 1; i++) {
       if (elements[i].modifier != null) {
         throw FormatException(
-            "Invalid AuthScope. May only contain modifiers on the last segment.",
-            scopeString,
-            scannedOffset);
+          "Invalid AuthScope. May only contain modifiers on the last segment.",
+          scopeString,
+          scannedOffset,
+        );
       }
 
       if (elements[i].name == "") {
         throw FormatException(
-            "Invalid AuthScope. May not contain empty segments or, leading or trailing colons.",
-            scopeString,
-            scannedOffset);
+          "Invalid AuthScope. May not contain empty segments or, leading or trailing colons.",
+          scopeString,
+          scannedOffset,
+        );
       }
 
       scannedOffset += elements[i].toString().length + 1;
@@ -392,9 +425,10 @@ class AuthScope {
 
     if (elements.last.name == "") {
       throw FormatException(
-          "Invalid AuthScope. May not contain empty segments.",
-          scopeString,
-          scannedOffset);
+        "Invalid AuthScope. May not contain empty segments.",
+        scopeString,
+        scannedOffset,
+      );
     }
 
     return elements;
@@ -423,7 +457,7 @@ class AuthScope {
     }
 
     final thisIterator = _segments.iterator;
-    for (var incomingSegment in incomingScope._segments) {
+    for (final incomingSegment in incomingScope._segments) {
       // If the incoming scope is more restrictive than this scope,
       // then it's not allowed.
       if (!thisIterator.moveNext()) {
@@ -454,7 +488,7 @@ class AuthScope {
   /// Whether or not two scopes are exactly the same.
   bool isExactlyScope(AuthScope scope) {
     final incomingIterator = scope._segments.iterator;
-    for (var segment in _segments) {
+    for (final segment in _segments) {
       /// the scope has less segments so no match.
       if (!incomingIterator.moveNext()) {
         return false;

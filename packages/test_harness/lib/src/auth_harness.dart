@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:conduit/conduit.dart';
+import 'package:conduit/src/auth/auth.dart' as auth_util;
 import 'package:conduit_test/conduit_test.dart';
 
 /// Use methods from this class to test applications that use [AuthServer] for authentication & authorization.
@@ -60,8 +61,8 @@ abstract class TestHarnessAuthMixin<T extends ApplicationChannel>
 
     if (secret != null) {
       client
-        ..salt = AuthUtility.generateRandomSalt()
-        ..hashedSecret = AuthUtility.generatePasswordHash(secret, client.salt!)
+        ..salt = auth_util.generateRandomSalt()
+        ..hashedSecret = auth_util.generatePasswordHash(secret, client.salt!)
         ..redirectURI = redirectUri;
     }
 

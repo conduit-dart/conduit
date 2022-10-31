@@ -1,5 +1,5 @@
-import 'http.dart';
-import 'route_specification.dart';
+import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/http/route_specification.dart';
 
 /// Stores path info for a [Request].
 ///
@@ -19,7 +19,7 @@ class RequestPath {
       requestIterator.moveNext();
     }
 
-    for (var segment in spec.segments) {
+    for (final segment in spec.segments) {
       if (!requestIterator.moveNext()) {
         remainingPath = "";
         return;
@@ -28,7 +28,7 @@ class RequestPath {
 
       if (segment.isVariable) {
         variables[segment.variableName.toString()] = requestSegment;
-        orderedVariableNames.add(segment.variableName!);
+        orderedVariableNames.add(segment.variableName);
       } else if (segment.isRemainingMatcher) {
         final remaining = [];
         remaining.add(requestIterator.current);

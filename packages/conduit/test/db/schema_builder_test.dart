@@ -19,8 +19,10 @@ void main() {
 
     test("Adding a table", () {
       builder.createTable(SchemaTable("foobar", []));
-      expect(builder.schema!.tables.firstWhere((st) => st.name == "foobar"),
-          isNotNull);
+      expect(
+        builder.schema!.tables.firstWhere((st) => st.name == "foobar"),
+        isNotNull,
+      );
 
       try {
         builder.createTable(SchemaTable("foobar", []));
@@ -47,15 +49,17 @@ void main() {
 
       builder.deleteTable("_DefaultItem");
       expect(
-          builder.schema!.tables
-              .firstWhereOrNull((st) => st.name == "_DefaultItem"),
-          isNull);
+        builder.schema!.tables
+            .firstWhereOrNull((st) => st.name == "_DefaultItem"),
+        isNull,
+      );
 
       builder.deleteTable("_cONTAINER");
       expect(
-          builder.schema!.tables
-              .firstWhereOrNull((st) => st.name == "_Container"),
-          isNull);
+        builder.schema!.tables
+            .firstWhereOrNull((st) => st.name == "_Container"),
+        isNull,
+      );
     });
 
     test("Adding a unique set", () {
@@ -63,8 +67,10 @@ void main() {
         t.uniqueColumnSet = ["startDate", "indexedValue"];
       });
 
-      expect(builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-          ["indexedValue", "startDate"]);
+      expect(
+        builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
+        ["indexedValue", "startDate"],
+      );
     });
 
     test("Removing a unique set", () {
@@ -75,8 +81,10 @@ void main() {
         t.uniqueColumnSet = null;
       });
 
-      expect(builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-          isNull);
+      expect(
+        builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
+        isNull,
+      );
     });
 
     test("Modifying a unique set", () {
@@ -87,38 +95,50 @@ void main() {
         t.uniqueColumnSet = ["startDate", "autoincrementValue"];
       });
 
-      expect(builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-          ["autoincrementValue", "startDate"]);
+      expect(
+        builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
+        ["autoincrementValue", "startDate"],
+      );
 
       builder.alterTable("_ExtensiveModel", (t) {
         t.uniqueColumnSet = ["startDate", "autoincrementValue", "indexedValue"];
       });
 
-      expect(builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-          ["autoincrementValue", "indexedValue", "startDate"]);
+      expect(
+        builder.schema!.tableForName("_ExtensiveModel")!.uniqueColumnSet,
+        ["autoincrementValue", "indexedValue", "startDate"],
+      );
     });
 
     test("Adding column", () {
       builder.addColumn(
-          "_DefaultItem", SchemaColumn("col1", ManagedPropertyType.integer));
+        "_DefaultItem",
+        SchemaColumn("col1", ManagedPropertyType.integer),
+      );
       builder.addColumn(
-          "_defaultITEM", SchemaColumn("col2", ManagedPropertyType.integer));
+        "_defaultITEM",
+        SchemaColumn("col2", ManagedPropertyType.integer),
+      );
       expect(
-          builder.schema!
-              .tableForName("_DefaultItem")!
-              .columns
-              .firstWhere((sc) => sc.name == "col1"),
-          isNotNull);
+        builder.schema!
+            .tableForName("_DefaultItem")!
+            .columns
+            .firstWhere((sc) => sc.name == "col1"),
+        isNotNull,
+      );
       expect(
-          builder.schema!
-              .tableForName("_DefaultItem")!
-              .columns
-              .firstWhere((sc) => sc.name == "col2"),
-          isNotNull);
+        builder.schema!
+            .tableForName("_DefaultItem")!
+            .columns
+            .firstWhere((sc) => sc.name == "col2"),
+        isNotNull,
+      );
 
       try {
         builder.addColumn(
-            "_DefaultItem", SchemaColumn("col1", ManagedPropertyType.integer));
+          "_DefaultItem",
+          SchemaColumn("col1", ManagedPropertyType.integer),
+        );
         expect(true, false);
       } on SchemaException catch (e) {
         expect(e.message, contains("already exists"));
@@ -126,7 +146,9 @@ void main() {
 
       try {
         builder.addColumn(
-            "foobar", SchemaColumn("col3", ManagedPropertyType.integer));
+          "foobar",
+          SchemaColumn("col3", ManagedPropertyType.integer),
+        );
         expect(true, false);
       } on SchemaException catch (e) {
         expect(e.message, contains("does not exist"));
@@ -136,11 +158,12 @@ void main() {
     test("Deleting column", () {
       builder.deleteColumn("_DefaultItem", "id");
       expect(
-          builder.schema!
-              .tableForName("_DefaultItem")!
-              .columns
-              .firstWhereOrNull((sc) => sc.name == "id"),
-          isNull);
+        builder.schema!
+            .tableForName("_DefaultItem")!
+            .columns
+            .firstWhereOrNull((sc) => sc.name == "id"),
+        isNull,
+      );
 
       try {
         builder.deleteColumn("_DefaultItem", "col1");
@@ -216,44 +239,54 @@ void main() {
         expect(e.message, contains("May not change"));
       }
 
-      builder.alterColumn("_LoadedItem", "someIndexedThing", (c) {
-        c.isIndexed = false;
-        c.isNullable = true;
-        c.isUnique = true;
-        c.defaultValue = "'bar'";
-        c.deleteRule = DeleteRule.setDefault;
-      }, unencodedInitialValue: "'foo'");
+      builder.alterColumn(
+        "_LoadedItem",
+        "someIndexedThing",
+        (c) {
+          c.isIndexed = false;
+          c.isNullable = true;
+          c.isUnique = true;
+          c.defaultValue = "'bar'";
+          c.deleteRule = DeleteRule.setDefault;
+        },
+        unencodedInitialValue: "'foo'",
+      );
 
       expect(
-          builder.schema!
-              .tableForName("_LoadedItem")!
-              .columnForName("someIndexedThing")!
-              .isIndexed,
-          false);
+        builder.schema!
+            .tableForName("_LoadedItem")!
+            .columnForName("someIndexedThing")!
+            .isIndexed,
+        false,
+      );
       expect(
-          builder.schema!
-              .tableForName("_LoadedItem")!
-              .columnForName("someIndexedThing")!
-              .isNullable,
-          true);
+        builder.schema!
+            .tableForName("_LoadedItem")!
+            .columnForName("someIndexedThing")!
+            .isNullable,
+        true,
+      );
       expect(
-          builder.schema!
-              .tableForName("_LoadedItem")!
-              .columnForName("someIndexedThing")!
-              .isUnique,
-          true);
+        builder.schema!
+            .tableForName("_LoadedItem")!
+            .columnForName("someIndexedThing")!
+            .isUnique,
+        true,
+      );
       expect(
-          builder.schema!
-              .tableForName("_LoadedItem")!
-              .columnForName("someIndexedThing")!
-              .defaultValue,
-          "'bar'");
+        builder.schema!
+            .tableForName("_LoadedItem")!
+            .columnForName("someIndexedThing")!
+            .defaultValue,
+        "'bar'",
+      );
       expect(
-          builder.schema!
-              .tableForName("_LoadedItem")!
-              .columnForName("someIndexedThing")!
-              .deleteRule,
-          DeleteRule.setDefault);
+        builder.schema!
+            .tableForName("_LoadedItem")!
+            .columnForName("someIndexedThing")!
+            .deleteRule,
+        DeleteRule.setDefault,
+      );
     });
   });
 }
@@ -287,8 +320,11 @@ class _LoadedItem {
   @Column(indexed: true)
   String? someIndexedThing;
 
-  @Relate(Symbol('loadedItems'),
-      onDelete: DeleteRule.restrict, isRequired: false)
+  @Relate(
+    Symbol('loadedItems'),
+    onDelete: DeleteRule.restrict,
+    isRequired: false,
+  )
   Container? container;
 
   LoadedSingleItem? loadedSingleItem;
@@ -300,8 +336,11 @@ class _LoadedSingleItem {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('loadedSingleItem'),
-      onDelete: DeleteRule.cascade, isRequired: true)
+  @Relate(
+    Symbol('loadedSingleItem'),
+    onDelete: DeleteRule.cascade,
+    isRequired: true,
+  )
   LoadedItem? loadedItem;
 }
 
@@ -340,10 +379,11 @@ class _ExtensiveModel {
   bool? nullableValue;
 
   @Column(
-      databaseType: ManagedPropertyType.bigInteger,
-      nullable: true,
-      defaultValue: "7",
-      unique: true,
-      indexed: true)
+    databaseType: ManagedPropertyType.bigInteger,
+    nullable: true,
+    defaultValue: "7",
+    unique: true,
+    indexed: true,
+  )
   int? loadedValue;
 }

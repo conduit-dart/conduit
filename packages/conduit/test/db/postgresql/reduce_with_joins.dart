@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -8,7 +10,7 @@ late ManagedContext ctx;
 late Company emptyCompany;
 late Company company1;
 late Company company2;
-late List<Employee> employees = [];
+List<Employee> employees = [];
 
 void main() {
   setUpAll(() async {

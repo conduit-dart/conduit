@@ -1,8 +1,8 @@
 // ignore_for_file: comment_references
 
-import 'request_path.dart';
-import 'resource_controller.dart';
-import 'serializable.dart';
+import 'package:conduit/src/http/request_path.dart';
+import 'package:conduit/src/http/resource_controller.dart';
+import 'package:conduit/src/http/serializable.dart';
 
 /// Binds an instance method in [ResourceController] to an operation.
 ///
@@ -18,55 +18,56 @@ import 'serializable.dart';
 ///           }
 ///         }
 class Operation {
-  const Operation(this.method,
-      [String? pathVariable1,
-      String? pathVariable2,
-      String? pathVariable3,
-      String? pathVariable4])
-      : _pathVariable1 = pathVariable1,
+  const Operation(
+    this.method, [
+    String? pathVariable1,
+    String? pathVariable2,
+    String? pathVariable3,
+    String? pathVariable4,
+  ])  : _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,
         _pathVariable4 = pathVariable4;
 
-  const Operation.get(
-      [String? pathVariable1,
-      String? pathVariable2,
-      String? pathVariable3,
-      String? pathVariable4])
-      : method = "GET",
+  const Operation.get([
+    String? pathVariable1,
+    String? pathVariable2,
+    String? pathVariable3,
+    String? pathVariable4,
+  ])  : method = "GET",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,
         _pathVariable4 = pathVariable4;
 
-  const Operation.put(
-      [String? pathVariable1,
-      String? pathVariable2,
-      String? pathVariable3,
-      String? pathVariable4])
-      : method = "PUT",
+  const Operation.put([
+    String? pathVariable1,
+    String? pathVariable2,
+    String? pathVariable3,
+    String? pathVariable4,
+  ])  : method = "PUT",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,
         _pathVariable4 = pathVariable4;
 
-  const Operation.post(
-      [String? pathVariable1,
-      String? pathVariable2,
-      String? pathVariable3,
-      String? pathVariable4])
-      : method = "POST",
+  const Operation.post([
+    String? pathVariable1,
+    String? pathVariable2,
+    String? pathVariable3,
+    String? pathVariable4,
+  ])  : method = "POST",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,
         _pathVariable4 = pathVariable4;
 
-  const Operation.delete(
-      [String? pathVariable1,
-      String? pathVariable2,
-      String? pathVariable3,
-      String? pathVariable4])
-      : method = "DELETE",
+  const Operation.delete([
+    String? pathVariable1,
+    String? pathVariable2,
+    String? pathVariable3,
+    String? pathVariable4,
+  ])  : method = "DELETE",
         _pathVariable1 = pathVariable1,
         _pathVariable2 = pathVariable2,
         _pathVariable3 = pathVariable3,

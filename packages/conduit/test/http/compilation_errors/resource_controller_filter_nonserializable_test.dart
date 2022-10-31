@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -13,7 +15,7 @@ void main() {
     } on StateError catch (e) {
       expect(
         e.toString(),
-        "Bad state: Invalid binding 'a' on 'FilterNonSerializable.get1':"
+        "Bad state: Invalid binding 'a' on 'FilterNonSerializable.get1': "
         "Filters can only be used on Serializable or List<Serializable>.",
       );
     }
@@ -23,7 +25,8 @@ void main() {
 class FilterNonSerializable extends ResourceController {
   @Operation.post()
   Future<Response> get1(
-      @Bind.body(ignore: ["id"]) Map<String, dynamic> a) async {
+    @Bind.body(ignore: ["id"]) Map<String, dynamic> a,
+  ) async {
     return Response.ok(null);
   }
 }

@@ -43,32 +43,43 @@ void main() {
     jsFile.writeAsBytesSync(utf8.encode(jsContents));
 
     final cachingController = FileController("temp_files")
-      ..addCachePolicy(const CachePolicy(requireConditionalRequest: true),
-          (path) => path.endsWith(".html"))
       ..addCachePolicy(
-          const CachePolicy(expirationFromNow: Duration(seconds: 31536000)),
-          (path) => [
-                ".jpg",
-                ".js",
-                ".png",
-                ".css",
-                ".jpeg",
-                ".ttf",
-                ".eot",
-                ".woff",
-                ".otf"
-              ].any((suffix) => path.endsWith(suffix)));
+        const CachePolicy(requireConditionalRequest: true),
+        (path) => path.endsWith(".html"),
+      )
+      ..addCachePolicy(
+        const CachePolicy(expirationFromNow: Duration(seconds: 31536000)),
+        (path) => [
+          ".jpg",
+          ".js",
+          ".png",
+          ".css",
+          ".jpeg",
+          ".ttf",
+          ".eot",
+          ".woff",
+          ".otf"
+        ].any((suffix) => path.endsWith(suffix)),
+      );
 
     final router = Router()
       ..route("/files/*").link(() => FileController("temp_files"))
       ..route("/redirect/*").link(
-          () => FileController("temp_files", onFileNotFound: (c, r) async {
-                return Response.ok({"k": "v"});
-              }))
+        () => FileController(
+          "temp_files",
+          onFileNotFound: (c, r) async {
+            return Response.ok({"k": "v"});
+          },
+        ),
+      )
       ..route("/cache/*").link(() => cachingController)
-      ..route("/silly/*").link(() => FileController("temp_files")
-        ..setContentTypeForExtension(
-            "silly", ContentType("text", "html", charset: "utf-8")));
+      ..route("/silly/*").link(
+        () => FileController("temp_files")
+          ..setContentTypeForExtension(
+            "silly",
+            ContentType("text", "html", charset: "utf-8"),
+          ),
+      );
     router.didAddToChannel();
 
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
@@ -116,8 +127,10 @@ void main() {
   test(
       "If 404 response to request without Accept: text/html, do not include HTML body",
       () async {
-    final response = await getFile("/file.foobar",
-        headers: {HttpHeaders.acceptHeader: "text/plain"});
+    final response = await getFile(
+      "/file.foobar",
+      headers: {HttpHeaders.acceptHeader: "text/plain"},
+    );
     expect(response.headers["last-modified"], isNull);
     expect(response.headers["cache-control"], isNull);
     expect(response.headers["content-type"], isNull);
@@ -239,7 +252,9 @@ void main() {
       final response = await getCacheableFile("/file.json");
       expect(response.statusCode, 200);
       expect(
-          response.headers["content-type"], "application/json; charset=utf-8");
+        response.headers["content-type"],
+        "application/json; charset=utf-8",
+      );
       expect(response.headers["content-encoding"], "gzip");
       expect(response.headers["transfer-encoding"], "chunked");
       expect(response.headers["cache-control"], isNull);
@@ -275,8 +290,10 @@ void main() {
     test(
         "Fetch file with If-Modified-Since after last modified date, returns 304 with no body",
         () async {
-      final response = await getCacheableFile("/file.html",
-          ifModifiedSince: DateTime.now().add(const Duration(hours: 1)));
+      final response = await getCacheableFile(
+        "/file.html",
+        ifModifiedSince: DateTime.now().add(const Duration(hours: 1)),
+      );
       expect(response.statusCode, 304);
       expect(response.headers["content-type"], isNull);
       expect(response.headers["content-encoding"], isNull);
@@ -289,8 +306,10 @@ void main() {
     test("JS file has large max-age", () async {
       final response = await getCacheableFile("/file.js");
       expect(response.statusCode, 200);
-      expect(response.headers["content-type"],
-          "application/javascript; charset=utf-8");
+      expect(
+        response.headers["content-type"],
+        "application/javascript; charset=utf-8",
+      );
       expect(response.headers["content-encoding"], "gzip");
       expect(response.headers["transfer-encoding"], "chunked");
       expect(response.headers["cache-control"], "public, max-age=31536000");
@@ -311,21 +330,30 @@ void main() {
   });
 }
 
-Future<http.Response> getFile(String path,
-    {Map<String, String>? headers}) async {
-  return http.get(Uri.parse("http://localhost:8888/files$path"),
-      headers: headers);
+Future<http.Response> getFile(
+  String path, {
+  Map<String, String>? headers,
+}) async {
+  return http.get(
+    Uri.parse("http://localhost:8888/files$path"),
+    headers: headers,
+  );
 }
 
-Future<http.Response> getCacheableFile(String path,
-    {DateTime? ifModifiedSince}) async {
+Future<http.Response> getCacheableFile(
+  String path, {
+  DateTime? ifModifiedSince,
+}) async {
   if (ifModifiedSince == null) {
     return http.get(Uri.parse("http://localhost:8888/cache$path"));
   }
 
-  return http.get(Uri.parse("http://localhost:8888/cache$path"), headers: {
-    HttpHeaders.ifModifiedSinceHeader: HttpDate.format(ifModifiedSince)
-  });
+  return http.get(
+    Uri.parse("http://localhost:8888/cache$path"),
+    headers: {
+      HttpHeaders.ifModifiedSinceHeader: HttpDate.format(ifModifiedSince)
+    },
+  );
 }
 
 Future serverHasNoMoreConnections(HttpServer server) async {

@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:conduit/src/application/application_server.dart';
 import 'package:conduit/src/application/isolate_application_server.dart';
+import 'package:conduit/src/application/isolate_supervisor.dart';
+import 'package:conduit/src/application/options.dart';
+import 'package:conduit/src/application/service_registry.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
-
-import '../http/http.dart';
-import 'application_server.dart';
-import 'isolate_supervisor.dart';
-import 'options.dart';
-import 'service_registry.dart';
 
 export 'application_server.dart';
 export 'options.dart';
@@ -78,7 +77,8 @@ class Application<T extends ApplicationChannel?> {
   Future start({int numberOfInstances = 1, bool consoleLogging = false}) async {
     if (server != null || supervisors.isNotEmpty) {
       throw StateError(
-          "Application error. Cannot invoke 'start' on already running Conduit application.");
+        "Application error. Cannot invoke 'start' on already running Conduit application.",
+      );
     }
 
     if (options.address == null) {
@@ -94,8 +94,13 @@ class Application<T extends ApplicationChannel?> {
 
       for (var i = 0; i < numberOfInstances; i++) {
         final supervisor = await _spawn(
-            this, options, i + 1, logger, isolateStartupTimeout,
-            logToConsole: consoleLogging);
+          this,
+          options,
+          i + 1,
+          logger,
+          isolateStartupTimeout,
+          logToConsole: consoleLogging,
+        );
         supervisors.add(supervisor);
         await supervisor.resume();
       }
@@ -104,7 +109,9 @@ class Application<T extends ApplicationChannel?> {
       await stop().timeout(const Duration(seconds: 5));
       rethrow;
     }
-    supervisors.forEach((sup) => sup.sendPendingMessages());
+    for (final sup in supervisors) {
+      sup.sendPendingMessages();
+    }
     _hasFinishedLaunching = true;
   }
 
@@ -115,7 +122,8 @@ class Application<T extends ApplicationChannel?> {
   Future startOnCurrentIsolate() async {
     if (server != null || supervisors.isNotEmpty) {
       throw StateError(
-          "Application error. Cannot invoke 'test' on already running Conduit application.");
+        "Application error. Cannot invoke 'test' on already running Conduit application.",
+      );
     }
 
     options.address ??= InternetAddress.loopbackIPv4;
@@ -156,8 +164,11 @@ class Application<T extends ApplicationChannel?> {
   /// Creates an [APIDocument] from an [ApplicationChannel].
   ///
   /// This method is called by the `conduit document` CLI.
-  static Future<APIDocument> document(Type type, ApplicationOptions config,
-      Map<String, dynamic> projectSpec) async {
+  static Future<APIDocument> document(
+    Type type,
+    ApplicationOptions config,
+    Map<String, dynamic> projectSpec,
+  ) async {
     final runtime = RuntimeContext.current[type] as ChannelRuntime;
 
     await runtime.runGlobalInitialization(config);
@@ -174,12 +185,13 @@ class Application<T extends ApplicationChannel?> {
   }
 
   Future<ApplicationIsolateSupervisor> _spawn(
-      Application application,
-      ApplicationOptions config,
-      int identifier,
-      Logger logger,
-      Duration startupTimeout,
-      {bool logToConsole = false}) async {
+    Application application,
+    ApplicationOptions config,
+    int identifier,
+    Logger logger,
+    Duration startupTimeout, {
+    bool logToConsole = false,
+  }) async {
     final receivePort = ReceivePort();
 
     final libraryUri = _runtime!.libraryUri;
@@ -187,14 +199,24 @@ class Application<T extends ApplicationChannel?> {
     final entryPoint = _runtime!.isolateEntryPoint;
 
     final initialMessage = ApplicationInitialServerMessage(
-        typeName, libraryUri, config, identifier, receivePort.sendPort,
-        logToConsole: logToConsole);
+      typeName,
+      libraryUri,
+      config,
+      identifier,
+      receivePort.sendPort,
+      logToConsole: logToConsole,
+    );
     final isolate =
         await Isolate.spawn(entryPoint, initialMessage, paused: true);
 
     return ApplicationIsolateSupervisor(
-        application, isolate, receivePort, identifier, logger,
-        startupTimeout: startupTimeout);
+      application,
+      isolate,
+      receivePort,
+      identifier,
+      logger,
+      startupTimeout: startupTimeout,
+    );
   }
 }
 

@@ -1,11 +1,10 @@
+import 'package:conduit/src/db/managed/backing.dart';
 import 'package:conduit/src/db/managed/key_path.dart';
+import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
-
-import '../managed/backing.dart';
-import '../managed/managed.dart';
-import 'page.dart';
-import 'query.dart';
-import 'sort_descriptor.dart';
+import 'package:conduit/src/db/query/page.dart';
+import 'package:conduit/src/db/query/query.dart';
+import 'package:conduit/src/db/query/sort_descriptor.dart';
 
 abstract class QueryMixin<InstanceType extends ManagedObject>
     implements Query<InstanceType> {
@@ -48,7 +47,9 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
     if (_valueObject == null) {
       _valueObject = entity.instanceOf() as InstanceType?;
       _valueObject!.backing = ManagedBuilderBacking.from(
-          _valueObject!.entity, _valueObject!.backing);
+        _valueObject!.entity,
+        _valueObject!.backing,
+      );
     }
     return _valueObject!;
   }
@@ -61,16 +62,19 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
     }
 
     _valueObject = entity.instanceOf(
-        backing: ManagedBuilderBacking.from(entity, obj.backing));
+      backing: ManagedBuilderBacking.from(entity, obj.backing),
+    );
   }
 
   @override
   QueryExpression<T, InstanceType> where<T>(
-      T propertyIdentifier(InstanceType x)) {
+    T Function(InstanceType x) propertyIdentifier,
+  ) {
     final properties = entity.identifyProperties(propertyIdentifier);
     if (properties.length != 1) {
       throw ArgumentError(
-          "Invalid property selector. Must reference a single property only.");
+        "Invalid property selector. Must reference a single property only.",
+      );
     }
 
     final expr = QueryExpression<T, InstanceType>(properties.first);
@@ -79,8 +83,10 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   @override
-  Query<T> join<T extends ManagedObject>(
-      {T? object(InstanceType x)?, ManagedSet<T>? set(InstanceType x)?}) {
+  Query<T> join<T extends ManagedObject>({
+    T? Function(InstanceType x)? object,
+    ManagedSet<T>? Function(InstanceType x)? set,
+  }) {
     final relationship = object ?? set!;
     final desc = entity.identifyRelationship(relationship);
 
@@ -88,15 +94,21 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   @override
-  void pageBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order,
-      {T? boundingValue}) {
+  void pageBy<T>(
+    T Function(InstanceType x) propertyIdentifier,
+    QuerySortOrder order, {
+    T? boundingValue,
+  }) {
     final attribute = entity.identifyAttribute(propertyIdentifier);
     pageDescriptor =
         QueryPage(order, attribute.name, boundingValue: boundingValue);
   }
 
   @override
-  void sortBy<T>(T propertyIdentifier(InstanceType x), QuerySortOrder order) {
+  void sortBy<T>(
+    T Function(InstanceType x) propertyIdentifier,
+    QuerySortOrder order,
+  ) {
     final attribute = entity.identifyAttribute(propertyIdentifier);
 
     sortDescriptors ??= <QuerySortDescriptor>[];
@@ -104,14 +116,21 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   @override
-  void returningProperties(List<dynamic> propertyIdentifiers(InstanceType x)) {
+  void returningProperties(
+    List<dynamic> Function(InstanceType x) propertyIdentifiers,
+  ) {
     final properties = entity.identifyProperties(propertyIdentifiers);
 
-    if (properties.any((kp) => kp.path.any((p) =>
-        p is ManagedRelationshipDescription &&
-        p.relationshipType != ManagedRelationshipType.belongsTo))) {
+    if (properties.any(
+      (kp) => kp.path.any(
+        (p) =>
+            p is ManagedRelationshipDescription &&
+            p.relationshipType != ManagedRelationshipType.belongsTo,
+      ),
+    )) {
       throw ArgumentError(
-          "Invalid property selector. Cannot select has-many or has-one relationship properties. Use join instead.");
+        "Invalid property selector. Cannot select has-many or has-one relationship properties. Use join instead.",
+      );
     }
 
     _propertiesToFetch = entity.identifyProperties(propertyIdentifiers);
@@ -133,10 +152,12 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
   }
 
   Query<T> _createSubquery<T extends ManagedObject>(
-      ManagedRelationshipDescription fromRelationship) {
+    ManagedRelationshipDescription fromRelationship,
+  ) {
     if (subQueries?.containsKey(fromRelationship) ?? false) {
       throw StateError(
-          "Invalid query. Cannot join same property more than once.");
+        "Invalid query. Cannot join same property more than once.",
+      );
     }
 
     // Ensure we don't cyclically join

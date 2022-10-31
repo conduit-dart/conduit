@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors, always_declare_return_types
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -34,12 +36,13 @@ void main() {
         ..join(set: (p) => p.children)
         ..where((o) => o.name).equalTo("D");
 
-      final verifier = (Parent? p) {
+      verifier(Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
         expect(p.children, []);
-      };
+      }
+
       verifier(await q.fetchOne());
       verifier((await q.fetch()).first);
     });
@@ -53,12 +56,13 @@ void main() {
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      final verifier = (Parent? p) {
+      verifier(Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
         expect(p.children, []);
-      };
+      }
+
       verifier(await q.fetchOne());
       verifier((await q.fetch()).first);
     });
@@ -70,16 +74,19 @@ void main() {
         ..join(set: (p) => p.children)
         ..where((o) => o.name).equalTo("C");
 
-      final verifier = (Parent? p) {
+      verifier(Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "C");
         expect(p.pid, isNotNull);
         expect(p.children!.first.cid, isNotNull);
         expect(p.children!.first.name, "C5");
         expect(p.children!.first.backing.contents!.containsKey("toy"), false);
-        expect(p.children!.first.backing.contents!.containsKey("vaccinations"),
-            false);
-      };
+        expect(
+          p.children!.first.backing.contents!.containsKey("vaccinations"),
+          false,
+        );
+      }
+
       verifier(await q.fetchOne());
       verifier((await q.fetch()).first);
     });
@@ -94,7 +101,7 @@ void main() {
         ..join(object: (c) => c.toy)
         ..join(set: (c) => c.vaccinations);
 
-      final verifier = (Parent? p) {
+      verifier(Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "B");
         expect(p.pid, isNotNull);
@@ -111,7 +118,7 @@ void main() {
         expect(p.children!.last.backing.contents!.containsKey("toy"), true);
         expect(p.children!.last.toy, isNull);
         expect(p.children!.last.vaccinations, []);
-      };
+      }
 
       verifier(await q.fetchOne());
       verifier((await q.fetch()).first);
@@ -128,7 +135,7 @@ void main() {
         ..join(set: (c) => c.vaccinations)
             .sortBy((v) => v.vid, QuerySortOrder.ascending);
 
-      final verifier = (Parent? p) {
+      verifier(Parent? p) {
         expect(p, isNotNull);
         expect(p!.name, "A");
         expect(p.pid, isNotNull);
@@ -147,7 +154,7 @@ void main() {
         expect(p.children!.last.toy!.tid, isNotNull);
         expect(p.children!.last.toy!.name, "T2");
         expect(p.children!.last.vaccinations, []);
-      };
+      }
 
       verifier(await q.fetchOne());
       verifier((await q.fetch()).first);
@@ -167,34 +174,43 @@ void main() {
       expect(results.first.name, "A");
       expect(results.first.children!.length, 2);
       expect(results.first.children!.first.name, "C1");
-      expect(results.first.children!.first.backing.contents!.containsKey("toy"),
-          false);
       expect(
-          results.first.children!.first.backing.contents!
-              .containsKey("vaccinations"),
-          false);
+        results.first.children!.first.backing.contents!.containsKey("toy"),
+        false,
+      );
+      expect(
+        results.first.children!.first.backing.contents!
+            .containsKey("vaccinations"),
+        false,
+      );
       expect(results.first.children!.last.name, "C2");
-      expect(results.first.children!.last.backing.contents!.containsKey("toy"),
-          false);
       expect(
-          results.first.children!.last.backing.contents!
-              .containsKey("vaccinations"),
-          false);
+        results.first.children!.last.backing.contents!.containsKey("toy"),
+        false,
+      );
+      expect(
+        results.first.children!.last.backing.contents!
+            .containsKey("vaccinations"),
+        false,
+      );
 
       expect(results[1].pid, isNotNull);
       expect(results[1].name, "C");
       expect(results[1].children!.length, 1);
       expect(results[1].children!.first.name, "C5");
-      expect(results[1].children!.first.backing.contents!.containsKey("toy"),
-          false);
       expect(
-          results[1]
-              .children!
-              .first
-              .backing
-              .contents!
-              .containsKey("vaccinations"),
-          false);
+        results[1].children!.first.backing.contents!.containsKey("toy"),
+        false,
+      );
+      expect(
+        results[1]
+            .children!
+            .first
+            .backing
+            .contents!
+            .containsKey("vaccinations"),
+        false,
+      );
 
       expect(results.last.pid, isNotNull);
       expect(results.last.name, "D");
@@ -210,7 +226,7 @@ void main() {
       final all = await q.fetch();
 
       final originalIterator = truth.iterator;
-      for (var p in all) {
+      for (final p in all) {
         originalIterator.moveNext();
         expect(p.pid, originalIterator.current.pid);
         expect(p.name, originalIterator.current.name);
@@ -294,7 +310,7 @@ void main() {
 
       expect(results.length, 4);
 
-      for (var p in results.sublist(1)) {
+      for (final p in results.sublist(1)) {
         expect(p.children, []);
       }
 
@@ -391,7 +407,7 @@ void main() {
       final results = await q.fetch();
 
       final originalIterator = truth.reversed.iterator;
-      for (var p in results) {
+      for (final p in results) {
         originalIterator.moveNext();
         expect(p.pid, originalIterator.current.pid);
         expect(p.name, originalIterator.current.name);
@@ -438,7 +454,7 @@ void main() {
         ..join(set: (p) => p.children);
 
       final o = await q.fetchOne();
-      for (var c in o!.children!) {
+      for (final c in o!.children!) {
         expect(identical(c.parent, o), false);
       }
     });
@@ -463,9 +479,11 @@ void main() {
         Query<Parent>(context!).returningProperties((p) => [p.pid, p.children]);
       } on ArgumentError catch (e) {
         expect(
-            e.toString(),
-            contains(
-                "Cannot select has-many or has-one relationship properties"));
+          e.toString(),
+          contains(
+            "Cannot select has-many or has-one relationship properties",
+          ),
+        );
       }
     });
 
@@ -481,9 +499,11 @@ void main() {
         expect(true, false);
       } on ArgumentError catch (e) {
         expect(
-            e.toString(),
-            contains(
-                "Cannot select has-many or has-one relationship properties"));
+          e.toString(),
+          contains(
+            "Cannot select has-many or has-one relationship properties",
+          ),
+        );
       }
     });
   });
@@ -568,13 +588,13 @@ Future<List<Parent>> populate(ManagedContext? context) async {
     Parent()..name = "D"
   ];
 
-  for (var p in parents) {
+  for (final p in parents) {
     final q = Query<Parent>(context!)..values.name = p.name;
     final insertedParent = await q.insert();
     modelGraph.add(insertedParent);
 
     insertedParent.children = ManagedSet<Child>();
-    for (var child in p.children ?? <Child>[]) {
+    for (final child in p.children ?? <Child>[]) {
       final childQ = Query<Child>(context)
         ..values.name = child.name
         ..values.parent = insertedParent;
@@ -589,12 +609,15 @@ Future<List<Parent>> populate(ManagedContext? context) async {
 
       if (child.vaccinations != null) {
         insertedParent.children!.last.vaccinations = ManagedSet<Vaccine>.from(
-            await Future.wait(child.vaccinations!.map((v) {
-          final vQ = Query<Vaccine>(context)
-            ..values.kind = v.kind
-            ..values.child = insertedParent.children!.last;
-          return vQ.insert();
-        })));
+          await Future.wait(
+            child.vaccinations!.map((v) {
+              final vQ = Query<Vaccine>(context)
+                ..values.kind = v.kind
+                ..values.child = insertedParent.children!.last;
+              return vQ.insert();
+            }),
+          ),
+        );
       }
     }
   }

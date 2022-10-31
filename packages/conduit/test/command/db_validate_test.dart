@@ -17,7 +17,7 @@ void main() {
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createTestProject();
 
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   tearDownAll(DartProjectAgent.tearDownAll);
@@ -69,7 +69,7 @@ class _TestObject {
       final nextLine =
           contents.indexOf("\n", contents.indexOf(upgradeLocation));
       return contents.replaceRange(nextLine, nextLine + 1, """
-        database.createTable(SchemaTable(\"foo\", []));
+        database.createTable(SchemaTable("foo", []));
         """);
     });
 
@@ -93,7 +93,7 @@ class _TestObject {
           return contents.replaceRange(
             nextLine,
             nextLine + 1,
-            "database.createTable(SchemaTable(\"foo\", []));\n",
+            'database.createTable(SchemaTable("foo", []));\n',
           );
         },
       );
@@ -111,7 +111,7 @@ class _TestObject {
       );
       expect(
         secondMigrationFile.readAsStringSync(),
-        contains("database.deleteTable(\"foo\")"),
+        contains('database.deleteTable("foo")'),
       );
 
       res = await projectUnderTestCli.run("db", ["validate"]);

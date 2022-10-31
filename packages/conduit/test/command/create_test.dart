@@ -1,4 +1,6 @@
 // ignore: unnecessary_const
+// ignore_for_file: avoid_dynamic_calls
+
 @Tags(["cli"])
 import 'dart:convert';
 import 'dart:io';
@@ -107,7 +109,7 @@ void main() {
       final lines = cli.output.split("\n");
 
       expect(lines.length, names.length + 4);
-      for (var n in names) {
+      for (final n in names) {
         expect(lines.any((l) => l.startsWith("\x1B[0m    $n ")), isTrue);
       }
     });
@@ -117,11 +119,15 @@ void main() {
       final res = await cli.run("create", ["test_project", "--offline"]);
       expect(res, 0);
 
-      final List packages = jsonDecode(File(join(
-              cli.agent.workingDirectory.path,
-              "test_project",
-              ".dart_tool/package_config.json"))
-          .readAsStringSync())['packages'] as List;
+      final List packages = jsonDecode(
+        File(
+          join(
+            cli.agent.workingDirectory.path,
+            "test_project",
+            ".dart_tool/package_config.json",
+          ),
+        ).readAsStringSync(),
+      )['packages'] as List;
       final conduitPacakge =
           packages.firstWhere((element) => element['name'] == 'conduit');
       final conduitLocation = Uri.parse(conduitPacakge['rootUri'] as String)
@@ -140,7 +146,7 @@ void main() {
     final conduitPubspec = loadYaml(File("pubspec.yaml").readAsStringSync());
     final conduitVersion = Version.parse("${conduitPubspec["version"]}");
 
-    for (var template in templates) {
+    for (final template in templates) {
       test(
         "Templates can use 'this' version of Conduit in their dependencies",
         () {
@@ -150,7 +156,6 @@ void main() {
           final projectVersionConstraint = VersionConstraint.parse(
             contents["dependencies"]["conduit"] as String,
           );
-          print(projectVersionConstraint);
           expect(projectVersionConstraint.allows(conduitVersion), isTrue);
         },
       );
@@ -178,8 +183,6 @@ void main() {
               .resolve("test_project")
               .toFilePath(windows: Platform.isWindows),
         );
-
-        print(res.stderr);
 
         expect(res.exitCode, 0);
         try {

@@ -21,8 +21,11 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
         super(message);
 
   RunUpgradeExecutable.input(
-      this.inputSchema, this.dbInfo, this.sources, this.currentVersion)
-      : super({
+    this.inputSchema,
+    this.dbInfo,
+    this.sources,
+    this.currentVersion,
+  ) : super({
           "schema": inputSchema.asMap(),
           "dbInfo": dbInfo.asMap(),
           "migrations": sources.map((source) => source.asMap()).toList(),
@@ -39,23 +42,26 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
     hierarchicalLoggingEnabled = true;
 
     PostgreSQLPersistentStore.logger.level = Level.ALL;
-    PostgreSQLPersistentStore.logger.onRecord
-        .listen((r) => log("${r.message}"));
+    PostgreSQLPersistentStore.logger.onRecord.listen((r) => log(r.message));
 
     late PersistentStore store;
     if (dbInfo.flavor == "postgres") {
-      store = PostgreSQLPersistentStore(dbInfo.username, dbInfo.password,
-          dbInfo.host, dbInfo.port, dbInfo.databaseName,
-          timeZone: dbInfo.timeZone, useSSL: dbInfo.useSSL);
+      store = PostgreSQLPersistentStore(
+        dbInfo.username,
+        dbInfo.password,
+        dbInfo.host,
+        dbInfo.port,
+        dbInfo.databaseName,
+        timeZone: dbInfo.timeZone,
+        useSSL: dbInfo.useSSL,
+      );
     }
 
-    final migrationTypes = currentMirrorSystem()
-        .isolate
-        .rootLibrary
-        .declarations
-        .values
-        .where((dm) =>
-            dm is ClassMirror && dm.isSubclassOf(reflectClass(Migration)));
+    final migrationTypes =
+        currentMirrorSystem().isolate.rootLibrary.declarations.values.where(
+              (dm) =>
+                  dm is ClassMirror && dm.isSubclassOf(reflectClass(Migration)),
+            );
 
     final instances = sources.map((s) {
       final type = migrationTypes.firstWhere((cm) {
@@ -118,9 +124,16 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
 }
 
 class DBInfo {
-  DBInfo(this.flavor, this.username, this.password, this.host, this.port,
-      this.databaseName, this.timeZone,
-      {this.useSSL = false});
+  DBInfo(
+    this.flavor,
+    this.username,
+    this.password,
+    this.host,
+    this.port,
+    this.databaseName,
+    this.timeZone, {
+    this.useSSL = false,
+  });
 
   DBInfo.fromMap(Map<String, dynamic> map)
       : flavor = map["flavor"] as String?,

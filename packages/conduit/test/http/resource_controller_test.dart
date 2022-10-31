@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:convert';
 import "dart:core";
 import "dart:io";
@@ -91,8 +93,11 @@ void main() {
     server = await enableController("/a", () => TController());
 
     final body = json.encode({"a": "b"});
-    final res = await http.post(Uri.parse("http://localhost:4040/a"),
-        headers: {"Content-Type": "application/json"}, body: body);
+    final res = await http.post(
+      Uri.parse("http://localhost:4040/a"),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
     expect(res.statusCode, 200);
     expect(json.decode(res.body), equals({"a": "b"}));
   });
@@ -101,8 +106,11 @@ void main() {
     server = await enableController("/a", () => TController());
 
     final body = json.encode({"a": "b"});
-    final res = await http.post(Uri.parse("http://localhost:4040/a"),
-        headers: {"Content-Type": "application/somenonsense"}, body: body);
+    final res = await http.post(
+      Uri.parse("http://localhost:4040/a"),
+      headers: {"Content-Type": "application/somenonsense"},
+      body: body,
+    );
     expect(res.statusCode, 415);
   });
 
@@ -111,39 +119,39 @@ void main() {
     server = await enableController("/a", () => QController());
 
     var res = await http.get(Uri.parse("http://localhost:4040/a?opt=x"));
-    expect(res.body, "\"OK\"");
+    expect(res.body, '"OK"');
 
     res = await http.get(Uri.parse("http://localhost:4040/a"));
-    expect(res.body, "\"NOT\"");
+    expect(res.body, '"NOT"');
 
     res = await http.get(Uri.parse("http://localhost:4040/a?option=x"));
-    expect(res.body, "\"NOT\"");
+    expect(res.body, '"NOT"');
 
     res = await http.get(Uri.parse("http://localhost:4040/a?opt=x&q=1"));
-    expect(res.body, "\"OK\"");
+    expect(res.body, '"OK"');
 
     await server!.close(force: true);
 
     server = await enableController("/:id", () => QController());
 
     res = await http.get(Uri.parse("http://localhost:4040/123?opt=x"));
-    expect(res.body, "\"OK\"");
+    expect(res.body, '"OK"');
 
     res = await http.get(Uri.parse("http://localhost:4040/123"));
-    expect(res.body, "\"NOT\"");
+    expect(res.body, '"NOT"');
 
     res = await http.get(Uri.parse("http://localhost:4040/123?option=x"));
-    expect(res.body, "\"NOT\"");
+    expect(res.body, '"NOT"');
 
     res = await http.get(Uri.parse("http://localhost:4040/123?opt=x&q=1"));
-    expect(res.body, "\"OK\"");
+    expect(res.body, '"OK"');
   });
 
   test("Path parameters are parsed into appropriate type", () async {
     server = await enableController("/:id", () => IntController());
 
     var res = await http.get(Uri.parse("http://localhost:4040/123"));
-    expect(res.body, "\"246\"");
+    expect(res.body, '"246"');
 
     res = await http.get(Uri.parse("http://localhost:4040/word"));
     expect(res.statusCode, 400);
@@ -154,7 +162,7 @@ void main() {
     res = await http
         .get(Uri.parse("http://localhost:4040/2001-01-01T00:00:00.000000Z"));
     expect(res.statusCode, 200);
-    expect(res.body, "\"2001-01-01 00:00:05.000Z\"");
+    expect(res.body, '"2001-01-01 00:00:05.000Z"');
 
     res = await http.get(Uri.parse("http://localhost:4040/foobar"));
     expect(res.statusCode, 400);
@@ -163,36 +171,40 @@ void main() {
   test("Query parameters are parsed into appropriate types", () async {
     server = await enableController("/a", () => IntController());
     var res = await http.get(Uri.parse("http://localhost:4040/a?opt=12"));
-    expect(res.body, "\"12\"");
+    expect(res.body, '"12"');
 
     res = await http.get(Uri.parse("http://localhost:4040/a?opt=word"));
     expect(res.statusCode, 400);
 
     res = await http.get(Uri.parse("http://localhost:4040/a?foo=2"));
     expect(res.statusCode, 200);
-    expect(res.body, "\"null\"");
+    expect(res.body, '"null"');
 
     await server!.close(force: true);
 
     server = await enableController("/a", () => DateTimeController());
     res = await http.get(
-        Uri.parse("http://localhost:4040/a?opt=2001-01-01T00:00:00.000000Z"));
+      Uri.parse("http://localhost:4040/a?opt=2001-01-01T00:00:00.000000Z"),
+    );
     expect(res.statusCode, 200);
-    expect(res.body, "\"2001-01-01 00:00:00.000Z\"");
+    expect(res.body, '"2001-01-01 00:00:00.000Z"');
 
     res = await http.get(Uri.parse("http://localhost:4040/a?opt=word"));
     expect(res.statusCode, 400);
 
     res = await http.get(
-        Uri.parse("http://localhost:4040/a?foo=2001-01-01T00:00:00.000000Z"));
+      Uri.parse("http://localhost:4040/a?foo=2001-01-01T00:00:00.000000Z"),
+    );
     expect(res.statusCode, 200);
   });
 
   test("Query parameters can be obtained from x-www-form-urlencoded", () async {
     server = await enableController("/a", () => IntController());
-    final res = await http.post(Uri.parse("http://localhost:4040/a"),
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        body: "opt=7");
+    final res = await http.post(
+      Uri.parse("http://localhost:4040/a"),
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: "opt=7",
+    );
     expect(res.body, '"7"');
   });
 
@@ -228,8 +240,11 @@ void main() {
 
   test("Sending bad JSON returns 400", () async {
     server = await enableController("/a", () => TController());
-    var res = await http.post(Uri.parse("http://localhost:4040/a"),
-        body: "{`foobar' : 2}", headers: {"Content-Type": "application/json"});
+    var res = await http.post(
+      Uri.parse("http://localhost:4040/a"),
+      body: "{`foobar' : 2}",
+      headers: {"Content-Type": "application/json"},
+    );
     expect(res.statusCode, 400);
 
     res = await http.get(Uri.parse("http://localhost:4040/a"));
@@ -271,8 +286,10 @@ void main() {
     server = await enableController("/a", () => TController());
     final resp = await http.get(Uri.parse("http://localhost:4040/a"));
     expect(resp.statusCode, 200);
-    expect(ContentType.parse(resp.headers["content-type"]!).primaryType,
-        "application");
+    expect(
+      ContentType.parse(resp.headers["content-type"]!).primaryType,
+      "application",
+    );
     expect(ContentType.parse(resp.headers["content-type"]!).subType, "json");
   });
 
@@ -300,9 +317,11 @@ void main() {
     var resp = await http.get(Uri.parse("http://localhost:4040/a"));
     expect(json.decode(resp.body), {"didDecode": false});
 
-    resp = await http.post(Uri.parse("http://localhost:4040/a"),
-        headers: {HttpHeaders.contentTypeHeader: ContentType.json.toString()},
-        body: json.encode({"k": "v"}));
+    resp = await http.post(
+      Uri.parse("http://localhost:4040/a"),
+      headers: {HttpHeaders.contentTypeHeader: ContentType.json.toString()},
+      body: json.encode({"k": "v"}),
+    );
     expect(json.decode(resp.body), {"didDecode": true});
   });
 
@@ -310,14 +329,16 @@ void main() {
     test("are supplied correctly", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse(
-              "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8"),
-          headers: {
-            "x-request-id": "3423423adfea90",
-            "location": "Nowhere",
-            "Cookie": "Chips Ahoy",
-            "Milk": "Publix",
-          });
+        Uri.parse(
+          "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
+        ),
+        headers: {
+          "x-request-id": "3423423adfea90",
+          "location": "Nowhere",
+          "Cookie": "Chips Ahoy",
+          "Milk": "Publix",
+        },
+      );
 
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {
@@ -335,11 +356,12 @@ void main() {
     test("optional parameters aren't required", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
-          headers: {
-            "x-request-id": "3423423adfea90",
-            "Cookie": "Chips Ahoy",
-          });
+        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        headers: {
+          "x-request-id": "3423423adfea90",
+          "Cookie": "Chips Ahoy",
+        },
+      );
 
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {
@@ -357,53 +379,67 @@ void main() {
     test("missing required controller header param fails", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
-          headers: {
-            "Cookie": "Chips Ahoy",
-          });
+        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        headers: {
+          "Cookie": "Chips Ahoy",
+        },
+      );
 
       expect(resp.statusCode, 400);
-      expect(json.decode(resp.body),
-          {"error": "missing required header 'X-Request-id'"});
+      expect(
+        json.decode(resp.body),
+        {"error": "missing required header 'X-Request-id'"},
+      );
     });
 
     test("missing required controller query param fails", () async {
       server = await enableController("/a", () => HTTPParameterController());
-      final resp = await http
-          .get(Uri.parse("http://localhost:4040/a?Table=IKEA"), headers: {
-        "x-request-id": "3423423adfea90",
-        "Cookie": "Chips Ahoy",
-      });
+      final resp = await http.get(
+        Uri.parse("http://localhost:4040/a?Table=IKEA"),
+        headers: {
+          "x-request-id": "3423423adfea90",
+          "Cookie": "Chips Ahoy",
+        },
+      );
 
       expect(resp.statusCode, 400);
       expect(
-          json.decode(resp.body), {"error": "missing required query 'Shaqs'"});
+        json.decode(resp.body),
+        {"error": "missing required query 'Shaqs'"},
+      );
     });
 
     test("missing required method header param fails", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
-          headers: {
-            "x-request-id": "3423423adfea90",
-          });
+        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        headers: {
+          "x-request-id": "3423423adfea90",
+        },
+      );
 
       expect(resp.statusCode, 400);
-      expect(json.decode(resp.body),
-          {"error": "missing required header 'Cookie'"});
+      expect(
+        json.decode(resp.body),
+        {"error": "missing required header 'Cookie'"},
+      );
     });
 
     test("missing require method query param fails", () async {
       server = await enableController("/a", () => HTTPParameterController());
-      final resp = await http
-          .get(Uri.parse("http://localhost:4040/a?Shaqs=1"), headers: {
-        "x-request-id": "3423423adfea90",
-        "Cookie": "Chips Ahoy",
-      });
+      final resp = await http.get(
+        Uri.parse("http://localhost:4040/a?Shaqs=1"),
+        headers: {
+          "x-request-id": "3423423adfea90",
+          "Cookie": "Chips Ahoy",
+        },
+      );
 
       expect(resp.statusCode, 400);
       expect(
-          json.decode(resp.body), {"error": "missing required query 'Table'"});
+        json.decode(resp.body),
+        {"error": "missing required query 'Table'"},
+      );
     });
 
     test("reports all missing required parameters", () async {
@@ -421,14 +457,16 @@ void main() {
     test("Headers are case-INsensitive", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse(
-              "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8"),
-          headers: {
-            "X-Request-ID": "3423423adfea90",
-            "location": "Nowhere",
-            "Cookie": "Chips Ahoy",
-            "Milk": "Publix",
-          });
+        Uri.parse(
+          "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
+        ),
+        headers: {
+          "X-Request-ID": "3423423adfea90",
+          "location": "Nowhere",
+          "Cookie": "Chips Ahoy",
+          "Milk": "Publix",
+        },
+      );
 
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {
@@ -446,16 +484,19 @@ void main() {
     test("Query parameters are case-SENSITIVE", () async {
       server = await enableController("/a", () => HTTPParameterController());
       final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?SHAQS=1&table=IKEA"),
-          headers: {
-            "X-Request-ID": "3423423adfea90",
-            "Cookie": "Chips Ahoy",
-          });
+        Uri.parse("http://localhost:4040/a?SHAQS=1&table=IKEA"),
+        headers: {
+          "X-Request-ID": "3423423adfea90",
+          "Cookie": "Chips Ahoy",
+        },
+      );
 
       expect(resp.statusCode, 400);
 
       expect(
-          json.decode(resp.body)["error"], contains("missing required query"));
+        json.decode(resp.body)["error"],
+        contains("missing required query"),
+      );
       expect(json.decode(resp.body)["error"], contains("Table"));
       expect(json.decode(resp.body)["error"], contains("Shaqs"));
     });
@@ -464,12 +505,15 @@ void main() {
         () async {
       server = await enableController("/a", () => DuplicateParamController());
       final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?list=a&list=b&single=x&single=y"));
+        Uri.parse("http://localhost:4040/a?list=a&list=b&single=x&single=y"),
+      );
 
       expect(resp.statusCode, 400);
 
-      expect(json.decode(resp.body)["error"],
-          "multiple values not expected for query value 'single'");
+      expect(
+        json.decode(resp.body)["error"],
+        "multiple values not expected for query value 'single'",
+      );
     });
 
     test("Can be more than one query parameters for arg type that is List<T>",
@@ -521,12 +565,16 @@ void main() {
         http.get(Uri.parse("http://localhost:4040/a")),
         http.get(Uri.parse("http://localhost:4040/a/foo")),
         http.get(Uri.parse("http://localhost:4040/a/foo/bar")),
-        http.put(Uri.parse("http://localhost:4040/a/foo"),
-            body: json.encode({"k": "v"}),
-            headers: {"content-type": "application/json;charset=utf-8"}),
-        http.post(Uri.parse("http://localhost:4040/a"),
-            body: json.encode({"k": "v"}),
-            headers: {"content-type": "application/json;charset=utf-8"}),
+        http.put(
+          Uri.parse("http://localhost:4040/a/foo"),
+          body: json.encode({"k": "v"}),
+          headers: {"content-type": "application/json;charset=utf-8"},
+        ),
+        http.post(
+          Uri.parse("http://localhost:4040/a"),
+          body: json.encode({"k": "v"}),
+          headers: {"content-type": "application/json;charset=utf-8"},
+        ),
       ]);
 
       expect(responses[0].statusCode, 200);
@@ -569,12 +617,14 @@ class TController extends ResourceController {
 
   @Operation.get("id")
   Future<Response> getOne(@Bind.path("id") String id) async {
-    return Response.ok("$id");
+    return Response.ok(id);
   }
 
   @Operation.get("id", "flag")
   Future<Response> getBoth(
-      @Bind.path("id") String id, @Bind.path("flag") String flag) async {
+    @Bind.path("id") String id,
+    @Bind.path("flag") String flag,
+  ) async {
     return Response.ok("$id$flag");
   }
 
@@ -602,8 +652,10 @@ class QController extends ResourceController {
   }
 
   @Operation.get("id")
-  Future<Response> getOne(@Bind.path("id") String id,
-      {@Bind.query("opt") String? opt}) async {
+  Future<Response> getOne(
+    @Bind.path("id") String id, {
+    @Bind.query("opt") String? opt,
+  }) async {
     if (opt == null) {
       return Response.ok("NOT");
     }
@@ -648,8 +700,9 @@ class DateTimeController extends ResourceController {
 
 class MultiQueryParamController extends ResourceController {
   @Operation.get()
-  Future<Response> get(
-      {@Bind.query("params") required List<String>? params}) async {
+  Future<Response> get({
+    @Bind.query("params") required List<String>? params,
+  }) async {
     return Response.ok(params!.join(","));
   }
 }
@@ -674,10 +727,12 @@ class HTTPParameterController extends ResourceController {
   int? number;
 
   @Operation.get()
-  Future<Response> get(@Bind.header("Cookie") String cookieBrand,
-      @Bind.query("Table") String tableBrand,
-      {@Bind.header("Milk") String? milkBrand,
-      @Bind.query("table_legs") int? numberOfTableLegs}) async {
+  Future<Response> get(
+    @Bind.header("Cookie") String cookieBrand,
+    @Bind.query("Table") String tableBrand, {
+    @Bind.header("Milk") String? milkBrand,
+    @Bind.query("table_legs") int? numberOfTableLegs,
+  }) async {
     return Response.ok({
       "location": location,
       "x-request-id": requestId,
@@ -743,8 +798,10 @@ class ContentTypeController extends ResourceController {
 
 class DuplicateParamController extends ResourceController {
   @Operation.get()
-  Future<Response> getThing(@Bind.query("list") List<String> list,
-      @Bind.query("single") String single) async {
+  Future<Response> getThing(
+    @Bind.query("list") List<String> list,
+    @Bind.query("single") String single,
+  ) async {
     return Response.ok({"list": list, "single": single});
   }
 }
@@ -776,7 +833,9 @@ class NoBindController extends ResourceController {
 }
 
 Future<HttpServer> enableController(
-    String pattern, Controller instantiate()) async {
+  String pattern,
+  Controller Function() instantiate,
+) async {
   final router = Router();
   router.route(pattern).link(instantiate);
   router.didAddToChannel();

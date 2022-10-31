@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'auth.dart';
+import 'package:conduit/src/auth/auth.dart';
 
 /// The properties of an OAuth 2.0 Resource Owner.
 ///
@@ -74,8 +74,11 @@ abstract class AuthServerDelegate {
   /// If no match is found, return null.
   ///
   /// [server] is the [AuthServer] requesting the [AuthToken].
-  FutureOr<AuthToken?>? getToken(AuthServer server,
-      {String? byAccessToken, String? byRefreshToken});
+  FutureOr<AuthToken?>? getToken(
+    AuthServer server, {
+    String? byAccessToken,
+    String? byRefreshToken,
+  });
 
   /// This method must delete all [AuthToken] and [AuthCode]s for a [ResourceOwner].
   ///
@@ -112,11 +115,12 @@ abstract class AuthServerDelegate {
   /// You may alter the token in addition to the provided values, and you may override the provided values.
   /// [newAccessToken] defaults to a random 32 character string.
   FutureOr updateToken(
-      AuthServer server,
-      String? oldAccessToken,
-      String? newAccessToken,
-      DateTime? newIssueDate,
-      DateTime? newExpirationDate);
+    AuthServer server,
+    String? oldAccessToken,
+    String? newAccessToken,
+    DateTime? newIssueDate,
+    DateTime? newExpirationDate,
+  );
 
   /// Must store [code].
   ///

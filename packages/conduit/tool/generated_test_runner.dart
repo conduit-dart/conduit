@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:io';
 
@@ -31,37 +33,44 @@ Future main(List<String> args) async {
         .listSync(recursive: true)
         .whereType<File>()
         .where((f) => f.path.endsWith('_test.dart'))
-        .where((f) => blacklist.every(
-            (blacklistFunction) => blacklistFunction(f.uri.path) == false))
+        .where(
+          (f) => blacklist.every(
+            (blacklistFunction) => blacklistFunction(f.uri.path) == false,
+          ),
+        )
         .toList();
   }
   var remainingCounter = testFiles.length;
   final passingFiles = <File>[];
   final failingFiles = <File>[];
-  for (var f in testFiles) {
+  for (final f in testFiles) {
     final currentTime = DateTime.now();
-    final makePrompt = () =>
+    String makePrompt() =>
         '(Pass: ${passingFiles.length} Fail: ${failingFiles.length} Remain: $remainingCounter)';
 
     print('Running tests derived from ${f.path}...');
     final ctx = BuildContext(
-        conduitDir.resolve('lib/').resolve('conduit.dart'),
-        Directory.current.uri.resolve('../').resolve('_build/'),
-        Directory.current.uri.resolve('../').resolve('run'),
-        File(conduitDir.resolve(f.path).path).readAsStringSync(),
-        forTests: true);
+      conduitDir.resolve('lib/').resolve('conduit.dart'),
+      Directory.current.uri.resolve('../').resolve('_build/'),
+      Directory.current.uri.resolve('../').resolve('run'),
+      File(conduitDir.resolve(f.path).path).readAsStringSync(),
+      forTests: true,
+    );
     final bm = BuildManager(ctx);
     await bm.build();
 
-    final result = await Process.start('dart', ['test/main_test.dart'],
-        workingDirectory:
-            ctx.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
-        environment: {
-          'CONDUIT_CI_DIR_LOCATION': Directory.current.uri
-              .resolve('../../')
-              .resolve('ci/')
-              .toFilePath(windows: Platform.isWindows)
-        });
+    final result = await Process.start(
+      'dart',
+      ['test/main_test.dart'],
+      workingDirectory:
+          ctx.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
+      environment: {
+        'CONDUIT_CI_DIR_LOCATION': Directory.current.uri
+            .resolve('../../')
+            .resolve('ci/')
+            .toFilePath(windows: Platform.isWindows)
+      },
+    );
     // ignore: unawaited_futures
     stdout.addStream(result.stdout);
     // ignore: unawaited_futures
@@ -78,7 +87,8 @@ Future main(List<String> args) async {
     final elapsed = DateTime.now().difference(currentTime);
     remainingCounter--;
     print(
-        '${makePrompt()} (${elapsed.inSeconds}s) Completed tests derived from ${f.path}.');
+      '${makePrompt()} (${elapsed.inSeconds}s) Completed tests derived from ${f.path}.',
+    );
     await bm.clean();
   }
 
@@ -96,10 +106,10 @@ Future main(List<String> args) async {
     return components.join('/');
   }
 
-  passingFiles.forEach((f) {
+  for (final f in passingFiles) {
     print('  ${stripParentDir(f.uri)}: success');
-  });
-  failingFiles.forEach((f) {
+  }
+  for (final f in failingFiles) {
     print('  ${stripParentDir(f.uri)}: FAILURE');
-  });
+  }
 }

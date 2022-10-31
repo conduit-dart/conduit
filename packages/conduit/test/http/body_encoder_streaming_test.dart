@@ -1,3 +1,5 @@
+// ignore_for_file: always_declare_return_types
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -29,7 +31,7 @@ void main() {
         ..contentType = ContentType("application", "octet-stream");
       server = await bindAndRespondWith(response);
 
-      final resultFuture = http.get(Uri.parse("http://localhost:${port}"));
+      final resultFuture = http.get(Uri.parse("http://localhost:$port"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -62,7 +64,9 @@ void main() {
         expect(true, false);
       } on HttpException catch (e) {
         expect(
-            e.toString(), contains("Connection closed while receiving data"));
+          e.toString(),
+          contains("Connection closed while receiving data"),
+        );
       }
 
       expect(serverHasNoMoreConnections(server), completes);
@@ -78,7 +82,7 @@ void main() {
         ..contentType = ContentType("application", "silly");
       server = await bindAndRespondWith(response);
 
-      final resultFuture = http.get(Uri.parse("http://localhost:${port}"));
+      final resultFuture = http.get(Uri.parse("http://localhost:$port"));
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
@@ -108,7 +112,7 @@ void main() {
         ..contentType = ContentType("text", "plain", charset: "utf-8");
       server = await bindAndRespondWith(response);
 
-      final resultFuture = http.get(Uri.parse("http://localhost:${port}"));
+      final resultFuture = http.get(Uri.parse("http://localhost:$port"));
 
       sc.add("abcd");
       sc.add("efgh");
@@ -143,7 +147,9 @@ void main() {
         expect(true, false);
       } on HttpException catch (e) {
         expect(
-            e.toString(), contains("Connection closed while receiving data"));
+          e.toString(),
+          contains("Connection closed while receiving data"),
+        );
       }
 
       expect(serverHasNoMoreConnections(server), completes);
@@ -168,9 +174,10 @@ void main() {
         () async {
       final sc = StreamController<String>();
       server = await bindAndRespondWith(
-          Response.ok(sc.stream)..contentType = ContentType.text);
+        Response.ok(sc.stream)..contentType = ContentType.text,
+      );
 
-      final req = await client.getUrl(Uri.parse("http://localhost:${port}"));
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
       req.headers.clear();
 
       final respFuture = req.close();
@@ -182,8 +189,10 @@ void main() {
 
       final resp = await respFuture;
 
-      expect(resp.headers.contentType.toString(),
-          equals(ContentType.text.toString()));
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.text.toString()),
+      );
       expect(resp.headers.value("content-encoding"), isNull);
       expect(resp.headers.value("transfer-encoding"), "chunked");
       expect(resp.headers.value("content-length"), isNull);
@@ -198,9 +207,10 @@ void main() {
         () async {
       final sc = StreamController<String>();
       server = await bindAndRespondWith(
-          Response.ok(sc.stream)..contentType = ContentType.text);
+        Response.ok(sc.stream)..contentType = ContentType.text,
+      );
 
-      final req = await client.getUrl(Uri.parse("http://localhost:${port}"));
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
       req.headers.clear();
       req.headers.add("accept-encoding", "deflate");
       final respFuture = req.close();
@@ -212,8 +222,10 @@ void main() {
 
       final resp = await respFuture;
 
-      expect(resp.headers.contentType.toString(),
-          equals(ContentType.text.toString()));
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.text.toString()),
+      );
       expect(resp.headers.value("content-encoding"), isNull);
       expect(resp.headers.value("transfer-encoding"), "chunked");
       expect(resp.headers.value("content-length"), isNull);
@@ -229,7 +241,7 @@ void main() {
       final ct = ContentType("application", "1");
       server =
           await bindAndRespondWith(Response.ok(sc.stream)..contentType = ct);
-      final req = await client.getUrl(Uri.parse("http://localhost:${port}"));
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       final respFuture = req.close();
@@ -256,7 +268,7 @@ void main() {
           .add(ct, const Utf8Codec(), allowCompression: false);
       server =
           await bindAndRespondWith(Response.ok(sc.stream)..contentType = ct);
-      final req = await client.getUrl(Uri.parse("http://localhost:${port}"));
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       final respFuture = req.close();
@@ -320,7 +332,7 @@ void main() {
   // that doesn't allow it to complete. The error occurs on client.postUrl
   // and the error message is: SocketException: Write failed (OS Error: An existing connection was forcibly closed by the remote host.
   // 3317  , errno = 10054)
-  final entityTooLarge = () {
+  entityTooLarge() {
     late HttpServer server;
     late HttpClient client;
 
@@ -361,7 +373,9 @@ void main() {
 
       var req = await client.postUrl(Uri.parse("http://localhost:8123"));
       req.headers.add(
-          HttpHeaders.contentTypeHeader, "application/json; charset=utf-8");
+        HttpHeaders.contentTypeHeader,
+        "application/json; charset=utf-8",
+      );
       var body = {"key": List.generate(8192 * 50, (_) => "a").join(" ")};
       req.add(utf8.encode(json.encode(body)));
 
@@ -383,7 +397,9 @@ void main() {
       // Make sure we can still send some more requests;
       req = await client.postUrl(Uri.parse("http://localhost:8123"));
       req.headers.add(
-          HttpHeaders.contentTypeHeader, "application/json; charset=utf-8");
+        HttpHeaders.contentTypeHeader,
+        "application/json; charset=utf-8",
+      );
       body = {"key": "a"};
       req.add(utf8.encode(json.encode(body)));
       final response = await req.close();
@@ -434,7 +450,7 @@ void main() {
         [1, 2, 3, 4]
       ]);
     });
-  };
+  }
 
   if (!Platform.isWindows) {
     group("Entity too large", entityTooLarge);

@@ -56,8 +56,9 @@ void main() {
       server = await enableRouter(router);
 
       final response = await http.get(
-          Uri.parse("http://localhost:4040/notplayer"),
-          headers: {HttpHeaders.acceptHeader: "application/json"});
+        Uri.parse("http://localhost:4040/notplayer"),
+        headers: {HttpHeaders.acceptHeader: "application/json"},
+      );
       expect(response.statusCode, equals(404));
       expect(response.headers[HttpHeaders.contentTypeHeader], isNull);
       expect(response.body.isEmpty, true);
@@ -158,15 +159,24 @@ void main() {
       });
       router.route("/locations/:id/vacation").linkFunction((req) async {
         return Response(
-            200, null, "/locations/${req.path.variables["id"]}/vacation");
+          200,
+          null,
+          "/locations/${req.path.variables["id"]}/vacation",
+        );
       });
       router.route("/locations/:id/alarms[/*]").linkFunction((req) async {
-        return Response(200, null,
-            "/locations/${req.path.variables["id"]}/alarms/${req.path.remainingPath}");
+        return Response(
+          200,
+          null,
+          "/locations/${req.path.variables["id"]}/alarms/${req.path.remainingPath}",
+        );
       });
       router.route("/equipment/[:id[/:property]]").linkFunction((req) async {
-        return Response(200, null,
-            "/equipment/${req.path.variables["id"]}/${req.path.variables["property"]}");
+        return Response(
+          200,
+          null,
+          "/equipment/${req.path.variables["id"]}/${req.path.variables["property"]}",
+        );
       });
       router.route("/file/*").linkFunction((req) async {
         return Response(200, null, "/file/${req.path.remainingPath}");
@@ -244,7 +254,8 @@ void main() {
     final router = Router();
     setUpAll(() async {
       router.route("/*").linkFunction(
-          (req) async => Response.ok("*${req.path.remainingPath}"));
+            (req) async => Response.ok("*${req.path.remainingPath}"),
+          );
       router.route("/a").linkFunction((req) async => Response.ok("a"));
 
       server = await enableRouter(router);
@@ -261,11 +272,11 @@ void main() {
       final r4 = await http.get(Uri.parse("http://localhost:4040/a/b"));
       final r5 = await http.get(Uri.parse("http://localhost:4040/"));
 
-      expect(r1.body, "\"a\"");
-      expect(r2.body, "\"*b\"");
-      expect(r3.body, "\"*ab\"");
+      expect(r1.body, '"a"');
+      expect(r2.body, '"*b"');
+      expect(r3.body, '"*ab"');
       expect(r4.statusCode, 404);
-      expect(r5.body, "\"*\"");
+      expect(r5.body, '"*"');
     });
   });
 

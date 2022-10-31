@@ -18,19 +18,21 @@ class EntityBuilder {
     name = _getName();
 
     entity = ManagedEntity(
-        name, type, MirrorSystem.getName(tableDefinitionType.simpleName))
-      ..validators = [];
+      name,
+      type,
+      MirrorSystem.getName(tableDefinitionType.simpleName),
+    )..validators = [];
 
     runtime = ManagedEntityRuntimeImpl(instanceType, entity);
 
     properties = _getProperties();
-    final _primaryKeyProperty =
+    final primaryKeyProperty1 =
         properties.firstWhereOrNull((p) => p.column?.isPrimaryKey ?? false);
-    if (_primaryKeyProperty == null) {
+    if (primaryKeyProperty1 == null) {
       throw ManagedDataModelErrorImpl.noPrimaryKey(entity);
     }
 
-    primaryKeyProperty = _primaryKeyProperty;
+    primaryKeyProperty = primaryKeyProperty1;
   }
 
   final ClassMirror instanceType;
@@ -53,9 +55,9 @@ class EntityBuilder {
       MirrorSystem.getName(tableDefinitionType.simpleName);
 
   void compile(List<EntityBuilder>? entityBuilders) {
-    properties.forEach((p) {
+    for (final p in properties) {
       p.compile(entityBuilders);
-    });
+    }
 
     uniquePropertySet =
         metadata?.uniquePropertySet?.map(MirrorSystem.getName).toList();
@@ -76,48 +78,63 @@ class EntityBuilder {
     if (uniquePropertySet != null) {
       if (uniquePropertySet!.isEmpty) {
         throw ManagedDataModelErrorImpl.emptyEntityUniqueProperties(
-            tableDefinitionTypeName);
+          tableDefinitionTypeName,
+        );
       } else if (uniquePropertySet!.length == 1) {
         throw ManagedDataModelErrorImpl.singleEntityUniqueProperty(
-            tableDefinitionTypeName, metadata!.uniquePropertySet!.first);
+          tableDefinitionTypeName,
+          metadata!.uniquePropertySet!.first,
+        );
       }
 
-      uniquePropertySet!.forEach((key) {
-        final prop = properties.firstWhere((p) => p.name == key, orElse: () {
-          throw ManagedDataModelErrorImpl.invalidEntityUniqueProperty(
-              tableDefinitionTypeName, Symbol(key));
-        });
+      for (final key in uniquePropertySet!) {
+        final prop = properties.firstWhere(
+          (p) => p.name == key,
+          orElse: () {
+            throw ManagedDataModelErrorImpl.invalidEntityUniqueProperty(
+              tableDefinitionTypeName,
+              Symbol(key),
+            );
+          },
+        );
 
         if (prop.isRelationship &&
             prop.relationshipType != ManagedRelationshipType.belongsTo) {
           throw ManagedDataModelErrorImpl.relationshipEntityUniqueProperty(
-              tableDefinitionTypeName, Symbol(key));
+            tableDefinitionTypeName,
+            Symbol(key),
+          );
         }
-      });
+      }
     }
 
     // Check that relationships are unique, i.e. two Relates point to the same property
     properties.where((p) => p.isRelationship).forEach((p) {
       final relationshipsWithThisInverse = properties
-          .where((check) =>
-              check.isRelationship &&
-              check.relatedProperty == p.relatedProperty)
+          .where(
+            (check) =>
+                check.isRelationship &&
+                check.relatedProperty == p.relatedProperty,
+          )
           .toList();
       if (relationshipsWithThisInverse.length > 1) {
         throw ManagedDataModelErrorImpl.duplicateInverse(
-            tableDefinitionTypeName,
-            p.relatedProperty!.name,
-            relationshipsWithThisInverse.map((r) => r.name).toList());
+          tableDefinitionTypeName,
+          p.relatedProperty!.name,
+          relationshipsWithThisInverse.map((r) => r.name).toList(),
+        );
       }
     });
 
     // Check each property
-    properties.forEach((p) => p.validate(entityBuilders));
+    for (final p in properties) {
+      p.validate(entityBuilders);
+    }
   }
 
   void link(List<ManagedEntity> entities) {
     entity.symbolMap = {};
-    properties.forEach((p) {
+    for (final p in properties) {
       p.link(entities);
 
       entity.symbolMap[Symbol(p.name)] = p.name;
@@ -131,7 +148,7 @@ class EntityBuilder {
           entity.primaryKey = p.name;
         }
       }
-    });
+    }
 
     entity.attributes = attributes;
     entity.relationships = relationships;
@@ -162,11 +179,12 @@ class EntityBuilder {
       return candidates.first;
     } else if (candidates.isEmpty) {
       throw ManagedDataModelErrorImpl.missingInverse(
-          foreignKey.parent.tableDefinitionTypeName,
-          foreignKey.parent.instanceTypeName,
-          foreignKey.declaration.simpleName,
-          tableDefinitionTypeName,
-          null);
+        foreignKey.parent.tableDefinitionTypeName,
+        foreignKey.parent.instanceTypeName,
+        foreignKey.declaration.simpleName,
+        tableDefinitionTypeName,
+        null,
+      );
     }
 
     throw ManagedDataModelError(
@@ -189,7 +207,8 @@ class EntityBuilder {
     }
 
     Logger("conduit").warning(
-        "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.");
+      "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.",
+    );
     return declaredTableNameClass.invoke(#tableName, []).reflectee as String?;
   }
 
@@ -219,26 +238,28 @@ class EntityBuilder {
     }
 
     final out = <PropertyBuilder>[];
-    attributes.forEach((prop) {
+    for (final prop in attributes) {
       final complement = out.firstWhereOrNull((pb) => pb.name == prop.name);
       if (complement != null) {
-        complement.serialize = const Serialize(input: true, output: true);
+        complement.serialize = const Serialize();
       } else {
         out.add(prop);
       }
-    });
+    }
 
     return out;
   }
 
   static ClassMirror getTableDefinitionForType(Type instanceType) {
     final ifNotFoundException = ManagedDataModelError(
-        "Invalid instance type '$instanceType' '${reflectClass(instanceType).simpleName}' is not subclass of 'ManagedObject'.");
+      "Invalid instance type '$instanceType' '${reflectClass(instanceType).simpleName}' is not subclass of 'ManagedObject'.",
+    );
 
     return classHierarchyForClass(reflectClass(instanceType))
         .firstWhere(
-            (cm) => !cm.superclass!.isSubtypeOf(reflectType(ManagedObject)),
-            orElse: () => throw ifNotFoundException)
+          (cm) => !cm.superclass!.isSubtypeOf(reflectType(ManagedObject)),
+          orElse: () => throw ifNotFoundException,
+        )
         .typeArguments
         .first as ClassMirror;
   }

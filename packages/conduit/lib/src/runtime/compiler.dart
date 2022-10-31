@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
@@ -17,15 +19,21 @@ class ConduitCompiler extends Compiler {
   Map<String, dynamic> compile(MirrorContext context) {
     final m = <String, dynamic>{};
 
-    m.addEntries(context
-        .getSubclassesOf(ApplicationChannel)
-        .map((t) => MapEntry(_getClassName(t), ChannelRuntimeImpl(t))));
-    m.addEntries(context
-        .getSubclassesOf(Serializable)
-        .map((t) => MapEntry(_getClassName(t), SerializableRuntimeImpl(t))));
-    m.addEntries(context
-        .getSubclassesOf(Controller)
-        .map((t) => MapEntry(_getClassName(t), ControllerRuntimeImpl(t))));
+    m.addEntries(
+      context
+          .getSubclassesOf(ApplicationChannel)
+          .map((t) => MapEntry(_getClassName(t), ChannelRuntimeImpl(t))),
+    );
+    m.addEntries(
+      context
+          .getSubclassesOf(Serializable)
+          .map((t) => MapEntry(_getClassName(t), SerializableRuntimeImpl(t))),
+    );
+    m.addEntries(
+      context
+          .getSubclassesOf(Controller)
+          .map((t) => MapEntry(_getClassName(t), ControllerRuntimeImpl(t))),
+    );
 
     m.addAll(DataModelCompiler().compile(context));
 
@@ -47,10 +55,15 @@ class ConduitCompiler extends Compiler {
   @override
   void deflectPackage(Directory destinationDirectory) {
     final libFile = File.fromUri(
-        destinationDirectory.uri.resolve("lib/").resolve("conduit.dart"));
+      destinationDirectory.uri.resolve("lib/").resolve("conduit.dart"),
+    );
     final contents = libFile.readAsStringSync();
-    libFile.writeAsStringSync(contents.replaceFirst(
-        "export 'package:conduit/src/runtime/compiler.dart';", ""));
+    libFile.writeAsStringSync(
+      contents.replaceFirst(
+        "export 'package:conduit/src/runtime/compiler.dart';",
+        "",
+      ),
+    );
   }
 
   @override
@@ -69,11 +82,12 @@ class ConduitCompiler extends Compiler {
             [package['name']!] = {"path": "packages/${package['path']!}"};
 
         copyPathSync(
-            context.sourceApplicationDirectory.uri
-                .resolve("../")
-                .resolve(package['path']!)
-                .path,
-            context.buildPackagesDirectory.uri.resolve(package['path']!).path);
+          context.sourceApplicationDirectory.uri
+              .resolve("../")
+              .resolve(package['path']!)
+              .path,
+          context.buildPackagesDirectory.uri.resolve(package['path']!).path,
+        );
       }
 
       pubspecContents["dependency_overrides"]["conduit"] =
@@ -112,23 +126,29 @@ class ConduitCompiler extends Compiler {
     }
   }
 
-  void _overwritePackageDependency(BuildContext context, String packageName,
-      List<Map<String, String>> packages) {
-    final pubspecFile = File.fromUri(context.buildDirectoryUri
-        .resolve('packages/')
-        .resolve('${packageName}/')
-        .resolve("pubspec.yaml"));
+  void _overwritePackageDependency(
+    BuildContext context,
+    String packageName,
+    List<Map<String, String>> packages,
+  ) {
+    final pubspecFile = File.fromUri(
+      context.buildDirectoryUri
+          .resolve('packages/')
+          .resolve('$packageName/')
+          .resolve("pubspec.yaml"),
+    );
     final pubspecContents = loadYaml(pubspecFile.readAsStringSync());
     final jsonContents = json.decode(json.encode(pubspecContents));
     for (final package in packages) {
       jsonContents["dependencies"]
           [package['name']!] = {"path": "../${package['path']!}"};
       copyPathSync(
-          context.sourceApplicationDirectory.uri
-              .resolve("../")
-              .resolve(package['path']!)
-              .path,
-          context.buildPackagesDirectory.uri.resolve(package['path']!).path);
+        context.sourceApplicationDirectory.uri
+            .resolve("../")
+            .resolve(package['path']!)
+            .path,
+        context.buildPackagesDirectory.uri.resolve(package['path']!).path,
+      );
     }
     pubspecFile.writeAsStringSync(json.encode(jsonContents));
   }

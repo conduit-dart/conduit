@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls, avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:postgres/postgres.dart';
@@ -86,8 +88,10 @@ void main() {
         await insertReq.insert();
         fail('should not be reached');
       } on ArgumentError catch (e) {
-        expect(e.toString(),
-            contains("Column 'bad_key' does not exist for table 'simple'"));
+        expect(
+          e.toString(),
+          contains("Column 'bad_key' does not exist for table 'simple'"),
+        );
       }
     });
 
@@ -238,8 +242,10 @@ void main() {
       final result = await q.insert();
 
       expect(result.dateCreated, isA<DateTime>());
-      expect(result.dateCreated!.difference(DateTime.now()).inMilliseconds,
-          closeTo(0, 1000));
+      expect(
+        result.dateCreated!.difference(DateTime.now()).inMilliseconds,
+        closeTo(0, 1000),
+      );
     });
 
     test("works when timestamp is set manually.", () async {
@@ -691,7 +697,7 @@ class _NullableObject {
 
 enum EnumValues { abcd, efgh, other18 }
 
-final doesNotContain = (matcher) => isNot(contains(matcher));
+Matcher doesNotContain(Object? matcher) => isNot(contains(matcher));
 
 void expectNullViolation(QueryException exception, {String? columnName}) {
   expect(exception.event, QueryExceptionEvent.input);

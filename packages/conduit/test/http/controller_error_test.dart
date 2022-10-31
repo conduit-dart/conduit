@@ -14,27 +14,33 @@ void main() {
   });
 
   test("Response thrown during normal handling is sent as response", () async {
-    server = await enableController(ClosureController((req) {
-      throw Response.ok(null);
-    }));
+    server = await enableController(
+      ClosureController((req) {
+        throw Response.ok(null);
+      }),
+    );
 
     final r = await http.get(Uri.parse("http://localhost:4040"));
     expect(r.statusCode, 200);
   });
 
   test("Unknown error thrown during handling returns 500", () async {
-    server = await enableController(ClosureController((req) {
-      throw StateError("error");
-    }));
+    server = await enableController(
+      ClosureController((req) {
+        throw StateError("error");
+      }),
+    );
 
     final r = await http.get(Uri.parse("http://localhost:4040"));
     expect(r.statusCode, 500);
   });
 
   test("HandlerException thrown in handle returns its response", () async {
-    server = await enableController(ClosureController((req) {
-      throw HandlerException(Response.ok(null));
-    }));
+    server = await enableController(
+      ClosureController((req) {
+        throw HandlerException(Response.ok(null));
+      }),
+    );
 
     final r = await http.get(Uri.parse("http://localhost:4040"));
     expect(r.statusCode, 200);
@@ -42,19 +48,23 @@ void main() {
 
   test("Throw exception when sending HandlerException response sends 500",
       () async {
-    server = await enableController(ClosureController((req) {
-      throw CrashingTestHandlerException();
-    }));
+    server = await enableController(
+      ClosureController((req) {
+        throw CrashingTestHandlerException();
+      }),
+    );
 
     final r = await http.get(Uri.parse("http://localhost:4040"));
     expect(r.statusCode, 500);
   });
 
   test("Throw exception when sending thrown Response sends 500", () async {
-    server = await enableController(ClosureController((req) {
-      // nonsense body to trigger exception when encoding
-      throw Response.ok(PassthruController());
-    }));
+    server = await enableController(
+      ClosureController((req) {
+        // nonsense body to trigger exception when encoding
+        throw Response.ok(PassthruController());
+      }),
+    );
 
     final r = await http.get(Uri.parse("http://localhost:4040"));
     expect(r.statusCode, 500);

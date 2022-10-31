@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'http.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// Provides encoding and decoding services based on the [ContentType] of a [Request] or [Response].
 ///
@@ -12,11 +12,14 @@ import 'http.dart';
 /// to add mappings in an application's [ApplicationChannel] subclass constructor.
 class CodecRegistry {
   CodecRegistry._() {
-    add(ContentType("application", "json", charset: "utf-8"), const JsonCodec(),
-        allowCompression: true);
-    add(ContentType("application", "x-www-form-urlencoded", charset: "utf-8"),
-        const _FormCodec(),
-        allowCompression: true);
+    add(
+      ContentType("application", "json", charset: "utf-8"),
+      const JsonCodec(),
+    );
+    add(
+      ContentType("application", "x-www-form-urlencoded", charset: "utf-8"),
+      const _FormCodec(),
+    );
     setAllowsCompression(ContentType("text", "*"), true);
     setAllowsCompression(ContentType("application", "javascript"), true);
     setAllowsCompression(ContentType("text", "event-stream"), false);
@@ -65,8 +68,11 @@ class CodecRegistry {
   /// In the event that a request is sent without a charset, the codec will automatically apply a UTF8 decode step because of this default.
   ///
   /// Only use default charsets when the codec must first be decoded into a [String].
-  void add(ContentType contentType, Codec codec,
-      {bool allowCompression = true}) {
+  void add(
+    ContentType contentType,
+    Codec codec, {
+    bool allowCompression = true,
+  }) {
     if (contentType.subType == "*") {
       _primaryTypeCodecs[contentType.primaryType] = codec;
       _primaryTypeCompressionMap[contentType.primaryType] = allowCompression;
@@ -83,7 +89,7 @@ class CodecRegistry {
 
     if (contentType.charset != null) {
       final innerCodecs = _defaultCharsetMap[contentType.primaryType] ?? {};
-      innerCodecs[contentType.subType] = contentType.charset!;
+      innerCodecs[contentType.subType] = contentType.charset;
       _defaultCharsetMap[contentType.primaryType] = innerCodecs;
     }
   }
@@ -205,7 +211,7 @@ class _FormEncoder extends Converter<Map<String, dynamic>, String> {
   }
 
   String _encodePair(String key, dynamic value) {
-    final encode = (String v) => "$key=${Uri.encodeQueryComponent(v)}";
+    String encode(String v) => "$key=${Uri.encodeQueryComponent(v)}";
     if (value is List<String>) {
       return value.map(encode).join("&");
     } else if (value is String) {
@@ -213,7 +219,8 @@ class _FormEncoder extends Converter<Map<String, dynamic>, String> {
     }
 
     throw ArgumentError(
-        "Cannot encode value '$value' for key '$key'. Must be 'String' or 'List<String>'");
+      "Cannot encode value '$value' for key '$key'. Must be 'String' or 'List<String>'",
+    );
   }
 }
 

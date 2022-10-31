@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
@@ -27,10 +29,12 @@ enum CLIColor { red, green, blue, boldRed, boldGreen, boldBlue, boldNone, none }
 /// A command line interface command.
 abstract class CLICommand {
   CLICommand() {
-    final arguments = reflect(this).type.instanceMembers.values.where((m) =>
-        m.metadata.any((im) => im.type.isAssignableTo(reflectType(Argument))));
+    final arguments = reflect(this).type.instanceMembers.values.where(
+          (m) => m.metadata
+              .any((im) => im.type.isAssignableTo(reflectType(Argument))),
+        );
 
-    arguments.forEach((arg) {
+    for (final arg in arguments) {
       if (!arg.isGetter) {
         throw StateError("Declaration "
             "${MirrorSystem.getName(arg.owner!.simpleName)}.${MirrorSystem.getName(arg.simpleName)} "
@@ -39,11 +43,11 @@ abstract class CLICommand {
 
       final Argument? argType = firstMetadataOfType<Argument>(arg);
       argType!.addToParser(options);
-    });
+    }
   }
 
   /// Options for this command.
-  args.ArgParser options = args.ArgParser(allowTrailingOptions: true);
+  args.ArgParser options = args.ArgParser();
 
   late args.ArgResults _argumentValues;
 
@@ -57,25 +61,39 @@ abstract class CLICommand {
         ?.runningProcess;
   }
 
-  @Flag("version",
-      help: "Prints version of this tool", negatable: false, defaultsTo: false)
+  @Flag(
+    "version",
+    help: "Prints version of this tool",
+    negatable: false,
+    defaultsTo: false,
+  )
   bool get showVersion => decode<bool>("version");
 
   @Flag("color", help: "Toggles ANSI color", negatable: true, defaultsTo: true)
   bool get showColors => decode<bool>("color");
 
-  @Flag("help",
-      abbr: "h", help: "Shows this", negatable: false, defaultsTo: false)
+  @Flag(
+    "help",
+    abbr: "h",
+    help: "Shows this",
+    negatable: false,
+    defaultsTo: false,
+  )
   bool get helpMeItsScary => decode<bool>("help");
 
-  @Flag("stacktrace",
-      help: "Shows the stacktrace if an error occurs", defaultsTo: false)
+  @Flag(
+    "stacktrace",
+    help: "Shows the stacktrace if an error occurs",
+    defaultsTo: false,
+  )
   bool get showStacktrace => decode<bool>("stacktrace");
 
-  @Flag("machine",
-      help:
-          "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
-      defaultsTo: false)
+  @Flag(
+    "machine",
+    help:
+        "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
+    defaultsTo: false,
+  )
   bool get isMachineOutput => decode<bool>("machine");
 
   final Map<String, CLICommand> _commandMap = {};
@@ -86,9 +104,9 @@ abstract class CLICommand {
 
   set outputSink(StringSink sink) {
     _outputSink = sink;
-    _commandMap.values.forEach((cmd) {
+    for (final cmd in _commandMap.values) {
       cmd.outputSink = sink;
-    });
+    }
   }
 
   Version? get toolVersion => _toolVersion;
@@ -151,7 +169,8 @@ abstract class CLICommand {
       return RuntimeContext.current.coerce<T>(val);
     } on TypeCoercionException catch (_) {
       throw CLIException(
-          'The value "$val" for argument "$key" could not be coerced to a $T.');
+        'The value "$val" for argument "$key" could not be coerced to a $T.',
+      );
     }
   }
 
@@ -180,8 +199,10 @@ abstract class CLICommand {
   ///
   /// Do not override this method. This method invokes [handle] within a try-catch block
   /// and will invoke [cleanup] when complete.
-  Future<int> process(args.ArgResults results,
-      {List<String>? commandPath}) async {
+  Future<int> process(
+    args.ArgResults results, {
+    List<String>? commandPath,
+  }) async {
     final parentCommandNames = commandPath ?? <String>[];
 
     if (results.command != null) {
@@ -232,10 +253,14 @@ abstract class CLICommand {
   Future determineToolVersion() async {
     try {
       final toolLibraryFilePath = (await Isolate.resolvePackageUri(
-              currentMirrorSystem().findLibrary(#conduit).uri))!
+        currentMirrorSystem().findLibrary(#conduit).uri,
+      ))!
           .toFilePath(windows: Platform.isWindows);
-      final conduitDirectory = Directory(FileSystemEntity.parentOf(
-          FileSystemEntity.parentOf(toolLibraryFilePath)));
+      final conduitDirectory = Directory(
+        FileSystemEntity.parentOf(
+          FileSystemEntity.parentOf(toolLibraryFilePath),
+        ),
+      );
       final toolPubspecFile =
           File.fromUri(conduitDirectory.absolute.uri.resolve("pubspec.yaml"));
 
@@ -250,10 +275,14 @@ abstract class CLICommand {
 
   void preProcess() {}
 
-  void displayError(String? errorMessage,
-      {bool showUsage = false, CLIColor color = CLIColor.boldRed}) {
+  void displayError(
+    String? errorMessage, {
+    bool showUsage = false,
+    CLIColor color = CLIColor.boldRed,
+  }) {
     outputSink.writeln(
-        "${colorSymbol(color)}$_errorDelimiter$errorMessage$defaultColorSymbol");
+      "${colorSymbol(color)}$_errorDelimiter$errorMessage$defaultColorSymbol",
+    );
     if (showUsage) {
       outputSink.writeln("\n${options.usage}");
     }
@@ -261,13 +290,17 @@ abstract class CLICommand {
 
   void displayInfo(String infoMessage, {CLIColor color = CLIColor.boldNone}) {
     outputSink.writeln(
-        "${colorSymbol(color)}$_delimiter$infoMessage$defaultColorSymbol");
+      "${colorSymbol(color)}$_delimiter$infoMessage$defaultColorSymbol",
+    );
   }
 
-  void displayProgress(String progressMessage,
-      {CLIColor color = CLIColor.none}) {
+  void displayProgress(
+    String progressMessage, {
+    CLIColor color = CLIColor.none,
+  }) {
     outputSink.writeln(
-        "${colorSymbol(color)}$_tabs$progressMessage$defaultColorSymbol");
+      "${colorSymbol(color)}$_tabs$progressMessage$defaultColorSymbol",
+    );
   }
 
   String? colorSymbol(CLIColor color) {
@@ -311,8 +344,8 @@ abstract class CLICommand {
   };
 
   void printHelp({String? parentCommandName}) {
-    print("$description");
-    print("$detailedDescription");
+    print(description);
+    print(detailedDescription);
     print("");
     if (parentCommandName == null) {
       print("Usage: $usage");
@@ -321,7 +354,7 @@ abstract class CLICommand {
     }
     print("");
     print("Options:");
-    print("${options.usage}");
+    print(options.usage);
 
     if (options.commands.isNotEmpty) {
       print("Available sub-commands:");
@@ -329,10 +362,10 @@ abstract class CLICommand {
       final commandNames = options.commands.keys.toList();
       commandNames.sort((a, b) => b.length.compareTo(a.length));
       final length = commandNames.first.length + 3;
-      commandNames.forEach((command) {
+      for (final command in commandNames) {
         final desc = _commandMap[command]?.description;
-        print("  ${command.padRight(length, " ")}$desc");
-      });
+        print("  ${command.padRight(length)}$desc");
+      }
     }
   }
 

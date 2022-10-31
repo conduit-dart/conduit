@@ -15,7 +15,7 @@ void main() {
     cli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createTestProject();
-    await cli.agent.getDependencies(offline: true);
+    await cli.agent.getDependencies();
     cli.agent.addOrReplaceFile("lib/application_test.dart", """
 import 'package:conduit/conduit.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -38,9 +40,12 @@ void main() {
       q.join(set: (r) => r.join).join(object: (r) => r.other);
       final results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            fullObjectMap(RootObject, 1, and: {
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            RootObject,
+            1,
+            and: {
               "join": [
                 {
                   "id": 1,
@@ -53,8 +58,12 @@ void main() {
                   "other": fullObjectMap(OtherRootObject, 2)
                 },
               ]
-            }),
-            fullObjectMap(RootObject, 2, and: {
+            },
+          ),
+          fullObjectMap(
+            RootObject,
+            2,
+            and: {
               "join": [
                 {
                   "id": 3,
@@ -62,11 +71,13 @@ void main() {
                   "other": fullObjectMap(OtherRootObject, 3)
                 },
               ]
-            }),
-            fullObjectMap(RootObject, 3, and: {"join": []}),
-            fullObjectMap(RootObject, 4, and: {"join": []}),
-            fullObjectMap(RootObject, 5, and: {"join": []}),
-          ]));
+            },
+          ),
+          fullObjectMap(RootObject, 3, and: {"join": []}),
+          fullObjectMap(RootObject, 4, and: {"join": []}),
+          fullObjectMap(RootObject, 5, and: {"join": []}),
+        ]),
+      );
     });
 
     test("Can join across many to many relationship, from other side",
@@ -77,9 +88,12 @@ void main() {
       q.join(set: (r) => r.join).join(object: (r) => r.root);
       final results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            fullObjectMap(OtherRootObject, 1, and: {
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            OtherRootObject,
+            1,
+            and: {
               "join": [
                 {
                   "id": 1,
@@ -87,8 +101,12 @@ void main() {
                   "other": {"id": 1},
                 }
               ]
-            }),
-            fullObjectMap(OtherRootObject, 2, and: {
+            },
+          ),
+          fullObjectMap(
+            OtherRootObject,
+            2,
+            and: {
               "join": [
                 {
                   "id": 2,
@@ -96,8 +114,12 @@ void main() {
                   "other": {"id": 2},
                 },
               ]
-            }),
-            fullObjectMap(OtherRootObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            OtherRootObject,
+            3,
+            and: {
               "join": [
                 {
                   "id": 3,
@@ -105,8 +127,10 @@ void main() {
                   "other": {"id": 3},
                 }
               ]
-            }),
-          ]));
+            },
+          ),
+        ]),
+      );
     });
 
     test("Can join from join table", () async {
@@ -117,61 +141,71 @@ void main() {
 
       final results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 1,
-              "other": fullObjectMap(OtherRootObject, 1),
-              "root": fullObjectMap(RootObject, 1)
-            },
-            {
-              "id": 2,
-              "other": fullObjectMap(OtherRootObject, 2),
-              "root": fullObjectMap(RootObject, 1)
-            },
-            {
-              "id": 3,
-              "other": fullObjectMap(OtherRootObject, 3),
-              "root": fullObjectMap(RootObject, 2)
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 1,
+            "other": fullObjectMap(OtherRootObject, 1),
+            "root": fullObjectMap(RootObject, 1)
+          },
+          {
+            "id": 2,
+            "other": fullObjectMap(OtherRootObject, 2),
+            "root": fullObjectMap(RootObject, 1)
+          },
+          {
+            "id": 3,
+            "other": fullObjectMap(OtherRootObject, 3),
+            "root": fullObjectMap(RootObject, 2)
+          },
+        ]),
+      );
     });
   });
 
   group("Implicit joins", () {
-    test("Can use implicit matcher across many to many table", () async {
-      final q = Query<RootObject>(ctx!)
-        ..sortBy((r) => r.rid, QuerySortOrder.ascending);
-      //..where((o) => o.join.haveAtLeastOneWhere.other.value1).lessThan(4);
+    test(
+      "Can use implicit matcher across many to many table",
+      () async {
+        final q = Query<RootObject>(ctx!)
+          ..sortBy((r) => r.rid, QuerySortOrder.ascending);
+        //..where((o) => o.join.haveAtLeastOneWhere.other.value1).lessThan(4);
 
-      var results = await q.fetch();
-      expect(results.map((r) => r.asMap()).toList(),
-          equals([fullObjectMap(RootObject, 1), fullObjectMap(RootObject, 2)]));
+        var results = await q.fetch();
+        expect(
+          results.map((r) => r.asMap()).toList(),
+          equals([fullObjectMap(RootObject, 1), fullObjectMap(RootObject, 2)]),
+        );
 
-      // q.where((o) => o.join.haveAtLeastOneWhere.other.value1).equalTo(3);
-      results = await q.fetch();
-      expect(results.map((r) => r.asMap()).toList(),
-          equals([fullObjectMap(RootObject, 2)]));
-    }, skip: "#481");
+        // q.where((o) => o.join.haveAtLeastOneWhere.other.value1).equalTo(3);
+        results = await q.fetch();
+        expect(
+          results.map((r) => r.asMap()).toList(),
+          equals([fullObjectMap(RootObject, 2)]),
+        );
+      },
+      skip: "#481",
+    );
 
     test("Can use implicit join with join table to one side", () async {
       final q = Query<RootJoinObject>(ctx!)
         ..where((o) => o.root!.value1).equalTo(1);
       final results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 1,
-              "other": {"id": 1},
-              "root": {"rid": 1}
-            },
-            {
-              "id": 2,
-              "other": {"id": 2},
-              "root": {"rid": 1}
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 1,
+            "other": {"id": 1},
+            "root": {"rid": 1}
+          },
+          {
+            "id": 2,
+            "other": {"id": 2},
+            "root": {"rid": 1}
+          },
+        ]),
+      );
     });
 
     test("Can use implicit join with join table to both sides", () async {
@@ -180,28 +214,30 @@ void main() {
         ..where((o) => o.other!.value1).equalTo(1);
       var results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 1,
-              "other": {"id": 1},
-              "root": {"rid": 1}
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 1,
+            "other": {"id": 1},
+            "root": {"rid": 1}
+          },
+        ]),
+      );
 
       q = Query<RootJoinObject>(ctx!)
         ..where((o) => o.root!.value1).equalTo(1)
         ..where((o) => o.other!.value1).equalTo(2);
       results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 2,
-              "other": {"id": 2},
-              "root": {"rid": 1}
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 2,
+            "other": {"id": 2},
+            "root": {"rid": 1}
+          },
+        ]),
+      );
 
       q = Query<RootJoinObject>(ctx!)
         ..where((o) => o.root!.value1).equalTo(2)
@@ -220,43 +256,44 @@ void main() {
 
       final results = await q.fetch();
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {"id": 1, "name": "Wisconsin", "awayGames": []},
-            {
-              "id": 2,
-              "name": "Minnesota",
-              "awayGames": [
-                {
-                  "id": 1,
-                  "homeScore": 45,
-                  "awayScore": 0,
-                  "homeTeam": {"id": 1, "name": "Wisconsin"},
-                  "awayTeam": {"id": 2}
-                }
-              ]
-            },
-            {
-              "id": 3,
-              "name": "Iowa",
-              "awayGames": [
-                {
-                  "id": 2,
-                  "homeScore": 35,
-                  "awayScore": 3,
-                  "homeTeam": {"id": 1, "name": "Wisconsin"},
-                  "awayTeam": {"id": 3}
-                },
-                {
-                  "id": 3,
-                  "homeScore": 0,
-                  "awayScore": 3,
-                  "homeTeam": {"id": 2, "name": "Minnesota"},
-                  "awayTeam": {"id": 3}
-                }
-              ]
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {"id": 1, "name": "Wisconsin", "awayGames": []},
+          {
+            "id": 2,
+            "name": "Minnesota",
+            "awayGames": [
+              {
+                "id": 1,
+                "homeScore": 45,
+                "awayScore": 0,
+                "homeTeam": {"id": 1, "name": "Wisconsin"},
+                "awayTeam": {"id": 2}
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "name": "Iowa",
+            "awayGames": [
+              {
+                "id": 2,
+                "homeScore": 35,
+                "awayScore": 3,
+                "homeTeam": {"id": 1, "name": "Wisconsin"},
+                "awayTeam": {"id": 3}
+              },
+              {
+                "id": 3,
+                "homeScore": 0,
+                "awayScore": 3,
+                "homeTeam": {"id": 2, "name": "Minnesota"},
+                "awayTeam": {"id": 3}
+              }
+            ]
+          },
+        ]),
+      );
     });
 
     test("Can join by other relationship", () async {
@@ -267,43 +304,44 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 1,
-              "name": "Wisconsin",
-              "homeGames": [
-                {
-                  "id": 1,
-                  "homeScore": 45,
-                  "awayScore": 0,
-                  "homeTeam": {"id": 1},
-                  "awayTeam": {"id": 2, "name": "Minnesota"}
-                },
-                {
-                  "id": 2,
-                  "homeScore": 35,
-                  "awayScore": 3,
-                  "homeTeam": {"id": 1},
-                  "awayTeam": {"id": 3, "name": "Iowa"}
-                },
-              ]
-            },
-            {
-              "id": 2,
-              "name": "Minnesota",
-              "homeGames": [
-                {
-                  "id": 3,
-                  "homeScore": 0,
-                  "awayScore": 3,
-                  "homeTeam": {"id": 2},
-                  "awayTeam": {"id": 3, "name": "Iowa"}
-                }
-              ]
-            },
-            {"id": 3, "name": "Iowa", "homeGames": []},
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 1,
+            "name": "Wisconsin",
+            "homeGames": [
+              {
+                "id": 1,
+                "homeScore": 45,
+                "awayScore": 0,
+                "homeTeam": {"id": 1},
+                "awayTeam": {"id": 2, "name": "Minnesota"}
+              },
+              {
+                "id": 2,
+                "homeScore": 35,
+                "awayScore": 3,
+                "homeTeam": {"id": 1},
+                "awayTeam": {"id": 3, "name": "Iowa"}
+              },
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Minnesota",
+            "homeGames": [
+              {
+                "id": 3,
+                "homeScore": 0,
+                "awayScore": 3,
+                "homeTeam": {"id": 2},
+                "awayTeam": {"id": 3, "name": "Iowa"}
+              }
+            ]
+          },
+          {"id": 3, "name": "Iowa", "homeGames": []},
+        ]),
+      );
     });
 
     test("Can join from join table", () async {
@@ -314,30 +352,31 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {
-              "id": 1,
-              "homeScore": 45,
-              "awayScore": 0,
-              "homeTeam": {"id": 1, "name": "Wisconsin"},
-              "awayTeam": {"id": 2, "name": "Minnesota"}
-            },
-            {
-              "id": 2,
-              "homeScore": 35,
-              "awayScore": 3,
-              "homeTeam": {"id": 1, "name": "Wisconsin"},
-              "awayTeam": {"id": 3, "name": "Iowa"}
-            },
-            {
-              "id": 3,
-              "homeScore": 0,
-              "awayScore": 3,
-              "homeTeam": {"id": 2, "name": "Minnesota"},
-              "awayTeam": {"id": 3, "name": "Iowa"}
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {
+            "id": 1,
+            "homeScore": 45,
+            "awayScore": 0,
+            "homeTeam": {"id": 1, "name": "Wisconsin"},
+            "awayTeam": {"id": 2, "name": "Minnesota"}
+          },
+          {
+            "id": 2,
+            "homeScore": 35,
+            "awayScore": 3,
+            "homeTeam": {"id": 1, "name": "Wisconsin"},
+            "awayTeam": {"id": 3, "name": "Iowa"}
+          },
+          {
+            "id": 3,
+            "homeScore": 0,
+            "awayScore": 3,
+            "homeTeam": {"id": 2, "name": "Minnesota"},
+            "awayTeam": {"id": 3, "name": "Iowa"}
+          },
+        ]),
+      );
     });
 
     test(
@@ -355,25 +394,31 @@ void main() {
   });
 
   group("Self joins - implicit", () {
-    test("Can implicit join through join table", () async {
-      // 'Teams that have played at Minnesota'
-      var q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+    test(
+      "Can implicit join through join table",
+      () async {
+        // 'Teams that have played at Minnesota'
+        var q = Query<Team>(ctx!)
+          ..sortBy((t) => t.id, QuerySortOrder.ascending);
 //        ..where((o) => o.awayGames.haveAtLeastOneWhere.homeTeam.name)
 //            .contains("Minn");
-      var results = await q.fetch();
-      expect(
+        var results = await q.fetch();
+        expect(
           results.map((t) => t.asMap()).toList(),
           equals([
             {"id": 3, "name": "Iowa"}
-          ]));
+          ]),
+        );
 
-      // 'Teams that have played at Iowa'
-      q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
+        // 'Teams that have played at Iowa'
+        q = Query<Team>(ctx!)..sortBy((t) => t.id, QuerySortOrder.ascending);
 //        ..where((o) => o.awayGames.haveAtLeastOneWhere.homeTeam.name)
 //            .contains("Iowa");
-      results = await q.fetch();
-      expect(results.map((t) => t.asMap()).toList(), equals([]));
-    }, skip: "#481");
+        results = await q.fetch();
+        expect(results.map((t) => t.asMap()).toList(), equals([]));
+      },
+      skip: "#481",
+    );
 
     test("Can implicit join from join table - one side", () async {
       // 'Games where Iowa was away'
@@ -381,23 +426,24 @@ void main() {
         ..where((o) => o.awayTeam!.name).contains("Iowa");
       final results = await q.fetch();
       expect(
-          results.map((g) => g.asMap()).toList(),
-          equals([
-            {
-              "id": 2,
-              "homeScore": 35,
-              "awayScore": 3,
-              "awayTeam": {"id": 3},
-              "homeTeam": {"id": 1}
-            },
-            {
-              "id": 3,
-              "homeScore": 0,
-              "awayScore": 3,
-              "awayTeam": {"id": 3},
-              "homeTeam": {"id": 2}
-            }
-          ]));
+        results.map((g) => g.asMap()).toList(),
+        equals([
+          {
+            "id": 2,
+            "homeScore": 35,
+            "awayScore": 3,
+            "awayTeam": {"id": 3},
+            "homeTeam": {"id": 1}
+          },
+          {
+            "id": 3,
+            "homeScore": 0,
+            "awayScore": 3,
+            "awayTeam": {"id": 3},
+            "homeTeam": {"id": 2}
+          }
+        ]),
+      );
     });
 
     test("Can implicit join from join table - both sides", () async {
@@ -407,16 +453,17 @@ void main() {
         ..where((o) => o.awayTeam!.name).contains("Iowa");
       final results = await q.fetch();
       expect(
-          results.map((g) => g.asMap()).toList(),
-          equals([
-            {
-              "id": 2,
-              "homeScore": 35,
-              "awayScore": 3,
-              "awayTeam": {"id": 3},
-              "homeTeam": {"id": 1}
-            }
-          ]));
+        results.map((g) => g.asMap()).toList(),
+        equals([
+          {
+            "id": 2,
+            "homeScore": 35,
+            "awayScore": 3,
+            "awayTeam": {"id": 3},
+            "homeTeam": {"id": 1}
+          }
+        ]),
+      );
     });
 
     test(
@@ -430,13 +477,16 @@ void main() {
           .contains("Minn");
       var results = await q.fetch();
       expect(results.length, 3);
-      expect(results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
-          1);
       expect(
-          results
-              .where((t) => t.name != "Minnesota")
-              .every((t) => t.awayGames!.isEmpty),
-          true);
+        results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
+        1,
+      );
+      expect(
+        results
+            .where((t) => t.name != "Minnesota")
+            .every((t) => t.awayGames!.isEmpty),
+        true,
+      );
 
       // All teams and their games played at %Minn%
       q = Query<Team>(ctx!);
@@ -448,10 +498,11 @@ void main() {
       expect(results.length, 3);
       expect(results.firstWhere((t) => t.name == "Iowa").awayGames!.length, 1);
       expect(
-          results
-              .where((t) => t.name != "Iowa")
-              .every((t) => t.awayGames!.isEmpty),
-          true);
+        results
+            .where((t) => t.name != "Iowa")
+            .every((t) => t.awayGames!.isEmpty),
+        true,
+      );
     });
   });
 
@@ -466,24 +517,25 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((r) => r.asMap()).toList(),
-          equals([
-            {"id": 1, "name": "Wisconsin", "awayGames": []},
-            {"id": 2, "name": "Minnesota", "awayGames": []},
-            {
-              "id": 3,
-              "name": "Iowa",
-              "awayGames": [
-                {
-                  "id": 3,
-                  "homeScore": 0,
-                  "awayScore": 3,
-                  "awayTeam": {"id": 3},
-                  "homeTeam": {"id": 2}
-                }
-              ]
-            },
-          ]));
+        results.map((r) => r.asMap()).toList(),
+        equals([
+          {"id": 1, "name": "Wisconsin", "awayGames": []},
+          {"id": 2, "name": "Minnesota", "awayGames": []},
+          {
+            "id": 3,
+            "name": "Iowa",
+            "awayGames": [
+              {
+                "id": 3,
+                "homeScore": 0,
+                "awayScore": 3,
+                "awayTeam": {"id": 3},
+                "homeTeam": {"id": 2}
+              }
+            ]
+          },
+        ]),
+      );
     });
   });
 }
@@ -523,7 +575,7 @@ Future populateGameSchedule(ManagedContext? ctx) async {
     Team()..name = "Iowa",
   ];
 
-  for (var t in teams) {
+  for (final t in teams) {
     final q = Query<Team>(ctx!)..values = t;
     t.id = (await q.insert()).id;
   }
@@ -546,7 +598,7 @@ Future populateGameSchedule(ManagedContext? ctx) async {
       ..awayScore = 3,
   ];
 
-  for (var g in games) {
+  for (final g in games) {
     final q = Query<Game>(ctx!)..values = g;
     await q.insert();
   }

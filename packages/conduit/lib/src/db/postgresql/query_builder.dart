@@ -1,11 +1,10 @@
+import 'package:conduit/src/db/db.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/db/postgresql/builders/sort.dart';
 import 'package:conduit/src/db/postgresql/builders/table.dart';
 import 'package:conduit/src/db/postgresql/builders/value.dart';
 import 'package:conduit/src/db/postgresql/postgresql_query.dart';
-
-import '../db.dart';
-import 'row_instantiator.dart';
+import 'package:conduit/src/db/postgresql/row_instantiator.dart';
 
 class PostgresQueryBuilder extends TableBuilder {
   PostgresQueryBuilder(PostgresQuery query, [String prefixIndex = ""])
@@ -68,7 +67,11 @@ class PostgresQueryBuilder extends TableBuilder {
       if (value != null) {
         if (value is ManagedObject || value is Map) {
           return ColumnValueBuilder(
-              this, property, value[property.destinationEntity.primaryKey]);
+            this,
+            property,
+            // ignore: avoid_dynamic_calls
+            value[property.destinationEntity.primaryKey],
+          );
         }
 
         throw ArgumentError("Invalid query. Column '$key' in "

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -154,7 +156,7 @@ void main() {
 
     setUp(() async {
       app = Application<OutlierChannel>()..options.port = 8000;
-      await app.start(numberOfInstances: 1);
+      await app.start();
     });
 
     tearDown(() async {
@@ -174,34 +176,36 @@ void main() {
       } on HttpException {}
 
       expect(
-          (await http.get(Uri.parse("http://localhost:8000/detach")))
-              .statusCode,
-          200);
+        (await http.get(Uri.parse("http://localhost:8000/detach"))).statusCode,
+        200,
+      );
     });
 
     test("Request on bad state: header already sent is captured in Controller",
         () async {
       expect(
-          (await http.get(Uri.parse("http://localhost:8000/closed")))
-              .statusCode,
-          200);
+        (await http.get(Uri.parse("http://localhost:8000/closed"))).statusCode,
+        200,
+      );
       expect(
-          (await http.get(Uri.parse("http://localhost:8000/closed")))
-              .statusCode,
-          200);
+        (await http.get(Uri.parse("http://localhost:8000/closed"))).statusCode,
+        200,
+      );
     });
 
     test(
         "Request controller throwing HttpResponseException that dies on bad state: header already sent is captured in Controller",
         () async {
       expect(
-          (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
-              .statusCode,
-          200);
+        (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+            .statusCode,
+        200,
+      );
       expect(
-          (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
-              .statusCode,
-          200);
+        (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+            .statusCode,
+        200,
+      );
     });
   });
 
@@ -301,8 +305,10 @@ void main() {
       var resp = await req.close();
 
       expect(resp.statusCode, 200);
-      expect(json.decode(String.fromCharCodes(await resp.first)),
-          {"statusCode": 403});
+      expect(
+        json.decode(String.fromCharCodes(await resp.first)),
+        {"statusCode": 403},
+      );
 
       // valid preflight
       req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
@@ -313,10 +319,14 @@ void main() {
       resp = await req.close();
 
       expect(resp.statusCode, 200);
-      expect(resp.headers.value("access-control-allow-methods"),
-          "POST, PUT, DELETE, GET");
-      expect(json.decode(String.fromCharCodes(await resp.first)),
-          {"statusCode": 200});
+      expect(
+        resp.headers.value("access-control-allow-methods"),
+        "POST, PUT, DELETE, GET",
+      );
+      expect(
+        json.decode(String.fromCharCodes(await resp.first)),
+        {"statusCode": 200},
+      );
     });
 
     test(
@@ -363,9 +373,11 @@ void main() {
         await next.receive(req);
       });
 
-      final resp = await http.post(Uri.parse("http://localhost:8888"),
-          headers: {"content-type": "application/json"},
-          body: json.encode(["a"]));
+      final resp = await http.post(
+        Uri.parse("http://localhost:8888"),
+        headers: {"content-type": "application/json"},
+        body: json.encode(["a"]),
+      );
 
       expect(resp.statusCode, 400);
     });
@@ -423,13 +435,10 @@ class OutlierChannel extends ApplicationChannel {
         socket.destroy();
 
         req.toDebugString(
-            includeHeaders: true,
-            includeContentSize: true,
-            includeElapsedTime: true,
-            includeMethod: true,
-            includeRequestIP: true,
-            includeResource: true,
-            includeStatusCode: true);
+          includeHeaders: true,
+          includeContentSize: true,
+          includeRequestIP: true,
+        );
       }
 
       count++;

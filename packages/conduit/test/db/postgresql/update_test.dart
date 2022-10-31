@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls, avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -242,8 +244,10 @@ void main() {
       final _ = await req.updateOne();
       expect(true, false);
     } on StateError catch (e) {
-      expect(e.toString(),
-          contains("'updateOne' modified more than one row in '_TestModel'"));
+      expect(
+        e.toString(),
+        contains("'updateOne' modified more than one row in '_TestModel'"),
+      );
     }
   });
 
@@ -269,9 +273,11 @@ void main() {
       expect(true, false);
     } on StateError catch (e) {
       expect(
-          e.message,
-          contains(
-              "Query is either update or delete query with no WHERE clause"));
+        e.message,
+        contains(
+          "Query is either update or delete query with no WHERE clause",
+        ),
+      );
     }
   });
 
@@ -311,7 +317,7 @@ void main() {
         ..name = "Fred"
         ..emailAddress = "2@a.com"
     ];
-    for (var o in objects) {
+    for (final o in objects) {
       final req = Query<TestModel>(context!)..values = o;
       await req.insert();
     }

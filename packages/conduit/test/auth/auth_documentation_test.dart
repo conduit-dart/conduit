@@ -10,10 +10,12 @@ void main() {
   group("AuthController", () {
     Map<String, APIOperation>? operations;
     setUpAll(() async {
-      final context = APIDocumentContext(APIDocument()
-        ..info = APIInfo("title", "1.0.0")
-        ..paths = {}
-        ..components = APIComponents());
+      final context = APIDocumentContext(
+        APIDocument()
+          ..info = APIInfo("title", "1.0.0")
+          ..paths = {}
+          ..components = APIComponents(),
+      );
       final authServer = AuthServer(InMemoryAuthStorage());
       authServer.documentComponents(context);
       final AuthController ac = AuthController(authServer);
@@ -41,7 +43,9 @@ void main() {
       expect(content.schema!.type, APIType.object);
       expect(content.schema!.properties!.length, 6);
       expect(
-          content.schema!.properties!["refresh_token"]!.type, APIType.string);
+        content.schema!.properties!["refresh_token"]!.type,
+        APIType.string,
+      );
       expect(content.schema!.properties!["scope"]!.type, APIType.string);
       expect(content.schema!.properties!["code"]!.type, APIType.string);
       expect(content.schema!.properties!["grant_type"]!.type, APIType.string);
@@ -54,86 +58,98 @@ void main() {
 
     test("POST requires client authorization", () {
       expect(operations!["post"]!.security!.length, 1);
-      expect(operations!["post"]!.security!.first!.requirements,
-          {"oauth2-client-authentication": []});
+      expect(
+        operations!["post"]!.security!.first!.requirements,
+        {"oauth2-client-authentication": []},
+      );
     });
 
     test("Responses", () {
       expect(operations!["post"]!.responses!.length, 2);
 
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .type,
-          APIType.object);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .type,
+        APIType.object,
+      );
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["access_token"]!
-              .type,
-          APIType.string);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["access_token"]!
+            .type,
+        APIType.string,
+      );
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["refresh_token"]!
-              .type,
-          APIType.string);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["refresh_token"]!
+            .type,
+        APIType.string,
+      );
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["expires_in"]!
-              .type,
-          APIType.integer);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["expires_in"]!
+            .type,
+        APIType.integer,
+      );
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["token_type"]!
-              .type,
-          APIType.string);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["token_type"]!
+            .type,
+        APIType.string,
+      );
       expect(
-          operations!["post"]!
-              .responses!["200"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["scope"]!
-              .type,
-          APIType.string);
+        operations!["post"]!
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["scope"]!
+            .type,
+        APIType.string,
+      );
 
       expect(
-          operations!["post"]!
-              .responses!["400"]!
-              .content!["application/json"]!
-              .schema!
-              .type,
-          APIType.object);
+        operations!["post"]!
+            .responses!["400"]!
+            .content!["application/json"]!
+            .schema!
+            .type,
+        APIType.object,
+      );
       expect(
-          operations!["post"]!
-              .responses!["400"]!
-              .content!["application/json"]!
-              .schema!
-              .properties!["error"]!
-              .type,
-          APIType.string);
+        operations!["post"]!
+            .responses!["400"]!
+            .content!["application/json"]!
+            .schema!
+            .properties!["error"]!
+            .type,
+        APIType.string,
+      );
     });
   });
 
   group("Auth Redirect", () {
     Map<String, APIOperation>? operations;
     setUpAll(() async {
-      final context = APIDocumentContext(APIDocument()
-        ..info = APIInfo("title", "1.0.0")
-        ..paths = {}
-        ..components = APIComponents());
+      final context = APIDocumentContext(
+        APIDocument()
+          ..info = APIInfo("title", "1.0.0")
+          ..paths = {}
+          ..components = APIComponents(),
+      );
       final AuthRedirectController ac =
           AuthRedirectController(AuthServer(InMemoryAuthStorage()));
       ac.restore(ac.recycledState);
@@ -149,12 +165,13 @@ void main() {
     test("GET serves HTML string for only response", () {
       expect(operations!["get"]!.responses!.length, 1);
       expect(
-          operations!["get"]!
-              .responses!["200"]!
-              .content!["text/html"]!
-              .schema!
-              .type,
-          APIType.string);
+        operations!["get"]!
+            .responses!["200"]!
+            .content!["text/html"]!
+            .schema!
+            .type,
+        APIType.string,
+      );
     });
 
     test("GET has parameters for client_id, state, response_type and scope",
@@ -162,9 +179,9 @@ void main() {
       final op = operations!["get"]!;
       expect(op.parameters!.length, 4);
       expect(
-          op.parameters!
-              .every((p) => p!.location == APIParameterLocation.query),
-          true);
+        op.parameters!.every((p) => p!.location == APIParameterLocation.query),
+        true,
+      );
       expect(op.parameterNamed("client_id")!.schema!.type, APIType.string);
       expect(op.parameterNamed("scope")!.schema!.type, APIType.string);
       expect(op.parameterNamed("response_type")!.schema!.type, APIType.string);
@@ -193,12 +210,16 @@ void main() {
       expect(content.schema!.properties!["scope"]!.type, APIType.string);
       expect(content.schema!.properties!["state"]!.type, APIType.string);
       expect(
-          content.schema!.properties!["response_type"]!.type, APIType.string);
+        content.schema!.properties!["response_type"]!.type,
+        APIType.string,
+      );
       expect(content.schema!.properties!["username"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.format, "password");
-      expect(content.schema!.isRequired,
-          ["client_id", "state", "response_type", "username", "password"]);
+      expect(
+        content.schema!.isRequired,
+        ["client_id", "state", "response_type", "username", "password"],
+      );
     });
 
     test("POST response can be redirect or bad request", () {
@@ -213,7 +234,9 @@ void main() {
           operations!["post"]!.responses!["${HttpStatus.movedTemporarily}"]!;
       expect(redirectResponse.content, isNull);
       expect(
-          redirectResponse.headers!["Location"]!.schema!.type, APIType.string);
+        redirectResponse.headers!["Location"]!.schema!.type,
+        APIType.string,
+      );
       expect(redirectResponse.headers!["Location"]!.schema!.format, "uri");
     });
   });

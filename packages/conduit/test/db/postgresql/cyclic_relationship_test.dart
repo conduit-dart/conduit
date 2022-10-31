@@ -58,12 +58,13 @@ void main() {
       final parent = await q.insert();
 
       await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       q = Query<SelfRef>(context!)
         ..where((s) => s.id).equalTo(parent.id)
@@ -101,12 +102,13 @@ void main() {
       final parent = await q.insert();
 
       final objs = await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       q = Query<SelfRef>(context!)
         ..where((s) => s.id).equalTo(objs.first.id)
@@ -126,18 +128,20 @@ void main() {
       final parent = await q.insert();
 
       final objs = await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       await Query.insertObject(
-          context!,
-          SelfRef()
-            ..name = "x"
-            ..parent = objs.first);
+        context!,
+        SelfRef()
+          ..name = "x"
+          ..parent = objs.first,
+      );
 
       q = Query<SelfRef>(context!)
         ..sortBy((s) => s.name, QuerySortOrder.ascending);
@@ -213,18 +217,20 @@ void main() {
       final parent = await q.insert();
 
       final objs = await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       await Query.insertObject(
-          context!,
-          SelfRef()
-            ..name = "x"
-            ..parent = objs.first);
+        context!,
+        SelfRef()
+          ..name = "x"
+          ..parent = objs.first,
+      );
 
       q = Query<SelfRef>(context!)..where((s) => s.id).equalTo(parent.id);
       q
@@ -263,18 +269,20 @@ void main() {
       final parent = await q.insert();
 
       final objs = await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       await Query.insertObject(
-          context!,
-          SelfRef()
-            ..name = "x"
-            ..parent = objs.first);
+        context!,
+        SelfRef()
+          ..name = "x"
+          ..parent = objs.first,
+      );
 
       q = Query<SelfRef>(context!)
         ..sortBy((s) => s.name, QuerySortOrder.ascending);
@@ -333,18 +341,20 @@ void main() {
       final parent = await q.insert();
 
       final objs = await Query.insertObjects(
-          context!,
-          ["a", "b", "c"].map((n) {
-            return SelfRef()
-              ..name = n
-              ..parent = parent;
-          }).toList());
+        context!,
+        ["a", "b", "c"].map((n) {
+          return SelfRef()
+            ..name = n
+            ..parent = parent;
+        }).toList(),
+      );
 
       await Query.insertObject(
-          context!,
-          SelfRef()
-            ..name = "x"
-            ..parent = objs.first);
+        context!,
+        SelfRef()
+          ..name = "x"
+          ..parent = objs.first,
+      );
 
       q = Query<SelfRef>(context!)..where((s) => s.name).greaterThan("o");
       q.join(set: (s) => s.children).where((s) => s.name).greaterThan("b");
@@ -394,10 +404,11 @@ void main() {
     test("Updating and joining across tables", () async {
       final r1 = await Query.insertObject(context!, Right()..name = "r1");
       final l1 = await Query.insertObject(
-          context!,
-          Left()
-            ..name = "l1"
-            ..belongsToRight = r1);
+        context!,
+        Left()
+          ..name = "l1"
+          ..belongsToRight = r1,
+      );
       final updateQuery = Query<Right>(context!)
         ..where((r) => r.id).equalTo(r1.id)
         ..values.belongsToLeft = l1;

@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
-
-import '../http/http.dart';
-import 'auth.dart';
 
 /// A [Controller] that validates the Authorization header of a request.
 ///
@@ -36,9 +35,11 @@ class Authorizer extends Controller {
   ///         Authorization: Bearer ap9ijlarlkz8jIOa9laweo
   ///
   /// If [scopes] is provided, the authorization granted must have access to *all* scopes according to [validator].
-  Authorizer(this.validator,
-      {this.parser = const AuthorizationBearerParser(), List<String>? scopes})
-      : scopes = scopes?.map((s) => AuthScope(s)).toList();
+  Authorizer(
+    this.validator, {
+    this.parser = const AuthorizationBearerParser(),
+    List<String>? scopes,
+  }) : scopes = scopes?.map((s) => AuthScope(s)).toList();
 
   /// Creates an instance of [Authorizer] with Basic Authentication parsing.
   ///
@@ -56,8 +57,11 @@ class Authorizer extends Controller {
   ///
   /// If [scopes] is provided, the bearer token must have access to *all* scopes according to [validator].
   Authorizer.bearer(AuthValidator? validator, {List<String>? scopes})
-      : this(validator,
-            parser: const AuthorizationBearerParser(), scopes: scopes);
+      : this(
+          validator,
+          parser: const AuthorizationBearerParser(),
+          scopes: scopes,
+        );
 
   /// The validating authorization object.
   ///
@@ -103,10 +107,12 @@ class Authorizer extends Controller {
       return _responseFromParseException(e);
     } on AuthServerException catch (e) {
       if (e.reason == AuthRequestError.invalidScope) {
-        return Response.forbidden(body: {
-          "error": "insufficient_scope",
-          "scope": scopes!.map((s) => s.toString()).join(" ")
-        });
+        return Response.forbidden(
+          body: {
+            "error": "insufficient_scope",
+            "scope": scopes!.map((s) => s.toString()).join(" ")
+          },
+        );
       }
 
       return Response.unauthorized();
@@ -119,7 +125,8 @@ class Authorizer extends Controller {
     switch (e.reason) {
       case AuthorizationParserExceptionReason.malformed:
         return Response.badRequest(
-            body: {"error": "invalid_authorization_header"});
+          body: {"error": "invalid_authorization_header"},
+        );
       case AuthorizationParserExceptionReason.missing:
         return Response.unauthorized();
       default:
@@ -152,41 +159,56 @@ class Authorizer extends Controller {
     super.documentComponents(context);
 
     context.responses.register(
-        "InsufficientScope",
-        APIResponse(
-            "The provided credentials or bearer token have insufficient permission to access this route.",
-            content: {
-              "application/json": APIMediaType(
-                  schema: APISchemaObject.object({
-                "error": APISchemaObject.string(),
-                "scope": APISchemaObject.string()
-                  ..description = "The required scope for this operation."
-              }))
-            }));
+      "InsufficientScope",
+      APIResponse(
+        "The provided credentials or bearer token have insufficient permission to access this route.",
+        content: {
+          "application/json": APIMediaType(
+            schema: APISchemaObject.object({
+              "error": APISchemaObject.string(),
+              "scope": APISchemaObject.string()
+                ..description = "The required scope for this operation."
+            }),
+          )
+        },
+      ),
+    );
 
     context.responses.register(
-        "InsufficientAccess",
-        APIResponse(
-            "The provided credentials or bearer token are not authorized for this request.",
-            content: {
-              "application/json": APIMediaType(
-                  schema: APISchemaObject.object(
-                      {"error": APISchemaObject.string()}))
-            }));
+      "InsufficientAccess",
+      APIResponse(
+        "The provided credentials or bearer token are not authorized for this request.",
+        content: {
+          "application/json": APIMediaType(
+            schema: APISchemaObject.object(
+              {"error": APISchemaObject.string()},
+            ),
+          )
+        },
+      ),
+    );
 
     context.responses.register(
-        "MalformedAuthorizationHeader",
-        APIResponse("The provided Authorization header was malformed.",
-            content: {
-              "application/json": APIMediaType(
-                  schema: APISchemaObject.object(
-                      {"error": APISchemaObject.string()}))
-            }));
+      "MalformedAuthorizationHeader",
+      APIResponse(
+        "The provided Authorization header was malformed.",
+        content: {
+          "application/json": APIMediaType(
+            schema: APISchemaObject.object(
+              {"error": APISchemaObject.string()},
+            ),
+          )
+        },
+      ),
+    );
   }
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path) {
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  ) {
     final operations = super.documentOperations(context, route, path);
 
     operations.forEach((_, op) {
@@ -196,9 +218,9 @@ class Authorizer extends Controller {
 
       final requirements = validator!
           .documentRequirementsForAuthorizer(context, this, scopes: scopes);
-      requirements.forEach((req) {
+      for (final req in requirements) {
         op.addSecurityRequirement(req);
-      });
+      }
     });
 
     return operations;

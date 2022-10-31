@@ -16,23 +16,29 @@ class CLIAuthAddClient extends CLICommand
   @Option("id", abbr: "i", help: "The client ID to insert.")
   String? get clientID => decodeOptional("id");
 
-  @Option("secret",
-      abbr: "s",
-      help:
-          "The client secret. This secret will be hashed on insertion, so you *must* store it somewhere. For public clients, this option may be omitted.")
+  @Option(
+    "secret",
+    abbr: "s",
+    help:
+        "The client secret. This secret will be hashed on insertion, so you *must* store it somewhere. For public clients, this option may be omitted.",
+  )
   String? get secret => decodeOptional("secret");
 
-  @Option("redirect-uri",
-      abbr: "r",
-      help:
-          "The redirect URI of the client if it supports the authorization code or implicit flow. May be omitted.")
+  @Option(
+    "redirect-uri",
+    abbr: "r",
+    help:
+        "The redirect URI of the client if it supports the authorization code or implicit flow. May be omitted.",
+  )
   String? get redirectUri => decodeOptional("redirect-uri");
 
-  @Option("hash-function",
-      help:
-          "Hash function to apply when hashing secret. Must match AuthServer.hashFunction.",
-      defaultsTo: "sha256",
-      allowed: ["sha256", "sha1", "md5"])
+  @Option(
+    "hash-function",
+    help:
+        "Hash function to apply when hashing secret. Must match AuthServer.hashFunction.",
+    defaultsTo: "sha256",
+    allowed: ["sha256", "sha1", "md5"],
+  )
   Hash get hashFunction {
     switch (decode<String>("hash-function")) {
       case "sha256":
@@ -43,26 +49,33 @@ class CLIAuthAddClient extends CLICommand
         return md5;
       default:
         throw CLIException(
-            "Value '${decode("hash-function")}' is not valid for option hash-function.");
+          "Value '${decode("hash-function")}' is not valid for option hash-function.",
+        );
     }
   }
 
-  @Option("hash-rounds",
-      help:
-          "Number of hash rounds to apply to secret. Must match AuthServer.hashRounds.",
-      defaultsTo: "1000")
+  @Option(
+    "hash-rounds",
+    help:
+        "Number of hash rounds to apply to secret. Must match AuthServer.hashRounds.",
+    defaultsTo: "1000",
+  )
   int get hashRounds => decode<int>("hash-rounds");
 
-  @Option("hash-length",
-      help:
-          "Length in bytes of secret key after hashing. Must match AuthServer.hashLength.",
-      defaultsTo: "32")
+  @Option(
+    "hash-length",
+    help:
+        "Length in bytes of secret key after hashing. Must match AuthServer.hashLength.",
+    defaultsTo: "32",
+  )
   int get hashLength => decode<int>("hash-length");
 
-  @Option("allowed-scopes",
-      help:
-          "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
-      defaultsTo: "")
+  @Option(
+    "allowed-scopes",
+    help:
+        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    defaultsTo: "",
+  )
   List<String>? get allowedScopes {
     final String v = decode<String>("allowed-scopes");
     if (v.isEmpty) {
@@ -83,12 +96,14 @@ class CLIAuthAddClient extends CLICommand
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     context = ManagedContext(dataModel, persistentStore);
 
-    final credentials = AuthUtility.generateAPICredentialPair(clientID, secret,
-        redirectURI: redirectUri,
-        hashLength: hashLength,
-        hashRounds: hashRounds,
-        hashFunction: hashFunction)
-      ..allowedScopes = allowedScopes?.map((s) => AuthScope(s)).toList();
+    final credentials = generateAPICredentialPair(
+      clientID,
+      secret,
+      redirectURI: redirectUri,
+      hashLength: hashLength,
+      hashRounds: hashRounds,
+      hashFunction: hashFunction,
+    )..allowedScopes = allowedScopes?.map((s) => AuthScope(s)).toList();
 
     final managedCredentials = ManagedAuthClient.fromClient(credentials);
 
@@ -102,7 +117,8 @@ class CLIAuthAddClient extends CLICommand
       displayProgress("Client with ID '$clientID' has been added.");
       if (secret != null) {
         displayProgress(
-            "The client secret has been hashed. You must store it elsewhere, as it cannot be retrieved.");
+          "The client secret has been hashed. You must store it elsewhere, as it cannot be retrieved.",
+        );
       }
       if (managedCredentials.allowedScope != null) {
         displayProgress("Allowed scope: ${managedCredentials.allowedScope}");

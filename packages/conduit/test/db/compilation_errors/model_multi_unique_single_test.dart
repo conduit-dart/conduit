@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
@@ -9,8 +11,10 @@ void main() {
       ManagedDataModel([MultiUniqueFailureSingleElement]);
       expect(true, false);
     } on ManagedDataModelError catch (e) {
-      expect(e.message,
-          contains("add 'Column(unique: true)' to declaration of 'a'"));
+      expect(
+        e.message,
+        contains("add 'Column(unique: true)' to declaration of 'a'"),
+      );
     }
   });
 }

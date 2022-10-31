@@ -48,7 +48,8 @@ abstract class BodyDecoder {
   Type get decodedType {
     if (!hasBeenDecoded) {
       throw StateError(
-          "Invalid body decoding. Must decode data prior to calling 'decodedType'.");
+        "Invalid body decoding. Must decode data prior to calling 'decodedType'.",
+      );
     }
 
     return (_decodedData as Object?).runtimeType;
@@ -60,7 +61,8 @@ abstract class BodyDecoder {
   List<int>? get originalBytes {
     if (retainOriginalBytes == false) {
       throw StateError(
-          "'originalBytes' were not retained. Set 'retainOriginalBytes' to true prior to decoding.");
+        "'originalBytes' were not retained. Set 'retainOriginalBytes' to true prior to decoding.",
+      );
     }
     return _bytes;
   }
@@ -106,7 +108,8 @@ abstract class BodyDecoder {
       rethrow;
     } catch (_) {
       throw Response.badRequest(
-          body: {"error": "request entity could not be decoded"});
+        body: {"error": "request entity could not be decoded"},
+      );
     }
 
     return _cast<T>(_decodedData);
@@ -129,7 +132,8 @@ abstract class BodyDecoder {
       return RuntimeContext.current.coerce<T>(body);
     } on TypeCoercionException {
       throw Response.badRequest(
-          body: {"error": "request entity was unexpected type"});
+        body: {"error": "request entity was unexpected type"},
+      );
     }
   }
 

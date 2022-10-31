@@ -23,22 +23,30 @@ void main() {
     const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
 
     final clients = [
-      AuthClient.withRedirectURI("redirect",
-          AuthUtility.generatePasswordHash("a", salt), salt, "http://a.com",
-          allowedScopes: [AuthScope("user"), AuthScope("location:add")]),
+      AuthClient.withRedirectURI(
+        "redirect",
+        generatePasswordHash("a", salt),
+        salt,
+        "http://a.com",
+        allowedScopes: [AuthScope("user"), AuthScope("location:add")],
+      ),
     ];
 
-    await Future.wait(clients
-        .map((ac) => ManagedAuthClient()
+    await Future.wait(
+      clients
+          .map(
+        (ac) => ManagedAuthClient()
           ..id = ac.id
           ..salt = ac.salt
           ..allowedScope = ac.allowedScopes!.map((a) => a.toString()).join(" ")
           ..hashedSecret = ac.hashedSecret
-          ..redirectURI = ac.redirectURI)
-        .map((mc) {
-      final q = Query<ManagedAuthClient>(context!)..values = mc;
-      return q.insert();
-    }));
+          ..redirectURI = ac.redirectURI,
+      )
+          .map((mc) {
+        final q = Query<ManagedAuthClient>(context!)..values = mc;
+        return q.insert();
+      }),
+    );
   });
 
   tearDownAll(() async {
@@ -49,11 +57,12 @@ void main() {
   group("Resource owner", () {
     test("AuthScope.Any allows all client scopes", () async {
       final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "admin").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("user"), AuthScope("location:add")]);
+        createdUsers.firstWhere((u) => u.role == "admin").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [AuthScope("user"), AuthScope("location:add")],
+      );
 
       expect(t.scopes!.length, 2);
       expect(t.scopes!.any((s) => s.isExactly("user")), true);
@@ -62,11 +71,12 @@ void main() {
 
     test("Restricted role scopes prevents allowed client scopes", () async {
       final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "user").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("user"), AuthScope("location:add")]);
+        createdUsers.firstWhere((u) => u.role == "user").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [AuthScope("user"), AuthScope("location:add")],
+      );
 
       expect(t.scopes!.length, 1);
       expect(t.scopes!.any((s) => s.isExactly("user")), true);
@@ -77,11 +87,12 @@ void main() {
         () async {
       try {
         await auth.authenticate(
-            createdUsers.firstWhere((u) => u.role == "user").username,
-            User.defaultPassword,
-            "redirect",
-            "a",
-            requestedScopes: [AuthScope("location:add")]);
+          createdUsers.firstWhere((u) => u.role == "user").username,
+          User.defaultPassword,
+          "redirect",
+          "a",
+          requestedScopes: [AuthScope("location:add")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -92,11 +103,12 @@ void main() {
         () async {
       try {
         await auth.authenticate(
-            createdUsers.firstWhere((u) => u.role == null).username,
-            User.defaultPassword,
-            "redirect",
-            "a",
-            requestedScopes: [AuthScope("location:add")]);
+          createdUsers.firstWhere((u) => u.role == null).username,
+          User.defaultPassword,
+          "redirect",
+          "a",
+          requestedScopes: [AuthScope("location:add")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -107,14 +119,15 @@ void main() {
         "Client allows full scope, role restricts it to a subset, can only grant subset",
         () async {
       final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [
-            AuthScope("user.readonly"),
-            AuthScope("location:add:xyz")
-          ]);
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [
+          AuthScope("user.readonly"),
+          AuthScope("location:add:xyz")
+        ],
+      );
 
       expect(t.scopes!.length, 2);
       expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
@@ -125,11 +138,12 @@ void main() {
         () async {
       try {
         await auth.authenticate(
-            createdUsers.firstWhere((u) => u.role == "invalid").username,
-            User.defaultPassword,
-            "redirect",
-            "a",
-            requestedScopes: [AuthScope("location")]);
+          createdUsers.firstWhere((u) => u.role == "invalid").username,
+          User.defaultPassword,
+          "redirect",
+          "a",
+          requestedScopes: [AuthScope("location")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -141,15 +155,20 @@ void main() {
     test("Can't upgrade scope if it allowed by client, but restricted by role",
         () async {
       final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("user.readonly")]);
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [AuthScope("user.readonly")],
+      );
 
       try {
-        await auth.refresh(t.refreshToken, "redirect", "a",
-            requestedScopes: [AuthScope("user")]);
+        await auth.refresh(
+          t.refreshToken,
+          "redirect",
+          "a",
+          requestedScopes: [AuthScope("user")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -158,17 +177,23 @@ void main() {
 
     test("Can't upgrade scope even if client/user allow it", () async {
       final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("user.readonly")]);
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [AuthScope("user.readonly")],
+      );
 
       try {
-        await auth.refresh(t.refreshToken, "redirect", "a", requestedScopes: [
-          AuthScope("user.readonly"),
-          AuthScope("location:add:xyz")
-        ]);
+        await auth.refresh(
+          t.refreshToken,
+          "redirect",
+          "a",
+          requestedScopes: [
+            AuthScope("user.readonly"),
+            AuthScope("location:add:xyz")
+          ],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -177,14 +202,15 @@ void main() {
 
     test("Not specifying scope returns same scope", () async {
       var t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [
-            AuthScope("user.readonly"),
-            AuthScope("location:add:xyz")
-          ]);
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [
+          AuthScope("user.readonly"),
+          AuthScope("location:add:xyz")
+        ],
+      );
 
       t = await auth.refresh(t.refreshToken, t.clientID, "a");
       expect(t.scopes!.length, 2);
@@ -196,10 +222,11 @@ void main() {
   group("Auth code", () {
     test("AuthScope.Any allows all client scopes", () async {
       final code = await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "admin").username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [AuthScope("user"), AuthScope("location:add")]);
+        createdUsers.firstWhere((u) => u.role == "admin").username,
+        User.defaultPassword,
+        "redirect",
+        requestedScopes: [AuthScope("user"), AuthScope("location:add")],
+      );
       final t = await auth.exchange(code.code, "redirect", "a");
 
       expect(t.scopes!.length, 2);
@@ -209,10 +236,11 @@ void main() {
 
     test("Restricted role scopes prevents allowed client scopes", () async {
       final code = await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "user").username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [AuthScope("user"), AuthScope("location:add")]);
+        createdUsers.firstWhere((u) => u.role == "user").username,
+        User.defaultPassword,
+        "redirect",
+        requestedScopes: [AuthScope("user"), AuthScope("location:add")],
+      );
       final t = await auth.exchange(code.code, "redirect", "a");
 
       expect(t.scopes!.length, 1);
@@ -224,10 +252,11 @@ void main() {
         () async {
       try {
         await auth.authenticateForCode(
-            createdUsers.firstWhere((u) => u.role == "user").username,
-            User.defaultPassword,
-            "redirect",
-            requestedScopes: [AuthScope("location:add")]);
+          createdUsers.firstWhere((u) => u.role == "user").username,
+          User.defaultPassword,
+          "redirect",
+          requestedScopes: [AuthScope("location:add")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -238,10 +267,11 @@ void main() {
         () async {
       try {
         await auth.authenticateForCode(
-            createdUsers.firstWhere((u) => u.role == null).username,
-            User.defaultPassword,
-            "redirect",
-            requestedScopes: [AuthScope("location:add")]);
+          createdUsers.firstWhere((u) => u.role == null).username,
+          User.defaultPassword,
+          "redirect",
+          requestedScopes: [AuthScope("location:add")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -252,13 +282,14 @@ void main() {
         "Client allows full scope, role restricts it to a subset, can only grant subset",
         () async {
       final code = await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [
-            AuthScope("user.readonly"),
-            AuthScope("location:add:xyz")
-          ]);
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        requestedScopes: [
+          AuthScope("user.readonly"),
+          AuthScope("location:add:xyz")
+        ],
+      );
       final t = await auth.exchange(code.code, "redirect", "a");
 
       expect(t.scopes!.length, 2);
@@ -270,10 +301,11 @@ void main() {
         () async {
       try {
         await auth.authenticateForCode(
-            createdUsers.firstWhere((u) => u.role == "invalid").username,
-            User.defaultPassword,
-            "redirect",
-            requestedScopes: [AuthScope("location")]);
+          createdUsers.firstWhere((u) => u.role == "invalid").username,
+          User.defaultPassword,
+          "redirect",
+          requestedScopes: [AuthScope("location")],
+        );
         expect(true, false);
       } on AuthServerException catch (e) {
         expect(e.reason, AuthRequestError.invalidScope);
@@ -295,12 +327,11 @@ class _User extends ResourceOwnerTableDefinition {
 Future<List<User>> createUsers(ManagedContext? ctx, int count) async {
   final list = <User>[];
   for (int i = 0; i < count; i++) {
-    final salt = AuthUtility.generateRandomSalt();
+    final salt = generateRandomSalt();
     final u = User()
       ..username = "bob+$i@stablekernel.com"
       ..salt = salt
-      ..hashedPassword =
-          AuthUtility.generatePasswordHash(User.defaultPassword, salt);
+      ..hashedPassword = generatePasswordHash(User.defaultPassword, salt);
 
     if (u.username!.startsWith("bob+0")) {
       u.role = "admin";
@@ -330,7 +361,8 @@ class RoleBasedAuthStorage extends ManagedAuthDelegate<User> {
     final query = Query<User>(context!)
       ..where((o) => o.username).equalTo(username)
       ..returningProperties(
-          (t) => [t.id, t.hashedPassword, t.salt, t.username, t.role]);
+        (t) => [t.id, t.hashedPassword, t.salt, t.username, t.role],
+      );
 
     return query.fetchOne();
   }

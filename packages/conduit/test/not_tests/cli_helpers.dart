@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:io';
 
@@ -64,7 +66,9 @@ class CLIClient {
       dstDirectory.deleteSync(recursive: true);
     }
     WorkingDirectoryAgent.copyDirectory(
-        src: agent.workingDirectory.uri, dst: dstUri);
+      src: agent.workingDirectory.uri,
+      dst: dstUri,
+    );
     return CLIClient(DartProjectAgent.existing(dstUri));
   }
 
@@ -73,30 +77,36 @@ class CLIClient {
     _output.clear();
   }
 
-  Future<CLIClient> createTestProject(
-      {String name = "application_test",
-      String? template,
-      bool offline = true}) async {
+  Future<CLIClient> createTestProject({
+    String name = "application_test",
+    String? template,
+    bool offline = true,
+  }) async {
     final project = normalize(absolute(join('.')));
     if (template == null) {
-      final client = CLIClient(DartProjectAgent(name, dependencies: {
-        "conduit": {"path": project}
-      }, devDependencies: {
-        "test": "^1.6.7"
-      }, dependencyOverrides: {
-        'conduit_runtime': {'path': '${join(project, '..', 'runtime')}'},
-        'conduit_isolate_exec': {
-          'path': '${join(project, '..', 'isolate_exec')}'
-        },
-        'conduit_password_hash': {
-          'path': '${join(project, '..', 'password_hash')}'
-        },
-        'conduit_open_api': {'path': '${join(project, '..', 'open_api')}'},
-        'conduit_codable': {'path': '${join(project, '..', 'codable')}'},
-        'conduit_config': {'path': '${join(project, '..', 'config')}'},
-        'conduit_common': {'path': '${join(project, '..', 'common')}'},
-        'fs_test_agent': {'path': '${join(project, '..', 'fs_test_agent')}'}
-      }));
+      final client = CLIClient(
+        DartProjectAgent(
+          name,
+          dependencies: {
+            "conduit": {"path": project}
+          },
+          devDependencies: {"test": "^1.6.7"},
+          dependencyOverrides: {
+            'conduit_runtime': {'path': join(project, '..', 'runtime')},
+            'conduit_isolate_exec': {
+              'path': join(project, '..', 'isolate_exec')
+            },
+            'conduit_password_hash': {
+              'path': join(project, '..', 'password_hash')
+            },
+            'conduit_open_api': {'path': join(project, '..', 'open_api')},
+            'conduit_codable': {'path': join(project, '..', 'codable')},
+            'conduit_config': {'path': join(project, '..', 'config')},
+            'conduit_common': {'path': join(project, '..', 'common')},
+            'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')}
+          },
+        ),
+      );
 
       client.projectAgent.addLibraryFile("channel", """
 import 'dart:async';
@@ -136,10 +146,13 @@ class TestChannel extends ApplicationChannel {
     args.add(name);
 
     await run("create", args);
-    print("$output");
+    print(output);
 
-    return CLIClient(DartProjectAgent.existing(
-        DartProjectAgent.projectsDirectory.uri.resolve("$name/")));
+    return CLIClient(
+      DartProjectAgent.existing(
+        DartProjectAgent.projectsDirectory.uri.resolve("$name/"),
+      ),
+    );
   }
 
   Future<int> executeMigrations({String? connectString}) async {
@@ -165,7 +178,7 @@ class TestChannel extends ApplicationChannel {
 
     final exitCode = await cmd.process(results);
     if (exitCode != 0) {
-      print("command failed: ${output}");
+      print("command failed: $output");
     }
 
     Directory.current = saved;

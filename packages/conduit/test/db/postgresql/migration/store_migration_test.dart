@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -21,11 +23,15 @@ void main() {
 
   test("Version table gets created on initiating upgrade if it doesn't exist",
       () async {
-    await store.upgrade(Schema.empty(), [EmptyMigration()..version = 1],
-        temporary: true);
+    await store.upgrade(
+      Schema.empty(),
+      [EmptyMigration()..version = 1],
+      temporary: true,
+    );
 
     final rows = await store.execute(
-        "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql");
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+    );
     expect(rows.length, 1);
     expect(rows.first.first, 1);
   });
@@ -34,12 +40,15 @@ void main() {
       "Subsequent upgrades do not fail because the verison table is already created",
       () async {
     final s1 = await store.upgrade(
-        Schema.empty(), [EmptyMigration()..version = 1],
-        temporary: true);
+      Schema.empty(),
+      [EmptyMigration()..version = 1],
+      temporary: true,
+    );
     await store.upgrade(s1, [EmptyMigration()..version = 2], temporary: true);
 
     final rows = await store.execute(
-        "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql");
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+    );
     expect(rows.length, 2);
     expect(rows.first.first, 1);
     expect(rows.last.first, 2);
@@ -47,8 +56,10 @@ void main() {
 
   test("Trying to upgrade to version that already exists fails", () async {
     final s1 = await store.upgrade(
-        Schema.empty(), [EmptyMigration()..version = 1],
-        temporary: true);
+      Schema.empty(),
+      [EmptyMigration()..version = 1],
+      temporary: true,
+    );
     try {
       await store.upgrade(s1, [EmptyMigration()..version = 1], temporary: true);
       expect(true, false);
@@ -61,8 +72,10 @@ void main() {
       "Trying to upgrade to version that is earlier than latest migration fails",
       () async {
     final s1 = await store.upgrade(
-        Schema.empty(), [EmptyMigration()..version = 2],
-        temporary: true);
+      Schema.empty(),
+      [EmptyMigration()..version = 2],
+      temporary: true,
+    );
     try {
       await store.upgrade(s1, [EmptyMigration()..version = 1], temporary: true);
       expect(true, false);
@@ -74,27 +87,35 @@ void main() {
   });
 
   test("Apply more than one migration to new database", () async {
-    await store.upgrade(Schema.empty(),
-        [EmptyMigration()..version = 1, EmptyMigration()..version = 2],
-        temporary: true);
+    await store.upgrade(
+      Schema.empty(),
+      [EmptyMigration()..version = 1, EmptyMigration()..version = 2],
+      temporary: true,
+    );
     expect(await store.schemaVersion, 2);
   });
 
   test("Apply more than one migration to existing database", () async {
-    await store.upgrade(Schema.empty(),
-        [EmptyMigration()..version = 1, EmptyMigration()..version = 2],
-        temporary: true);
+    await store.upgrade(
+      Schema.empty(),
+      [EmptyMigration()..version = 1, EmptyMigration()..version = 2],
+      temporary: true,
+    );
     expect(await store.schemaVersion, 2);
-    await store.upgrade(Schema.empty(),
-        [EmptyMigration()..version = 3, EmptyMigration()..version = 4],
-        temporary: true);
+    await store.upgrade(
+      Schema.empty(),
+      [EmptyMigration()..version = 3, EmptyMigration()..version = 4],
+      temporary: true,
+    );
     expect(await store.schemaVersion, 4);
   });
 
   test("Can apply an unencoded initial value", () async {
     await store.upgrade(
-        Schema.empty(), [MCase11()..version = 1, MCase12()..version = 2],
-        temporary: true);
+      Schema.empty(),
+      [MCase11()..version = 1, MCase12()..version = 2],
+      temporary: true,
+    );
     expect(await store.schemaVersion, 2);
     expect(await store.execute("SELECT id, v FROM t"), [
       [1, 10]
@@ -116,10 +137,16 @@ class EmptyMigration extends Migration {
 class MCase11 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable("t", [
-      SchemaColumn("id", ManagedPropertyType.integer,
-          isPrimaryKey: true, autoincrement: true)
-    ]));
+    database.createTable(
+      SchemaTable("t", [
+        SchemaColumn(
+          "id",
+          ManagedPropertyType.integer,
+          isPrimaryKey: true,
+          autoincrement: true,
+        )
+      ]),
+    );
   }
 
   @override
@@ -134,8 +161,11 @@ class MCase11 extends Migration {
 class MCase12 extends Migration {
   @override
   Future upgrade() async {
-    database.addColumn("t", SchemaColumn("v", ManagedPropertyType.integer),
-        unencodedInitialValue: "10");
+    database.addColumn(
+      "t",
+      SchemaColumn("v", ManagedPropertyType.integer),
+      unencodedInitialValue: "10",
+    );
   }
 
   @override

@@ -19,23 +19,26 @@ void main() {
   setUpAll(() async {
     final project = normalize(absolute(join('.')));
 
-    cli = CLIClient(DartProjectAgent("application_test", dependencies: {
-      "conduit": {"path": project},
-    }, dependencyOverrides: {
-      'conduit_runtime': {'path': '${join(project, '..', 'runtime')}'},
-      'conduit_isolate_exec': {
-        'path': '${join(project, '..', 'isolate_exec')}'
-      },
-      'conduit_password_hash': {
-        'path': '${join(project, '..', 'password_hash')}'
-      },
-      'conduit_open_api': {'path': '${join(project, '..', 'open_api')}'},
-      'conduit_codable': {'path': '${join(project, '..', 'codable')}'},
-      'conduit_config': {'path': '${join(project, '..', 'config')}'},
-      'conduit_common': {'path': '${join(project, '..', 'common')}'},
-      'fs_test_agent': {'path': '${join(project, '..', 'fs_test_agent')}'}
-    }))
-      ..defaultArgs = ["--connect", PostgresTestConfig().connectionUrl];
+    cli = CLIClient(
+      DartProjectAgent(
+        "application_test",
+        dependencies: {
+          "conduit": {"path": project},
+        },
+        dependencyOverrides: {
+          'conduit_runtime': {'path': join(project, '..', 'runtime')},
+          'conduit_isolate_exec': {'path': join(project, '..', 'isolate_exec')},
+          'conduit_password_hash': {
+            'path': join(project, '..', 'password_hash')
+          },
+          'conduit_open_api': {'path': join(project, '..', 'open_api')},
+          'conduit_codable': {'path': join(project, '..', 'codable')},
+          'conduit_config': {'path': join(project, '..', 'config')},
+          'conduit_common': {'path': join(project, '..', 'common')},
+          'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')}
+        },
+      ),
+    )..defaultArgs = ["--connect", PostgresTestConfig().connectionUrl];
     await cli.agent.getDependencies();
   });
 
@@ -43,7 +46,7 @@ void main() {
     store = PostgresTestConfig().persistentStore();
 
     final builder = SchemaBuilder.toSchema(store, schema);
-    for (var command in builder.commands) {
+    for (final command in builder.commands) {
       await store.execute(command);
     }
 
@@ -83,7 +86,7 @@ void main() {
 
       final salt = results.first.salt!;
       final secret = results.first.hashedSecret;
-      expect(AuthUtility.generatePasswordHash("abc", salt), secret);
+      expect(generatePasswordHash("abc", salt), secret);
     });
 
     test("Can create confidential client with redirect uri", () async {
@@ -109,7 +112,7 @@ void main() {
 
       final salt = results.first.salt!;
       final secret = results.first.hashedSecret;
-      expect(AuthUtility.generatePasswordHash("abc", salt), secret);
+      expect(generatePasswordHash("abc", salt), secret);
     });
 
     test("Can create public client with redirect uri", () async {
@@ -249,7 +252,7 @@ void main() {
           "--id",
           "foobar",
           "--allowed-scopes",
-          "x\"x",
+          'x"x',
         ],
       );
       final q = Query<ManagedAuthClient>(context);

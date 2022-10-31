@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,11 +16,11 @@ void main() {
     app.options.port = port;
 
     setUpAll(() async {
-      return await app.start(numberOfInstances: 1);
+      return app.start();
     });
 
     tearDownAll(() async {
-      return await app.stop();
+      return app.stop();
     });
 
     test("Single message, use broadcast stream", () async {
@@ -75,8 +77,10 @@ void main() {
         if (hash == stopHash) {
           await socket.sink.done;
         } else {
-          expect(messages[i++].hashCode.toString(),
-              rx.toString()); //check confirmation of each message
+          expect(
+            messages[i++].hashCode.toString(),
+            rx.toString(),
+          ); //check confirmation of each message
         }
       });
 
@@ -143,7 +147,7 @@ class TestChannel extends ApplicationChannel {
 class TestController extends ResourceController {
   final _stopwatch = Stopwatch();
   Future _processConnection(WebSocket socket) async {
-    await for (var message in socket) {
+    await for (final message in socket) {
       //await the response for more realistic async behaviour
       await Future.delayed(const Duration(milliseconds: 5));
       socket.add('${message.hashCode}');
@@ -160,8 +164,8 @@ class TestController extends ResourceController {
     _stopwatch.start();
     final httpRequest = request!.raw;
     WebSocketTransformer.upgrade(httpRequest).then(_processConnection);
-    return Future.value(
-        null); //upgrade the HTTP connection to WebSocket by returning null
+    return Future
+        .value(); //upgrade the HTTP connection to WebSocket by returning null
   }
 }
 
@@ -187,7 +191,7 @@ class ChatController extends ResourceController {
     _socket[user] = await WebSocketTransformer.upgrade(httpRequest);
     _socket[user]!.listen((event) => handleEvent(event as String, user));
 
-    return Future.value(
-        null); //upgrade the HTTP connection to WebSocket by returning null
+    return Future
+        .value(); //upgrade the HTTP connection to WebSocket by returning null
   }
 }

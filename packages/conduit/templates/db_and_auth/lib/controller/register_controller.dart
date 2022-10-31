@@ -16,7 +16,7 @@ class RegisterController extends ResourceController {
     }
 
     user
-      ..salt = AuthUtility.generateRandomSalt()
+      ..salt = generateRandomSalt()
       ..hashedPassword = authServer.hashPassword(user.password!, user.salt!);
 
     final query = Query<User>(context)..values = user;

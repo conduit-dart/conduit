@@ -32,9 +32,16 @@ class App extends ApplicationChannel {
         AppConfiguration.fromFile(File(options!.configurationFilePath!));
     final db = config.database;
     final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
-        db.username, db.password, db.host, db.port, db.databaseName);
+      db.username,
+      db.password,
+      db.host,
+      db.port,
+      db.databaseName,
+    );
     context = ManagedContext(
-        ManagedDataModel.fromCurrentMirrorSystem(), persistentStore);
+      ManagedDataModel.fromCurrentMirrorSystem(),
+      persistentStore,
+    );
 
     authServer = AuthServer(ManagedAuthDelegate(context));
   }
@@ -77,10 +84,11 @@ class UserController extends ResourceController {
   Future<Response> createUser(@Bind.body() User user) async {
     if (user.username == null || user.password == null) {
       return Response.badRequest(
-          body: {"error": "username and password required."});
+        body: {"error": "username and password required."},
+      );
     }
 
-    final salt = AuthUtility.generateRandomSalt();
+    final salt = generateRandomSalt();
     final hashedPassword = authServer!.hashPassword(user.password!, salt);
 
     final query = Query<User>(context!)
@@ -91,10 +99,11 @@ class UserController extends ResourceController {
 
     final u = await query.insert();
     final token = await authServer!.authenticate(
-        u.username,
-        query.values.password,
-        request!.authorization!.credentials!.username,
-        request!.authorization!.credentials!.password);
+      u.username,
+      query.values.password,
+      request!.authorization!.credentials!.username,
+      request!.authorization!.credentials!.password,
+    );
 
     return AuthController.tokenResponse(token);
   }

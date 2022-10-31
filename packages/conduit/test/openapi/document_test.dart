@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors, avoid_dynamic_calls
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -61,9 +63,10 @@ void main() {
 
     test("Controllers are prepared prior to documenting", () async {
       expect(
-          controllerPrepared.isBefore(controllerDocumented) ||
-              controllerPrepared.isAtSameMomentAs(controllerDocumented),
-          true);
+        controllerPrepared.isBefore(controllerDocumented) ||
+            controllerPrepared.isAtSameMomentAs(controllerDocumented),
+        true,
+      );
     });
 
     test("Static init is ran prior to controller prep", () async {
@@ -79,10 +82,12 @@ void main() {
     late APIDocumentContext ctx;
 
     setUp(() async {
-      ctx = APIDocumentContext(APIDocument()
-        ..info = APIInfo("test", "1.0.0")
-        ..paths = {}
-        ..components = APIComponents());
+      ctx = APIDocumentContext(
+        APIDocument()
+          ..info = APIInfo("test", "1.0.0")
+          ..paths = {}
+          ..components = APIComponents(),
+      );
     });
 
     test("Can defer async functions", () async {
@@ -133,10 +138,14 @@ void main() {
     test("Finalize throws error if contains unresolved type reference",
         () async {
       ctx.document.paths = {
-        "/path": APIPath(operations: {
-          "get": APIOperation(
-              "id1", {"200": ctx.responses.getObjectWithType(String)})
-        })
+        "/path": APIPath(
+          operations: {
+            "get": APIOperation(
+              "id1",
+              {"200": ctx.responses.getObjectWithType(String)},
+            )
+          },
+        )
       };
 
       try {
@@ -152,10 +161,12 @@ void main() {
 
     test("Finalize throws error if contains unresolved uri reference",
         () async {
-      ctx.document.components!.responses["test"] =
-          APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
-      });
+      ctx.document.components!.responses["test"] = APIResponse(
+        "desc",
+        content: {
+          "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        },
+      );
 
       try {
         await ctx.finalize();
@@ -171,32 +182,43 @@ void main() {
         "Deferred async/sync components can be used to register components after they have been referenced",
         () async {
       ctx.document.paths = {
-        "/path": APIPath(operations: {
-          "get": APIOperation(
-              "id1", {"200": ctx.responses.getObjectWithType(String)})
-        })
+        "/path": APIPath(
+          operations: {
+            "get": APIOperation(
+              "id1",
+              {"200": ctx.responses.getObjectWithType(String)},
+            )
+          },
+        )
       };
 
-      ctx.document.components!.responses["test"] =
-          APIResponse("desc", content: {
-        "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
-      });
+      ctx.document.components!.responses["test"] = APIResponse(
+        "desc",
+        content: {
+          "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
+        },
+      );
 
       ctx.schema.register("foo", APISchemaObject.integer());
       ctx.defer(() {
-        return Future(() => ctx.responses
-            .register("whatever", APIResponse("foo"), representation: String));
+        return Future(
+          () => ctx.responses
+              .register("whatever", APIResponse("foo"), representation: String),
+        );
       });
 
       await ctx.finalize();
 
       final map = ctx.document.asMap();
-      expect(map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
-          "#/components/responses/whatever");
       expect(
-          map["components"]["responses"]["test"]["content"]["application/json"]
-              ["schema"][r"$ref"],
-          "#/components/schemas/foo");
+        map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
+        "#/components/responses/whatever",
+      );
+      expect(
+        map["components"]["responses"]["test"]["content"]["application/json"]
+            ["schema"][r"$ref"],
+        "#/components/schemas/foo",
+      );
     });
   });
 
@@ -233,10 +255,14 @@ void main() {
         expect(doc.paths!["/dynamic"]!.parameters.length, 0);
 
         expect(doc.paths!["/path/{id}"]!.parameters.length, 1);
-        expect(doc.paths!["/path/{id}"]!.parameters.first!.location,
-            APIParameterLocation.path);
-        expect(doc.paths!["/path/{id}"]!.parameters.first!.schema!.type,
-            APIType.string);
+        expect(
+          doc.paths!["/path/{id}"]!.parameters.first!.location,
+          APIParameterLocation.path,
+        );
+        expect(
+          doc.paths!["/path/{id}"]!.parameters.first!.schema!.type,
+          APIType.string,
+        );
         expect(doc.paths!["/path/{id}"]!.parameters.first!.name, "id");
       });
 
@@ -268,16 +294,20 @@ void main() {
           doc.paths!["/constant"]!.operations.values,
         ].expand((i) => i).toList();
 
-        opsWithMiddleware.forEach((op) {
+        for (final op in opsWithMiddleware) {
           final middlewareParam = op!.parameters!
-              .where((p) =>
-                  p!.referenceURI?.path == "/components/parameters/x-api-key")
+              .where(
+                (p) =>
+                    p!.referenceURI?.path == "/components/parameters/x-api-key",
+              )
               .toList();
           expect(middlewareParam.length, 1);
 
-          expect(doc.components!.resolve(middlewareParam.first!)!.schema!.type,
-              APIType.string);
-        });
+          expect(
+            doc.components!.resolve(middlewareParam.first!)!.schema!.type,
+            APIType.string,
+          );
+        }
       });
     });
 
@@ -313,8 +343,11 @@ void main() {
       test("Add component more than once does not replace it", () {
         final doc = APIDocument()..components = APIComponents();
         final ctx = APIDocumentContext(doc);
-        ctx.schema.register("a", APISchemaObject.string(format: "original"),
-            representation: String);
+        ctx.schema.register(
+          "a",
+          APISchemaObject.string(format: "original"),
+          representation: String,
+        );
         ctx.schema.register("a", APISchemaObject.string(format: "replacement"));
 
         expect(doc.components!.schemas["a"]!.format, "original");
@@ -351,10 +384,12 @@ void main() {
   group("Schema object documentation", () {
     late APIDocumentContext ctx;
     setUp(() {
-      ctx = APIDocumentContext(APIDocument()
-        ..info = APIInfo("x", "1.0.0")
-        ..paths = {}
-        ..components = APIComponents());
+      ctx = APIDocumentContext(
+        APIDocument()
+          ..info = APIInfo("x", "1.0.0")
+          ..paths = {}
+          ..components = APIComponents(),
+      );
     });
 
     tearDown(() async {
@@ -367,8 +402,10 @@ void main() {
               as SerializableRuntime)
           .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
-      expect(schema.additionalPropertyPolicy,
-          equals(APISchemaAdditionalPropertyPolicy.freeForm));
+      expect(
+        schema.additionalPropertyPolicy,
+        equals(APISchemaAdditionalPropertyPolicy.freeForm),
+      );
       expect(schema.description, contains("Failed to"));
       expect(schema.description, contains("Map"));
     });
@@ -378,8 +415,10 @@ void main() {
               as SerializableRuntime)
           .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
-      expect(schema.additionalPropertyPolicy,
-          equals(APISchemaAdditionalPropertyPolicy.freeForm));
+      expect(
+        schema.additionalPropertyPolicy,
+        equals(APISchemaAdditionalPropertyPolicy.freeForm),
+      );
       expect(schema.description, contains("Failed to"));
       expect(schema.description, contains("DefaultChannel"));
     });
@@ -389,8 +428,10 @@ void main() {
               as SerializableRuntime)
           .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
-      expect(schema.additionalPropertyPolicy,
-          equals(APISchemaAdditionalPropertyPolicy.freeForm));
+      expect(
+        schema.additionalPropertyPolicy,
+        equals(APISchemaAdditionalPropertyPolicy.freeForm),
+      );
       expect(schema.description, contains("Failed to"));
       expect(schema.description, contains("DefaultChannel"));
     });
@@ -401,30 +442,40 @@ void main() {
               .documentSchema(ctx);
 
       expect(schema.properties!["a"]!.type, APIType.object);
-      expect(schema.properties!["a"]!.additionalPropertySchema!.type,
-          APIType.integer);
+      expect(
+        schema.properties!["a"]!.additionalPropertySchema!.type,
+        APIType.integer,
+      );
 
       expect(schema.properties!["b"]!.type, APIType.array);
       expect(schema.properties!["b"]!.items!.type, APIType.integer);
 
       expect(schema.properties!["c"]!.type, APIType.array);
       expect(schema.properties!["c"]!.items!.type, APIType.object);
-      expect(schema.properties!["c"]!.items!.additionalPropertySchema!.type,
-          APIType.string);
+      expect(
+        schema.properties!["c"]!.items!.additionalPropertySchema!.type,
+        APIType.string,
+      );
 
       expect(schema.properties!["d"]!.type, APIType.array);
       expect(schema.properties!["d"]!.items!.type, APIType.object);
-      expect(schema.properties!["d"]!.items!.properties!["x"]!.type,
-          APIType.integer);
+      expect(
+        schema.properties!["d"]!.items!.properties!["x"]!.type,
+        APIType.integer,
+      );
 
       expect(schema.properties!["e"]!.type, APIType.object);
       expect(schema.properties!["e"]!.properties!["x"]!.type, APIType.integer);
 
       expect(schema.properties!["f"]!.type, APIType.object);
-      expect(schema.properties!["f"]!.additionalPropertySchema!.type,
-          APIType.array);
-      expect(schema.properties!["f"]!.additionalPropertySchema!.items!.type,
-          APIType.string);
+      expect(
+        schema.properties!["f"]!.additionalPropertySchema!.type,
+        APIType.array,
+      );
+      expect(
+        schema.properties!["f"]!.additionalPropertySchema!.items!.type,
+        APIType.string,
+      );
 
       expect(schema.properties!["integer"]!.type, APIType.integer);
       expect(schema.properties!["doublePrecision"]!.type, APIType.number);
@@ -579,20 +630,25 @@ class UndocumentedMiddleware extends Controller {
 class Middleware extends Controller {
   @override
   void documentComponents(APIDocumentContext components) {
-    components.parameters.register("x-api-key",
-        APIParameter.header("x-api-key", schema: APISchemaObject.string()));
+    components.parameters.register(
+      "x-api-key",
+      APIParameter.header("x-api-key", schema: APISchemaObject.string()),
+    );
     nextController?.documentComponents(components);
   }
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext components, String route, APIPath path) {
+    APIDocumentContext components,
+    String route,
+    APIPath path,
+  ) {
     final ops = super.documentOperations(components, route, path);
 
-    ops.values.forEach((op) {
+    for (final op in ops.values) {
       op.parameters ??= [];
       op.parameters!.add(components.parameters["x-api-key"]);
-    });
+    }
 
     return ops;
   }
@@ -611,28 +667,38 @@ class Endpoint extends Controller {
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext registry, String route, APIPath path) {
+    APIDocumentContext registry,
+    String route,
+    APIPath path,
+  ) {
     documented?.complete();
 
     if (path.parameters.isNotEmpty) {
       return {
-        "get": APIOperation("get1", {
-          "200": APIResponse("get/1-200"),
-          "400": APIResponse("get/1-400"),
-        }, parameters: [
-          APIParameter.header("x-op", schema: APISchemaObject.integer())
-        ]),
+        "get": APIOperation(
+          "get1",
+          {
+            "200": APIResponse("get/1-200"),
+            "400": APIResponse("get/1-400"),
+          },
+          parameters: [
+            APIParameter.header("x-op", schema: APISchemaObject.integer())
+          ],
+        ),
         "put": APIOperation("put1", {"200": APIResponse("put/1-200")}),
       };
     }
 
     return {
       "get": APIOperation("get0", {"200": APIResponse("get/0-200")}),
-      "post": APIOperation("post0", {"200": APIResponse("post/0-200")},
-          requestBody: APIRequestBody({
-            "application/json":
-                APIMediaType(schema: registry.schema["someObject"])
-          }))
+      "post": APIOperation(
+        "post0",
+        {"200": APIResponse("post/0-200")},
+        requestBody: APIRequestBody({
+          "application/json":
+              APIMediaType(schema: registry.schema["someObject"])
+        }),
+      )
     };
   }
 
@@ -665,9 +731,11 @@ class ComponentA implements APIComponentDocumenter {
 class ComponentB extends APIComponentDocumenter {
   @override
   void documentComponents(APIDocumentContext components) {
-    components.schema.register("ref-component",
-        APISchemaObject.object({"key": APISchemaObject.string()}),
-        representation: ReferencableSchemaObject);
+    components.schema.register(
+      "ref-component",
+      APISchemaObject.object({"key": APISchemaObject.string()}),
+      representation: ReferencableSchemaObject,
+    );
   }
 }
 
@@ -676,8 +744,10 @@ class ReferencableSchemaObject {}
 class UnaccountedForControllerWithComponents extends Controller {
   @override
   void documentComponents(APIDocumentContext components) {
-    components.schema.register("won't-show-up",
-        APISchemaObject.object({"key": APISchemaObject.string()}));
+    components.schema.register(
+      "won't-show-up",
+      APISchemaObject.object({"key": APISchemaObject.string()}),
+    );
   }
 
   @override

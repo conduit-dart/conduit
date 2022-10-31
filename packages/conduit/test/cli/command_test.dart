@@ -9,10 +9,15 @@ void main() {
     final args = ['--flavor=test'];
 
     expect(
-        () => cmd.options.parse(args),
-        throwsA(predicate<FormatException>((e) =>
-            e.message ==
-            '"test" is not an allowed value for option "flavor".')));
+      () => cmd.options.parse(args),
+      throwsA(
+        predicate<FormatException>(
+          (e) =>
+              e.message ==
+              '"test" is not an allowed value for option "flavor".',
+        ),
+      ),
+    );
   });
 
   test('command invalid key', () async {
@@ -21,9 +26,13 @@ void main() {
     final args = ['--bad=test'];
 
     expect(
-        () => cmd.options.parse(args),
-        throwsA(predicate<FormatException>(
-            (e) => e.message == 'Could not find an option named "bad".')));
+      () => cmd.options.parse(args),
+      throwsA(
+        predicate<FormatException>(
+          (e) => e.message == 'Could not find an option named "bad".',
+        ),
+      ),
+    );
   });
 
   test('Command empty value', () {
@@ -54,9 +63,13 @@ void main() {
     final results = cmd.options.parse(args);
     cmd.process(results);
     expect(
-        () => cmd.decode('invalid'),
-        throwsA(predicate<CLIException>((e) =>
-            e.message == 'The required argument "invalid" was not passed.')));
+      () => cmd.decode('invalid'),
+      throwsA(
+        predicate<CLIException>(
+          (e) => e.message == 'The required argument "invalid" was not passed.',
+        ),
+      ),
+    );
   });
 
   test('Command required key', () {
@@ -68,9 +81,13 @@ void main() {
     cmd.process(results);
 
     expect(
-        () => cmd.databaseConnectionString,
-        throwsA(predicate<CLIException>((e) =>
-            e.message == 'The required argument "connect" was not passed.')));
+      () => cmd.databaseConnectionString,
+      throwsA(
+        predicate<CLIException>(
+          (e) => e.message == 'The required argument "connect" was not passed.',
+        ),
+      ),
+    );
   });
 
   test('Command int conversion', () {
@@ -118,9 +135,14 @@ void main() {
     cmd.process(results);
 
     expect(
-        () => cmd.count,
-        throwsA(predicate<CLIException>((e) =>
-            e.message == 'Invalid integer value "aa" for argument "count".')));
+      () => cmd.count,
+      throwsA(
+        predicate<CLIException>(
+          (e) =>
+              e.message == 'Invalid integer value "aa" for argument "count".',
+        ),
+      ),
+    );
   });
 
   test('Command bool conversion ', () {
@@ -158,18 +180,22 @@ class TestCLICommand extends CLICommand {
   @override
   String get name => throw UnimplementedError();
 
-  @Option("connect",
-      abbr: "c",
-      help:
-          "A database connection URI string. If this option is set, database-config is ignored.",
-      valueHelp: "postgres://user:password@localhost:port/databaseName")
+  @Option(
+    "connect",
+    abbr: "c",
+    help:
+        "A database connection URI string. If this option is set, database-config is ignored.",
+    valueHelp: "postgres://user:password@localhost:port/databaseName",
+  )
   String? get databaseConnectionString => decode("connect");
 
-  @Option("flavor",
-      abbr: "f",
-      help: "The database driver flavor to use.",
-      defaultsTo: "postgres",
-      allowed: ["postgres"])
+  @Option(
+    "flavor",
+    abbr: "f",
+    help: "The database driver flavor to use.",
+    defaultsTo: "postgres",
+    allowed: ["postgres"],
+  )
   String get databaseFlavor => decode("flavor");
 
   @Option("count", abbr: "o", help: "The no. of things.")
@@ -187,13 +213,15 @@ class TestCLICommand extends CLICommand {
   @Flag("useSSLWithDefault", abbr: "d", help: "useSSlWithDefault.")
   bool get useSSlWithDefault => decode("useSSlWithDefault");
 
-  @Option("scopes",
-      help:
-          "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
-      defaultsTo: "")
+  @Option(
+    "scopes",
+    help:
+        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    defaultsTo: "",
+  )
   List<String>? get scopes {
-    final String? v = decode("scopes");
-    if (v!.isEmpty) {
+    final String v = decode("scopes");
+    if (v.isEmpty) {
       return null;
     }
     return v.split(" ").toList();

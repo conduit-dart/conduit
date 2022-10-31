@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:io';
 

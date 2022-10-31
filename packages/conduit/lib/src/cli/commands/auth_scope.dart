@@ -18,13 +18,15 @@ class CLIAuthScopeClient extends CLICommand
   @Option("id", abbr: "i", help: "The client ID to insert.")
   String? get clientID => decodeOptional("id");
 
-  @Option("scopes",
-      help:
-          "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
-      defaultsTo: "")
+  @Option(
+    "scopes",
+    help:
+        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    defaultsTo: "",
+  )
   List<String>? get scopes {
-    final String? v = decode("scopes");
-    if (v!.isEmpty) {
+    final String v = decode("scopes");
+    if (v.isEmpty) {
       return null;
     }
     return v.split(" ").toList();
@@ -44,8 +46,10 @@ class CLIAuthScopeClient extends CLICommand
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     context = ManagedContext(dataModel, persistentStore);
 
-    final scopingClient = AuthClient.public(clientID!,
-        allowedScopes: scopes?.map((s) => AuthScope(s)).toList());
+    final scopingClient = AuthClient.public(
+      clientID!,
+      allowedScopes: scopes?.map((s) => AuthScope(s)).toList(),
+    );
 
     final query = Query<ManagedAuthClient>(context)
       ..where((o) => o.id).equalTo(clientID)

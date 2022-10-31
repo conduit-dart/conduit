@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors, avoid_dynamic_calls
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -17,11 +19,12 @@ void main() {
   group("Attribute identification", () {
     test("Identify top-level", () {
       expect(
-          context!
-              .entityForType(Parent)
-              .identifyAttribute((Parent? x) => x!.field)
-              .name,
-          "field");
+        context!
+            .entityForType(Parent)
+            .identifyAttribute((Parent? x) => x!.field)
+            .name,
+        "field",
+      );
     });
 
     test("Cannot select relationship", () {
@@ -56,19 +59,22 @@ void main() {
         fail("unreachable");
       } on ArgumentError catch (e) {
         expect(
-            e.toString(),
-            contains(
-                "Cannot access more than one property for this operation"));
+          e.toString(),
+          contains(
+            "Cannot access more than one property for this operation",
+          ),
+        );
       }
     });
 
     test("Can select document directly", () {
       expect(
-          context!
-              .entityForType(Parent)
-              .identifyAttribute((Parent? x) => x!.document)
-              .name,
-          "document");
+        context!
+            .entityForType(Parent)
+            .identifyAttribute((Parent? x) => x!.document)
+            .name,
+        "document",
+      );
     });
 
     test("Cannot select sub-document", () {
@@ -78,8 +84,10 @@ void main() {
             .identifyAttribute((Child? p) => p!.document!["foo"]);
         fail("unreachable");
       } on ArgumentError catch (e) {
-        expect(e.toString(),
-            contains("Cannot access subdocuments for this operation"));
+        expect(
+          e.toString(),
+          contains("Cannot access subdocuments for this operation"),
+        );
       }
     });
   });
@@ -87,20 +95,22 @@ void main() {
   group("Relationship identification", () {
     test("Identify top-level relationship", () {
       expect(
-          context!
-              .entityForType(Parent)
-              .identifyRelationship((Parent? x) => x!.children)
-              .name,
-          "children");
+        context!
+            .entityForType(Parent)
+            .identifyRelationship((Parent? x) => x!.children)
+            .name,
+        "children",
+      );
     });
 
     test("Identify top-level relationship to-one", () {
       expect(
-          context!
-              .entityForType(Child)
-              .identifyRelationship((Child? x) => x!.parent)
-              .name,
-          "parent");
+        context!
+            .entityForType(Child)
+            .identifyRelationship((Child? x) => x!.parent)
+            .name,
+        "parent",
+      );
     });
 
     test("Cannot select attribute", () {
@@ -135,9 +145,11 @@ void main() {
         fail("unreachable");
       } on ArgumentError catch (e) {
         expect(
-            e.toString(),
-            contains(
-                "Cannot access more than one property for this operation"));
+          e.toString(),
+          contains(
+            "Cannot access more than one property for this operation",
+          ),
+        );
       }
     });
   });
@@ -145,7 +157,8 @@ void main() {
   group("KeyPath identification", () {
     test("Identify multiple properties", () {
       final props = context!.entityForType(Parent).identifyProperties(
-          (Parent? x) => [x!.document, x.field, x.children]);
+            (Parent? x) => [x!.document, x.field, x.children],
+          );
       expect(props.length, 3);
       expect(props.any((k) => k.path.first!.name == "document"), true);
       expect(props.any((k) => k.path.first!.name == "field"), true);

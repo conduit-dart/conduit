@@ -1,12 +1,11 @@
-import 'package:conduit/src/db/managed/data_model_manager.dart';
+import 'package:conduit/src/db/managed/backing.dart';
+import 'package:conduit/src/db/managed/data_model_manager.dart' as mm;
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/query/query.dart';
+import 'package:conduit/src/http/serializable.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:meta/meta.dart';
-
-import '../../http/serializable.dart';
-import '../query/query.dart';
-import 'backing.dart';
-import 'managed.dart';
 
 /// Instances of this class provide storage for [ManagedObject]s.
 ///
@@ -69,7 +68,7 @@ abstract class ManagedObject<T> extends Serializable {
   static bool get shouldAutomaticallyDocument => false;
 
   /// The [ManagedEntity] this instance is described by.
-  ManagedEntity entity = ManagedDataModelManager.findEntity(T);
+  ManagedEntity entity = mm.findEntity(T);
 
   /// The persistent values of this object.
   ///
@@ -112,8 +111,9 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Removes multiple properties from [backing].
   void removePropertiesFromBackingMap(List<String> propertyNames) {
-    propertyNames
-        .forEach((propertyName) => backing.removeProperty(propertyName));
+    for (final propertyName in propertyNames) {
+      backing.removeProperty(propertyName);
+    }
   }
 
   /// Checks whether or not a property has been set in this instances' [backing].
@@ -214,7 +214,9 @@ abstract class ManagedObject<T> extends Serializable {
       if (property is ManagedAttributeDescription) {
         if (!property.isTransient) {
           backing.setValueForProperty(
-              property, property.convertFromPrimitiveValue(v));
+            property,
+            property.convertFromPrimitiveValue(v),
+          );
         } else {
           if (!property.transientStatus!.isAvailableAsInput) {
             throw ValidationException(["invalid input key '$key'"]);
@@ -230,7 +232,9 @@ abstract class ManagedObject<T> extends Serializable {
         }
       } else {
         backing.setValueForProperty(
-            property, property.convertFromPrimitiveValue(v));
+          property,
+          property.convertFromPrimitiveValue(v),
+        );
       }
     });
   }

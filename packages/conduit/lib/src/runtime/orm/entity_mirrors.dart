@@ -21,7 +21,8 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
   } else if (type.isSubtypeOf(reflectType(Map))) {
     if (!type.typeArguments.first.isAssignableTo(reflectType(String))) {
       throw UnsupportedError(
-          "Invalid type '${type.reflectedType}' for 'ManagedType'. Key is invalid; must be 'String'.");
+        "Invalid type '${type.reflectedType}' for 'ManagedType'. Key is invalid; must be 'String'.",
+      );
     }
     kind = ManagedPropertyType.map;
     elements = getManagedTypeFromType(type.typeArguments.last);
@@ -38,7 +39,8 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
     }
   } else {
     throw UnsupportedError(
-        "Invalid type '${type.reflectedType}' for 'ManagedType'.");
+      "Invalid type '${type.reflectedType}' for 'ManagedType'.",
+    );
   }
 
   return ManagedType(type.reflectedType, kind, elements, enumerationMap);
@@ -50,9 +52,11 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
 // we can simply fold this list so that the first ivar 'wins'.
 List<VariableMirror> instanceVariablesFromClass(ClassMirror classMirror) {
   return classHierarchyForClass(classMirror)
-      .expand((cm) => cm.declarations.values
-          .where(isInstanceVariableMirror)
-          .map((decl) => decl as VariableMirror))
+      .expand(
+    (cm) => cm.declarations.values
+        .where(isInstanceVariableMirror)
+        .map((decl) => decl as VariableMirror),
+  )
       .fold(<VariableMirror>[], (List<VariableMirror> acc, decl) {
     if (!acc.any((vm) => vm.simpleName == decl.simpleName)) {
       acc.add(decl);
@@ -66,7 +70,7 @@ bool classHasDefaultConstructor(ClassMirror type) {
   return type.declarations.values.any((dm) {
     return dm is MethodMirror &&
         dm.isConstructor &&
-        dm.constructorName == const Symbol('') &&
+        dm.constructorName == Symbol.empty &&
         dm.parameters.every((p) => p.isOptional == true);
   });
 }

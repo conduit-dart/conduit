@@ -15,7 +15,7 @@ void main() {
     final t =
         CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
     templateCli = await t.createTestProject(template: "db_and_auth");
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   setUp(() {

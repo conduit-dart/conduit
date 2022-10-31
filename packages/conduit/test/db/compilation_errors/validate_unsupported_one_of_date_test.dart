@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 

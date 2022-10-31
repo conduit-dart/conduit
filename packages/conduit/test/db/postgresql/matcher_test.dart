@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -10,7 +12,7 @@ void main() {
         await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
     var counter = 0;
     final names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
-    for (var name in names) {
+    for (final name in names) {
       final q = Query<TestModel>(context!)
         ..values.name = name
         ..values.email = "$counter@a.com";

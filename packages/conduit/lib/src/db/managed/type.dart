@@ -1,4 +1,4 @@
-import 'managed.dart';
+import 'package:conduit/src/db/managed/managed.dart';
 
 /// Possible data types for [ManagedEntity] attributes.
 enum ManagedPropertyType {
@@ -38,8 +38,11 @@ class ManagedType {
   ManagedType(this.type, this.kind, this.elements, this.enumerationMap);
 
   // ignore: prefer_constructors_over_static_methods
-  static ManagedType make<T>(ManagedPropertyType kind, ManagedType? elements,
-      Map<String, dynamic> enumerationMap) {
+  static ManagedType make<T>(
+    ManagedPropertyType kind,
+    ManagedType? elements,
+    Map<String, dynamic> enumerationMap,
+  ) {
     return ManagedType(T, kind, elements, enumerationMap);
   }
 

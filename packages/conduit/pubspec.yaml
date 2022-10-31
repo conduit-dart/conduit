@@ -5,8 +5,8 @@ description: A modern HTTP server application framework, ORM and OAuth2 provider
 environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
-  args: ^2.1.1
   analyzer: ^5.1.0
+  args: ^2.1.1
   collection: ^1.15.0
   conduit_common: ^3.2.7
   conduit_config: ^3.2.7
@@ -24,17 +24,35 @@ dependencies:
   pub_semver: ^2.0.0
   yaml: ^3.1.0
 dev_dependencies:
-  http: ^0.13.0
-  matcher: ^0.12.12
-  mockito: ^5.3.2
-  lints: ^2.0.1
-  test: ^1.21.6
-  fs_test_agent:
-    path: ../fs_test_agent
   conduit_common_test:
     path: ../common_test
   conduit_test:
     path: ../test_harness
+  fs_test_agent:
+    path: ../fs_test_agent
+  http: ^0.13.0
+  lint: ^1.5.3
+  lints: ^2.0.1
+  matcher: ^0.12.12
+  mockito: ^5.3.2
+  test: ^1.21.6
   web_socket_channel: ^2.2.0
 executables:
   conduit: conduit
+dependency_overrides:
+  conduit_codable:
+    path: ../codable
+  conduit_common:
+    path: ../common
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_open_api:
+    path: ../open_api
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime
+  conduit_test:
+    path: ../test_harness

@@ -14,37 +14,53 @@ abstract class ResourceControllerRuntime {
   ResourceControllerDocumenter? documenter;
 
   ResourceControllerOperation? getOperationRuntime(
-      String method, List<String?> pathVariables) {
+    String method,
+    List<String?> pathVariables,
+  ) {
     return operations.firstWhereOrNull(
-        (op) => op.isSuitableForRequest(method, pathVariables));
+      (op) => op.isSuitableForRequest(method, pathVariables),
+    );
   }
 
-  void applyRequestProperties(ResourceController untypedController,
-      ResourceControllerOperationInvocationArgs args);
+  void applyRequestProperties(
+    ResourceController untypedController,
+    ResourceControllerOperationInvocationArgs args,
+  );
 }
 
 abstract class ResourceControllerDocumenter {
   void documentComponents(ResourceController rc, APIDocumentContext context);
 
   List<APIParameter?> documentOperationParameters(
-      ResourceController rc, APIDocumentContext context, Operation? operation);
+    ResourceController rc,
+    APIDocumentContext context,
+    Operation? operation,
+  );
 
   APIRequestBody? documentOperationRequestBody(
-      ResourceController rc, APIDocumentContext context, Operation? operation);
+    ResourceController rc,
+    APIDocumentContext context,
+    Operation? operation,
+  );
 
-  Map<String, APIOperation> documentOperations(ResourceController rc,
-      APIDocumentContext context, String route, APIPath path);
+  Map<String, APIOperation> documentOperations(
+    ResourceController rc,
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  );
 }
 
 class ResourceControllerOperation {
-  ResourceControllerOperation(
-      {required this.scopes,
-      required this.pathVariables,
-      required this.httpMethod,
-      required this.dartMethodName,
-      required this.positionalParameters,
-      required this.namedParameters,
-      required this.invoker});
+  ResourceControllerOperation({
+    required this.scopes,
+    required this.pathVariables,
+    required this.httpMethod,
+    required this.dartMethodName,
+    required this.positionalParameters,
+    required this.namedParameters,
+    required this.invoker,
+  });
 
   final List<AuthScope>? scopes;
   final List<String> pathVariables;
@@ -54,15 +70,19 @@ class ResourceControllerOperation {
   final List<ResourceControllerParameter> positionalParameters;
   final List<ResourceControllerParameter> namedParameters;
 
-  final Future<Response?> Function(ResourceController resourceController,
-      ResourceControllerOperationInvocationArgs args) invoker;
+  final Future<Response?> Function(
+    ResourceController resourceController,
+    ResourceControllerOperationInvocationArgs args,
+  ) invoker;
 
   /// Checks if a request's method and path variables will select this binder.
   ///
   /// Note that [requestMethod] may be null; if this is the case, only
   /// path variables are compared.
   bool isSuitableForRequest(
-      String? requestMethod, List<String?> requestPathVariables) {
+    String? requestMethod,
+    List<String?> requestPathVariables,
+  ) {
     if (requestMethod != null && requestMethod.toUpperCase() != httpMethod) {
       return false;
     }
@@ -76,44 +96,46 @@ class ResourceControllerOperation {
 }
 
 class ResourceControllerParameter {
-  ResourceControllerParameter(
-      {required this.symbolName,
-      required this.name,
-      required this.location,
-      required this.isRequired,
-      required dynamic Function(dynamic input)? decoder,
-      required this.type,
-      required this.defaultValue,
-      required this.acceptFilter,
-      required this.ignoreFilter,
-      required this.requireFilter,
-      required this.rejectFilter})
-      : _decoder = decoder;
+  ResourceControllerParameter({
+    required this.symbolName,
+    required this.name,
+    required this.location,
+    required this.isRequired,
+    required dynamic Function(dynamic input)? decoder,
+    required this.type,
+    required this.defaultValue,
+    required this.acceptFilter,
+    required this.ignoreFilter,
+    required this.requireFilter,
+    required this.rejectFilter,
+  }) : _decoder = decoder;
 
   // ignore: prefer_constructors_over_static_methods
-  static ResourceControllerParameter make<T>(
-      {required String symbolName,
-      required String? name,
-      required BindingType location,
-      required bool isRequired,
-      required dynamic Function(dynamic input) decoder,
-      required dynamic defaultValue,
-      required List<String>? acceptFilter,
-      required List<String>? ignoreFilter,
-      required List<String>? requireFilter,
-      required List<String>? rejectFilter}) {
+  static ResourceControllerParameter make<T>({
+    required String symbolName,
+    required String? name,
+    required BindingType location,
+    required bool isRequired,
+    required dynamic Function(dynamic input) decoder,
+    required dynamic defaultValue,
+    required List<String>? acceptFilter,
+    required List<String>? ignoreFilter,
+    required List<String>? requireFilter,
+    required List<String>? rejectFilter,
+  }) {
     return ResourceControllerParameter(
-        symbolName: symbolName,
-        name: name,
-        location: location,
-        isRequired: isRequired,
-        decoder: decoder,
-        type: T,
-        defaultValue: defaultValue,
-        acceptFilter: acceptFilter,
-        ignoreFilter: ignoreFilter,
-        requireFilter: requireFilter,
-        rejectFilter: rejectFilter);
+      symbolName: symbolName,
+      name: name,
+      location: location,
+      isRequired: isRequired,
+      decoder: decoder,
+      type: T,
+      defaultValue: defaultValue,
+      acceptFilter: acceptFilter,
+      ignoreFilter: ignoreFilter,
+      requireFilter: requireFilter,
+      rejectFilter: rejectFilter,
+    );
   }
 
   final String symbolName;

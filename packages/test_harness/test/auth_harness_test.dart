@@ -155,11 +155,11 @@ class HarnessSubclass extends TestHarness<Channel>
 
   Future<User> createUser(
       {String username = "username", String password = "password"}) {
-    final salt = AuthUtility.generateRandomSalt();
+    final salt = generateRandomSalt();
     final user = User()
       ..username = username
       ..salt = salt
-      ..hashedPassword = AuthUtility.generatePasswordHash(password, salt);
+      ..hashedPassword = generatePasswordHash(password, salt);
     return Query.insertObject(context!, user);
   }
 }

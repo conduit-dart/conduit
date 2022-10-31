@@ -36,8 +36,10 @@ void main() {
     test(
         "Ask for multiple connections at once, yield one successful connection",
         () async {
-      final connections = await Future.wait([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-          .map((_) => persistentStore!.getDatabaseConnection()));
+      final connections = await Future.wait(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            .map((_) => persistentStore!.getDatabaseConnection()),
+      );
       final first = connections.first;
       expect(connections, everyElement(first));
     });
@@ -46,15 +48,19 @@ void main() {
         () async {
       final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       final values = await Future.wait(
-          expectedValues.map((i) => persistentStore!.execute("select $i")));
+        expectedValues.map((i) => persistentStore!.execute("select $i")),
+      );
 
       expect(
-          values,
-          expectedValues
-              .map((v) => [
-                    [v]
-                  ])
-              .toList());
+        values,
+        expectedValues
+            .map(
+              (v) => [
+                [v]
+              ],
+            )
+            .toList(),
+      );
     });
 
     test("Make multiple requests at once, all fail because db connect fails",
@@ -63,8 +69,11 @@ void main() {
           PostgresTestConfig().persistentStore(dbName: 'xyzxyznotadb');
 
       final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      final values = await Future.wait(expectedValues.map(
-          (i) => persistentStore!.execute("select $i").catchError((e) => e)));
+      final values = await Future.wait(
+        expectedValues.map(
+          (i) => persistentStore!.execute("select $i").catchError((e) => e),
+        ),
+      );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
     });
 
@@ -74,8 +83,11 @@ void main() {
       persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       var expectedValues = [1, 2, 3, 4, 5];
-      var values = await Future.wait(expectedValues.map(
-          (i) => persistentStore!.execute("select $i").catchError((e) => e)));
+      var values = await Future.wait(
+        expectedValues.map(
+          (i) => persistentStore!.execute("select $i").catchError((e) => e),
+        ),
+      );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
       proxy = SocketProxy(15433, 15432);
@@ -83,14 +95,18 @@ void main() {
 
       expectedValues = [5, 6, 7, 8, 9];
       values = await Future.wait(
-          expectedValues.map((i) => persistentStore!.execute("select $i")));
+        expectedValues.map((i) => persistentStore!.execute("select $i")),
+      );
       expect(
-          values,
-          expectedValues
-              .map((v) => [
-                    [v]
-                  ])
-              .toList());
+        values,
+        expectedValues
+            .map(
+              (v) => [
+                [v]
+              ],
+            )
+            .toList(),
+      );
     });
 
     test("Connect to bad db fails gracefully, can then be used again",
@@ -163,10 +179,12 @@ class SocketProxy {
 
   Future close() async {
     await _server?.close();
-    await Future.wait(_pairs.map((sp) async {
-      await sp.src.close();
-      await sp.dest.close();
-    }));
+    await Future.wait(
+      _pairs.map((sp) async {
+        await sp.src.close();
+        await sp.dest.close();
+      }),
+    );
   }
 }
 

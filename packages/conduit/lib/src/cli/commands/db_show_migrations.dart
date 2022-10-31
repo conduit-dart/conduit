@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:conduit/src/cli/command.dart';
@@ -16,7 +18,7 @@ class CLIDatabaseShowMigrations extends CLICommand
 
     print(" Version  | Path");
     print("----------|-----------");
-    print("$files");
+    print(files);
 
     return 0;
   }

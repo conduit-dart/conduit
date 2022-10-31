@@ -6,5 +6,22 @@ publish_to: none
 environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
-  conduit: ^3.2.8
-  conduit_common: ^3.2.7
+  conduit: ^3.2.6
+  conduit_common: ^3.2.5
+dependency_overrides:
+  conduit:
+    path: ../conduit
+  conduit_common:
+    path: ../common
+  conduit_open_api:
+    path: ../open_api
+  conduit_codable:
+    path: ../codable
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime

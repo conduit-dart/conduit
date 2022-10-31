@@ -1,6 +1,6 @@
 import 'dart:async';
-import '../application/application.dart';
-import '../db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
 
 /// An object that manages the cleanup of service objects when an application is stopped.
 ///
@@ -34,7 +34,7 @@ class ServiceRegistry {
   ///         new StreamController(), (c) => c.close());
   ///
   /// If [object] has already been registered, this method does nothing and [onClose] will only be invoked once.
-  T register<T>(T object, FutureOr onClose(T object)) {
+  T register<T>(T object, FutureOr Function(T object) onClose) {
     if (_registrations.any((r) => identical(r.object, object))) {
       return object;
     }

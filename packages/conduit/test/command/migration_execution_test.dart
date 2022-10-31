@@ -27,17 +27,18 @@ void main() {
     final t =
         CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
     cli = await t.createTestProject();
-    await cli.agent.getDependencies(offline: true);
+    await cli.agent.getDependencies();
   });
 
   setUp(() async {
     // create a working directory to store migrations in, inside terminal temporary directory
     store = PostgreSQLPersistentStore(
-        connectInfo.username,
-        connectInfo.password,
-        connectInfo.host,
-        connectInfo.port,
-        connectInfo.databaseName);
+      connectInfo.username,
+      connectInfo.password,
+      connectInfo.host,
+      connectInfo.port,
+      connectInfo.databaseName,
+    );
 
     if (cli.defaultMigrationDirectory.existsSync()) {
       cli.defaultMigrationDirectory.deleteSync(recursive: true);
@@ -52,9 +53,11 @@ void main() {
       "_testobject",
     ];
 
-    await Future.wait(tables.map((t) {
-      return store.execute("DROP TABLE IF EXISTS $t");
-    }));
+    await Future.wait(
+      tables.map((t) {
+        return store.execute("DROP TABLE IF EXISTS $t");
+      }),
+    );
     await store.close();
   });
 
@@ -160,7 +163,7 @@ void main() {
         cli.output.contains("Applied schema version 1 successfully"),
         isTrue,
       );
-      expect(cli.output, contains("relation \"_unknowntable\" does not exist"));
+      expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
       expect(await tableExists(store, store.versionTable.name), isFalse);
       expect(await tableExists(store, "_testobject"), isFalse);
@@ -183,7 +186,7 @@ void main() {
         isNonZero,
       );
 
-      expect(cli.output, contains("relation \"_unknowntable\" does not exist"));
+      expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
       final version = await store
           .execute("SELECT versionNumber FROM _conduit_version_pgsql");
@@ -209,7 +212,9 @@ void main() {
     () async {
       final StringBuffer buf = StringBuffer();
       expect(
-          await runMigrationCases(["Case81", "Case82"], log: buf), isNonZero);
+        await runMigrationCases(["Case81", "Case82"], log: buf),
+        isNonZero,
+      );
       expect(buf.toString(), contains("adding or altering"));
       expect(buf.toString(), contains("_testobject.name"));
       expect(buf.toString(), contains("unencodedInitialValue"));
@@ -267,22 +272,27 @@ List<MigrationSource> getOrderedTestMigrations(
       .map(migrationSourceFromClassDeclaration)
       .toList();
 
-  migrations.forEach((ms) {
+  for (final ms in migrations) {
     final index = names.indexOf(ms.originalName) + 1 + fromVersion;
     ms.uri = Uri.parse("$index.migration.dart");
-  });
+  }
 
   return migrations;
 }
 
-Future runMigrationCases(List<String?> migrationNames,
-    {int fromVersion = 0, StringSink? log}) async {
+Future runMigrationCases(
+  List<String?> migrationNames, {
+  int fromVersion = 0,
+  StringSink? log,
+}) async {
   final migs =
       getOrderedTestMigrations(migrationNames, fromVersion: fromVersion);
 
-  for (var mig in migs) {
-    final file = File.fromUri(cli.defaultMigrationDirectory.uri
-        .resolve("${mig.versionNumber}_name.migration.dart"));
+  for (final mig in migs) {
+    final file = File.fromUri(
+      cli.defaultMigrationDirectory.uri
+          .resolve("${mig.versionNumber}_name.migration.dart"),
+    );
     file.writeAsStringSync(
       "import 'dart:async';\nimport 'package:conduit/conduit.dart';\n${mig.source}",
     );
@@ -301,29 +311,23 @@ Future runMigrationCases(List<String?> migrationNames,
 class Case1 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -336,29 +340,23 @@ class Case1 extends Migration {
 class Case2 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -371,29 +369,23 @@ class Case2 extends Migration {
 class Case31 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -406,29 +398,26 @@ class Case31 extends Migration {
 class Case32 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_Foo",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn.relationship(
-          "testObject",
-          ManagedPropertyType.bigInteger,
-          relatedTableName: "_TestObject",
-          relatedColumnName: "id",
-          rule: DeleteRule.nullify,
-          isNullable: true,
-          isUnique: true,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_Foo",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn.relationship(
+            "testObject",
+            ManagedPropertyType.bigInteger,
+            relatedTableName: "_TestObject",
+            relatedColumnName: "id",
+            isUnique: true,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -441,29 +430,23 @@ class Case32 extends Migration {
 class Case41 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -476,26 +459,26 @@ class Case41 extends Migration {
 class Case42 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_Foo",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn.relationship("testObject", ManagedPropertyType.bigInteger,
+    database.createTable(
+      SchemaTable(
+        "_Foo",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn.relationship(
+            "testObject",
+            ManagedPropertyType.bigInteger,
             relatedTableName: "_TestObject",
             relatedColumnName: "id",
-            rule: DeleteRule.nullify,
-            isNullable: true,
-            isUnique: true),
-      ],
-    ));
+            isUnique: true,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -508,29 +491,23 @@ class Case42 extends Migration {
 class Case5 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
     database.deleteTable("_Foo");
   }
 
@@ -544,29 +521,23 @@ class Case5 extends Migration {
 class Case61 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -579,26 +550,26 @@ class Case61 extends Migration {
 class Case62 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_Foo",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn.relationship("testObject", ManagedPropertyType.bigInteger,
+    database.createTable(
+      SchemaTable(
+        "_Foo",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn.relationship(
+            "testObject",
+            ManagedPropertyType.bigInteger,
             relatedTableName: "_UnknownTable",
             relatedColumnName: "id",
-            rule: DeleteRule.nullify,
-            isNullable: true,
-            isUnique: true),
-      ],
-    ));
+            isUnique: true,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -612,17 +583,13 @@ class Case63 extends Migration {
   @override
   Future upgrade() async {
     database.addColumn(
-        "_TestObject",
-        SchemaColumn(
-          "name",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        unencodedInitialValue: "0");
+      "_TestObject",
+      SchemaColumn(
+        "name",
+        ManagedPropertyType.string,
+      ),
+      unencodedInitialValue: "0",
+    );
   }
 
   @override
@@ -635,29 +602,23 @@ class Case63 extends Migration {
 class Case7 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-        SchemaColumn(
-          "foo",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+          SchemaColumn(
+            "foo",
+            ManagedPropertyType.string,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -673,20 +634,19 @@ class Case7 extends Migration {
 class Case81 extends Migration {
   @override
   Future upgrade() async {
-    database.createTable(SchemaTable(
-      "_TestObject",
-      [
-        SchemaColumn(
-          "id",
-          ManagedPropertyType.bigInteger,
-          isPrimaryKey: true,
-          autoincrement: true,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ),
-      ],
-    ));
+    database.createTable(
+      SchemaTable(
+        "_TestObject",
+        [
+          SchemaColumn(
+            "id",
+            ManagedPropertyType.bigInteger,
+            isPrimaryKey: true,
+            autoincrement: true,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -702,16 +662,12 @@ class Case82 extends Migration {
   @override
   Future upgrade() async {
     database.addColumn(
-        "_TestObject",
-        SchemaColumn(
-          "name",
-          ManagedPropertyType.string,
-          isPrimaryKey: false,
-          autoincrement: false,
-          isIndexed: false,
-          isNullable: false,
-          isUnique: false,
-        ));
+      "_TestObject",
+      SchemaColumn(
+        "name",
+        ManagedPropertyType.string,
+      ),
+    );
   }
 
   @override

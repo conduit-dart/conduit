@@ -1,4 +1,6 @@
 // ignore: unnecessary_const
+// ignore_for_file: avoid_print, avoid_dynamic_calls
+
 @Timeout(Duration(seconds: 120))
 import 'dart:async';
 import 'dart:convert';
@@ -58,13 +60,17 @@ void main() {
       sleep(const Duration(milliseconds: 50));
 
       expect(
-          responses.any(
-              (http.Response resp) => resp.headers["server"] == "conduit/1"),
-          true);
+        responses.any(
+          (http.Response resp) => resp.headers["server"] == "conduit/1",
+        ),
+        true,
+      );
       expect(
-          responses.any(
-              (http.Response resp) => resp.headers["server"] == "conduit/2"),
-          true);
+        responses.any(
+          (http.Response resp) => resp.headers["server"] == "conduit/2",
+        ),
+        true,
+      );
     });
 
     test("Application stops", () async {

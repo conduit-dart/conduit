@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import "dart:core";
 
 import 'package:conduit/conduit.dart';

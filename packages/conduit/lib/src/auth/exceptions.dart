@@ -1,4 +1,4 @@
-import 'auth.dart';
+import 'package:conduit/src/auth/auth.dart';
 
 /// An exception thrown by [AuthServer].
 class AuthServerException implements Exception {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
@@ -15,9 +17,11 @@ void main() {
       expect(true, false);
     } on ManagedDataModelError catch (e) {
       expect(
-          e.message,
-          contains(
-              "Class '_NoPrimaryKey' doesn't declare a primary key property"));
+        e.message,
+        contains(
+          "Class '_NoPrimaryKey' doesn't declare a primary key property",
+        ),
+      );
     }
   });
 }

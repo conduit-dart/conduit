@@ -1,4 +1,4 @@
-import 'query.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 /// A description of a page of results to be applied to a [Query].
 ///

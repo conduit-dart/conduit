@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 

@@ -23,11 +23,14 @@ void main() {
             .resolve("conduit.key.pem")
             .toFilePath(windows: Platform.isWindows);
 
-      await app.start(numberOfInstances: 1);
+      await app.start();
 
       final completer = Completer<List<int>>();
-      final socket = await SecureSocket.connect("localhost", 8888,
-          onBadCertificate: (_) => true);
+      final socket = await SecureSocket.connect(
+        "localhost",
+        8888,
+        onBadCertificate: (_) => true,
+      );
       const request =
           "GET /r HTTP/1.1\r\nConnection: close\r\nHost: localhost\r\n\r\n";
       socket.add(request.codeUnits);

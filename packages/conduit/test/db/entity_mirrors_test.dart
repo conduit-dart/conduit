@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors, empty_catches, cast_nullable_to_non_nullable
+
 import 'dart:mirrors';
 
 import 'package:conduit/conduit.dart';
@@ -28,23 +30,19 @@ void main() {
     try {
       getManagedTypeFromType(typeOf(#invalidMapKey));
       fail("unreachable");
-      // ignore: empty_catches
     } on UnsupportedError {}
     try {
       getManagedTypeFromType(typeOf(#invalidMapValue));
       fail("unreachable");
-      // ignore: empty_catches
     } on UnsupportedError {}
     try {
       getManagedTypeFromType(typeOf(#invalidList));
       fail("unreachable");
-      // ignore: empty_catches
     } on UnsupportedError {}
 
     try {
       getManagedTypeFromType(typeOf(#uri));
       fail("unreachable");
-      // ignore: empty_catches
     } on UnsupportedError {}
   });
 }

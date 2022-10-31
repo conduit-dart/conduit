@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -57,7 +59,8 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         RuntimeContext.current.runtimes.iterable.whereType<ChannelRuntime>();
     if (channels.length != 1) {
       throw StateError(
-          "Zero or more than one ApplicationChannel subclass found: ${channels.map((c) => "'${c.channelType}'").join(", ")}");
+        "Zero or more than one ApplicationChannel subclass found: ${channels.map((c) => "'${c.channelType}'").join(", ")}",
+      );
     }
 
     try {
@@ -106,28 +109,30 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
       if (resolveRelativeUrls!) {
         final baseUri =
             document.servers?.first?.url ?? Uri.parse("http://localhost:8888");
-        document.components!.securitySchemes.values.forEach((scheme) {
-          scheme.flows?.values.forEach((flow) {
-            if (flow!.refreshURL != null && !flow.refreshURL!.isAbsolute) {
-              flow.refreshURL = baseUri.resolveUri(flow.refreshURL!);
+        for (final scheme in document.components!.securitySchemes.values) {
+          if (scheme.flows != null) {
+            for (final flow in scheme.flows!.values) {
+              if (flow!.refreshURL != null && !flow.refreshURL!.isAbsolute) {
+                flow.refreshURL = baseUri.resolveUri(flow.refreshURL!);
+              }
+              if (flow.authorizationURL != null &&
+                  !flow.authorizationURL!.isAbsolute) {
+                flow.authorizationURL =
+                    baseUri.resolveUri(flow.authorizationURL!);
+              }
+              if (flow.tokenURL != null && !flow.tokenURL!.isAbsolute) {
+                flow.tokenURL = baseUri.resolveUri(flow.tokenURL!);
+              }
             }
-            if (flow.authorizationURL != null &&
-                !flow.authorizationURL!.isAbsolute) {
-              flow.authorizationURL =
-                  baseUri.resolveUri(flow.authorizationURL!);
-            }
-            if (flow.tokenURL != null && !flow.tokenURL!.isAbsolute) {
-              flow.tokenURL = baseUri.resolveUri(flow.tokenURL!);
-            }
-          });
-        });
+          }
+        }
       }
 
       return document.asMap();
     } on ConfigurationException catch (e) {
       return {
         "error":
-            "There was an issue loading the configuration file '${configPath}': ${e.message}"
+            "There was an issue loading the configuration file '$configPath': ${e.message}"
       };
     } on ManagedDataModelError catch (e) {
       return {
@@ -148,7 +153,9 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
 }
 
 Future<Map<String, dynamic>> documentProject(
-    CLIProject project, CLIDocumentOptions options) async {
+  CLIProject project,
+  CLIDocumentOptions options,
+) async {
   final variables = <String, dynamic>{
     "pubspec": project.projectSpecificationFile.readAsStringSync(),
     "hosts": options.hosts.map((u) => u.toString()).toList(),
@@ -165,9 +172,11 @@ Future<Map<String, dynamic>> documentProject(
     "resolveRelativeUrls": options.resolveRelativeUrls
   };
 
-  final result = await IsolateExecutor.run(OpenAPIBuilder(variables),
-      packageConfigURI: project.packageConfigUri,
-      imports: OpenAPIBuilder.importsForPackage(project.libraryName));
+  final result = await IsolateExecutor.run(
+    OpenAPIBuilder(variables),
+    packageConfigURI: project.packageConfigUri,
+    imports: OpenAPIBuilder.importsForPackage(project.libraryName),
+  );
 
   if (result.containsKey("error")) {
     throw CLIException(result["error"] as String?);

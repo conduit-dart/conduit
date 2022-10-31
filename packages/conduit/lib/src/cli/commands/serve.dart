@@ -11,64 +11,82 @@ import 'package:conduit/src/cli/running_process.dart';
 class CLIServer extends CLICommand with CLIProject {
   late String derivedChannelType;
 
-  @Option("timeout",
-      help: "Number of seconds to wait to ensure startup succeeded.",
-      defaultsTo: "45")
+  @Option(
+    "timeout",
+    help: "Number of seconds to wait to ensure startup succeeded.",
+    defaultsTo: "45",
+  )
   int get startupTimeout => decode<int>("timeout");
 
-  @Option("ssl-key-path",
-      help:
-          "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.")
+  @Option(
+    "ssl-key-path",
+    help:
+        "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+  )
   String? get keyPath => decodeOptional("ssl-key-path");
 
-  @Option("ssl-certificate-path",
-      help:
-          "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.")
+  @Option(
+    "ssl-certificate-path",
+    help:
+        "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+  )
   String? get certificatePath => decodeOptional("ssl-certificate-path");
 
   @Flag("observe", help: "Enables Dart Observatory", defaultsTo: false)
   bool get shouldRunObservatory => decode("observe");
 
-  @Flag("ipv6-only",
-      help: "Limits listening to IPv6 connections only.",
-      negatable: false,
-      defaultsTo: false)
+  @Flag(
+    "ipv6-only",
+    help: "Limits listening to IPv6 connections only.",
+    negatable: false,
+    defaultsTo: false,
+  )
   bool get ipv6Only => decode("ipv6-only");
 
-  @Option("port",
-      abbr: "p",
-      help: "The port number to listen for HTTP requests on.",
-      defaultsTo: "8888")
+  @Option(
+    "port",
+    abbr: "p",
+    help: "The port number to listen for HTTP requests on.",
+    defaultsTo: "8888",
+  )
   int get port => decode<int>("port");
 
-  @Option("isolates",
-      abbr: "n",
-      help: "Number of isolates processing requests",
-      defaultsTo: "0")
+  @Option(
+    "isolates",
+    abbr: "n",
+    help: "Number of isolates processing requests",
+    defaultsTo: "0",
+  )
   int get numberOfIsolates => decode("isolates");
 
-  @Option("address",
-      abbr: "a",
-      help:
-          "The address to listen on. See HttpServer.bind for more details; this value is used as the String passed to InternetAddress.lookup."
-          " Using the default will listen on any address.",
-      defaultsTo: '0.0.0.0')
+  @Option(
+    "address",
+    abbr: "a",
+    help:
+        "The address to listen on. See HttpServer.bind for more details; this value is used as the String passed to InternetAddress.lookup."
+        " Using the default will listen on any address.",
+    defaultsTo: '0.0.0.0',
+  )
   String get address => decode("address");
 
-  @Option("channel",
-      abbr: "s",
-      help:
-          "The name of the ApplicationChannel subclass to be instantiated to serve requests. "
-          "By default, this subclass is determined by reflecting on the application library in the [directory] being served.")
+  @Option(
+    "channel",
+    abbr: "s",
+    help:
+        "The name of the ApplicationChannel subclass to be instantiated to serve requests. "
+        "By default, this subclass is determined by reflecting on the application library in the [directory] being served.",
+  )
   String get channelType =>
       decodeOptional("channel", orElse: () => derivedChannelType)!;
 
-  @Option("config-path",
-      abbr: "c",
-      help:
-          "The path to a configuration file. This File is available in the ApplicationOptions"
-          "for a ApplicationChannel to use to read application-specific configuration values. Relative paths are relative to [directory].",
-      defaultsTo: "config.yaml")
+  @Option(
+    "config-path",
+    abbr: "c",
+    help:
+        "The path to a configuration file. This File is available in the ApplicationOptions "
+        "for a ApplicationChannel to use to read application-specific configuration values. Relative paths are relative to [directory].",
+    defaultsTo: "config.yaml",
+  )
   File get configurationFile => File(decode("config-path")).absolute;
 
   ReceivePort? messagePort;
@@ -124,20 +142,26 @@ class CLIServer extends CLICommand with CLIProject {
 
     final generatedStartScript = createScriptSource(replacements);
     final dataUri = Uri.parse(
-        "data:application/dart;charset=utf-8,${Uri.encodeComponent(generatedStartScript)}");
+      "data:application/dart;charset=utf-8,${Uri.encodeComponent(generatedStartScript)}",
+    );
     final startupCompleter = Completer<SendPort>();
 
-    final isolate = await Isolate.spawnUri(dataUri, [], messagePort!.sendPort,
-        errorsAreFatal: true,
-        onError: errorPort!.sendPort,
-        packageConfig:
-            fileInProjectDirectory(".dart_tool/package_config.json").uri,
-        paused: true);
+    final isolate = await Isolate.spawnUri(
+      dataUri,
+      [],
+      messagePort!.sendPort,
+      onError: errorPort!.sendPort,
+      packageConfig:
+          fileInProjectDirectory(".dart_tool/package_config.json").uri,
+      paused: true,
+    );
 
     errorPort!.listen((msg) {
       if (msg is List) {
         startupCompleter.completeError(
-            msg.first as Object, StackTrace.fromString(msg.last as String));
+          msg.first as Object,
+          StackTrace.fromString(msg.last as String),
+        );
       }
     });
 
@@ -179,32 +203,34 @@ class CLIServer extends CLICommand with CLIProject {
   Future<void> _prepare() async {
     if (keyPath != null && certificatePath == null) {
       throw CLIException(
-          "Configuration error: --ssl-key-path was specified, but --ssl-certificate-path was not.");
+        "Configuration error: --ssl-key-path was specified, but --ssl-certificate-path was not.",
+      );
     }
     if (keyPath == null && certificatePath != null) {
       throw CLIException(
-          "Configuration error: --ssl-certificate-path was specified, but --ssl-key-path was not.");
+        "Configuration error: --ssl-certificate-path was specified, but --ssl-key-path was not.",
+      );
     }
 
     derivedChannelType = await getChannelName();
   }
 
   String createScriptSource(Map<String, dynamic> values) {
-    var addressString = "..address = \"___ADDRESS___\"";
+    var addressString = '..address = "___ADDRESS___"';
     if (values["ADDRESS"] == null) {
       addressString = "";
     }
     var configString =
-        "..configurationFilePath = r\"___CONFIGURATION_FILE_PATH___\"";
+        '..configurationFilePath = r"___CONFIGURATION_FILE_PATH___"';
     if (values["CONFIGURATION_FILE_PATH"] == null) {
       configString = "";
     }
     var certificateString =
-        "..certificateFilePath = r\"___SSL_CERTIFICATE_PATH___\"";
+        '..certificateFilePath = r"___SSL_CERTIFICATE_PATH___"';
     if (values["SSL_CERTIFICATE_PATH"] == null) {
       certificateString = "";
     }
-    var keyString = "..privateKeyFilePath = r\"___SSL_KEY_PATH___\"";
+    var keyString = '..privateKeyFilePath = r"___SSL_KEY_PATH___"';
     if (values["SSL_KEY_PATH"] == null) {
       keyString = "";
     }

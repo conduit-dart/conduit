@@ -55,8 +55,10 @@ void main() {
   });
 
   test("contentType property overrides any headers", () {
-    final response = Response.ok(null,
-        headers: {HttpHeaders.contentTypeHeader: "application/xml"});
+    final response = Response.ok(
+      null,
+      headers: {HttpHeaders.contentTypeHeader: "application/xml"},
+    );
     response.contentType = ContentType.json;
 
     expect(response.contentType, ContentType.json);
@@ -67,8 +69,10 @@ void main() {
   test(
       "Setting content type as String through headers returns same type from contentType",
       () {
-    final response = Response.ok(null,
-        headers: {HttpHeaders.contentTypeHeader: "application/xml"});
+    final response = Response.ok(
+      null,
+      headers: {HttpHeaders.contentTypeHeader: "application/xml"},
+    );
     expect(response.contentType!.primaryType, "application");
     expect(response.contentType!.subType, "xml");
   });
@@ -76,9 +80,12 @@ void main() {
   test(
       "Setting content type as ContentType through headers returns same type from contentType",
       () {
-    final response = Response.ok(null, headers: {
-      HttpHeaders.contentTypeHeader: ContentType("application", "xml")
-    });
+    final response = Response.ok(
+      null,
+      headers: {
+        HttpHeaders.contentTypeHeader: ContentType("application", "xml")
+      },
+    );
     expect(response.contentType!.primaryType, "application");
     expect(response.contentType!.subType, "xml");
   });

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -33,15 +35,19 @@ void main() {
       }
 
       expect(
-          waitForMessages({
+        waitForMessages(
+          {
             id1: [
               {"isolateID": postingIsolateID, "message": "msg1"}
             ],
             id2: [
               {"isolateID": postingIsolateID, "message": "msg1"}
             ],
-          }, butNeverReceiveIn: postingIsolateID),
-          completes);
+          },
+          butNeverReceiveIn: postingIsolateID,
+        ),
+        completes,
+      );
     });
 
     test("A message sent in prepare is received by all channels eventually",
@@ -52,21 +58,22 @@ void main() {
       await app.start(numberOfInstances: 3);
 
       expect(
-          waitForMessages({
-            1: [
-              {"isolateID": 2, "message": "init"},
-              {"isolateID": 3, "message": "init"}
-            ],
-            2: [
-              {"isolateID": 1, "message": "init"},
-              {"isolateID": 3, "message": "init"}
-            ],
-            3: [
-              {"isolateID": 2, "message": "init"},
-              {"isolateID": 1, "message": "init"}
-            ],
-          }),
-          completes);
+        waitForMessages({
+          1: [
+            {"isolateID": 2, "message": "init"},
+            {"isolateID": 3, "message": "init"}
+          ],
+          2: [
+            {"isolateID": 1, "message": "init"},
+            {"isolateID": 3, "message": "init"}
+          ],
+          3: [
+            {"isolateID": 2, "message": "init"},
+            {"isolateID": 1, "message": "init"}
+          ],
+        }),
+        completes,
+      );
     });
   });
 
@@ -95,7 +102,8 @@ void main() {
       }
 
       expect(
-          waitForMessages({
+        waitForMessages(
+          {
             id1: [
               {"isolateID": postingIsolateID, "message": "msg1"},
               {"isolateID": postingIsolateID, "message": "msg1"}
@@ -104,8 +112,11 @@ void main() {
               {"isolateID": postingIsolateID, "message": "msg1"},
               {"isolateID": postingIsolateID, "message": "msg1"}
             ],
-          }, butNeverReceiveIn: postingIsolateID),
-          completes);
+          },
+          butNeverReceiveIn: postingIsolateID,
+        ),
+        completes,
+      );
     });
   });
 
@@ -124,8 +135,10 @@ void main() {
       final errors = await getErrorsFromIsolates();
       final serverID = isolateIdentifierFromResponse(resp);
       expect(errors[serverID]!.length, 1);
-      expect(errors[serverID]!.first,
-          contains("Illegal argument in isolate message"));
+      expect(
+        errors[serverID]!.first,
+        contains("Illegal argument in isolate message"),
+      );
 
       // Make sure that we can still send messages from the isolate that encountered the error
       dynamic resendID;
@@ -136,24 +149,29 @@ void main() {
 
       final int expectedReceiverID = resendID == 1 ? 2 : 1;
       expect(
-          waitForMessages({
-            expectedReceiverID: [
-              {"isolateID": serverID, "message": "ok"}
-            ]
-          }),
-          completes);
+        waitForMessages({
+          expectedReceiverID: [
+            {"isolateID": serverID, "message": "ok"}
+          ]
+        }),
+        completes,
+      );
     });
   });
 }
 
 Future<http.Response> postMessage(String message) async {
-  return http.post(Uri.parse("http://localhost:8000/send"),
-      headers: {HttpHeaders.contentTypeHeader: ContentType.text.toString()},
-      body: message);
+  return http.post(
+    Uri.parse("http://localhost:8000/send"),
+    headers: {HttpHeaders.contentTypeHeader: ContentType.text.toString()},
+    body: message,
+  );
 }
 
-Future waitForMessages(Map<int, List<Map<String, dynamic>>> expectedMessages,
-    {int? butNeverReceiveIn}) async {
+Future waitForMessages(
+  Map<int, List<Map<String, dynamic>>> expectedMessages, {
+  int? butNeverReceiveIn,
+}) async {
   final response = await http.get(Uri.parse("http://localhost:8000/messages"));
   final respondingIsolateID = isolateIdentifierFromResponse(response);
   final messages = json.decode(response.body) as List<dynamic>?;
@@ -161,7 +179,7 @@ Future waitForMessages(Map<int, List<Map<String, dynamic>>> expectedMessages,
   if (expectedMessages.containsKey(respondingIsolateID)) {
     final remainingMessagesExpectedForIsolateID =
         expectedMessages[respondingIsolateID];
-    for (var message in messages!) {
+    for (final message in messages!) {
       final firstMatchedMessage =
           remainingMessagesExpectedForIsolateID!.firstWhereOrNull((msg) {
         return msg["isolateID"] == message["isolateID"] &&
@@ -184,8 +202,10 @@ Future waitForMessages(Map<int, List<Map<String, dynamic>>> expectedMessages,
   }
 
   if (expectedMessages.isNotEmpty) {
-    return waitForMessages(expectedMessages,
-        butNeverReceiveIn: butNeverReceiveIn);
+    return waitForMessages(
+      expectedMessages,
+      butNeverReceiveIn: butNeverReceiveIn,
+    );
   }
 
   return null;
@@ -231,18 +251,24 @@ class HubChannel extends ApplicationChannel {
 
   @override
   Future prepare() async {
-    messageHub.listen((event) {
-      messages.add(event as Map<String, dynamic>);
-    }, onError: (err) {
-      errors.add(err.toString());
-    });
+    messageHub.listen(
+      (event) {
+        messages.add(event as Map<String, dynamic>);
+      },
+      onError: (err) {
+        errors.add(err.toString());
+      },
+    );
 
     if (options!.context["multipleListeners"] == true) {
-      messageHub.listen((event) {
-        messages.add(event as Map<String, dynamic>);
-      }, onError: (err) {
-        errors.add(err.toString());
-      });
+      messageHub.listen(
+        (event) {
+          messages.add(event as Map<String, dynamic>);
+        },
+        onError: (err) {
+          errors.add(err.toString());
+        },
+      );
     }
 
     if (options!.context["sendIn"] == "prepare") {

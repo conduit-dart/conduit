@@ -117,8 +117,10 @@ void main() {
 
   test("Encoder that doesn't net out with List<int> safely fails", () async {
     CodecRegistry.defaultInstance.add(
-        ContentType("application", "baddata"), BadDataCodec(),
-        allowCompression: false);
+      ContentType("application", "baddata"),
+      BadDataCodec(),
+      allowCompression: false,
+    );
     final serverResponse = Response.ok("abcd")
       ..contentType = ContentType("application", "baddata");
     server = await bindAndRespondWith(serverResponse);
@@ -129,17 +131,21 @@ void main() {
 
   test("Encode with x-www-form-urlencoded", () {
     final codec = CodecRegistry.defaultInstance.codecForContentType(
-        ContentType("application", "x-www-form-urlencoded"))!;
+      ContentType("application", "x-www-form-urlencoded"),
+    )!;
 
     expect(codec.encode(<String, dynamic>{"k": "v"}), "k=v".codeUnits);
     expect(codec.encode(<String, dynamic>{"k": "v!v"}), "k=v%21v".codeUnits);
-    expect(codec.encode(<String, dynamic>{"k1": "v1", "k2": "v2"}),
-        "k1=v1&k2=v2".codeUnits);
     expect(
-        codec.encode(<String, dynamic>{
-          "k": ["v1", "v!"]
-        }),
-        "k=v1&k=v%21".codeUnits);
+      codec.encode(<String, dynamic>{"k1": "v1", "k2": "v2"}),
+      "k1=v1&k2=v2".codeUnits,
+    );
+    expect(
+      codec.encode(<String, dynamic>{
+        "k": ["v1", "v!"]
+      }),
+      "k=v1&k=v%21".codeUnits,
+    );
   });
 
   group("Compression", () {
@@ -150,17 +156,22 @@ void main() {
       server = await bindAndRespondWith(Response.ok({"a": "b"}));
 
       final acceptEncodingHeaders = ["gzip", "gzip, deflate", "deflate,gzip"];
-      for (var acceptEncoding in acceptEncodingHeaders) {
+      for (final acceptEncoding in acceptEncodingHeaders) {
         final req = await client.getUrl(Uri.parse("http://localhost:8888"));
         req.headers.clear();
         req.headers.add("accept-encoding", acceptEncoding);
         final resp = await req.close();
 
         expect(resp.statusCode, 200);
-        expect(resp.headers.contentType.toString(),
-            equals(ContentType.json.toString()));
-        expect(resp.headers.value("content-encoding"), "gzip",
-            reason: acceptEncoding);
+        expect(
+          resp.headers.contentType.toString(),
+          equals(ContentType.json.toString()),
+        );
+        expect(
+          resp.headers.value("content-encoding"),
+          "gzip",
+          reason: acceptEncoding,
+        );
         expect(resp.headers.value("content-length"), isNotNull);
         expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
       }
@@ -175,8 +186,10 @@ void main() {
       req.headers.clear();
       final resp = await req.close();
 
-      expect(resp.headers.contentType.toString(),
-          equals(ContentType.json.toString()));
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.json.toString()),
+      );
       expect(resp.headers.value("content-encoding"), isNull);
       expect(resp.headers.value("content-length"), isNotNull);
 
@@ -194,8 +207,10 @@ void main() {
       req.headers.add("accept-encoding", "deflate");
       final resp = await req.close();
 
-      expect(resp.headers.contentType.toString(),
-          equals(ContentType.json.toString()));
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.json.toString()),
+      );
       expect(resp.headers.value("content-encoding"), isNull);
 
       expect(resp.statusCode, 200);

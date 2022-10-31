@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls, avoid_setters_without_getters
+
 import 'dart:convert';
 
 import 'package:conduit/conduit.dart';
@@ -180,8 +182,10 @@ void main() {
     var user = User();
     user.readFromMap(washMap(map));
 
-    expect(user.dateCreated!.difference(DateTime.parse(dateString)),
-        Duration.zero);
+    expect(
+      user.dateCreated!.difference(DateTime.parse(dateString)),
+      Duration.zero,
+    );
 
     final remap = user.asMap();
     expect(remap["dateCreated"], dateString);
@@ -200,9 +204,11 @@ void main() {
       "Handles input of type num for double precision float properties of the model",
       () {
     final m = TransientTypeTest()
-      ..readFromMap(washMap({
-        "transientDouble": 30,
-      }));
+      ..readFromMap(
+        washMap({
+          "transientDouble": 30,
+        }),
+      );
 
     expect(m.transientDouble, 30.0);
   });
@@ -456,47 +462,56 @@ void main() {
     expect(m.containsKey("dateCreated"), true);
   });
 
-  test("DeepMap Transient Properties of all types can be read and returned",
-      () {
-    final m = (TransientTypeTest()
-          ..readFromMap(washMap({
-            "deepMap": {
-              "ok": {"ik1": 1, "ik2": 2}
-            }
-          })))
-        .asMap();
+  test(
+    "DeepMap Transient Properties of all types can be read and returned",
+    () {
+      final m = (TransientTypeTest()
+            ..readFromMap(
+              washMap({
+                "deepMap": {
+                  "ok": {"ik1": 1, "ik2": 2}
+                }
+              }),
+            ))
+          .asMap();
 
-    expect(m["deepMap"], {
-      "ok": {"ik1": 1, "ik2": 2}
-    });
-  }, skip: "NYI in AOT");
+      expect(m["deepMap"], {
+        "ok": {"ik1": 1, "ik2": 2}
+      });
+    },
+    skip: "NYI in AOT",
+  );
 
   test("Transient Properties of all types can be read and returned", () {
     const dateString = "2016-10-31T15:40:45+00:00";
     final m = (TransientTypeTest()
-          ..readFromMap(washMap({
-            "transientInt": 5,
-            "transientBigInt": 123456789,
-            "transientString": "lowercase string",
-            "transientDate": dateString,
-            "transientBool": true,
-            "transientDouble": 30.5,
-            "transientMap": {"key": "value", "anotherKey": "anotherValue"},
-            "transientList": [1, 2, 3, 4, 5],
-            "defaultList": [1, "foo"],
-            "defaultMap": {"key": "value"},
-            "deepList": [
-              {"str": "val"},
-              {"other": "otherval"}
-            ]
-          })))
+          ..readFromMap(
+            washMap({
+              "transientInt": 5,
+              "transientBigInt": 123456789,
+              "transientString": "lowercase string",
+              "transientDate": dateString,
+              "transientBool": true,
+              "transientDouble": 30.5,
+              "transientMap": {"key": "value", "anotherKey": "anotherValue"},
+              "transientList": [1, 2, 3, 4, 5],
+              "defaultList": [1, "foo"],
+              "defaultMap": {"key": "value"},
+              "deepList": [
+                {"str": "val"},
+                {"other": "otherval"}
+              ]
+            }),
+          ))
         .asMap();
 
     expect(m["transientInt"], 5);
     expect(m["transientBigInt"], 123456789);
     expect(m["transientString"], "lowercase string");
-    expect(m["transientDate"].difference(DateTime.parse(dateString)),
-        Duration.zero);
+    expect(
+      m["transientDate"].difference(DateTime.parse(dateString)),
+      Duration.zero,
+    );
     expect(m["transientBool"], true);
     expect(m["transientDouble"], 30.5);
     expect(m["transientList"], [1, 2, 3, 4, 5]);
@@ -576,13 +591,15 @@ void main() {
 
   test("Reading hasMany relationship from JSON succeeds", () {
     final u = User();
-    u.readFromMap(washMap({
-      "name": "Bob",
-      "id": 1,
-      "posts": [
-        {"text": "Hi", "id": 1}
-      ]
-    }));
+    u.readFromMap(
+      washMap({
+        "name": "Bob",
+        "id": 1,
+        "posts": [
+          {"text": "Hi", "id": 1}
+        ]
+      }),
+    );
     expect(u.posts!.length, 1);
     expect(u.posts![0].id, 1);
     expect(u.posts![0].text, "Hi");
@@ -616,19 +633,21 @@ void main() {
 
   test("readFromMap correctly invoked for relationships of relationships", () {
     final t = Top()
-      ..readFromMap(washMap({
-        "id": 1,
-        "middles": [
-          {
-            "id": 2,
-            "bottom": {"id": 3},
-            "bottoms": [
-              {"id": 4},
-              {"id": 5}
-            ]
-          }
-        ]
-      }));
+      ..readFromMap(
+        washMap({
+          "id": 1,
+          "middles": [
+            {
+              "id": 2,
+              "bottom": {"id": 3},
+              "bottoms": [
+                {"id": 4},
+                {"id": 5}
+              ]
+            }
+          ]
+        }),
+      );
 
     expect(t.id, 1);
     expect(t.middles.first.id, 2);
@@ -716,21 +735,25 @@ void main() {
   group("Document data type", () {
     test("Can read object into document data type from map", () {
       final o = DocumentTest();
-      o.readFromMap(washMap({
-        "document": {"key": "value"}
-      }));
+      o.readFromMap(
+        washMap({
+          "document": {"key": "value"}
+        }),
+      );
 
       expect(o.document.data, {"key": "value"});
     });
 
     test("Can read array into document data type from list", () {
       final o = DocumentTest();
-      o.readFromMap(washMap({
-        "document": [
-          {"key": "value"},
-          1
-        ]
-      }));
+      o.readFromMap(
+        washMap({
+          "document": [
+            {"key": "value"},
+            1
+          ]
+        }),
+      );
 
       expect(o.document.data, [
         {"key": "value"},
@@ -762,7 +785,7 @@ void main() {
 
   test("Can have constructor with only optional args", () {
     final dm = ManagedDataModel([DefaultConstructorHasOptionalArgs]);
-    final _ = ManagedContext(dm, null);
+    final _ = ManagedContext(dm, EmptyStore());
     final instance =
         dm.entityForType(DefaultConstructorHasOptionalArgs).instanceOf();
     expect(instance is DefaultConstructorHasOptionalArgs, true);
@@ -920,10 +943,10 @@ class TransientTypeTest extends ManagedObject<_TransientTypeTest>
 
     final returnMap = <String, String>{};
 
-    pairs.forEach((String pair) {
+    for (final pair in pairs) {
       final List<String> pairList = pair.split(":");
       returnMap[pairList[0]] = pairList[1];
-    });
+    }
 
     return returnMap;
   }

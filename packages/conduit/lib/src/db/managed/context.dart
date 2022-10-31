@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:conduit/src/application/channel.dart';
 import 'package:conduit/src/application/service_registry.dart';
-import 'package:conduit/src/db/managed/data_model_manager.dart';
+import 'package:conduit/src/db/managed/data_model_manager.dart' as mm;
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/query/query.dart';
 import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
-
-import '../persistent_store/persistent_store.dart';
-import '../query/query.dart';
-import 'managed.dart';
 
 /// A service object that handles connecting to and sending queries to a database.
 ///
@@ -47,7 +46,7 @@ class ManagedContext implements APIComponentDocumenter {
   /// A [Query] is sent to the database described by [persistentStore]. A [Query] may only be executed
   /// on this context if its type is in [dataModel].
   ManagedContext(this.dataModel, this.persistentStore) {
-    ManagedDataModelManager.add(dataModel!);
+    mm.add(dataModel!);
     ServiceRegistry.defaultInstance
         .register<ManagedContext>(this, (o) => o.close());
   }
@@ -58,7 +57,7 @@ class ManagedContext implements APIComponentDocumenter {
         dataModel = parentContext.dataModel;
 
   /// The persistent store that [Query]s on this context are executed through.
-  PersistentStore? persistentStore;
+  PersistentStore persistentStore;
 
   /// The data model containing the [ManagedEntity]s that describe the [ManagedObject]s this instance works with.
   final ManagedDataModel? dataModel;
@@ -98,9 +97,12 @@ class ManagedContext implements APIComponentDocumenter {
   ///            ...
   ///         });
   Future<T?> transaction<T>(
-      Future<T?> transactionBlock(ManagedContext transaction)) {
-    return persistentStore!
-        .transaction(ManagedContext.childOf(this), transactionBlock);
+    Future<T?> Function(ManagedContext transaction) transactionBlock,
+  ) {
+    return persistentStore.transaction(
+      ManagedContext.childOf(this),
+      transactionBlock,
+    );
   }
 
   /// Closes this context and release its underlying resources.
@@ -108,7 +110,7 @@ class ManagedContext implements APIComponentDocumenter {
   /// This method closes the connection to [persistentStore] and releases [dataModel].
   /// A context may not be reused once it has been closed.
   Future close() async {
-    await persistentStore?.close();
+    await persistentStore.close();
     dataModel?.release();
   }
 
@@ -142,7 +144,8 @@ class ManagedContext implements APIComponentDocumenter {
   /// If [T] cannot be inferred, an error is thrown. If [identifier] is not the same type as [T]'s primary key,
   /// null is returned.
   Future<T?> fetchObjectWithID<T extends ManagedObject>(
-      dynamic identifier) async {
+    dynamic identifier,
+  ) async {
     final entity = dataModel!.tryEntityForType(T);
     if (entity == null) {
       throw ArgumentError("Unknown entity '$T' in fetchObjectWithID. "

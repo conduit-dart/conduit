@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -26,8 +28,11 @@ class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
       final changeList = <String>[];
 
       final source = Migration.sourceForSchemaUpgrade(
-          inputSchema, schema, versionTag,
-          changeList: changeList);
+        inputSchema,
+        schema,
+        versionTag,
+        changeList: changeList,
+      );
       return {
         "source": source,
         "tablesEvaluated": dataModel.entities.map((e) => e.name).toList(),
@@ -59,13 +64,16 @@ class MigrationBuilderResult {
 }
 
 Future<MigrationBuilderResult> generateMigrationFileForProject(
-    CLIProject project, Schema initialSchema, int inputVersion) async {
+  CLIProject project,
+  Schema initialSchema,
+  int inputVersion,
+) async {
   final resultMap = await IsolateExecutor.run(
-      MigrationBuilderExecutable.input(initialSchema, inputVersion),
-      packageConfigURI: project.packageConfigUri,
-      imports:
-          MigrationBuilderExecutable.importsForPackage(project.packageName),
-      logHandler: project.displayProgress);
+    MigrationBuilderExecutable.input(initialSchema, inputVersion),
+    packageConfigURI: project.packageConfigUri,
+    imports: MigrationBuilderExecutable.importsForPackage(project.packageName),
+    logHandler: project.displayProgress,
+  );
 
   if (resultMap.containsKey("error")) {
     throw CLIException(resultMap["error"] as String?);

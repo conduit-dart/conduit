@@ -5,7 +5,9 @@ void main() {
   test("Cannot change type", () {
     final original = Schema([
       SchemaTable(
-          "_u", [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)]),
+        "_u",
+        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
+      ),
     ]);
 
     final dest = Schema.from(original)
@@ -23,17 +25,27 @@ void main() {
   test("Cannot change relatedTable", () {
     final original = Schema([
       SchemaTable(
-          "_u", [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)]),
+        "_u",
+        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
+      ),
       SchemaTable("_t", [
         SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
-        SchemaColumn.relationship("_u_id", ManagedType.integer,
-            relatedTableName: "_u", relatedColumnName: "id")
+        SchemaColumn.relationship(
+          "_u_id",
+          ManagedType.integer,
+          relatedTableName: "_u",
+          relatedColumnName: "id",
+        )
       ])
     ]);
 
     final dest = Schema.from(original)
-      ..addTable(SchemaTable(
-          "_v", [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)]))
+      ..addTable(
+        SchemaTable(
+          "_v",
+          [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
+        ),
+      )
       ..tableForName("_t")!.columnForName("_u_id")!.relatedTableName = "_v";
 
     try {
@@ -47,13 +59,19 @@ void main() {
   test("Cannot change primary key property", () {
     final original = Schema([
       SchemaTable(
-          "_u", [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)]),
+        "_u",
+        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
+      ),
     ]);
 
     final dest = Schema.from(original)
-      ..tableForName("_u")!.addColumn(SchemaColumn(
-          "replacement", ManagedPropertyType.integer,
-          isPrimaryKey: true))
+      ..tableForName("_u")!.addColumn(
+        SchemaColumn(
+          "replacement",
+          ManagedPropertyType.integer,
+          isPrimaryKey: true,
+        ),
+      )
       ..tableForName("_u")!.columnForName("id")!.isPrimaryKey = false;
 
     try {
@@ -69,31 +87,36 @@ void main() {
       SchemaTable("_u", [
         SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
         SchemaColumn("auto", ManagedType.integer, autoincrement: true),
-        SchemaColumn("not_auto", ManagedType.integer, autoincrement: false),
+        SchemaColumn("not_auto", ManagedType.integer),
       ]),
     ]);
 
     try {
       SchemaDifference(
-          original,
-          Schema.from(original)
-            ..tableForName("_u")!.columnForName("auto")!.autoincrement = false);
+        original,
+        Schema.from(original)
+          ..tableForName("_u")!.columnForName("auto")!.autoincrement = false,
+      );
       fail('unreachable');
     } on SchemaException catch (e) {
-      expect(e.toString(),
-          contains("Cannot change autoincrement behavior of '_u.auto'"));
+      expect(
+        e.toString(),
+        contains("Cannot change autoincrement behavior of '_u.auto'"),
+      );
     }
 
     try {
       SchemaDifference(
-          original,
-          Schema.from(original)
-            ..tableForName("_u")!.columnForName("not_auto")!.autoincrement =
-                true);
+        original,
+        Schema.from(original)
+          ..tableForName("_u")!.columnForName("not_auto")!.autoincrement = true,
+      );
       fail('unreachable');
     } on SchemaException catch (e) {
-      expect(e.toString(),
-          contains("Cannot change autoincrement behavior of '_u.not_auto'"));
+      expect(
+        e.toString(),
+        contains("Cannot change autoincrement behavior of '_u.not_auto'"),
+      );
     }
   });
 
@@ -107,10 +130,11 @@ void main() {
 
     try {
       SchemaDifference(
-          original,
-          Schema.from(original)
-            ..tableForName("_u")!.columnForName("i")!.type =
-                ManagedPropertyType.string);
+        original,
+        Schema.from(original)
+          ..tableForName("_u")!.columnForName("i")!.type =
+              ManagedPropertyType.string,
+      );
       fail('unreachable');
     } on SchemaException catch (e) {
       expect(e.toString(), contains("Cannot change type of '_u.i'"));

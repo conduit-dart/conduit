@@ -18,7 +18,7 @@ void main() {
     templateCli = await CLIClient(
       WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
     ).createTestProject();
-    await templateCli.agent.getDependencies(offline: true);
+    await templateCli.agent.getDependencies();
   });
 
   tearDownAll(() async {
@@ -39,10 +39,12 @@ void main() {
     await task.hasStarted;
 
     expect(
-        Directory.fromUri(projectUnderTestCli.agent.workingDirectory.uri
-                .resolve(".conduit_spec/"))
-            .existsSync(),
-        true);
+      Directory.fromUri(
+        projectUnderTestCli.agent.workingDirectory.uri
+            .resolve(".conduit_spec/"),
+      ).existsSync(),
+      true,
+    );
 
     final response = await http.get(Uri.parse("http://localhost:8111"));
     expect(response.body, contains("redoc spec-url='openapi.json'"));
@@ -51,9 +53,11 @@ void main() {
     task.process!.stop(0);
     expect(await task.exitCode, 0);
     expect(
-        Directory.fromUri(projectUnderTestCli.agent.workingDirectory.uri
-                .resolve(".conduit_spec/"))
-            .existsSync(),
-        false);
+      Directory.fromUri(
+        projectUnderTestCli.agent.workingDirectory.uri
+            .resolve(".conduit_spec/"),
+      ).existsSync(),
+      false,
+    );
   });
 }

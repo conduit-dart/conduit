@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/src/db/managed/data_model.dart';
 import 'package:conduit/src/db/managed/entity.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
@@ -22,7 +24,8 @@ class ValidatorBuilder {
     if (property.isRelationship) {
       if (property.relationshipType != ManagedRelationshipType.belongsTo) {
         throw ManagedDataModelError(
-            "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Validations cannot be performed on has-one or has-many relationships.");
+          "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Validations cannot be performed on has-one or has-many relationships.",
+        );
       }
     }
     Type? type;
@@ -30,7 +33,8 @@ class ValidatorBuilder {
     if (property.isRelationship) {
       if (property.relationshipType != ManagedRelationshipType.belongsTo) {
         throw ManagedDataModelError(
-            "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Validations cannot be performed on has-one or has-many relationships.");
+          "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Validations cannot be performed on has-one or has-many relationships.",
+        );
       }
 
       type = property.relatedProperty!.parent.instanceType.reflectedType;
@@ -41,7 +45,8 @@ class ValidatorBuilder {
       _state = metadata.compile(prop.type, relationshipInverseType: type);
     } on ValidateCompilationError catch (e) {
       throw ManagedDataModelError(
-          "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Reason: ${e.reason}");
+        "Invalid '@Validate' on property '${property.parent.name}.${property.name}'. Reason: ${e.reason}",
+      );
     }
   }
 

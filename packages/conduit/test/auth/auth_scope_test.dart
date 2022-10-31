@@ -152,17 +152,20 @@ void main() {
 
   test("Can contain all valid characters", () {
     final scope = AuthScope(
-        "ABC:DEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzz0123456789!#\$%&'`()*+,./;<=>?@[]^_{|}-");
+      "ABC:DEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzz0123456789!#\$%&'`()*+,./;<=>?@[]^_{|}-",
+    );
     expect(
-        scope.allows(
-            "ABC:DEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzz0123456789!#\$%&'`()*+,./;<=>?@[]^_{|}-"),
-        true);
+      scope.allows(
+        "ABC:DEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzz0123456789!#\$%&'`()*+,./;<=>?@[]^_{|}-",
+      ),
+      true,
+    );
     expect(scope.allows("ABC"), true);
   });
 
   test("Cannot contain invalid characters", () {
     try {
-      final _ = AuthScope("abdef\"xz");
+      final _ = AuthScope('abdef"xz');
       expect(true, false);
     } on FormatException catch (e) {
       expect(e.toString(), contains("Invalid authorization scope"));
@@ -255,65 +258,96 @@ void main() {
 
     test("Empty required always yields true", () {
       expect(
-          AuthScope.verify(
-              [], ["scope2", "scope1"].map((s) => AuthScope(s)).toList()),
-          true);
-      expect(AuthScope.verify([], ["scope1"].map((s) => AuthScope(s)).toList()),
-          true);
-      expect(AuthScope.verify([], <String>[].map((s) => AuthScope(s)).toList()),
-          true);
+        AuthScope.verify(
+          [],
+          ["scope2", "scope1"].map((s) => AuthScope(s)).toList(),
+        ),
+        true,
+      );
+      expect(
+        AuthScope.verify([], ["scope1"].map((s) => AuthScope(s)).toList()),
+        true,
+      );
+      expect(
+        AuthScope.verify([], <String>[].map((s) => AuthScope(s)).toList()),
+        true,
+      );
     });
 
     test("Null required always yields true", () {
       expect(
-          AuthScope.verify(
-              null, ["scope2", "scope1"].map((s) => AuthScope(s)).toList()),
-          true);
+        AuthScope.verify(
+          null,
+          ["scope2", "scope1"].map((s) => AuthScope(s)).toList(),
+        ),
+        true,
+      );
       expect(
-          AuthScope.verify(null, ["scope1"].map((s) => AuthScope(s)).toList()),
-          true);
+        AuthScope.verify(null, ["scope1"].map((s) => AuthScope(s)).toList()),
+        true,
+      );
       expect(
-          AuthScope.verify(null, <String>[].map((s) => AuthScope(s)).toList()),
-          true);
+        AuthScope.verify(null, <String>[].map((s) => AuthScope(s)).toList()),
+        true,
+      );
     });
   });
 
   group("Client behavior", () {
     test("Client collapses redundant scope because of nesting", () {
-      var c = AuthClient("a", "b", "c",
-          allowedScopes: [AuthScope("abc"), AuthScope("abc:def")]);
+      var c = AuthClient(
+        "a",
+        "b",
+        "c",
+        allowedScopes: [AuthScope("abc"), AuthScope("abc:def")],
+      );
       expect(c.allowedScopes!.length, 1);
       expect(c.allowedScopes!.first.isExactly("abc"), true);
 
-      c = AuthClient("a", "b", "c", allowedScopes: [
-        AuthScope("abc"),
-        AuthScope("abc:def"),
-        AuthScope("abc:def:xyz"),
-        AuthScope("cba"),
-        AuthScope("cba:foo")
-      ]);
+      c = AuthClient(
+        "a",
+        "b",
+        "c",
+        allowedScopes: [
+          AuthScope("abc"),
+          AuthScope("abc:def"),
+          AuthScope("abc:def:xyz"),
+          AuthScope("cba"),
+          AuthScope("cba:foo")
+        ],
+      );
       expect(c.allowedScopes!.length, 2);
       expect(c.allowedScopes!.any((s) => s.isExactly("abc")), true);
       expect(c.allowedScopes!.any((s) => s.isExactly("cba")), true);
     });
 
     test("Client collapses redundant scope because of modifier", () {
-      var c = AuthClient("a", "b", "c", allowedScopes: [
-        AuthScope("abc"),
-        AuthScope("abc:def"),
-        AuthScope("abc.readonly"),
-        AuthScope("abc:def.readonly")
-      ]);
+      var c = AuthClient(
+        "a",
+        "b",
+        "c",
+        allowedScopes: [
+          AuthScope("abc"),
+          AuthScope("abc:def"),
+          AuthScope("abc.readonly"),
+          AuthScope("abc:def.readonly")
+        ],
+      );
       expect(c.allowedScopes!.length, 1);
       expect(c.allowedScopes!.first.isExactly("abc"), true);
 
-      c = AuthClient("a", "b", "c", allowedScopes: [
-        AuthScope("abc"),
-        AuthScope("abc:def"),
-        AuthScope("abc:def:xyz.readonly"),
-        AuthScope("cba"),
-        AuthScope("cba:foo.readonly")
-      ]);
+      c = AuthClient(
+        "a",
+        "b",
+        "c",
+        allowedScopes: [
+          AuthScope("abc"),
+          AuthScope("abc:def"),
+          AuthScope("abc:def:xyz.readonly"),
+          AuthScope("cba"),
+          AuthScope("cba:foo.readonly")
+        ],
+      );
       expect(c.allowedScopes!.length, 2);
       expect(c.allowedScopes!.any((s) => s.isExactly("abc")), true);
       expect(c.allowedScopes!.any((s) => s.isExactly("cba")), true);

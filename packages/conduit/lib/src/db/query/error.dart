@@ -1,24 +1,31 @@
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/query/query.dart';
 import 'package:conduit/src/http/http.dart';
-
-import '../persistent_store/persistent_store.dart';
-import 'query.dart';
 
 /// An exception describing an issue with a query.
 ///
 /// A suggested HTTP status code based on the type of exception will always be available.
 class QueryException<T> implements HandlerException {
-  QueryException(this.event,
-      {this.message, this.underlyingException, this.offendingItems});
+  QueryException(
+    this.event, {
+    this.message,
+    this.underlyingException,
+    this.offendingItems,
+  });
 
-  QueryException.input(this.message, this.offendingItems,
-      {this.underlyingException})
-      : event = QueryExceptionEvent.input;
+  QueryException.input(
+    this.message,
+    this.offendingItems, {
+    this.underlyingException,
+  }) : event = QueryExceptionEvent.input;
   QueryException.transport(this.message, {this.underlyingException})
       : event = QueryExceptionEvent.transport,
         offendingItems = null;
-  QueryException.conflict(this.message, this.offendingItems,
-      {this.underlyingException})
-      : event = QueryExceptionEvent.conflict;
+  QueryException.conflict(
+    this.message,
+    this.offendingItems, {
+    this.underlyingException,
+  }) : event = QueryExceptionEvent.conflict;
 
   final String? message;
 
@@ -36,7 +43,9 @@ class QueryException<T> implements HandlerException {
   }
 
   static Map<String, String> _getBody(
-      String? message, List<String>? offendingItems) {
+    String? message,
+    List<String>? offendingItems,
+  ) {
     final body = {
       "error": message ?? "query failed",
     };

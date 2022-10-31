@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -72,9 +74,11 @@ void main() {
     ]);
 
     expect(
-        addresses.every((addr) =>
-            addresses.where((testAddr) => addr == testAddr).length == 1),
-        true);
+      addresses.every(
+        (addr) => addresses.where((testAddr) => addr == testAddr).length == 1,
+      ),
+      true,
+    );
   });
 
   test("A Recyclable instance reuses recycleState", () async {
@@ -148,18 +152,24 @@ void main() {
     ]);
 
     expect(
-        responses.every(
-            (b) => responses.every((ib) => ib["hashCode"] == b["hashCode"])),
-        true);
+      responses.every(
+        (b) => responses.every((ib) => ib["hashCode"] == b["hashCode"]),
+      ),
+      true,
+    );
     expect(responses.every((b) => b["middleware-state"] == "state"), true);
     expect(
-        responses.every((b) =>
+      responses.every(
+        (b) =>
             responses
                 .where(
-                    (ib) => ib["middleware-address"] == b["middleware-address"])
+                  (ib) => ib["middleware-address"] == b["middleware-address"],
+                )
                 .length ==
-            1),
-        true);
+            1,
+      ),
+      true,
+    );
 
     expect(MiddlewareRecyclable._stateCount, 1);
   });
@@ -191,20 +201,27 @@ void main() {
     ]);
 
     expect(
-        responses.every((b) =>
+      responses.every(
+        (b) =>
             responses.where((ib) => ib["hashCode"] == b["hashCode"]).length ==
-            1),
-        true);
+            1,
+      ),
+      true,
+    );
     expect(responses.every((b) => b["state"] == "state"), true);
     expect(responses.every((b) => b["middleware-state"] == "state"), true);
     expect(
-        responses.every((b) =>
+      responses.every(
+        (b) =>
             responses
                 .where(
-                    (ib) => ib["middleware-address"] == b["middleware-address"])
+                  (ib) => ib["middleware-address"] == b["middleware-address"],
+                )
                 .length ==
-            1),
-        true);
+            1,
+      ),
+      true,
+    );
 
     expect(DefaultRecyclable._stateCount, 1);
     expect(MiddlewareRecyclable._stateCount, 1);

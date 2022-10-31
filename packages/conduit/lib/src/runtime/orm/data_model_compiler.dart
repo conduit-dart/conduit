@@ -13,15 +13,15 @@ class DataModelCompiler {
         .map((c) => c.reflectedType);
 
     _builders = instanceTypes.map((t) => EntityBuilder(t)).toList();
-    _builders!.forEach((b) {
+    for (final b in _builders!) {
       b.compile(_builders);
-    });
+    }
     _validate();
 
-    _builders!.forEach((b) {
+    for (final b in _builders!) {
       b.link(_builders!.map((eb) => eb.entity).toList());
       m[b.entity.instanceType.toString()] = b.runtime;
-    });
+    }
 
     return m;
   }
@@ -30,18 +30,22 @@ class DataModelCompiler {
 
   void _validate() {
     // Check for dupe tables
-    _builders!.forEach((builder) {
+    for (final builder in _builders!) {
       final withSameName = _builders!
           .where((eb) => eb.name == builder.name)
           .map((eb) => eb.instanceTypeName)
           .toList();
       if (withSameName.length > 1) {
         throw ManagedDataModelErrorImpl.duplicateTables(
-            builder.name, withSameName);
+          builder.name,
+          withSameName,
+        );
       }
-    });
+    }
 
-    _builders!.forEach((b) => b.validate(_builders));
+    for (final b in _builders!) {
+      b.validate(_builders);
+    }
   }
 
   static bool _isTypeManagedObjectSubclass(ClassMirror mirror) {
@@ -84,7 +88,9 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.invalidType(
-      Symbol tableSymbol, Symbol propertySymbol) {
+    Symbol tableSymbol,
+    Symbol propertySymbol,
+  ) {
     return ManagedDataModelErrorImpl(
         "Property '${_getName(propertySymbol)}' on "
         "'${_getName(tableSymbol)}'"
@@ -95,7 +101,9 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.invalidMetadata(
-      String tableName, Symbol property) {
+    String tableName,
+    Symbol property,
+  ) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
         "'$tableName' "
         "cannot both have 'Column' and 'Relate' metadata. "
@@ -104,27 +112,30 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.missingInverse(
-      String tableName,
-      String instanceName,
-      Symbol property,
-      String destinationTableName,
-      Symbol? expectedProperty) {
+    String tableName,
+    String instanceName,
+    Symbol property,
+    String destinationTableName,
+    Symbol? expectedProperty,
+  ) {
     var expectedString = "Some property";
     if (expectedProperty != null) {
       expectedString = "'${_getName(expectedProperty)}'";
     }
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' has "
+        "'$tableName' has "
         "no inverse property. Every relationship must have an inverse. "
         "$expectedString on "
-        "'${destinationTableName}'"
+        "'$destinationTableName'"
         "is supposed to exist, and it should be either a "
-        "'${instanceName}' or"
-        "'ManagedSet<${instanceName}>'.");
+        "'$instanceName' or "
+        "'ManagedSet<$instanceName>'.");
   }
 
   factory ManagedDataModelErrorImpl.incompatibleDeleteRule(
-      String tableName, Symbol property) {
+    String tableName,
+    Symbol property,
+  ) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
         "'$tableName' "
         "has both 'RelationshipDeleteRule.nullify' and 'isRequired' equal to true, which "
@@ -132,41 +143,52 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
         "can't be null and 'nullify' means the column has to be null.");
   }
 
-  factory ManagedDataModelErrorImpl.dualMetadata(String tableName,
-      Symbol property, String destinationTableName, String? inverseProperty) {
+  factory ManagedDataModelErrorImpl.dualMetadata(
+    String tableName,
+    Symbol property,
+    String destinationTableName,
+    String? inverseProperty,
+  ) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' "
-        "on '${tableName}' "
-        "and '${inverseProperty}' "
-        "on '${destinationTableName}' "
+        "on '$tableName' "
+        "and '$inverseProperty' "
+        "on '$destinationTableName' "
         "both have 'Relate' metadata, but only one can. "
         "The property with 'Relate' metadata is a foreign key column "
         "in the database.");
   }
 
   factory ManagedDataModelErrorImpl.duplicateInverse(
-      String tableName, String? inverseName, List<String?> conflictingNames) {
+    String tableName,
+    String? inverseName,
+    List<String?> conflictingNames,
+  ) {
     return ManagedDataModelErrorImpl(
-        "Entity '${tableName}' has multiple relationship "
+        "Entity '$tableName' has multiple relationship "
         "properties that claim to be the inverse of '$inverseName'. A property may "
         "only have one inverse. The claiming properties are: ${conflictingNames.join(", ")}.");
   }
 
   factory ManagedDataModelErrorImpl.noDestinationEntity(
-      String tableName, Symbol property, Symbol expectedType) {
+    String tableName,
+    Symbol property,
+    Symbol expectedType,
+  ) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' expects that there is a subclass "
+        "'$tableName' expects that there is a subclass "
         "of 'ManagedObject' named '${_getName(expectedType)}', "
         "but there isn't one. If you have declared one - and you really checked "
         "hard for typos - make sure the file it is declared in is imported appropriately.");
   }
 
   factory ManagedDataModelErrorImpl.multipleDestinationEntities(
-      String tableName,
-      Symbol property,
-      List<String> possibleEntities,
-      Symbol expected) {
+    String tableName,
+    Symbol property,
+    List<String> possibleEntities,
+    Symbol expected,
+  ) {
     return ManagedDataModelErrorImpl("Relationship '${_getName(property)}' on "
-        "'${tableName}' expects that just one "
+        "'$tableName' expects that just one "
         "'ManagedObject' subclass uses a table definition that extends "
         "'${_getName(expected)}. But the following implementations were found: "
         "${possibleEntities.join(",")}. That's just "
@@ -174,10 +196,12 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.invalidTransient(
-      ManagedEntity entity, Symbol property) {
+    ManagedEntity entity,
+    Symbol property,
+  ) {
     return ManagedDataModelErrorImpl(
         "Transient property '${_getName(property)}' on "
-        "'${_getInstanceClassName(entity)}' declares that"
+        "'${_getInstanceClassName(entity)}' declares that "
         "it is transient, but it it has a mismatch. A transient "
         "getter method must have 'isAvailableAsOutput' and a transient "
         "setter method must have 'isAvailableAsInput'.");
@@ -191,7 +215,9 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.duplicateTables(
-      String? tableName, List<String> instanceTypes) {
+    String? tableName,
+    List<String> instanceTypes,
+  ) {
     return ManagedDataModelErrorImpl(
         "Entities ${instanceTypes.map((i) => "'$i'").join(",")} "
         "have the same table name: '$tableName'. Rename these "
@@ -199,28 +225,36 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.conflictingTypes(
-      ManagedEntity entity, String propertyName) {
+    ManagedEntity entity,
+    String propertyName,
+  ) {
     return ManagedDataModelErrorImpl(
         "The entity '${_getInstanceClassName(entity)}' declares two accessors named "
         "'$propertyName', but they have conflicting types.");
   }
 
   factory ManagedDataModelErrorImpl.invalidValidator(
-      ManagedEntity entity, String property, String reason) {
+    ManagedEntity entity,
+    String property,
+    String reason,
+  ) {
     return ManagedDataModelErrorImpl(
         "Type '${_getPersistentClassName(entity)}' "
         "has invalid validator for property '$property'. Reason: $reason");
   }
 
   factory ManagedDataModelErrorImpl.emptyEntityUniqueProperties(
-      String tableName) {
+    String tableName,
+  ) {
     return ManagedDataModelErrorImpl("Type '$tableName' "
         "has empty set for unique 'Table'. Must contain two or "
         "more attributes (or belongs-to relationship properties).");
   }
 
   factory ManagedDataModelErrorImpl.singleEntityUniqueProperty(
-      String tableName, Symbol property) {
+    String tableName,
+    Symbol property,
+  ) {
     return ManagedDataModelErrorImpl("Type '$tableName' "
         "has only one attribute for unique 'Table'. Must contain two or "
         "more attributes (or belongs-to relationship properties). To make this property unique, "
@@ -228,15 +262,19 @@ class ManagedDataModelErrorImpl extends ManagedDataModelError {
   }
 
   factory ManagedDataModelErrorImpl.invalidEntityUniqueProperty(
-      String tableName, Symbol property) {
-    return ManagedDataModelErrorImpl("Type '${tableName}' "
+    String tableName,
+    Symbol property,
+  ) {
+    return ManagedDataModelErrorImpl("Type '$tableName' "
         "declares '${MirrorSystem.getName(property)}' as unique in 'Table', "
         "but '${MirrorSystem.getName(property)}' is not a property of this type.");
   }
 
   factory ManagedDataModelErrorImpl.relationshipEntityUniqueProperty(
-      String tableName, Symbol property) {
-    return ManagedDataModelErrorImpl("Type '${tableName}' "
+    String tableName,
+    Symbol property,
+  ) {
+    return ManagedDataModelErrorImpl("Type '$tableName' "
         "declares '${_getName(property)}' as unique in 'Table'. This property cannot "
         "be used to make an instance unique; only attributes or belongs-to relationships may used "
         "in this way.");

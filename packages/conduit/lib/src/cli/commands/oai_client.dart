@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -18,10 +20,12 @@ class CLIDocumentClient extends CLICommand with CLIProject, CLIDocumentOptions {
     file.writeAsStringSync(source);
 
     displayInfo(
-        "OpenAPI client for application '${doc["info"]["title"]}' successfully created.",
-        color: CLIColor.boldGreen);
+      "OpenAPI client for application '${doc["info"]["title"]}' successfully created.",
+      color: CLIColor.boldGreen,
+    );
     displayProgress(
-        "Configured to connect to '${doc["servers"].first["url"]}'.");
+      "Configured to connect to '${doc["servers"].first["url"]}'.",
+    );
     displayProgress("Open '${file.absolute.path}' in your browser.");
 
     return 0;

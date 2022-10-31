@@ -1,7 +1,6 @@
 import 'package:conduit/src/db/managed/key_path.dart';
+import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
-
-import 'managed.dart';
 
 final ArgumentError _invalidValueConstruction = ArgumentError(
     "Invalid property access when building 'Query.values'. "
@@ -24,7 +23,8 @@ class ManagedValueBacking extends ManagedBacking {
     if (value != null) {
       if (!property.isAssignableWith(value)) {
         throw ValidationException(
-            ["invalid input value for '${property.name}'"]);
+          ["invalid input value for '${property.name}'"],
+        );
       }
     }
 
@@ -35,7 +35,9 @@ class ManagedValueBacking extends ManagedBacking {
 class ManagedForeignKeyBuilderBacking extends ManagedBacking {
   ManagedForeignKeyBuilderBacking();
   ManagedForeignKeyBuilderBacking.from(
-      ManagedEntity entity, ManagedBacking backing) {
+    ManagedEntity entity,
+    ManagedBacking backing,
+  ) {
     if (backing.contents!.containsKey(entity.primaryKey)) {
       contents[entity.primaryKey] = backing.contents![entity.primaryKey];
     }
@@ -69,14 +71,16 @@ class ManagedBuilderBacking extends ManagedBacking {
   ManagedBuilderBacking.from(ManagedEntity entity, ManagedBacking original) {
     if (original is! ManagedValueBacking) {
       throw ArgumentError(
-          "Invalid 'ManagedObject' assignment to 'Query.values'. Object must be created through default constructor.");
+        "Invalid 'ManagedObject' assignment to 'Query.values'. Object must be created through default constructor.",
+      );
     }
 
     original.contents.forEach((key, value) {
       final prop = entity.properties[key];
       if (prop == null) {
         throw ArgumentError(
-            "Invalid 'ManagedObject' assignment to 'Query.values'. Property '$key' does not exist for '${entity.name}'.");
+          "Invalid 'ManagedObject' assignment to 'Query.values'. Property '$key' does not exist for '${entity.name}'.",
+        );
       }
 
       if (prop is ManagedRelationshipDescription) {
@@ -120,7 +124,9 @@ class ManagedBuilderBacking extends ManagedBacking {
       } else {
         final original = value as ManagedObject;
         final replacementBacking = ManagedForeignKeyBuilderBacking.from(
-            original.entity, original.backing);
+          original.entity,
+          original.backing,
+        );
         final replacement =
             original.entity.instanceOf(backing: replacementBacking);
         contents[property.name] = replacement;

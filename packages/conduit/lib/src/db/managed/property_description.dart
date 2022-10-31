@@ -1,11 +1,10 @@
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/managed/relationship_type.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/query/query.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
-
-import '../persistent_store/persistent_store.dart';
-import '../query/query.dart';
-import 'managed.dart';
-import 'relationship_type.dart';
 
 /// Contains database column information and metadata for a property of a [ManagedObject] object.
 ///
@@ -14,20 +13,24 @@ import 'relationship_type.dart';
 /// and [ManagedAttributeDescription].
 abstract class ManagedPropertyDescription {
   ManagedPropertyDescription(
-      this.entity, this.name, this.type, this.declaredType,
-      {bool unique = false,
-      bool indexed = false,
-      bool nullable = false,
-      bool includedInDefaultResultSet = true,
-      bool autoincrement = false,
-      List<ManagedValidator?> validators = const []})
-      : isUnique = unique,
+    this.entity,
+    this.name,
+    this.type,
+    this.declaredType, {
+    bool unique = false,
+    bool indexed = false,
+    bool nullable = false,
+    bool includedInDefaultResultSet = true,
+    this.autoincrement = false,
+    List<ManagedValidator?> validators = const [],
+  })  : isUnique = unique,
         isIndexed = indexed,
         isNullable = nullable,
         isIncludedInDefaultResultSet = includedInDefaultResultSet,
-        autoincrement = autoincrement,
         _validators = validators {
-    _validators.forEach((v) => v!.property = this);
+    for (final v in _validators) {
+      v!.property = this;
+    }
   }
 
   /// A reference to the [ManagedEntity] that contains this property.
@@ -124,10 +127,12 @@ abstract class ManagedPropertyDescription {
         return APISchemaObject.boolean();
       case ManagedPropertyType.list:
         return APISchemaObject.array(
-            ofSchema: _typedSchemaObject(type.elements!));
+          ofSchema: _typedSchemaObject(type.elements!),
+        );
       case ManagedPropertyType.map:
         return APISchemaObject.map(
-            ofSchema: _typedSchemaObject(type.elements!));
+          ofSchema: _typedSchemaObject(type.elements!),
+        );
       case ManagedPropertyType.document:
         return APISchemaObject.freeForm();
     }
@@ -148,61 +153,84 @@ abstract class ManagedPropertyDescription {
 /// adds two properties to [ManagedPropertyDescription] that are only valid for non-relationship types, [isPrimaryKey] and [defaultValue].
 class ManagedAttributeDescription extends ManagedPropertyDescription {
   ManagedAttributeDescription(
-      ManagedEntity entity, String name, ManagedType type, Type? declaredType,
-      {Serialize? transientStatus,
-      bool primaryKey = false,
-      String? defaultValue,
-      bool unique = false,
-      bool indexed = false,
-      bool nullable = false,
-      bool includedInDefaultResultSet = true,
-      bool autoincrement = false,
-      List<ManagedValidator?> validators = const []})
-      : isPrimaryKey = primaryKey,
-        defaultValue = defaultValue,
-        transientStatus = transientStatus,
-        super(entity, name, type, declaredType,
-            unique: unique,
-            indexed: indexed,
-            nullable: nullable,
-            includedInDefaultResultSet: includedInDefaultResultSet,
-            autoincrement: autoincrement,
-            validators: validators);
+    ManagedEntity entity,
+    String name,
+    ManagedType type,
+    Type? declaredType, {
+    this.transientStatus,
+    bool primaryKey = false,
+    this.defaultValue,
+    bool unique = false,
+    bool indexed = false,
+    bool nullable = false,
+    bool includedInDefaultResultSet = true,
+    bool autoincrement = false,
+    List<ManagedValidator?> validators = const [],
+  })  : isPrimaryKey = primaryKey,
+        super(
+          entity,
+          name,
+          type,
+          declaredType,
+          unique: unique,
+          indexed: indexed,
+          nullable: nullable,
+          includedInDefaultResultSet: includedInDefaultResultSet,
+          autoincrement: autoincrement,
+          validators: validators,
+        );
 
-  ManagedAttributeDescription.transient(ManagedEntity entity, String name,
-      ManagedType type, Type declaredType, this.transientStatus)
-      : isPrimaryKey = false,
+  ManagedAttributeDescription.transient(
+    ManagedEntity entity,
+    String name,
+    ManagedType type,
+    Type declaredType,
+    this.transientStatus,
+  )   : isPrimaryKey = false,
         defaultValue = null,
-        super(entity, name, type, declaredType,
-            unique: false,
-            indexed: false,
-            nullable: false,
-            includedInDefaultResultSet: false,
-            autoincrement: false,
-            validators: []);
+        super(
+          entity,
+          name,
+          type,
+          declaredType,
+          unique: false,
+          indexed: false,
+          nullable: false,
+          includedInDefaultResultSet: false,
+          autoincrement: false,
+          validators: [],
+        );
 
   // ignore: prefer_constructors_over_static_methods
   static ManagedAttributeDescription make<T>(
-      ManagedEntity entity, String name, ManagedType type,
-      {Serialize? transientStatus,
-      bool primaryKey = false,
-      String? defaultValue,
-      bool unique = false,
-      bool indexed = false,
-      bool nullable = false,
-      bool includedInDefaultResultSet = true,
-      bool autoincrement = false,
-      List<ManagedValidator> validators = const []}) {
-    return ManagedAttributeDescription(entity, name, type, T,
-        transientStatus: transientStatus,
-        primaryKey: primaryKey,
-        defaultValue: defaultValue,
-        unique: unique,
-        indexed: indexed,
-        nullable: nullable,
-        includedInDefaultResultSet: includedInDefaultResultSet,
-        autoincrement: autoincrement,
-        validators: validators);
+    ManagedEntity entity,
+    String name,
+    ManagedType type, {
+    Serialize? transientStatus,
+    bool primaryKey = false,
+    String? defaultValue,
+    bool unique = false,
+    bool indexed = false,
+    bool nullable = false,
+    bool includedInDefaultResultSet = true,
+    bool autoincrement = false,
+    List<ManagedValidator> validators = const [],
+  }) {
+    return ManagedAttributeDescription(
+      entity,
+      name,
+      type,
+      T,
+      transientStatus: transientStatus,
+      primaryKey: primaryKey,
+      defaultValue: defaultValue,
+      unique: unique,
+      indexed: indexed,
+      nullable: nullable,
+      includedInDefaultResultSet: includedInDefaultResultSet,
+      autoincrement: autoincrement,
+      validators: validators,
+    );
   }
 
   /// Whether or not this attribute is the primary key for its [ManagedEntity].
@@ -250,8 +278,9 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
 
     // Add'l schema info
     prop.isNullable = isNullable;
-    validators
-        .forEach((v) => v!.definition.constrainSchemaObject(context, prop));
+    for (final v in validators) {
+      v!.definition.constrainSchemaObject(context, prop);
+    }
 
     if (isEnumeratedValue) {
       prop.enumerated = prop.enumerated!.map(convertToPrimitiveValue).toList();
@@ -313,7 +342,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       flagBuffer.write("required ");
     }
 
-    return "- $name | $type | Flags: ${flagBuffer.toString()}";
+    return "- $name | $type | Flags: $flagBuffer";
   }
 
   @override
@@ -374,47 +403,61 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
 /// Contains information for a relationship property of a [ManagedObject].
 class ManagedRelationshipDescription extends ManagedPropertyDescription {
   ManagedRelationshipDescription(
-      ManagedEntity entity,
-      String name,
-      ManagedType? type,
-      Type? declaredType,
-      this.destinationEntity,
-      this.deleteRule,
-      this.relationshipType,
-      this.inverseKey,
-      {bool unique = false,
-      bool indexed = false,
-      bool nullable = false,
-      bool includedInDefaultResultSet = true,
-      List<ManagedValidator> validators = const []})
-      : super(entity, name, type, declaredType,
-            unique: unique,
-            indexed: indexed,
-            nullable: nullable,
-            includedInDefaultResultSet: includedInDefaultResultSet,
-            validators: validators);
+    ManagedEntity entity,
+    String name,
+    ManagedType? type,
+    Type? declaredType,
+    this.destinationEntity,
+    this.deleteRule,
+    this.relationshipType,
+    this.inverseKey, {
+    bool unique = false,
+    bool indexed = false,
+    bool nullable = false,
+    bool includedInDefaultResultSet = true,
+    List<ManagedValidator> validators = const [],
+  }) : super(
+          entity,
+          name,
+          type,
+          declaredType,
+          unique: unique,
+          indexed: indexed,
+          nullable: nullable,
+          includedInDefaultResultSet: includedInDefaultResultSet,
+          validators: validators,
+        );
 
   // ignore: prefer_constructors_over_static_methods
   static ManagedRelationshipDescription make<T>(
-      ManagedEntity entity,
-      String name,
-      ManagedType? type,
-      ManagedEntity destinationEntity,
-      DeleteRule? deleteRule,
-      ManagedRelationshipType relationshipType,
-      String inverseKey,
-      {bool unique = false,
-      bool indexed = false,
-      bool nullable = false,
-      bool includedInDefaultResultSet = true,
-      List<ManagedValidator> validators = const []}) {
-    return ManagedRelationshipDescription(entity, name, type, T,
-        destinationEntity, deleteRule, relationshipType, inverseKey,
-        unique: unique,
-        indexed: indexed,
-        nullable: nullable,
-        includedInDefaultResultSet: includedInDefaultResultSet,
-        validators: validators);
+    ManagedEntity entity,
+    String name,
+    ManagedType? type,
+    ManagedEntity destinationEntity,
+    DeleteRule? deleteRule,
+    ManagedRelationshipType relationshipType,
+    String inverseKey, {
+    bool unique = false,
+    bool indexed = false,
+    bool nullable = false,
+    bool includedInDefaultResultSet = true,
+    List<ManagedValidator> validators = const [],
+  }) {
+    return ManagedRelationshipDescription(
+      entity,
+      name,
+      type,
+      T,
+      destinationEntity,
+      deleteRule,
+      relationshipType,
+      inverseKey,
+      unique: unique,
+      indexed: indexed,
+      nullable: nullable,
+      includedInDefaultResultSet: includedInDefaultResultSet,
+      validators: validators,
+    );
   }
 
   /// The entity that this relationship's instances are represented by.
@@ -467,7 +510,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     }
 
     throw StateError(
-        "Invalid relationship assigment. Relationship '$entity.$name' is not a 'ManagedSet' or 'ManagedObject'.");
+      "Invalid relationship assigment. Relationship '$entity.$name' is not a 'ManagedSet' or 'ManagedObject'.",
+    );
   }
 
   @override
@@ -493,13 +537,14 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       throw ValidationException(["invalid input type for '$name'"]);
     }
 
-    final instantiator = (dynamic m) {
+    ManagedObject instantiator(dynamic m) {
       if (m is! Map<String, dynamic>) {
         throw ValidationException(["invalid input type for '$name'"]);
       }
       final instance = destinationEntity.instanceOf()..readFromMap(m);
       return instance;
-    };
+    }
+
     return destinationEntity.setOf(value.map(instantiator));
   }
 
@@ -542,6 +587,6 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       //   relTypeString = 'Not set';
       //   break;
     }
-    return "- $name -> '${destinationEntity.name}' | Type: $relTypeString | Inverse: ${inverseKey}";
+    return "- $name -> '${destinationEntity.name}' | Type: $relTypeString | Inverse: $inverseKey";
   }
 }

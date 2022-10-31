@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
@@ -8,8 +10,10 @@ void main() {
       ManagedDataModel([Owner, FailingChild]);
       expect(true, false);
     } on ManagedDataModelError catch (e) {
-      expect(e.message,
-          contains("Relationship 'ref' on '_FailingChild' has both"));
+      expect(
+        e.message,
+        contains("Relationship 'ref' on '_FailingChild' has both"),
+      );
     }
   });
 }

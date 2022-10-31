@@ -1,3 +1,5 @@
+// ignore_for_file: cast_nullable_to_non_nullable
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -52,16 +54,20 @@ void main() {
   });
 
   test("Request with path parameter and body", () async {
-    final response = await http.put(Uri.parse("http://localhost:8888/users/2"),
-        headers: {"Content-Type": "application/json;charset=utf-8"},
-        body: json.encode({"name": "joe"}));
+    final response = await http.put(
+      Uri.parse("http://localhost:8888/users/2"),
+      headers: {"Content-Type": "application/json;charset=utf-8"},
+      body: json.encode({"name": "joe"}),
+    );
     expect(response.statusCode, 200);
   });
 
   test("Request without path parameter and body", () async {
-    final response = await http.post(Uri.parse("http://localhost:8888/users"),
-        headers: {"Content-Type": "application/json;charset=utf-8"},
-        body: json.encode({"name": "joe"}));
+    final response = await http.post(
+      Uri.parse("http://localhost:8888/users"),
+      headers: {"Content-Type": "application/json;charset=utf-8"},
+      body: json.encode({"name": "joe"}),
+    );
     expect(response.statusCode, 200);
   });
 

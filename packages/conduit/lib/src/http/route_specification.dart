@@ -1,5 +1,5 @@
-import 'http.dart';
-import 'route_node.dart';
+import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/http/route_node.dart';
 
 /// Specifies a matchable route path.
 ///
@@ -12,12 +12,13 @@ class RouteSpecification {
     segments = _splitPathSegments(patternString);
     variableNames = segments
         .where((e) => e.isVariable)
-        .map((e) => e.variableName as String)
+        .map((e) => e.variableName!)
         .toList();
   }
 
   static List<RouteSpecification> specificationsForRoutePattern(
-      String routePattern) {
+    String routePattern,
+  ) {
     return _pathsFromRoutePattern(routePattern)
         .map((path) => RouteSpecification(path))
         .toList();
@@ -36,7 +37,7 @@ class RouteSpecification {
   String toString() => segments.join("/");
 }
 
-List<String> _pathsFromRoutePattern(final String inputPattern) {
+List<String> _pathsFromRoutePattern(String inputPattern) {
   var routePattern = inputPattern;
   var endingOptionalCloseCount = 0;
   while (routePattern.endsWith("]")) {
@@ -58,7 +59,8 @@ List<String> _pathsFromRoutePattern(final String inputPattern) {
     if (code == openExpression) {
       if (insideExpression) {
         throw ArgumentError(
-            "Router compilation failed. Route pattern '$routePattern' cannot use expression that contains '(' or ')'");
+          "Router compilation failed. Route pattern '$routePattern' cannot use expression that contains '(' or ')'",
+        );
       } else {
         buffer.writeCharCode(code);
         insideExpression = true;
@@ -69,7 +71,8 @@ List<String> _pathsFromRoutePattern(final String inputPattern) {
         insideExpression = false;
       } else {
         throw ArgumentError(
-            "Router compilation failed. Route pattern '$routePattern' cannot use expression that contains '(' or ')'");
+          "Router compilation failed. Route pattern '$routePattern' cannot use expression that contains '(' or ')'",
+        );
       }
     } else if (code == openOptional) {
       if (insideExpression) {
@@ -84,12 +87,14 @@ List<String> _pathsFromRoutePattern(final String inputPattern) {
 
   if (insideExpression) {
     throw ArgumentError(
-        "Router compilation failed. Route pattern '$routePattern' has unterminated regular expression.");
+      "Router compilation failed. Route pattern '$routePattern' has unterminated regular expression.",
+    );
   }
 
   if (endingOptionalCloseCount != patterns.length) {
     throw ArgumentError(
-        "Router compilation failed. Route pattern '$routePattern' does not close all optionals.");
+      "Router compilation failed. Route pattern '$routePattern' does not close all optionals.",
+    );
   }
 
   // Add the final pattern - if no optionals, this is the only pattern.
@@ -142,7 +147,8 @@ List<RouteSegment> _splitPathSegments(String inputPath) {
 
   if (segments.any((seg) => seg == "")) {
     throw ArgumentError(
-        "Router compilation failed. Route pattern '$path' contains an empty path segment.");
+      "Router compilation failed. Route pattern '$path' contains an empty path segment.",
+    );
   }
 
   // Add final

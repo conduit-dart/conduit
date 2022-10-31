@@ -40,14 +40,20 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
     final server = await HttpServer.bind(InternetAddress.anyIPv4, port);
 
     final fileController = FileController(
-        _hostedDirectory.uri.toFilePath(windows: Platform.isWindows))
-      ..addCachePolicy(const CachePolicy(requireConditionalRequest: true),
-          (p) => p.endsWith(".html"))
-      ..addCachePolicy(const CachePolicy(requireConditionalRequest: true),
-          (p) => p.endsWith(".json"))
+      _hostedDirectory.uri.toFilePath(windows: Platform.isWindows),
+    )
       ..addCachePolicy(
-          const CachePolicy(expirationFromNow: Duration(days: 300)),
-          (p) => true)
+        const CachePolicy(requireConditionalRequest: true),
+        (p) => p.endsWith(".html"),
+      )
+      ..addCachePolicy(
+        const CachePolicy(requireConditionalRequest: true),
+        (p) => p.endsWith(".json"),
+      )
+      ..addCachePolicy(
+        const CachePolicy(expirationFromNow: Duration(days: 300)),
+        (p) => true,
+      )
       ..logger.onRecord.listen((rec) {
         outputSink.writeln("${rec.message} ${rec.stackTrace ?? ""}");
       });
@@ -59,8 +65,9 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
     server.map((req) => Request(req)).listen(router.receive);
 
     displayInfo(
-        "Document server listening on http://${server.address.host}:${server.port}/.",
-        color: CLIColor.boldGreen);
+      "Document server listening on http://${server.address.host}:${server.port}/.",
+      color: CLIColor.boldGreen,
+    );
     displayProgress("Use Ctrl-C (SIGINT) to stop running the server.");
 
     return StoppableProcess((reason) async {

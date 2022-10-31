@@ -25,16 +25,15 @@ library conduit.managed_auth;
 
 import 'dart:async';
 
+import 'package:conduit/src/auth/authorization_server.dart';
+import 'package:conduit/src/auth/exceptions.dart';
+import 'package:conduit/src/auth/objects.dart';
+import 'package:conduit/src/auth/protocols.dart';
 import 'package:conduit/src/db/managed/attributes.dart';
 import 'package:conduit/src/db/managed/context.dart';
 import 'package:conduit/src/db/managed/object.dart';
-
-import 'src/auth/authorization_server.dart';
-import 'src/auth/exceptions.dart';
-import 'src/auth/objects.dart';
-import 'src/auth/protocols.dart';
-import 'src/db/managed/set.dart';
-import 'src/db/query/query.dart';
+import 'package:conduit/src/db/managed/set.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 /// Represent an OAuth 2.0 authorization token and authorization code.
 ///
@@ -186,8 +185,13 @@ class ManagedAuthClient extends ManagedObject<_ManagedAuthClient>
   AuthClient asClient() {
     final scopes = allowedScope?.split(" ").map((s) => AuthScope(s)).toList();
 
-    return AuthClient.withRedirectURI(id, hashedSecret, salt, redirectURI,
-        allowedScopes: scopes);
+    return AuthClient.withRedirectURI(
+      id,
+      hashedSecret,
+      salt,
+      redirectURI,
+      allowedScopes: scopes,
+    );
   }
 }
 
@@ -319,11 +323,15 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
   }
 
   @override
-  Future<AuthToken?> getToken(AuthServer server,
-      {String? byAccessToken, String? byRefreshToken}) async {
+  Future<AuthToken?> getToken(
+    AuthServer server, {
+    String? byAccessToken,
+    String? byRefreshToken,
+  }) async {
     if (byAccessToken != null && byRefreshToken != null) {
       throw ArgumentError(
-          "Exactly one of 'byAccessToken' or 'byRefreshToken' must be non-null.");
+        "Exactly one of 'byAccessToken' or 'byRefreshToken' must be non-null.",
+      );
     }
 
     final query = Query<ManagedAuthToken>(context!);
@@ -333,7 +341,8 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
       query.where((o) => o.refreshToken).equalTo(byRefreshToken);
     } else {
       throw ArgumentError(
-          "Exactly one of 'byAccessToken' or 'byRefreshToken' must be non-null.");
+        "Exactly one of 'byAccessToken' or 'byRefreshToken' must be non-null.",
+      );
     }
 
     final token = await query.fetchOne();
@@ -346,7 +355,8 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
     final query = Query<T>(context!)
       ..where((o) => o.username).equalTo(username)
       ..returningProperties(
-          (t) => [t.id, t.hashedPassword, t.salt, t.username]);
+        (t) => [t.id, t.hashedPassword, t.salt, t.username],
+      );
 
     return query.fetchOne();
   }
@@ -360,8 +370,11 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
   }
 
   @override
-  Future addToken(AuthServer server, AuthToken token,
-      {AuthCode? issuedFrom}) async {
+  Future addToken(
+    AuthServer server,
+    AuthToken token, {
+    AuthCode? issuedFrom,
+  }) async {
     final storage = ManagedAuthToken.fromToken(token);
     final query = Query<ManagedAuthToken>(context!)..values = storage;
 
@@ -371,8 +384,10 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
 
       final outToken = await query.updateOne();
       if (outToken == null) {
-        throw AuthServerException(AuthRequestError.invalidGrant,
-            AuthClient(token.clientID, null, null));
+        throw AuthServerException(
+          AuthRequestError.invalidGrant,
+          AuthClient(token.clientID, null, null),
+        );
       }
     } else {
       await query.insert();
@@ -383,11 +398,12 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
 
   @override
   Future updateToken(
-      AuthServer server,
-      String? oldAccessToken,
-      String? newAccessToken,
-      DateTime? newIssueDate,
-      DateTime? newExpirationDate) {
+    AuthServer server,
+    String? oldAccessToken,
+    String? newAccessToken,
+    DateTime? newIssueDate,
+    DateTime? newExpirationDate,
+  ) {
     final query = Query<ManagedAuthToken>(context!)
       ..where((o) => o.accessToken).equalTo(oldAccessToken)
       ..values.accessToken = newAccessToken

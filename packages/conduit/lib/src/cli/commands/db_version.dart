@@ -12,7 +12,7 @@ class CLIDatabaseVersion extends CLICommand
   @override
   Future<int> handle() async {
     try {
-      final current = await persistentStore!.schemaVersion;
+      final current = await persistentStore.schemaVersion;
       displayInfo("Current version: $current");
       if (current == 0) {
         displayProgress("This database hasn't had a migration yet.");
@@ -34,7 +34,7 @@ class CLIDatabaseVersion extends CLICommand
   }
 
   @override
-  Future cleanup() => persistentStore!.close();
+  Future cleanup() => persistentStore.close();
 
   @override
   String get name {

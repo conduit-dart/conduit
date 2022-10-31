@@ -45,9 +45,12 @@ void main() {
       final resp = await client.request("/controller").get();
       final sublist = allObjects.sublist(1);
       expect(
-          resp,
-          hasResponse(200,
-              body: {"data": sublist.map((m) => m.asMap()).toList()}));
+        resp,
+        hasResponse(
+          200,
+          body: {"data": sublist.map((m) => m.asMap()).toList()},
+        ),
+      );
     });
 
     test("Can update an object", () async {
@@ -114,12 +117,14 @@ class TestChannel extends ApplicationChannel {
 
     final targetSchema = Schema.fromDataModel(context.dataModel!);
     final schemaBuilder = SchemaBuilder.toSchema(
-        context.persistentStore, targetSchema,
-        isTemporary: true);
+      context.persistentStore,
+      targetSchema,
+      isTemporary: true,
+    );
 
     final commands = schemaBuilder.commands;
-    for (var cmd in commands) {
-      await context.persistentStore!.execute(cmd);
+    for (final cmd in commands) {
+      await context.persistentStore.execute(cmd);
     }
   }
 
@@ -146,7 +151,8 @@ class Subclass extends ManagedObjectController<TestModel> {
 
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(
-      Query<TestModel>? query) async {
+    Query<TestModel>? query,
+  ) async {
     query!.where((o) => o.name).oneOf(["1", "2", "3"]);
     return query;
   }
@@ -163,7 +169,8 @@ class Subclass extends ManagedObjectController<TestModel> {
 
   @override
   Future<Query<TestModel>?> willInsertObjectWithQuery(
-      Query<TestModel>? query) async {
+    Query<TestModel>? query,
+  ) async {
     query!.values.name = "Mr. ${query.values.name}";
     return query;
   }
@@ -175,7 +182,8 @@ class Subclass extends ManagedObjectController<TestModel> {
 
   @override
   Future<Query<TestModel>?> willDeleteObjectWithQuery(
-      Query<TestModel>? query) async {
+    Query<TestModel>? query,
+  ) async {
     if (request!.path.variables["id"] == "3") {
       throw Response(301, null, {"error": "invalid"});
     }
@@ -194,7 +202,8 @@ class Subclass extends ManagedObjectController<TestModel> {
 
   @override
   Future<Query<TestModel>?> willUpdateObjectWithQuery(
-      Query<TestModel>? query) async {
+    Query<TestModel>? query,
+  ) async {
     query!.values.name = "Mr. ${query.values.name}";
     return query;
   }
@@ -211,7 +220,8 @@ class Subclass extends ManagedObjectController<TestModel> {
 
   @override
   Future<Query<TestModel>?> willFindObjectsWithQuery(
-      Query<TestModel>? query) async {
+    Query<TestModel>? query,
+  ) async {
     query!.where((o) => o.id).greaterThan(1);
     return query;
   }

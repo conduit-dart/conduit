@@ -48,7 +48,8 @@ class RangeExpression implements PredicateExpression {
   const RangeExpression(this.lhs, this.rhs, {this.within = true});
 
   final bool within;
-  final dynamic lhs, rhs;
+  final dynamic lhs;
+  final dynamic rhs;
 
   @override
   PredicateExpression get inverse {
@@ -80,10 +81,13 @@ class SetMembershipExpression implements PredicateExpression {
 }
 
 class StringExpression implements PredicateExpression {
-  const StringExpression(this.value, this.operator,
-      {this.caseSensitive = true,
-      this.invertOperator = false,
-      this.allowSpecialCharacters = true});
+  const StringExpression(
+    this.value,
+    this.operator, {
+    this.caseSensitive = true,
+    this.invertOperator = false,
+    this.allowSpecialCharacters = true,
+  });
 
   final PredicateStringOperator operator;
   final bool invertOperator;
@@ -93,9 +97,12 @@ class StringExpression implements PredicateExpression {
 
   @override
   PredicateExpression get inverse {
-    return StringExpression(value, operator,
-        caseSensitive: caseSensitive,
-        invertOperator: !invertOperator,
-        allowSpecialCharacters: allowSpecialCharacters);
+    return StringExpression(
+      value,
+      operator,
+      caseSensitive: caseSensitive,
+      invertOperator: !invertOperator,
+      allowSpecialCharacters: allowSpecialCharacters,
+    );
   }
 }

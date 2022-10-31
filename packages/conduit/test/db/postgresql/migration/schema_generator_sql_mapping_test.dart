@@ -21,8 +21,10 @@ void main() {
           .expand((l) => l)
           .toList();
 
-      expect(commands[0],
-          "CREATE TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)");
+      expect(
+        commands[0],
+        "CREATE TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)",
+      );
       expect(commands.length, 1);
     });
 
@@ -34,8 +36,10 @@ void main() {
           .expand((l) => l)
           .toList();
 
-      expect(commands[0],
-          "CREATE TEMPORARY TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)");
+      expect(
+        commands[0],
+        "CREATE TEMPORARY TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)",
+      );
       expect(commands.length, 1);
     });
 
@@ -43,16 +47,21 @@ void main() {
       final dm = ManagedDataModel([GeneratorModel2]);
       final schema = Schema.fromDataModel(dm);
       schema.tableForName("_GeneratorModel2")!.addColumn(
-          SchemaColumn("a", ManagedPropertyType.integer, isIndexed: true));
+            SchemaColumn("a", ManagedPropertyType.integer, isIndexed: true),
+          );
       final commands = schema.tables
           .map((t) => psc.createTable(t))
           .expand((l) => l)
           .toList();
 
-      expect(commands[0],
-          "CREATE TABLE _GeneratorModel2 (id INT PRIMARY KEY,a INT NOT NULL)");
-      expect(commands[1],
-          "CREATE INDEX _GeneratorModel2_a_idx ON _GeneratorModel2 (a)");
+      expect(
+        commands[0],
+        "CREATE TABLE _GeneratorModel2 (id INT PRIMARY KEY,a INT NOT NULL)",
+      );
+      expect(
+        commands[1],
+        "CREATE INDEX _GeneratorModel2_a_idx ON _GeneratorModel2 (a)",
+      );
     });
 
     test("Create multiple tables with trailing index", () {
@@ -63,8 +72,10 @@ void main() {
           .expand((l) => l)
           .toList();
 
-      expect(commands[0],
-          "CREATE TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)");
+      expect(
+        commands[0],
+        "CREATE TABLE _GeneratorModel1 (id BIGSERIAL PRIMARY KEY,name TEXT NOT NULL,option BOOLEAN NOT NULL,points DOUBLE PRECISION NOT NULL UNIQUE,validDate TIMESTAMP NULL,document JSONB NOT NULL)",
+      );
       expect(commands[1], "CREATE TABLE _GeneratorModel2 (id INT PRIMARY KEY)");
     });
 
@@ -76,8 +87,10 @@ void main() {
           .expand((l) => l)
           .toList();
 
-      expect(commands[0],
-          "CREATE TABLE _GeneratorModel3 (creationDate TIMESTAMP NOT NULL DEFAULT (now() at time zone 'utc'),id INT PRIMARY KEY,textValue TEXT NOT NULL DEFAULT \$\$dflt\$\$,option BOOLEAN NOT NULL DEFAULT true,otherTime TIMESTAMP NOT NULL DEFAULT '1900-01-01T00:00:00.000Z',value DOUBLE PRECISION NOT NULL DEFAULT 20.0)");
+      expect(
+        commands[0],
+        "CREATE TABLE _GeneratorModel3 (creationDate TIMESTAMP NOT NULL DEFAULT (now() at time zone 'utc'),id INT PRIMARY KEY,textValue TEXT NOT NULL DEFAULT \$\$dflt\$\$,option BOOLEAN NOT NULL DEFAULT true,otherTime TIMESTAMP NOT NULL DEFAULT '1900-01-01T00:00:00.000Z',value DOUBLE PRECISION NOT NULL DEFAULT 20.0)",
+      );
     });
 
     test("Table with @Table(name) overrides class name", () {
@@ -100,12 +113,18 @@ void main() {
           .toList();
 
       expect(cmds[0], "CREATE TABLE _GenOwner (id BIGSERIAL PRIMARY KEY)");
-      expect(cmds[1],
-          "CREATE TABLE _GenAuth (id INT PRIMARY KEY,owner_id BIGINT NULL UNIQUE)");
       expect(
-          cmds[2], "CREATE INDEX _GenAuth_owner_id_idx ON _GenAuth (owner_id)");
-      expect(cmds[3],
-          "ALTER TABLE ONLY _GenAuth ADD FOREIGN KEY (owner_id) REFERENCES _GenOwner (id) ON DELETE CASCADE");
+        cmds[1],
+        "CREATE TABLE _GenAuth (id INT PRIMARY KEY,owner_id BIGINT NULL UNIQUE)",
+      );
+      expect(
+        cmds[2],
+        "CREATE INDEX _GenAuth_owner_id_idx ON _GenAuth (owner_id)",
+      );
+      expect(
+        cmds[3],
+        "ALTER TABLE ONLY _GenAuth ADD FOREIGN KEY (owner_id) REFERENCES _GenOwner (id) ON DELETE CASCADE",
+      );
       expect(cmds.length, 4);
     });
 
@@ -118,21 +137,29 @@ void main() {
           .toList();
 
       expect(
-          cmds.contains(
-              "CREATE TABLE _GenUser (id INT PRIMARY KEY,name TEXT NOT NULL)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _GenUser (id INT PRIMARY KEY,name TEXT NOT NULL)",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "CREATE TABLE _GenPost (id INT PRIMARY KEY,text TEXT NOT NULL,owner_id INT NULL)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _GenPost (id INT PRIMARY KEY,text TEXT NOT NULL,owner_id INT NULL)",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "CREATE INDEX _GenPost_owner_id_idx ON _GenPost (owner_id)"),
-          true);
+        cmds.contains(
+          "CREATE INDEX _GenPost_owner_id_idx ON _GenPost (owner_id)",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "ALTER TABLE ONLY _GenPost ADD FOREIGN KEY (owner_id) REFERENCES _GenUser (id) ON DELETE RESTRICT"),
-          true);
+        cmds.contains(
+          "ALTER TABLE ONLY _GenPost ADD FOREIGN KEY (owner_id) REFERENCES _GenUser (id) ON DELETE RESTRICT",
+        ),
+        true,
+      );
       expect(cmds.length, 4);
     });
 
@@ -146,27 +173,39 @@ void main() {
 
       expect(cmds.contains("CREATE TABLE _GenLeft (id INT PRIMARY KEY)"), true);
       expect(
-          cmds.contains("CREATE TABLE _GenRight (id INT PRIMARY KEY)"), true);
+        cmds.contains("CREATE TABLE _GenRight (id INT PRIMARY KEY)"),
+        true,
+      );
       expect(
-          cmds.contains(
-              "CREATE TABLE _GenJoin (id BIGSERIAL PRIMARY KEY,left_id INT NULL,right_id INT NULL)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _GenJoin (id BIGSERIAL PRIMARY KEY,left_id INT NULL,right_id INT NULL)",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "ALTER TABLE ONLY _GenJoin ADD FOREIGN KEY (left_id) REFERENCES _GenLeft (id) ON DELETE SET NULL"),
-          true);
+        cmds.contains(
+          "ALTER TABLE ONLY _GenJoin ADD FOREIGN KEY (left_id) REFERENCES _GenLeft (id) ON DELETE SET NULL",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "ALTER TABLE ONLY _GenJoin ADD FOREIGN KEY (right_id) REFERENCES _GenRight (id) ON DELETE SET NULL"),
-          true);
+        cmds.contains(
+          "ALTER TABLE ONLY _GenJoin ADD FOREIGN KEY (right_id) REFERENCES _GenRight (id) ON DELETE SET NULL",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "CREATE INDEX _GenJoin_left_id_idx ON _GenJoin (left_id)"),
-          true);
+        cmds.contains(
+          "CREATE INDEX _GenJoin_left_id_idx ON _GenJoin (left_id)",
+        ),
+        true,
+      );
       expect(
-          cmds.contains(
-              "CREATE INDEX _GenJoin_right_id_idx ON _GenJoin (right_id)"),
-          true);
+        cmds.contains(
+          "CREATE INDEX _GenJoin_right_id_idx ON _GenJoin (right_id)",
+        ),
+        true,
+      );
       expect(cmds.length, 7);
     });
 
@@ -179,9 +218,11 @@ void main() {
           .toList();
 
       expect(
-          cmds.contains(
-              "CREATE TABLE _GenAuth (id INT PRIMARY KEY,owner_id BIGINT NULL UNIQUE)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _GenAuth (id INT PRIMARY KEY,owner_id BIGINT NULL UNIQUE)",
+        ),
+        true,
+      );
     });
 
     test("Private fields are generated as columns", () {
@@ -193,9 +234,11 @@ void main() {
           .toList();
 
       expect(
-          cmds.contains(
-              "CREATE TABLE _PrivateField (id BIGSERIAL PRIMARY KEY,_private TEXT NOT NULL)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _PrivateField (id BIGSERIAL PRIMARY KEY,_private TEXT NOT NULL)",
+        ),
+        true,
+      );
     });
 
     test("Enum fields are generated as strings", () {
@@ -207,9 +250,11 @@ void main() {
           .toList();
 
       expect(
-          cmds.contains(
-              "CREATE TABLE _EnumObject (id BIGSERIAL PRIMARY KEY,enumValues TEXT NOT NULL)"),
-          true);
+        cmds.contains(
+          "CREATE TABLE _EnumObject (id BIGSERIAL PRIMARY KEY,enumValues TEXT NOT NULL)",
+        ),
+        true,
+      );
     });
 
     test("Create table with unique set", () {
@@ -220,10 +265,14 @@ void main() {
           .expand((l) => l)
           .toList();
 
-      expect(cmds[0],
-          "CREATE TABLE _Unique (id BIGSERIAL PRIMARY KEY,a TEXT NOT NULL,b TEXT NOT NULL,c TEXT NOT NULL)");
       expect(
-          cmds[1], "CREATE UNIQUE INDEX _Unique_unique_idx ON _Unique (a,b)");
+        cmds[0],
+        "CREATE TABLE _Unique (id BIGSERIAL PRIMARY KEY,a TEXT NOT NULL,b TEXT NOT NULL,c TEXT NOT NULL)",
+      );
+      expect(
+        cmds[1],
+        "CREATE UNIQUE INDEX _Unique_unique_idx ON _Unique (a,b)",
+      );
     });
   });
 
@@ -245,13 +294,16 @@ void main() {
       final schema = Schema.fromDataModel(dm);
 
       final propDesc = ManagedAttributeDescription(
-          dm.entityForType(GeneratorModel1),
-          "foobar",
-          getManagedTypeFromType(reflectType(int)),
-          null,
-          nullable: true);
+        dm.entityForType(GeneratorModel1),
+        "foobar",
+        getManagedTypeFromType(reflectType(int)),
+        null,
+        nullable: true,
+      );
       final cmds = psc.addColumn(
-          schema.tables.first, SchemaColumn.fromProperty(propDesc));
+        schema.tables.first,
+        SchemaColumn.fromProperty(propDesc),
+      );
       expect(cmds, ["ALTER TABLE _GeneratorModel1 ADD COLUMN foobar INT NULL"]);
     });
 
@@ -260,21 +312,28 @@ void main() {
       final schema = Schema.fromDataModel(dm);
 
       final propDesc = ManagedAttributeDescription(
-          dm.entityForType(GeneratorModel1),
-          "foobar",
-          getManagedTypeFromType(reflectType(int)),
-          null,
-          defaultValue: "4",
-          unique: true,
-          indexed: true,
-          nullable: true,
-          autoincrement: true);
+        dm.entityForType(GeneratorModel1),
+        "foobar",
+        getManagedTypeFromType(reflectType(int)),
+        null,
+        defaultValue: "4",
+        unique: true,
+        indexed: true,
+        nullable: true,
+        autoincrement: true,
+      );
       final cmds = psc.addColumn(
-          schema.tables.first, SchemaColumn.fromProperty(propDesc));
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 ADD COLUMN foobar SERIAL NULL DEFAULT 4 UNIQUE");
-      expect(cmds.last,
-          "CREATE INDEX _GeneratorModel1_foobar_idx ON _GeneratorModel1 (foobar)");
+        schema.tables.first,
+        SchemaColumn.fromProperty(propDesc),
+      );
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 ADD COLUMN foobar SERIAL NULL DEFAULT 4 UNIQUE",
+      );
+      expect(
+        cmds.last,
+        "CREATE INDEX _GeneratorModel1_foobar_idx ON _GeneratorModel1 (foobar)",
+      );
     });
 
     test("Add foreign key column (index + constraint)", () {
@@ -282,57 +341,78 @@ void main() {
       final schema = Schema.fromDataModel(dm);
 
       final propDesc = ManagedRelationshipDescription(
-          dm.entityForType(GeneratorModel1),
-          "foobar",
-          getManagedTypeFromType(reflectType(String)),
-          null,
-          dm.entityForType(GeneratorModel2),
-          DeleteRule.cascade,
-          ManagedRelationshipType.belongsTo,
-          dm.entityForType(GeneratorModel2).primaryKey,
-          indexed: true,
-          nullable: true);
+        dm.entityForType(GeneratorModel1),
+        "foobar",
+        getManagedTypeFromType(reflectType(String)),
+        null,
+        dm.entityForType(GeneratorModel2),
+        DeleteRule.cascade,
+        ManagedRelationshipType.belongsTo,
+        dm.entityForType(GeneratorModel2).primaryKey,
+        indexed: true,
+        nullable: true,
+      );
       final cmds = psc.addColumn(
-          schema.tables.first, SchemaColumn.fromProperty(propDesc));
-      expect(cmds[0],
-          "ALTER TABLE _GeneratorModel1 ADD COLUMN foobar_id TEXT NULL");
-      expect(cmds[1],
-          "CREATE INDEX _GeneratorModel1_foobar_id_idx ON _GeneratorModel1 (foobar_id)");
-      expect(cmds[2],
-          "ALTER TABLE ONLY _GeneratorModel1 ADD FOREIGN KEY (foobar_id) REFERENCES _GeneratorModel2 (id) ON DELETE CASCADE");
+        schema.tables.first,
+        SchemaColumn.fromProperty(propDesc),
+      );
+      expect(
+        cmds[0],
+        "ALTER TABLE _GeneratorModel1 ADD COLUMN foobar_id TEXT NULL",
+      );
+      expect(
+        cmds[1],
+        "CREATE INDEX _GeneratorModel1_foobar_id_idx ON _GeneratorModel1 (foobar_id)",
+      );
+      expect(
+        cmds[2],
+        "ALTER TABLE ONLY _GeneratorModel1 ADD FOREIGN KEY (foobar_id) REFERENCES _GeneratorModel2 (id) ON DELETE CASCADE",
+      );
     });
 
     test("Delete column", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final cmds = psc.deleteColumn(schema.tables.first,
-          schema.tables.first.columns.firstWhere((s) => s.name == "validDate"));
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 DROP COLUMN validDate RESTRICT");
+      final cmds = psc.deleteColumn(
+        schema.tables.first,
+        schema.tables.first.columns.firstWhere((s) => s.name == "validDate"),
+      );
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 DROP COLUMN validDate RESTRICT",
+      );
     });
 
     test("Delete foreign key column", () {
       final dm = ManagedDataModel([GenUser, GenPost]);
       final schema = Schema.fromDataModel(dm);
-      final cmds = psc.deleteColumn(schema.tables.last,
-          schema.tables.last.columns.firstWhere((c) => c.name == "owner"));
+      final cmds = psc.deleteColumn(
+        schema.tables.last,
+        schema.tables.last.columns.firstWhere((c) => c.name == "owner"),
+      );
       expect(cmds.first, "ALTER TABLE _GenPost DROP COLUMN owner_id CASCADE");
     });
 
     test("Add index to column", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final cmds = psc.addIndexToColumn(schema.tables.first,
-          schema.tables.first.columns.firstWhere((s) => s.name == "validDate"));
-      expect(cmds.first,
-          "CREATE INDEX _GeneratorModel1_validDate_idx ON _GeneratorModel1 (validDate)");
+      final cmds = psc.addIndexToColumn(
+        schema.tables.first,
+        schema.tables.first.columns.firstWhere((s) => s.name == "validDate"),
+      );
+      expect(
+        cmds.first,
+        "CREATE INDEX _GeneratorModel1_validDate_idx ON _GeneratorModel1 (validDate)",
+      );
     });
 
     test("Remove index from column", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final cmds = psc.deleteIndexFromColumn(schema.tables.first,
-          schema.tables.first.columns.firstWhere((s) => s.name == "validDate"));
+      final cmds = psc.deleteIndexFromColumn(
+        schema.tables.first,
+        schema.tables.first.columns.firstWhere((s) => s.name == "validDate"),
+      );
       expect(cmds.first, "DROP INDEX _GeneratorModel1_validDate_idx");
     });
 
@@ -348,8 +428,10 @@ void main() {
       // Add nullability
       col.isNullable = true;
       var cmds = psc.alterColumnNullability(schema.tables.first, col, null);
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 ALTER COLUMN name DROP NOT NULL");
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 ALTER COLUMN name DROP NOT NULL",
+      );
 
       // Remove nullability, but don't provide value to update things to:
       col.isNullable = false;
@@ -377,8 +459,10 @@ void main() {
       // Remove unique
       col.isUnique = false;
       cmds = psc.alterColumnUniqueness(schema.tables.first, col);
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 DROP CONSTRAINT _GeneratorModel1_name_key");
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 DROP CONSTRAINT _GeneratorModel1_name_key",
+      );
     });
 
     test("Alter column change default value", () {
@@ -393,14 +477,18 @@ void main() {
       // Add default
       col.defaultValue = "'foobar'";
       var cmds = psc.alterColumnDefaultValue(schema.tables.first, col);
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 ALTER COLUMN name SET DEFAULT 'foobar'");
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 ALTER COLUMN name SET DEFAULT 'foobar'",
+      );
 
       // Remove default
       col.defaultValue = null;
       cmds = psc.alterColumnDefaultValue(schema.tables.first, col);
-      expect(cmds.first,
-          "ALTER TABLE _GeneratorModel1 ALTER COLUMN name DROP DEFAULT");
+      expect(
+        cmds.first,
+        "ALTER TABLE _GeneratorModel1 ALTER COLUMN name DROP DEFAULT",
+      );
     });
 
     test("Alter column change delete rule", () {
@@ -416,10 +504,14 @@ void main() {
       // Change delete rule
       col.deleteRule = DeleteRule.nullify;
       final cmds = psc.alterColumnDeleteRule(postTable, col);
-      expect(cmds.first,
-          "ALTER TABLE ONLY _GenPost DROP CONSTRAINT _GenPost_owner_id_fkey");
-      expect(cmds.last,
-          "ALTER TABLE ONLY _GenPost ADD FOREIGN KEY (owner_id) REFERENCES _GenUser (id) ON DELETE SET NULL");
+      expect(
+        cmds.first,
+        "ALTER TABLE ONLY _GenPost DROP CONSTRAINT _GenPost_owner_id_fkey",
+      );
+      expect(
+        cmds.last,
+        "ALTER TABLE ONLY _GenPost ADD FOREIGN KEY (owner_id) REFERENCES _GenUser (id) ON DELETE SET NULL",
+      );
     });
   });
 
@@ -434,8 +526,10 @@ void main() {
       final schema = Schema.fromDataModel(dm);
 
       final cmds = psc.addTableUniqueColumnSet(schema.tableForName("_Unique")!);
-      expect(cmds.first,
-          "CREATE UNIQUE INDEX _Unique_unique_idx ON _Unique (a,b)");
+      expect(
+        cmds.first,
+        "CREATE UNIQUE INDEX _Unique_unique_idx ON _Unique (a,b)",
+      );
     });
 
     test("Can remove unique", () {
@@ -454,8 +548,10 @@ void main() {
 
       final cmds =
           psc.addTableUniqueColumnSet(schema.tableForName("_UniqueBelongsTo")!);
-      expect(cmds.first,
-          "CREATE UNIQUE INDEX _UniqueBelongsTo_unique_idx ON _UniqueBelongsTo (a,container_id)");
+      expect(
+        cmds.first,
+        "CREATE UNIQUE INDEX _UniqueBelongsTo_unique_idx ON _UniqueBelongsTo (a,container_id)",
+      );
     });
   });
 }

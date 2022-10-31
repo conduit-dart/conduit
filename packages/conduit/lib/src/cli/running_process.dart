@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-typedef _StopProcess = Future Function(String reason);
-
 class StoppableProcess {
-  StoppableProcess(Future onStop(String reason)) : _stop = onStop {
+  StoppableProcess(Future Function(String reason) onStop) : _stop = onStop {
     final l1 = ProcessSignal.sigint.watch().listen((_) {
       stop(0, reason: "Process interrupted.");
     });
@@ -22,7 +20,7 @@ class StoppableProcess {
 
   final List<StreamSubscription> _listeners = [];
 
-  final _StopProcess _stop;
+  final Future Function(String) _stop;
   final Completer<int> _completer = Completer<int>();
 
   Future stop(int exitCode, {String? reason}) async {

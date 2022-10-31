@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../utilities/lowercasing_map.dart';
-import 'http.dart';
+import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/utilities/lowercasing_map.dart';
 
 /// Represents the information in an HTTP response.
 ///
@@ -14,10 +14,9 @@ class Response implements RequestOrResponse {
   ///
   /// There exist convenience constructors for common response status codes
   /// and you should prefer to use those.
-  Response(int statusCode, Map<String, dynamic>? headers, dynamic body) {
+  Response(int this.statusCode, Map<String, dynamic>? headers, dynamic body) {
     this.body = body;
     this.headers = LowercaseMap.fromMap(headers ?? {});
-    this.statusCode = statusCode;
   }
 
   /// Represents a 200 response.
@@ -27,12 +26,15 @@ class Response implements RequestOrResponse {
   /// Represents a 201 response.
   ///
   /// The [location] is a URI that is added as the Location header.
-  Response.created(String location,
-      {dynamic body, Map<String, dynamic>? headers})
-      : this(
-            HttpStatus.created,
-            _headersWith(headers, {HttpHeaders.locationHeader: location}),
-            body);
+  Response.created(
+    String location, {
+    dynamic body,
+    Map<String, dynamic>? headers,
+  }) : this(
+          HttpStatus.created,
+          _headersWith(headers, {HttpHeaders.locationHeader: location}),
+          body,
+        );
 
   /// Represents a 202 response.
   Response.accepted({Map<String, dynamic>? headers})
@@ -46,10 +48,9 @@ class Response implements RequestOrResponse {
   ///
   /// Where [lastModified] is the last modified date of the resource
   /// and [cachePolicy] is the same policy as applied when this resource was first fetched.
-  Response.notModified(DateTime lastModified, CachePolicy? cachePolicy) {
+  Response.notModified(DateTime lastModified, this.cachePolicy) {
     statusCode = HttpStatus.notModified;
     headers = {HttpHeaders.lastModifiedHeader: HttpDate.format(lastModified)};
-    this.cachePolicy = cachePolicy;
   }
 
   /// Represents a 400 response.
@@ -177,7 +178,8 @@ class Response implements RequestOrResponse {
     }
 
     throw StateError(
-        "Invalid content-type response header. Is not 'String' or 'ContentType'.");
+      "Invalid content-type response header. Is not 'String' or 'ContentType'.",
+    );
   }
 
   set contentType(ContentType? t) {
@@ -202,7 +204,9 @@ class Response implements RequestOrResponse {
   bool encodeBody = true;
 
   static Map<String, dynamic> _headersWith(
-      Map<String, dynamic>? inputHeaders, Map<String, dynamic> otherHeaders) {
+    Map<String, dynamic>? inputHeaders,
+    Map<String, dynamic> otherHeaders,
+  ) {
     final m = LowercaseMap.fromMap(inputHeaders ?? {});
     m.addAll(otherHeaders);
     return m;

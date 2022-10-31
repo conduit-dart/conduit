@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/application/isolate_application_server.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-
-import '../http/http.dart';
-import 'application.dart';
-import 'isolate_application_server.dart';
 
 /// An object that defines the behavior specific to your application.
 ///
@@ -141,7 +140,8 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
   @mustCallSuper
   Future close() async {
     logger.fine(
-        "ApplicationChannel(${server.identifier}).close: closing messageHub");
+      "ApplicationChannel(${server.identifier}).close: closing messageHub",
+    );
     await messageHub.close();
   }
 
@@ -172,8 +172,10 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
     doc.paths = root.documentPaths(context);
 
     doc.info = APIInfo(
-        projectSpec["name"] as String?, projectSpec["version"] as String?,
-        description: projectSpec["description"] as String?);
+      projectSpec["name"] as String?,
+      projectSpec["version"] as String?,
+      description: projectSpec["description"] as String?,
+    );
 
     await context.finalize();
 
@@ -231,14 +233,20 @@ class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
   /// [onError], if provided, will be invoked when this isolate tries to [add] invalid data. Only the isolate
   /// that failed to send the data will receive [onError] events.
   @override
-  StreamSubscription<dynamic> listen(void onData(dynamic event)?,
-          {Function? onError, void onDone()?, bool? cancelOnError = false}) =>
-      _inboundController.stream.listen(onData,
-          onError: onError ??
-              ((err, StackTrace st) =>
-                  _logger.severe("ApplicationMessageHub error", err, st)),
-          onDone: onDone,
-          cancelOnError: cancelOnError);
+  StreamSubscription<dynamic> listen(
+    void Function(dynamic event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError = false,
+  }) =>
+      _inboundController.stream.listen(
+        onData,
+        onError: onError ??
+            ((err, StackTrace st) =>
+                _logger.severe("ApplicationMessageHub error", err, st)),
+        onDone: onDone,
+        cancelOnError: cancelOnError,
+      );
 
   /// Sends a message to all other hubs.
   ///
@@ -268,7 +276,8 @@ class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
 
 abstract class ChannelRuntime {
   Iterable<APIComponentDocumenter?> getDocumentableChannelComponents(
-      ApplicationChannel channel);
+    ApplicationChannel channel,
+  );
 
   Type get channelType;
 

@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/application/isolate_supervisor.dart';
 import 'package:logging/logging.dart';
 
-import 'application.dart';
-import 'isolate_supervisor.dart';
-
 class ApplicationIsolateServer extends ApplicationServer {
-  ApplicationIsolateServer(Type channelType, ApplicationOptions configuration,
-      int identifier, this.supervisingApplicationPort,
-      {bool logToConsole = false})
-      : super(channelType, configuration, identifier) {
+  ApplicationIsolateServer(
+    Type channelType,
+    ApplicationOptions configuration,
+    int identifier,
+    this.supervisingApplicationPort, {
+    bool logToConsole = false,
+  }) : super(channelType, configuration, identifier) {
     if (logToConsole) {
       hierarchicalLoggingEnabled = true;
       logger.level = Level.ALL;
+      // ignore: avoid_print
       logger.onRecord.listen(print);
     }
     supervisingReceivePort = ReceivePort();
@@ -31,7 +34,8 @@ class ApplicationIsolateServer extends ApplicationServer {
   Future start({bool shareHttpServer = false}) async {
     final result = await super.start(shareHttpServer: shareHttpServer);
     logger.fine(
-        "ApplicationIsolateServer($identifier) started, sending listen message");
+      "ApplicationIsolateServer($identifier) started, sending listen message",
+    );
     supervisingApplicationPort
         .send(ApplicationIsolateSupervisor.messageKeyListening);
 
@@ -63,19 +67,26 @@ class ApplicationIsolateServer extends ApplicationServer {
     await ServiceRegistry.defaultInstance.close();
     logger.clearListeners();
     logger.fine(
-        "ApplicationIsolateServer($identifier) sending stop acknowledgement");
+      "ApplicationIsolateServer($identifier) sending stop acknowledgement",
+    );
     supervisingApplicationPort
         .send(ApplicationIsolateSupervisor.messageKeyStop);
   }
 }
 
 typedef IsolateEntryFunction = void Function(
-    ApplicationInitialServerMessage message);
+  ApplicationInitialServerMessage message,
+);
 
 class ApplicationInitialServerMessage {
-  ApplicationInitialServerMessage(this.streamTypeName, this.streamLibraryURI,
-      this.configuration, this.identifier, this.parentMessagePort,
-      {this.logToConsole = false});
+  ApplicationInitialServerMessage(
+    this.streamTypeName,
+    this.streamLibraryURI,
+    this.configuration,
+    this.identifier,
+    this.parentMessagePort, {
+    this.logToConsole = false,
+  });
 
   String streamTypeName;
   Uri streamLibraryURI;

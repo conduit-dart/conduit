@@ -1,4 +1,4 @@
-import 'http.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// Instances of this type provide configuration for the 'Cache-Control' header.
 ///
@@ -9,11 +9,12 @@ class CachePolicy {
   /// Policies applied to [Response.cachePolicy] will add the appropriate
   /// headers to that response. See properties for definitions of arguments
   /// to this constructor.
-  const CachePolicy(
-      {this.preventIntermediateProxyCaching = false,
-      this.preventCaching = false,
-      this.requireConditionalRequest = false,
-      this.expirationFromNow});
+  const CachePolicy({
+    this.preventIntermediateProxyCaching = false,
+    this.preventCaching = false,
+    this.requireConditionalRequest = false,
+    this.expirationFromNow,
+  });
 
   /// Prevents a response from being cached by an intermediate proxy.
   ///

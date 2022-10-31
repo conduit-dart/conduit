@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 import 'dart:io';
 
@@ -10,8 +12,11 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
 
 abstract class CLIProject implements CLICommand {
-  @Option("directory",
-      abbr: "d", help: "Project directory to execute command in")
+  @Option(
+    "directory",
+    abbr: "d",
+    help: "Project directory to execute command in",
+  )
   Directory? get projectDirectory {
     if (_projectDirectory == null) {
       final String? dir = decodeOptional("directory");
@@ -29,7 +34,8 @@ abstract class CLIProject implements CLICommand {
       final file = projectSpecificationFile;
       if (!file.existsSync()) {
         throw CLIException(
-            "Failed to locate pubspec.yaml in project directory '${projectDirectory!.path}'");
+          "Failed to locate pubspec.yaml in project directory '${projectDirectory!.path}'",
+        );
       }
       final yamlContents = file.readAsStringSync();
       final yaml = loadYaml(yamlContents) as Map<dynamic, dynamic>;
@@ -59,6 +65,7 @@ abstract class CLIProject implements CLICommand {
 
       final lockFileContents = loadYaml(lockFile.readAsStringSync()) as Map;
       final projectVersion =
+          // ignore: avoid_dynamic_calls
           lockFileContents["packages"]["conduit"]["version"] as String;
       _projectVersion = Version.parse(projectVersion);
     }
@@ -91,10 +98,11 @@ abstract class CLIProject implements CLICommand {
 
       if (projectVersion?.major != toolVersion!.major) {
         throw CLIException(
-            "CLI version is incompatible with project conduit version.",
-            instructions: [
-              "Install conduit@${projectVersion?.toString()} or upgrade your project to conduit${toolVersion.toString()}."
-            ]);
+          "CLI version is incompatible with project conduit version.",
+          instructions: [
+            "Install conduit@$projectVersion or upgrade your project to conduit$toolVersion."
+          ],
+        );
       }
     } on CLIException {
       rethrow;
@@ -103,14 +111,17 @@ abstract class CLIProject implements CLICommand {
 
   Future<String> getChannelName() async {
     try {
-      final name = await IsolateExecutor.run(GetChannelExecutable({}),
-          packageConfigURI: packageConfigUri,
-          imports: GetChannelExecutable.importsForPackage(libraryName),
-          logHandler: displayProgress);
+      final name = await IsolateExecutor.run(
+        GetChannelExecutable({}),
+        packageConfigURI: packageConfigUri,
+        imports: GetChannelExecutable.importsForPackage(libraryName),
+        logHandler: displayProgress,
+      );
       return name;
     } on StateError catch (e) {
       throw CLIException(
-          "No ApplicationChannel subclass found in $packageName/$libraryName : ${e.message}");
+        "No ApplicationChannel subclass found in $packageName/$libraryName : ${e.message}",
+      );
     }
   }
 }

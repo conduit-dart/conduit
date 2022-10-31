@@ -1,11 +1,11 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../auth/auth.dart';
-import 'http.dart';
-
-typedef _ResponseModifier = void Function(Response resp);
+import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// A single HTTP request.
 ///
@@ -75,7 +75,7 @@ class Request implements RequestOrResponse {
   /// null if no permission has been set.
   Authorization? authorization;
 
-  List<_ResponseModifier>? _responseModifiers;
+  List<void Function(Response)>? _responseModifiers;
 
   /// The acceptable content types for a [Response] returned for this instance.
   ///
@@ -120,7 +120,8 @@ class Request implements RequestOrResponse {
         _cachedAcceptableTypes = contentTypes;
       } catch (_) {
         throw Response.badRequest(
-            body: {"error": "accept header is malformed"});
+          body: {"error": "accept header is malformed"},
+        );
       }
     }
     return _cachedAcceptableTypes!;
@@ -201,7 +202,7 @@ class Request implements RequestOrResponse {
   ///           });
   ///           return request;
   ///         }
-  void addResponseModifier(void modifier(Response response)) {
+  void addResponseModifier(void Function(Response response) modifier) {
     _responseModifiers ??= [];
     _responseModifiers!.add(modifier);
   }
@@ -257,8 +258,10 @@ class Request implements RequestOrResponse {
     });
 
     if (conduitResponse.cachePolicy != null) {
-      response.headers.add(HttpHeaders.cacheControlHeader,
-          conduitResponse.cachePolicy!.headerValue);
+      response.headers.add(
+        HttpHeaders.cacheControlHeader,
+        conduitResponse.cachePolicy!.headerValue,
+      );
     }
 
     if (body == null) {
@@ -267,7 +270,9 @@ class Request implements RequestOrResponse {
     }
 
     response.headers.add(
-        HttpHeaders.contentTypeHeader, conduitResponse.contentType.toString());
+      HttpHeaders.contentTypeHeader,
+      conduitResponse.contentType.toString(),
+    );
 
     if (body is List<int>) {
       if (compressionType.value != null) {
@@ -300,7 +305,9 @@ class Request implements RequestOrResponse {
   }
 
   List<int>? _responseBodyBytes(
-      Response resp, _Reference<String> compressionType) {
+    Response resp,
+    _Reference<String> compressionType,
+  ) {
     if (resp.body == null) {
       return null;
     }
@@ -321,7 +328,8 @@ class Request implements RequestOrResponse {
     if (codec == null) {
       if (resp.body is! List<int>) {
         throw StateError(
-            "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.");
+          "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.",
+        );
       }
 
       final bytes = resp.body as List<int>;
@@ -341,7 +349,9 @@ class Request implements RequestOrResponse {
   }
 
   Stream<List<int>> _responseBodyStream(
-      Response resp, _Reference<String> compressionType) {
+    Response resp,
+    _Reference<String> compressionType,
+  ) {
     Codec<dynamic, List<int>>? codec;
     if (resp.encodeBody) {
       codec =
@@ -354,7 +364,8 @@ class Request implements RequestOrResponse {
     if (codec == null) {
       if (resp.body is! Stream<List<int>>) {
         throw StateError(
-            "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.");
+          "Invalid response body. Body of type '${resp.body.runtimeType}' cannot be encoded as content-type '${resp.contentType}'.",
+        );
       }
 
       final stream = resp.body as Stream<List<int>>;
@@ -388,14 +399,15 @@ class Request implements RequestOrResponse {
   /// A string that represents more details about the request, typically used for logging.
   ///
   /// Note: Setting includeRequestIP to true creates a significant performance penalty.
-  String toDebugString(
-      {bool includeElapsedTime = true,
-      bool includeRequestIP = false,
-      bool includeMethod = true,
-      bool includeResource = true,
-      bool includeStatusCode = true,
-      bool includeContentSize = false,
-      bool includeHeaders = false}) {
+  String toDebugString({
+    bool includeElapsedTime = true,
+    bool includeRequestIP = false,
+    bool includeMethod = true,
+    bool includeResource = true,
+    bool includeStatusCode = true,
+    bool includeContentSize = false,
+    bool includeHeaders = false,
+  }) {
     final builder = StringBuffer();
     if (includeRequestIP) {
       builder.write("${raw.connectionInfo?.remoteAddress.address} ");

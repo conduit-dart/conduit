@@ -4,23 +4,24 @@ import 'package:test/test.dart';
 
 void main() {
   final ctx = ManagedContext(
-      ManagedDataModel([
-        T,
-        U,
-        V,
-        EnumObject,
-        Constant,
-        ConstantRef,
-        FK,
-        Parent,
-        PresenceHas,
-        PresenceBelongsTo,
-        AbsenceBelongsTo,
-        AbsenceHas,
-        NonDefaultPK,
-        MultiValidate
-      ]),
-      DefaultPersistentStore());
+    ManagedDataModel([
+      T,
+      U,
+      V,
+      EnumObject,
+      Constant,
+      ConstantRef,
+      FK,
+      Parent,
+      PresenceHas,
+      PresenceBelongsTo,
+      AbsenceBelongsTo,
+      AbsenceHas,
+      NonDefaultPK,
+      MultiValidate
+    ]),
+    DefaultPersistentStore(),
+  );
 
   tearDownAll(() async {
     await ctx.close();
@@ -29,7 +30,7 @@ void main() {
   group("Primary key defaults", () {
     test("@primaryKey defaults to using Validate.constant()", () {
       final t = T()..id = 1;
-      expect(t.validate(forEvent: Validating.insert).isValid, true);
+      expect(t.validate().isValid, true);
       expect(t.validate(forEvent: Validating.update).isValid, false);
     });
 
@@ -37,7 +38,7 @@ void main() {
         "A primary key that isn't @primaryKey does not have Validate.constant()",
         () {
       final t = NonDefaultPK()..id = 1;
-      expect(t.validate(forEvent: Validating.insert).isValid, true);
+      expect(t.validate().isValid, true);
       expect(t.validate(forEvent: Validating.update).isValid, true);
     });
   });
@@ -246,7 +247,9 @@ void main() {
       final fk = PresenceBelongsTo()..present = PresenceHas();
       expect(fk.validate().isValid, false);
       expect(
-          fk.validate().errors.first, contains("PresenceBelongsTo.present.id"));
+        fk.validate().errors.first,
+        contains("PresenceBelongsTo.present.id"),
+      );
     });
   });
 
@@ -305,7 +308,7 @@ void main() {
   group("Validate.constant", () {
     test("Allows attributes during insert, not update", () {
       final t = Constant()..constantString = "A";
-      expect(t.validate(forEvent: Validating.insert).isValid, true);
+      expect(t.validate().isValid, true);
 
       expect(t.validate(forEvent: Validating.update).isValid, false);
     });
@@ -314,7 +317,7 @@ void main() {
       final t = Constant()
         ..constantRef = ConstantRef()
         ..id = 1;
-      expect(t.validate(forEvent: Validating.insert).isValid, true);
+      expect(t.validate().isValid, true);
       expect(t.validate(forEvent: Validating.update).isValid, false);
     });
   });
@@ -322,7 +325,7 @@ void main() {
   group("Operation", () {
     test("Specify update only, only runs on update", () {
       final t = T()..mustBeZeroOnUpdate = 10;
-      expect(ManagedValidator.run(t, event: Validating.insert).isValid, true);
+      expect(ManagedValidator.run(t).isValid, true);
 
       t.mustBeZeroOnUpdate = 10;
       expect(ManagedValidator.run(t, event: Validating.update).isValid, false);
@@ -336,10 +339,10 @@ void main() {
       expect(ManagedValidator.run(t, event: Validating.update).isValid, true);
 
       t.mustBeZeroOnInsert = 10;
-      expect(ManagedValidator.run(t, event: Validating.insert).isValid, false);
+      expect(ManagedValidator.run(t).isValid, false);
 
       t.mustBeZeroOnInsert = 0;
-      expect(ManagedValidator.run(t, event: Validating.insert).isValid, true);
+      expect(ManagedValidator.run(t).isValid, true);
     });
 
     test("More than one matcher", () {
@@ -600,9 +603,10 @@ class NonDefaultPK extends ManagedObject<_NonDefaultPK>
 
 class _NonDefaultPK {
   @Column(
-      primaryKey: true,
-      databaseType: ManagedPropertyType.bigInteger,
-      autoincrement: true)
+    primaryKey: true,
+    databaseType: ManagedPropertyType.bigInteger,
+    autoincrement: true,
+  )
   int? id;
 
   String? name;
@@ -619,9 +623,11 @@ class _MultiValidate {
 
   @validateReference
   @Validate.compare(lessThan: 5)
-  @Column(validators: [
-    Validate.compare(greaterThan: 3),
-    Validate.compare(equalTo: 4)
-  ])
+  @Column(
+    validators: [
+      Validate.compare(greaterThan: 3),
+      Validate.compare(equalTo: 4)
+    ],
+  )
   int? canOnlyBe4;
 }

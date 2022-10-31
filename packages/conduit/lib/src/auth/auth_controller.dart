@@ -1,13 +1,14 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/auth/auth.dart';
 import 'package:conduit/src/http/resource_controller.dart';
 import 'package:conduit/src/http/resource_controller_bindings.dart';
 import 'package:conduit/src/http/response.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
-
-import 'auth.dart';
 
 /// Controller for issuing and refreshing OAuth 2.0 access tokens.
 ///
@@ -61,13 +62,14 @@ class AuthController extends ResourceController {
   /// This endpoint requires client_id authentication. The Authorization header must
   /// include a valid Client ID and Secret in the Basic authorization scheme format.
   @Operation.post()
-  Future<Response> grant(
-      {@Bind.query("username") String? username,
-      @Bind.query("password") String? password,
-      @Bind.query("refresh_token") String? refreshToken,
-      @Bind.query("code") String? authCode,
-      @Bind.query("grant_type") String? grantType,
-      @Bind.query("scope") String? scope}) async {
+  Future<Response> grant({
+    @Bind.query("username") String? username,
+    @Bind.query("password") String? password,
+    @Bind.query("refresh_token") String? refreshToken,
+    @Bind.query("code") String? authCode,
+    @Bind.query("grant_type") String? grantType,
+    @Bind.query("scope") String? scope,
+  }) async {
     AuthBasicCredentials basicRecord;
     try {
       basicRecord = _parser.parse(authHeader);
@@ -80,14 +82,21 @@ class AuthController extends ResourceController {
 
       if (grantType == "password") {
         final token = await authServer!.authenticate(
-            username, password, basicRecord.username, basicRecord.password,
-            requestedScopes: scopes);
+          username,
+          password,
+          basicRecord.username,
+          basicRecord.password,
+          requestedScopes: scopes,
+        );
 
         return AuthController.tokenResponse(token);
       } else if (grantType == "refresh_token") {
         final token = await authServer!.refresh(
-            refreshToken, basicRecord.username, basicRecord.password,
-            requestedScopes: scopes);
+          refreshToken,
+          basicRecord.username,
+          basicRecord.password,
+          requestedScopes: scopes,
+        );
 
         return AuthController.tokenResponse(token);
       } else if (grantType == "authorization_code") {
@@ -114,8 +123,11 @@ class AuthController extends ResourceController {
   /// Transforms a [AuthToken] into a [Response] object with an RFC6749 compliant JSON token
   /// as the HTTP response body.
   static Response tokenResponse(AuthToken token) {
-    return Response(HttpStatus.ok,
-        {"Cache-Control": "no-store", "Pragma": "no-cache"}, token.asMap());
+    return Response(
+      HttpStatus.ok,
+      {"Cache-Control": "no-store", "Pragma": "no-cache"},
+      token.asMap(),
+    );
   }
 
   @override
@@ -139,7 +151,9 @@ class AuthController extends ResourceController {
 
   @override
   List<APIParameter?> documentOperationParameters(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     final parameters = super.documentOperationParameters(context, operation)!;
     parameters.removeWhere((p) => p!.name == HttpHeaders.authorizationHeader);
     return parameters;
@@ -147,7 +161,9 @@ class AuthController extends ResourceController {
 
   @override
   APIRequestBody documentOperationRequestBody(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     final body = super.documentOperationRequestBody(context, operation)!;
     body.content!["application/x-www-form-urlencoded"]!.schema!.isRequired = [
       "grant_type"
@@ -159,7 +175,10 @@ class AuthController extends ResourceController {
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path) {
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  ) {
     final operations = super.documentOperations(context, route, path);
 
     operations.forEach((_, op) {
@@ -180,26 +199,32 @@ class AuthController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     return {
       "200": APIResponse.schema(
-          "Successfully exchanged credentials for token",
-          APISchemaObject.object({
-            "access_token": APISchemaObject.string(),
-            "token_type": APISchemaObject.string(),
-            "expires_in": APISchemaObject.integer(),
-            "refresh_token": APISchemaObject.string(),
-            "scope": APISchemaObject.string()
-          }),
-          contentTypes: ["application/json"]),
-      "400": APIResponse.schema("Invalid credentials or missing parameters.",
-          APISchemaObject.object({"error": APISchemaObject.string()}),
-          contentTypes: ["application/json"])
+        "Successfully exchanged credentials for token",
+        APISchemaObject.object({
+          "access_token": APISchemaObject.string(),
+          "token_type": APISchemaObject.string(),
+          "expires_in": APISchemaObject.integer(),
+          "refresh_token": APISchemaObject.string(),
+          "scope": APISchemaObject.string()
+        }),
+        contentTypes: ["application/json"],
+      ),
+      "400": APIResponse.schema(
+        "Invalid credentials or missing parameters.",
+        APISchemaObject.object({"error": APISchemaObject.string()}),
+        contentTypes: ["application/json"],
+      )
     };
   }
 
   Response _responseForError(AuthRequestError error) {
     return Response.badRequest(
-        body: {"error": AuthServerException.errorString(error)});
+      body: {"error": AuthServerException.errorString(error)},
+    );
   }
 }

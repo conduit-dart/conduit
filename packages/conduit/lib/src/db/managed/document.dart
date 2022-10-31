@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:conduit/src/db/managed/managed.dart';
 
 /// Allows storage of unstructured data in a [ManagedObject] property.

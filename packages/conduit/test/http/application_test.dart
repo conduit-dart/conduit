@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -58,8 +60,10 @@ void main() {
     });
 
     test("Application gzips content", () async {
-      final resp = await http.get(Uri.parse("http://localhost:8888/t"),
-          headers: {"Accept-Encoding": "gzip"});
+      final resp = await http.get(
+        Uri.parse("http://localhost:8888/t"),
+        headers: {"Accept-Encoding": "gzip"},
+      );
       expect(resp.headers["content-encoding"], "gzip");
     });
 

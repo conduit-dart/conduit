@@ -32,7 +32,7 @@ jobs:
     - name: Install melos
       run: dart pub global activate melos
     - name: Strip overrides
-      run: melos run strip-overrides
+      run: melos strip-overrides
     - name: Format
       run: dart fix --apply && dart format --fix .
     - name: Uptick versions
@@ -41,14 +41,16 @@ jobs:
       run: git diff --unified=0 $GITHUB_SHA packages/conduit/CHANGELOG.md | tail +6 | sed -e 's/^\+//' > CHANGES.txt
     - name: Cache Source
       run: melos cache-source
+    - name: Publish package
+      run: melos publish --no-dry-run --git-tag-version --yes
+    - name: Apply overrides
+      run: melos apply-overrides
     - name: Push tags
       uses: CasperWA/push-protected@v2
       with:
         token: ${{ secrets.CONDUIT_PAT }}
         tags: true
         branch: master
-    - name: Publish package
-      run: melos publish --no-dry-run --git-tag-version --yes
     - name: Compute the release tag
       run: |
         echo "release_tag=v`cat packages/conduit/pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV

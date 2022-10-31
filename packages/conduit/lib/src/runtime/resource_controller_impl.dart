@@ -35,14 +35,14 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
     if (conflictingOperations.isNotEmpty) {
       final opNames = conflictingOperations.map((s) => "'$s'").join(", ");
       throw StateError(
-          "Invalid controller. Controller '${type.reflectedType.toString()}' has "
+          "Invalid controller. Controller '${type.reflectedType}' has "
           "ambiguous operations. Offending operating methods: $opNames.");
     }
 
     if (unsatisfiableOperations.isNotEmpty) {
       final opNames = unsatisfiableOperations.map((s) => "'$s'").join(", ");
       throw StateError(
-          "Invalid controller. Controller '${type.reflectedType.toString()}' has operations where "
+          "Invalid controller. Controller '${type.reflectedType}' has operations where "
           "parameter is bound with @Bind.path(), but path variable is not declared in "
           "@Operation(). Offending operation methods: $opNames");
     }
@@ -54,31 +54,30 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
 
   String compile(BuildContext ctx) =>
       getResourceControllerImplSource(ctx, this);
-  static late final _listType = reflectType(List);
+  static final _listType = reflectType(List);
   List<String> get directives {
     final directives = <String>[];
-    operations.forEach((op) {
-      final imports = [
-        op.positionalParameters,
-        op.namedParameters,
-        ivarParameters
-      ]
-          .expand((i) => i!)
-          .map((p) {
-            final type = reflectType(p.type);
-            if (type.isSubtypeOf(_listType)) {
-              return type.typeArguments.first.location?.sourceUri;
-            }
-            return type.location?.sourceUri;
-          })
-          .where((uri) =>
-              uri != null &&
-              (uri.scheme == "package" ||
-                  (uri.scheme == "file" && uri.isAbsolute)))
-          .map((uri) => "import '$uri';")
-          .toList();
+    for (final op in operations) {
+      final imports =
+          [op.positionalParameters, op.namedParameters, ivarParameters]
+              .expand((i) => i!)
+              .map((p) {
+                final type = reflectType(p.type);
+                if (type.isSubtypeOf(_listType)) {
+                  return type.typeArguments.first.location?.sourceUri;
+                }
+                return type.location?.sourceUri;
+              })
+              .where(
+                (uri) =>
+                    uri != null &&
+                    (uri.scheme == "package" ||
+                        (uri.scheme == "file" && uri.isAbsolute)),
+              )
+              .map((uri) => "import '$uri';")
+              .toList();
       directives.addAll(imports);
-    });
+    }
     return directives;
   }
 
@@ -118,15 +117,19 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
   }
 
   @override
-  void applyRequestProperties(ResourceController untypedController,
-      ResourceControllerOperationInvocationArgs args) {
+  void applyRequestProperties(
+    ResourceController untypedController,
+    ResourceControllerOperationInvocationArgs args,
+  ) {
     final rcMirror = reflect(untypedController);
 
     args.instanceVariables.forEach((k, v) => rcMirror.setField(Symbol(k), v));
   }
 
-  ResourceControllerParameter getParameterForVariable(VariableMirror mirror,
-      {required bool isRequired}) {
+  ResourceControllerParameter getParameterForVariable(
+    VariableMirror mirror, {
+    required bool isRequired,
+  }) {
     final metadata = mirror.metadata
         .firstWhere((im) => im.reflectee is Bind)
         .reflectee as Bind;
@@ -150,8 +153,10 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
               metadata.require != null ||
               metadata.accept != null) {
             if (!(isDecodingSerializable || isDecodingListOfSerializable)) {
-              throw _makeError(mirror,
-                  "Filters can only be used on Serializable or List<Serializable>.");
+              throw _makeError(
+                mirror,
+                "Filters can only be used on Serializable or List<Serializable>.",
+              );
             }
           }
 
@@ -161,11 +166,13 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
 
               final value = boundType.newInstance(Symbol.empty, []).reflectee
                   as Serializable;
-              value.read(body.as(),
-                  accept: metadata.accept,
-                  ignore: metadata.ignore,
-                  reject: metadata.reject,
-                  require: metadata.require);
+              value.read(
+                body.as(),
+                accept: metadata.accept,
+                ignore: metadata.ignore,
+                reject: metadata.reject,
+                require: metadata.require,
+              );
 
               return value;
             };
@@ -181,11 +188,13 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
               final iterable = bodyList.map((object) {
                 final value = typeArg.newInstance(Symbol.empty, []).reflectee
                     as Serializable;
-                value.read(object,
-                    accept: metadata.accept,
-                    ignore: metadata.ignore,
-                    reject: metadata.reject,
-                    require: metadata.require);
+                value.read(
+                  object,
+                  accept: metadata.accept,
+                  ignore: metadata.ignore,
+                  reject: metadata.reject,
+                  require: metadata.require,
+                );
 
                 return value;
               }).toList();
@@ -208,22 +217,28 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
           if (!(boundType.isAssignableTo(reflectType(bool)) || isListOfBools)) {
             if (boundType.isAssignableTo(reflectType(List))) {
               _enforceTypeCanBeParsedFromString(
-                  mirror, boundType.typeArguments.first);
+                mirror,
+                boundType.typeArguments.first,
+              );
             } else {
               _enforceTypeCanBeParsedFromString(mirror, boundType);
             }
           }
           decoder = (value) {
             return _convertParameterListWithMirror(
-                value as List<String>?, boundType);
+              value as List<String>?,
+              boundType,
+            );
           };
         }
         break;
       case BindingType.path:
         {
           if (boundType.isAssignableTo(reflectType(List))) {
-            throw _makeError(mirror,
-                "Cannot bind variable of type 'List' to path parameter.");
+            throw _makeError(
+              mirror,
+              "Cannot bind variable of type 'List' to path parameter.",
+            );
           }
           decoder = (value) {
             return _convertParameterWithMirror(value as String?, mirror.type);
@@ -234,32 +249,36 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
         {
           if (boundType.isAssignableTo(reflectType(List))) {
             _enforceTypeCanBeParsedFromString(
-                mirror, boundType.typeArguments.first);
+              mirror,
+              boundType.typeArguments.first,
+            );
           } else {
             _enforceTypeCanBeParsedFromString(mirror, boundType);
           }
           decoder = (value) {
             return _convertParameterListWithMirror(
-                value as List<String>?, mirror.type);
+              value as List<String>?,
+              mirror.type,
+            );
           };
         }
         break;
     }
 
     return ResourceControllerParameter(
-        acceptFilter: metadata.accept,
-        ignoreFilter: metadata.ignore,
-        rejectFilter: metadata.reject,
-        requireFilter: metadata.require,
-        name: metadata.name,
-        type: mirror.type.reflectedType,
-        symbolName: MirrorSystem.getName(mirror.simpleName),
-        location: metadata.bindingType,
-        isRequired: isRequired,
-        decoder: decoder,
-        defaultValue: (mirror is ParameterMirror)
-            ? mirror.defaultValue?.reflectee
-            : null);
+      acceptFilter: metadata.accept,
+      ignoreFilter: metadata.ignore,
+      rejectFilter: metadata.reject,
+      requireFilter: metadata.require,
+      name: metadata.name,
+      type: mirror.type.reflectedType,
+      symbolName: MirrorSystem.getName(mirror.simpleName),
+      location: metadata.bindingType,
+      isRequired: isRequired,
+      decoder: decoder,
+      defaultValue:
+          (mirror is ParameterMirror) ? mirror.defaultValue?.reflectee : null,
+    );
   }
 
   ResourceControllerOperation getOperationForMethod(MethodMirror mirror) {
@@ -278,27 +297,33 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
     }
 
     return ResourceControllerOperation(
-        positionalParameters: mirror.parameters
-            .where((pm) => !pm.isOptional)
-            .map((pm) => getParameterForVariable(pm, isRequired: true))
-            .toList(),
-        namedParameters: mirror.parameters
-            .where((pm) => pm.isOptional)
-            .map((pm) => getParameterForVariable(
-                  pm,
-                  isRequired: false,
-                ))
-            .toList(),
-        scopes: getMethodScopes(mirror),
-        dartMethodName: MirrorSystem.getName(symbol),
-        httpMethod: operation.method.toUpperCase(),
-        pathVariables: operation.pathVariables,
-        invoker: (rc, args) {
-          return reflect(rc)
-              .invoke(symbol, args.positionalArguments,
-                  args.namedArguments.map((k, v) => MapEntry(Symbol(k), v)))
-              .reflectee as Future<Response?>;
-        });
+      positionalParameters: mirror.parameters
+          .where((pm) => !pm.isOptional)
+          .map((pm) => getParameterForVariable(pm, isRequired: true))
+          .toList(),
+      namedParameters: mirror.parameters
+          .where((pm) => pm.isOptional)
+          .map(
+            (pm) => getParameterForVariable(
+              pm,
+              isRequired: false,
+            ),
+          )
+          .toList(),
+      scopes: getMethodScopes(mirror),
+      dartMethodName: MirrorSystem.getName(symbol),
+      httpMethod: operation.method.toUpperCase(),
+      pathVariables: operation.pathVariables,
+      invoker: (rc, args) {
+        return reflect(rc)
+            .invoke(
+              symbol,
+              args.positionalArguments,
+              args.namedArguments.map((k, v) => MapEntry(Symbol(k), v)),
+            )
+            .reflectee as Future<Response?>;
+      },
+    );
   }
 }
 
@@ -309,7 +334,9 @@ StateError _makeError(VariableMirror mirror, String s) {
 }
 
 void _enforceTypeCanBeParsedFromString(
-    VariableMirror varMirror, TypeMirror typeMirror) {
+  VariableMirror varMirror,
+  TypeMirror typeMirror,
+) {
   if (typeMirror is! ClassMirror) {
     throw _makeError(varMirror, 'Cannot bind dynamic type parameters.');
   }
@@ -321,7 +348,9 @@ void _enforceTypeCanBeParsedFromString(
   final classMirror = typeMirror;
   if (!classMirror.staticMembers.containsKey(#parse)) {
     throw _makeError(
-        varMirror, 'Parameter type does not implement static parse method.');
+      varMirror,
+      'Parameter type does not implement static parse method.',
+    );
   }
 
   final parseMethod = classMirror.staticMembers[#parse]!;
@@ -335,16 +364,16 @@ void _enforceTypeCanBeParsedFromString(
 }
 
 dynamic _convertParameterListWithMirror(
-    List<String>? parameterValues, TypeMirror typeMirror) {
+  List<String>? parameterValues,
+  TypeMirror typeMirror,
+) {
   if (typeMirror.isSubtypeOf(reflectType(List))) {
-    final iterable = parameterValues!.map((str) =>
-        _convertParameterWithMirror(str, typeMirror.typeArguments.first));
+    final iterable = parameterValues!.map(
+      (str) => _convertParameterWithMirror(str, typeMirror.typeArguments.first),
+    );
 
     return (typeMirror as ClassMirror).newInstance(#from, [iterable]).reflectee;
   } else {
-    if (parameterValues == null) {
-      print('wtf');
-    }
     if (parameterValues!.length > 1) {
       throw ArgumentError("multiple values not expected");
     }
@@ -353,7 +382,9 @@ dynamic _convertParameterListWithMirror(
 }
 
 dynamic _convertParameterWithMirror(
-    String? parameterValue, TypeMirror typeMirror) {
+  String? parameterValue,
+  TypeMirror typeMirror,
+) {
   if (typeMirror.isSubtypeOf(reflectType(bool))) {
     return true;
   }

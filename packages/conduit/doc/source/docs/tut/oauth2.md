@@ -146,7 +146,7 @@ class RegisterController extends ResourceController {
     }
 
     user
-      ..salt = AuthUtility.generateRandomSalt()
+      ..salt = generateRandomSalt()
       ..hashedPassword = authServer.hashPassword(user.password, user.salt);
 
     return Response.ok(await Query(context, values: user).insert());

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -28,14 +30,18 @@ void main() {
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    final someOtherContext = ManagedContext(ManagedDataModel([]), null);
+    final someOtherContext = ManagedContext(ManagedDataModel([]), EmptyStore());
     try {
       Query.forEntity(
-          context!.dataModel!.entityForType(TestModel), someOtherContext);
+        context!.dataModel!.entityForType(TestModel),
+        someOtherContext,
+      );
       expect(true, false);
     } on StateError catch (e) {
-      expect(e.toString(),
-          allOf([contains("'simple'"), contains("is from different context")]));
+      expect(
+        e.toString(),
+        allOf([contains("'simple'"), contains("is from different context")]),
+      );
     }
   });
 
@@ -73,11 +79,12 @@ void main() {
       fail("unreachable");
     } on ArgumentError catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("'foobar'"),
-            contains("'TestModel'"),
-          ]));
+        e.toString(),
+        allOf([
+          contains("'foobar'"),
+          contains("'TestModel'"),
+        ]),
+      );
     }
   });
 
@@ -105,7 +112,7 @@ void main() {
     result = await req.fetch();
 
     int? idIndex = 0;
-    for (TestModel m in result) {
+    for (final TestModel m in result) {
       final int? next = m.id;
       expect(next, greaterThan(idIndex!));
       idIndex = next;
@@ -142,12 +149,13 @@ void main() {
       expect(true, false);
     } on ArgumentError catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("does not exist on"),
-            contains("'nonexisting'"),
-            contains("'TestModel'"),
-          ]));
+        e.toString(),
+        allOf([
+          contains("does not exist on"),
+          contains("'nonexisting'"),
+          contains("'TestModel'"),
+        ]),
+      );
     }
   });
 
@@ -158,12 +166,13 @@ void main() {
       expect(true, false);
     } on ArgumentError catch (e) {
       expect(
-          e.toString(),
-          allOf([
-            contains("'posts'"),
-            contains("'GenUser'"),
-            contains("is a relationship"),
-          ]));
+        e.toString(),
+        allOf([
+          contains("'posts'"),
+          contains("'GenUser'"),
+          contains("is a relationship"),
+        ]),
+      );
     }
   });
 
@@ -230,8 +239,10 @@ void main() {
 
       fail("unreachable");
     } on ArgumentError catch (e) {
-      expect(e.toString(),
-          contains("Property 'badkey' does not exist on 'TestModel'"));
+      expect(
+        e.toString(),
+        contains("Property 'badkey' does not exist on 'TestModel'"),
+      );
     }
   });
 
@@ -258,12 +269,13 @@ void main() {
     var res = await req.fetch();
     expect(res.length, 5);
     expect(
-        res
-            .map((p) => p.text)
-            .where((text) => num.parse(text!) % 2 == 0)
-            .toList()
-            .length,
-        5);
+      res
+          .map((p) => p.text)
+          .where((text) => num.parse(text!) % 2 == 0)
+          .toList()
+          .length,
+      5,
+    );
 
     final query = Query<GenPost>(context!);
     query.where((o) => o.owner).identifiedBy(u1.id);
@@ -273,12 +285,13 @@ void main() {
     expect(user, isNotNull);
     expect(res.length, 5);
     expect(
-        res
-            .map((p) => p.text)
-            .where((text) => num.parse(text!) % 2 == 0)
-            .toList()
-            .length,
-        5);
+      res
+          .map((p) => p.text)
+          .where((text) => num.parse(text!) % 2 == 0)
+          .toList()
+          .length,
+      5,
+    );
   });
 
   test("Fetch object with null reference", () async {
@@ -316,7 +329,7 @@ void main() {
 
     final objects = [GenUser()..name = "Joe", GenUser()..name = "Bob"];
 
-    for (var o in objects) {
+    for (final o in objects) {
       final req = Query<GenUser>(context!)..values = o;
       await req.insert();
     }
@@ -328,8 +341,10 @@ void main() {
 
       expect(true, false);
     } on StateError catch (e) {
-      expect(e.toString(),
-          contains("'fetchOne' returned more than one row from 'GenUser'"));
+      expect(
+        e.toString(),
+        contains("'fetchOne' returned more than one row from 'GenUser'"),
+      );
     }
   });
 
@@ -357,8 +372,10 @@ void main() {
         ..returningProperties((p) => [p.id, p["owner_id"]]);
       expect(true, false);
     } on ArgumentError catch (e) {
-      expect(e.toString(),
-          contains("Property 'owner_id' does not exist on 'GenPost'"));
+      expect(
+        e.toString(),
+        contains("Property 'owner_id' does not exist on 'GenPost'"),
+      );
     }
   });
 
@@ -381,13 +398,13 @@ void main() {
     await q.insert();
 
     q = Query<EnumObject>(context!);
-    EnumObject? result = (await q.fetchOne())!;
-    expect(result.enumValues, EnumValues.abcd);
+    EnumObject? result = await q.fetchOne();
+    expect(result!.enumValues, EnumValues.abcd);
     expect(result.asMap()["enumValues"], "abcd");
 
     q = Query<EnumObject>(context!)
       ..where((o) => o.enumValues).equalTo(EnumValues.abcd);
-    result = (await q.fetchOne())!;
+    result = await q.fetchOne();
     expect(result, isNotNull);
 
     q = Query<EnumObject>(context!)
@@ -411,7 +428,7 @@ void main() {
   test("When fetching invalid enum value from db, throws error", () async {
     context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
-    await context!.persistentStore!
+    await context!.persistentStore
         .execute("INSERT INTO _enumobject (enumValues) VALUES ('foobar')");
 
     try {
@@ -432,9 +449,11 @@ void main() {
       fail("unreachable");
     } on ArgumentError catch (e) {
       expect(
-          e.toString(),
-          contains(
-              "Cannot select has-many or has-one relationship properties"));
+        e.toString(),
+        contains(
+          "Cannot select has-many or has-one relationship properties",
+        ),
+      );
     }
   });
 

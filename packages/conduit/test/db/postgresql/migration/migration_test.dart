@@ -25,14 +25,18 @@ void main() {
   group("Tables", () {
     test("Add table to schema", () async {
       final cmds = await applyDifference(
-          store,
-          Schema.empty(),
-          Schema([
-            SchemaTable("foo", [
-              SchemaColumn("id", ManagedPropertyType.integer,
-                  isPrimaryKey: true)
-            ])
-          ]));
+        store,
+        Schema.empty(),
+        Schema([
+          SchemaTable("foo", [
+            SchemaColumn(
+              "id",
+              ManagedPropertyType.integer,
+              isPrimaryKey: true,
+            )
+          ])
+        ]),
+      );
 
       expect(cmds.length, 1);
 
@@ -43,18 +47,25 @@ void main() {
 
     test("Add multiple, unrelated tables", () async {
       final cmds = await applyDifference(
-          store,
-          Schema.empty(),
-          Schema([
-            SchemaTable("foo", [
-              SchemaColumn("id", ManagedPropertyType.integer,
-                  isPrimaryKey: true)
-            ]),
-            SchemaTable("bar", [
-              SchemaColumn("id", ManagedPropertyType.integer,
-                  isPrimaryKey: true)
-            ])
-          ]));
+        store,
+        Schema.empty(),
+        Schema([
+          SchemaTable("foo", [
+            SchemaColumn(
+              "id",
+              ManagedPropertyType.integer,
+              isPrimaryKey: true,
+            )
+          ]),
+          SchemaTable("bar", [
+            SchemaColumn(
+              "id",
+              ManagedPropertyType.integer,
+              isPrimaryKey: true,
+            )
+          ])
+        ]),
+      );
 
       expect(cmds.length, 2);
 
@@ -105,14 +116,19 @@ void main() {
           ]),
         ]),
         Schema([
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("a", ManagedPropertyType.integer),
-            SchemaColumn("b", ManagedPropertyType.integer, isNullable: true),
-          ], uniqueColumnSetNames: [
-            "a",
-            "b"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("a", ManagedPropertyType.integer),
+              SchemaColumn("b", ManagedPropertyType.integer, isNullable: true),
+            ],
+            uniqueColumnSetNames: ["a", "b"],
+          ),
         ])
       ];
 
@@ -129,14 +145,19 @@ void main() {
       final schemas = [
         Schema.empty(),
         Schema([
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("a", ManagedPropertyType.integer),
-            SchemaColumn("b", ManagedPropertyType.integer)
-          ], uniqueColumnSetNames: [
-            "a",
-            "b"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("a", ManagedPropertyType.integer),
+              SchemaColumn("b", ManagedPropertyType.integer)
+            ],
+            uniqueColumnSetNames: ["a", "b"],
+          ),
         ]),
         Schema([
           SchemaTable("u", [
@@ -160,25 +181,35 @@ void main() {
       final schemas = [
         Schema.empty(),
         Schema([
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("a", ManagedPropertyType.integer),
-            SchemaColumn("b", ManagedPropertyType.integer)
-          ], uniqueColumnSetNames: [
-            "a",
-            "b"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("a", ManagedPropertyType.integer),
+              SchemaColumn("b", ManagedPropertyType.integer)
+            ],
+            uniqueColumnSetNames: ["a", "b"],
+          ),
         ]),
         Schema([
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("a", ManagedPropertyType.integer),
-            SchemaColumn("b", ManagedPropertyType.integer),
-            SchemaColumn("c", ManagedPropertyType.integer, isNullable: true)
-          ], uniqueColumnSetNames: [
-            "b",
-            "c"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("a", ManagedPropertyType.integer),
+              SchemaColumn("b", ManagedPropertyType.integer),
+              SchemaColumn("c", ManagedPropertyType.integer, isNullable: true)
+            ],
+            uniqueColumnSetNames: ["b", "c"],
+          ),
         ])
       ];
 
@@ -199,15 +230,24 @@ void main() {
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true)
           ]),
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
-          ], uniqueColumnSetNames: [
-            "x",
-            "ref"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn.relationship(
+                "ref",
+                ManagedPropertyType.integer,
+                relatedTableName: "t",
+                relatedColumnName: "id",
+              )
+            ],
+            uniqueColumnSetNames: ["x", "ref"],
+          ),
         ])
       ];
 
@@ -215,11 +255,14 @@ void main() {
       final defs = await TableDefinition.get(store, ["t", "u"]);
       expect(defs["u"]!.uniqueSet, isNotNull);
       expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test(
@@ -240,15 +283,24 @@ void main() {
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true)
           ]),
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
-          ], uniqueColumnSetNames: [
-            "x",
-            "ref"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn.relationship(
+                "ref",
+                ManagedPropertyType.integer,
+                relatedTableName: "t",
+                relatedColumnName: "id",
+              )
+            ],
+            uniqueColumnSetNames: ["x", "ref"],
+          ),
         ])
       ];
 
@@ -257,11 +309,14 @@ void main() {
       final defs = await TableDefinition.get(store, ["t", "u"]);
       expect(defs["u"]!.uniqueSet, isNotNull);
       expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test(
@@ -273,30 +328,43 @@ void main() {
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true)
           ]),
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn("y", ManagedPropertyType.integer),
-          ], uniqueColumnSetNames: [
-            "x",
-            "y"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn("y", ManagedPropertyType.integer),
+            ],
+            uniqueColumnSetNames: ["x", "y"],
+          ),
         ]),
         Schema([
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true)
           ]),
-          SchemaTable("u", [
-            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn("y", ManagedPropertyType.integer),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
-          ], uniqueColumnSetNames: [
-            "x",
-            "y",
-            "ref"
-          ]),
+          SchemaTable(
+            "u",
+            [
+              SchemaColumn(
+                "id",
+                ManagedPropertyType.integer,
+                isPrimaryKey: true,
+              ),
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn("y", ManagedPropertyType.integer),
+              SchemaColumn.relationship(
+                "ref",
+                ManagedPropertyType.integer,
+                relatedTableName: "t",
+                relatedColumnName: "id",
+              )
+            ],
+            uniqueColumnSetNames: ["x", "y", "ref"],
+          ),
         ])
       ];
 
@@ -305,11 +373,14 @@ void main() {
       final defs = await TableDefinition.get(store, ["t", "u"]);
       expect(defs["u"]!.uniqueSet, isNotNull);
       expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x", "y"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
   });
 
@@ -352,11 +423,14 @@ void main() {
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
             SchemaColumn("x", ManagedPropertyType.string),
-            SchemaColumn("y", ManagedPropertyType.datetime,
-                isIndexed: true,
-                isNullable: true,
-                isUnique: true,
-                defaultValue: "'1900-01-01 00:00:00'")
+            SchemaColumn(
+              "y",
+              ManagedPropertyType.datetime,
+              isIndexed: true,
+              isNullable: true,
+              isUnique: true,
+              defaultValue: "'1900-01-01 00:00:00'",
+            )
           ]),
         ])
       ];
@@ -369,11 +443,14 @@ void main() {
       defs = await TableDefinition.get(store, ["foo"]);
       defs["foo"]!.expectColumn("id", "integer", primaryKey: true);
       defs["foo"]!.expectColumn("x", "text");
-      defs["foo"]!.expectColumn("y", "timestamp without time zone",
-          defaultValue: "'1900-01-01 00:00:00'::timestamp without time zone",
-          nullable: true,
-          indexed: true,
-          unique: true);
+      defs["foo"]!.expectColumn(
+        "y",
+        "timestamp without time zone",
+        defaultValue: "'1900-01-01 00:00:00'::timestamp without time zone",
+        nullable: true,
+        indexed: true,
+        unique: true,
+      );
     });
 
     test("Add column with autoincrementing", () async {
@@ -387,8 +464,11 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                autoincrement: true),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+              autoincrement: true,
+            ),
           ]),
         ])
       ];
@@ -455,7 +535,7 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger, isIndexed: false),
+            SchemaColumn("x", ManagedPropertyType.bigInteger),
           ]),
         ]),
         Schema([
@@ -467,7 +547,7 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger, isIndexed: false),
+            SchemaColumn("x", ManagedPropertyType.bigInteger),
           ]),
         ]),
       ];
@@ -479,7 +559,7 @@ void main() {
 
       await applyDifference(store, schemas[2], schemas[3]);
       defs = await TableDefinition.get(store, ["foo"]);
-      defs["foo"]!.expectColumn("x", "bigint", indexed: false);
+      defs["foo"]!.expectColumn("x", "bigint");
     });
 
     test("Modify defaultValue", () async {
@@ -488,22 +568,29 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                defaultValue: null),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+            ),
           ]),
         ]),
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                defaultValue: "1"),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+              defaultValue: "1",
+            ),
           ]),
         ]),
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                defaultValue: null),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+            ),
           ]),
         ]),
       ];
@@ -515,7 +602,7 @@ void main() {
 
       await applyDifference(store, schemas[2], schemas[3]);
       defs = await TableDefinition.get(store, ["foo"]);
-      defs["foo"]!.expectColumn("x", "bigint", defaultValue: null);
+      defs["foo"]!.expectColumn("x", "bigint");
     });
 
     test("Modify unique", () async {
@@ -524,7 +611,7 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger, isUnique: false),
+            SchemaColumn("x", ManagedPropertyType.bigInteger),
           ]),
         ]),
         Schema([
@@ -536,7 +623,7 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger, isUnique: false),
+            SchemaColumn("x", ManagedPropertyType.bigInteger),
           ]),
         ]),
       ];
@@ -548,7 +635,7 @@ void main() {
 
       await applyDifference(store, schemas[2], schemas[3]);
       defs = await TableDefinition.get(store, ["foo"]);
-      defs["foo"]!.expectColumn("x", "bigint", unique: false);
+      defs["foo"]!.expectColumn("x", "bigint");
     });
 
     test("Modify nullability", () async {
@@ -557,8 +644,10 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                isNullable: false),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+            ),
           ]),
         ]),
         Schema([
@@ -570,8 +659,10 @@ void main() {
         Schema([
           SchemaTable("foo", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn("x", ManagedPropertyType.bigInteger,
-                isNullable: false),
+            SchemaColumn(
+              "x",
+              ManagedPropertyType.bigInteger,
+            ),
           ]),
         ]),
       ];
@@ -583,7 +674,7 @@ void main() {
 
       await applyDifference(store, schemas[2], schemas[3]);
       defs = await TableDefinition.get(store, ["foo"]);
-      defs["foo"]!.expectColumn("x", "bigint", nullable: false);
+      defs["foo"]!.expectColumn("x", "bigint");
     });
   });
 
@@ -597,19 +688,26 @@ void main() {
           ]),
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
         ])
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("In reverse order, add tables, one with a foreign key to another",
@@ -619,8 +717,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true)
@@ -630,11 +732,14 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Create tables with foreign key references to one another", () async {
@@ -643,29 +748,43 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "u", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "u",
+              relatedColumnName: "id",
+            )
           ]),
         ])
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
-      defs["t"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "u",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+      defs["t"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "u",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Create table with foreign key reference to itself", () async {
@@ -674,19 +793,26 @@ void main() {
         Schema([
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
         ])
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["t"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["t"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Create 3 tables with cyclical foreign keys", () async {
@@ -695,39 +821,60 @@ void main() {
         Schema([
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "u", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "u",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "v", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "v",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("v", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
         ])
       ];
 
       await applyDifference(store, schemas[0], schemas[1]);
       final defs = await TableDefinition.get(store, ["t", "u", "v"]);
-      defs["t"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "u",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "v",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
-      defs["v"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["t"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "u",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "v",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+      defs["v"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Add a table with a foreign key to an existing table", () async {
@@ -744,8 +891,12 @@ void main() {
           ]),
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
         ])
       ];
@@ -754,11 +905,14 @@ void main() {
       await applyDifference(store, schemas[1], schemas[2]);
 
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test(
@@ -774,8 +928,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -786,11 +944,14 @@ void main() {
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Add a new foreign key column", () async {
@@ -807,8 +968,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -819,11 +984,14 @@ void main() {
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Add a new unique (has-one) foreign key column", () async {
@@ -840,8 +1008,13 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id", isUnique: true)
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+              isUnique: true,
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -852,12 +1025,15 @@ void main() {
       await applyDifference(store, schemas[0], schemas[1]);
       await applyDifference(store, schemas[1], schemas[2]);
       final defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          unique: true,
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        unique: true,
+        deleteRule: "SET NULL",
+      );
     });
 
     test("Remove foreign key column", () async {
@@ -866,8 +1042,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -897,8 +1077,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -927,8 +1111,12 @@ void main() {
       final base = Schema([
         SchemaTable("u", [
           SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-          SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-              relatedTableName: "t", relatedColumnName: "id")
+          SchemaColumn.relationship(
+            "ref",
+            ManagedPropertyType.integer,
+            relatedTableName: "t",
+            relatedColumnName: "id",
+          )
         ]),
         SchemaTable("t", [
           SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -951,35 +1139,47 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       var defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
 
       await applyDifference(store, schemas[1], schemas[2]);
       defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "CASCADE");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "CASCADE",
+      );
 
       await applyDifference(store, schemas[2], schemas[3]);
       defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "RESTRICT");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "RESTRICT",
+      );
 
       await applyDifference(store, schemas[3], schemas[4]);
       defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET DEFAULT");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET DEFAULT",
+      );
     });
 
     test("Modify foreign key nullability", () async {
@@ -988,8 +1188,12 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -998,11 +1202,14 @@ void main() {
         Schema([
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t",
-                relatedColumnName: "id",
-                rule: DeleteRule.cascade,
-                isNullable: false)
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+              rule: DeleteRule.cascade,
+              isNullable: false,
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -1012,19 +1219,24 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       var defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
 
       await applyDifference(store, schemas[1], schemas[2]);
       defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: false,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "CASCADE");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "CASCADE",
+      );
     });
 
     test("Delete tables that have a relationship", () async {
@@ -1036,8 +1248,12 @@ void main() {
           ]),
           SchemaTable("u", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
-            SchemaColumn.relationship("ref", ManagedPropertyType.integer,
-                relatedTableName: "t", relatedColumnName: "id")
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            )
           ]),
           SchemaTable("t", [
             SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
@@ -1052,11 +1268,14 @@ void main() {
 
       await applyDifference(store, schemas[0], schemas[1]);
       var defs = await TableDefinition.get(store, ["t", "u"]);
-      defs["u"]!.expectColumn("ref_id", "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL");
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
 
       await applyDifference(store, schemas[1], schemas[2]);
       defs = await TableDefinition.get(store, ["t", "u", "v"]);
@@ -1067,7 +1286,10 @@ void main() {
 }
 
 Future<List<String>> applyDifference(
-    PersistentStore store, Schema baseSchema, Schema newSchema) async {
+  PersistentStore store,
+  Schema baseSchema,
+  Schema newSchema,
+) async {
   final diff = baseSchema.differenceFrom(newSchema);
   final commands =
       SchemaBuilder.fromDifference(store, diff, isTemporary: true).commands;
@@ -1081,42 +1303,54 @@ class TableDefinition {
   TableDefinition(this.name);
 
   static Future<Map<String, TableDefinition>> get(
-      PostgreSQLPersistentStore store, List<String> tableNames) async {
-    final tables = await Future.wait(tableNames.map((t) async {
-      final def = TableDefinition(t);
-      await def.resolve(store);
-      return def;
-    }));
+    PostgreSQLPersistentStore store,
+    List<String> tableNames,
+  ) async {
+    final tables = await Future.wait(
+      tableNames.map((t) async {
+        final def = TableDefinition(t);
+        await def.resolve(store);
+        return def;
+      }),
+    );
 
     final m = <String, TableDefinition>{};
-    tables.forEach((t) {
+    for (final t in tables) {
       if (t.isValid) {
         m[t.name] = t;
       }
-    });
+    }
 
     return m;
   }
 
-  void expectColumn(String name, String dataType,
-      {String? defaultValue,
-      bool unique = false,
-      bool primaryKey = false,
-      bool nullable = false,
-      bool indexed = false,
-      bool autoincrementing = false,
-      String? relatedTableName,
-      String? relatedColumnName,
-      String? deleteRule}) {
-    final col = columns.firstWhere((c) => c.name == name,
-        orElse: () => fail("column $name doesn't exist"));
+  void expectColumn(
+    String name,
+    String dataType, {
+    String? defaultValue,
+    bool unique = false,
+    bool primaryKey = false,
+    bool nullable = false,
+    bool indexed = false,
+    bool autoincrementing = false,
+    String? relatedTableName,
+    String? relatedColumnName,
+    String? deleteRule,
+  }) {
+    final col = columns.firstWhere(
+      (c) => c.name == name,
+      orElse: () => fail("column $name doesn't exist"),
+    );
 
     expect(col.dataType, dataType, reason: "$name data type");
     expect(col.defaultValue, defaultValue, reason: "$name default value");
     expect(col.isPrimaryKey, primaryKey, reason: "$name primary key");
     expect(col.isNullable, nullable, reason: "$name nullable");
-    expect(col.isAutoincrementing, autoincrementing,
-        reason: "$name autoincrement");
+    expect(
+      col.isAutoincrementing,
+      autoincrementing,
+      reason: "$name autoincrement",
+    );
 
     // if column is expected to be a pk, it is always indexed and unique.
     // if column is relationship, it is always indexed
@@ -1129,10 +1363,16 @@ class TableDefinition {
       expect(col.isUnique, unique, reason: "$name unique");
     }
 
-    expect(col.relatedColumnName, relatedColumnName,
-        reason: "$name related column name");
-    expect(col.relatedTableName, relatedTableName,
-        reason: "$name related table name");
+    expect(
+      col.relatedColumnName,
+      relatedColumnName,
+      reason: "$name related column name",
+    );
+    expect(
+      col.relatedTableName,
+      relatedTableName,
+      reason: "$name related table name",
+    );
     expect(col.deleteRule, deleteRule, reason: "$name delete rule");
   }
 
@@ -1144,8 +1384,8 @@ class TableDefinition {
 
   Future<void> resolve(PostgreSQLPersistentStore store) async {
     final exists = await store.execute(
-            "SELECT table_name FROM information_schema.tables WHERE table_name = '$name'")
-        as List<List<dynamic>>;
+      "SELECT table_name FROM information_schema.tables WHERE table_name = '$name'",
+    ) as List<List<dynamic>>;
     isValid = exists.length == 1;
 
     if (!isValid) {
@@ -1153,8 +1393,8 @@ class TableDefinition {
     }
 
     final results = await store.execute(
-            "SELECT column_name, column_default, data_type, is_nullable FROM information_schema.columns WHERE table_name = '$name'")
-        as List<List<dynamic>>;
+      "SELECT column_name, column_default, data_type, is_nullable FROM information_schema.columns WHERE table_name = '$name'",
+    ) as List<List<dynamic>>;
 
     columns = results.map((row) => ColumnDefinition(row)).toList();
 
@@ -1162,7 +1402,7 @@ class TableDefinition {
             "SELECT c.column_name, t.constraint_type FROM information_schema.key_column_usage AS c "
             "LEFT JOIN information_schema.table_constraints AS t ON t.constraint_name = c.constraint_name WHERE t.table_name = '$name'")
         as List<List<dynamic>>;
-    constraints.forEach((constraint) {
+    for (final constraint in constraints) {
       final col = columns.firstWhere((c) => c.name == constraint.first);
 
       if (constraint.last == "UNIQUE") {
@@ -1170,16 +1410,18 @@ class TableDefinition {
       } else if (constraint.last == "PRIMARY KEY") {
         col.isPrimaryKey = true;
       }
-    });
+    }
 
     final indices = await store.execute(
-            "SELECT indexdef FROM pg_indexes WHERE tablename = '$name'")
-        as List<List<dynamic>>;
+      "SELECT indexdef FROM pg_indexes WHERE tablename = '$name'",
+    ) as List<List<dynamic>>;
     final lookupIndex = RegExp(
-        "CREATE INDEX ([A-Za-z_]*) ON [A-Za-z_0-9\\.]* USING [A-Za-z_]* \\(([a-zA-Z0-9_]*)\\)");
+      "CREATE INDEX ([A-Za-z_]*) ON [A-Za-z_0-9\\.]* USING [A-Za-z_]* \\(([a-zA-Z0-9_]*)\\)",
+    );
     final uniqueIndex = RegExp(
-        "CREATE UNIQUE INDEX ([A-Za-z_]*) ON [A-Za-z_0-9\\.]* USING [A-Za-z_]* \\(([a-zA-Z0-9_, ]*)\\)");
-    indices.forEach((idx) {
+      "CREATE UNIQUE INDEX ([A-Za-z_]*) ON [A-Za-z_0-9\\.]* USING [A-Za-z_]* \\(([a-zA-Z0-9_, ]*)\\)",
+    );
+    for (final idx in indices) {
       final lMatch = lookupIndex.firstMatch(idx.first as String);
       if (lMatch != null) {
         final columnName = lMatch.group(2);
@@ -1197,7 +1439,7 @@ class TableDefinition {
           uniqueSet = columnNames;
         }
       }
-    });
+    }
 
     final foreignKeys = await store.execute(
             "SELECT ccu.table_name, ccu.column_name, kcu.column_name, rc.delete_rule FROM information_schema.table_constraints tc "
@@ -1206,13 +1448,13 @@ class TableDefinition {
             "INNER JOIN information_schema.constraint_column_usage ccu ON (tc.constraint_name=ccu.constraint_name) "
             "WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name ='$name';")
         as List<List<dynamic>>;
-    foreignKeys.forEach((foreignKey) {
+    for (final foreignKey in foreignKeys) {
       final col = columns.firstWhere((c) => c.name == foreignKey[2]);
 
       col.relatedTableName = foreignKey[0] as String;
       col.relatedColumnName = foreignKey[1] as String;
       col.deleteRule = foreignKey[3] as String;
-    });
+    }
   }
 }
 

@@ -29,21 +29,25 @@ class ManagedDataModel extends Object
         .toList();
     final expectedRuntimes = instanceTypes
         .map(
-            (t) => runtimes.firstWhereOrNull((e) => e.entity.instanceType == t))
+          (t) => runtimes.firstWhereOrNull((e) => e.entity.instanceType == t),
+        )
         .toList();
 
     final notFound = expectedRuntimes.where((e) => e == null).toList();
     if (notFound.isNotEmpty) {
       throw ManagedDataModelError(
-          "Data model types were not found: ${notFound.map((e) => e!.entity.name).join(", ")}");
+        "Data model types were not found: ${notFound.map((e) => e!.entity.name).join(", ")}",
+      );
     }
 
-    expectedRuntimes.forEach((runtime) {
+    for (final runtime in expectedRuntimes) {
       _entities[runtime!.entity.instanceType] = runtime.entity;
       _tableDefinitionToEntityMap[runtime.entity.tableDefinition] =
           runtime.entity;
-    });
-    expectedRuntimes.forEach((runtime) => runtime!.finalize(this));
+    }
+    for (final runtime in expectedRuntimes) {
+      runtime!.finalize(this);
+    }
   }
 
   /// Creates an instance of a [ManagedDataModel] from all subclasses of [ManagedObject] in all libraries visible to the calling library.
@@ -59,12 +63,14 @@ class ManagedDataModel extends Object
     final runtimes = RuntimeContext.current.runtimes.iterable
         .whereType<ManagedEntityRuntime>();
 
-    runtimes.forEach((runtime) {
+    for (final runtime in runtimes) {
       _entities[runtime.entity.instanceType] = runtime.entity;
       _tableDefinitionToEntityMap[runtime.entity.tableDefinition] =
           runtime.entity;
-    });
-    runtimes.forEach((runtime) => runtime.finalize(this));
+    }
+    for (final runtime in runtimes) {
+      runtime.finalize(this);
+    }
   }
 
   Iterable<ManagedEntity> get entities => _entities.values;
@@ -88,7 +94,8 @@ class ManagedDataModel extends Object
 
     if (entity == null) {
       throw StateError(
-          "No entity found for '$type. Did you forget to create a 'ManagedContext'?");
+        "No entity found for '$type. Did you forget to create a 'ManagedContext'?",
+      );
     }
 
     return entity;
@@ -99,7 +106,9 @@ class ManagedDataModel extends Object
 
   @override
   void documentComponents(APIDocumentContext context) {
-    entities.forEach((e) => e.documentComponents(context));
+    for (final e in entities) {
+      e.documentComponents(context);
+    }
   }
 }
 

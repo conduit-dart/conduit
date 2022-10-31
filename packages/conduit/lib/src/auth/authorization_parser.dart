@@ -20,14 +20,16 @@ class AuthorizationBearerParser extends AuthorizationParser<String?> {
   String? parse(String? authorizationHeader) {
     if (authorizationHeader == null) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.missing);
+        AuthorizationParserExceptionReason.missing,
+      );
     }
 
     final matcher = RegExp("Bearer (.+)");
     final match = matcher.firstMatch(authorizationHeader);
     if (match == null) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.malformed);
+        AuthorizationParserExceptionReason.malformed,
+      );
     }
     return match[1];
   }
@@ -62,14 +64,16 @@ class AuthorizationBasicParser
   AuthBasicCredentials parse(String? authorizationHeader) {
     if (authorizationHeader == null) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.missing);
+        AuthorizationParserExceptionReason.missing,
+      );
     }
 
     final matcher = RegExp("Basic (.+)");
     final match = matcher.firstMatch(authorizationHeader);
     if (match == null) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.malformed);
+        AuthorizationParserExceptionReason.malformed,
+      );
     }
 
     final base64String = match[1]!;
@@ -79,13 +83,15 @@ class AuthorizationBasicParser
           String.fromCharCodes(const Base64Decoder().convert(base64String));
     } catch (e) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.malformed);
+        AuthorizationParserExceptionReason.malformed,
+      );
     }
 
     final splitCredentials = decodedCredentials.split(":");
     if (splitCredentials.length != 2) {
       throw AuthorizationParserException(
-          AuthorizationParserExceptionReason.malformed);
+        AuthorizationParserExceptionReason.malformed,
+      );
     }
 
     return AuthBasicCredentials()

@@ -16,6 +16,7 @@ void justLogEverything() {
   hierarchicalLoggingEnabled = true;
   Logger("")
     ..level = Level.ALL
+    // ignore: avoid_print
     ..onRecord.listen((p) => print("$p ${p.object} ${p.stackTrace}"));
 }
 
@@ -130,13 +131,12 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   void createUsers(int count) {
     for (int i = 0; i < count; i++) {
-      final salt = AuthUtility.generateRandomSalt();
+      final salt = generateRandomSalt();
       final u = TestUser()
         ..id = i + 1
         ..username = "bob+$i@stablekernel.com"
         ..salt = salt
-        ..hashedPassword =
-            AuthUtility.generatePasswordHash(defaultPassword, salt);
+        ..hashedPassword = generatePasswordHash(defaultPassword, salt);
 
       users[i + 1] = u;
     }
@@ -145,39 +145,50 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   void reset() {
     const salt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
     clients = {
-      "com.stablekernel.app1": AuthClient("com.stablekernel.app1",
-          AuthUtility.generatePasswordHash("kilimanjaro", salt), salt),
-      "com.stablekernel.app2": AuthClient("com.stablekernel.app2",
-          AuthUtility.generatePasswordHash("fuji", salt), salt),
+      "com.stablekernel.app1": AuthClient(
+        "com.stablekernel.app1",
+        generatePasswordHash("kilimanjaro", salt),
+        salt,
+      ),
+      "com.stablekernel.app2": AuthClient(
+        "com.stablekernel.app2",
+        generatePasswordHash("fuji", salt),
+        salt,
+      ),
       "com.stablekernel.redirect": AuthClient.withRedirectURI(
-          "com.stablekernel.redirect",
-          AuthUtility.generatePasswordHash("mckinley", salt),
-          salt,
-          "http://stablekernel.com/auth/redirect"),
+        "com.stablekernel.redirect",
+        generatePasswordHash("mckinley", salt),
+        salt,
+        "http://stablekernel.com/auth/redirect",
+      ),
       "com.stablekernel.public":
           AuthClient("com.stablekernel.public", null, salt),
       "com.stablekernel.redirect2": AuthClient.withRedirectURI(
-          "com.stablekernel.redirect2",
-          AuthUtility.generatePasswordHash("gibraltar", salt),
-          salt,
-          "http://stablekernel.com/auth/redirect2"),
+        "com.stablekernel.redirect2",
+        generatePasswordHash("gibraltar", salt),
+        salt,
+        "http://stablekernel.com/auth/redirect2",
+      ),
       "com.stablekernel.public.redirect": AuthClient.withRedirectURI(
-          "com.stablekernel.public.redirect",
-          null,
-          salt,
-          "http://stablekernel.com/auth/public-redirect"),
+        "com.stablekernel.public.redirect",
+        null,
+        salt,
+        "http://stablekernel.com/auth/public-redirect",
+      ),
       "com.stablekernel.scoped": AuthClient.withRedirectURI(
-          "com.stablekernel.scoped",
-          AuthUtility.generatePasswordHash("kilimanjaro", salt),
-          salt,
-          "http://stablekernel.com/auth/scoped",
-          allowedScopes: [AuthScope("user"), AuthScope("other_scope")]),
+        "com.stablekernel.scoped",
+        generatePasswordHash("kilimanjaro", salt),
+        salt,
+        "http://stablekernel.com/auth/scoped",
+        allowedScopes: [AuthScope("user"), AuthScope("other_scope")],
+      ),
       "com.stablekernel.public.scoped": AuthClient.withRedirectURI(
-          "com.stablekernel.public.scoped",
-          null,
-          salt,
-          "http://stablekernel.com/auth/public-scoped",
-          allowedScopes: [AuthScope("user"), AuthScope("other_scope")]),
+        "com.stablekernel.public.scoped",
+        null,
+        salt,
+        "http://stablekernel.com/auth/public-scoped",
+        allowedScopes: [AuthScope("user"), AuthScope("other_scope")],
+      ),
     };
     users = {};
     tokens = [];
@@ -196,8 +207,11 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   }
 
   @override
-  FutureOr<AuthToken>? getToken(AuthServer server,
-      {String? byAccessToken, String? byRefreshToken}) {
+  FutureOr<AuthToken>? getToken(
+    AuthServer server, {
+    String? byAccessToken,
+    String? byRefreshToken,
+  }) {
     AuthToken? existing;
     if (byAccessToken != null) {
       existing = tokens.firstWhereOrNull((t) => t.accessToken == byAccessToken);
@@ -206,7 +220,8 @@ class InMemoryAuthStorage extends AuthServerDelegate {
           tokens.firstWhereOrNull((t) => t.refreshToken == byRefreshToken);
     } else {
       throw ArgumentError(
-          "byAccessToken and byRefreshToken are mutually exclusive");
+        "byAccessToken and byRefreshToken are mutually exclusive",
+      );
     }
 
     if (existing == null) {
@@ -225,8 +240,11 @@ class InMemoryAuthStorage extends AuthServerDelegate {
       tokens.removeWhere((t) => t.code == grantedByCode.code);
 
   @override
-  FutureOr addToken(AuthServer server, AuthToken token,
-      {AuthCode? issuedFrom}) {
+  FutureOr addToken(
+    AuthServer server,
+    AuthToken token, {
+    AuthCode? issuedFrom,
+  }) {
     if (issuedFrom != null) {
       final existingIssued =
           tokens.firstWhereOrNull((t) => t.code == issuedFrom.code);
@@ -245,11 +263,12 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   @override
   FutureOr updateToken(
-      AuthServer server,
-      String? oldAccessToken,
-      String? newAccessToken,
-      DateTime? newIssueDate,
-      DateTime? newExpirationDate) {
+    AuthServer server,
+    String? oldAccessToken,
+    String? newAccessToken,
+    DateTime? newIssueDate,
+    DateTime? newExpirationDate,
+  ) {
     final existing =
         tokens.firstWhereOrNull((e) => e.accessToken == oldAccessToken);
     if (existing != null) {
@@ -313,22 +332,29 @@ class DefaultPersistentStore extends PersistentStore {
   }
 
   @override
-  Future<dynamic> execute(String sql,
-          {Map<String, dynamic>? substitutionValues}) async =>
+  Future<dynamic> execute(
+    String sql, {
+    Map<String, dynamic>? substitutionValues,
+  }) async =>
       null;
 
   @override
-  Future<dynamic> executeQuery(String formatString,
-          Map<String?, dynamic> values, int timeoutInSeconds,
-          {PersistentStoreQueryReturnType? returnType}) async =>
+  Future<dynamic> executeQuery(
+    String formatString,
+    Map<String?, dynamic> values,
+    int timeoutInSeconds, {
+    PersistentStoreQueryReturnType? returnType,
+  }) async =>
       null;
 
   @override
   Future close() async {}
 
   @override
-  Future<T?> transaction<T>(ManagedContext transactionContext,
-          Future<T?> transactionBlock(ManagedContext transaction)) async =>
+  Future<T?> transaction<T>(
+    ManagedContext transactionContext,
+    Future<T?> Function(ManagedContext transaction) transactionBlock,
+  ) async =>
       throw Exception("Transaciton not supported on mock");
 
   @override
@@ -347,8 +373,11 @@ class DefaultPersistentStore extends PersistentStore {
   List<String> deleteTableUniqueColumnSet(SchemaTable table) => [];
 
   @override
-  List<String> addColumn(SchemaTable table, SchemaColumn column,
-          {String? unencodedInitialValue}) =>
+  List<String> addColumn(
+    SchemaTable table,
+    SchemaColumn column, {
+    String? unencodedInitialValue,
+  }) =>
       [];
 
   @override
@@ -356,12 +385,18 @@ class DefaultPersistentStore extends PersistentStore {
 
   @override
   List<String> renameColumn(
-          SchemaTable table, SchemaColumn column, String? name) =>
+    SchemaTable table,
+    SchemaColumn column,
+    String? name,
+  ) =>
       [];
 
   @override
-  List<String> alterColumnNullability(SchemaTable table, SchemaColumn column,
-          String? unencodedInitialValue) =>
+  List<String> alterColumnNullability(
+    SchemaTable table,
+    SchemaColumn column,
+    String? unencodedInitialValue,
+  ) =>
       [];
 
   @override
@@ -370,7 +405,9 @@ class DefaultPersistentStore extends PersistentStore {
 
   @override
   List<String> alterColumnDefaultValue(
-          SchemaTable table, SchemaColumn column) =>
+    SchemaTable table,
+    SchemaColumn column,
+  ) =>
       [];
 
   @override
@@ -382,7 +419,10 @@ class DefaultPersistentStore extends PersistentStore {
 
   @override
   List<String> renameIndex(
-          SchemaTable table, SchemaColumn column, String newIndexName) =>
+    SchemaTable table,
+    SchemaColumn column,
+    String newIndexName,
+  ) =>
       [];
 
   @override
@@ -393,10 +433,13 @@ class DefaultPersistentStore extends PersistentStore {
   Future<int> get schemaVersion async => 0;
 
   @override
-  Future<Schema?> upgrade(Schema fromSchema, List<Migration> withMigrations,
-      {bool temporary = false}) async {
+  Future<Schema?> upgrade(
+    Schema fromSchema,
+    List<Migration> withMigrations, {
+    bool temporary = false,
+  }) async {
     Schema? out = fromSchema;
-    for (var migration in withMigrations) {
+    for (final migration in withMigrations) {
       migration.database = SchemaBuilder(this, out);
       await migration.upgrade();
       await migration.seed();

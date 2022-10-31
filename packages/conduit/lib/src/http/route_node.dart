@@ -1,5 +1,7 @@
-import 'http.dart';
-import 'route_specification.dart';
+// ignore_for_file: avoid_dynamic_calls
+
+import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/http/route_specification.dart';
 
 class RouteSegment {
   RouteSegment(String segment) {
@@ -23,13 +25,12 @@ class RouteSegment {
     }
   }
 
-  RouteSegment.direct(
-      {String? literal,
-      String? variableName,
-      String? expression,
-      bool matchesAnything = false}) {
-    this.literal = literal;
-    this.variableName = variableName;
+  RouteSegment.direct({
+    this.literal,
+    this.variableName,
+    String? expression,
+    bool matchesAnything = false,
+  }) {
     isRemainingMatcher = matchesAnything;
     if (expression != null) {
       matcher = RegExp(expression);
@@ -85,19 +86,23 @@ class RouteNode {
         specs.where((spec) => spec?.segments.length == depth).toList();
     if (terminatedAtThisDepth.length > 1) {
       throw ArgumentError(
-          "Router compilation failed. Cannot disambiguate from the following routes: $terminatedAtThisDepth.");
+        "Router compilation failed. Cannot disambiguate from the following routes: $terminatedAtThisDepth.",
+      );
     } else if (terminatedAtThisDepth.length == 1) {
       specification = terminatedAtThisDepth.first;
     }
 
     final remainingSpecifications = List<RouteSpecification?>.from(
-        specs.where((spec) => depth != spec?.segments.length));
+      specs.where((spec) => depth != spec?.segments.length),
+    );
 
-    final Set<String> childEqualitySegments = Set.from(remainingSpecifications
-        .where((spec) => spec?.segments[depth].isLiteralMatcher ?? false)
-        .map((spec) => spec!.segments[depth].literal));
+    final Set<String> childEqualitySegments = Set.from(
+      remainingSpecifications
+          .where((spec) => spec?.segments[depth].isLiteralMatcher ?? false)
+          .map((spec) => spec!.segments[depth].literal),
+    );
 
-    childEqualitySegments.forEach((childSegment) {
+    for (final childSegment in childEqualitySegments) {
       final childrenBeginningWithThisSegment = remainingSpecifications
           .where((spec) => spec?.segments[depth].literal == childSegment)
           .toList();
@@ -105,19 +110,23 @@ class RouteNode {
           RouteNode(childrenBeginningWithThisSegment, depth: depth + 1);
       remainingSpecifications
           .removeWhere(childrenBeginningWithThisSegment.contains);
-    });
+    }
 
     final takeAllSegment = remainingSpecifications.firstWhere(
-        (spec) => spec?.segments[depth].isRemainingMatcher ?? false,
-        orElse: () => null);
+      (spec) => spec?.segments[depth].isRemainingMatcher ?? false,
+      orElse: () => null,
+    );
     if (takeAllSegment != null) {
       takeAllChild = RouteNode.withSpecification(takeAllSegment);
       remainingSpecifications.removeWhere(
-          (spec) => spec?.segments[depth].isRemainingMatcher ?? false);
+        (spec) => spec?.segments[depth].isRemainingMatcher ?? false,
+      );
     }
 
-    final Set<String?> childPatternedSegments = Set.from(remainingSpecifications
-        .map((spec) => spec?.segments[depth].matcher?.pattern));
+    final Set<String?> childPatternedSegments = Set.from(
+      remainingSpecifications
+          .map((spec) => spec?.segments[depth].matcher?.pattern),
+    );
 
     patternedChildren = childPatternedSegments.map((pattern) {
       final childrenWithThisPattern = remainingSpecifications
@@ -129,12 +138,15 @@ class RouteNode {
           childrenWithThisPattern
               .any((spec) => spec?.segments[depth].matcher != null)) {
         throw ArgumentError(
-            "Router compilation failed. Cannot disambiguate from the following routes, as one of them will match anything: $childrenWithThisPattern.");
+          "Router compilation failed. Cannot disambiguate from the following routes, as one of them will match anything: $childrenWithThisPattern.",
+        );
       }
 
-      return RouteNode(childrenWithThisPattern,
-          depth: depth + 1,
-          matcher: childrenWithThisPattern.first?.segments[depth].matcher);
+      return RouteNode(
+        childrenWithThisPattern,
+        depth: depth + 1,
+        matcher: childrenWithThisPattern.first?.segments[depth].matcher,
+      );
     }).toList();
   }
 
@@ -155,7 +167,9 @@ class RouteNode {
   RouteNode? takeAllChild;
 
   RouteNode? nodeForPathSegments(
-      Iterator<String> requestSegments, RequestPath path) {
+    Iterator<String> requestSegments,
+    RequestPath path,
+  ) {
     if (!requestSegments.moveNext()) {
       return this;
     }
@@ -167,7 +181,7 @@ class RouteNode {
           .nodeForPathSegments(requestSegments, path);
     }
 
-    for (var node in patternedChildren) {
+    for (final node in patternedChildren) {
       if (node.patternMatcher == null) {
         // This is a variable with no regular expression
         return node.nodeForPathSegments(requestSegments, path);
@@ -196,7 +210,8 @@ class RouteNode {
     }
 
     buf.writeln(
-        "Controller: ${specification?.controller?.nextController?.runtimeType}");
+      "Controller: ${specification?.controller?.nextController?.runtimeType}",
+    );
     equalityChildren.forEach((seg, spec) {
       for (var i = 0; i < depth; i++) {
         buf.write("\t");

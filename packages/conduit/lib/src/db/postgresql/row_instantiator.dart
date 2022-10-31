@@ -1,8 +1,7 @@
+import 'package:conduit/src/db/db.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
 import 'package:conduit/src/db/postgresql/builders/column.dart';
 import 'package:conduit/src/db/postgresql/builders/table.dart';
-
-import '../db.dart';
 
 class RowInstantiator {
   RowInstantiator(this.rootTableBuilder, this.returningValues);
@@ -16,18 +15,21 @@ class RowInstantiator {
     try {
       return rows
           .map(
-              (row) => instanceFromRow(row.iterator, returningValues!.iterator))
+            (row) => instanceFromRow(row.iterator, returningValues!.iterator),
+          )
           .where((wrapper) => wrapper?.isNew ?? false)
           .map((wrapper) => wrapper!.instance as U)
           .toList();
     } on ValidationException catch (e) {
-      throw StateError("Database error when retrieving value. ${e.toString()}");
+      throw StateError("Database error when retrieving value. $e");
     }
   }
 
   InstanceWrapper? instanceFromRow(
-      Iterator<dynamic> rowIterator, Iterator<Returnable> returningIterator,
-      {TableBuilder? table}) {
+    Iterator<dynamic> rowIterator,
+    Iterator<Returnable> returningIterator, {
+    TableBuilder? table,
+  }) {
     table ??= rootTableBuilder;
 
     // Inspect the primary key first.  We are guaranteed to have the primary key come first in any rowIterator.
@@ -61,7 +63,9 @@ class RowInstantiator {
   }
 
   ManagedObject createInstanceWithPrimaryKeyValue(
-      TableBuilder table, dynamic primaryKeyValue) {
+    TableBuilder table,
+    dynamic primaryKeyValue,
+  ) {
     final instance = table.entity.instanceOf();
 
     instance[table.entity.primaryKey] = primaryKeyValue;
@@ -78,7 +82,9 @@ class RowInstantiator {
   }
 
   ManagedObject? getExistingInstance(
-      TableBuilder table, dynamic primaryKeyValue) {
+    TableBuilder table,
+    dynamic primaryKeyValue,
+  ) {
     final byType = distinctObjects[table];
     if (byType == null) {
       return null;
@@ -87,8 +93,11 @@ class RowInstantiator {
     return byType[primaryKeyValue];
   }
 
-  void applyRowValuesToInstance(ManagedObject instance, TableBuilder table,
-      Iterator<dynamic> rowIterator) {
+  void applyRowValuesToInstance(
+    ManagedObject instance,
+    TableBuilder table,
+    Iterator<dynamic> rowIterator,
+  ) {
     if (table.flattenedColumnsToReturn.isEmpty) {
       return;
     }
@@ -120,7 +129,10 @@ class RowInstantiator {
   }
 
   void applyColumnValueToProperty(
-      ManagedObject instance, ColumnBuilder column, dynamic value) {
+    ManagedObject instance,
+    ColumnBuilder column,
+    dynamic value,
+  ) {
     final desc = column.property;
 
     if (desc is ManagedRelationshipDescription) {
@@ -139,7 +151,9 @@ class RowInstantiator {
   }
 
   void exhaustNullInstanceIterator(
-      Iterator<dynamic> rowIterator, Iterator<Returnable> returningIterator) {
+    Iterator<dynamic> rowIterator,
+    Iterator<Returnable> returningIterator,
+  ) {
     while (returningIterator.moveNext()) {
       final ret = returningIterator.current;
       if (ret is TableBuilder) {

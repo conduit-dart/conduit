@@ -5,12 +5,14 @@ abstract class Argument {
 }
 
 class Flag implements Argument {
-  const Flag(this.name,
-      {this.abbr,
-      this.help,
-      this.defaultsTo = false,
-      this.negatable = true,
-      this.hide = false});
+  const Flag(
+    this.name, {
+    this.abbr,
+    this.help,
+    this.defaultsTo = false,
+    this.negatable = true,
+    this.hide = false,
+  });
 
   final String name;
   final String? abbr;
@@ -21,24 +23,28 @@ class Flag implements Argument {
 
   @override
   void addToParser(args.ArgParser parser) {
-    parser.addFlag(name,
-        abbr: abbr,
-        help: help,
-        defaultsTo: defaultsTo,
-        negatable: negatable,
-        hide: hide);
+    parser.addFlag(
+      name,
+      abbr: abbr,
+      help: help,
+      defaultsTo: defaultsTo,
+      negatable: negatable,
+      hide: hide,
+    );
   }
 }
 
 class Option implements Argument {
-  const Option(this.name,
-      {this.abbr,
-      this.help,
-      this.valueHelp,
-      this.allowed,
-      this.allowedHelp,
-      this.defaultsTo,
-      this.hide = false});
+  const Option(
+    this.name, {
+    this.abbr,
+    this.help,
+    this.valueHelp,
+    this.allowed,
+    this.allowedHelp,
+    this.defaultsTo,
+    this.hide = false,
+  });
 
   final String name;
   final String? abbr;
@@ -51,27 +57,31 @@ class Option implements Argument {
 
   @override
   void addToParser(args.ArgParser parser) {
-    parser.addOption(name,
-        abbr: abbr,
-        help: help,
-        valueHelp: valueHelp,
-        allowed: allowed,
-        allowedHelp: allowedHelp,
-        defaultsTo: defaultsTo,
-        hide: hide);
+    parser.addOption(
+      name,
+      abbr: abbr,
+      help: help,
+      valueHelp: valueHelp,
+      allowed: allowed,
+      allowedHelp: allowedHelp,
+      defaultsTo: defaultsTo,
+      hide: hide,
+    );
   }
 }
 
 class MultiOption implements Argument {
-  const MultiOption(this.name,
-      {this.abbr,
-      this.help,
-      this.valueHelp,
-      this.allowed,
-      this.allowedHelp,
-      this.defaultsTo,
-      this.hide = false,
-      this.splitsCommas = true});
+  const MultiOption(
+    this.name, {
+    this.abbr,
+    this.help,
+    this.valueHelp,
+    this.allowed,
+    this.allowedHelp,
+    this.defaultsTo,
+    this.hide = false,
+    this.splitsCommas = true,
+  });
 
   final String name;
   final String? abbr;
@@ -85,14 +95,16 @@ class MultiOption implements Argument {
 
   @override
   void addToParser(args.ArgParser parser) {
-    parser.addMultiOption(name,
-        abbr: abbr,
-        help: help,
-        valueHelp: valueHelp,
-        allowed: allowed,
-        allowedHelp: allowedHelp,
-        defaultsTo: defaultsTo,
-        hide: hide,
-        splitCommas: splitsCommas);
+    parser.addMultiOption(
+      name,
+      abbr: abbr,
+      help: help,
+      valueHelp: valueHelp,
+      allowed: allowed,
+      allowedHelp: allowedHelp,
+      defaultsTo: defaultsTo,
+      hide: hide,
+      splitCommas: splitsCommas,
+    );
   }
 }

@@ -9,10 +9,12 @@ import 'package:test/test.dart';
 void main() {
   late APIDocumentContext ctx;
   setUp(() {
-    ctx = APIDocumentContext(APIDocument()
-      ..info = APIInfo("x", "1.0.0")
-      ..paths = {}
-      ..components = APIComponents());
+    ctx = APIDocumentContext(
+      APIDocument()
+        ..info = APIInfo("x", "1.0.0")
+        ..paths = {}
+        ..components = APIComponents(),
+    );
   });
 
   tearDown(() async {
@@ -47,8 +49,10 @@ void main() {
 
     expect(doc.title, "FailsToDocument");
     expect(doc.description, contains("HttpServer"));
-    expect(doc.additionalPropertyPolicy,
-        APISchemaAdditionalPropertyPolicy.freeForm);
+    expect(
+      doc.additionalPropertyPolicy,
+      APISchemaAdditionalPropertyPolicy.freeForm,
+    );
   });
 
   test("Serializable can override static document method", () async {
@@ -70,14 +74,15 @@ void main() {
     await ctx.finalize();
 
     expect(
-        op["post"]!
-            .requestBody!
-            .content!["application/json"]!
-            .schema!
-            .referenceURI!
-            .pathSegments
-            .last,
-        "BoundBody");
+      op["post"]!
+          .requestBody!
+          .content!["application/json"]!
+          .schema!
+          .referenceURI!
+          .pathSegments
+          .last,
+      "BoundBody",
+    );
   });
 }
 

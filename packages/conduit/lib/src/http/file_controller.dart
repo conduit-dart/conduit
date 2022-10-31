@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
-import 'http.dart';
-
-typedef _OnFileNotFound = FutureOr<Response> Function(
-    FileController controller, Request req);
 
 /// Serves files from a directory on the filesystem.
 ///
@@ -40,10 +37,14 @@ class FileController extends Controller {
   /// according to [CodecRegistry].
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
-  FileController(String pathOfDirectoryToServe,
-      {FutureOr<Response> onFileNotFound(
-          FileController controller, Request req)?})
-      : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
+  FileController(
+    String pathOfDirectoryToServe, {
+    FutureOr<Response> Function(
+      FileController controller,
+      Request req,
+    )?
+        onFileNotFound,
+  })  : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
         _onFileNotFound = onFileNotFound;
 
   static final Map<String, ContentType> _defaultExtensionMap = {
@@ -81,7 +82,10 @@ class FileController extends Controller {
   final Map<String, ContentType> _extensionMap = Map.from(_defaultExtensionMap);
   final List<_PolicyPair?> _policyPairs = [];
   final Uri _servingDirectory;
-  final _OnFileNotFound? _onFileNotFound;
+  final FutureOr<Response> Function(
+    FileController,
+    Request,
+  )? _onFileNotFound;
 
   /// Returns a [ContentType] for a file extension.
   ///
@@ -130,7 +134,10 @@ class FileController extends Controller {
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
   ///
-  void addCachePolicy(CachePolicy policy, bool shouldApplyToPath(String path)) {
+  void addCachePolicy(
+    CachePolicy policy,
+    bool Function(String path) shouldApplyToPath,
+  ) {
     _policyPairs.add(_PolicyPair(policy, shouldApplyToPath));
   }
 
@@ -140,8 +147,10 @@ class FileController extends Controller {
   /// returns it if exists.
   CachePolicy? cachePolicyForPath(String path) {
     return _policyPairs
-        .firstWhere((pair) => pair?.shouldApplyToPath(path) ?? false,
-            orElse: () => null)
+        .firstWhere(
+          (pair) => pair?.shouldApplyToPath(path) ?? false,
+          orElse: () => null,
+        )
         ?.policy;
   }
 
@@ -189,8 +198,10 @@ class FileController extends Controller {
         ContentType("application", "octet-stream");
     final byteStream = file.openRead();
 
-    return Response.ok(byteStream,
-        headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue})
+    return Response.ok(
+      byteStream,
+      headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue},
+    )
       ..cachePolicy = _policyForFile(file)
       ..encodeBody = false
       ..contentType = contentType;
@@ -198,28 +209,32 @@ class FileController extends Controller {
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path) {
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  ) {
     return {
       "get": APIOperation(
-          "getFile",
-          {
-            "200": APIResponse("Successful file fetch.",
-                content: {"*/*": APIMediaType(schema: APISchemaObject.file())}),
-            "404": APIResponse("No file exists at path.")
-          },
-          description: "Content-Type is determined by the suffix of the file.",
-          summary: "Returns the contents of a file on the server's filesystem.")
+        "getFile",
+        {
+          "200": APIResponse(
+            "Successful file fetch.",
+            content: {"*/*": APIMediaType(schema: APISchemaObject.file())},
+          ),
+          "404": APIResponse("No file exists at path.")
+        },
+        description: "Content-Type is determined by the suffix of the file.",
+        summary: "Returns the contents of a file on the server's filesystem.",
+      )
     };
   }
 
   CachePolicy? _policyForFile(File file) => cachePolicyForPath(file.path);
 }
 
-typedef _ShouldApplyToPath = bool Function(String path);
-
 class _PolicyPair {
   _PolicyPair(this.policy, this.shouldApplyToPath);
 
-  final _ShouldApplyToPath shouldApplyToPath;
+  final bool Function(String) shouldApplyToPath;
   final CachePolicy policy;
 }

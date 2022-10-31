@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -22,17 +24,19 @@ void main() {
     authServer = AuthServer(delegate);
 
     accessToken = (await authServer.authenticate(
-            delegate.users[1]!.username,
-            InMemoryAuthStorage.defaultPassword,
-            "com.stablekernel.app1",
-            "kilimanjaro"))
+      delegate.users[1]!.username,
+      InMemoryAuthStorage.defaultPassword,
+      "com.stablekernel.app1",
+      "kilimanjaro",
+    ))
         .accessToken;
     expiredErrorToken = (await authServer.authenticate(
-            delegate.users[1]!.username,
-            InMemoryAuthStorage.defaultPassword,
-            "com.stablekernel.app1",
-            "kilimanjaro",
-            expiration: const Duration(seconds: 0)))
+      delegate.users[1]!.username,
+      InMemoryAuthStorage.defaultPassword,
+      "com.stablekernel.app1",
+      "kilimanjaro",
+      expiration: Duration.zero,
+    ))
         .accessToken;
   });
 
@@ -45,7 +49,7 @@ void main() {
       final authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"));
+      final res = await http.get(Uri.parse("http://localhost:$port"));
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -54,8 +58,10 @@ void main() {
       final authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Notbearer"});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Notbearer"},
+      );
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
     });
@@ -66,8 +72,10 @@ void main() {
       final authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Bearer "});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Bearer "},
+      );
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
     });
@@ -76,10 +84,12 @@ void main() {
       final authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer 1234567890asdfghjkl"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer 1234567890asdfghjkl"
+        },
+      );
       expect(res.statusCode, 401);
     });
 
@@ -87,10 +97,10 @@ void main() {
       final authorizer = Authorizer.bearer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $expiredErrorToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Bearer $expiredErrorToken"},
+      );
       expect(res.statusCode, 401);
     });
 
@@ -98,8 +108,10 @@ void main() {
       final authorizer = Authorizer(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"},
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body), {
         "clientID": "com.stablekernel.app1",
@@ -114,7 +126,7 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"));
+      final res = await http.get(Uri.parse("http://localhost:$port"));
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -123,8 +135,10 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Notright"});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Notright"},
+      );
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
     });
@@ -133,8 +147,10 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Basic "});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Basic "},
+      );
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
     });
@@ -145,8 +161,10 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Basic asasd"});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Basic asasd"},
+      );
       expect(res.statusCode, 400);
       expect(json.decode(res.body), {"error": "invalid_authorization_header"});
     });
@@ -155,11 +173,13 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res =
-          await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("abcd:kilimanjaro".codeUnits)}"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("abcd:kilimanjaro".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -168,11 +188,13 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res =
-          await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.app1:foobar".codeUnits)}"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.app1:foobar".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 401);
       expect(res.body, "");
     });
@@ -181,11 +203,13 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      final res =
-          await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.app1:kilimanjaro".codeUnits)}"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.app1:kilimanjaro".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body), {
         "clientID": "com.stablekernel.app1",
@@ -198,10 +222,13 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.public:".codeUnits)}"
-      });
+      var res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.public:".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body), {
         "clientID": "com.stablekernel.public",
@@ -209,10 +236,13 @@ void main() {
         "credentials": "com.stablekernel.public:"
       });
 
-      res = await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.public:password".codeUnits)}"
-      });
+      res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.public:password".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 401);
     });
 
@@ -221,16 +251,22 @@ void main() {
       final authorizer = Authorizer.basic(authServer);
       server = await enableAuthorizer(authorizer);
 
-      var res = await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.app1:".codeUnits)}"
-      });
+      var res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.app1:".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 401);
 
-      res = await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("com.stablekernel.app1".codeUnits)}"
-      });
+      res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("com.stablekernel.app1".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 400);
     });
   });
@@ -243,38 +279,39 @@ void main() {
 
     setUp(() async {
       userReadOnlyScopedAccessToken = (await authServer.authenticate(
-              delegate.users[1]!.username,
-              InMemoryAuthStorage.defaultPassword,
-              "com.stablekernel.scoped",
-              "kilimanjaro",
-              requestedScopes: [AuthScope("user.readonly")]))
+        delegate.users[1]!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.scoped",
+        "kilimanjaro",
+        requestedScopes: [AuthScope("user.readonly")],
+      ))
           .accessToken;
 
       userScopedAccessToken = (await authServer.authenticate(
-              delegate.users[1]!.username,
-              InMemoryAuthStorage.defaultPassword,
-              "com.stablekernel.scoped",
-              "kilimanjaro",
-              requestedScopes: [AuthScope("user")]))
+        delegate.users[1]!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.scoped",
+        "kilimanjaro",
+        requestedScopes: [AuthScope("user")],
+      ))
           .accessToken;
 
       userAndOtherScopedAccessToken = (await authServer.authenticate(
-              delegate.users[1]!.username,
-              InMemoryAuthStorage.defaultPassword,
-              "com.stablekernel.scoped",
-              "kilimanjaro",
-              requestedScopes: [AuthScope("user"), AuthScope("other_scope")]))
+        delegate.users[1]!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.scoped",
+        "kilimanjaro",
+        requestedScopes: [AuthScope("user"), AuthScope("other_scope")],
+      ))
           .accessToken;
 
       userAndOtherReadOnlyScopedAccessToken = (await authServer.authenticate(
-              delegate.users[1]!.username,
-              InMemoryAuthStorage.defaultPassword,
-              "com.stablekernel.scoped",
-              "kilimanjaro",
-              requestedScopes: [
-            AuthScope("user"),
-            AuthScope("other_scope.readonly")
-          ]))
+        delegate.users[1]!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.scoped",
+        "kilimanjaro",
+        requestedScopes: [AuthScope("user"), AuthScope("other_scope.readonly")],
+      ))
           .accessToken;
     });
 
@@ -283,10 +320,12 @@ void main() {
       final authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body)["scopes"], ["user"]);
     });
@@ -298,10 +337,12 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user.readonly"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body)["scopes"], ["user"]);
     });
@@ -312,10 +353,13 @@ void main() {
       final authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http
-          .get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer $userAndOtherScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body)["scopes"], ["user", "other_scope"]);
     });
@@ -326,10 +370,13 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http
-          .get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer $userAndOtherScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body)["scopes"], ["user", "other_scope"]);
     });
@@ -337,14 +384,19 @@ void main() {
     test(
         "Multi-scoped authorizer, multi-scoped valid token with more privilegs than necessary pass authorizer",
         () async {
-      final authorizer = Authorizer.bearer(authServer,
-          scopes: ["user:foo", "other_scope.readonly"]);
+      final authorizer = Authorizer.bearer(
+        authServer,
+        scopes: ["user:foo", "other_scope.readonly"],
+      );
       server = await enableAuthorizer(authorizer);
 
-      final res = await http
-          .get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader: "Bearer $userAndOtherScopedAccessToken"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer $userAndOtherScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 200);
       expect(json.decode(res.body)["scopes"], ["user", "other_scope"]);
     });
@@ -357,13 +409,18 @@ void main() {
       final authorizer = Authorizer.bearer(authServer, scopes: ["user"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http
-          .get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader: "Bearer $userReadOnlyScopedAccessToken"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer $userReadOnlyScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 403);
-      expect(json.decode(res.body),
-          {"error": "insufficient_scope", "scope": "user"});
+      expect(
+        json.decode(res.body),
+        {"error": "insufficient_scope", "scope": "user"},
+      );
     });
 
     test(
@@ -372,13 +429,17 @@ void main() {
       final authorizer = Authorizer.bearer(authServer, scopes: ["other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 403);
-      expect(json.decode(res.body),
-          {"error": "insufficient_scope", "scope": "other_scope"});
+      expect(
+        json.decode(res.body),
+        {"error": "insufficient_scope", "scope": "other_scope"},
+      );
     });
 
     test("Multi-scoped authorizer, single scoped token do not pass authorizer",
@@ -387,13 +448,17 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 403);
-      expect(json.decode(res.body),
-          {"error": "insufficient_scope", "scope": "user other_scope"});
+      expect(
+        json.decode(res.body),
+        {"error": "insufficient_scope", "scope": "user other_scope"},
+      );
     });
 
     test(
@@ -403,13 +468,17 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["other", "something_else"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $userScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 403);
-      expect(json.decode(res.body),
-          {"error": "insufficient_scope", "scope": "other something_else"});
+      expect(
+        json.decode(res.body),
+        {"error": "insufficient_scope", "scope": "other something_else"},
+      );
     });
 
     test(
@@ -419,14 +488,18 @@ void main() {
           Authorizer.bearer(authServer, scopes: ["user", "other_scope"]);
       server = await enableAuthorizer(authorizer);
 
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {
-            HttpHeaders.authorizationHeader:
-                "Bearer $userAndOtherReadOnlyScopedAccessToken"
-          });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Bearer $userAndOtherReadOnlyScopedAccessToken"
+        },
+      );
       expect(res.statusCode, 403);
-      expect(json.decode(res.body),
-          {"error": "insufficient_scope", "scope": "user other_scope"});
+      expect(
+        json.decode(res.body),
+        {"error": "insufficient_scope", "scope": "user other_scope"},
+      );
     });
   });
 
@@ -435,11 +508,13 @@ void main() {
         () async {
       final anotherAuthServer = AuthServer(CrashingStorage());
       server = await enableAuthorizer(Authorizer.basic(anotherAuthServer));
-      final res =
-          await http.get(Uri.parse("http://localhost:${port}"), headers: {
-        HttpHeaders.authorizationHeader:
-            "Basic ${const Base64Encoder().convert("a:".codeUnits)}"
-      });
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {
+          HttpHeaders.authorizationHeader:
+              "Basic ${const Base64Encoder().convert("a:".codeUnits)}"
+        },
+      );
       expect(res.statusCode, 504);
     });
 
@@ -447,8 +522,10 @@ void main() {
         () async {
       final anotherAuthServer = AuthServer(CrashingStorage());
       server = await enableAuthorizer(Authorizer.bearer(anotherAuthServer));
-      final res = await http.get(Uri.parse("http://localhost:${port}"),
-          headers: {HttpHeaders.authorizationHeader: "Bearer axy"});
+      final res = await http.get(
+        Uri.parse("http://localhost:$port"),
+        headers: {HttpHeaders.authorizationHeader: "Bearer axy"},
+      );
       expect(res.statusCode, 504);
     });
   });
@@ -505,8 +582,11 @@ Future<RequestOrResponse> respond(Request req) async {
 
 class CrashingStorage extends InMemoryAuthStorage {
   @override
-  Future<AuthToken> getToken(AuthServer server,
-      {String? byAccessToken, String? byRefreshToken}) async {
+  Future<AuthToken> getToken(
+    AuthServer server, {
+    String? byAccessToken,
+    String? byRefreshToken,
+  }) async {
     throw Response(504, null, "ok");
   }
 

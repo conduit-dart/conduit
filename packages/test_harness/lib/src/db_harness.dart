@@ -70,7 +70,7 @@ abstract class TestHarnessORMMixin {
 
     for (var cmd in builder.commands) {
       logger?.info("$cmd");
-      await context!.persistentStore?.execute(cmd);
+      await context!.persistentStore.execute(cmd);
     }
   }
 }

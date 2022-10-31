@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:conduit/src/db/db.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
-
-import '../db/db.dart';
-import 'http.dart';
 
 /// A [Controller] that implements basic CRUD operations for a [ManagedObject].
 ///
@@ -51,8 +50,9 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// where the static type argument cannot be defined. Behaves just like the unnamed constructor.
   ///
   ManagedObjectController.forEntity(
-      ManagedEntity entity, ManagedContext context)
-      : super() {
+    ManagedEntity entity,
+    ManagedContext context,
+  ) : super() {
     _query = Query.forEntity(entity, context);
   }
 
@@ -72,7 +72,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// but it must have the same [InstanceType] as this controller. If you return null from this method, no [Query] will be executed
   /// and [didNotFindObject] will immediately be called.
   FutureOr<Query<InstanceType>?> willFindObjectWithQuery(
-      Query<InstanceType>? query) {
+    Query<InstanceType>? query,
+  ) {
     return query;
   }
 
@@ -115,7 +116,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// but it must have the same type argument as this controller. If you return null from this method,
   /// no values will be inserted and [didInsertObject] will immediately be called with the value null.
   FutureOr<Query<InstanceType>?> willInsertObjectWithQuery(
-      Query<InstanceType>? query) {
+    Query<InstanceType>? query,
+  ) {
     return query;
   }
 
@@ -144,7 +146,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// but it must have the same type argument as this controller. If you return null from this method,
   /// no delete operation will be performed and [didNotFindObjectToDeleteWithID] will immediately be called with the value null.
   FutureOr<Query<InstanceType>?> willDeleteObjectWithQuery(
-      Query<InstanceType>? query) {
+    Query<InstanceType>? query,
+  ) {
     return query;
   }
 
@@ -186,7 +189,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// but it must have the same type argument as this controller. If you return null from this method,
   /// no values will be inserted and [didNotFindObjectToUpdateWithID] will immediately be called with the value null.
   FutureOr<Query<InstanceType>?> willUpdateObjectWithQuery(
-      Query<InstanceType>? query) {
+    Query<InstanceType>? query,
+  ) {
     return query;
   }
 
@@ -231,7 +235,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// but it must have the same type argument as this controller. If you return null from this method,
   /// no objects will be fetched and [didFindObjects] will immediately be called with the value null.
   FutureOr<Query<InstanceType>?> willFindObjectsWithQuery(
-      Query<InstanceType>? query) {
+    Query<InstanceType>? query,
+  ) {
     return query;
   }
 
@@ -243,45 +248,45 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   }
 
   @Operation.get()
-  Future<Response> getObjects(
-      {
-      /// Limits the number of objects returned.
-      @Bind.query("count") int count = 0,
+  Future<Response> getObjects({
+    /// Limits the number of objects returned.
+    @Bind.query("count") int count = 0,
 
-      /// An integer offset into an ordered list of objects.
-      ///
-      /// Use with count.
-      ///
-      /// See pageBy for an alternative form of offsetting.
-      @Bind.query("offset") int offset = 0,
+    /// An integer offset into an ordered list of objects.
+    ///
+    /// Use with count.
+    ///
+    /// See pageBy for an alternative form of offsetting.
+    @Bind.query("offset") int offset = 0,
 
-      /// The property of this object to page by.
-      ///
-      /// Must be a key in the object type being fetched. Must
-      /// provide either pageAfter or pagePrior. Use with count.
-      @Bind.query("pageBy") String? pageBy,
+    /// The property of this object to page by.
+    ///
+    /// Must be a key in the object type being fetched. Must
+    /// provide either pageAfter or pagePrior. Use with count.
+    @Bind.query("pageBy") String? pageBy,
 
-      /// A value-based offset into an ordered list of objects.
-      ///
-      /// Objects are returned if their
-      /// value for the property named by pageBy is greater than
-      /// the value of pageAfter. Must provide pageBy, and the type
-      /// of the property designated by pageBy must be the same as pageAfter.
-      @Bind.query("pageAfter") String? pageAfter,
+    /// A value-based offset into an ordered list of objects.
+    ///
+    /// Objects are returned if their
+    /// value for the property named by pageBy is greater than
+    /// the value of pageAfter. Must provide pageBy, and the type
+    /// of the property designated by pageBy must be the same as pageAfter.
+    @Bind.query("pageAfter") String? pageAfter,
 
-      /// A value-based offset into an ordered list of objects.
-      ///
-      /// Objects are returned if their
-      /// value for the property named by pageBy is less than
-      /// the value of pageAfter. Must provide pageBy, and the type
-      /// of the property designated by pageBy must be the same as pageAfter.
-      @Bind.query("pagePrior") String? pagePrior,
+    /// A value-based offset into an ordered list of objects.
+    ///
+    /// Objects are returned if their
+    /// value for the property named by pageBy is less than
+    /// the value of pageAfter. Must provide pageBy, and the type
+    /// of the property designated by pageBy must be the same as pageAfter.
+    @Bind.query("pagePrior") String? pagePrior,
 
-      /// Designates a sorting strategy for the returned objects.
-      ///
-      /// This value must take the form 'name,asc' or 'name,desc', where name
-      /// is the property of the returned objects to sort on.
-      @Bind.query("sortBy") List<String>? sortBy}) async {
+    /// Designates a sorting strategy for the returned objects.
+    ///
+    /// This value must take the form 'name,asc' or 'name,desc', where name
+    /// is the property of the returned objects to sort on.
+    @Bind.query("sortBy") List<String>? sortBy,
+  }) async {
     _query!.fetchLimit = count;
     _query!.offset = offset;
 
@@ -295,10 +300,12 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         direction = QuerySortOrder.descending;
         pageValue = pagePrior;
       } else {
-        return Response.badRequest(body: {
-          "error":
-              "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given"
-        });
+        return Response.badRequest(
+          body: {
+            "error":
+                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given"
+          },
+        );
       }
 
       final pageByProperty = _query!.entity.properties[pageBy];
@@ -307,34 +314,42 @@ class ManagedObjectController<InstanceType extends ManagedObject>
       }
 
       final parsed = _parseValueForProperty(pageValue, pageByProperty);
-      _query!.pageBy((t) => t[pageBy], direction,
-          boundingValue: parsed == "null" ? null : parsed);
+      _query!.pageBy(
+        (t) => t[pageBy],
+        direction,
+        boundingValue: parsed == "null" ? null : parsed,
+      );
     }
 
     if (sortBy != null) {
-      sortBy.forEach((sort) {
+      for (final sort in sortBy) {
         final split = sort.split(",").map((str) => str.trim()).toList();
         if (split.length != 2) {
-          throw Response.badRequest(body: {
-            "error":
-                "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'."
-          });
+          throw Response.badRequest(
+            body: {
+              "error":
+                  "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'."
+            },
+          );
         }
         if (_query!.entity.properties[split.first] == null) {
           throw Response.badRequest(
-              body: {"error": "cannot sort by '$sortBy'"});
+            body: {"error": "cannot sort by '$sortBy'"},
+          );
         }
         if (split.last != "asc" && split.last != "desc") {
-          throw Response.badRequest(body: {
-            "error":
-                "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'."
-          });
+          throw Response.badRequest(
+            body: {
+              "error":
+                  "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'."
+            },
+          );
         }
         final sortOrder = split.last == "asc"
             ? QuerySortOrder.ascending
             : QuerySortOrder.descending;
         _query!.sortBy((t) => t[split.first], sortOrder);
-      });
+      }
     }
 
     _query = await willFindObjectsWithQuery(_query);
@@ -346,7 +361,9 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @override
   APIRequestBody? documentOperationRequestBody(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     if (operation!.method == "POST" || operation.method == "PUT") {
       return APIRequestBody.schema(
         context.schema.getObjectWithType(InstanceType),
@@ -360,43 +377,63 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     switch (operation!.method) {
       case "GET":
         if (operation.pathVariables.isEmpty) {
           return {
             "200": APIResponse.schema(
-                "Returns a list of objects.",
-                APISchemaObject.array(
-                    ofSchema: context.schema.getObjectWithType(InstanceType))),
-            "400": APIResponse.schema("Invalid request.",
-                APISchemaObject.object({"error": APISchemaObject.string()}))
+              "Returns a list of objects.",
+              APISchemaObject.array(
+                ofSchema: context.schema.getObjectWithType(InstanceType),
+              ),
+            ),
+            "400": APIResponse.schema(
+              "Invalid request.",
+              APISchemaObject.object({"error": APISchemaObject.string()}),
+            )
           };
         }
 
         return {
-          "200": APIResponse.schema("Returns a single object.",
-              context.schema.getObjectWithType(InstanceType)),
+          "200": APIResponse.schema(
+            "Returns a single object.",
+            context.schema.getObjectWithType(InstanceType),
+          ),
           "404": APIResponse("No object found.")
         };
       case "PUT":
         return {
-          "200": APIResponse.schema("Returns updated object.",
-              context.schema.getObjectWithType(InstanceType)),
+          "200": APIResponse.schema(
+            "Returns updated object.",
+            context.schema.getObjectWithType(InstanceType),
+          ),
           "404": APIResponse("No object found."),
-          "400": APIResponse.schema("Invalid request.",
-              APISchemaObject.object({"error": APISchemaObject.string()})),
-          "409": APIResponse.schema("Object already exists",
-              APISchemaObject.object({"error": APISchemaObject.string()})),
+          "400": APIResponse.schema(
+            "Invalid request.",
+            APISchemaObject.object({"error": APISchemaObject.string()}),
+          ),
+          "409": APIResponse.schema(
+            "Object already exists",
+            APISchemaObject.object({"error": APISchemaObject.string()}),
+          ),
         };
       case "POST":
         return {
-          "200": APIResponse.schema("Returns created object.",
-              context.schema.getObjectWithType(InstanceType)),
-          "400": APIResponse.schema("Invalid request.",
-              APISchemaObject.object({"error": APISchemaObject.string()})),
-          "409": APIResponse.schema("Object already exists",
-              APISchemaObject.object({"error": APISchemaObject.string()}))
+          "200": APIResponse.schema(
+            "Returns created object.",
+            context.schema.getObjectWithType(InstanceType),
+          ),
+          "400": APIResponse.schema(
+            "Invalid request.",
+            APISchemaObject.object({"error": APISchemaObject.string()}),
+          ),
+          "409": APIResponse.schema(
+            "Object already exists",
+            APISchemaObject.object({"error": APISchemaObject.string()}),
+          )
         };
       case "DELETE":
         return {
@@ -410,7 +447,10 @@ class ManagedObjectController<InstanceType extends ManagedObject>
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path) {
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  ) {
     final ops = super.documentOperations(context, route, path);
 
     final entityName = _query!.entity.name;
@@ -430,12 +470,17 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   }
 
   dynamic _getIdentifierFromPath(
-      String value, ManagedPropertyDescription? desc) {
+    String value,
+    ManagedPropertyDescription? desc,
+  ) {
     return _parseValueForProperty(value, desc, onError: Response.notFound());
   }
 
-  dynamic _parseValueForProperty(String value, ManagedPropertyDescription? desc,
-      {Response? onError}) {
+  dynamic _parseValueForProperty(
+    String value,
+    ManagedPropertyDescription? desc, {
+    Response? onError,
+  }) {
     if (value == "null") {
       return null;
     }

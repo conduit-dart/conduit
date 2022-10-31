@@ -25,8 +25,13 @@ class TableBuilder implements Returnable {
         [];
 
     if (query.pageDescriptor != null) {
-      columnSortBuilders.add(ColumnSortBuilder(this,
-          query.pageDescriptor!.propertyName, query.pageDescriptor!.order));
+      columnSortBuilders.add(
+        ColumnSortBuilder(
+          this,
+          query.pageDescriptor!.propertyName,
+          query.pageDescriptor!.order,
+        ),
+      );
 
       if (query.pageDescriptor!.boundingValue != null) {
         final prop = entity.properties[query.pageDescriptor!.propertyName];
@@ -34,25 +39,34 @@ class TableBuilder implements Returnable {
             ? PredicateOperator.greaterThan
             : PredicateOperator.lessThan;
         final expr = ColumnExpressionBuilder(
-            this,
-            prop,
-            ComparisonExpression(
-                query.pageDescriptor!.boundingValue, operator));
+          this,
+          prop,
+          ComparisonExpression(
+            query.pageDescriptor!.boundingValue,
+            operator,
+          ),
+        );
         expressionBuilders.add(expr);
       }
     }
 
     query.subQueries?.forEach((relationshipDesc, subQuery) {
-      addJoinTableBuilder(TableBuilder(subQuery as PostgresQuery,
-          parent: this, joinedBy: relationshipDesc));
+      addJoinTableBuilder(
+        TableBuilder(
+          subQuery as PostgresQuery,
+          parent: this,
+          joinedBy: relationshipDesc,
+        ),
+      );
     });
 
     addColumnExpressions(query.expressions);
   }
 
   TableBuilder.implicit(
-      this.parent, ManagedRelationshipDescription this.joinedBy)
-      : entity = joinedBy.inverse!.entity,
+    this.parent,
+    ManagedRelationshipDescription this.joinedBy,
+  )   : entity = joinedBy.inverse!.entity,
         _manualPredicate = QueryPredicate.empty() {
     tableAlias = createTableAlias();
     returning = <Returnable>[];
@@ -103,7 +117,8 @@ class TableBuilder implements Returnable {
   }
 
   QueryPredicate get joiningPredicate {
-    ColumnBuilder left, right;
+    ColumnBuilder left;
+    ColumnBuilder right;
     if (identical(foreignKeyProperty, joinedBy)) {
       left = ColumnBuilder(parent, joinedBy);
       right = ColumnBuilder(this, entity.primaryKeyAttribute);
@@ -128,8 +143,10 @@ class TableBuilder implements Returnable {
   }
 
   void finalize(Map<String?, dynamic> variables) {
-    final allExpressions = [_manualPredicate]
-      ..addAll(expressionBuilders.map((c) => c.predicate));
+    final allExpressions = [
+      _manualPredicate,
+      ...expressionBuilders.map((c) => c.predicate)
+    ];
 
     predicate = QueryPredicate.and(allExpressions);
     if (predicate?.parameters != null) {
@@ -142,8 +159,9 @@ class TableBuilder implements Returnable {
   }
 
   void addColumnExpressions(
-      List<QueryExpression<dynamic, dynamic>> expressions) {
-    expressions.forEach((expression) {
+    List<QueryExpression<dynamic, dynamic>> expressions,
+  ) {
+    for (final expression in expressions) {
       final firstElement = expression.keyPath.path.first;
       final lastElement = expression.keyPath.path.last;
 
@@ -166,35 +184,45 @@ class TableBuilder implements Returnable {
           final expr =
               ColumnExpressionBuilder(this, lastElement, expression.expression);
           expressionBuilders.add(expr);
-          return;
+          continue;
         }
       } else if (isForeignKey) {
         // This will occur if we selected a belongs to relationship or a belongs to relationship's
         // primary key. In either case, this is a column in this table (a foreign key column).
         final expr = ColumnExpressionBuilder(
-            this, expression.keyPath.path.first, expression.expression);
+          this,
+          expression.keyPath.path.first,
+          expression.expression,
+        );
         expressionBuilders.add(expr);
-        return;
+        continue;
       }
 
       addColumnExpressionToJoinedTable(expression);
-    });
+    }
   }
 
   void addColumnExpressionToJoinedTable(
-      QueryExpression<dynamic, dynamic> expression) {
+    QueryExpression<dynamic, dynamic> expression,
+  ) {
     final TableBuilder joinedTable = _findJoinedTable(expression.keyPath);
     final lastElement = expression.keyPath.path.last;
     if (lastElement is ManagedRelationshipDescription) {
       final inversePrimaryKey = lastElement.inverse!.entity.primaryKeyAttribute;
       final expr = ColumnExpressionBuilder(
-          joinedTable, inversePrimaryKey, expression.expression,
-          prefix: tableAlias);
+        joinedTable,
+        inversePrimaryKey,
+        expression.expression,
+        prefix: tableAlias,
+      );
       expressionBuilders.add(expr);
     } else {
       final expr = ColumnExpressionBuilder(
-          joinedTable, lastElement, expression.expression,
-          prefix: tableAlias);
+        joinedTable,
+        lastElement,
+        expression.expression,
+        prefix: tableAlias,
+      );
       expressionBuilders.add(expr);
     }
   }

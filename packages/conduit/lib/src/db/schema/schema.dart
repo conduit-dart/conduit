@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart' show IterableExtension;
 
-import '../managed/managed.dart';
-import 'schema_table.dart';
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/schema/schema_table.dart';
 
 export 'migration.dart';
 export 'schema_builder.dart';
@@ -59,7 +59,9 @@ class Schema {
   // ignore: avoid_setters_without_getters
   set _tables(List<SchemaTable> tables) {
     _tableStorage = tables;
-    _tableStorage!.forEach((t) => t.schema = this);
+    for (final t in _tableStorage!) {
+      t.schema = this;
+    }
   }
 
   /// Gets a table from [tables] by that table's name.
@@ -81,7 +83,8 @@ class Schema {
   void addTable(SchemaTable table) {
     if (this[table.name!] != null) {
       throw SchemaException(
-          "Table ${table.name} already exists and cannot be added.");
+        "Table ${table.name} already exists and cannot be added.",
+      );
     }
 
     _tableStorage!.add(table);
@@ -91,7 +94,8 @@ class Schema {
   void replaceTable(SchemaTable existingTable, SchemaTable newTable) {
     if (!_tableStorage!.contains(existingTable)) {
       throw SchemaException(
-          "Table ${existingTable.name} does not exist and cannot be replaced.");
+        "Table ${existingTable.name} does not exist and cannot be replaced.",
+      );
     }
 
     final index = _tableStorage!.indexOf(existingTable);
@@ -154,7 +158,7 @@ class SchemaDifference {
   /// Creates a new instance that represents the difference between [expectedSchema] and [actualSchema].
   ///
   SchemaDifference(this.expectedSchema, this.actualSchema) {
-    for (var expectedTable in expectedSchema.tables) {
+    for (final expectedTable in expectedSchema.tables) {
       final actualTable = actualSchema[expectedTable.name!];
       if (actualTable == null) {
         _differingTables.add(SchemaTableDifference(expectedTable, null));
@@ -166,11 +170,13 @@ class SchemaDifference {
       }
     }
 
-    _differingTables.addAll(actualSchema.tables
-        .where((t) => expectedSchema[t.name!] == null)
-        .map((unexpectedTable) {
-      return SchemaTableDifference(null, unexpectedTable);
-    }));
+    _differingTables.addAll(
+      actualSchema.tables
+          .where((t) => expectedSchema[t.name!] == null)
+          .map((unexpectedTable) {
+        return SchemaTableDifference(null, unexpectedTable);
+      }),
+    );
   }
 
   /// The 'expected' schema.

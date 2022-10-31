@@ -1,8 +1,7 @@
 import 'dart:io';
 
+import 'package:conduit/src/application/application.dart';
 import 'package:conduit/src/application/channel.dart';
-
-import 'application.dart';
 
 /// An object that contains configuration values for an [Application].
 ///

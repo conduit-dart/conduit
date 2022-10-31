@@ -1,4 +1,6 @@
 // ignore: unnecessary_const
+// ignore_for_file: avoid_print, avoid_dynamic_calls
+
 @Timeout(Duration(seconds: 90))
 import 'dart:async';
 
@@ -23,7 +25,7 @@ void main() {
           errorMsgCompleter.complete(rec);
         }
       });
-      await app.start(numberOfInstances: 1);
+      await app.start();
 
       // This request will generate an uncaught exception
       final failFuture =
@@ -47,8 +49,10 @@ void main() {
       expect(errorMessage.stackTrace, isNotNull);
 
       // And then we should make sure everything is working just fine.
-      expect((await http.get(Uri.parse("http://localhost:8888/"))).statusCode,
-          200);
+      expect(
+        (await http.get(Uri.parse("http://localhost:8888/"))).statusCode,
+        200,
+      );
       print("succeeded in final request");
     });
 
@@ -75,8 +79,10 @@ void main() {
       final successResponse =
           await http.get(Uri.parse("http://localhost:8888/"));
       expect(successResponse.statusCode, 200);
-      expect((await Future.wait(failFutures)).map((r) => r.statusCode),
-          everyElement(200));
+      expect(
+        (await Future.wait(failFutures)).map((r) => r.statusCode),
+        everyElement(200),
+      );
 
       print("wait on completion");
       await completer.future;

@@ -1,5 +1,5 @@
-import '../persistent_store/persistent_store.dart';
-import 'query.dart';
+import 'package:conduit/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 /// A predicate contains instructions for filtering rows when performing a [Query].
 ///
@@ -58,7 +58,7 @@ class QueryPredicate {
     int dupeCounter = 0;
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
-    for (var predicate in predicateList) {
+    for (final predicate in predicateList) {
       final duplicateKeys = predicate!.parameters?.keys
               .where((k) => valueMap.keys.contains(k))
               .toList() ??
@@ -67,12 +67,12 @@ class QueryPredicate {
       if (duplicateKeys.isNotEmpty) {
         var fmt = predicate.format;
         final Map<String?, String> dupeMap = {};
-        duplicateKeys.forEach((key) {
+        for (final key in duplicateKeys) {
           final replacementKey = "$key$dupeCounter";
           fmt = fmt.replaceAll("@$key", "@$replacementKey");
           dupeMap[key] = replacementKey;
           dupeCounter++;
-        });
+        }
 
         allFormatStrings.add(fmt);
         predicate.parameters?.forEach((key, value) {

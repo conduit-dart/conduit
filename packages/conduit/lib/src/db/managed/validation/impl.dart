@@ -39,7 +39,8 @@ class ValidationExpression {
         {
           if (comparisonValue!.compareTo(input) > 0) {
             context.addError(
-                "must be greater than or equal to '$comparisonValue'.");
+              "must be greater than or equal to '$comparisonValue'.",
+            );
           }
         }
         break;

@@ -1,17 +1,17 @@
-// ignore_for_file: comment_references
+// ignore_for_file: comment_references, avoid_catching_errors
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/auth/auth.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-
-import 'http.dart';
 
 /// Controller for operating on an HTTP Resource.
 ///
@@ -68,7 +68,7 @@ import 'http.dart';
 ///
 /// To access the request directly, use [request]. Note that the [Request.body] of [request] will be decoded prior to invoking an operation method.
 abstract class ResourceController extends Controller
-    implements Recyclable<Null> {
+    implements Recyclable<void> {
   ResourceController() {
     _runtime =
         (RuntimeContext.current.runtimes[runtimeType] as ControllerRuntime?)
@@ -76,7 +76,7 @@ abstract class ResourceController extends Controller
   }
 
   @override
-  Null get recycledState => null;
+  void get recycledState => nullptr;
 
   ResourceControllerRuntime? _runtime;
 
@@ -132,7 +132,7 @@ abstract class ResourceController extends Controller
   void didDecodeRequestBody(RequestBody body) {}
 
   @override
-  void restore(Null state) {
+  void restore(void state) {
     /* no op - fetched from static cache in Runtime */
   }
 
@@ -148,7 +148,8 @@ abstract class ResourceController extends Controller
     }
 
     throw StateError(
-        "'$runtimeType' returned invalid object from 'willProcessRequest'. Must return 'Request' or 'Response'.");
+      "'$runtimeType' returned invalid object from 'willProcessRequest'. Must return 'Request' or 'Response'.",
+    );
   }
 
   /// Returns a documented list of [APIParameter] for [operation].
@@ -159,7 +160,9 @@ abstract class ResourceController extends Controller
   /// to the returned list before returning the combined list.
   @mustCallSuper
   List<APIParameter?>? documentOperationParameters(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     return _runtime!.documenter
         ?.documentOperationParameters(this, context, operation);
   }
@@ -169,7 +172,9 @@ abstract class ResourceController extends Controller
   /// By default, this method returns null and the summary is derived from documentation comments
   /// above the operation method. You may override this method to manually add a summary to an operation.
   String? documentOperationSummary(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     return null;
   }
 
@@ -178,7 +183,9 @@ abstract class ResourceController extends Controller
   /// By default, this method returns null and the description is derived from documentation comments
   /// above the operation method. You may override this method to manually add a description to an operation.
   String? documentOperationDescription(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     return null;
   }
 
@@ -188,7 +195,9 @@ abstract class ResourceController extends Controller
   /// that describes the bound body type. You may override this method to take an alternative approach or to augment the
   /// automatically generated request body documentation.
   APIRequestBody? documentOperationRequestBody(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     return _runtime!.documenter
         ?.documentOperationRequestBody(this, context, operation);
   }
@@ -199,7 +208,9 @@ abstract class ResourceController extends Controller
   /// possible responses. The key is a [String] representation of a status code (e.g., "200") and the value
   /// is an [APIResponse] object.
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
+    APIDocumentContext context,
+    Operation operation,
+  ) {
     return {"200": APIResponse("Successful response.")};
   }
 
@@ -210,14 +221,19 @@ abstract class ResourceController extends Controller
   /// to provide additional tags. You should call the superclass' implementation to retain
   /// the controller grouping tag.
   List<String> documentOperationTags(
-      APIDocumentContext context, Operation? operation) {
+    APIDocumentContext context,
+    Operation? operation,
+  ) {
     final tag = "$runtimeType".replaceAll("Controller", "");
     return [tag];
   }
 
   @override
   Map<String, APIOperation> documentOperations(
-      APIDocumentContext context, String route, APIPath path) {
+    APIDocumentContext context,
+    String route,
+    APIPath path,
+  ) {
     return _runtime!.documenter!.documentOperations(this, context, route, path);
   }
 
@@ -236,7 +252,8 @@ abstract class ResourceController extends Controller
   }
 
   List<String> _allowedMethodsForPathVariables(
-      Iterable<String?> pathVariables) {
+    Iterable<String?> pathVariables,
+  ) {
     return _runtime!.operations
         .where((op) => op.isSuitableForRequest(null, pathVariables.toList()))
         .map((op) => op.httpMethod)
@@ -251,32 +268,36 @@ abstract class ResourceController extends Controller
     }
 
     final operation = _runtime!.getOperationRuntime(
-        request!.raw.method, request!.path.variables.keys.toList());
+      request!.raw.method,
+      request!.path.variables.keys.toList(),
+    );
     if (operation == null) {
       throw Response(
-          405,
-          {
-            "Allow":
-                _allowedMethodsForPathVariables(request!.path.variables.keys)
-                    .join(", ")
-          },
-          null);
+        405,
+        {
+          "Allow": _allowedMethodsForPathVariables(request!.path.variables.keys)
+              .join(", ")
+        },
+        null,
+      );
     }
 
     if (operation.scopes != null) {
       if (request!.authorization == null) {
         // todo: this should be done compile-time
         Logger("conduit").warning(
-            "'${runtimeType}' must be linked to channel that contains an 'Authorizer', because "
+            "'$runtimeType' must be linked to channel that contains an 'Authorizer', because "
             "it uses 'Scope' annotation for one or more of its operation methods.");
         throw Response.serverError();
       }
 
       if (!AuthScope.verify(operation.scopes, request!.authorization!.scopes)) {
-        throw Response.forbidden(body: {
-          "error": "insufficient_scope",
-          "scope": operation.scopes!.map((s) => s.toString()).join(" ")
-        });
+        throw Response.forbidden(
+          body: {
+            "error": "insufficient_scope",
+            "scope": operation.scopes!.map((s) => s.toString()).join(" ")
+          },
+        );
       }
     }
 
@@ -289,26 +310,31 @@ abstract class ResourceController extends Controller
     /* Begin decoding bindings */
     final args = ResourceControllerOperationInvocationArgs();
     final errors = <String>[];
-    final errorCatchWrapper = (ResourceControllerParameter p, f) {
+    dynamic errorCatchWrapper(ResourceControllerParameter p, f) {
       try {
+        // ignore: avoid_dynamic_calls
         return f();
       } on ArgumentError catch (e) {
         errors.add(
-            "${e.message ?? 'ArgumentError'} for ${p.locationName} value '${p.name}'");
+          "${e.message ?? 'ArgumentError'} for ${p.locationName} value '${p.name}'",
+        );
       }
       return null;
-    };
-    final checkIfMissingRequiredAndEmitErrorIfSo =
-        (ResourceControllerParameter p, dynamic v) {
+    }
+
+    void checkIfMissingRequiredAndEmitErrorIfSo(
+      ResourceControllerParameter p,
+      dynamic v,
+    ) {
       if (v == null && p.isRequired) {
         if (p.location == BindingType.body) {
           errors.add("missing required ${p.locationName}");
         } else {
           errors.add("missing required ${p.locationName} '${p.name ?? ""}'");
         }
-        return null;
+        return;
       }
-    };
+    }
 
     args.positionalArguments = operation.positionalParameters
         .map((p) {

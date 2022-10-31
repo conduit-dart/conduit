@@ -1,5 +1,5 @@
-import '../query/query.dart';
-import 'managed.dart';
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 /// Annotation to configure the table definition of a [ManagedObject].
 ///
@@ -68,8 +68,11 @@ enum DeleteRule {
 /// resolves to a column in the database. The relationship property without this metadata resolves to a row or rows in the database.
 class Relate {
   /// Creates an instance of this type.
-  const Relate(this.inversePropertyName,
-      {this.onDelete = DeleteRule.nullify, this.isRequired = false});
+  const Relate(
+    this.inversePropertyName, {
+    this.onDelete = DeleteRule.nullify,
+    this.isRequired = false,
+  });
 
   const Relate.deferred(DeleteRule onDelete, {bool isRequired = false})
       : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
@@ -119,25 +122,21 @@ class Column {
   ///
   /// [defaultValue] is sent as-is to the database, therefore, if the default value is the integer value 2,
   /// pass the string "2". If the default value is a string, it must also be wrapped in single quotes: "'defaultValue'".
-  const Column(
-      {ManagedPropertyType? databaseType,
-      bool primaryKey = false,
-      bool nullable = false,
-      String? defaultValue,
-      bool unique = false,
-      bool indexed = false,
-      bool omitByDefault = false,
-      bool autoincrement = false,
-      List<Validate> validators = const []})
-      : isPrimaryKey = primaryKey,
-        databaseType = databaseType,
+  const Column({
+    this.databaseType,
+    bool primaryKey = false,
+    bool nullable = false,
+    this.defaultValue,
+    bool unique = false,
+    bool indexed = false,
+    bool omitByDefault = false,
+    this.autoincrement = false,
+    this.validators = const [],
+  })  : isPrimaryKey = primaryKey,
         isNullable = nullable,
-        defaultValue = defaultValue,
         isUnique = unique,
         isIndexed = indexed,
-        shouldOmitByDefault = omitByDefault,
-        autoincrement = autoincrement,
-        validators = validators;
+        shouldOmitByDefault = omitByDefault;
 
   /// When true, indicates that this property is the primary key.
   ///
@@ -236,7 +235,8 @@ class Serialize {
 ///
 /// The validator [Validate.constant] is automatically applied to a property with this annotation.
 const Column primaryKey = Column(
-    primaryKey: true,
-    databaseType: ManagedPropertyType.bigInteger,
-    autoincrement: true,
-    validators: [Validate.constant()]);
+  primaryKey: true,
+  databaseType: ManagedPropertyType.bigInteger,
+  autoincrement: true,
+  validators: [Validate.constant()],
+);

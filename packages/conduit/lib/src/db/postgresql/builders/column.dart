@@ -1,3 +1,5 @@
+// ignore_for_file: cast_nullable_to_non_nullable
+
 import 'package:conduit/src/db/managed/key_path.dart';
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/managed/relationship_type.dart';
@@ -32,19 +34,27 @@ class ColumnBuilder extends Returnable {
       keys.insert(0, KeyPath(entity.primaryKeyAttribute));
     }
 
-    return List.from(keys.map((key) {
-      return ColumnBuilder(table, propertyForName(entity, key.path.first!.name),
-          documentKeyPath: key.dynamicElements);
-    }));
+    return List.from(
+      keys.map((key) {
+        return ColumnBuilder(
+          table,
+          propertyForName(entity, key.path.first!.name),
+          documentKeyPath: key.dynamicElements,
+        );
+      }),
+    );
   }
 
   static ManagedPropertyDescription propertyForName(
-      ManagedEntity entity, String? propertyName) {
+    ManagedEntity entity,
+    String? propertyName,
+  ) {
     final property = entity.properties[propertyName];
 
     if (property == null) {
       throw ArgumentError(
-          "Could not construct query. Column '$propertyName' does not exist for table '${entity.tableName}'.");
+        "Could not construct query. Column '$propertyName' does not exist for table '${entity.tableName}'.",
+      );
     }
 
     if (property is ManagedRelationshipDescription &&
@@ -97,7 +107,8 @@ class ColumnBuilder extends Returnable {
         }
 
         throw ArgumentError(
-            "Invalid data type for 'Document'. Must be 'Document', 'Map', or 'List'.");
+          "Invalid data type for 'Document'. Must be 'Document', 'Map', or 'List'.",
+        );
       }
     }
 
@@ -126,7 +137,8 @@ class ColumnBuilder extends Returnable {
 
   String get sqlTypeSuffix {
     final type = PostgreSQLFormat.dataTypeStringForDataType(
-        typeMap[property!.type!.kind]);
+      typeMap[property!.type!.kind],
+    );
     if (type != null) {
       return ":$type";
     }
@@ -134,10 +146,11 @@ class ColumnBuilder extends Returnable {
     return "";
   }
 
-  String sqlColumnName(
-      {bool withTypeSuffix = false,
-      bool withTableNamespace = false,
-      String? withPrefix}) {
+  String sqlColumnName({
+    bool withTypeSuffix = false,
+    bool withTableNamespace = false,
+    String? withPrefix,
+  }) {
     var name = property!.name;
 
     if (property is ManagedRelationshipDescription) {

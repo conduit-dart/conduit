@@ -9,10 +9,12 @@ import 'package:conduit/src/cli/scripts/migration_builder.dart';
 
 class CLIDatabaseGenerate extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
-  @Option("name",
-      help:
-          "Name of the generated migration. Automaticaly lower- and snakecased.",
-      defaultsTo: "unnamed")
+  @Option(
+    "name",
+    help:
+        "Name of the generated migration. Automaticaly lower- and snakecased.",
+    defaultsTo: "unnamed",
+  )
   String get migrationName {
     final String name = decode<String>("name");
 
@@ -22,8 +24,8 @@ class CLIDatabaseGenerate extends CLICommand
   String _toSnakeCase(String name) {
     final sb = StringBuffer();
     final words = <String>[];
-    final isAllCaps = !name.contains(RegExp(r'[a-z]'));
-    final upperAlphaRegex = RegExp(r'[A-Z]');
+    final isAllCaps = !name.contains(RegExp('[a-z]'));
+    final upperAlphaRegex = RegExp('[A-Z]');
     final symbolRegex = RegExp(r'[ ./_\-]');
 
     for (int i = 0; i < name.length; i++) {
@@ -55,14 +57,20 @@ class CLIDatabaseGenerate extends CLICommand
   Future<int> handle() async {
     final existingMigrations = projectMigrations;
 
-    var newMigrationFile = File.fromUri(migrationDirectory!.uri.resolve(
-        "00000001_${migrationName != "unnamed" ? migrationName : "initial"}.migration.dart"));
+    var newMigrationFile = File.fromUri(
+      migrationDirectory!.uri.resolve(
+        "00000001_${migrationName != "unnamed" ? migrationName : "initial"}.migration.dart",
+      ),
+    );
     var versionNumber = 1;
 
     if (existingMigrations.isNotEmpty) {
       versionNumber = existingMigrations.last.versionNumber + 1;
-      newMigrationFile = File.fromUri(migrationDirectory!.uri.resolve(
-          "${"$versionNumber".padLeft(8, "0")}_${migrationName}.migration.dart"));
+      newMigrationFile = File.fromUri(
+        migrationDirectory!.uri.resolve(
+          "${"$versionNumber".padLeft(8, "0")}_$migrationName.migration.dart",
+        ),
+      );
     }
 
     final schema = await schemaByApplyingMigrationSources(projectMigrations);
@@ -70,18 +78,21 @@ class CLIDatabaseGenerate extends CLICommand
         await generateMigrationFileForProject(this, schema, versionNumber);
 
     displayInfo("The following ManagedObject<T> subclasses were found:");
-    displayProgress("${result.tablesEvaluated!.join(", ")}");
+    displayProgress(result.tablesEvaluated!.join(", "));
     displayProgress("");
     displayProgress(
-        "* If you were expecting more declarations, ensure the files are visible in the application library file.");
+      "* If you were expecting more declarations, ensure the files are visible in the application library file.",
+    );
     displayProgress("");
 
     result.changeList?.forEach(displayProgress);
 
     newMigrationFile.writeAsStringSync(result.source!);
 
-    displayInfo("Created new migration file (version $versionNumber).",
-        color: CLIColor.boldGreen);
+    displayInfo(
+      "Created new migration file (version $versionNumber).",
+      color: CLIColor.boldGreen,
+    );
     displayProgress("New file is located at ${newMigrationFile.path}");
 
     return 0;

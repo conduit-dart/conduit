@@ -1,19 +1,23 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/application/isolate_application_server.dart';
 import 'package:logging/logging.dart';
-
-import 'application.dart';
-import 'isolate_application_server.dart';
 
 /// Represents the supervision of a [ApplicationIsolateServer].
 ///
 /// You should not use this class directly.
 class ApplicationIsolateSupervisor {
   /// Create an instance of [ApplicationIsolateSupervisor].
-  ApplicationIsolateSupervisor(this.supervisingApplication, this.isolate,
-      this.receivePort, this.identifier, this.logger,
-      {this.startupTimeout = const Duration(seconds: 30)});
+  ApplicationIsolateSupervisor(
+    this.supervisingApplication,
+    this.isolate,
+    this.receivePort,
+    this.identifier,
+    this.logger, {
+    this.startupTimeout = const Duration(seconds: 30),
+  });
 
   /// The [Isolate] being supervised.
   final Isolate isolate;
@@ -50,30 +54,37 @@ class ApplicationIsolateSupervisor {
     isolate.setErrorsFatal(false);
     isolate.addErrorListener(receivePort.sendPort);
     logger.fine(
-        "ApplicationIsolateSupervisor($identifier).resume will resume isolate");
+      "ApplicationIsolateSupervisor($identifier).resume will resume isolate",
+    );
     isolate.resume(isolate.pauseCapability!);
 
-    return _launchCompleter!.future.timeout(startupTimeout, onTimeout: () {
-      logger.fine(
-          "ApplicationIsolateSupervisor($identifier).resume timed out waiting for isolate start");
-      throw TimeoutException(
-          "Isolate ($identifier) failed to launch in $startupTimeout seconds. "
-          "There may be an error with your application or Application.isolateStartupTimeout needs to be increased.");
-    });
+    return _launchCompleter!.future.timeout(
+      startupTimeout,
+      onTimeout: () {
+        logger.fine(
+          "ApplicationIsolateSupervisor($identifier).resume timed out waiting for isolate start",
+        );
+        throw TimeoutException(
+            "Isolate ($identifier) failed to launch in $startupTimeout seconds. "
+            "There may be an error with your application or Application.isolateStartupTimeout needs to be increased.");
+      },
+    );
   }
 
   /// Stops the [Isolate] being supervised.
   Future stop() async {
     _stopCompleter = Completer();
     logger.fine(
-        "ApplicationIsolateSupervisor($identifier).stop sending stop to supervised isolate");
+      "ApplicationIsolateSupervisor($identifier).stop sending stop to supervised isolate",
+    );
     _serverSendPort.send(messageKeyStop);
 
     try {
       await _stopCompleter!.future.timeout(const Duration(seconds: 5));
     } on TimeoutException {
       logger.severe(
-          "Isolate ($identifier) not responding to stop message, terminating.");
+        "Isolate ($identifier) not responding to stop message, terminating.",
+      );
       isolate.kill();
     }
 
@@ -87,17 +98,20 @@ class ApplicationIsolateSupervisor {
       _launchCompleter!.complete();
       _launchCompleter = null;
       logger.fine(
-          "ApplicationIsolateSupervisor($identifier) isolate listening acknowledged");
+        "ApplicationIsolateSupervisor($identifier) isolate listening acknowledged",
+      );
     } else if (message == messageKeyStop) {
       logger.fine(
-          "ApplicationIsolateSupervisor($identifier) stop message acknowledged");
+        "ApplicationIsolateSupervisor($identifier) stop message acknowledged",
+      );
       receivePort.close();
 
       _stopCompleter?.complete();
       _stopCompleter = null;
     } else if (message is List) {
       logger.fine(
-          "ApplicationIsolateSupervisor($identifier) received isolate error ${message.first}");
+        "ApplicationIsolateSupervisor($identifier) received isolate error ${message.first}",
+      );
       final stacktrace = StackTrace.fromString(message.last as String);
       _handleIsolateException(message.first, stacktrace);
     } else if (message is MessageHubMessage) {

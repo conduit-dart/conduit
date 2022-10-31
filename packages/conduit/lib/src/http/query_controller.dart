@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../db/db.dart';
-import 'http.dart';
+import 'package:conduit/src/db/db.dart';
+import 'package:conduit/src/http/http.dart';
 
 /// A partial class for implementing an [ResourceController] that has a few conveniences
 /// for executing [Query]s.

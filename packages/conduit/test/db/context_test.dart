@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';
@@ -116,7 +118,7 @@ Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
       PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
   final context = ManagedContext(dataModel, persistentStore);
 
-  for (var cmd in commands) {
+  for (final cmd in commands) {
     await persistentStore.execute(cmd);
   }
 

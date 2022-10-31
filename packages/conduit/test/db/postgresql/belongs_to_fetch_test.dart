@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/model_graph.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
@@ -33,9 +35,11 @@ void main() {
         ..where((o) => o.parents).identifiedBy(1);
       final results = await q.fetch();
 
-      expect(results.length,
-          rootObjects.firstWhere((r) => r.rid == 1).children!.length);
-      for (var child in rootObjects.first.children!) {
+      expect(
+        results.length,
+        rootObjects.firstWhere((r) => r.rid == 1).children!.length,
+      );
+      for (final child in rootObjects.first.children!) {
         final matching = results.firstWhere((c) => c.cid == child.cid);
         expect(child.value1, matching.value1);
         expect(child.value2, matching.value2);
@@ -50,9 +54,11 @@ void main() {
         ..where((o) => o.parents!.rid).equalTo(1);
       final results = await q.fetch();
 
-      expect(results.length,
-          rootObjects.firstWhere((r) => r.rid == 1).children!.length);
-      for (var child in rootObjects.first.children!) {
+      expect(
+        results.length,
+        rootObjects.firstWhere((r) => r.rid == 1).children!.length,
+      );
+      for (final child in rootObjects.first.children!) {
         final matching = results.firstWhere((c) => c.cid == child.cid);
         expect(child.value1, matching.value1);
         expect(child.value2, matching.value2);
@@ -68,10 +74,12 @@ void main() {
           rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
 
       expect(results.length, childNotChildren.length);
-      childNotChildren.forEach((c) {
-        expect(results.firstWhere((resultChild) => c!.cid == resultChild.cid),
-            isNotNull);
-      });
+      for (final c in childNotChildren) {
+        expect(
+          results.firstWhere((resultChild) => c!.cid == resultChild.cid),
+          isNotNull,
+        );
+      }
 
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNull();
       results = await q.fetch();
@@ -80,10 +88,12 @@ void main() {
           rootObjects.expand((r) => r.children ?? []).toList();
 
       expect(results.length, childrenNotChild.length);
-      childrenNotChild.forEach((c) {
-        expect(results.firstWhere((resultChild) => c.cid == resultChild.cid),
-            isNotNull);
-      });
+      for (final c in childrenNotChild) {
+        expect(
+          results.firstWhere((resultChild) => c.cid == resultChild.cid),
+          isNotNull,
+        );
+      }
     });
 
     test("Can use whereNotNull", () async {
@@ -96,10 +106,12 @@ void main() {
           .toList();
 
       expect(results.length, childrenNotChild.length);
-      childrenNotChild.forEach((c) {
-        expect(results.firstWhere((resultChild) => c.cid == resultChild.cid),
-            isNotNull);
-      });
+      for (final c in childrenNotChild) {
+        expect(
+          results.firstWhere((resultChild) => c.cid == resultChild.cid),
+          isNotNull,
+        );
+      }
 
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNotNull();
       results = await q.fetch();
@@ -107,10 +119,12 @@ void main() {
           rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
 
       expect(results.length, childNotChildren.length);
-      childNotChildren.forEach((c) {
-        expect(results.firstWhere((resultChild) => c!.cid == resultChild.cid),
-            isNotNull);
-      });
+      for (final c in childNotChildren) {
+        expect(
+          results.firstWhere((resultChild) => c!.cid == resultChild.cid),
+          isNotNull,
+        );
+      }
     });
   });
 
@@ -122,27 +136,55 @@ void main() {
     final results = await q.fetch();
 
     expect(
-        results.map((c) => c.asMap()).toList(),
-        equals([
-          fullObjectMap(ChildObject, 1,
-              and: {"parents": null, "parent": fullObjectMap(RootObject, 1)}),
-          fullObjectMap(ChildObject, 2,
-              and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-          fullObjectMap(ChildObject, 3,
-              and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-          fullObjectMap(ChildObject, 4,
-              and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-          fullObjectMap(ChildObject, 5,
-              and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-          fullObjectMap(ChildObject, 6,
-              and: {"parents": null, "parent": fullObjectMap(RootObject, 2)}),
-          fullObjectMap(ChildObject, 7,
-              and: {"parents": fullObjectMap(RootObject, 2), "parent": null}),
-          fullObjectMap(ChildObject, 8,
-              and: {"parents": null, "parent": fullObjectMap(RootObject, 3)}),
-          fullObjectMap(ChildObject, 9,
-              and: {"parents": fullObjectMap(RootObject, 4), "parent": null})
-        ]));
+      results.map((c) => c.asMap()).toList(),
+      equals([
+        fullObjectMap(
+          ChildObject,
+          1,
+          and: {"parents": null, "parent": fullObjectMap(RootObject, 1)},
+        ),
+        fullObjectMap(
+          ChildObject,
+          2,
+          and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+        ),
+        fullObjectMap(
+          ChildObject,
+          3,
+          and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+        ),
+        fullObjectMap(
+          ChildObject,
+          4,
+          and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+        ),
+        fullObjectMap(
+          ChildObject,
+          5,
+          and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+        ),
+        fullObjectMap(
+          ChildObject,
+          6,
+          and: {"parents": null, "parent": fullObjectMap(RootObject, 2)},
+        ),
+        fullObjectMap(
+          ChildObject,
+          7,
+          and: {"parents": fullObjectMap(RootObject, 2), "parent": null},
+        ),
+        fullObjectMap(
+          ChildObject,
+          8,
+          and: {"parents": null, "parent": fullObjectMap(RootObject, 3)},
+        ),
+        fullObjectMap(
+          ChildObject,
+          9,
+          and: {"parents": fullObjectMap(RootObject, 4), "parent": null},
+        )
+      ]),
+    );
   });
 
   group("Join on parent of hasMany relationship", () {
@@ -151,33 +193,64 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(ChildObject, 1, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            ChildObject,
+            1,
+            and: {
               "parents": null,
               "parent": {"rid": 1}
-            }),
-            fullObjectMap(ChildObject, 2,
-                and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-            fullObjectMap(ChildObject, 3,
-                and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-            fullObjectMap(ChildObject, 4,
-                and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-            fullObjectMap(ChildObject, 5,
-                and: {"parents": fullObjectMap(RootObject, 1), "parent": null}),
-            fullObjectMap(ChildObject, 6, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            2,
+            and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+          ),
+          fullObjectMap(
+            ChildObject,
+            3,
+            and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+          ),
+          fullObjectMap(
+            ChildObject,
+            4,
+            and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+          ),
+          fullObjectMap(
+            ChildObject,
+            5,
+            and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+          ),
+          fullObjectMap(
+            ChildObject,
+            6,
+            and: {
               "parents": null,
               "parent": {"rid": 2}
-            }),
-            fullObjectMap(ChildObject, 7,
-                and: {"parents": fullObjectMap(RootObject, 2), "parent": null}),
-            fullObjectMap(ChildObject, 8, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            7,
+            and: {"parents": fullObjectMap(RootObject, 2), "parent": null},
+          ),
+          fullObjectMap(
+            ChildObject,
+            8,
+            and: {
               "parents": null,
               "parent": {"rid": 3}
-            }),
-            fullObjectMap(ChildObject, 9,
-                and: {"parents": fullObjectMap(RootObject, 4), "parent": null})
-          ]));
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            9,
+            and: {"parents": fullObjectMap(RootObject, 4), "parent": null},
+          )
+        ]),
+      );
     });
 
     test("Nested join", () async {
@@ -186,56 +259,100 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((g) => g.asMap()).toList(),
-          equals([
-            fullObjectMap(GrandChildObject, 1, and: {
+        results.map((g) => g.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            GrandChildObject,
+            1,
+            and: {
               "parents": null,
               "parent": {"cid": 1}
-            }),
-            fullObjectMap(GrandChildObject, 2, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            2,
+            and: {
               "parent": null,
-              "parents": fullObjectMap(ChildObject, 1, and: {
-                "parents": null,
-                "parent": {"rid": 1}
-              })
-            }),
-            fullObjectMap(GrandChildObject, 3, and: {
+              "parents": fullObjectMap(
+                ChildObject,
+                1,
+                and: {
+                  "parents": null,
+                  "parent": {"rid": 1}
+                },
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            3,
+            and: {
               "parent": null,
-              "parents": fullObjectMap(ChildObject, 1, and: {
-                "parents": null,
-                "parent": {"rid": 1}
-              })
-            }),
-            fullObjectMap(GrandChildObject, 4, and: {
+              "parents": fullObjectMap(
+                ChildObject,
+                1,
+                and: {
+                  "parents": null,
+                  "parent": {"rid": 1}
+                },
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            4,
+            and: {
               "parents": null,
               "parent": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 5, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            5,
+            and: {
               "parent": null,
-              "parents": fullObjectMap(ChildObject, 2, and: {
-                "parents": fullObjectMap(RootObject, 1),
-                "parent": null
-              })
-            }),
-            fullObjectMap(GrandChildObject, 6, and: {
+              "parents": fullObjectMap(
+                ChildObject,
+                2,
+                and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            6,
+            and: {
               "parent": null,
-              "parents": fullObjectMap(ChildObject, 2, and: {
-                "parents": fullObjectMap(RootObject, 1),
-                "parent": null
-              })
-            }),
-            fullObjectMap(GrandChildObject, 7, and: {
+              "parents": fullObjectMap(
+                ChildObject,
+                2,
+                and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            7,
+            and: {
               "parents": null,
               "parent": {"cid": 3}
-            }),
-            fullObjectMap(GrandChildObject, 8, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            8,
+            and: {
               "parent": null,
-              "parents": fullObjectMap(ChildObject, 4, and: {
-                "parents": fullObjectMap(RootObject, 1),
-                "parent": null
-              })
-            }),
-          ]));
+              "parents": fullObjectMap(
+                ChildObject,
+                4,
+                and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
+              )
+            },
+          ),
+        ]),
+      );
     });
 
     test("Bidirectional join", () async {
@@ -248,77 +365,134 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(ChildObject, 1, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            ChildObject,
+            1,
+            and: {
               "parents": null,
               "parent": {"rid": 1},
               "grandChildren": [
-                fullObjectMap(GrandChildObject, 3, and: {
-                  "parents": {"cid": 1},
-                  "parent": null
-                }),
-                fullObjectMap(GrandChildObject, 2, and: {
-                  "parents": {"cid": 1},
-                  "parent": null
-                }),
+                fullObjectMap(
+                  GrandChildObject,
+                  3,
+                  and: {
+                    "parents": {"cid": 1},
+                    "parent": null
+                  },
+                ),
+                fullObjectMap(
+                  GrandChildObject,
+                  2,
+                  and: {
+                    "parents": {"cid": 1},
+                    "parent": null
+                  },
+                ),
               ]
-            }),
-            fullObjectMap(ChildObject, 2, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            2,
+            and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
               "grandChildren": [
-                fullObjectMap(GrandChildObject, 6, and: {
-                  "parents": {"cid": 2},
-                  "parent": null
-                }),
-                fullObjectMap(GrandChildObject, 5, and: {
-                  "parents": {"cid": 2},
-                  "parent": null
-                }),
+                fullObjectMap(
+                  GrandChildObject,
+                  6,
+                  and: {
+                    "parents": {"cid": 2},
+                    "parent": null
+                  },
+                ),
+                fullObjectMap(
+                  GrandChildObject,
+                  5,
+                  and: {
+                    "parents": {"cid": 2},
+                    "parent": null
+                  },
+                ),
               ]
-            }),
-            fullObjectMap(ChildObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            3,
+            and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
               "grandChildren": []
-            }),
-            fullObjectMap(ChildObject, 4, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            4,
+            and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
               "grandChildren": [
-                fullObjectMap(GrandChildObject, 8, and: {
-                  "parents": {"cid": 4},
-                  "parent": null
-                }),
+                fullObjectMap(
+                  GrandChildObject,
+                  8,
+                  and: {
+                    "parents": {"cid": 4},
+                    "parent": null
+                  },
+                ),
               ]
-            }),
-            fullObjectMap(ChildObject, 5, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            5,
+            and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
               "grandChildren": []
-            }),
-            fullObjectMap(ChildObject, 6, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            6,
+            and: {
               "parents": null,
               "parent": {"rid": 2},
               "grandChildren": []
-            }),
-            fullObjectMap(ChildObject, 7, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            7,
+            and: {
               "parents": fullObjectMap(RootObject, 2),
               "parent": null,
               "grandChildren": []
-            }),
-            fullObjectMap(ChildObject, 8, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            8,
+            and: {
               "parents": null,
               "parent": {"rid": 3},
               "grandChildren": []
-            }),
-            fullObjectMap(ChildObject, 9, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            9,
+            and: {
               "parents": fullObjectMap(RootObject, 4),
               "parent": null,
               "grandChildren": []
-            })
-          ]));
+            },
+          )
+        ]),
+      );
     });
 
     test(
@@ -347,39 +521,73 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(ChildObject, 1,
-                and: {"parents": null, "parent": fullObjectMap(RootObject, 1)}),
-            fullObjectMap(ChildObject, 2, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            ChildObject,
+            1,
+            and: {"parents": null, "parent": fullObjectMap(RootObject, 1)},
+          ),
+          fullObjectMap(
+            ChildObject,
+            2,
+            and: {
               "parents": {"rid": 1},
               "parent": null
-            }),
-            fullObjectMap(ChildObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            3,
+            and: {
               "parents": {"rid": 1},
               "parent": null
-            }),
-            fullObjectMap(ChildObject, 4, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            4,
+            and: {
               "parents": {"rid": 1},
               "parent": null
-            }),
-            fullObjectMap(ChildObject, 5, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            5,
+            and: {
               "parents": {"rid": 1},
               "parent": null
-            }),
-            fullObjectMap(ChildObject, 6,
-                and: {"parents": null, "parent": fullObjectMap(RootObject, 2)}),
-            fullObjectMap(ChildObject, 7, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            6,
+            and: {"parents": null, "parent": fullObjectMap(RootObject, 2)},
+          ),
+          fullObjectMap(
+            ChildObject,
+            7,
+            and: {
               "parents": {"rid": 2},
               "parent": null
-            }),
-            fullObjectMap(ChildObject, 8,
-                and: {"parents": null, "parent": fullObjectMap(RootObject, 3)}),
-            fullObjectMap(ChildObject, 9, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            8,
+            and: {"parents": null, "parent": fullObjectMap(RootObject, 3)},
+          ),
+          fullObjectMap(
+            ChildObject,
+            9,
+            and: {
               "parents": {"rid": 4},
               "parent": null
-            })
-          ]));
+            },
+          )
+        ]),
+      );
     });
 
     test("Nested join", () async {
@@ -391,50 +599,92 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((g) => g.asMap()).toList(),
-          equals([
-            fullObjectMap(GrandChildObject, 1, and: {
+        results.map((g) => g.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            GrandChildObject,
+            1,
+            and: {
               "parents": null,
-              "parent": fullObjectMap(ChildObject, 1, and: {
-                "parents": null,
-                "parent": fullObjectMap(RootObject, 1)
-              })
-            }),
-            fullObjectMap(GrandChildObject, 2, and: {
+              "parent": fullObjectMap(
+                ChildObject,
+                1,
+                and: {"parents": null, "parent": fullObjectMap(RootObject, 1)},
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            2,
+            and: {
               "parent": null,
               "parents": {"cid": 1}
-            }),
-            fullObjectMap(GrandChildObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            3,
+            and: {
               "parent": null,
               "parents": {"cid": 1}
-            }),
-            fullObjectMap(GrandChildObject, 4, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            4,
+            and: {
               "parents": null,
-              "parent": fullObjectMap(ChildObject, 2, and: {
-                "parents": {"rid": 1},
-                "parent": null
-              })
-            }),
-            fullObjectMap(GrandChildObject, 5, and: {
+              "parent": fullObjectMap(
+                ChildObject,
+                2,
+                and: {
+                  "parents": {"rid": 1},
+                  "parent": null
+                },
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            5,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 6, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            6,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 7, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            7,
+            and: {
               "parents": null,
-              "parent": fullObjectMap(ChildObject, 3, and: {
-                "parents": {"rid": 1},
-                "parent": null
-              })
-            }),
-            fullObjectMap(GrandChildObject, 8, and: {
+              "parent": fullObjectMap(
+                ChildObject,
+                3,
+                and: {
+                  "parents": {"rid": 1},
+                  "parent": null
+                },
+              )
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            8,
+            and: {
               "parent": null,
               "parents": {"cid": 4}
-            })
-          ]));
+            },
+          )
+        ]),
+      );
     });
   });
 
@@ -445,25 +695,42 @@ void main() {
       final results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(ChildObject, 2, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            ChildObject,
+            2,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-            fullObjectMap(ChildObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            3,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-            fullObjectMap(ChildObject, 4, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            4,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-            fullObjectMap(ChildObject, 5, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            5,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-          ]));
+            },
+          ),
+        ]),
+      );
     });
 
     test("Nested implicit joins", () async {
@@ -474,21 +741,34 @@ void main() {
       var results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(GrandChildObject, 5, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            GrandChildObject,
+            5,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 6, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            6,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 8, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            8,
+            and: {
               "parent": null,
               "parents": {"cid": 4}
-            }),
-          ]));
+            },
+          ),
+        ]),
+      );
 
       q = Query<GrandChildObject>(ctx!)
         ..where((o) => o.parents!.parents).identifiedBy(1)
@@ -496,21 +776,34 @@ void main() {
       results = await q.fetch();
 
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(GrandChildObject, 5, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            GrandChildObject,
+            5,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 6, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            6,
+            and: {
               "parent": null,
               "parents": {"cid": 2}
-            }),
-            fullObjectMap(GrandChildObject, 8, and: {
+            },
+          ),
+          fullObjectMap(
+            GrandChildObject,
+            8,
+            and: {
               "parent": null,
               "parents": {"cid": 4}
-            }),
-          ]));
+            },
+          ),
+        ]),
+      );
     });
 
     test("Bidirectional implicit join", () async {
@@ -519,17 +812,26 @@ void main() {
         ..where((o) => o.grandChild).isNotNull();
       final results = await q.fetch();
       expect(
-          results.map((c) => c.asMap()).toList(),
-          equals([
-            fullObjectMap(ChildObject, 2, and: {
+        results.map((c) => c.asMap()).toList(),
+        equals([
+          fullObjectMap(
+            ChildObject,
+            2,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-            fullObjectMap(ChildObject, 3, and: {
+            },
+          ),
+          fullObjectMap(
+            ChildObject,
+            3,
+            and: {
               "parent": null,
               "parents": {"rid": 1}
-            }),
-          ]));
+            },
+          ),
+        ]),
+      );
     });
   });
 }

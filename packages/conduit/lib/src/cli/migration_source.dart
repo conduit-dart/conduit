@@ -4,7 +4,7 @@ import 'package:crypto/crypto.dart';
 class MigrationSource {
   MigrationSource(this.source, this.uri, int nameStartIndex, int nameEndIndex) {
     originalName = source!.substring(nameStartIndex, nameEndIndex);
-    name = "M${md5.convert(source!.codeUnits).toString()}";
+    name = "M${md5.convert(source!.codeUnits)}";
     source = source!.replaceRange(nameStartIndex, nameEndIndex, name!);
   }
 
@@ -20,7 +20,8 @@ class MigrationSource {
     final migrationTypes = analyzer.getSubclassesFromFile("Migration", uri);
     if (migrationTypes.length != 1) {
       throw StateError(
-          "Invalid migration file. Must contain exactly one 'Migration' subclass. File: '$uri'.");
+        "Invalid migration file. Must contain exactly one 'Migration' subclass. File: '$uri'.",
+      );
     }
 
     final klass = migrationTypes.first;

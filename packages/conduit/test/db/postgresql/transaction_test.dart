@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/conduit.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:test/test.dart';
@@ -115,8 +117,7 @@ void main() {
       () async {
     await context.transaction((t) async {
       await Query.insertObject(t, Model()..name = "1");
-      await t.persistentStore!
-          .execute("INSERT INTO _Model (name) VALUES ('2')");
+      await t.persistentStore.execute("INSERT INTO _Model (name) VALUES ('2')");
       await Query.insertObject(t, Model()..name = "3");
     });
 

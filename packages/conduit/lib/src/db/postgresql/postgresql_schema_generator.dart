@@ -1,5 +1,5 @@
-import '../managed/managed.dart';
-import '../schema/schema.dart';
+import 'package:conduit/src/db/managed/managed.dart';
+import 'package:conduit/src/db/schema/schema.dart';
 
 class PostgreSQLSchemaGenerator {
   String get versionTableName => "_conduit_version_pgsql";
@@ -10,20 +10,23 @@ class PostgreSQLSchemaGenerator {
     // Create table command
     final columnString = table.columns.map(_columnStringForColumn).join(",");
     commands.add(
-        "CREATE${isTemporary ? " TEMPORARY " : " "}TABLE ${table.name} ($columnString)");
+      "CREATE${isTemporary ? " TEMPORARY " : " "}TABLE ${table.name} ($columnString)",
+    );
 
     final indexCommands = table.columns
-        .where((col) =>
-            col.isIndexed! &&
-            !col.isPrimaryKey!) // primary keys are auto-indexed
+        .where(
+          (col) => col.isIndexed! && !col.isPrimaryKey!,
+        ) // primary keys are auto-indexed
         .map((col) => addIndexToColumn(table, col))
         .expand((commands) => commands);
     commands.addAll(indexCommands);
 
-    commands.addAll(table.columns
-        .where((sc) => sc.isForeignKey)
-        .map((col) => _addConstraintsForColumn(table.name, col))
-        .expand((commands) => commands));
+    commands.addAll(
+      table.columns
+          .where((sc) => sc.isForeignKey)
+          .map((col) => _addConstraintsForColumn(table.name, col))
+          .expand((commands) => commands),
+    );
 
     if (table.uniqueColumnSet != null) {
       commands.addAll(addTableUniqueColumnSet(table));
@@ -54,8 +57,11 @@ class PostgreSQLSchemaGenerator {
     return ["DROP INDEX IF EXISTS ${table.name}_unique_idx"];
   }
 
-  List<String> addColumn(SchemaTable table, SchemaColumn column,
-      {String? unencodedInitialValue}) {
+  List<String> addColumn(
+    SchemaTable table,
+    SchemaColumn column, {
+    String? unencodedInitialValue,
+  }) {
     final commands = <String>[];
 
     if (unencodedInitialValue != null) {
@@ -88,13 +94,19 @@ class PostgreSQLSchemaGenerator {
   }
 
   List<String> renameColumn(
-      SchemaTable table, SchemaColumn column, String name) {
+    SchemaTable table,
+    SchemaColumn column,
+    String name,
+  ) {
     // Must rename indices, constraints, etc.
     throw UnsupportedError("renameColumn is not yet supported.");
   }
 
   List<String> alterColumnNullability(
-      SchemaTable table, SchemaColumn column, String? unencodedInitialValue) {
+    SchemaTable table,
+    SchemaColumn column,
+    String? unencodedInitialValue,
+  ) {
     if (column.isNullable!) {
       return [
         "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP NOT NULL"
@@ -138,7 +150,8 @@ class PostgreSQLSchemaGenerator {
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) {
     final allCommands = <String>[];
     allCommands.add(
-        "ALTER TABLE ONLY ${table.name} DROP CONSTRAINT ${_foreignKeyName(table.name, column)}");
+      "ALTER TABLE ONLY ${table.name} DROP CONSTRAINT ${_foreignKeyName(table.name, column)}",
+    );
     allCommands.addAll(_addConstraintsForColumn(table.name, column));
     return allCommands;
   }
@@ -150,7 +163,10 @@ class PostgreSQLSchemaGenerator {
   }
 
   List<String> renameIndex(
-      SchemaTable table, SchemaColumn column, String newIndexName) {
+    SchemaTable table,
+    SchemaColumn column,
+    String newIndexName,
+  ) {
     final existingIndexName = _indexNameForColumn(table.name, column);
     return ["ALTER INDEX $existingIndexName RENAME TO $newIndexName"];
   }
@@ -170,14 +186,17 @@ class PostgreSQLSchemaGenerator {
   }
 
   List<String> _addConstraintsForColumn(
-      String? tableName, SchemaColumn column) {
+    String? tableName,
+    SchemaColumn column,
+  ) {
     var constraints =
         "ALTER TABLE ONLY $tableName ADD FOREIGN KEY (${_columnNameForColumn(column)}) "
         "REFERENCES ${column.relatedTableName} (${column.relatedColumnName}) ";
 
-    if (column.deleteRule != null)
+    if (column.deleteRule != null) {
       constraints +=
           "ON DELETE ${_deleteRuleStringForDeleteRule(SchemaColumn.deleteRuleStringForDeleteRule(column.deleteRule!))}";
+    }
 
     return [constraints];
   }

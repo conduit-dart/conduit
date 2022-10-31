@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import '../managed/object.dart';
-import '../managed/property_description.dart';
-import '../query/query.dart';
-import 'builders/column.dart';
-import 'postgresql_persistent_store.dart';
-import 'postgresql_query.dart';
-import 'query_builder.dart';
+import 'package:conduit/src/db/managed/object.dart';
+import 'package:conduit/src/db/managed/property_description.dart';
+import 'package:conduit/src/db/postgresql/builders/column.dart';
+import 'package:conduit/src/db/postgresql/postgresql_persistent_store.dart';
+import 'package:conduit/src/db/postgresql/postgresql_query.dart';
+import 'package:conduit/src/db/postgresql/query_builder.dart';
+import 'package:conduit/src/db/query/query.dart';
 
 // ignore_for_file: constant_identifier_names
 enum _Reducer {
@@ -25,9 +25,11 @@ class PostgresQueryReduce<T extends ManagedObject>
   final PostgresQueryBuilder builder;
 
   @override
-  Future<double?> average(num? selector(T object)) {
+  Future<double?> average(num? Function(T object) selector) {
     return _execute<double?>(
-        _Reducer.AVG, query.entity.identifyAttribute(selector));
+      _Reducer.AVG,
+      query.entity.identifyAttribute(selector),
+    );
   }
 
   @override
@@ -36,17 +38,17 @@ class PostgresQueryReduce<T extends ManagedObject>
   }
 
   @override
-  Future<U?> maximum<U>(U? selector(T object)) {
+  Future<U?> maximum<U>(U? Function(T object) selector) {
     return _execute<U?>(_Reducer.MAX, query.entity.identifyAttribute(selector));
   }
 
   @override
-  Future<U?> minimum<U>(U? selector(T object)) {
+  Future<U?> minimum<U>(U? Function(T object) selector) {
     return _execute<U?>(_Reducer.MIN, query.entity.identifyAttribute(selector));
   }
 
   @override
-  Future<U?> sum<U extends num>(U? selector(T object)) {
+  Future<U?> sum<U extends num>(U? Function(T object) selector) {
     return _execute<U?>(_Reducer.SUM, query.entity.identifyAttribute(selector));
   }
 
@@ -94,8 +96,10 @@ class PostgresQueryReduce<T extends ManagedObject>
           .timeout(Duration(seconds: query.timeoutInSeconds));
       return result.first.first as U;
     } on TimeoutException catch (e) {
-      throw QueryException.transport("timed out connecting to database",
-          underlyingException: e);
+      throw QueryException.transport(
+        "timed out connecting to database",
+        underlyingException: e,
+      );
     }
   }
 }

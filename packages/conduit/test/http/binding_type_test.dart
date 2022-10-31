@@ -82,16 +82,22 @@ void main() {
 
 class StandardSet extends ResourceController {
   @Operation.get('id')
-  Future<Response> get1(@Bind.header("foo") String a, @Bind.path("id") String b,
-      @Bind.query("c") String c) async {
+  Future<Response> get1(
+    @Bind.header("foo") String a,
+    @Bind.path("id") String b,
+    @Bind.query("c") String c,
+  ) async {
     return Response.ok(null);
   }
 }
 
 class ParseSet extends ResourceController {
   @Operation.get('id')
-  Future<Response> get1(@Bind.header("foo") int a, @Bind.path("id") DateTime b,
-      @Bind.query("c") num c) async {
+  Future<Response> get1(
+    @Bind.header("foo") int a,
+    @Bind.path("id") DateTime b,
+    @Bind.query("c") num c,
+  ) async {
     return Response.ok(null);
   }
 }
@@ -113,16 +119,20 @@ class BodyBind extends ResourceController {
 
 class StandardListSet extends ResourceController {
   Future<Response> get1(
-      @Bind.header("foo") List<String> a,
-      @Bind.header("id") List<String> b,
-      @Bind.query("c") List<String> c) async {
+    @Bind.header("foo") List<String> a,
+    @Bind.header("id") List<String> b,
+    @Bind.query("c") List<String> c,
+  ) async {
     return Response.ok(null);
   }
 }
 
 class ParseListSet extends ResourceController {
-  Future<Response> get1(@Bind.header("foo") List<int> a,
-      @Bind.header("id") List<DateTime> b, @Bind.query("c") List<num> c) async {
+  Future<Response> get1(
+    @Bind.header("foo") List<int> a,
+    @Bind.header("id") List<DateTime> b,
+    @Bind.query("c") List<num> c,
+  ) async {
     return Response.ok(null);
   }
 }

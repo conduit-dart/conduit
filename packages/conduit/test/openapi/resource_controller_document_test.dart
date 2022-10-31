@@ -20,18 +20,26 @@ void main() {
     final idOperations = document.paths!["/a/{id}"]!.operations.values;
     expect(collectionOperations.length, 3);
     expect(idOperations.length, 2);
-    for (var op in [collectionOperations, idOperations].expand((i) => i)) {
-      expect(op!.parameterNamed("optionalQueryProperty")!.schema!.type,
-          APIType.integer);
+    for (final op in [collectionOperations, idOperations].expand((i) => i)) {
+      expect(
+        op!.parameterNamed("optionalQueryProperty")!.schema!.type,
+        APIType.integer,
+      );
       expect(op.parameterNamed("optionalQueryProperty")!.isRequired, false);
-      expect(op.parameterNamed("optionalQueryProperty")!.location,
-          APIParameterLocation.query);
+      expect(
+        op.parameterNamed("optionalQueryProperty")!.location,
+        APIParameterLocation.query,
+      );
 
-      expect(op.parameterNamed("requiredHeaderProperty")!.schema!.type,
-          APIType.string);
+      expect(
+        op.parameterNamed("requiredHeaderProperty")!.schema!.type,
+        APIType.string,
+      );
       expect(op.parameterNamed("requiredHeaderProperty")!.isRequired, true);
-      expect(op.parameterNamed("requiredHeaderProperty")!.location,
-          APIParameterLocation.header);
+      expect(
+        op.parameterNamed("requiredHeaderProperty")!.location,
+        APIParameterLocation.header,
+      );
     }
   });
 
@@ -41,8 +49,10 @@ void main() {
     final collectionOperations = document.paths!["/a"]!.operations;
     final idOperations = document.paths!["/a/{id}"]!.operations;
 
-    expect(collectionOperations,
-        {"get": isNotNull, "post": isNotNull, "put": isNotNull});
+    expect(
+      collectionOperations,
+      {"get": isNotNull, "post": isNotNull, "put": isNotNull},
+    );
     expect(idOperations, {"get": isNotNull, "put": isNotNull});
 
     expect(collectionOperations["get"]!.id, "getAllAs");
@@ -60,75 +70,87 @@ void main() {
     expect(collectionOperations["get"]!.parameters!.length, 4);
 
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("requiredHeaderParameter")!
-            .location,
-        APIParameterLocation.header);
+      collectionOperations["get"]!
+          .parameterNamed("requiredHeaderParameter")!
+          .location,
+      APIParameterLocation.header,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("requiredHeaderParameter")!
-            .isRequired,
-        true);
+      collectionOperations["get"]!
+          .parameterNamed("requiredHeaderParameter")!
+          .isRequired,
+      true,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("requiredHeaderParameter")!
-            .schema!
-            .type,
-        APIType.string);
+      collectionOperations["get"]!
+          .parameterNamed("requiredHeaderParameter")!
+          .schema!
+          .type,
+      APIType.string,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("requiredHeaderParameter")!
-            .schema!
-            .format,
-        "date-time");
+      collectionOperations["get"]!
+          .parameterNamed("requiredHeaderParameter")!
+          .schema!
+          .format,
+      "date-time",
+    );
 
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("optionalQueryParameter")!
-            .location,
-        APIParameterLocation.query);
+      collectionOperations["get"]!
+          .parameterNamed("optionalQueryParameter")!
+          .location,
+      APIParameterLocation.query,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("optionalQueryParameter")!
-            .isRequired,
-        false);
+      collectionOperations["get"]!
+          .parameterNamed("optionalQueryParameter")!
+          .isRequired,
+      false,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("optionalQueryParameter")!
-            .schema!
-            .type,
-        APIType.string);
+      collectionOperations["get"]!
+          .parameterNamed("optionalQueryParameter")!
+          .schema!
+          .type,
+      APIType.string,
+    );
     expect(
-        collectionOperations["get"]!
-            .parameterNamed("optionalQueryParameter")!
-            .schema!
-            .format,
-        isNull);
+      collectionOperations["get"]!
+          .parameterNamed("optionalQueryParameter")!
+          .schema!
+          .format,
+      isNull,
+    );
 
     expect(collectionOperations["post"]!.parameters!.length, 3);
 
     expect(
-        collectionOperations["post"]!
-            .parameterNamed("requiredQueryParameter")!
-            .location,
-        APIParameterLocation.query);
+      collectionOperations["post"]!
+          .parameterNamed("requiredQueryParameter")!
+          .location,
+      APIParameterLocation.query,
+    );
     expect(
-        collectionOperations["post"]!
-            .parameterNamed("requiredQueryParameter")!
-            .isRequired,
-        true);
+      collectionOperations["post"]!
+          .parameterNamed("requiredQueryParameter")!
+          .isRequired,
+      true,
+    );
     expect(
-        collectionOperations["post"]!
-            .parameterNamed("requiredQueryParameter")!
-            .schema!
-            .type,
-        APIType.integer);
+      collectionOperations["post"]!
+          .parameterNamed("requiredQueryParameter")!
+          .schema!
+          .type,
+      APIType.integer,
+    );
     expect(
-        collectionOperations["post"]!
-            .parameterNamed("requiredQueryParameter")!
-            .schema!
-            .format,
-        isNull);
+      collectionOperations["post"]!
+          .parameterNamed("requiredQueryParameter")!
+          .schema!
+          .format,
+      isNull,
+    );
   });
 
   test(
@@ -139,13 +161,14 @@ void main() {
     final comps = document.components!.schemas;
     expect(comps.containsKey("AModel"), true);
     expect(
-        collectionOperations["post"]!
-            .requestBody!
-            .content!["application/json"]!
-            .schema!
-            .referenceURI!
-            .path,
-        "/components/schemas/AModel");
+      collectionOperations["post"]!
+          .requestBody!
+          .content!["application/json"]!
+          .schema!
+          .referenceURI!
+          .path,
+      "/components/schemas/AModel",
+    );
   });
 
   test(
@@ -166,16 +189,19 @@ void main() {
       () {
     final collectionOperations = document.paths!["/b"]!.operations;
     expect(
-        collectionOperations["post"]!
-            .requestBody!
-            .content!["application/json"]!
-            .schema!
-            .referenceURI!
-            .path,
-        "/components/schemas/Override");
+      collectionOperations["post"]!
+          .requestBody!
+          .content!["application/json"]!
+          .schema!
+          .referenceURI!
+          .path,
+      "/components/schemas/Override",
+    );
     expect(document.components!.schemas["OverrideGeneration"], isNull);
     expect(
-        document.components!.schemas["Override"]!.properties!["k"], isNotNull);
+      document.components!.schemas["Override"]!.properties!["k"],
+      isNotNull,
+    );
   });
 
   test("Inherited operation methods are available in document", () {
@@ -211,27 +237,33 @@ class A extends ResourceController {
 
   @Operation.get()
   Future<Response> getAllAs(
-      @Bind.header("requiredHeaderParameter") DateTime paramH,
-      {@Bind.query("optionalQueryParameter") String? paramQ}) async {
+    @Bind.header("requiredHeaderParameter") DateTime paramH, {
+    @Bind.query("optionalQueryParameter") String? paramQ,
+  }) async {
     return Response.ok(null);
   }
 
   @Operation.get('id')
-  Future<Response> getOneA(
-      {@Bind.query("optionalQueryParameter") String? paramQ}) async {
+  Future<Response> getOneA({
+    @Bind.query("optionalQueryParameter") String? paramQ,
+  }) async {
     return Response.ok(null);
   }
 
   @Operation.post()
-  Future<Response> createA(@Bind.body() AModel model,
-      @Bind.query("requiredQueryParameter") int q) async {
+  Future<Response> createA(
+    @Bind.body() AModel model,
+    @Bind.query("requiredQueryParameter") int q,
+  ) async {
     return Response.ok(null);
   }
 
   @Operation.put('id')
   Future<Response> undocumented(
-      @Bind.query("requiredQueryParameter") int q, @Bind.body() AModel body,
-      {@Bind.header("optionalHeaderParameter") String? h}) async {
+    @Bind.query("requiredQueryParameter") int q,
+    @Bind.body() AModel body, {
+    @Bind.header("optionalHeaderParameter") String? h,
+  }) async {
     return Response.ok(null);
   }
 
@@ -265,8 +297,10 @@ class B extends ResourceController {
   void documentComponents(APIDocumentContext context) {
     super.documentComponents(context);
     context.schema.register(
-        "Override", APISchemaObject.object({"k": APISchemaObject.boolean()}),
-        representation: OverrideGeneration);
+      "Override",
+      APISchemaObject.object({"k": APISchemaObject.boolean()}),
+      representation: OverrideGeneration,
+    );
   }
 }
 

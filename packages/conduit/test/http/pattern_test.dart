@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_catching_errors
+
 import 'package:conduit/src/http/route_node.dart';
 import 'package:conduit/src/http/route_specification.dart';
 import "package:test/test.dart";
@@ -50,7 +52,7 @@ void main() {
 
     test("With expressions that look like optionals and remaining paths", () {
       expect(_segmentsForRoute("/([^x]*)"), [
-        [RouteSegment.direct(expression: r"[^x]*")]
+        [RouteSegment.direct(expression: "[^x]*")]
       ]);
       expect(_segmentsForRoute("/a/([^x])"), [
         [
@@ -198,7 +200,7 @@ void main() {
   });
 }
 
-void expectRouterException(void f(), {String? exceptionMessage}) {
+void expectRouterException(void Function() f, {String? exceptionMessage}) {
   try {
     f();
     fail("Expected RouterException");
