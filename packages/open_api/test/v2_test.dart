@@ -41,7 +41,6 @@ void main() {
 
     test("Has paths", () {
       expect(doc!.paths!.length, greaterThan(0));
-      // ignore: avoid_dynamic_calls
       expect(doc!.paths!.length, original!["paths"].length);
 
       final Map<String, dynamic> originalPaths =

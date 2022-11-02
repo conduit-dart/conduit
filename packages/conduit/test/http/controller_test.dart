@@ -138,9 +138,7 @@ void main() {
         req.raw.response.close();
 
         return null;
-      })!.linkFunction(
-          // ignore: missing_return
-          (req) {
+      })!.linkFunction((req) {
         set = true;
         return null;
       });
