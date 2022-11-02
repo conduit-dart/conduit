@@ -124,6 +124,7 @@ jobs:
       with:
         sdk: dev
     - name: Get Dependencies
+      shell: bash
       run: |
         dart pub global activate melos
         cd packages/isolate_exec_test_packages/test_package && dart pub get
