@@ -112,9 +112,10 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       PGPORT: 5432
+      POSTGRES_ADMIN_USER: conduit_test_user
+      POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
-      PGPASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
       TEST_VALUE: 1
