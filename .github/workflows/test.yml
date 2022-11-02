@@ -129,4 +129,5 @@ jobs:
         cd packages/isolate_exec_test_packages/test_package && dart pub get
         melos bootstrap
     - name: Run tests
+      shell: bash
       run: melos test-unit
