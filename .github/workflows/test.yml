@@ -111,6 +111,7 @@ jobs:
       TEST_DIR: packages/conduit
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
+      PGPORT: 5432
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       PGPASSWORD: conduit!
@@ -124,7 +125,7 @@ jobs:
         $pgService = Get-Service -Name postgresql*
         Set-Service -InputObject $pgService -Status running -StartupType automatic
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-    - name: Create scheduler user on Windows
+    - name: Create user on Windows
       run: |
         & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD ${{ env.POSTGRES_PASSWORD }}" --command="\du"
     - name: Create conduit test database
