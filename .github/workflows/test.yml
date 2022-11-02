@@ -102,32 +102,32 @@ jobs:
   #       run: . ../../ci/.env && dart test
 
   windows:
-  name: Setup PostgreSQL on Windows
-  runs-on: windows-latest
-  steps:
-  - name: Start PostgreSQL on Windows
-    run: |
-      $pgService = Get-Service -Name postgresql*
-      Set-Service -InputObject $pgService -Status running -StartupType automatic
-      Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-  - name: Create conduit_test_user user on Windows
-    run: |
-      & $env:PGBIN\psql --command="CREATE USER conduit_test_user PASSWORD 'conduit!'" --command="\du"
-  - name: Create timetable database
-    run: |
-      & $env:PGBIN\createdb --owner=conduit_test_user conduit_test_db
-      $env:PGPASSWORD = 'conduit!'
-      $env:POSTGRES_PORT = '15432'
-      & $env:PGBIN\psql --username=conduit_test_user --host=localhost --list conduit_test_db 
-  - uses: actions/checkout@v3
-  - uses: dart-lang/setup-dart@v1
-    with:
-      sdk: dev
-  - name: Get Dependencies
-    run: |
-      dart pub global activate melos
-      cd packages/isolate_exec_test_packages/test_package && dart pub get
-      melos bootstrap
-      melos cache-source
-  - name: Run tests
-    run: melos test-unit
+    name: Setup PostgreSQL on Windows
+    runs-on: windows-latest
+    steps:
+    - name: Start PostgreSQL on Windows
+      run: |
+        $pgService = Get-Service -Name postgresql*
+        Set-Service -InputObject $pgService -Status running -StartupType automatic
+        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
+    - name: Create conduit_test_user user on Windows
+      run: |
+        & $env:PGBIN\psql --command="CREATE USER conduit_test_user PASSWORD 'conduit!'" --command="\du"
+    - name: Create timetable database
+      run: |
+        & $env:PGBIN\createdb --owner=conduit_test_user conduit_test_db
+        $env:PGPASSWORD = 'conduit!'
+        $env:POSTGRES_PORT = '15432'
+        & $env:PGBIN\psql --username=conduit_test_user --host=localhost --list conduit_test_db 
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
+    - name: Get Dependencies
+      run: |
+        dart pub global activate melos
+        cd packages/isolate_exec_test_packages/test_package && dart pub get
+        melos bootstrap
+        melos cache-source
+    - name: Run tests
+      run: melos test-unit
