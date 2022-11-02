@@ -128,7 +128,7 @@ jobs:
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create conduit test database
       run: |
-        & $env:PGBIN\createdb conduit_test_db
+        & $env:PGBIN\createdb -p $env:PGPORT conduit_test_db
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
