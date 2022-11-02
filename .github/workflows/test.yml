@@ -128,7 +128,7 @@ jobs:
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create user on Windows
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD ${{ env.POSTGRES_PASSWORD }}" --command="\du"
+        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb ${{ env.POSTGRES_DB }}
@@ -143,6 +143,4 @@ jobs:
         melos bootstrap
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
-      env:
-        PGPASSWORD: conduit!
       run: ${{ matrix.runner_args }}
