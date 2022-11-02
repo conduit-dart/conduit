@@ -102,13 +102,13 @@ jobs:
   #       run: . ../../ci/.env && dart test
 
   windows:
-    name: Unit test Windows
+    name: Setup PostgreSQL on Windows
     runs-on: windows-latest
     env:
-      PGHOST: localhost
-      PGPORT: 5432
-      PGUSER: conduit_test_user
-      PGPASSWORD: conduit!
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 15432
+      POSTGRES_ADMIN_USER: conduit_test_user
+      POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
@@ -123,7 +123,10 @@ jobs:
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create conduit test database
       run: |
-        & $env:PGBIN\createdb conduit_test_db
+        & $env:PGBIN\createdb --owner=conduit_test_user conduit_test_db
+        $env:PGPASSWORD = 'conduit!'
+        $env:POSTGRES_PORT = '15432'
+        & $env:PGBIN\psql --username=conduit_test_user --host=localhost --list conduit_test_db 
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
