@@ -143,4 +143,6 @@ jobs:
         melos bootstrap
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
+      env:
+        PGPASSWORD: conduit!
       run: ${{ matrix.runner_args }}
