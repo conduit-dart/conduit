@@ -34,7 +34,7 @@ jobs:
   #         melos bootstrap
   #         melos cache-source
   #     - name: Run tests
-  #       run: melos test-unit
+  #       run: . ./ci/.env && melos test-unit
 
   # conduit_cli:
   #   if: |
@@ -104,6 +104,17 @@ jobs:
   windows:
     name: Setup PostgreSQL on Windows
     runs-on: windows-latest
+    env:
+      POSTGRES_HOST: 'localhost'
+      POSTGRES_PORT: '15432'
+      POSTGRES_ADMIN_USER: 'conduit_test_user'
+      POSTGRES_ADMIN_PASSWORD: 'conduit!'
+      POSTGRES_USER: 'conduit_test_user'
+      POSTGRES_PASSWORD: 'conduit!'
+      POSTGRES_DB: 'conduit_test_db'
+      TEST_DB_ENV_VAR: 'postgres://user:password@host:5432/dbname'
+      TEST_VALUE: 1
+      TEST_BOOL: true
     steps:
     - name: Start PostgreSQL on Windows
       run: |
@@ -124,11 +135,9 @@ jobs:
       with:
         sdk: dev
     - name: Get Dependencies
-      shell: bash
       run: |
         dart pub global activate melos
         cd packages/isolate_exec_test_packages/test_package && dart pub get
         melos bootstrap
     - name: Run tests
-      shell: bash
       run: melos test-unit
