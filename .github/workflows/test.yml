@@ -102,7 +102,7 @@ jobs:
   #       run: . ../../ci/.env && dart test
 
   windows:
-    name: Setup PostgreSQL on Windows
+    name: Unit test Windows
     runs-on: windows-latest
     env:
       PGHOST: localhost
@@ -123,7 +123,7 @@ jobs:
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create conduit test database
       run: |
-        & $env:PGBIN\createdb --owner=conduit_test_user conduit_test_db
+        & $env:PGBIN\createdb conduit_test_db
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
