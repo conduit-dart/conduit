@@ -113,7 +113,7 @@ jobs:
     - name: Create conduit_test_user user on Windows
       run: |
         & $env:PGBIN\psql --command="CREATE USER conduit_test_user PASSWORD 'conduit!'" --command="\du"
-    - name: Create timetable database
+    - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb --owner=conduit_test_user conduit_test_db
         $env:PGPASSWORD = 'conduit!'
@@ -128,6 +128,5 @@ jobs:
         dart pub global activate melos
         cd packages/isolate_exec_test_packages/test_package && dart pub get
         melos bootstrap
-        melos cache-source
     - name: Run tests
       run: melos test-unit
