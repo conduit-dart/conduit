@@ -1,18 +1,17 @@
 site_name: Conduit
 theme:
-  name: material
-  custom_dir: overrides
+  name: readthedocs
+  custom_dir: docs/overrides
 markdown_extensions:
   - codehilite
   - markdown.extensions.admonition
 extra_css:
   - style/css/override.css
-repo_url: https://github.com/stablekernel/aqueduct
+repo_url: https://github.com/conduit-dart/conduit
 edit_uri: edit/docs/source/source/docs/
-google_analytics: ['UA-41269877-2', 'aqueduct.io']
 site_description: Documentation for Conduit, a Dart server-side framework.
 copyright: Built by Stable Kernel
-pages:
+nav:
 - Home: 'index.md'
 - Core Concepts: 'core_concepts.md'
 - Getting Started: 'getting_started.md'

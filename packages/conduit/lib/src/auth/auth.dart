@@ -68,8 +68,3 @@ AuthClient generateAPICredentialPair(
 
   return AuthClient.withRedirectURI(clientID, hashed, salt, redirectURI);
 }
-
-class xception implements Exception {
-  xception(this.message);
-  String message;
-}

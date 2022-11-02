@@ -212,8 +212,9 @@ class SchemaColumn {
         return ManagedPropertyType.string;
       case "document":
         return ManagedPropertyType.document;
+      default:
+        return null;
     }
-    return null;
   }
 
   /// Returns string representation of [DeleteRule].
