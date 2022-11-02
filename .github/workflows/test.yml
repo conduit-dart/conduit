@@ -106,7 +106,7 @@ jobs:
     runs-on: windows-latest
     env:
       PGHOST: localhost
-      PGPORT: 15432
+      PGPORT: 5432
       PGUSER: conduit_test_user
       PGPASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
