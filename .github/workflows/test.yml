@@ -46,7 +46,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   strategy:
   #     matrix:
-  #       runner_args: [dart test -j1 -t cli test/*, dart tool/generated_test_runner.dart]
+  #       runner_args: [dart test -j1 -t cli test/, dart tool/generated_test_runner.dart]
   #   services:
   #     postgres:
   #       image: postgres:14.5
@@ -102,11 +102,16 @@ jobs:
   #       run: . ../../ci/.env && dart test
 
   windows:
-    name: Setup PostgreSQL on Windows
+    name: Run unit tests on Windows
     runs-on: windows-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/, melos test-unit]
     env:
+      TEST_DIR: packages/runtime
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 15432
+      PGPORT: 15432
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
@@ -134,4 +139,5 @@ jobs:
         cd packages/isolate_exec_test_packages/test_package && dart pub get
         melos bootstrap
     - name: Run tests
-      run: melos test-unit
+      working-directory: ${{ env.TEST_DIR }}
+      run: ${{ matrix.runner_args }}
