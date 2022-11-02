@@ -111,10 +111,9 @@ jobs:
       TEST_DIR: packages/conduit
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
-      POSTGRES_ADMIN_USER: conduit_test_user
-      POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
+      PGPASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
       TEST_VALUE: 1
@@ -125,9 +124,12 @@ jobs:
         $pgService = Get-Service -Name postgresql*
         Set-Service -InputObject $pgService -Status running -StartupType automatic
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
+    - name: Create scheduler user on Windows
+      run: |
+        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD ${{ env.POSTGRES_PASSWORD }}" --command="\du"
     - name: Create conduit test database
       run: |
-        & $env:PGBIN\createdb conduit_test_db
+        & $env:PGBIN\createdb ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
