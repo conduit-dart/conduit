@@ -79,7 +79,7 @@ jobs:
     #   matrix:
     #     runner_args: [dart test -j1 -t cli test/, melos test-unit]
     env:
-      TEST_DIR: packages/runtime
+      TEST_DIR: packages/test_harness
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       PGPORT: 5432
