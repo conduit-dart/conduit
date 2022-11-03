@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit_test/conduit_test.dart';
@@ -9,10 +10,12 @@ import 'package:test/test.dart';
 void main() {
   group("Mock HTTP Tests", () {
     late MockHTTPServer server;
-    final testClient = Agent.onPort(4000);
+    late Agent testClient;
 
     setUp(() async {
-      server = MockHTTPServer(4000);
+      final int rand = Random().nextInt(4000);
+      testClient = Agent.onPort(rand);
+      server = MockHTTPServer(rand);
       await server.open();
     });
 
@@ -192,9 +195,7 @@ void main() {
     test("Can queue handler", () async {
       server.queueHandler(
           (req) => Response.ok({"k": req.raw.uri.queryParameters["k"]}));
-      print('test');
       final response = await testClient.request("/ok?k=1").get();
-      print('test');
       expect(response.body.as<Map>()["k"], "1");
 
       expect((await testClient.request("/ok").get()).statusCode,
