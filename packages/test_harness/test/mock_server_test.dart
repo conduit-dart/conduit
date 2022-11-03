@@ -119,6 +119,7 @@ void main() {
       // ignore: unawaited_futures
       responseFuture.whenComplete(() => responseReturned = true);
 
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(responseReturned, false);
       await Future.delayed(const Duration(milliseconds: 1500));
       expect(responseReturned, true);

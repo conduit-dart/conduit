@@ -80,7 +80,7 @@ void main() {
     test(
         "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
         () async {
-      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
+      persistentStore = PostgresTestConfig().persistentStore(port: 15434);
 
       var expectedValues = [1, 2, 3, 4, 5];
       var values = await Future.wait(
@@ -90,7 +90,7 @@ void main() {
       );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy = SocketProxy(15433, 15432);
+      proxy = SocketProxy(15434, 15432);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -158,7 +158,6 @@ class SocketProxy {
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);
     _server!.listen((socket) async {
-      // ignore: close_sinks
       final outgoing = await Socket.connect("localhost", dest);
 
       outgoing.listen((bytes) {
