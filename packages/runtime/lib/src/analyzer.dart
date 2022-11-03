@@ -120,8 +120,8 @@ class CodeAnalyzer {
       // ignore: empty_catches
     } catch (e) {}
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-            normalize(fileUri.toFilePath(windows: Platform.isWindows)))
-        as ParsedUnitResult;
+          normalize(join(fileUri.toFilePath(windows: Platform.isWindows))),
+        ) as ParsedUnitResult;
     return unit.unit;
   }
 
