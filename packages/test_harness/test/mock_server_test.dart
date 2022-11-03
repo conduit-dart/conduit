@@ -1,3 +1,4 @@
+@Timeout(Duration(seconds: 45))
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
