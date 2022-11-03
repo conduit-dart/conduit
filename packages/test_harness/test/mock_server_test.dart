@@ -119,12 +119,9 @@ void main() {
       // ignore: unawaited_futures
       responseFuture.whenComplete(() => responseReturned = true);
 
-      await Future.delayed(const Duration(milliseconds: 100)).then((_) {
-        expect(responseReturned, false);
-      });
-      await Future.delayed(const Duration(milliseconds: 1500)).then((_) {
-        expect(responseReturned, true);
-      });
+      expect(responseReturned, false);
+      await Future.delayed(const Duration(milliseconds: 1500));
+      expect(responseReturned, true);
 
       server.queueResponse(Response.ok(null),
           delay: const Duration(milliseconds: 1000));
