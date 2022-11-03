@@ -90,7 +90,8 @@ void main() {
       );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy = SocketProxy(15434, 15432);
+      proxy =
+          SocketProxy(15434, int.parse(Platform.environment['POSTGRES_PORT']!));
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -119,7 +120,8 @@ void main() {
         // ignore: empty_catches
       } on QueryException {}
 
-      proxy = SocketProxy(15433, 15432);
+      proxy =
+          SocketProxy(15433, int.parse(Platform.environment['POSTGRES_PORT']!));
       await proxy!.open();
 
       final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
@@ -158,8 +160,6 @@ class SocketProxy {
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);
     _server!.listen((socket) async {
-      print(src);
-      print(dest);
       final outgoing = await Socket.connect("localhost", dest);
 
       outgoing.listen((bytes) {
