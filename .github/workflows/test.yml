@@ -75,9 +75,9 @@ jobs:
   windows:
     name: Run unit tests on Windows
     runs-on: windows-latest
-    # strategy:
-    #   matrix:
-    #     runner_args: [dart test -j1 -t cli test/, melos test-unit]
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/, melos test-unit]
     env:
       TEST_DIR: packages/test_harness
       POSTGRES_HOST: localhost
@@ -114,5 +114,4 @@ jobs:
         melos bootstrap
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
-      run: dart test
-      # run: ${{ matrix.runner_args }}
+      run: ${{ matrix.runner_args }}
