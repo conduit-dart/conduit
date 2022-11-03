@@ -82,7 +82,6 @@ class CodeAnalyzer {
 
   ClassDeclaration? getClassFromFile(String className, Uri fileUri) {
     try {
-      print(fileUri);
       return _getFileAstRoot(fileUri)
           .declarations
           .whereType<ClassDeclaration>()
@@ -120,9 +119,10 @@ class CodeAnalyzer {
       // ignore: empty_catches
     } catch (e) {}
     final unit = contexts
-        .contextFor(path)
-        .currentSession
-        .getParsedUnit(fileUri.path) as ParsedUnitResult;
+            .contextFor(path)
+            .currentSession
+            .getParsedUnit(fileUri.toFilePath(windows: Platform.isWindows))
+        as ParsedUnitResult;
     return unit.unit;
   }
 
