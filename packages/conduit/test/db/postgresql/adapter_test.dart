@@ -158,6 +158,8 @@ class SocketProxy {
   Future open() async {
     _server = await ServerSocket.bind("localhost", src);
     _server!.listen((socket) async {
+      print(src);
+      print(dest);
       final outgoing = await Socket.connect("localhost", dest);
 
       outgoing.listen((bytes) {
