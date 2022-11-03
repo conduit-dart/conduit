@@ -72,43 +72,14 @@ jobs:
   #       working-directory: ${{ env.TEST_DIR }}
   #       run: . ../../ci/.env && ${{ matrix.runner_args }}
 
-  # For help debugging CI problems should normally be commented out
-  # single_unit:
-  #   env:
-  #     TEST_DIR: packages/runtime
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     postgres:
-  #       image: postgres:14.5
-  #       env:
-  #         POSTGRES_USER: conduit_test_user
-  #         POSTGRES_PASSWORD: conduit!
-  #         POSTGRES_DB: conduit_test_db
-  #         POSTGRES_PORT: 15432
-  #       ports:
-  #         - 15432:5432
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: dart-lang/setup-dart@v1
-  #       with:
-  #         sdk: dev
-  #     - name: Get Dependencies
-  #       run: |
-  #         dart pub global activate melos
-  #         melos bootstrap
-  #         melos cache-source
-  #     - name: Run tests
-  #       working-directory: ${{ env.TEST_DIR }}
-  #       run: . ../../ci/.env && dart test
-
   windows:
     name: Run unit tests on Windows
     runs-on: windows-latest
-    strategy:
-      matrix:
-        runner_args: [dart test -j1 -t cli test/, melos test-unit]
+    # strategy:
+    #   matrix:
+    #     runner_args: [dart test -j1 -t cli test/, melos test-unit]
     env:
-      TEST_DIR: packages/conduit
+      TEST_DIR: packages/runtime
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       PGPORT: 5432
@@ -143,4 +114,5 @@ jobs:
         melos bootstrap
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
-      run: ${{ matrix.runner_args }}
+      run: dart test
+      # run: ${{ matrix.runner_args }}
