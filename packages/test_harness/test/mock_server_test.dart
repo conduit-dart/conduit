@@ -192,7 +192,9 @@ void main() {
     test("Can queue handler", () async {
       server.queueHandler(
           (req) => Response.ok({"k": req.raw.uri.queryParameters["k"]}));
+      print('test');
       final response = await testClient.request("/ok?k=1").get();
+      print('test');
       expect(response.body.as<Map>()["k"], "1");
 
       expect((await testClient.request("/ok").get()).statusCode,
