@@ -82,6 +82,7 @@ class CodeAnalyzer {
 
   ClassDeclaration? getClassFromFile(String className, Uri fileUri) {
     try {
+      print(fileUri);
       return _getFileAstRoot(fileUri)
           .declarations
           .whereType<ClassDeclaration>()

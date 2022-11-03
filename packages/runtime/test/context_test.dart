@@ -89,7 +89,7 @@ void main() {
     );
     expect(imports, [
       "import 'package:dependency/dependency.dart';",
-      "import 'file:$absolutePathToAppLib/src/file.dart';"
+      "import 'file:${join(absolutePathToAppLib, 'src/file.dart')}';"
     ]);
   });
 
@@ -99,7 +99,7 @@ void main() {
     );
     expect(imports, [
       "import 'package:dependency/dependency.dart';",
-      "import 'file:$absolutePathToAppLib/src/file.dart';"
+      "import 'file:${join(absolutePathToAppLib, 'src/file.dart')}';"
     ]);
   });
 
@@ -107,6 +107,7 @@ void main() {
     final imports = await ctx.getImportDirectives(
       uri: Uri.parse("package:application/src/file.dart"),
     );
-    expect(imports, ["import 'file:$absolutePathToAppLib/application.dart';"]);
+    expect(imports,
+        ["import 'file:${join(absolutePathToAppLib, 'application.dart')}';"]);
   });
 }
