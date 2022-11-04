@@ -515,6 +515,8 @@ void main() {
             token.issueDate!.isAtSameMomentAs(now),
         true,
       );
+      print(token.expirationDate);
+      print(now);
       expect(token.expirationDate!.isAfter(now), true);
 
       expect(token.issueDate!.isAfter(initialToken.issueDate!), true);
