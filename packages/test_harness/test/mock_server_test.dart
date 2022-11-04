@@ -210,7 +210,9 @@ Future spawnFunc(List pair) async {
   final delay = pair.last as int;
   final testClient = Agent.onPort(4000);
   sleep(Duration(seconds: delay));
+  print('test');
   await testClient.request(path).get().catchError((_) {});
+  print('test');
 }
 
 Future<TestResponse?> tttt() {
