@@ -12,3 +12,20 @@ dev_dependencies:
   conduit_common_test:
     path: ../common_test
   test_core: ^0.4.18
+dependency_overrides:
+  conduit:
+    path: ../conduit
+  conduit_codable:
+    path: ../codable
+  conduit_common:
+    path: ../common
+  conduit_config:
+    path: ../config
+  conduit_isolate_exec:
+    path: ../isolate_exec
+  conduit_open_api:
+    path: ../open_api
+  conduit_password_hash:
+    path: ../password_hash
+  conduit_runtime:
+    path: ../runtime
