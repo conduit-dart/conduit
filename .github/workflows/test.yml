@@ -111,6 +111,8 @@ jobs:
       run: |
         dart pub global activate melos
         cd packages/isolate_exec_test_packages/test_package && dart pub get
+        cd packages/runtime_test_packages/application && dart pub get
+        cd packages/runtime_test_packages/dependency && dart pub get
         melos bootstrap
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
