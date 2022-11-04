@@ -118,8 +118,11 @@ class CodeAnalyzer {
       }
       // ignore: empty_catches
     } catch (e) {}
-    final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-            fileUri.normalizePath().toFilePath(windows: Platform.isWindows))
+    print(fileUri.toFilePath(windows: Platform.isWindows));
+    final unit = contexts
+            .contextFor(path)
+            .currentSession
+            .getParsedUnit(fileUri.toFilePath(windows: Platform.isWindows))
         as ParsedUnitResult;
     return unit.unit;
   }
