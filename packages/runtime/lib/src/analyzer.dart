@@ -118,7 +118,7 @@ class CodeAnalyzer {
       }
       // ignore: empty_catches
     } catch (e) {}
-    print(fileUri.toFilePath(windows: Platform.isWindows));
+    throw fileUri.toFilePath(windows: Platform.isWindows);
     final unit = contexts
             .contextFor(path)
             .currentSession
