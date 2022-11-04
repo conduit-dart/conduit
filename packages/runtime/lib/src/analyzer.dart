@@ -4,7 +4,6 @@ import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
-import 'package:path/path.dart';
 
 class CodeAnalyzer {
   CodeAnalyzer(this.uri) {
@@ -120,10 +119,8 @@ class CodeAnalyzer {
       // ignore: empty_catches
     } catch (e) {}
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-          normalize(
-            absolute(join(fileUri.toFilePath(windows: Platform.isWindows))),
-          ),
-        ) as ParsedUnitResult;
+            fileUri.normalizePath().toFilePath(windows: Platform.isWindows))
+        as ParsedUnitResult;
     return unit.unit;
   }
 
