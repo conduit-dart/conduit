@@ -110,15 +110,15 @@ jobs:
     - name: Get Dependencies
       shell: bash
       run: |
-        printenv
+        ls $PUB_CACHE/bin
         dart pub global activate melos
         dart pub global activate test
         dart pub global activate lint
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
-        $PUB_CACHE/bin/melos bootstrap
-        $PUB_CACHE/bin/melos cache-source
+        melos bootstrap
+        melos cache-source
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
