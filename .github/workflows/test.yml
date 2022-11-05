@@ -117,8 +117,8 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
         choco install yq
         bash -c "melos strip-overrides"
-        $PUB_CACHE\\bin\\melos.bat bootstrap
-        $PUB_CACHE\\bin\\melos.bat cache-source
+        $PUB_CACHE\bin\melos.bat bootstrap
+        $PUB_CACHE\bin\melos.bat cache-source
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
