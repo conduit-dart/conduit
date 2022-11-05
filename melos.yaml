@@ -29,7 +29,7 @@ scripts:
     select-pacakge:
       no-private: true
   strip-overrides:
-    run: melos exec -- "yq -i 'del(.dependency_overrides)' '\$MELOS_PACKAGE_PATH\\pubspec.yaml'"
+    run: melos exec -- "yq -i 'del(.dependency_overrides)' '\$MELOS_PACKAGE_PATH\pubspec.yaml'"
     select-pacakge:
       no-private: true
   apply-overrides:
