@@ -110,7 +110,7 @@ jobs:
     - name: Get Dependencies
       shell: bash
       run: |
-        ls $DART_HOME
+        ls $DART_HOME/bin
         dart pub global activate melos
         dart pub global activate test
         dart pub global activate lint
