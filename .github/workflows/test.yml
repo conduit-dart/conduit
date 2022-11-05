@@ -110,7 +110,7 @@ jobs:
     - name: Get Dependencies
       shell: bash
       run: |
-        export PUB_CACHE=/c/Users/runneradmin/.pub-cache
+        ls /c/Users/runneradmin/.pub-cache
         dart pub global activate melos
         dart pub global activate test
         dart pub global activate lint
