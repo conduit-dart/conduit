@@ -109,8 +109,7 @@ jobs:
         sdk: dev
     - name: Get Dependencies
       run: |
-        dart pub global activate melos
-        dart pub global activate test
+        dart pub global activate melos test lint
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
