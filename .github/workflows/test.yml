@@ -108,7 +108,6 @@ jobs:
       with:
         sdk: dev
     - name: Get Dependencies
-      shell: bash
       run: |
         dart pub global activate melos
         dart pub global activate test
@@ -117,7 +116,7 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
         choco install yq
-        $PUB_CACHE\\bin\\melos.bat strip-overrides
+        bash -c "melos strip-overrides"
         $PUB_CACHE\\bin\\melos.bat bootstrap
         $PUB_CACHE\\bin\\melos.bat cache-source
     - name: Run tests
