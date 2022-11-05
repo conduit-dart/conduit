@@ -117,8 +117,8 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
         choco install yq
-        dart pub global run melos:melos bootstrap
-        dart pub global run melos:melos cache-source
+        $PUB_CACHE/bin/melos bootstrap
+        $PUB_CACHE/bin/melos cache-source
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
