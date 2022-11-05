@@ -29,7 +29,7 @@ scripts:
     select-pacakge:
       no-private: true
   cache-source-win:
-    run: melos exec -- "mkdir '$PUB_CACHE\\hosted\\pub.dev\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; xcopy /s /y '\$MELOS_PACKAGE_PATH' '$PUB_CACHE\\hosted\\pub.dev\\\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
+    run: melos exec -- "mkdir '$PUB_CACHE\\hosted\\pub.dev\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'; dir $PUB_CACHE\\hosted\\pub.dev"
     select-pacakge:
       no-private: true
   strip-overrides:
