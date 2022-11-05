@@ -67,6 +67,8 @@ class IsolateExecutor<U> {
         "data:application/dart;charset=utf-8,$scriptSource",
       );
 
+      print(packageConfigURI);
+
       await Isolate.spawnUri(
         dataUri,
         [],
