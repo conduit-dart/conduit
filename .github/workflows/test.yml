@@ -105,13 +105,12 @@ jobs:
         & $env:PGBIN\createdb ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
-      shell: bash
       with:
         sdk: dev
     - name: Get Dependencies
       shell: bash
       run: |
-        ls $PUB_CACHE
+        export PUB_CACHE=/c/Users/runneradmin/.pub-cache
         dart pub global activate melos
         dart pub global activate test
         dart pub global activate lint
