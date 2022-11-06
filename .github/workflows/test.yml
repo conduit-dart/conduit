@@ -103,10 +103,7 @@ jobs:
         mkdir -p datadir
         initdb -U ${{ env.PGUSER }} -D datadir
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
-    - name: Create user
-      run: |
-        psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
-    - name: Create timetable database
+    - name: Create database
       run: |
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
@@ -155,10 +152,7 @@ jobs:
         icacls "datadir" /grant Users:F /T
         & $env:PGBIN\initdb -U ${{ env.PGUSER }} -D datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
-    - name: Create user
-      run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
-    - name: Create conduit test database
+    - name: Create database
       run: |
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
