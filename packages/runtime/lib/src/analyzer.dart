@@ -89,6 +89,7 @@ class CodeAnalyzer {
           .firstWhere((c) => c.name.value() == className);
     } catch (e) {
       if (e is StateError || e is TypeError || e is ArgumentError) {
+        print(e.runtimeType);
         return null;
       }
       rethrow;
@@ -117,11 +118,7 @@ class CodeAnalyzer {
       if (_resolvedAsts.containsKey(path)) {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
-      // ignore: empty_catches
-    } catch (e) {
-      print(e);
-    }
-    print(fileUri);
+    } finally {}
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(
           normalize(
             absolute(fileUri.toFilePath(windows: Platform.isWindows)),
