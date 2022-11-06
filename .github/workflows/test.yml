@@ -41,12 +41,12 @@ jobs:
       startsWith(github.head_ref, 'feature/')
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'refactor/')
-    env:
-      TEST_DIR: packages/conduit
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runner_args: [dart test -j1 -t cli test/, melos test-unit-scoped, dart tool/generated_test_runner.dart]
+        runner_args: [dart test -j1 -t cli test/*, melos test-unit-scoped, dart tool/generated_test_runner.dart]
+    env:
+      TEST_DIR: packages/conduit
     services:
       postgres:
         image: postgres:14.5
@@ -58,6 +58,68 @@ jobs:
         ports:
           - 15432:5432
     steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: dev
+      - name: Get Dependencies
+        run: |
+          dart pub global activate melos
+          melos bootstrap
+          melos cache-source
+          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+          dart pub get --directory=packages/runtime_test_packages/application --offline
+          dart pub get --directory=packages/runtime_test_packages/dependency --offline
+      - name: Run tests
+        working-directory: ${{ env.TEST_DIR }}
+        run: . ../../ci/.env && ${{ matrix.runner_args }}
+
+  macos:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/*, melos test-unit-scoped, dart tool/generated_test_runner.dart]
+    env:
+      TEST_DIR: packages/conduit
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      PGPORT: 5432
+      POSTGRES_ADMIN_USER: conduit_test_user
+      POSTGRES_ADMIN_PASSWORD: conduit!
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
+      TEST_VALUE: 1
+      TEST_BOOL: true
+    steps:
+     name: Start PostgreSQL
+        run: |
+          brew services start postgresql
+          echo "Check PostgreSQL service is running"
+          i=10
+          COMMAND='pg_isready'
+          while [ $i -gt 0 ]; do
+              echo "Check PostgreSQL service status"
+              eval $COMMAND && break
+              ((i--))
+              if [ $i == 0 ]; then
+                  echo "PostgreSQL service not ready, all attempts exhausted"
+                  exit 1
+              fi
+              echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
+              sleep 10
+          done
+      - name: Create user
+        run: |
+          psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
+      - name: Create timetable database
+        run: |
+          createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
         with:
@@ -97,12 +159,12 @@ jobs:
       TEST_VALUE: 1
       TEST_BOOL: true
     steps:
-    - name: Start PostgreSQL on Windows
+    - name: Start PostgreSQL
       run: |
         $pgService = Get-Service -Name postgresql*
         Set-Service -InputObject $pgService -Status running -StartupType automatic
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-    - name: Create user on Windows
+    - name: Create user
       run: |
         & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create conduit test database
