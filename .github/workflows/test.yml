@@ -124,7 +124,7 @@ jobs:
       run: |
         mkdir C:\datadir
         icacls "C:\datadir" /grant Users:F /T
-        & $env:PGBIN\initdb -U postgres -D datadir
+        & $env:PGBIN\initdb -U postgres -D C:\datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D C:\datadir start
     - name: Create database
       env:
