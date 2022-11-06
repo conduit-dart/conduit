@@ -101,20 +101,6 @@ jobs:
         mkdir -p datadir
         initdb -D datadir
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
-        echo "Check PostgreSQL service is running"
-        i=10
-        COMMAND='pg_isready'
-        while [ $i -gt 0 ]; do
-            echo "Check PostgreSQL service status"
-            eval $COMMAND && break
-            ((i--))
-            if [ $i == 0 ]; then
-                echo "PostgreSQL service not ready, all attempts exhausted"
-                exit 1
-            fi
-            echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
-            sleep 10
-        done
     - name: Create user
       run: |
         psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
@@ -167,10 +153,9 @@ jobs:
         icacls "datadir" /grant Users:F /T
         & $env:PGBIN\initdb -D datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
-        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create user
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
     - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb ${{ env.POSTGRES_DB }}
