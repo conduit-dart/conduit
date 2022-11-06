@@ -70,9 +70,9 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        mkdir -p /datadir
-        initdb -U postgres -D /datadir
-        pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D /datadir start
+        mkdir -p $HOME/datadir
+        initdb -U postgres -D $HOME/datadir
+        pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D $HOME/datadir start
         ps auxwww | grep postgres
         exit 1
     - name: Create database
