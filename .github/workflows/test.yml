@@ -87,6 +87,7 @@ jobs:
       TEST_DIR: packages/conduit
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 15432
+      PGPORT: 15432
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
@@ -155,7 +156,7 @@ jobs:
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create user
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
+        & $env:PGBIN\psql -U postgres --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb ${{ env.POSTGRES_DB }}
