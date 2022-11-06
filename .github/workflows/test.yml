@@ -97,7 +97,7 @@ jobs:
       TEST_VALUE: 1
       TEST_BOOL: true
     steps:
-      name: Start PostgreSQL
+    - name: Start PostgreSQL
       run: |
         brew services start postgresql
         echo "Check PostgreSQL service is running"
@@ -114,27 +114,27 @@ jobs:
             echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
             sleep 10
         done
-      - name: Create user
-        run: |
-          psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
-      - name: Create timetable database
-        run: |
-          createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: dev
-      - name: Get Dependencies
-        run: |
-          dart pub global activate melos
-          melos bootstrap
-          melos cache-source
-          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
-          dart pub get --directory=packages/runtime_test_packages/application --offline
-          dart pub get --directory=packages/runtime_test_packages/dependency --offline
-      - name: Run tests
-        working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && ${{ matrix.runner_args }}
+    - name: Create user
+      run: |
+        psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du" postgres
+    - name: Create timetable database
+      run: |
+        createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
+    - name: Get Dependencies
+      run: |
+        dart pub global activate melos
+        melos bootstrap
+        melos cache-source
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+        dart pub get --directory=packages/runtime_test_packages/application --offline
+        dart pub get --directory=packages/runtime_test_packages/dependency --offline
+    - name: Run tests
+      working-directory: ${{ env.TEST_DIR }}
+      run: . ../../ci/.env && ${{ matrix.runner_args }}
 
   windows:
     if: |
