@@ -56,7 +56,7 @@ jobs:
         runner_args: [dart test -j1 -t cli test/*, melos test-unit-scoped, dart tool/generated_test_runner.dart]
     env:
       TEST_DIR: packages/conduit
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: 127.0.0.1
       POSTGRES_PORT: 15432
       PGPORT: 15432
       POSTGRES_ADMIN_USER: conduit_test_user
@@ -73,8 +73,6 @@ jobs:
         mkdir -p $HOME/datadir
         initdb -U postgres -D $HOME/datadir
         pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D $HOME/datadir start
-        ps auxwww | grep postgres
-        exit 1
     - name: Create database
       env:
         PGUSER: postgres
