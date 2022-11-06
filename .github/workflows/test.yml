@@ -99,6 +99,7 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
+        mkdir -p /Library/PostgreSQL/data
         pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" -D /Library/PostgreSQL/data start
         echo "Check PostgreSQL service is running"
         i=10
