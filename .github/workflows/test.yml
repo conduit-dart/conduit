@@ -76,9 +76,9 @@ jobs:
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        psql --command="CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
+        createuser -s -e ${{ env.POSTGRES_USER }}
+        psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
-        psql --command="GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} to ${{ env.POSTGRES_USER }};"
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
@@ -123,7 +123,8 @@ jobs:
       run: |
         mkdir datadir
         icacls "datadir" /grant Users:F /T
-        & $env:PGBIN\initdb -U ${{ env.PGUSER }} -D datadir
+        & $env:PGBIN\createuser -s -e ${{ env.POSTGRES_USER }}
+        & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
