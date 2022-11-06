@@ -74,6 +74,8 @@ jobs:
         initdb -U postgres -D datadir
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
+      env:
+        PGUSER: postgres
       run: |
         createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
         psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
@@ -124,6 +126,8 @@ jobs:
         & $env:PGBIN\initdb -U postgres -D datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
+      env:
+        PGUSER: postgres
       run: |
         & $env:PGBIN\createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
         & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
