@@ -164,6 +164,7 @@ jobs:
     - name: Start PostgreSQL
       run: |
         mkdir datadir
+        icacls "datadir" /grant runneradmin:(OI)(CI)F /T
         & $env:PGBIN\initdb -D datadir
         & $env:PGBIN\pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" -D datadir start
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
