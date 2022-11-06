@@ -107,28 +107,19 @@ class CodeAnalyzer {
   }
 
   CompilationUnit _getFileAstRoot(Uri fileUri) {
-    assert(
-      FileSystemEntity.isFileSync(
-        fileUri.toFilePath(windows: Platform.isWindows),
-      ),
-    );
     try {
       final path = getPath(fileUri);
       if (_resolvedAsts.containsKey(path)) {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
-    } finally {}
-    try {
-      final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-            normalize(
-              absolute(fileUri.toFilePath(windows: Platform.isWindows)),
-            ),
-          ) as ParsedUnitResult;
-      return unit.unit;
-    } catch (e) {
-      print(fileUri);
-      print('asd');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
+    final unit = contexts.contextFor(path).currentSession.getParsedUnit(
+          normalize(
+            absolute(fileUri.toFilePath(windows: Platform.isWindows)),
+          ),
+        ) as ParsedUnitResult;
+    return unit.unit;
   }
 
   static String getPath(dynamic inputUri) {
