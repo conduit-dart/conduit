@@ -91,7 +91,6 @@ jobs:
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
-      PGUSER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:15432/dbname
@@ -142,7 +141,6 @@ jobs:
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
-      PGUSER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:15432/dbname
