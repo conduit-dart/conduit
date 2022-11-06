@@ -70,9 +70,11 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        mkdir -p datadir
-        initdb -U postgres -D datadir
-        pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
+        mkdir -p /datadir
+        initdb -U postgres -D /datadir
+        pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D /datadir start
+        ps auxwww | grep postgres
+        exit 1
     - name: Create database
       env:
         PGUSER: postgres
@@ -120,12 +122,11 @@ jobs:
       TEST_BOOL: true
     steps:
     - name: Start PostgreSQL
-
       run: |
         mkdir C:\datadir
         icacls "C:\datadir" /grant Users:F /T
         & $env:PGBIN\initdb -U postgres -D C:\datadir
-        & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D C:\datadir start
+        & $env:PGBIN\pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D C:\datadir start
     - name: Create database
       env:
         PGUSER: postgres
