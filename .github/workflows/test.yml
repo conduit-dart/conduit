@@ -72,7 +72,7 @@ jobs:
     - name: Start PostgreSQL
       run: |
         mkdir -p datadir
-        initdb -U ${{ env.PGUSER }} -D datadir
+        initdb -D datadir
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
@@ -123,14 +123,13 @@ jobs:
       run: |
         mkdir datadir
         icacls "datadir" /grant Users:F /T
-        & $env:PGBIN\createuser -s -e ${{ env.POSTGRES_USER }}
-        & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
+        & $env:PGBIN\initdb -D datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
+        & $env:PGBIN\createuser -s -e ${{ env.POSTGRES_USER }}
+        & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
-        & $env:PGBIN\psql --command="GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} to ${{ env.POSTGRES_USER }};"
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
