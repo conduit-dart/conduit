@@ -99,7 +99,7 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" start
+        pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" -D /Library/PostgreSQL/data start
         echo "Check PostgreSQL service is running"
         i=10
         COMMAND='pg_isready'
@@ -161,7 +161,7 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        $env:PGBIN\pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" start
+        & $env:PGBIN\pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" -D datadir start
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create user
       run: |
