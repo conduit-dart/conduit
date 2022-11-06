@@ -99,7 +99,7 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        brew services start postgresql
+        pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" start
         echo "Check PostgreSQL service is running"
         i=10
         COMMAND='pg_isready'
@@ -161,8 +161,7 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        $pgService = Get-Service -Name postgresql*
-        Set-Service -InputObject $pgService -Status running -StartupType automatic
+        $env:PGBIN\pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" start
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create user
       run: |
