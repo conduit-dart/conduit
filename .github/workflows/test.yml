@@ -167,6 +167,8 @@ jobs:
         icacls "datadir" /grant Users:F /T
         & $env:PGBIN\initdb -D datadir
         & $env:PGBIN\pg_ctl -o "-F -p ${{env.POSTGRES_PORT}}" -D datadir start
+        $pgService = Get-Service -Name postgresql*
+        Set-Service -InputObject $pgService -Status running -StartupType automatic
         Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
     - name: Create user
       run: |
