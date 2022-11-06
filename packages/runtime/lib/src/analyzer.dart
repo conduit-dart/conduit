@@ -107,6 +107,11 @@ class CodeAnalyzer {
   }
 
   CompilationUnit _getFileAstRoot(Uri fileUri) {
+    assert(
+      FileSystemEntity.isFileSync(
+        fileUri.toFilePath(windows: Platform.isWindows),
+      ),
+    );
     try {
       final path = getPath(fileUri);
       if (_resolvedAsts.containsKey(path)) {
@@ -114,6 +119,7 @@ class CodeAnalyzer {
       }
       // ignore: empty_catches
     } catch (e) {}
+    print(fileUri);
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(
           normalize(
             absolute(fileUri.toFilePath(windows: Platform.isWindows)),
