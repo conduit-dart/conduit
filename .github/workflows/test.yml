@@ -76,8 +76,9 @@ jobs:
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        psql --command="CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+        psql --command="GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} to ${{ env.POSTGRES_USER }};"
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
@@ -126,8 +127,9 @@ jobs:
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+        & $env:PGBIN\psql --command="GRANT ALL PRIVILEGES ON DATABASE ${{ env.POSTGRES_DB }} to ${{ env.POSTGRES_USER }};"
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
