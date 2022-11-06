@@ -63,7 +63,6 @@ jobs:
         with:
           sdk: dev
       - name: Get Dependencies
-        working-directory: ${{ env.TEST_DIR }}
         run: |
           dart pub global activate melos
           melos bootstrap
@@ -80,7 +79,6 @@ jobs:
       startsWith(github.head_ref, 'feature/')
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'refactor/')
-    name: Run unit tests on Windows
     runs-on: windows-latest
     strategy:
       matrix:
