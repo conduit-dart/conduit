@@ -12,7 +12,11 @@ command:
     linkToCommits: true
 scripts:
   test-unit:
-    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/" #TODO: file a bug report with dart:mirrors
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli"
+    select-pacakge:
+      no-private: true
+  test-unit-scoped:
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
     select-pacakge:
       no-private: true
   test-with-coverage:
