@@ -91,6 +91,7 @@ jobs:
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
+      PGUSER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:15432/dbname
@@ -100,11 +101,11 @@ jobs:
     - name: Start PostgreSQL
       run: |
         mkdir -p datadir
-        initdb -D datadir
+        initdb -U ${{ env.PGUSER }} -D datadir
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create user
       run: |
-        psql -U --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create timetable database
       run: |
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
@@ -141,6 +142,7 @@ jobs:
       POSTGRES_ADMIN_USER: conduit_test_user
       POSTGRES_ADMIN_PASSWORD: conduit!
       POSTGRES_USER: conduit_test_user
+      PGUSER: conduit_test_user
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       TEST_DB_ENV_VAR: postgres://user:password@host:15432/dbname
@@ -151,7 +153,7 @@ jobs:
       run: |
         mkdir datadir
         icacls "datadir" /grant Users:F /T
-        & $env:PGBIN\initdb -D datadir
+        & $env:PGBIN\initdb -U ${{ env.PGUSER }} -D datadir
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create user
       run: |
