@@ -121,10 +121,10 @@ jobs:
     steps:
     - name: Start PostgreSQL
       run: |
-        mkdir datadir
-        icacls "datadir" /grant Users:F /T
+        mkdir ..\datadir
+        icacls "..\datadir" /grant Users:F /T
         & $env:PGBIN\initdb -U postgres -D datadir
-        & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
+        & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D ..\datadir start
     - name: Create database
       env:
         PGUSER: postgres
