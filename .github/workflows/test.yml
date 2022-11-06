@@ -6,35 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # all_unit:
-  #   if: |
-  #     startsWith(github.head_ref, 'feature/')
-  #     || startsWith(github.head_ref, 'fix/')
-  #     || startsWith(github.head_ref, 'refactor/')
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     postgres:
-  #       image: postgres:14.5
-  #       env:
-  #         POSTGRES_USER: conduit_test_user
-  #         POSTGRES_PASSWORD: conduit!
-  #         POSTGRES_DB: conduit_test_db
-  #         POSTGRES_PORT: 15432
-  #       ports:
-  #         - 15432:5432
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: dart-lang/setup-dart@v1
-  #       with:
-  #         sdk: dev
-  #     - name: Get Dependencies
-  #       run: |
-  #         dart pub global activate melos
-  #         cd packages/isolate_exec_test_packages/test_package && dart pub get
-  #         melos bootstrap
-  #         melos cache-source
-  #     - name: Run tests
-  #       run: . ./ci/.env && melos test-unit
 
   linux:
     if: |
@@ -105,6 +76,7 @@ jobs:
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
+        psql --command="ALTER USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
@@ -154,6 +126,7 @@ jobs:
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
+        & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
