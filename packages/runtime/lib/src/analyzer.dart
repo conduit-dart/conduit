@@ -117,14 +117,18 @@ class CodeAnalyzer {
       if (_resolvedAsts.containsKey(path)) {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
-      // ignore: empty_catches
-    } catch (e) {}
-    final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-          normalize(
-            absolute(fileUri.toFilePath(windows: Platform.isWindows)),
-          ),
-        ) as ParsedUnitResult;
-    return unit.unit;
+    } finally {}
+    try {
+      final unit = contexts.contextFor(path).currentSession.getParsedUnit(
+            normalize(
+              absolute(fileUri.toFilePath(windows: Platform.isWindows)),
+            ),
+          ) as ParsedUnitResult;
+      return unit.unit;
+    } catch (e) {
+      print(fileUri);
+      print('asd');
+    }
   }
 
   static String getPath(dynamic inputUri) {
