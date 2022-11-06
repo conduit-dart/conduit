@@ -154,10 +154,10 @@ jobs:
         mkdir datadir
         icacls "datadir" /grant Users:F /T
         & $env:PGBIN\initdb -D datadir
-        & $env:PGBIN\pg_ctl %USER% -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
+        & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create user
       run: |
-        & $env:PGBIN\psql --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        & $env:PGBIN\psql -U %USER% --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
