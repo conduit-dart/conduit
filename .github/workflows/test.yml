@@ -76,7 +76,7 @@ jobs:
         pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        createuser -s -e ${{ env.POSTGRES_USER }}
+        createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
         psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
@@ -127,7 +127,7 @@ jobs:
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create database
       run: |
-        & $env:PGBIN\createuser -s -e ${{ env.POSTGRES_USER }}
+        & $env:PGBIN\createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
         & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
