@@ -67,8 +67,6 @@ class IsolateExecutor<U> {
         "data:application/dart;charset=utf-8,$scriptSource",
       );
 
-      print(message['migrations']?[0]['uri']?.runtimeType);
-
       await Isolate.spawnUri(
         dataUri,
         [],

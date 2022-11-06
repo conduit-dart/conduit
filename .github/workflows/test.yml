@@ -36,48 +36,55 @@ jobs:
   #     - name: Run tests
   #       run: . ./ci/.env && melos test-unit
 
-  # conduit_cli:
-  #   if: |
-  #     startsWith(github.head_ref, 'feature/')
-  #     || startsWith(github.head_ref, 'fix/')
-  #     || startsWith(github.head_ref, 'refactor/')
-  #   env:
-  #     TEST_DIR: packages/conduit
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       runner_args: [dart test -j1 -t cli test/, dart tool/generated_test_runner.dart]
-  #   services:
-  #     postgres:
-  #       image: postgres:14.5
-  #       env:
-  #         POSTGRES_USER: conduit_test_user
-  #         POSTGRES_PASSWORD: conduit!
-  #         POSTGRES_DB: conduit_test_db
-  #         POSTGRES_PORT: 15432
-  #       ports:
-  #         - 15432:5432
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: dart-lang/setup-dart@v1
-  #       with:
-  #         sdk: dev
-  #     - name: Get Dependencies
-  #       working-directory: ${{ env.TEST_DIR }}
-  #       run: |
-  #         dart pub global activate melos
-  #         melos bootstrap
-  #         melos cache-source
-  #     - name: Run tests
-  #       working-directory: ${{ env.TEST_DIR }}
-  #       run: . ../../ci/.env && ${{ matrix.runner_args }}
+  linux:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+    env:
+      TEST_DIR: packages/conduit
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/, dart tool/generated_test_runner.dart, melos test-unit]
+    services:
+      postgres:
+        image: postgres:14.5
+        env:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 15432
+        ports:
+          - 15432:5432
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: dev
+      - name: Get Dependencies
+        working-directory: ${{ env.TEST_DIR }}
+        run: |
+          dart pub global activate melos
+          melos bootstrap
+          melos cache-source
+          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+          dart pub get --directory=packages/runtime_test_packages/application --offline
+          dart pub get --directory=packages/runtime_test_packages/dependency --offline
+      - name: Run tests
+        working-directory: ${{ env.TEST_DIR }}
+        run: . ../../ci/.env && ${{ matrix.runner_args }}
 
   windows:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
     name: Run unit tests on Windows
     runs-on: windows-latest
     strategy:
       matrix:
-        runner_args: [dart test -j1 -t cli test/, melos test-unit]
+        runner_args: [dart test -j1 -t cli test/, melos test-unit, dart tool/generated_test_runner.dart]
     env:
       TEST_DIR: packages/conduit
       POSTGRES_HOST: localhost
@@ -109,14 +116,13 @@ jobs:
         sdk: dev
     - name: Get Dependencies
       run: |
+        choco install yq
         dart pub global activate melos
-        dart pub global activate test
-        dart pub global activate lint
+        dart pub global run melos:melos bootstrap
+        dart pub global run melos:melos cache-source-win
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
-        choco install yq
-        dart pub global run melos:melos cache-source-win
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
