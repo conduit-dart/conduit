@@ -118,7 +118,9 @@ class CodeAnalyzer {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
       // ignore: empty_catches
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     print(fileUri);
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(
           normalize(
