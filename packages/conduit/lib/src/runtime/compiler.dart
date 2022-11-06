@@ -85,9 +85,10 @@ class ConduitCompiler extends Compiler {
           context.sourceApplicationDirectory.uri
               .resolve("../")
               .resolve(package['path']!)
-              .normalizePath()
               .toFilePath(windows: Platform.isWindows),
-          context.buildPackagesDirectory.uri.resolve(package['path']!).path,
+          context.buildPackagesDirectory.uri
+              .resolve(package['path']!)
+              .toFilePath(windows: Platform.isWindows),
         );
       }
 
