@@ -157,7 +157,7 @@ jobs:
         & $env:PGBIN\pg_ctl -o "-p ${{env.POSTGRES_PORT}}" -D datadir start
     - name: Create user
       run: |
-        & $env:PGBIN\psql -U $env:USERNAME --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
+        & $env:PGBIN\psql -U ${{ env.POSTGRES_USER }} --command="CREATE USER ${{ env.POSTGRES_USER }} PASSWORD '${{ env.POSTGRES_PASSWORD }}'" --command="\du"
     - name: Create conduit test database
       run: |
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
