@@ -49,7 +49,7 @@ void main() {
     test("Application handles a bunch of requests", () async {
       final reqs = <Future>[];
       final responses = <http.Response>[];
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 500; i++) {
         final req = http.get(Uri.parse("http://localhost:8888/t"));
         req.then(responses.add);
         reqs.add(req);
