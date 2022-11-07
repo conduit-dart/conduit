@@ -88,7 +88,8 @@ void main() {
       expect(
         doc.components!.schemas["container"]!.referenceURI!
             .toFilePath(windows: Platform.isWindows),
-        "/components/schemas/string",
+        Uri.parse("/components/schemas/string")
+            .toFilePath(windows: Platform.isWindows),
       );
 
       doc.components!.schemas["other"] = APISchemaObject()
