@@ -35,8 +35,8 @@ jobs:
       - name: Get Dependencies
         run: |
           dart pub global activate melos
-          melos bootstrap
           melos cache-source
+          melos bootstrap
           dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
           dart pub get --directory=packages/runtime_test_packages/application --offline
           dart pub get --directory=packages/runtime_test_packages/dependency --offline
@@ -84,8 +84,8 @@ jobs:
     - name: Get Dependencies
       run: |
         dart pub global activate melos
-        melos bootstrap
         melos cache-source
+        melos bootstrap
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
@@ -135,8 +135,8 @@ jobs:
       run: |
         choco install yq
         dart pub global activate melos
-        dart pub global run melos:melos bootstrap
         dart pub global run melos:melos cache-source-win
+        dart pub global run melos:melos bootstrap
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
