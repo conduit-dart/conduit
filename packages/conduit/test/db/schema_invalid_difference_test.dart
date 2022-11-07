@@ -1,4 +1,4 @@
-import 'package:conduit/src/db/db.dart';
+import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
 void main() {
