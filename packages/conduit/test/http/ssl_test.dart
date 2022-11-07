@@ -8,11 +8,7 @@ void main() {
   group("SSL", () {
     late Application app;
 
-    tearDown(() async {
-      await app.stop();
-    });
-
-    test("Start with HTTPS", () async {
+    setUp(() async {
       final ciDirUri = getCIDirectoryUri();
 
       app = Application<TestChannel>()
@@ -24,7 +20,13 @@ void main() {
             .toFilePath(windows: Platform.isWindows);
 
       await app.start();
+    });
 
+    tearDown(() async {
+      await app.stop();
+    });
+
+    test("Start with HTTPS", () async {
       final completer = Completer<List<int>>();
       final socket = await SecureSocket.connect(
         "localhost",
