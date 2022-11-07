@@ -9,6 +9,7 @@ void main() {
   group("Behavior", () {
     PostgreSQLPersistentStore? persistentStore;
     SocketProxy? proxy;
+    String? oldPort = Platform.environment['POSTGRES_PORT'];
 
     setUp(() async {
       persistentStore = PostgresTestConfig().persistentStore();
@@ -17,6 +18,10 @@ void main() {
     tearDown(() async {
       await persistentStore?.close();
       await proxy?.close();
+    });
+
+    tearDownAll(() {
+      Platform.environment['POSTGRES_PORT'] = oldPort!;
     });
 
     test("A down connection will restart", () async {
