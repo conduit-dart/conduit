@@ -128,10 +128,16 @@ jobs:
         & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
     - uses: actions/checkout@v3
+    - name: Make pub cache
+      run: |
+        mkdir C:\.pub_cache
+        icacls "C:\.pub_cache" /grant Users:F /T
     - uses: dart-lang/setup-dart@v1
       with:
         sdk: dev
     - name: Get Dependencies
+      env:
+        PUB_CACHE: C:\.pub_cache
       run: |
         choco install yq
         dart pub global activate melos
@@ -141,5 +147,7 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
+      env:
+        PUB_CACHE: C:\.pub_cache
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}

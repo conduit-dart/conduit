@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit/conduit.dart';
+import 'package:conduit/src/application/application.dart';
+import 'package:conduit/src/http/http.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -11,13 +12,13 @@ void main() {
     setUp(() {
       final ciDirUri = getCIDirectoryUri();
 
-      app = Application<TestChannel>()
+      app = (Application<TestChannel>()
         ..options.certificateFilePath = ciDirUri
             .resolve("conduit.cert.pem")
             .toFilePath(windows: Platform.isWindows)
         ..options.privateKeyFilePath = ciDirUri
             .resolve("conduit.key.pem")
-            .toFilePath(windows: Platform.isWindows);
+            .toFilePath(windows: Platform.isWindows));
     });
 
     tearDown(() async {
