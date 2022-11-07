@@ -174,7 +174,7 @@ class BuildContext {
 
       if (!importedUri.isAbsolute) {
         final path = fileUri
-            ?.resolve(importedUri.path)
+            ?.resolve(importedUri.toFilePath(windows: Platform.isWindows))
             .toFilePath(windows: Platform.isWindows);
         return "import 'file:${absolute(path!)}';";
       }

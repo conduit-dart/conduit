@@ -86,7 +86,8 @@ void main() {
       });
 
       expect(
-        doc.components!.schemas["container"]!.referenceURI!.path,
+        doc.components!.schemas["container"]!.referenceURI!
+            .toFilePath(windows: Platform.isWindows),
         "/components/schemas/string",
       );
 
