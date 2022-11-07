@@ -80,6 +80,7 @@ void main() {
     test(
         "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
         () async {
+      Platform.environment['POSTGRES_PORT'] = '15434';
       persistentStore = PostgresTestConfig().persistentStore(port: 15434);
 
       var expectedValues = [1, 2, 3, 4, 5];
@@ -112,6 +113,7 @@ void main() {
 
     test("Connect to bad db fails gracefully, can then be used again",
         () async {
+      Platform.environment['POSTGRES_PORT'] = '15433';
       persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       try {
