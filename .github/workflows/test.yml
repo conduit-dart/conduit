@@ -112,6 +112,7 @@ jobs:
       TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
       TEST_VALUE: 1
       TEST_BOOL: true
+      PUB_CACHE: C:\.pub_cache
     steps:
     - name: Start PostgreSQL
       run: |
@@ -136,8 +137,6 @@ jobs:
       with:
         sdk: dev
     - name: Get Dependencies
-      env:
-        PUB_CACHE: C:\.pub_cache
       run: |
         choco install yq
         dart pub global activate melos
@@ -147,7 +146,5 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
-      env:
-        PUB_CACHE: C:\.pub_cache
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
