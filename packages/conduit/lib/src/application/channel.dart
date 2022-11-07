@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:conduit/src/application/application.dart';
 import 'package:conduit/src/application/isolate_application_server.dart';
 import 'package:conduit/src/http/http.dart';
-import 'package:conduit_common/conduit_common.dart';
+// ignore: implementation_imports
+import 'package:conduit_common/src/openapi/documentable.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:logging/logging.dart';
