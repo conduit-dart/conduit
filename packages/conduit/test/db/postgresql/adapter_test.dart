@@ -10,16 +10,13 @@ void main() {
     PostgreSQLPersistentStore? persistentStore;
     SocketProxy? proxy;
 
-    setUp(() async {
-      persistentStore = PostgresTestConfig().persistentStore();
-    });
-
     tearDown(() async {
       await persistentStore?.close();
       await proxy?.close();
     });
 
     test("A down connection will restart", () async {
+      persistentStore = PostgresTestConfig().persistentStore();
       var result = await persistentStore!.execute("select 1");
       expect(result, [
         [1]
@@ -36,6 +33,7 @@ void main() {
     test(
         "Ask for multiple connections at once, yield one successful connection",
         () async {
+      persistentStore = PostgresTestConfig().persistentStore();
       final connections = await Future.wait(
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             .map((_) => persistentStore!.getDatabaseConnection()),
@@ -46,6 +44,7 @@ void main() {
 
     test("Make multiple requests at once, yield one successful connection",
         () async {
+      persistentStore = PostgresTestConfig().persistentStore();
       final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       final values = await Future.wait(
         expectedValues.map((i) => persistentStore!.execute("select $i")),
