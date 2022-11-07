@@ -8,7 +8,7 @@ void main() {
   group("SSL", () {
     late Application app;
 
-    setUp(() async {
+    setUp(() {
       final ciDirUri = getCIDirectoryUri();
 
       app = Application<TestChannel>()
@@ -18,15 +18,14 @@ void main() {
         ..options.privateKeyFilePath = ciDirUri
             .resolve("conduit.key.pem")
             .toFilePath(windows: Platform.isWindows);
-
-      await app.start();
     });
 
     tearDown(() async {
-      await app.stop();
+      return app.stop();
     });
 
     test("Start with HTTPS", () async {
+      await app.start();
       final completer = Completer<List<int>>();
       final socket = await SecureSocket.connect(
         "localhost",

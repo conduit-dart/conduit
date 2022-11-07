@@ -53,7 +53,8 @@ Future main(List<String> args) async {
       conduitDir.resolve('lib/').resolve('conduit.dart'),
       Directory.current.uri.resolve('../').resolve('_build/'),
       Directory.current.uri.resolve('../').resolve('run'),
-      File(conduitDir.resolve(f.path).path).readAsStringSync(),
+      File(conduitDir.resolve(f.path).toFilePath(windows: Platform.isWindows))
+          .readAsStringSync(),
       forTests: true,
     );
     final bm = BuildManager(ctx);
