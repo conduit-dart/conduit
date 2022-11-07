@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_catching_errors
 
-import 'package:conduit/src/http/route_node.dart';
-import 'package:conduit/src/http/route_specification.dart';
+import 'package:conduit/conduit.dart';
 import 'package:test/test.dart';
 
 void main() {
