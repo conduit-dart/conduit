@@ -16,10 +16,14 @@ void main() {
       final ciDirUri = getCIDirectoryUri();
 
       app = Application<TestChannel>()
-        ..options.certificateFilePath =
-            ciDirUri.resolve("conduit.cert.pem").normalizePath().path
-        ..options.privateKeyFilePath =
-            ciDirUri.resolve("conduit.key.pem").normalizePath().path;
+        ..options.certificateFilePath = ciDirUri
+            .resolve("conduit.cert.pem")
+            .normalizePath()
+            .toFilePath(windows: Platform.isWindows)
+        ..options.privateKeyFilePath = ciDirUri
+            .resolve("conduit.key.pem")
+            .normalizePath()
+            .toFilePath(windows: Platform.isWindows);
 
       await app.start();
 
