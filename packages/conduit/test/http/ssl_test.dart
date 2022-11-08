@@ -14,17 +14,12 @@ void main() {
 
     test("Start with HTTPS", () async {
       final ciDirUri = getCIDirectoryUri();
-      print(ciDirUri);
 
       app = Application<TestChannel>()
-        ..options.certificateFilePath = ciDirUri
-            .resolve("conduit.cert.pem")
-            .normalizePath()
-            .toFilePath(windows: Platform.isWindows)
-        ..options.privateKeyFilePath = ciDirUri
-            .resolve("conduit.key.pem")
-            .normalizePath()
-            .toFilePath(windows: Platform.isWindows);
+        ..options.certificateFilePath =
+            ciDirUri.resolve("conduit.cert.pem").normalizePath().path
+        ..options.privateKeyFilePath =
+            ciDirUri.resolve("conduit.key.pem").normalizePath().path;
 
       await app.start();
 
