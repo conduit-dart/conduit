@@ -146,6 +146,5 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
-      env:
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
