@@ -3,8 +3,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_runtime/runtime.dart';
 
-// ignore: always_use_package_imports
-import '../dependency.dart';
+import 'package:dependency/dependency.dart';
 
 class DependencyCompiler extends Compiler {
   @override
