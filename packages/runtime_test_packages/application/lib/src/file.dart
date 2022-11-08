@@ -1,1 +1,1 @@
-import 'package:application/application.dart'; //ignore: unused_import
+import '../application.dart'; //ignore: unused_import

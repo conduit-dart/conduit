@@ -3,7 +3,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_runtime/runtime.dart';
 
-import 'package:dependency/dependency.dart';
+import '../dependency.dart';
 
 class DependencyCompiler extends Compiler {
   @override
