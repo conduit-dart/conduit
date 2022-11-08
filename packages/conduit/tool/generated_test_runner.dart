@@ -65,10 +65,12 @@ Future main(List<String> args) async {
       workingDirectory:
           ctx.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
       environment: {
-        'CONDUIT_CI_DIR_LOCATION': Directory.current.uri
-            .resolve('../../')
-            .resolve('ci/')
-            .toFilePath(windows: Platform.isWindows)
+        'CONDUIT_CI_DIR_LOCATION':
+            Platform.environment['CONDUIT_CI_DIR_LOCATION'] ??
+                Directory.current.uri
+                    .resolve('../../')
+                    .resolve('ci/')
+                    .toFilePath(windows: Platform.isWindows)
       },
     );
     // ignore: unawaited_futures

@@ -59,5 +59,7 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
+      env:
+        CONDUIT_CI_DIR_LOCATION: ${{ env.GITHUB_WORKSPACE }}\ci
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
