@@ -18,6 +18,7 @@ class ApplicationServer {
   ///
   /// You should not need to invoke this method directly.
   ApplicationServer(this.channelType, this.options, this.identifier) {
+    print(this.options);
     channel = (RuntimeContext.current[channelType] as ChannelRuntime)
         .instantiateChannel()!
       ..server = this
