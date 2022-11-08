@@ -14,6 +14,7 @@ void main() {
 
     test("Start with HTTPS", () async {
       final ciDirUri = getCIDirectoryUri();
+      print(ciDirUri);
 
       app = Application<TestChannel>()
         ..options.certificateFilePath = ciDirUri
