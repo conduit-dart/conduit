@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_dynamic_calls
 
-@Timeout(Duration(seconds: 45))
 // ignore: unnecessary_const
 @Tags(["cli"])
 import 'dart:async';
