@@ -1,3 +1,4 @@
+import 'package:conduit/src/http/controller.dart';
 import 'package:conduit/src/http/route_node.dart';
 
 /// Specifies a matchable route path.
