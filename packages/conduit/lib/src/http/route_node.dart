@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_dynamic_calls
 
-import 'package:conduit/src/http/http.dart';
+import 'package:conduit/src/http/route_specification.dart';
 
 class RouteSegment {
   RouteSegment(String segment) {

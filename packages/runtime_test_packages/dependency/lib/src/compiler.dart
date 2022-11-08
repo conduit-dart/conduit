@@ -3,18 +3,20 @@ import 'dart:mirrors';
 
 import 'package:conduit_runtime/runtime.dart';
 
-import 'package:dependency/dependency.dart';
+// ignore: always_use_package_imports
+import '../dependency.dart';
 
 class DependencyCompiler extends Compiler {
   @override
   Map<String, dynamic> compile(MirrorContext context) {
-    return Map.fromEntries(context.getSubclassesOf(Consumer).map((c) {
-      return MapEntry(
-        MirrorSystem.getName(c.simpleName),
-        ConsumerRuntimeImpl(),
-      );
-    }),)
-      ..addAll({"Consumer": ConsumerRuntimeImpl()});
+    return Map.fromEntries(
+      context.getSubclassesOf(Consumer).map((c) {
+        return MapEntry(
+          MirrorSystem.getName(c.simpleName),
+          ConsumerRuntimeImpl(),
+        );
+      }),
+    )..addAll({"Consumer": ConsumerRuntimeImpl()});
   }
 
   @override
