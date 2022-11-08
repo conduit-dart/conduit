@@ -1,0 +1,56 @@
+name: Macos
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  macos:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/*, melos test-unit-scoped, dart tool/generated_test_runner.dart]
+    env:
+      TEST_DIR: packages/conduit
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 15432
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
+      TEST_VALUE: 1
+      TEST_BOOL: true
+    steps:
+    - name: Start PostgreSQL
+      run: |
+        mkdir -p $HOME/datadir
+        initdb -U postgres -D $HOME/datadir
+        pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D $HOME/datadir start
+    - name: Create database
+      env:
+        PGUSER: postgres
+        PGPORT: 15432
+      run: |
+        createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
+        psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
+        createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
+    - name: Get Dependencies
+      run: |
+        dart pub global activate melos
+        melos cache-source
+        melos bootstrap
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+        dart pub get --directory=packages/runtime_test_packages/application --offline
+        dart pub get --directory=packages/runtime_test_packages/dependency --offline
+    - name: Run tests
+      working-directory: ${{ env.TEST_DIR }}
+      run: ${{ matrix.runner_args }}
