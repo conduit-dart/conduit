@@ -134,13 +134,9 @@ jobs:
         mkdir C:\.pub_cache
         icacls "C:\.pub_cache" /grant Users:F /T
     - uses: dart-lang/setup-dart@v1
-      env:
-        CONDUIT_CI_DIR_LOCATION: ${{ env.GITHUB_WORKSPACE }}\ci
       with:
         sdk: dev
     - name: Get Dependencies
-      env:
-        CONDUIT_CI_DIR_LOCATION: ${{ env.GITHUB_WORKSPACE }}\ci
       run: |
         choco install yq
         dart pub global activate melos
@@ -151,6 +147,5 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
       env:
-        CONDUIT_CI_DIR_LOCATION: ${{ env.GITHUB_WORKSPACE }}\ci
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
