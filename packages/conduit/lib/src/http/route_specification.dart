@@ -1,5 +1,4 @@
 import 'package:conduit/src/http/http.dart';
-import 'package:conduit/src/http/route_node.dart';
 
 /// Specifies a matchable route path.
 ///

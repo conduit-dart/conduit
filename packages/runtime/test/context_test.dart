@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:conduit_runtime/runtime.dart';
-import 'package:path/path.dart';
 import 'package:test/test.dart';
 
 void main() {

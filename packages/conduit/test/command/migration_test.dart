@@ -147,15 +147,23 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
       final mock = MockMigratable(temporaryDirectory);
       final files = mock.projectMigrations;
       expect(files.length, 5);
-      expect(Uri.parse(files[0].uri!).pathSegments.last,
-          "00000001.migration.dart");
+      expect(
+        Uri.parse(files[0].uri!).pathSegments.last,
+        "00000001.migration.dart",
+      );
       expect(Uri.parse(files[1].uri!).pathSegments.last, "2.migration.dart");
       expect(
-          Uri.parse(files[2].uri!).pathSegments.last, "03_Foo.migration.dart");
-      expect(Uri.parse(files[3].uri!).pathSegments.last,
-          "000001001.migration.dart");
+        Uri.parse(files[2].uri!).pathSegments.last,
+        "03_Foo.migration.dart",
+      );
       expect(
-          Uri.parse(files[4].uri!).pathSegments.last, "10001_.migration.dart");
+        Uri.parse(files[3].uri!).pathSegments.last,
+        "000001001.migration.dart",
+      );
+      expect(
+        Uri.parse(files[4].uri!).pathSegments.last,
+        "10001_.migration.dart",
+      );
     });
   });
 }

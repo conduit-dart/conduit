@@ -1,5 +1,4 @@
 import 'package:conduit/src/http/http.dart';
-import 'package:conduit/src/http/route_specification.dart';
 
 /// Stores path info for a [Request].
 ///

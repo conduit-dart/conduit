@@ -29,8 +29,12 @@ class MigrationSource {
     final klass = migrationTypes.first;
     final source = klass.toSource();
     final offset = klass.name.offset - klass.offset;
-    return MigrationSource(source, uri.toFilePath(windows: Platform.isWindows),
-        offset, offset + klass.name.length);
+    return MigrationSource(
+      source,
+      uri.toFilePath(windows: Platform.isWindows),
+      offset,
+      offset + klass.name.length,
+    );
   }
 
   Map<String, dynamic> asMap() {

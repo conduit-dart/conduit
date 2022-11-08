@@ -15,6 +15,7 @@ void main() {
     test("Start with HTTPS", () async {
       final ciDirUri = getCIDirectoryUri();
 
+      print(ciDirUri.resolve("conduit.cert.pem"));
       app = Application<TestChannel>()
         ..options.certificateFilePath =
             ciDirUri.resolve("conduit.cert.pem").normalizePath().path

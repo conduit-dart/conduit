@@ -170,7 +170,7 @@ class Build {
       dstDir.createSync(recursive: true);
     }
     await copyPath(srcUri.toFilePath(windows: Platform.isWindows),
-        dstUri.toFilePath(windows: Platform.isWindows));
+        dstUri.toFilePath(windows: Platform.isWindows),);
     return context.getFile(srcUri.resolve("pubspec.yaml")).copy(
           dstUri
               .resolve("pubspec.yaml")

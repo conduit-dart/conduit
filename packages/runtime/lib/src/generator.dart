@@ -82,7 +82,8 @@ class GeneratedContext extends RuntimeContext {
 
     for (final e in _elements) {
       buf.writeln(
-          "import 'src/${e.relativeUri.toFilePath(windows: Platform.isWindows)}' as ${e.importAlias};");
+        "import 'src/${e.relativeUri.toFilePath(windows: Platform.isWindows)}' as ${e.importAlias};",
+      );
     }
 
     return buf.toString();
