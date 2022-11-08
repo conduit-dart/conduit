@@ -1,4 +1,4 @@
-// ignore: unnecessary_const
+@Timeout(Duration(seconds: 120))
 @Tags(["cli"])
 import 'package:conduit/conduit.dart';
 import 'package:conduit/managed_auth.dart';
