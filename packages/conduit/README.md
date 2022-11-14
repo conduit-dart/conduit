@@ -26,3 +26,14 @@ conduit serve
 We are currently in the process of collating helpful resources for your edification. Our main docs live [here](https://docs.theconduit.dev/).
 
 Conduit is a close fork to Aqueduct, so Aqueduct examples can be tweaked to work with Conduit [here](https://github.com/stablekernel/aqueduct_examples). The major concern is updating the code to use null-safety.
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

@@ -12,24 +12,17 @@ refactor/<username>-<description>
 If the scope of the issue changes for any reason, please rebranch and use the appropriate anming convention.
 
 ## Local Testing
-While we do provide CI/CD through github actions, it is slow to get results on the CI. You should set up your environment in order to run tests locally before pushing commits
+While we do provide CI/CD through github actions, it is slow to get results on the CI. You should set up your environment in order to run tests locally before pushing commits.
+
 ### Setup
-To set up your testing environment, a general rule is to follow what is provided in the CI configurations:
-```bash
-# This can be found in .github/workflows/test.yml
-dart pub global activate melos
-cd packages/isolate_exec_test_packages/test_package && dart pub get
-melos bootstrap
-melos cache-source
-. ./ci/.env
-```
-Provide a database with the appropriate configurations. I highly recommend that you [install docker](https://docs.docker.com/get-docker/) and use the provided docker compose file at (ci/docker-compose.yaml) which sets up a similar database used in the github CI.
+To set up your testing environment, a general rule is to follow what is provided in the CI configurations. There are workflow files under (.github/workflows) for each platform, which should give you an idea about how to set up your environment appropriately. Provide a database with the appropriate configurations. I highly recommend that you [install docker](https://docs.docker.com/get-docker/) and use the provided docker compose file at (ci/docker-compose.yaml) which sets up a similar database used in the github CI.
+
 ### Running Tests
 Currently there are three tests that need to be run to hit all the tests:
 ```bash
 melos test-unit
 # These two need to be run inside packages/conduit
-dart test -j1 -t cli test/*
+dart test -j1 -t cli test/* # use dart test -j1 -t cli for windows and macos
 dart tool/generated_test_runner.dart
 ```
 The first will run all the unit tests in conduit and all its dependencies. The last two test cli components and string-compiled code respectively.
@@ -39,3 +32,6 @@ Please document the intent of the pull request. All non-documentation pull reque
 
 ## Commits
 The project uses [melos](https://pub.dev/packages/melos) for tooling, which provides autoversioning based on [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). Commits to `master` will usually be squashed from PRs, so make sure that the PR name uses conventional commits to trigger the versioning and publishing CI; you do NOT need to use conventional commits on each commit to your branch.
+
+## Licensing
+The predessor project, [Aqueduct](https://www.github.com/stablekernel/aquedect), and the corresponding dependencies will retain their BSD and MIT licenses copyrighted by stablekernel. Any subsequent work done on Conduit and changes to dependencies will fall under the BSD-2 liecense attirbuted to conduit-dart and fellow contributors. So any additional package created from scratch for this mono-repo must contain the root level license.
