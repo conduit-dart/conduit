@@ -1,4 +1,7 @@
 <img src="https://raw.githubusercontent.com/conduit-dart/conduit/master/assets/conduit-name.svg" width="500" height="150">
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Test Suite](https://github.com/conduit-dart/conduit/actions/workflows/test.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/test.yml) [<img src="https://discord.com/assets/3437c10597c1526c3dbd98c737c2bcae.svg" width="28" height="20">](https://discord.gg/MHz5cqktHW)
 
@@ -30,6 +33,20 @@ Conduit is a close fork to Aqueduct, so Aqueduct examples can be tweaked to work
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><a href="http://j4qfrost.github.io"><img src="https://avatars.githubusercontent.com/u/4009919?v=4?s=100" width="100px;" alt="j4qfrost"/><br /><sub><b>j4qfrost</b></sub></a><br /><a href="https://github.com/conduit-dart/conduit/commits?author=j4qfrost" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 
