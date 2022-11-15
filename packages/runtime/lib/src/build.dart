@@ -50,7 +50,7 @@ class Build {
     final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
-      'environment': {'sdk': '>=2.12.0 <3.0.0'},
+      'environment': {'sdk': '>=2.17.0 <3.0.0'},
       'dependency_overrides': {}
     };
     final overrides = pubspecMap['dependency_overrides'] as Map;
