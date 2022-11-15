@@ -169,10 +169,23 @@ class Build {
     if (!dstDir.existsSync()) {
       dstDir.createSync(recursive: true);
     }
-    await copyPath(
-      srcUri.toFilePath(windows: Platform.isWindows),
-      dstUri.toFilePath(windows: Platform.isWindows),
-    );
+    try {
+      await copyPath(
+        srcUri.toFilePath(windows: Platform.isWindows),
+        dstUri.toFilePath(windows: Platform.isWindows),
+      );
+    } on FileSystemException catch (e) {
+      if (Platform.isWindows) {
+        File(e.path!).writeAsStringSync('dummy');
+        await copyPath(
+          srcUri.toFilePath(windows: Platform.isWindows),
+          dstUri.toFilePath(windows: Platform.isWindows),
+        );
+      } else {
+        rethrow;
+      }
+    }
+
     return context.getFile(srcUri.resolve("pubspec.yaml")).copy(
           dstUri
               .resolve("pubspec.yaml")
