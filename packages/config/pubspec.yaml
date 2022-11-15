@@ -3,7 +3,7 @@ version: 3.2.9
 description: A safe and convenient way to read YAML configuration files.
 repository: https://github.com/conduit-dart/conduit-config.git
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 dependencies:
   conduit_runtime: ^3.2.9
   meta: ^1.3.0
