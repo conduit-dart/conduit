@@ -176,6 +176,7 @@ class Build {
       );
     } on FileSystemException catch (e) {
       if (Platform.isWindows) {
+        print(e.path);
         File(e.path!).writeAsStringSync('dummy');
         await copyPath(
           srcUri.toFilePath(windows: Platform.isWindows),
