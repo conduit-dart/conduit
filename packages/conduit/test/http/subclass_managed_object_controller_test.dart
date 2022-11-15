@@ -147,7 +147,7 @@ class _TestModel {
 }
 
 class Subclass extends ManagedObjectController<TestModel> {
-  Subclass(ManagedContext context) : super(context);
+  Subclass(super.context);
 
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(

@@ -79,7 +79,7 @@ void main() {
 }
 
 class TestModelController extends QueryController<TestModel> {
-  TestModelController(ManagedContext context) : super(context);
+  TestModelController(super.context);
 
   @Operation.get()
   Future<Response> getAll() async {
@@ -177,7 +177,7 @@ class _TestModel {
 }
 
 class StringController extends QueryController<StringModel> {
-  StringController(ManagedContext context) : super(context);
+  StringController(super.context);
 
   @Operation.get("id")
   Future<Response> get(@Bind.path("id") String id) async {

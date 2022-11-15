@@ -9,7 +9,7 @@ void main() async {
   group("Matcher Basics", () {
     late MockHTTPServer server;
     setUpAll(() async {
-      server = await getUnusedPort((port) => MockHTTPServer(port));
+      server = await getUnusedPort(MockHTTPServer.new);
       await server.open();
       server.defaultResponse = Response.ok(null);
     });
@@ -271,7 +271,7 @@ void main() async {
   group("Body, content-type matchers", () {
     late MockHTTPServer server;
     setUp(() async {
-      server = await getUnusedPort((port) => MockHTTPServer(port));
+      server = await getUnusedPort(MockHTTPServer.new);
       await server.open();
     });
 
@@ -339,7 +339,7 @@ void main() async {
   group("Body, value matchers", () {
     late MockHTTPServer server;
     setUpAll(() async {
-      server = await getUnusedPort((port) => MockHTTPServer(port));
+      server = await getUnusedPort(MockHTTPServer.new);
       await server.open();
     });
 
@@ -459,7 +459,7 @@ void main() async {
   group("Total matcher", () {
     late MockHTTPServer server;
     setUpAll(() async {
-      server = await getUnusedPort((port) => MockHTTPServer(port));
+      server = await getUnusedPort(MockHTTPServer.new);
       await server.open();
     });
 

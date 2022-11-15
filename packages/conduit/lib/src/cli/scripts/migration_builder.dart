@@ -8,11 +8,10 @@ import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
-  MigrationBuilderExecutable(Map<String, dynamic> message)
+  MigrationBuilderExecutable(super.message)
       : inputSchema =
             Schema.fromMap(message["inputSchema"] as Map<String, dynamic>),
-        versionTag = message["versionTag"] as int?,
-        super(message);
+        versionTag = message["versionTag"] as int?;
 
   MigrationBuilderExecutable.input(this.inputSchema, this.versionTag)
       : super({"inputSchema": inputSchema.asMap(), "versionTag": versionTag});

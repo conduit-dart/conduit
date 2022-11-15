@@ -469,8 +469,7 @@ class _U {
 }
 
 class CustomValidate extends Validate {
-  const CustomValidate({bool onUpdate = true, bool onInsert = true})
-      : super(onUpdate: onUpdate, onInsert: onInsert);
+  const CustomValidate({super.onUpdate, super.onInsert});
 
   @override
   void validate(ValidationContext context, dynamic input) {

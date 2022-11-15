@@ -4,7 +4,7 @@ homepage: https://github.com/conduit-dart/common-test
 description: A collection of classes and function used for testing conduit and by the conduit test harness.
 publish_to: none
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 dependencies:
   conduit: ^3.2.10
   conduit_common: ^3.2.9

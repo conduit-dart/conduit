@@ -3,7 +3,7 @@ version: 3.2.9
 homepage: https://github.com/conduit-dart/conduit
 description: Utilities for writing automated tests for Conduit applications
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 dependencies:
   test: ^1.21.6
   matcher: ^0.12.12

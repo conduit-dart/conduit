@@ -59,7 +59,7 @@ abstract class TestHarnessAuthMixin<T extends ApplicationChannel>
   Future<Agent> addClient(String id,
       {String? secret, String? redirectUri, List<String>? allowedScope}) async {
     final client = AuthClient.public(id,
-        allowedScopes: allowedScope?.map((s) => AuthScope(s)).toList());
+        allowedScopes: allowedScope?.map(AuthScope.new).toList());
 
     if (secret != null) {
       client
@@ -95,7 +95,7 @@ abstract class TestHarnessAuthMixin<T extends ApplicationChannel>
     try {
       final token = await authServer!.authenticate(
           username, password, credentials.username, credentials.password,
-          requestedScopes: scopes?.map((s) => AuthScope(s)).toList());
+          requestedScopes: scopes?.map(AuthScope.new).toList());
       return Agent.from(fromAgent)
         ..headers["authorization"] = "Bearer ${token.accessToken}";
     } on AuthServerException catch (e) {

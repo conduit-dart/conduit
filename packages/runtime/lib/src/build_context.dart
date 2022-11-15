@@ -84,22 +84,26 @@ class BuildContext {
       getDirectory(rootLibraryFileUri.resolve("../"));
 
   /// The library file of the application being compiled.
-  File get sourceLibraryFile => getFile(rootLibraryFileUri);
+  File get sourceLibraryFile => getFile(rootLibraryFileUri.normalizePath());
 
   /// The directory where build artifacts are stored.
-  Directory get buildDirectory => getDirectory(buildDirectoryUri);
+  Directory get buildDirectory =>
+      getDirectory(buildDirectoryUri.normalizePath());
 
   /// The generated runtime directory
-  Directory get buildRuntimeDirectory =>
-      getDirectory(buildDirectoryUri.resolve("generated_runtime/"));
+  Directory get buildRuntimeDirectory => getDirectory(
+        buildDirectoryUri.resolve("generated_runtime/").normalizePath(),
+      );
 
   /// Directory for compiled packages
   Directory get buildPackagesDirectory =>
-      getDirectory(buildDirectoryUri.resolve("packages/"));
+      getDirectory(buildDirectoryUri.resolve("packages/").normalizePath());
 
   /// Directory for compiled application
   Directory get buildApplicationDirectory => getDirectory(
-        buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"),
+        buildPackagesDirectory.uri
+            .resolve("${sourceApplicationPubspec.name}/")
+            .normalizePath(),
       );
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].

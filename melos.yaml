@@ -45,5 +45,5 @@ scripts:
   hard-clean:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   

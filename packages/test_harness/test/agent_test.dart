@@ -71,7 +71,7 @@ void main() async {
   group("Request building", () {
     late MockHTTPServer server;
     setUp(() async {
-      server = await getUnusedPort((port) => MockHTTPServer(port));
+      server = await getUnusedPort(MockHTTPServer.new);
       await server.open();
     });
 
@@ -202,9 +202,9 @@ void main() async {
       final server = await HttpServer.bind("localhost", portLocal,
           v6Only: false, shared: false);
       final router = Router();
-      router.route("/na").link(() => TestController());
+      router.route("/na").link(TestController.new);
       router.didAddToChannel();
-      server.map((req) => Request(req)).listen(router.receive);
+      server.map(Request.new).listen(router.receive);
 
       final resp = await client.request("/na").get();
       expect(

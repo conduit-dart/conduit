@@ -141,7 +141,7 @@ class MockHTTPServer extends MockServer<Request> {
   Future open() async {
     server =
         await HttpServer.bind(InternetAddress.loopbackIPv4, port, shared: true);
-    server.map((req) => Request(req)).listen((req) async {
+    server.map(Request.new).listen((req) async {
       add(req);
 
       await req.body.decode();

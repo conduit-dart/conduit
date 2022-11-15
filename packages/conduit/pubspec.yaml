@@ -3,7 +3,7 @@ version: 3.2.10
 homepage: https://github.com/conduit-dart/conduit
 description: A modern HTTP server application framework, ORM and OAuth2 provider with OpenAPI 3.0 integration. Foundation for REST, RPC or GraphQL services.
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 dependencies:
   analyzer: ^5.1.0
   args: ^2.1.1
