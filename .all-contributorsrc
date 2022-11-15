@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "j4qfrost",
+      "name": "j4qfrost",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4009919?v=4",
+      "profile": "http://j4qfrost.github.io",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "conduit",
+  "projectOwner": "conduit-dart"
+}
