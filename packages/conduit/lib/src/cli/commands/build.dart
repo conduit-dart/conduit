@@ -28,8 +28,10 @@ class CLIBuild extends CLICommand with CLIProject {
         "The directory to store build artifacts during compilation. By default, this directory is deleted when this command completes. See 'retain-build-artifacts' flag.",
     defaultsTo: "/tmp/build",
   )
-  Directory get buildDirectory =>
-      Directory(decode<String>("build-directory")).absolute;
+  Directory get buildDirectory => Directory(
+        Uri.parse(decode<String>("build-directory"))
+            .toFilePath(windows: Platform.isWindows),
+      ).absolute;
 
   @override
   Future<int> handle() async {
