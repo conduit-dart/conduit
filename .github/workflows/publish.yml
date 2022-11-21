@@ -43,8 +43,6 @@ jobs:
       run: melos cache-source
     - name: Publish package
       run: melos publish --no-dry-run --git-tag-version --yes
-    - name: Apply overrides
-      run: melos apply-overrides
     - name: Push tags
       uses: CasperWA/push-protected@v2
       with:
