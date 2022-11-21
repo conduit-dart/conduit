@@ -21,20 +21,20 @@ export 'service_registry.dart';
 /// An application object opens HTTP listeners that forward requests to instances of your [ApplicationChannel].
 /// It is unlikely that you need to use this class directly - the `conduit serve` command creates an application object
 /// on your behalf.
-class Application<T extends ApplicationChannel?> {
+class Application<T extends ApplicationChannel> {
   /// A list of isolates that this application supervises.
   List<ApplicationIsolateSupervisor> supervisors = [];
 
   /// The [ApplicationServer] listening for HTTP requests while under test.
   ///
   /// This property is only valid when an application is started via [startOnCurrentIsolate].
-  ApplicationServer? server;
+  late ApplicationServer server;
 
   /// The [ApplicationChannel] handling requests while under test.
   ///
   /// This property is only valid when an application is started via [startOnCurrentIsolate]. You use
   /// this value to access elements of your application channel during testing.
-  T? get channel => server?.channel as T?;
+  T get channel => server.channel as T;
 
   /// The logger that this application will write messages to.
   ///
@@ -60,7 +60,7 @@ class Application<T extends ApplicationChannel?> {
   /// This value will return to false after [stop] has completed.
   bool get isRunning => _hasFinishedLaunching;
   bool _hasFinishedLaunching = false;
-  ChannelRuntime? get _runtime => RuntimeContext.current[T] as ChannelRuntime?;
+  ChannelRuntime get _runtime => RuntimeContext.current[T] as ChannelRuntime;
 
   /// Starts this application, allowing it to handle HTTP requests.
   ///
@@ -75,7 +75,7 @@ class Application<T extends ApplicationChannel?> {
   ///
   /// See also [startOnCurrentIsolate] for starting an application when running automated tests.
   Future start({int numberOfInstances = 1, bool consoleLogging = false}) async {
-    if (server != null || supervisors.isNotEmpty) {
+    if (supervisors.isNotEmpty) {
       throw StateError(
         "Application error. Cannot invoke 'start' on already running Conduit application.",
       );
@@ -90,7 +90,7 @@ class Application<T extends ApplicationChannel?> {
     }
 
     try {
-      await _runtime!.runGlobalInitialization(options);
+      await _runtime.runGlobalInitialization(options);
 
       for (var i = 0; i < numberOfInstances; i++) {
         final supervisor = await _spawn(
@@ -120,7 +120,7 @@ class Application<T extends ApplicationChannel?> {
   /// An application started in this way will run on the same isolate this method is invoked on.
   /// Performance is limited when running the application with this method; prefer to use [start].
   Future startOnCurrentIsolate() async {
-    if (server != null || supervisors.isNotEmpty) {
+    if (supervisors.isNotEmpty) {
       throw StateError(
         "Application error. Cannot invoke 'test' on already running Conduit application.",
       );
@@ -129,11 +129,11 @@ class Application<T extends ApplicationChannel?> {
     options.address ??= InternetAddress.loopbackIPv4;
 
     try {
-      await _runtime!.runGlobalInitialization(options);
+      await _runtime.runGlobalInitialization(options);
 
-      server = ApplicationServer(_runtime!.channelType, options, 1);
+      server = ApplicationServer(_runtime.channelType, options, 1);
 
-      await server!.start();
+      await server.start();
       _hasFinishedLaunching = true;
     } catch (e, st) {
       logger.severe("$e", this, st);
@@ -148,14 +148,24 @@ class Application<T extends ApplicationChannel?> {
   /// The [ServiceRegistry] will close any of its resources.
   Future stop() async {
     _hasFinishedLaunching = false;
-    await Future.wait(supervisors.map((s) => s.stop()));
-    if (server != null && server!.server != null) {
-      await server!.server!.close(force: true);
+    await Future.wait(supervisors.map((s) => s.stop()))
+        .onError((error, stackTrace) {
+      if (error.runtimeType.toString() == 'LateError') {
+        throw StateError(
+          'Channel type $T was not loaded in the current isolate. Check that the class was declared and public.',
+        );
+      }
+      throw error! as Error;
+    });
+
+    try {
+      await server.server!.close(force: true);
+    } catch (e) {
+      logger.severe(e);
     }
 
     await ServiceRegistry.defaultInstance.close();
     _hasFinishedLaunching = false;
-    server = null;
     supervisors = [];
 
     logger.clearListeners();
@@ -175,11 +185,11 @@ class Application<T extends ApplicationChannel?> {
 
     final server = ApplicationServer(runtime.channelType, config, 1);
 
-    await server.channel!.prepare();
+    await server.channel.prepare();
 
-    final doc = await server.channel!.documentAPI(projectSpec);
+    final doc = await server.channel.documentAPI(projectSpec);
 
-    await server.channel!.close();
+    await server.channel.close();
 
     return doc;
   }
@@ -194,9 +204,9 @@ class Application<T extends ApplicationChannel?> {
   }) async {
     final receivePort = ReceivePort();
 
-    final libraryUri = _runtime!.libraryUri;
-    final typeName = _runtime!.name;
-    final entryPoint = _runtime!.isolateEntryPoint;
+    final libraryUri = _runtime.libraryUri;
+    final typeName = _runtime.name;
+    final entryPoint = _runtime.isolateEntryPoint;
 
     final initialMessage = ApplicationInitialServerMessage(
       typeName,
