@@ -45,6 +45,18 @@ void main() {
       fail("unreachable");
     } on UnsupportedError {}
   });
+  test("Private channel fails and notifies with appropriate message", () async {
+    final crashingApp = Application<_PrivateChannel>();
+    try {
+      await crashingApp.start();
+      expect(true, false);
+    } catch (e) {
+      expect(
+        e.toString(),
+        "Bad state: Channel type _PrivateChannel was not loaded in the current isolate. Check that the class was declared and public.",
+      );
+    }
+  });
 }
 
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
@@ -75,4 +87,12 @@ class TypeRepo {
 
 TypeMirror typeOf(Symbol symbol) {
   return (reflectClass(TypeRepo).declarations[symbol] as VariableMirror).type;
+}
+
+class _PrivateChannel extends ApplicationChannel {
+  @override
+  Controller get entryPoint {
+    final router = Router();
+    return router;
+  }
 }

@@ -96,7 +96,7 @@ class Agent {
       if (!_application!.isRunning) {
         throw StateError("Application under test is not running.");
       }
-      return "${_application!.server!.requiresHTTPS ? "https" : "http"}://localhost:${_application!.channel!.server.server!.port}";
+      return "${_application!.server.requiresHTTPS ? "https" : "http"}://localhost:${_application!.channel.server.server!.port}";
     }
 
     return "$_scheme://$_host:$_port";

@@ -125,21 +125,6 @@ void main() {
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });
-
-    test("Private channel fails and notifies with appropriate message",
-        () async {
-      final crashingApp = Application<_PrivateChannel>();
-
-      try {
-        await crashingApp.start();
-        expect(true, false);
-      } catch (e) {
-        expect(
-          e.toString(),
-          "Bad state: Channel type _PrivateChannel was not loaded in the current isolate. Check that the class was declared and public.",
-        );
-      }
-    });
   });
 }
 
@@ -202,14 +187,5 @@ class RController extends Controller {
   @override
   FutureOr<RequestOrResponse> handle(Request request) {
     return Response.ok("r_ok");
-  }
-}
-
-class _PrivateChannel extends ApplicationChannel {
-  @override
-  @override
-  Controller get entryPoint {
-    final router = Router();
-    return router;
   }
 }
