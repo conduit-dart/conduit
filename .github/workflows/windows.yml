@@ -58,10 +58,9 @@ jobs:
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
-
     - name: Apply overrides
       shell: sh
-      run: melos apply-overrides
+      run: dart pub global run melos:melos apply-overrides
     - name: Run tests
       env:
         CONDUIT_CI_DIR_LOCATION: ${{ github.workspace }}\ci\
