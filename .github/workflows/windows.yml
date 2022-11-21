@@ -59,7 +59,7 @@ jobs:
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Apply overrides
-      shell: sh
+      shell: bash
       run: dart pub global run melos:melos apply-overrides
     - name: Run tests
       env:
