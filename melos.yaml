@@ -43,7 +43,7 @@ scripts:
   apply-overrides:
     run: melos exec -- "if [ -f '\$MELOS_PACKAGE_PATH/overrides.yaml' ]; then yq -i '. *= load(\"\$MELOS_PACKAGE_PATH/overrides.yaml\")' '\$MELOS_PACKAGE_PATH/pubspec.yaml'; fi"
   apply-overrides-win:
-    run: melos exec -- "if exist $MELOS_PACKAGE_PATH\overrides.yaml $env:OVERRIDES=$MELOS_PACKAGE_PATH\overrides.yaml && yq -i '. *= load(env(OVERRIDES))' $MELOS_PACKAGE_PATH\pubspec.yaml"
+    run: melos exec -- "if exist $MELOS_PACKAGE_PATH\overrides.yaml set OVERRIDES=$MELOS_PACKAGE_PATH\overrides.yaml && yq -i '. *= load(env(OVERRIDES))' $MELOS_PACKAGE_PATH\pubspec.yaml"
   hard-clean:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
 environment:
