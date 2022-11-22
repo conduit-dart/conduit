@@ -20,8 +20,8 @@ void main() {
       return server.open();
     });
 
-    tearDown(() async {
-      await server.close();
+    tearDown(() {
+      return server.close();
     });
 
     test("Request body is captured", () async {
