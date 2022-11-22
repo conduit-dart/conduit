@@ -31,8 +31,6 @@ jobs:
         git config --local user.name "github-actions[bot]"
     - name: Install melos
       run: dart pub global activate melos
-    - name: Strip overrides
-      run: melos strip-overrides
     - name: Format
       run: dart fix --apply && dart format --fix .
     - name: Uptick versions
