@@ -37,6 +37,7 @@ Conduit is a close fork to Aqueduct, so Aqueduct examples can be tweaked to work
     <tr>
       <td align="center"><a href="http://j4qfrost.github.io"><img src="https://avatars.githubusercontent.com/u/4009919?v=4?s=100" width="100px;" alt="j4qfrost"/><br /><sub><b>j4qfrost</b></sub></a><br /><a href="https://github.com/conduit-dart/conduit/commits?author=j4qfrost" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/neterror"><img src="https://avatars.githubusercontent.com/u/6708967?v=4?s=100" width="100px;" alt="neterror"/><br /><sub><b>neterror</b></sub></a><br /><a href="https://github.com/conduit-dart/conduit/commits?author=neterror" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/luis901101"><img src="https://avatars.githubusercontent.com/u/28322469?v=4?s=100" width="100px;" alt="Luis"/><br /><sub><b>Luis</b></sub></a><br /><a href="https://github.com/conduit-dart/conduit/commits?author=luis901101" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
