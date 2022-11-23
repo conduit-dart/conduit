@@ -538,7 +538,8 @@ void main() {
     late SchemaTable tableSchema;
 
     setUpAll(() {
-      tableSchema = Schema.fromDataModel(ManagedDataModel([Ticket])).tables.first;
+      tableSchema =
+          Schema.fromDataModel(ManagedDataModel([Ticket])).tables.first;
     });
 
     test("Table default 'legacy' naming", () {
@@ -562,7 +563,8 @@ void main() {
     late SchemaTable tableSchema;
 
     setUpAll(() {
-      tableSchema = Schema.fromDataModel(ManagedDataModel([StadiumVenue])).tables.first;
+      tableSchema =
+          Schema.fromDataModel(ManagedDataModel([StadiumVenue])).tables.first;
     });
 
     test("Table snake_case naming", () {
@@ -573,11 +575,14 @@ void main() {
       expect(tableSchema.columnForName('venue_location'), isNotNull);
     });
 
-    test("Column custom naming, overrides @Table() column naming annotation" , () {
+    test("Column custom naming, overrides @Table() column naming annotation",
+        () {
       expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
     });
 
-    test("Column legacy naming overriding snake case naming from @Table() annotation", () {
+    test(
+        "Column legacy naming overriding snake case naming from @Table() annotation",
+        () {
       expect(tableSchema.columnForName('extradescription'), isNotNull);
     });
   });
@@ -667,20 +672,26 @@ void main() {
       expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
     });
 
-    test("Column legacy naming by @Column() annotation overriding useSnakeCaseName", () {
+    test(
+        "Column legacy naming by @Column() annotation overriding useSnakeCaseName",
+        () {
       expect(e.properties['extraDescription'], isNotNull);
       expect(tableSchema.columnForName('extradescription'), isNotNull);
     });
 
-    test("ResponseModel includeIfNullField with ResponseKey includeIfNull override", () {
+    test(
+        "ResponseModel includeIfNullField with ResponseKey includeIfNull override",
+        () {
       expect(outputMap['venue_location'], isNotNull);
       expect(outputMap.containsKey('info'), true);
       expect(outputMap.containsKey('extra_info'), true);
-      expect(outputMap, partial({
-        'CrEaTiOn_DaTe': isNotPresent,
-        'SHORT_DESCRIPTION': isNotPresent,
-        'extraDescription': isNotPresent
-      }));
+      expect(
+          outputMap,
+          partial({
+            'CrEaTiOn_DaTe': isNotPresent,
+            'SHORT_DESCRIPTION': isNotPresent,
+            'extraDescription': isNotPresent
+          }));
     });
   });
 }
@@ -692,7 +703,9 @@ class _Ticket {
   @primaryKey
   int? id;
 
-  @Column(nullable: true, )
+  @Column(
+    nullable: true,
+  )
   String? venueLocation;
 
   @Column(nullable: true, name: 'SHORT_DESCRIPTION')
@@ -702,7 +715,8 @@ class _Ticket {
   String? extraDescription;
 }
 
-class StadiumVenue extends ManagedObject<_StadiumVenue> implements _StadiumVenue {}
+class StadiumVenue extends ManagedObject<_StadiumVenue>
+    implements _StadiumVenue {}
 
 @Table(useSnakeCaseName: true, useSnakeCaseColumnName: true)
 class _StadiumVenue {
@@ -711,7 +725,9 @@ class _StadiumVenue {
 
   DateTime? creationDate;
 
-  @Column(nullable: true, )
+  @Column(
+    nullable: true,
+  )
   String? venueLocation;
 
   @Column(nullable: true, name: 'SHORT_DESCRIPTION')
@@ -771,7 +787,9 @@ class _AccessPoint {
   @ResponseKey(name: 'CrEaTiOn_DaTe')
   DateTime? creationDate;
 
-  @Column(nullable: true, )
+  @Column(
+    nullable: true,
+  )
   String? venueLocation;
 
   @Column(nullable: true, name: 'SHORT_DESCRIPTION')

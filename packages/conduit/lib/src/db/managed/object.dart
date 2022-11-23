@@ -70,8 +70,8 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
   late Map<String?, ManagedPropertyDescription?> responseKeyProperties = {
-    for (final entry in properties.entries)
-      if (entry.key != null) mapKeyName(entry.key!): entry.value
+    for (final key in properties.keys)
+      if (key != null) mapKeyName(key): properties[key]
   };
 
   late final bool modelFieldIncludeIfNull = properties.isEmpty ||

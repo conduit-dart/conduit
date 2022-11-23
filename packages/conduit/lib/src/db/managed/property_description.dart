@@ -193,7 +193,6 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
           validators: [],
         );
 
-  // ignore: prefer_constructors_over_static_methods
   static ManagedAttributeDescription make<T>(
     ManagedEntity entity,
     String name,
@@ -207,6 +206,8 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     bool includedInDefaultResultSet = true,
     bool autoincrement = false,
     List<ManagedValidator> validators = const [],
+    ResponseKey? responseKey,
+    ResponseModel? responseModel,
   }) {
     return ManagedAttributeDescription(
       entity,
@@ -222,6 +223,8 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       includedInDefaultResultSet: includedInDefaultResultSet,
       autoincrement: autoincrement,
       validators: validators,
+      responseKey: responseKey,
+      responseModel: responseModel,
     );
   }
 
@@ -412,7 +415,6 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     super.responseKey,
   });
 
-  // ignore: prefer_constructors_over_static_methods
   static ManagedRelationshipDescription make<T>(
     ManagedEntity entity,
     String name,
@@ -426,6 +428,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     bool nullable = false,
     bool includedInDefaultResultSet = true,
     List<ManagedValidator> validators = const [],
+    ResponseKey? responseKey,
+    ResponseModel? responseModel,
   }) {
     return ManagedRelationshipDescription(
       entity,
@@ -441,6 +445,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       nullable: nullable,
       includedInDefaultResultSet: includedInDefaultResultSet,
       validators: validators,
+      responseKey: responseKey,
+      responseModel: responseModel,
     );
   }
 

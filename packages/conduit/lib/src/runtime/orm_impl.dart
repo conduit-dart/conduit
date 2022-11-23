@@ -278,6 +278,12 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     final validatorStr = attribute.isTransient
         ? "[]"
         : "[${await _getValidators(ctx, attribute, importUris: importUris)}]";
+    final rKeyStr = attribute.responseKey != null
+        ? "const ResponseKey(name: ${attribute.responseKey!.name != null ? '"${attribute.responseKey!.name}"' : null}, includeIfNull: ${attribute.responseKey!.includeIfNull})"
+        : null;
+    final rModelStr = attribute.responseModel != null
+        ? 'const ResponseModel(includeIfNullField: ${attribute.responseModel!.includeIfNullField})'
+        : null;
     return """
 ManagedAttributeDescription.make<${attribute.declaredType}>(entity, '${attribute.name}',
     ${_getManagedTypeInstantiator(attribute.type)},
@@ -289,7 +295,9 @@ ManagedAttributeDescription.make<${attribute.declaredType}>(entity, '${attribute
     nullable: ${attribute.isNullable},
     includedInDefaultResultSet: ${attribute.isIncludedInDefaultResultSet},
     autoincrement: ${attribute.autoincrement},
-    validators: $validatorStr.expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList())
+    validators: $validatorStr.expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList(),
+    responseKey: $rKeyStr,
+    responseModel: $rModelStr)
     """;
   }
 
@@ -298,6 +306,12 @@ ManagedAttributeDescription.make<${attribute.declaredType}>(entity, '${attribute
     ManagedRelationshipDescription relationship, {
     required List<Uri> importUris,
   }) async {
+    final rKeyStr = relationship.responseKey != null
+        ? "const ResponseKey(name: ${relationship.responseKey!.name != null ? '"${relationship.responseKey!.name}"' : null}, includeIfNull: ${relationship.responseKey!.includeIfNull})"
+        : null;
+    final rModelStr = relationship.responseModel != null
+        ? 'const ResponseModel(includeIfNullField: ${relationship.responseModel!.includeIfNullField})'
+        : null;
     return """
 ManagedRelationshipDescription.make<${relationship.declaredType}>(
   entity,
@@ -311,7 +325,9 @@ ManagedRelationshipDescription.make<${relationship.declaredType}>(
   indexed: ${relationship.isIndexed},
   nullable: ${relationship.isNullable},
   includedInDefaultResultSet: ${relationship.isIncludedInDefaultResultSet},
-  validators: [${await _getValidators(ctx, relationship, importUris: importUris)}].expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList())
+  validators: [${await _getValidators(ctx, relationship, importUris: importUris)}].expand<ManagedValidator>((i) => i as Iterable<ManagedValidator>).toList(),
+  responseKey: $rKeyStr,
+  responseModel: $rModelStr)
     """;
   }
 
