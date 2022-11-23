@@ -7,12 +7,15 @@ import 'package:conduit/src/runtime/orm/entity_builder.dart';
 import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/validator_builder.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit/src/utilities/text_case.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)
       : relate = firstMetadataOfType(declaration),
         column = firstMetadataOfType(declaration),
+        responseKey = firstMetadataOfType(declaration),
         serialize = _getTransienceForProperty(declaration) {
+    propertyName = _getPropertyName();
     name = _getName();
     type = _getType();
 
@@ -43,6 +46,7 @@ class PropertyBuilder {
   final DeclarationMirror declaration;
   final Relate? relate;
   final Column? column;
+  final ResponseKey? responseKey;
 
   List<ValidatorBuilder>? get validators => _validators;
   Serialize? serialize;
@@ -51,6 +55,7 @@ class PropertyBuilder {
   ManagedRelationshipDescription? relationship;
   List<ManagedValidator> managedValidators = [];
 
+  late String propertyName;
   late String name;
   ManagedType? type;
 
@@ -89,6 +94,7 @@ class PropertyBuilder {
       nullable = column?.isNullable ?? false;
       includeInDefaultResultSet = !(column?.shouldOmitByDefault ?? false);
       autoincrement = column?.autoincrement ?? false;
+      name = column?.name ?? name;
     }
 
     for (final vb in validators!) {
@@ -171,6 +177,8 @@ class PropertyBuilder {
             .where((v) => v != null)
             .cast<ManagedValidator>()
             .toList(),
+        responseModel: parent.responseModel,
+        responseKey: responseKey,
       );
     } else {
       final dartType = getDeclarationType().reflectedType;
@@ -188,6 +196,8 @@ class PropertyBuilder {
         includedInDefaultResultSet: includeInDefaultResultSet,
         autoincrement: autoincrement,
         validators: validators!.map((v) => v.managedValidator).toList(),
+        responseModel: parent.responseModel,
+        responseKey: responseKey,
       );
     }
   }
@@ -243,7 +253,7 @@ class PropertyBuilder {
     }
   }
 
-  String _getName() {
+  String _getPropertyName() {
     if (declaration is MethodMirror) {
       if ((declaration as MethodMirror).isGetter) {
         return MirrorSystem.getName(declaration.simpleName);
@@ -258,6 +268,23 @@ class PropertyBuilder {
     throw ManagedDataModelError(
         "Tried getting property type description from non-property. This is an internal error, "
         "as this method shouldn't be invoked on non-property or non-accessors.");
+  }
+
+  String _getName() {
+    if (column?.name != null) {
+      return column!.name!;
+    }
+
+    final name = _getPropertyName();
+
+    if (serialize != null) {
+      return name;
+    }
+
+    return (column?.useSnakeCaseName ??
+            (parent.metadata ?? const Table()).useSnakeCaseColumnName)
+        ? name.snakeCase
+        : name;
   }
 
   EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder>? builders) {

@@ -1,8 +1,11 @@
+# melos_managed_dependency_overrides: conduit_common_test,fs_test_agent
 dependency_overrides:
   conduit_codable:
     path: ../codable
   conduit_common:
     path: ../common
+  conduit_common_test:
+    path: ../common_test
   conduit_config:
     path: ../config
   conduit_isolate_exec:
@@ -15,3 +18,5 @@ dependency_overrides:
     path: ../runtime
   conduit_test:
     path: ../test_harness
+  fs_test_agent:
+    path: ../fs_test_agent

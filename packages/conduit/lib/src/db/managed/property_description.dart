@@ -23,6 +23,8 @@ abstract class ManagedPropertyDescription {
     bool includedInDefaultResultSet = true,
     this.autoincrement = false,
     List<ManagedValidator?> validators = const [],
+    this.responseModel,
+    this.responseKey,
   })  : isUnique = unique,
         isIndexed = indexed,
         isNullable = nullable,
@@ -85,6 +87,9 @@ abstract class ManagedPropertyDescription {
   List<ManagedValidator?> get validators => _validators;
 
   final List<ManagedValidator?> _validators;
+
+  final ResponseModel? responseModel;
+  final ResponseKey? responseKey;
 
   /// Whether or not a the argument can be assigned to this property.
   bool isAssignableWith(dynamic dartValue) => type!.isAssignableWith(dartValue);
@@ -166,6 +171,8 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     super.includedInDefaultResultSet,
     super.autoincrement,
     super.validators,
+    super.responseModel,
+    super.responseKey,
   }) : isPrimaryKey = primaryKey;
 
   ManagedAttributeDescription.transient(
@@ -173,8 +180,9 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     super.name,
     ManagedType super.type,
     Type super.declaredType,
-    this.transientStatus,
-  )   : isPrimaryKey = false,
+    this.transientStatus, {
+    super.responseKey,
+  })  : isPrimaryKey = false,
         defaultValue = null,
         super(
           unique: false,
@@ -400,6 +408,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     super.nullable,
     super.includedInDefaultResultSet,
     List<ManagedValidator> super.validators = const [],
+    super.responseModel,
+    super.responseKey,
   });
 
   // ignore: prefer_constructors_over_static_methods
