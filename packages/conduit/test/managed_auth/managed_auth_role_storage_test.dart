@@ -353,8 +353,7 @@ Future<List<User>> createUsers(ManagedContext? ctx, int count) async {
 }
 
 class RoleBasedAuthStorage extends ManagedAuthDelegate<User> {
-  RoleBasedAuthStorage(ManagedContext? context, {int tokenLimit = 40})
-      : super(context, tokenLimit: tokenLimit);
+  RoleBasedAuthStorage(super.context, {super.tokenLimit});
 
   @override
   Future<User?> getResourceOwner(AuthServer server, String username) {

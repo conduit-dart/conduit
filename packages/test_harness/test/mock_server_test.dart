@@ -1,6 +1,8 @@
+@Timeout(Duration(seconds: 120))
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit_test/conduit_test.dart';
@@ -9,15 +11,17 @@ import 'package:test/test.dart';
 void main() {
   group("Mock HTTP Tests", () {
     late MockHTTPServer server;
-    final testClient = Agent.onPort(4000);
-
-    setUp(() async {
-      server = MockHTTPServer(4000);
-      await server.open();
+    late Agent testClient;
+    late int rand;
+    setUp(() {
+      rand = Random().nextInt(3000) + 1000;
+      testClient = Agent.onPort(rand);
+      server = MockHTTPServer(rand);
+      return server.open();
     });
 
-    tearDown(() async {
-      await server.close();
+    tearDown(() {
+      return server.close();
     });
 
     test("Request body is captured", () async {
@@ -43,8 +47,10 @@ void main() {
     });
 
     test("Wait for request that will happen in future", () async {
-      final i1 = await Isolate.spawn(spawnFunc, ["/foo", 1], paused: true);
-      final i2 = await Isolate.spawn(spawnFunc, ["/bar", 2], paused: true);
+      final i1 =
+          await Isolate.spawn(spawnFunc(rand), ["/foo", 1], paused: true);
+      final i2 =
+          await Isolate.spawn(spawnFunc(rand), ["/bar", 2], paused: true);
 
       i1.resume(i1.pauseCapability!);
       i2.resume(i2.pauseCapability!);
@@ -201,12 +207,14 @@ void main() {
   });
 }
 
-Future spawnFunc(List pair) async {
-  final path = pair.first as String;
-  final delay = pair.last as int;
-  final testClient = Agent.onPort(4000);
-  sleep(Duration(seconds: delay));
-  await testClient.request(path).get().catchError((_) {});
+Future<Null> Function(List) spawnFunc(int port) {
+  return (List pair) async {
+    final path = pair.first as String;
+    final delay = pair.last as int;
+    final testClient = Agent.onPort(port);
+    sleep(Duration(seconds: delay));
+    await testClient.request(path).get().catchError((_) {});
+  };
 }
 
 Future<TestResponse?> tttt() {

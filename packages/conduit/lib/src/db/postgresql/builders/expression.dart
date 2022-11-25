@@ -1,4 +1,3 @@
-import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/postgresql/builders/column.dart';
 import 'package:conduit/src/db/postgresql/builders/table.dart';
 import 'package:conduit/src/db/query/matcher_internal.dart';
@@ -6,11 +5,11 @@ import 'package:conduit/src/db/query/query.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
   ColumnExpressionBuilder(
-    TableBuilder table,
-    ManagedPropertyDescription? property,
+    TableBuilder super.table,
+    super.property,
     this.expression, {
     this.prefix = "",
-  }) : super(table, property);
+  });
 
   final String? prefix;
   PredicateExpression? expression;

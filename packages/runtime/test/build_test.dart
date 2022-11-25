@@ -13,26 +13,8 @@ need to test for local (relative), in pub cache (absolute)
 void main() {
   final tmp = Directory.current.uri.resolve("../tmp/");
   setUpAll(() async {
-    const String cmd = "dart";
-
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
-    await Process.run(
-      cmd,
-      ["pub", "get", "--offline"],
-      workingDirectory: testPackagesUri
-          .resolve("application/")
-          .toFilePath(windows: Platform.isWindows),
-      runInShell: true,
-    );
-    await Process.run(
-      cmd,
-      ["pub", "get", "--offline"],
-      workingDirectory: testPackagesUri
-          .resolve("dependency/")
-          .toFilePath(windows: Platform.isWindows),
-      runInShell: true,
-    );
 
     final appDir = testPackagesUri.resolve("application/");
     final appLib = appDir.resolve("lib/").resolve("application.dart");

@@ -50,7 +50,7 @@ class Build {
     final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
-      'environment': {'sdk': '>=2.12.0 <3.0.0'},
+      'environment': {'sdk': '>=2.17.0 <3.0.0'},
       'dependency_overrides': {}
     };
     final overrides = pubspecMap['dependency_overrides'] as Map;
@@ -169,7 +169,27 @@ class Build {
     if (!dstDir.existsSync()) {
       dstDir.createSync(recursive: true);
     }
-    await copyPath(srcUri.path, dstUri.path);
+    try {
+      await copyPath(
+        srcUri.toFilePath(windows: Platform.isWindows),
+        dstUri.toFilePath(windows: Platform.isWindows),
+      );
+    } on FileSystemException catch (e) {
+      if (Platform.isWindows) {
+        final File f = File(e.path!);
+        if (f.existsSync()) {
+          f.deleteSync();
+        }
+        File(e.path!).writeAsStringSync('dummy');
+        await copyPath(
+          srcUri.toFilePath(windows: Platform.isWindows),
+          dstUri.toFilePath(windows: Platform.isWindows),
+        );
+      } else {
+        rethrow;
+      }
+    }
+
     return context.getFile(srcUri.resolve("pubspec.yaml")).copy(
           dstUri
               .resolve("pubspec.yaml")

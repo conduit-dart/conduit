@@ -17,7 +17,7 @@ void main() {
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {
-        final q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel.context)
           ..values.createdAt = now
           ..values.name = "$i";
         allObjects.add(await q.insert());
@@ -27,7 +27,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 
@@ -147,7 +147,7 @@ class _TestModel {
 }
 
 class Subclass extends ManagedObjectController<TestModel> {
-  Subclass(ManagedContext context) : super(context);
+  Subclass(super.context);
 
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(

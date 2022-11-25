@@ -10,7 +10,7 @@ void main() async {
   late Agent agent;
 
   setUpAll(() async {
-    server = await getUnusedPort((port) => MockHTTPServer(port));
+    server = await getUnusedPort(MockHTTPServer.new);
     agent = Agent.onPort(server.port);
     await server.open();
   });

@@ -10,6 +10,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:conduit_isolate_exec/src/executable.dart';
+import 'package:path/path.dart';
 
 class SourceGenerator {
   SourceGenerator(
@@ -65,7 +66,8 @@ Future main (List<String> args, Map<String, dynamic> message) async {
   static Future<ClassDeclaration> _getClass(Type type) async {
     final uri =
         await Isolate.resolvePackageUri(reflectClass(type).location!.sourceUri);
-    final path = uri!.toFilePath(windows: Platform.isWindows);
+    final path =
+        absolute(normalize(uri!.toFilePath(windows: Platform.isWindows)));
 
     final context = _createContext(path);
     final session = context.currentSession;

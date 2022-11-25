@@ -1,7 +1,6 @@
 // ignore: unnecessary_const
 // ignore_for_file: avoid_print, avoid_dynamic_calls
 
-@Timeout(Duration(seconds: 120))
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -26,7 +25,7 @@ void main() {
       print("stopped");
     });
 
-    test("Application starts", () async {
+    test("Application starts", () {
       expect(app.supervisors.length, 2);
     });
 
@@ -49,9 +48,8 @@ void main() {
     test("Application handles a bunch of requests", () async {
       final reqs = <Future>[];
       final responses = <http.Response>[];
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 500; i++) {
         final req = http.get(Uri.parse("http://localhost:8888/t"));
-        // ignore: unawaited_futures
         req.then(responses.add);
         reqs.add(req);
       }

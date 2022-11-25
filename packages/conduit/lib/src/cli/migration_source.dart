@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:conduit_runtime/runtime.dart';
 import 'package:crypto/crypto.dart';
 
@@ -12,7 +14,7 @@ class MigrationSource {
     originalName = map["originalName"] as String?;
     source = map["source"] as String?;
     name = map["name"] as String?;
-    uri = map["uri"] as Uri?;
+    uri = map["uri"] as String?;
   }
 
   factory MigrationSource.fromFile(Uri uri) {
@@ -27,7 +29,12 @@ class MigrationSource {
     final klass = migrationTypes.first;
     final source = klass.toSource();
     final offset = klass.name.offset - klass.offset;
-    return MigrationSource(source, uri, offset, offset + klass.name.length);
+    return MigrationSource(
+      source,
+      uri.toFilePath(windows: Platform.isWindows),
+      offset,
+      offset + klass.name.length,
+    );
   }
 
   Map<String, dynamic> asMap() {
@@ -55,7 +62,7 @@ class MigrationSource {
 
   String? name;
 
-  Uri? uri;
+  String? uri;
 
-  int get versionNumber => versionNumberFromUri(uri!);
+  int get versionNumber => versionNumberFromUri(Uri.parse(uri!));
 }

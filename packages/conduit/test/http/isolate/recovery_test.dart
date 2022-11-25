@@ -1,7 +1,6 @@
 // ignore: unnecessary_const
 // ignore_for_file: avoid_print, avoid_dynamic_calls
 
-@Timeout(Duration(seconds: 90))
 import 'dart:async';
 
 import 'package:conduit/conduit.dart';

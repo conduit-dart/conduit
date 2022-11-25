@@ -10,13 +10,19 @@ ignore:
 command:
   version:
     linkToCommits: true
+  bootstrap:
+    usePubspecOverrides: true
 scripts:
   test-unit:
-    run: . ci/.env && melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli"
+    select-pacakge:
+      no-private: true
+  test-unit-scoped:
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
     select-pacakge:
       no-private: true
   test-with-coverage:
-    run: . ci/.env && melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart $MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart $MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
     select-pacakge:
       no-private: true
   analyze: melos exec -- pub global run tuneup check
@@ -28,14 +34,12 @@ scripts:
     run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && cp -R '\$MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && yq -i 'del(.dependency_overrides)' '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION/pubspec.yaml'"
     select-pacakge:
       no-private: true
-  strip-overrides:
-    run: melos exec -- "yq -i 'del(.dependency_overrides)' '\$MELOS_PACKAGE_PATH/pubspec.yaml'"
+  cache-source-win:
+    run: melos exec -- "mkdir %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION && xcopy $MELOS_PACKAGE_PATH %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION && yq -i del(.dependency_overrides) %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION\pubspec.yaml"
     select-pacakge:
       no-private: true
-  apply-overrides:
-    run: melos exec -- "if [ -f '\$MELOS_PACKAGE_PATH/overrides.yaml' ]; then yq -i '. *= load(\"\$MELOS_PACKAGE_PATH/overrides.yaml\")' '\$MELOS_PACKAGE_PATH/pubspec.yaml'; fi"
   hard-clean:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   

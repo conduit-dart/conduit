@@ -1,4 +1,3 @@
-@Timeout(Duration(minutes: 30))
 import 'dart:io';
 
 import 'package:test/test.dart';

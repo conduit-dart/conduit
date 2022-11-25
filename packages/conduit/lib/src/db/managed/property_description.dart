@@ -153,46 +153,30 @@ abstract class ManagedPropertyDescription {
 /// adds two properties to [ManagedPropertyDescription] that are only valid for non-relationship types, [isPrimaryKey] and [defaultValue].
 class ManagedAttributeDescription extends ManagedPropertyDescription {
   ManagedAttributeDescription(
-    ManagedEntity entity,
-    String name,
-    ManagedType type,
-    Type? declaredType, {
+    super.entity,
+    super.name,
+    ManagedType super.type,
+    super.declaredType, {
     this.transientStatus,
     bool primaryKey = false,
     this.defaultValue,
-    bool unique = false,
-    bool indexed = false,
-    bool nullable = false,
-    bool includedInDefaultResultSet = true,
-    bool autoincrement = false,
-    List<ManagedValidator?> validators = const [],
-  })  : isPrimaryKey = primaryKey,
-        super(
-          entity,
-          name,
-          type,
-          declaredType,
-          unique: unique,
-          indexed: indexed,
-          nullable: nullable,
-          includedInDefaultResultSet: includedInDefaultResultSet,
-          autoincrement: autoincrement,
-          validators: validators,
-        );
+    super.unique,
+    super.indexed,
+    super.nullable,
+    super.includedInDefaultResultSet,
+    super.autoincrement,
+    super.validators,
+  }) : isPrimaryKey = primaryKey;
 
   ManagedAttributeDescription.transient(
-    ManagedEntity entity,
-    String name,
-    ManagedType type,
-    Type declaredType,
+    super.entity,
+    super.name,
+    ManagedType super.type,
+    Type super.declaredType,
     this.transientStatus,
   )   : isPrimaryKey = false,
         defaultValue = null,
         super(
-          entity,
-          name,
-          type,
-          declaredType,
           unique: false,
           indexed: false,
           nullable: false,
@@ -403,30 +387,20 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
 /// Contains information for a relationship property of a [ManagedObject].
 class ManagedRelationshipDescription extends ManagedPropertyDescription {
   ManagedRelationshipDescription(
-    ManagedEntity entity,
-    String name,
-    ManagedType? type,
-    Type? declaredType,
+    super.entity,
+    super.name,
+    super.type,
+    super.declaredType,
     this.destinationEntity,
     this.deleteRule,
     this.relationshipType,
     this.inverseKey, {
-    bool unique = false,
-    bool indexed = false,
-    bool nullable = false,
-    bool includedInDefaultResultSet = true,
-    List<ManagedValidator> validators = const [],
-  }) : super(
-          entity,
-          name,
-          type,
-          declaredType,
-          unique: unique,
-          indexed: indexed,
-          nullable: nullable,
-          includedInDefaultResultSet: includedInDefaultResultSet,
-          validators: validators,
-        );
+    super.unique,
+    super.indexed,
+    super.nullable,
+    super.includedInDefaultResultSet,
+    List<ManagedValidator> super.validators = const [],
+  });
 
   // ignore: prefer_constructors_over_static_methods
   static ManagedRelationshipDescription make<T>(

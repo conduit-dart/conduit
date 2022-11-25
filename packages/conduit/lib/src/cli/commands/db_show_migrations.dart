@@ -13,7 +13,7 @@ class CLIDatabaseShowMigrations extends CLICommand
   Future<int> handle() async {
     final files = projectMigrations.map((mig) {
       final versionString = "${mig.versionNumber}".padLeft(8, "0");
-      return " $versionString | ${mig.uri!.pathSegments.last}";
+      return " $versionString | ${Uri.parse(mig.uri!).pathSegments.last}";
     }).join("\n");
 
     print(" Version  | Path");

@@ -19,7 +19,7 @@ class ApplicationServer {
   /// You should not need to invoke this method directly.
   ApplicationServer(this.channelType, this.options, this.identifier) {
     channel = (RuntimeContext.current[channelType] as ChannelRuntime)
-        .instantiateChannel()!
+        .instantiateChannel()
       ..server = this
       ..options = options;
   }
@@ -31,7 +31,7 @@ class ApplicationServer {
   HttpServer? server;
 
   /// The instance of [ApplicationChannel] serving requests.
-  ApplicationChannel? channel;
+  late ApplicationChannel channel;
 
   /// The cached entrypoint of [channel].
   late Controller entryPoint;
@@ -62,13 +62,13 @@ class ApplicationServer {
   Future start({bool shareHttpServer = false}) async {
     logger.fine("ApplicationServer($identifier).start entry");
 
-    await channel!.prepare();
+    await channel.prepare();
 
-    entryPoint = channel!.entryPoint;
+    entryPoint = channel.entryPoint;
     entryPoint.didAddToChannel();
 
     logger.fine("ApplicationServer($identifier).start binding HTTP");
-    final securityContext = channel!.securityContext;
+    final securityContext = channel.securityContext;
     if (securityContext != null) {
       _requiresHTTPS = true;
 
@@ -102,7 +102,7 @@ class ApplicationServer {
       await server!.close(force: true);
     }
     logger.fine("ApplicationServer($identifier).close Closing channel");
-    await channel?.close();
+    await channel.close();
 
     // This is actually closed by channel.messageHub.close, but this shuts up the analyzer.
     hubSink?.close();
@@ -118,7 +118,7 @@ class ApplicationServer {
     logger.fine("ApplicationServer($identifier).didOpen start listening");
     server!.map((baseReq) => Request(baseReq)).listen(entryPoint.receive);
 
-    channel!.willStartReceivingRequests();
+    channel.willStartReceivingRequests();
     logger.info("Server conduit/$identifier started.");
   }
 

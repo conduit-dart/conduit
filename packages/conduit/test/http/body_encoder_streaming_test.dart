@@ -347,15 +347,6 @@ void main() {
       await server.close(force: true);
     });
 
-    /*
-      There is a different set of expectations when running on macOS.
-      On macOS, when the client request is sending data and the server decides to terminate the connection,
-      the client will get a 'EPROTOTYPE' socket error (most of the time). This occurs when the client tries
-      to send data while the socket is in the process of being torn down. Since the server will kill the
-      socket when it realizes too much data is being sent, the client throws an exception and doesn't
-      get back the response.
-     */
-
     test(
         "Entity with known content-type that is too large is rejected, chunked",
         () async {
@@ -381,11 +372,7 @@ void main() {
 
       try {
         final response = await req.close();
-        if (Platform.isMacOS) {
-          fail("Should not complete on macOS, see comment above tests");
-        } else {
-          expect(response.statusCode, 413);
-        }
+        expect(response.statusCode, 413);
       } on SocketException catch (_) {
         if (!Platform.isMacOS) {
           rethrow;
@@ -427,11 +414,7 @@ void main() {
 
       try {
         final response = await req.close();
-        if (Platform.isMacOS) {
-          fail("Should not complete on macOS, see comment above tests");
-        } else {
-          expect(response.statusCode, 413);
-        }
+        expect(response.statusCode, 413);
       } on SocketException {
         if (!Platform.isMacOS) {
           rethrow;

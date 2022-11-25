@@ -285,7 +285,7 @@ abstract class ChannelRuntime {
   Uri get libraryUri;
   IsolateEntryFunction get isolateEntryPoint;
 
-  ApplicationChannel? instantiateChannel();
+  ApplicationChannel instantiateChannel();
 
   Future? runGlobalInitialization(ApplicationOptions config);
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_dynamic_calls
 
+@Timeout(Duration(seconds: 120))
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';

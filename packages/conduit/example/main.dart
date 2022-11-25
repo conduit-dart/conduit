@@ -110,7 +110,7 @@ class UserController extends ResourceController {
 }
 
 class AppConfiguration extends Configuration {
-  AppConfiguration.fromFile(File file) : super.fromFile(file);
+  AppConfiguration.fromFile(super.file) : super.fromFile();
 
   late DatabaseConfiguration database;
 }

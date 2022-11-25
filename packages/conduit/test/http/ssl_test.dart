@@ -46,7 +46,7 @@ void main() {
 Uri getCIDirectoryUri() {
   final env = Platform.environment['CONDUIT_CI_DIR_LOCATION'];
   return env != null
-      ? Uri.parse(env)
+      ? Uri(scheme: 'file', path: env)
       : Directory.current.uri.resolve("../../").resolve("ci/");
 }
 

@@ -17,35 +17,35 @@ import 'package:conduit_runtime/runtime.dart';
 class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   ChannelRuntimeImpl(this.type);
 
-  final ClassMirror? type;
+  final ClassMirror type;
 
   static const _globalStartSymbol = #initializeApplication;
 
   @override
-  String get name => MirrorSystem.getName(type!.simpleName);
+  String get name => MirrorSystem.getName(type.simpleName);
 
   @override
   IsolateEntryFunction get isolateEntryPoint => isolateServerEntryPoint;
 
   @override
-  Uri get libraryUri => (type!.owner! as LibraryMirror).uri;
+  Uri get libraryUri => (type.owner! as LibraryMirror).uri;
 
   bool get hasGlobalInitializationMethod {
-    return type!.staticMembers[_globalStartSymbol] != null;
+    return type.staticMembers[_globalStartSymbol] != null;
   }
 
   @override
-  Type get channelType => type!.reflectedType;
+  Type get channelType => type.reflectedType;
 
   @override
-  ApplicationChannel? instantiateChannel() {
-    return type!.newInstance(Symbol.empty, []).reflectee as ApplicationChannel?;
+  ApplicationChannel instantiateChannel() {
+    return type.newInstance(Symbol.empty, []).reflectee as ApplicationChannel;
   }
 
   @override
   Future? runGlobalInitialization(ApplicationOptions config) {
     if (hasGlobalInitializationMethod) {
-      return type!.invoke(_globalStartSymbol, [config]).reflectee as Future?;
+      return type.invoke(_globalStartSymbol, [config]).reflectee as Future?;
     }
 
     return null;
@@ -56,7 +56,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
     ApplicationChannel channel,
   ) {
     final documenter = reflectType(APIComponentDocumenter);
-    return type!.declarations.values
+    return type.declarations.values
         .whereType<VariableMirror>()
         .where(
           (member) =>
@@ -70,8 +70,8 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
 
   @override
   Future<String> compile(BuildContext ctx) async {
-    final className = MirrorSystem.getName(type!.simpleName);
-    final originalFileUri = type!.location!.sourceUri.toString();
+    final className = MirrorSystem.getName(type.simpleName);
+    final originalFileUri = type.location!.sourceUri.toString();
     final globalInitBody = hasGlobalInitializationMethod
         ? "await $className.initializeApplication(config);"
         : "";
@@ -133,7 +133,7 @@ void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
   final channelSourceLibrary =
       currentMirrorSystem().libraries[params.streamLibraryURI]!;
   final channelType = channelSourceLibrary
-      .declarations[Symbol(params.streamTypeName)] as ClassMirror?;
+      .declarations[Symbol(params.streamTypeName)]! as ClassMirror;
 
   final runtime = ChannelRuntimeImpl(channelType);
 

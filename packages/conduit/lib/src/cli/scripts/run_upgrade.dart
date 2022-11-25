@@ -11,14 +11,13 @@ import 'package:logging/logging.dart';
 import 'package:postgres/postgres.dart';
 
 class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
-  RunUpgradeExecutable(Map<String, dynamic> message)
+  RunUpgradeExecutable(super.message)
       : inputSchema = Schema.fromMap(message["schema"] as Map<String, dynamic>),
         dbInfo = DBInfo.fromMap(message["dbInfo"] as Map<String, dynamic>),
         sources = (message["migrations"] as List<Map>)
             .map((m) => MigrationSource.fromMap(m as Map<String, dynamic>))
             .toList(),
-        currentVersion = message["currentVersion"] as int?,
-        super(message);
+        currentVersion = message["currentVersion"] as int?;
 
   RunUpgradeExecutable.input(
     this.inputSchema,

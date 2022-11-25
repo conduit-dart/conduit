@@ -1,22 +1,14 @@
 import 'dart:io';
 
 import 'package:conduit_runtime/runtime.dart';
-import 'package:path/path.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final absolutePathToAppLib = normalize(
-    absolute(
-      join(
-        Directory.current.uri
-            .resolve("../")
-            .resolve("runtime_test_packages/")
-            .resolve("application/")
-            .resolve("lib/")
-            .toFilePath(windows: Platform.isWindows),
-      ),
-    ),
-  );
+  final absolutePathToAppLib = Directory.current.uri
+      .resolve("../")
+      .resolve("runtime_test_packages/")
+      .resolve("application/")
+      .resolve("lib/");
   late BuildContext ctx;
 
   setUpAll(() async {
@@ -89,7 +81,7 @@ void main() {
     );
     expect(imports, [
       "import 'package:dependency/dependency.dart';",
-      "import 'file:$absolutePathToAppLib/src/file.dart';"
+      "import 'file:${absolutePathToAppLib.resolve('src/file.dart').toFilePath(windows: Platform.isWindows)}';"
     ]);
   });
 
@@ -99,7 +91,7 @@ void main() {
     );
     expect(imports, [
       "import 'package:dependency/dependency.dart';",
-      "import 'file:$absolutePathToAppLib/src/file.dart';"
+      "import 'file:${absolutePathToAppLib.resolve('src/file.dart').toFilePath(windows: Platform.isWindows)}';"
     ]);
   });
 
@@ -107,6 +99,8 @@ void main() {
     final imports = await ctx.getImportDirectives(
       uri: Uri.parse("package:application/src/file.dart"),
     );
-    expect(imports, ["import 'file:$absolutePathToAppLib/application.dart';"]);
+    expect(imports, [
+      "import 'file:${absolutePathToAppLib.resolve('application.dart').toFilePath(windows: Platform.isWindows)}';"
+    ]);
   });
 }

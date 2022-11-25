@@ -1,0 +1,65 @@
+name: Windows
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    if: |
+      startsWith(github.head_ref, 'feature/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        runner_args: [dart test -j1 -t cli test/, melos test-unit, dart tool/generated_test_runner.dart]
+    env:
+      TEST_DIR: packages/conduit
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 15432
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
+      TEST_VALUE: 1
+      TEST_BOOL: true
+      PUB_CACHE: C:\.pub_cache
+    steps:
+    - name: Start PostgreSQL
+      run: |
+        mkdir C:\datadir
+        icacls "C:\datadir" /grant Users:F /T
+        & $env:PGBIN\initdb -U postgres -D C:\datadir
+        & $env:PGBIN\pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D C:\datadir start
+    - name: Create database
+      env:
+        PGUSER: postgres
+        PGPORT: 15432
+      run: |
+        & $env:PGBIN\createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
+        & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
+        & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+    - uses: actions/checkout@v3
+    - name: Make pub cache
+      run: |
+        mkdir C:\.pub_cache
+        icacls "C:\.pub_cache" /grant Users:F /T
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
+    - name: Get Dependencies
+      run: |
+        choco install yq
+        dart pub global activate melos
+        dart pub global run melos:melos cache-source-win
+        dart pub global run melos:melos bootstrap
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+        dart pub get --directory=packages/runtime_test_packages/application --offline
+        dart pub get --directory=packages/runtime_test_packages/dependency --offline
+    - name: Run tests
+      env:
+        CONDUIT_CI_DIR_LOCATION: ${{ github.workspace }}\ci\
+      working-directory: ${{ env.TEST_DIR }}
+      run: ${{ matrix.runner_args }}

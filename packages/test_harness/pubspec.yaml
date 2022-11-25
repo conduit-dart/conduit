@@ -1,13 +1,13 @@
 name: conduit_test
-version: 3.2.8
+version: 3.2.11
 homepage: https://github.com/conduit-dart/conduit
 description: Utilities for writing automated tests for Conduit applications
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 dependencies:
   test: ^1.21.6
   matcher: ^0.12.12
-  conduit: ^3.2.9
+  conduit: ^3.2.12
 dev_dependencies:
   conduit_common_test:
     path: ../common_test

@@ -74,7 +74,7 @@ class DataModelCompiler {
 }
 
 class ManagedDataModelErrorImpl extends ManagedDataModelError {
-  ManagedDataModelErrorImpl(String message) : super(message);
+  ManagedDataModelErrorImpl(super.message);
 
   factory ManagedDataModelErrorImpl.noPrimaryKey(ManagedEntity entity) {
     return ManagedDataModelErrorImpl(

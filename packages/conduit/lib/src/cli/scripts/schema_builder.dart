@@ -7,12 +7,11 @@ import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:logging/logging.dart';
 
 class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
-  SchemaBuilderExecutable(Map<String, dynamic> message)
+  SchemaBuilderExecutable(super.message)
       : inputSchema = Schema.fromMap(message["schema"] as Map<String, dynamic>),
         sources = (message["sources"] as List<Map>)
             .map((m) => MigrationSource.fromMap(m as Map<String, dynamic>))
-            .toList(),
-        super(message);
+            .toList();
 
   SchemaBuilderExecutable.input(this.sources, this.inputSchema)
       : super({

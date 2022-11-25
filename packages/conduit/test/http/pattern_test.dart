@@ -1,8 +1,5 @@
-// ignore_for_file: avoid_catching_errors
-
-import 'package:conduit/src/http/route_node.dart';
-import 'package:conduit/src/http/route_specification.dart';
-import "package:test/test.dart";
+import 'package:conduit/conduit.dart';
+import 'package:test/test.dart';
 
 void main() {
   group("Pattern splitting", () {
@@ -204,6 +201,7 @@ void expectRouterException(void Function() f, {String? exceptionMessage}) {
   try {
     f();
     fail("Expected RouterException");
+    // ignore: avoid_catching_errors
   } on ArgumentError catch (e) {
     if (exceptionMessage != null) {
       expect(e.message, exceptionMessage);

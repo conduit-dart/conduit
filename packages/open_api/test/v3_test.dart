@@ -86,8 +86,10 @@ void main() {
       });
 
       expect(
-        doc.components!.schemas["container"]!.referenceURI!.path,
-        "/components/schemas/string",
+        doc.components!.schemas["container"]!.referenceURI!
+            .toFilePath(windows: Platform.isWindows),
+        Uri.parse("/components/schemas/string")
+            .toFilePath(windows: Platform.isWindows),
       );
 
       doc.components!.schemas["other"] = APISchemaObject()

@@ -85,6 +85,7 @@ class ApplicationIsolateSupervisor {
       logger.severe(
         "Isolate ($identifier) not responding to stop message, terminating.",
       );
+    } finally {
       isolate.kill();
     }
 

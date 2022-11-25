@@ -4,10 +4,10 @@ import 'package:conduit/src/db/postgresql/builders/table.dart';
 
 class ColumnValueBuilder extends ColumnBuilder {
   ColumnValueBuilder(
-    TableBuilder table,
-    ManagedPropertyDescription property,
+    TableBuilder super.table,
+    ManagedPropertyDescription super.property,
     dynamic value,
-  ) : super(table, property) {
+  ) {
     this.value = convertValueForStorage(value);
   }
 

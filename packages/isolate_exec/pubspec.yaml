@@ -1,15 +1,15 @@
 name: conduit_isolate_exec
-version: 3.2.8
+version: 3.2.11
 homepage: https://github.com/conduit-dart/isolate-exec
 description: This library contains types that allow for executing code in a spawned isolate, perhaps with additional imports.
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 dependencies:
   analyzer: ^5.1.0
   glob: ^2.0.0
+  path: ^1.8.0
 dev_dependencies:
   lint: ^1.5.3
-  path: ^1.8.0
   test: ^1.21.6
   test_package:
     path: ../isolate_exec_test_packages/test_package

@@ -17,7 +17,7 @@ void main() {
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {
-        final q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel.context)
           ..values.createdAt = now
           ..values.name = "$i";
         allObjects.add(await q.insert());
@@ -27,7 +27,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 
@@ -100,7 +100,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 
@@ -133,7 +133,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 
@@ -171,7 +171,7 @@ void main() {
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {
-        final q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel.context)
           ..values.createdAt = now
           ..values.name = "${9 - i}";
         allObjects.add(await q.insert());
@@ -181,7 +181,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 
@@ -317,7 +317,7 @@ void main() {
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {
-        final q = Query<TestModel>(app.channel!.context)
+        final q = Query<TestModel>(app.channel.context)
           ..values.createdAt = now
           ..values.name = "${9 - i}";
         allObjects.add(await q.insert());
@@ -327,7 +327,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      await app.channel!.context.close();
+      await app.channel.context.close();
       await app.stop();
     });
 

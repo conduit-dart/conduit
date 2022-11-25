@@ -250,7 +250,7 @@ MigrationSource migrationSourceFromClassDeclaration(ClassDeclaration cu) {
   // uri is temporary
   return MigrationSource(
     code,
-    Uri.parse("1.migration.dart"),
+    "1.migration.dart",
     offset,
     offset + cu.name.length,
   );
@@ -274,7 +274,7 @@ List<MigrationSource> getOrderedTestMigrations(
 
   for (final ms in migrations) {
     final index = names.indexOf(ms.originalName) + 1 + fromVersion;
-    ms.uri = Uri.parse("$index.migration.dart");
+    ms.uri = "$index.migration.dart";
   }
 
   return migrations;

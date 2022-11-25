@@ -17,5 +17,7 @@ export 'resource_controller_bindings.dart';
 export 'resource_controller_interfaces.dart';
 export 'resource_controller_scope.dart';
 export 'response.dart';
+export 'route_node.dart';
+export 'route_specification.dart';
 export 'router.dart';
 export 'serializable.dart';

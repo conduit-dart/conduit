@@ -6,7 +6,7 @@ import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 class GetChannelExecutable extends Executable<String> {
-  GetChannelExecutable(Map<String, dynamic> message) : super(message);
+  GetChannelExecutable(super.message);
 
   @override
   Future<String> execute() async {
