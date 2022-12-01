@@ -192,7 +192,7 @@ void main() {
 class Parent extends Configuration {
   Parent();
 
-  Parent.fromMap(Map m) : super.fromMap(m);
+  Parent.fromMap(super.m) : super.fromMap();
 
   late String id;
 

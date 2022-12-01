@@ -52,7 +52,7 @@ Our application will link two controllers:
 
 Your application starts with a channel object called the _application channel_. You link the controllers in your application to this channel.
 
-![ApplicationChannel entryPoint](../.gitbook/assets/entrypoint.png)
+![ApplicationChannel entryPoint](../assets/entrypoint.png)
 
 Each application has a subclass of `ApplicationChannel` that you override methods in to set up your controllers. This type is already declared in `lib/channel.dart` - open this file and find `ApplicationChannel.entryPoint`:
 
@@ -138,7 +138,7 @@ This will start your application running locally. Reload the browser page `http:
 
 #### Screenshot of Heroes Application
 
-![Conduit Heroes First Run](../.gitbook/assets/run1%20%281%29.png)
+![Conduit Heroes First Run](../assets/run1.png)
 
 You can also see the actual response of your request by entering the following into your shell:
 
@@ -229,7 +229,7 @@ Future<RequestOrResponse> handle(Request request) async {
 
 In your shell currently running the application, hit Ctrl-C to stop the application. Then, run `conduit serve` again. In the browser application, click on a hero and you will be taken to a detail page for that hero.
 
-![Screenshot of Hero Detail Page](../.gitbook/assets/run2.png)
+![Screenshot of Hero Detail Page](../assets/run2.png)
 
 You can verify that your server is responding correctly by executing `curl -X GET http://localhost:8888/heroes/11` to view the single hero object. You can also trigger a 404 Not Found response by getting a hero that doesn't exist.
 

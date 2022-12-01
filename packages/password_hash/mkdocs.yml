@@ -1,0 +1,5 @@
+site_name: conduit_password_hash
+docs_dir: doc/api
+
+nav: 
+  - API: "index.html"

@@ -1,0 +1,5 @@
+site_name: conduit_isolate_exec
+docs_dir: doc/api
+
+nav: 
+  - API: "index.html"

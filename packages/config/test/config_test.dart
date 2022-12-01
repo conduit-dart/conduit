@@ -921,12 +921,11 @@ void main() {
 class TopLevelConfiguration extends Configuration {
   TopLevelConfiguration();
 
-  TopLevelConfiguration.fromString(String contents)
-      : super.fromString(contents);
+  TopLevelConfiguration.fromString(super.contents) : super.fromString();
 
-  TopLevelConfiguration.fromFile(File file) : super.fromFile(file);
+  TopLevelConfiguration.fromFile(super.file) : super.fromFile();
 
-  TopLevelConfiguration.fromMap(Map map) : super.fromMap(map);
+  TopLevelConfiguration.fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -938,13 +937,12 @@ class TopLevelConfiguration extends Configuration {
 class TopLevelConfigurationWithValidation extends Configuration {
   TopLevelConfigurationWithValidation();
 
-  TopLevelConfigurationWithValidation.fromString(String contents)
-      : super.fromString(contents);
+  TopLevelConfigurationWithValidation.fromString(super.contents)
+      : super.fromString();
 
-  TopLevelConfigurationWithValidation.fromFile(File file)
-      : super.fromFile(file);
+  TopLevelConfigurationWithValidation.fromFile(super.file) : super.fromFile();
 
-  TopLevelConfigurationWithValidation.fromMap(Map map) : super.fromMap(map);
+  TopLevelConfigurationWithValidation.fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -968,12 +966,11 @@ class DatabaseConfigurationSubclass extends DatabaseConfiguration {
 class ConfigurationSuperclass extends Configuration {
   ConfigurationSuperclass();
 
-  ConfigurationSuperclass.fromString(String contents)
-      : super.fromString(contents);
+  ConfigurationSuperclass.fromString(super.contents) : super.fromString();
 
-  ConfigurationSuperclass.fromFile(File file) : super.fromFile(file);
+  ConfigurationSuperclass.fromFile(super.file) : super.fromFile();
 
-  ConfigurationSuperclass.fromMap(Map map) : super.fromMap(map);
+  ConfigurationSuperclass.fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -983,12 +980,11 @@ class ConfigurationSuperclass extends Configuration {
 class ConfigurationSubclass extends ConfigurationSuperclass {
   ConfigurationSubclass();
 
-  ConfigurationSubclass.fromString(String contents)
-      : super.fromString(contents);
+  ConfigurationSubclass.fromString(super.contents) : super.fromString();
 
-  ConfigurationSubclass.fromFile(File file) : super.fromFile(file);
+  ConfigurationSubclass.fromFile(super.file) : super.fromFile();
 
-  ConfigurationSubclass.fromMap(Map map) : super.fromMap(map);
+  ConfigurationSubclass.fromMap(super.map) : super.fromMap();
 
   late int extraValue;
 
@@ -998,13 +994,12 @@ class ConfigurationSubclass extends ConfigurationSuperclass {
 class ConfigurationSubclassWithValidation extends ConfigurationSuperclass {
   ConfigurationSubclassWithValidation();
 
-  ConfigurationSubclassWithValidation.fromString(String contents)
-      : super.fromString(contents);
+  ConfigurationSubclassWithValidation.fromString(super.contents)
+      : super.fromString();
 
-  ConfigurationSubclassWithValidation.fromFile(File file)
-      : super.fromFile(file);
+  ConfigurationSubclassWithValidation.fromFile(super.file) : super.fromFile();
 
-  ConfigurationSubclassWithValidation.fromMap(Map map) : super.fromMap(map);
+  ConfigurationSubclassWithValidation.fromMap(super.map) : super.fromMap();
 
   late DatabaseConfigurationSubclassWithValidation database;
 }
@@ -1028,7 +1023,7 @@ class DatabaseConfigurationSubclassWithValidation
 class SpecialInfo extends Configuration {
   SpecialInfo();
 
-  SpecialInfo.fromString(String contents) : super.fromString(contents);
+  SpecialInfo.fromString(super.contents) : super.fromString();
 
   late List<String> strings;
   late List<DatabaseConfiguration> databaseRecords;
@@ -1039,8 +1034,7 @@ class SpecialInfo extends Configuration {
 class OptionalEmbeddedContainer extends Configuration {
   OptionalEmbeddedContainer();
 
-  OptionalEmbeddedContainer.fromString(String contents)
-      : super.fromString(contents);
+  OptionalEmbeddedContainer.fromString(super.contents) : super.fromString();
 
   late int port;
 
@@ -1050,8 +1044,7 @@ class OptionalEmbeddedContainer extends Configuration {
 class EnvironmentConfiguration extends Configuration {
   EnvironmentConfiguration();
 
-  EnvironmentConfiguration.fromString(String contents)
-      : super.fromString(contents);
+  EnvironmentConfiguration.fromString(super.contents) : super.fromString();
 
   late String path;
   late int testValue;
@@ -1063,8 +1056,7 @@ class EnvironmentConfiguration extends Configuration {
 class StaticVariableConfiguration extends Configuration {
   StaticVariableConfiguration();
 
-  StaticVariableConfiguration.fromString(String contents)
-      : super.fromString(contents);
+  StaticVariableConfiguration.fromString(super.contents) : super.fromString();
 
   static late String staticVariable;
 
@@ -1074,8 +1066,7 @@ class StaticVariableConfiguration extends Configuration {
 class PrivateVariableConfiguration extends Configuration {
   PrivateVariableConfiguration();
 
-  PrivateVariableConfiguration.fromString(String contents)
-      : super.fromString(contents);
+  PrivateVariableConfiguration.fromString(super.contents) : super.fromString();
 
   String? _privateVariable;
   late int value;
@@ -1084,21 +1075,21 @@ class PrivateVariableConfiguration extends Configuration {
 class EnvFail extends Configuration {
   EnvFail();
 
-  EnvFail.fromString(String contents) : super.fromString(contents);
+  EnvFail.fromString(super.contents) : super.fromString();
 
   late String value;
 }
 
 class BoolConfig extends Configuration {
   BoolConfig();
-  BoolConfig.fromString(String contents) : super.fromString(contents);
+  BoolConfig.fromString(super.contents) : super.fromString();
 
   late bool value;
 }
 
 class DefaultValConfig extends Configuration {
   DefaultValConfig();
-  DefaultValConfig.fromString(String contents) : super.fromString(contents);
+  DefaultValConfig.fromString(super.contents) : super.fromString();
 
   late String required;
 

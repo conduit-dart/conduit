@@ -1,0 +1,2 @@
+dartdoc:
+  includeExternal: ['../test_harness/lib/conduit_test.dart']

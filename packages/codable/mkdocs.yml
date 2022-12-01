@@ -1,0 +1,5 @@
+site_name: conduit_codable
+docs_dir: doc/api
+
+nav: 
+  - API: "index.html"

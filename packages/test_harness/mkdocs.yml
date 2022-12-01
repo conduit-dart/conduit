@@ -1,0 +1,5 @@
+site_name: conduit_test
+docs_dir: doc/api
+
+nav: 
+  - API: "index.html"

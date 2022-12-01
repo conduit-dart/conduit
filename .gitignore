@@ -30,4 +30,7 @@ stackoverflow
 migration_tmp
 coverage
 
+doc/
+site/
+
 *.reflectable.dart

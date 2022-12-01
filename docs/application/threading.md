@@ -32,13 +32,13 @@ There are a number of variables that factor into the isolate count decision. Fir
 
 While a few milliseconds difference in speed to handle a single request isn't all that meaningful, when you start receiving thousands of requests at a time, these milliseconds add up. When your application is struggling to keep up with executing instructions, it is said to be _CPU-bound_. \(When your application is struggling to transmit data, it is said to be _IO-bound_.\)
 
-A CPU-bound application has two choices: execute less instructions or have more processors \(or cores\) to execute instructions with. Most computers these days have multiple processors. When only using a single isolate, a Conduit application can only use one of those processors at a time. As the number of isolates increases, so too do the number of processors that can be used at a time.
+A CPU-bound application has two choices: execute fewer instructions or have more processors \(or cores\) to execute instructions with. Most computers these days have multiple processors. When only using a single isolate, a Conduit application can only use one of those processors at a time. As the number of isolates increases, so too do the number of processors that can be used at a time.
 
 Thus, more isolates means more processors means more instructions and your application bound less by the CPU. However, there is a limit - creating 100 isolates when there are only two processors doesn't yield any greater performance, because 50 isolates will fight over a single processor. In fact, the amount of work to schedule these instructions and the amount of memory this many isolates will consume will hurt performance.
 
 For example, when running benchmarks with [wrk](https://github.com/wg/wrk) on my four-core machine, I get significantly better results as I add isolates 1 through 4, but then I get marginal gains and finally less or equal performance as I increase the number of isolates past 4. The blue bar represents the number of requests per second for each isolate count when making a simple HTTP call to Conduit.
 
-![Requests Per Second](../.gitbook/assets/req_per_sec%20%281%29.png)
+![Requests Per Second](../assets//req_per_sec.png)
 
 \(Note that benchmarks are a good way of measuring relative performance of an application and identifying bottlenecks, but real world usability performance across a network is the only measurement that matters. The absolute value of these benchmarks should not be taken seriously, as they entirely remove the network portion of the transmission.\)
 
@@ -46,7 +46,7 @@ But this isn't the whole story. Server applications are rarely CPU-bound, but in
 
 Recall that each isolate has its own database connection. A database connection is a serial queue - it can only handle one query at a time. Increasing the number of database connections means handling more queries at a time. This is no more apparent than when looking at the following graph, which measures the latency of requests with and without a database call.
 
-![Average Latency](../.gitbook/assets/latency%20%281%29.png)
+![Average Latency](../assets//latency.png)
 
 When there is only one database connection \(one isolate\), the latency is significantly higher per request - the application is entirely bound by the speed of the database serial queue. Adding a second isolate, and therefore a second database connection, drops the latency by more than half.
 

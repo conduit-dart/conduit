@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:conduit_config/src/configuration.dart';
 
 /// A [Configuration] to represent a database connection configuration.
@@ -7,12 +5,11 @@ class DatabaseConfiguration extends Configuration {
   /// Default constructor.
   DatabaseConfiguration();
 
-  DatabaseConfiguration.fromFile(File file) : super.fromFile(file);
+  DatabaseConfiguration.fromFile(super.file) : super.fromFile();
 
-  DatabaseConfiguration.fromString(String yaml) : super.fromString(yaml);
+  DatabaseConfiguration.fromString(super.yaml) : super.fromString();
 
-  DatabaseConfiguration.fromMap(Map<dynamic, dynamic> yaml)
-      : super.fromMap(yaml);
+  DatabaseConfiguration.fromMap(super.yaml) : super.fromMap();
 
   /// A named constructor that contains all of the properties of this instance.
   DatabaseConfiguration.withConnectionInfo(
@@ -98,11 +95,11 @@ class DatabaseConfiguration extends Configuration {
 class APIConfiguration extends Configuration {
   APIConfiguration();
 
-  APIConfiguration.fromFile(File file) : super.fromFile(file);
+  APIConfiguration.fromFile(super.file) : super.fromFile();
 
-  APIConfiguration.fromString(String yaml) : super.fromString(yaml);
+  APIConfiguration.fromString(super.yaml) : super.fromString();
 
-  APIConfiguration.fromMap(Map<dynamic, dynamic> yaml) : super.fromMap(yaml);
+  APIConfiguration.fromMap(super.yaml) : super.fromMap();
 
   /// The base URL of the described API.
   ///

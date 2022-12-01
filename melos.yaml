@@ -14,11 +14,11 @@ command:
     usePubspecOverrides: true
 scripts:
   test-unit:
-    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli"
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli"
     select-pacakge:
       no-private: true
   test-unit-scoped:
-    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1 -x cli test/*" #TODO: file a bug report with dart:mirrors
     select-pacakge:
       no-private: true
   test-with-coverage:
@@ -40,6 +40,11 @@ scripts:
       no-private: true
   hard-clean:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
+  gen-docs:
+    run: |
+      yq -i 'with(.nav[] | select(has("API")); . = {"API": []})' $MELOS_ROOT_PATH/mkdocs.yml && melos exec --ignore "*common*" -- "dart doc && CONF=\$(echo \$MELOS_PACKAGE_PATH/mkdocs.yml | sed -e 's#^$MELOS_ROOT_PATH#!include .#') yq -i 'with(.nav[] | select(has(\"API\")); .[] += {\"\$MELOS_PACKAGE_NAME\" : strenv(CONF)})' $MELOS_ROOT_PATH/mkdocs.yml" \
+    select-pacakge:
+      no-private: true
 environment:
   sdk: ">=2.17.0 <3.0.0"
   

@@ -157,7 +157,6 @@ class CLIServer extends CLICommand with CLIProject {
     );
 
     errorPort!.listen((msg) {
-      print(msg);
       if (msg is List) {
         startupCompleter.completeError(
           msg.first as Object,
