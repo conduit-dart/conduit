@@ -1,5 +1,6 @@
 import 'package:conduit/src/db/managed/managed.dart';
 import 'package:conduit/src/db/query/query.dart';
+import 'package:meta/meta_meta.dart';
 
 /// Annotation to configure the table definition of a [ManagedObject].
 ///
@@ -23,7 +24,12 @@ class Table {
   /// the name of the underlying table matches the name of the table definition class.
   ///
   /// See also [Table.unique] for the behavior of [uniquePropertySet].
-  const Table({this.name, this.uniquePropertySet});
+  const Table({
+    this.useSnakeCaseName = false,
+    this.name,
+    this.uniquePropertySet,
+    this.useSnakeCaseColumnName = false,
+  });
 
   /// Configures each instance of a table definition to be unique for the combination of [properties].
   ///
@@ -39,10 +45,21 @@ class Table {
   /// null if not set.
   final List<Symbol>? uniquePropertySet;
 
+  /// Useful to indicate using new snake_case naming convention if [name] is not set
+  /// This property defaults to false to avoid breaking change ensuring backward compatibility
+  final bool useSnakeCaseName;
+
   /// The name of the underlying database table.
   ///
-  /// If this value is not set, the name defaults to the name of the table definition class.
+  /// If this value is not set, the name defaults to the name of the table definition class using snake_case naming convention without the prefix '_' underscore.
   final String? name;
+
+  /// Useful to indicate using new snake_case naming convention for columns.
+  /// This property defaults to false to avoid breaking change ensuring backward compatibility
+  ///
+  /// If a column is annotated with `@Column()` with a non-`null` value for
+  /// `name` or `useSnakeCaseName`, that value takes precedent.
+  final bool useSnakeCaseColumnName;
 }
 
 /// Possible values for a delete rule in a [Relate].
@@ -132,6 +149,8 @@ class Column {
     bool omitByDefault = false,
     this.autoincrement = false,
     this.validators = const [],
+    this.useSnakeCaseName,
+    this.name,
   })  : isPrimaryKey = primaryKey,
         isNullable = nullable,
         isUnique = unique,
@@ -196,6 +215,57 @@ class Column {
   /// When the data model is compiled, this list is combined with any `Validate` annotations on the annotated property.
   ///
   final List<Validate> validators;
+
+  /// Useful to indicate using new snake_case naming convention if [name] is not set
+  ///
+  /// This property defaults to null to delegate to [Table.useSnakeCaseColumnName]
+  /// The default value, `null`, indicates that the behavior should be
+  /// acquired from the [Table.useSnakeCaseColumnName] annotation on the
+  /// enclosing class.
+  final bool? useSnakeCaseName;
+
+  /// The name of the underlying column in table.
+  ///
+  /// If this value is not set, the name defaults to the name of the model attribute using snake_case naming convention.
+  final String? name;
+}
+
+/// An annotation used to specify how a Model is serialized in API responses.
+@Target({TargetKind.classType})
+class ResponseModel {
+  const ResponseModel({this.includeIfNullField = true});
+
+  /// Whether the serializer should include fields with `null` values in the
+  /// serialized Model output.
+  ///
+  /// If `true` (the default), all fields in the Model are written to JSON, even if they are
+  /// `null`.
+  ///
+  /// If a field is annotated with `@ResponseKey()` with a non-`null` value for
+  /// `includeIfNull`, that value takes precedent.
+  final bool includeIfNullField;
+}
+
+/// An annotation used to specify how a field is serialized in API responses.
+@Target({TargetKind.field, TargetKind.getter, TargetKind.setter})
+class ResponseKey {
+  const ResponseKey({this.name, this.includeIfNull});
+
+  /// The name to be used when serializing this field.
+  ///
+  /// If this value is not set, the name defaults to [Column.name].
+  final String? name;
+
+  /// Whether the serializer should include the field with `null` value in the
+  /// serialized output.
+  ///
+  /// If `true`, the serializer should include the field in the serialized
+  /// output, even if the value is `null`.
+  ///
+  /// The default value, `null`, indicates that the behavior should be
+  /// acquired from the [ResponseModel.includeIfNullField] annotation on the
+  /// enclosing class.
+  final bool? includeIfNull;
 }
 
 /// Annotation for [ManagedObject] properties that allows them to participate in [ManagedObject.asMap] and/or [ManagedObject.readFromMap].

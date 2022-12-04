@@ -1,3 +1,9 @@
+## 4.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: Column naming snake-case ([#153](https://github.com/conduit-dart/conduit/issues/153)). ([61e6ae77](https://github.com/conduit-dart/conduit/commit/61e6ae770e646db07fc8963d5fd9f599ab0cce5f))
+
 ## 3.2.11
 
  - **FIX**: Handle private class in isolate ([#152](https://github.com/conduit-dart/conduit/issues/152)). ([28b87457](https://github.com/conduit-dart/conduit/commit/28b87457498242e353301ebbde00c858dd265482))

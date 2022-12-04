@@ -8,15 +8,19 @@ import 'package:conduit/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit/src/runtime/orm/property_builder.dart';
 import 'package:conduit/src/runtime/orm_impl.dart';
 import 'package:conduit/src/utilities/mirror_helpers.dart';
+import 'package:conduit/src/utilities/text_case.dart';
 import 'package:logging/logging.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
       : instanceType = reflectClass(type),
         tableDefinitionType = getTableDefinitionForType(type),
-        metadata = firstMetadataOfType(getTableDefinitionForType(type)) {
-    name = _getName();
-
+        metadata = firstMetadataOfType(
+          getTableDefinitionForType(type),
+        ),
+        responseModel = firstMetadataOfType(
+          getTableDefinitionForType(type),
+        ) {
     entity = ManagedEntity(
       name,
       type,
@@ -38,10 +42,11 @@ class EntityBuilder {
   final ClassMirror instanceType;
   final ClassMirror tableDefinitionType;
   final Table? metadata;
+  final ResponseModel? responseModel;
 
   ManagedEntityRuntime? runtime;
 
-  String? name;
+  late final String name = _getName();
   late ManagedEntity entity;
   List<String>? uniquePropertySet;
   late PropertyBuilder primaryKeyProperty;
@@ -140,6 +145,9 @@ class EntityBuilder {
       entity.symbolMap[Symbol(p.name)] = p.name;
       entity.symbolMap[Symbol("${p.name}=")] = p.name;
 
+      entity.symbolMap[Symbol(p.propertyName)] = p.name;
+      entity.symbolMap[Symbol("${p.propertyName}=")] = p.name;
+
       if (p.isRelationship) {
         relationships[p.name] = p.relationship;
       } else {
@@ -194,22 +202,30 @@ class EntityBuilder {
         " ${candidates.map((p) => p.name).join(", ")}");
   }
 
-  String? _getName() {
+  String _getName() {
     if (metadata?.name != null) {
-      return metadata!.name;
+      return metadata!.name!;
     }
 
-    final declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
-        .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
+    String mirrorName() {
+      final declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
+          .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
 
-    if (declaredTableNameClass == null) {
-      return tableDefinitionTypeName;
+      if (declaredTableNameClass == null) {
+        return tableDefinitionTypeName;
+      }
+
+      Logger("conduit").warning(
+        "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.",
+      );
+      return declaredTableNameClass.invoke(#tableName, []).reflectee
+              as String? ??
+          tableDefinitionTypeName;
     }
 
-    Logger("conduit").warning(
-      "Overriding ManagedObject.tableName is deprecated. Use '@Table(name: ...)' instead.",
-    );
-    return declaredTableNameClass.invoke(#tableName, []).reflectee as String?;
+    final name = mirrorName();
+
+    return (metadata ?? const Table()).useSnakeCaseName ? name.snakeCase : name;
   }
 
   List<PropertyBuilder> _getProperties() {

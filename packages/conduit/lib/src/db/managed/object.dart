@@ -65,6 +65,23 @@ abstract class ManagedBacking {
 ///
 /// See more documentation on defining a data model at http://conduit.io/docs/db/modeling_data/
 abstract class ManagedObject<T> extends Serializable {
+  /// IMPROVEMENT: Cache of entity.properties to reduce property loading time
+  late Map<String?, ManagedPropertyDescription?> properties = entity.properties;
+
+  /// Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
+  late Map<String?, ManagedPropertyDescription?> responseKeyProperties = {
+    for (final key in properties.keys)
+      if (key != null) mapKeyName(key): properties[key]
+  };
+
+  late final bool modelFieldIncludeIfNull = properties.isEmpty ||
+      (properties.values.first?.responseModel?.includeIfNullField ?? true);
+
+  String mapKeyName(String propertyName) {
+    final property = properties[propertyName];
+    return property?.responseKey?.name ?? property?.name ?? propertyName;
+  }
+
   static bool get shouldAutomaticallyDocument => false;
 
   /// The [ManagedEntity] this instance is described by.
@@ -82,7 +99,7 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Retrieves a value by property name from [backing].
   dynamic operator [](String? propertyName) {
-    final prop = entity.properties[propertyName];
+    final prop = properties[propertyName];
     if (prop == null) {
       throw ArgumentError("Invalid property access for '${entity.name}'. "
           "Property '$propertyName' does not exist on '${entity.name}'.");
@@ -93,7 +110,7 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Sets a value by property name in [backing].
   void operator []=(String? propertyName, dynamic value) {
-    final prop = entity.properties[propertyName];
+    final prop = properties[propertyName];
     if (prop == null) {
       throw ArgumentError("Invalid property access for '${entity.name}'. "
           "Property '$propertyName' does not exist on '${entity.name}'.");
@@ -203,7 +220,7 @@ abstract class ManagedObject<T> extends Serializable {
   @override
   void readFromMap(Map<String, dynamic> object) {
     object.forEach((key, v) {
-      final property = entity.properties[key];
+      final property = responseKeyProperties[key];
       if (property == null) {
         throw ValidationException(["invalid input key '$key'"]);
       }
@@ -228,7 +245,8 @@ abstract class ManagedObject<T> extends Serializable {
             throw ValidationException(["invalid input type for key '$key'"]);
           }
 
-          entity.runtime!.setTransientValueForKey(this, key, decodedValue);
+          entity.runtime!
+              .setTransientValueForKey(this, property.name, decodedValue);
         }
       } else {
         backing.setValueForProperty(
@@ -254,7 +272,12 @@ abstract class ManagedObject<T> extends Serializable {
 
     backing.contents!.forEach((k, v) {
       if (!_isPropertyPrivate(k!)) {
-        outputMap[k] = entity.properties[k]!.convertToPrimitiveValue(v);
+        final property = properties[k];
+        final value = property!.convertToPrimitiveValue(v);
+        if (value == null && !_includeIfNull(property)) {
+          return;
+        }
+        outputMap[mapKeyName(k)] = value;
       }
     });
 
@@ -263,7 +286,7 @@ abstract class ManagedObject<T> extends Serializable {
         .forEach((attr) {
       final value = entity.runtime!.getTransientValueForKey(this, attr!.name);
       if (value != null) {
-        outputMap[attr.name] = value;
+        outputMap[mapKeyName(attr.responseKey?.name ?? attr.name)] = value;
       }
     });
 
@@ -276,4 +299,7 @@ abstract class ManagedObject<T> extends Serializable {
 
   static bool _isPropertyPrivate(String propertyName) =>
       propertyName.startsWith("_");
+
+  bool _includeIfNull(ManagedPropertyDescription property) =>
+      property.responseKey?.includeIfNull ?? modelFieldIncludeIfNull;
 }

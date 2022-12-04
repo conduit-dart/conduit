@@ -2,6 +2,7 @@
 
 import 'package:conduit/conduit.dart';
 import 'package:conduit/src/dev/helpers.dart';
+import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -532,6 +533,270 @@ void main() {
       expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
     });
   });
+
+  group("@Table(...) and @Column(...) basic naming", () {
+    late SchemaTable tableSchema;
+
+    setUpAll(() {
+      tableSchema =
+          Schema.fromDataModel(ManagedDataModel([Ticket])).tables.first;
+    });
+
+    test("Table default 'legacy' naming", () {
+      expect(tableSchema.name, '_Ticket');
+    });
+
+    test("Column default 'legacy' naming", () {
+      expect(tableSchema.columnForName('venuelocation'), isNotNull);
+    });
+
+    test("Column custom naming", () {
+      expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
+    });
+
+    test("Column snake_case naming", () {
+      expect(tableSchema.columnForName('extra_description'), isNotNull);
+    });
+  });
+
+  group("@Table(...) and @Column(...) interaction naming", () {
+    late SchemaTable tableSchema;
+
+    setUpAll(() {
+      tableSchema =
+          Schema.fromDataModel(ManagedDataModel([StadiumVenue])).tables.first;
+    });
+
+    test("Table snake_case naming", () {
+      expect(tableSchema.name, 'stadium_venue');
+    });
+
+    test("Column snake_case naming from @Table() annotation", () {
+      expect(tableSchema.columnForName('venue_location'), isNotNull);
+    });
+
+    test("Column custom naming, overrides @Table() column naming annotation",
+        () {
+      expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
+    });
+
+    test(
+        "Column legacy naming overriding snake case naming from @Table() annotation",
+        () {
+      expect(tableSchema.columnForName('extradescription'), isNotNull);
+    });
+  });
+
+  group("ResponseKey tests", () {
+    late ManagedDataModel dm;
+    late ManagedContext context;
+    final inputMap = {
+      'id': 1,
+      'CrEaTiOn_DaTe': "2021-11-10T00:02:37.472299Z",
+    };
+    late final Map<String, dynamic> outputMap;
+
+    setUpAll(() {
+      dm = ManagedDataModel([Event]);
+      context = ManagedContext(dm, DefaultPersistentStore());
+      final ap = Event();
+      ap.readFromMap(inputMap);
+      outputMap = ap.asMap();
+    });
+
+    tearDownAll(() async {
+      await context.close();
+    });
+
+    test("ResponseKey don't include if null", () {
+      expect(outputMap.containsKey('info'), false);
+    });
+
+    test("ResponseKey include if null (default)", () {
+      expect(outputMap.containsKey('description'), false);
+    });
+
+    test("ResponseKey custom naming", () {
+      expect(outputMap['CrEaTiOn_DaTe'], isNotNull);
+    });
+
+    test("ResponseKey transient field custom naming", () {
+      expect(outputMap['extra_info'], isNotNull);
+    });
+  });
+
+  group("ResponseModel, ResponseKey, Table and Column all mixed", () {
+    late ManagedDataModel dm;
+    late ManagedEntity e;
+    late ManagedContext context;
+    late Schema schema;
+    late SchemaTable tableSchema;
+    final inputMap = {
+      'id': 1,
+      'venue_location': "Theater",
+      'info': null,
+      'CrEaTiOn_DaTe': null,
+      'SHORT_DESCRIPTION': null,
+      'extraDescription': null,
+    };
+    late final Map<String, dynamic> outputMap;
+
+    setUpAll(() {
+      dm = ManagedDataModel([AccessPoint]);
+      schema = Schema.fromDataModel(dm);
+      context = ManagedContext(dm, DefaultPersistentStore());
+      e = dm.entityForType(AccessPoint);
+      tableSchema = schema.tables.first;
+      final ap = AccessPoint();
+      ap.readFromMap(inputMap);
+      outputMap = ap.asMap();
+    });
+
+    tearDownAll(() async {
+      await context.close();
+    });
+
+    test("Table snake_case naming", () {
+      expect(e.tableName, 'access_point');
+      expect(e.tableDefinition, '_AccessPoint');
+      expect(tableSchema.name, 'access_point');
+    });
+
+    test("Column snake_case naming from @Table() annotation", () {
+      expect(e.properties['venue_location'], isNotNull);
+      expect(tableSchema.columnForName('venue_location'), isNotNull);
+    });
+
+    test("Column custom naming from @Column() annotation", () {
+      expect(e.properties['SHORT_DESCRIPTION'], isNotNull);
+      expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
+    });
+
+    test(
+        "Column legacy naming by @Column() annotation overriding useSnakeCaseName",
+        () {
+      expect(e.properties['extraDescription'], isNotNull);
+      expect(tableSchema.columnForName('extradescription'), isNotNull);
+    });
+
+    test(
+        "ResponseModel includeIfNullField with ResponseKey includeIfNull override",
+        () {
+      expect(outputMap['venue_location'], isNotNull);
+      expect(outputMap.containsKey('info'), true);
+      expect(outputMap.containsKey('extra_info'), true);
+      expect(
+          outputMap,
+          partial({
+            'CrEaTiOn_DaTe': isNotPresent,
+            'SHORT_DESCRIPTION': isNotPresent,
+            'extraDescription': isNotPresent
+          }));
+    });
+  });
+}
+
+class Ticket extends ManagedObject<_Ticket> implements _Ticket {}
+
+@Table()
+class _Ticket {
+  @primaryKey
+  int? id;
+
+  @Column(
+    nullable: true,
+  )
+  String? venueLocation;
+
+  @Column(nullable: true, name: 'SHORT_DESCRIPTION')
+  String? shortDescription;
+
+  @Column(nullable: true, useSnakeCaseName: true)
+  String? extraDescription;
+}
+
+class StadiumVenue extends ManagedObject<_StadiumVenue>
+    implements _StadiumVenue {}
+
+@Table(useSnakeCaseName: true, useSnakeCaseColumnName: true)
+class _StadiumVenue {
+  @primaryKey
+  int? id;
+
+  DateTime? creationDate;
+
+  @Column(
+    nullable: true,
+  )
+  String? venueLocation;
+
+  @Column(nullable: true, name: 'SHORT_DESCRIPTION')
+  String? shortDescription;
+
+  @Column(nullable: true, useSnakeCaseName: false)
+  String? extraDescription;
+}
+
+class Event extends ManagedObject<_Event> implements _Event {
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  String? get extraInfo => '$info Some extra info';
+
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  set extraInfo(String? extra) => info = '$info $extra';
+}
+
+@Table()
+class _Event {
+  @primaryKey
+  int? id;
+
+  @ResponseKey(includeIfNull: false)
+  @Column(nullable: true)
+  String? info;
+
+  @ResponseKey(includeIfNull: true)
+  @Column(nullable: true)
+  String? description;
+
+  @ResponseKey(name: 'CrEaTiOn_DaTe', includeIfNull: false)
+  DateTime? creationDate;
+}
+
+class AccessPoint extends ManagedObject<_AccessPoint> implements _AccessPoint {
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  String? get extraInfo => '$info Some extra info';
+
+  @Serialize()
+  @ResponseKey(name: 'extra_info')
+  set extraInfo(String? extra) => info = '$info $extra';
+}
+
+@ResponseModel(includeIfNullField: false)
+@Table(useSnakeCaseName: true, useSnakeCaseColumnName: true)
+class _AccessPoint {
+  @primaryKey
+  int? id;
+
+  @ResponseKey(includeIfNull: true)
+  @Column(nullable: true)
+  String? info;
+
+  @ResponseKey(name: 'CrEaTiOn_DaTe')
+  DateTime? creationDate;
+
+  @Column(
+    nullable: true,
+  )
+  String? venueLocation;
+
+  @Column(nullable: true, name: 'SHORT_DESCRIPTION')
+  String? shortDescription;
+
+  @Column(nullable: true, useSnakeCaseName: false)
+  String? extraDescription;
 }
 
 class User extends ManagedObject<_User> implements _User {

@@ -1,3 +1,4 @@
+# melos_managed_dependency_overrides: conduit_common_test
 dependency_overrides:
   conduit:
     path: ../conduit
@@ -5,6 +6,8 @@ dependency_overrides:
     path: ../codable
   conduit_common:
     path: ../common
+  conduit_common_test:
+    path: ../common_test
   conduit_config:
     path: ../config
   conduit_isolate_exec:
