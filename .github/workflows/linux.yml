@@ -5,6 +5,10 @@ on:
     branches: [master]
   workflow_dispatch:
 
+concurrency:
+  group: "linux-test"
+  cancel-in-progress: true
+
 jobs:
   linux:
     if: |
