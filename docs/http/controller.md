@@ -8,7 +8,7 @@ A controller is the basic building block of a Conduit application. A controller 
 
 Controllers are linked together to compose their behaviors into a _channel_. A channel handles a request by performing each of its controllers' behavior in order. For example, a channel might verify the credentials of a request and then return a list of city names by composing two controllers that take each of these actions.
 
-![Conduit Channel](../assets//simple_controller_diagram.png)
+![Conduit Channel](../assets/simple_controller_diagram.png)
 
 You subclass controllers to provide their request handling logic, and there are common controller subclasses in Conduit for your use.
 

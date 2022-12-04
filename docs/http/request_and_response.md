@@ -78,11 +78,11 @@ final response = Response.ok(map)
 
 Body objects are encoded according to their content-type. In the above, `map` is first encoded as a JSON string and then to a list of UTF8 bytes.
 
-![Map Encoding](../assets//object_body_flow.png)
+![Map Encoding](../assets/object_body_flow.png)
 
 A `ContentType` is made up of three components: a primary type, a subtype and an optional character set.
 
-![Content Type Components](../assets//content_type_components.png)
+![Content Type Components](../assets/content_type_components.png)
 
 The primary and subtype determine the first conversion step and the charset determines the next. Each step is performed by an instance of `Codec` \(from `dart:convert`\). For example, the content type `application/json` selects `JsonCodec`, while charset `utf-8` selects `Utf8Codec`. These two codecs are run in succession to convert the `Map` to a list of bytes. The codec is selected by your application's `CodecRegistry`; this is covered in later section.
 
@@ -206,7 +206,7 @@ final response = Response.ok(people);
 
 The flow of a body object is shown in the following diagram. Each orange item is an allowed body object type and shows the steps it will go through when being encoded to the HTTP response body. For example, a `Serializable` goes through three steps, whereas a `List<int>` goes through zero steps and is added as-is to the HTTP response.
 
-![Response Body Object Flow](../assets//response_flow.png)
+![Response Body Object Flow](../assets/response_flow.png)
 
 ### Reading Serializable Objects from Request Bodies
 

@@ -691,7 +691,7 @@ void main() {
             'CrEaTiOn_DaTe': isNotPresent,
             'SHORT_DESCRIPTION': isNotPresent,
             'extraDescription': isNotPresent
-          }));
+          }),);
     });
   });
 }

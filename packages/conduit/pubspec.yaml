@@ -31,7 +31,7 @@ dev_dependencies:
   fs_test_agent:
     path: ../fs_test_agent
   http: ^0.13.0
-  lint: ^1.5.3
+  lint: ^2.0.0
   lints: ^2.0.1
   matcher: ^0.12.12
   mockito: ^5.3.2

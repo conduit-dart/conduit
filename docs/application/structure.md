@@ -8,7 +8,7 @@ The building blocks of a Conduit application are [Controllers](../http/controlle
 
 For example, consider an `Authorizer` controller that verifies the request's authorization credentials are correct, and a `SecretController` that sends a response with secret information. By composing these two controllers together, we have a channel that verifies credentials before sending a secret. The benefit of controllers and channels is that controllers can be reused in multiple channels; the `Authorizer` can protect other types of controllers without any change to its logic.
 
-![Simple Controller Diagram](../assets//simple_controller_diagram.png)
+![Simple Controller Diagram](../assets/simple_controller_diagram.png)
 
 The last controller in a channel must always respond to a request. These types of controllers are called _endpoint controllers_ and implement the business logic for your application's endpoints. For example, an endpoint controller might fetch a list of books from a database and send them in a response.
 
@@ -24,7 +24,7 @@ Most endpoint controllers are created by subclassing [ResourceController](../htt
 
 Each application designates one controller as the _entry point_ of the application. This controller is the first to receive a new request and is the head of the application's channel. In most applications, the entry point is a [Router](../http/routing.md); this controller allows multiple channels to be linked, effectively splitting the channel into sub-channels.
 
-![Structure](../assets//structure.png)
+![Structure](../assets/structure.png)
 
 The diagram above looks like this in code:
 

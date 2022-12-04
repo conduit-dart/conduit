@@ -38,7 +38,7 @@ Thus, more isolates means more processors means more instructions and your appli
 
 For example, when running benchmarks with [wrk](https://github.com/wg/wrk) on my four-core machine, I get significantly better results as I add isolates 1 through 4, but then I get marginal gains and finally less or equal performance as I increase the number of isolates past 4. The blue bar represents the number of requests per second for each isolate count when making a simple HTTP call to Conduit.
 
-![Requests Per Second](../assets//req_per_sec.png)
+![Requests Per Second](../assets/req_per_sec.png)
 
 \(Note that benchmarks are a good way of measuring relative performance of an application and identifying bottlenecks, but real world usability performance across a network is the only measurement that matters. The absolute value of these benchmarks should not be taken seriously, as they entirely remove the network portion of the transmission.\)
 
@@ -46,7 +46,7 @@ But this isn't the whole story. Server applications are rarely CPU-bound, but in
 
 Recall that each isolate has its own database connection. A database connection is a serial queue - it can only handle one query at a time. Increasing the number of database connections means handling more queries at a time. This is no more apparent than when looking at the following graph, which measures the latency of requests with and without a database call.
 
-![Average Latency](../assets//latency.png)
+![Average Latency](../assets/latency.png)
 
 When there is only one database connection \(one isolate\), the latency is significantly higher per request - the application is entirely bound by the speed of the database serial queue. Adding a second isolate, and therefore a second database connection, drops the latency by more than half.
 

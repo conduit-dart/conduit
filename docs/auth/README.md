@@ -8,7 +8,7 @@ An `AuthServer` service object is injected into `Authorizer` controllers that pr
 
 The `conduit auth` command-line tool manages configuration - such as client identifier management - for live applications.
 
-![Authorization Objects](../assets//authobjects.png)
+![Authorization Objects](../assets/authobjects.png)
 
 ## Guides
 

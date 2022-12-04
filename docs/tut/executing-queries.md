@@ -264,7 +264,7 @@ In the browser application, the dashboard has a text field for searching heroes.
 GET /heroes?name=abc
 ```
 
-![Conduit Tutorial Run 4](../assets//run4.png)
+![Conduit Tutorial Run 4](../assets/run4.png)
 
 Our Conduit application can use this value to return a list of heroes that contains the search string. In `heroes_controller.dart`, modify `getAllHeroes()` to bind the 'name' query parameter:
 

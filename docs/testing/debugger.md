@@ -6,7 +6,7 @@ The debugger may be used when running tests or developing client applications lo
 
 Applications created by `conduit create` ship with a `bin/main.dart` script that starts the application. When developing, running this script from an IDE is often preferred to `conduit serve` because the IDE can leverage its full capabilities. One such capability is a debugger. In IntelliJ IDEA \(and its suite of products\), you may right-click on this file and select 'Debug' from the pop-up menu to run the application in the debugger.
 
-![Debugger Screenshot](../assets//debugger_screenshot.png)
+![Debugger Screenshot](../assets/debugger_screenshot.png)
 
 ## Setting Breakpoints
 
@@ -14,7 +14,7 @@ A valuable feature of a debugger is the ability to set breakpoints. A breakpoint
 
 To set a breakpoint, you simply click on the gutter area next to the line of code you wish to stop at.
 
-![Debugger Screenshot](../assets//breakpoint_screenshot.png)
+![Debugger Screenshot](../assets/breakpoint_screenshot.png)
 
 Once a debugger stops, you can view variable values in the center pane of the debugging panel. The left pane \(labeled 'Frames'\) shows the current stack trace. The row of buttons above the stack trace allow you to continue executing code line-by-line.
 

@@ -1,6 +1,6 @@
 # Introduction
 
-![](assets//image.png)
+![](assets/image.png)
 
 [![pub points](https://badges.bar/conduit/pub%20points)](https://pub.dev/packages/conduit/score)[![Test Suite](https://github.com/conduit-dart/conduit/actions/workflows/test.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/test.yml) [![](https://discord.com/assets/3437c10597c1526c3dbd98c737c2bcae.svg)](https://discord.gg/MHz5cqktHW)
 

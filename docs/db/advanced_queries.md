@@ -6,7 +6,7 @@ The rows from a table can be sorted and fetched in contiguous chunks. This sorti
 
 Naive paging can be accomplished using the `fetchLimit` and `offset` properties of a `Query<T>`. For example, if a table contains 100 rows, and you would like to grab 10 at a time, each query would have a value of 10 for its `fetchLimit`. The first query would have an `offset` of 0, then 10, then 20, and so on. Especially when using `sortBy`, this type of paging can be effective. One of the drawbacks to this type of paging is that it can skip or duplicate rows if rows are being added or deleted between fetches.
 
-![Paging Error](../assets//paging.png)
+![Paging Error](../assets/paging.png)
 
 For example, consider the seven objects above that are ordered by time. If we page by two objects at a time \(`fetchLimit=2`\) starting at the first item \(`offset=0`\), our first result set is the first two objects. The next page is the original offset plus the same limit - we grab the next two rows. But before the next page is fetched, a new object is inserted and its at an index that we already fetched. The next page would return `3:00pm` again. A similar problem occurs if a row is deleted when paging in this way.
 

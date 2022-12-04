@@ -16,5 +16,5 @@ dependencies:
 dev_dependencies:
   fs_test_agent:
     path: ../fs_test_agent
-  lint: ^1.5.0
+  lint: ^2.0.0
   test: ^1.21.6

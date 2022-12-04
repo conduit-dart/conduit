@@ -25,7 +25,7 @@ scripts:
     run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart $MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
     select-pacakge:
       no-private: true
-  analyze: melos exec -- pub global run tuneup check
+  analyze: melos exec -- dart pub global run tuneup check
   activate-all:
     run: melos exec -- "dart pub global activate '\$MELOS_PACKAGE_NAME'"
     select-pacakge:
@@ -43,6 +43,10 @@ scripts:
   gen-docs:
     run: |
       yq -i 'with(.nav[] | select(has("API")); . = {"API": []})' $MELOS_ROOT_PATH/mkdocs.yml && melos exec --ignore "*common*" -- "dart doc && CONF=\$(echo \$MELOS_PACKAGE_PATH/mkdocs.yml | sed -e 's#^$MELOS_ROOT_PATH#!include .#') yq -i 'with(.nav[] | select(has(\"API\")); .[] += {\"\$MELOS_PACKAGE_NAME\" : strenv(CONF)})' $MELOS_ROOT_PATH/mkdocs.yml" \
+    select-pacakge:
+      no-private: true
+  fix:
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart fix --apply ."
     select-pacakge:
       no-private: true
 environment:

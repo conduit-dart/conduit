@@ -5,6 +5,10 @@ on:
     branches: [master]
   workflow_dispatch:
 
+concurrency:
+  group: "windows-test"
+  cancel-in-progress: true
+
 jobs:
   windows:
     if: |
