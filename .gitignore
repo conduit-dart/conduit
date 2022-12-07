@@ -32,5 +32,6 @@ coverage
 
 doc/
 site/
+_build/
 
 *.reflectable.dart
