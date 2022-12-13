@@ -686,12 +686,13 @@ void main() {
       expect(outputMap.containsKey('info'), true);
       expect(outputMap.containsKey('extra_info'), true);
       expect(
-          outputMap,
-          partial({
-            'CrEaTiOn_DaTe': isNotPresent,
-            'SHORT_DESCRIPTION': isNotPresent,
-            'extraDescription': isNotPresent
-          }),);
+        outputMap,
+        partial({
+          'CrEaTiOn_DaTe': isNotPresent,
+          'SHORT_DESCRIPTION': isNotPresent,
+          'extraDescription': isNotPresent
+        }),
+      );
     });
   });
 }
