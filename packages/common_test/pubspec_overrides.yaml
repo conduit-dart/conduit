@@ -1,6 +1,6 @@
 dependency_overrides:
   conduit:
-    path: ../conduit
+    path: ../cli
   conduit_common:
     path: ../common
   conduit_open_api:
@@ -9,6 +9,8 @@ dependency_overrides:
     path: ../codable
   conduit_config:
     path: ../config
+  conduit_core:
+    path: ../core
   conduit_isolate_exec:
     path: ../isolate_exec
   conduit_password_hash:

@@ -3,8 +3,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:conduit/conduit.dart';
-import 'package:conduit/src/auth/auth.dart' as auth_util;
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/src/auth/auth.dart' as auth_util;
 import 'package:conduit_test/conduit_test.dart';
 
 /// Use methods from this class to test applications that use [AuthServer] for authentication & authorization.
@@ -18,7 +18,7 @@ import 'package:conduit_test/conduit_test.dart';
 /// You must override [authServer] to return your application's [AuthServer] service,
 /// and [application] to return your harness' application.
 ///
-/// This mixin is typically used with [TestHarnessORMMixin] and `package:conduit/managed_auth`.
+/// This mixin is typically used with [TestHarnessORMMixin] and `package:conduit_core/managed_auth`.
 /// Invoke [addClient] in [TestHarnessORMMixin.seed] to add OAuth2 clients that will survive
 /// [TestHarnessORMMixin.resetData].
 ///

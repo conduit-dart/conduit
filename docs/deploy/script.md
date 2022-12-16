@@ -8,7 +8,7 @@ A sample script looks like this:
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:my_application/my_application.dart';
 
 Future main() async {

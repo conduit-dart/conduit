@@ -3,7 +3,7 @@ repository: https://github.com/conduit-dart/conduit
 packages:
   - packages/**
 ignore:
-  - packages/conduit/templates/**
+  - packages/cli/templates/**
   - packages/tmp/**
   - packages/runtime_test_packages/**
   - packages/isolate_exec_test_packages/**

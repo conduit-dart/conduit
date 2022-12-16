@@ -110,7 +110,7 @@ git push heroku master
 
 This command pushes your code to a remote git server hosted by Heroku, which triggers your application to run its release script.
 
-Now that your application's database schema has been uploaded, you can configure your OAuth 2 server with client identifiers if you are using `package:conduit/managed_auth`. The following command will run within your application's remote environment.
+Now that your application's database schema has been uploaded, you can configure your OAuth 2 server with client identifiers if you are using `package:conduit_core/managed_auth`. The following command will run within your application's remote environment.
 
 ```bash
 heroku run /app/dart-sdk/bin/pub global run conduit:conduit auth add-client --id com.app.standard --secret secret --connect \$DATABASE_URL

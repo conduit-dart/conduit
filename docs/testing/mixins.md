@@ -71,7 +71,7 @@ conduit db upgrade --connect postgres://my_app_user:mypassword@localhost:5432/my
 
 Applications that use OAuth 2.0 should mixin `TestHarnessAuthMixin`. This mixin adds methods for registering a client identifier and authenticating a user. Both methods return an `Agent` with default headers with authorization information for the client identifier or user.
 
-Most often, you use `package:conduit/managed_auth` for an ORM-driven OAuth2 delegate. You must also mixin `TestHarnessORMMixin` when using this mixin.
+Most often, you use `package:conduit_core/managed_auth` for an ORM-driven OAuth2 delegate. You must also mixin `TestHarnessORMMixin` when using this mixin.
 
 ```dart
 class Harness extends TestHarness<AppChannel> with TestHarnessAuthMixin<AppChannel>, TestHarnessORMMixin {

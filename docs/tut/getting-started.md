@@ -80,7 +80,7 @@ You use the `route` method on a router to attach a controller to a _route_. A ro
 We need to route the path `/heroes` to a controller of our own, so we can control what happens. Let's create a `HeroesController`. Create a new file in `lib/controller/heroes_controller.dart` and add the following code \(you will need to create the subdirectory `lib/controller/`\):
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:heroes/heroes.dart';
 
 class HeroesController extends Controller {

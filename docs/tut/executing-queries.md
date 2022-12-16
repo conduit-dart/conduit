@@ -207,7 +207,7 @@ conduit db generate
 This command will create a new _migration file_. A migration file is a Dart script that runs a series of SQL commands to alter a database's schema. It is created in a new directory in your project named `migrations/`. Open `migrations/00000001_initial.migration.dart`, it should look like this:
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'dart:async';
 
 class Migration1 extends Migration {

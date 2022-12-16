@@ -3,8 +3,8 @@
 ## Enable OAuth 2.0
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class AppChannel extends ApplicationChannel {
   AuthServer authServer;
@@ -48,8 +48,8 @@ conduit auth add-client \
 ## Require OAuth 2.0 Scope to Access Routes
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class AppChannel extends ApplicationChannel {
   AuthServer authServer;
@@ -101,7 +101,7 @@ class ProfileController extends ResourceController {
 ## Basic Authentication
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class AppChannel extends ApplicationChannel {
   @override
@@ -131,8 +131,8 @@ class PasswordVerifier extends AuthValidator {
 ## Add OAuth 2.0 Authorization Code Flow
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class AppChannel extends ApplicationChannel {
   AuthServer authServer;

@@ -12,7 +12,7 @@ dependencies:
 By default, resource controllers only accept `application/json` requests and must be configured to accept `multipart/form-data` requests. To read each part, create a `MimeMultipartTransformer` and stream the body into it. The following shows an example:
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:mime/mime.dart';
 
 class MyController extends ResourceController {

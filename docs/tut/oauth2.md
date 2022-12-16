@@ -17,7 +17,7 @@ Conduit has a built-in OAuth 2.0 implementation that leverages the ORM. This imp
 Our application needs some concept of a 'user' - a person who logs into the application to manage heroes. This user will have a username and password. In a later exercise, a user will also have a list of heroes that belong to them. Create a new file `model/user.dart` and enter the following code:
 
 ```dart
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/managed_auth.dart';
 import 'package:heroes/heroes.dart';
 import 'package:heroes/model/hero.dart';
 
@@ -26,7 +26,7 @@ class User extends ManagedObject<_User> implements _User, ManagedAuthResourceOwn
 class _User extends ResourceOwnerTableDefinition {}
 ```
 
-The imported library `package:conduit/managed_auth.dart` contains types that use the ORM to store users, tokens and other OAuth 2.0 related data. One of those types is `ResourceOwnerTableDefinition`, the superclass of our user's table definition. This type contains all of the required fields that Conduit needs to implement authentication.
+The imported library `package:conduit_core/managed_auth.dart` contains types that use the ORM to store users, tokens and other OAuth 2.0 related data. One of those types is `ResourceOwnerTableDefinition`, the superclass of our user's table definition. This type contains all of the required fields that Conduit needs to implement authentication.
 
 !!! tip "Resource Owners" A _resource owner_ is a more general term for a 'user' that comes from the OAuth 2.0 specification. In the framework, you'll see types and variables using some variant of _resource owner_, but for all intents and purposes, you can consider this a 'user'.
 
@@ -52,7 +52,7 @@ class ResourceOwnerTableDefinition {
 
 Because these fields are in `User`'s table definition, our `User` table has all of these database columns.
 
-!!! note "ManagedAuthResourceOwner" Note that `User` implements `ManagedAuthResourceOwner<_User>` - this is a requirement of any OAuth 2.0 resource owner type when using `package:conduit/managed_auth`.
+!!! note "ManagedAuthResourceOwner" Note that `User` implements `ManagedAuthResourceOwner<_User>` - this is a requirement of any OAuth 2.0 resource owner type when using `package:conduit_core/managed_auth`.
 
 ## Setting up OAuth 2.0: AuthServer and its Delegate
 
@@ -61,7 +61,7 @@ Now that we have a user, we need some way to create new users and authenticate t
 In `channel.dart`, add the following imports to the top of your file:
 
 ```dart
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/managed_auth.dart';
 import 'package:heroes/model/user.dart';
 ```
 
@@ -95,7 +95,7 @@ class HeroesChannel extends ApplicationChannel {
   ...
 ```
 
-While an `AuthServer` handles the logic of authentication and authorization, it doesn't know how to store or fetch the data it uses for those tasks. Instead, it relies on a _delegate_ object to handle storing and fetching data from a database. In our application, we use `ManagedAuthDelegate<T>` - from `package:conduit/managed_auth` - as the delegate. This type uses the ORM for these tasks; the type argument must be our application's user object.
+While an `AuthServer` handles the logic of authentication and authorization, it doesn't know how to store or fetch the data it uses for those tasks. Instead, it relies on a _delegate_ object to handle storing and fetching data from a database. In our application, we use `ManagedAuthDelegate<T>` - from `package:conduit_core/managed_auth` - as the delegate. This type uses the ORM for these tasks; the type argument must be our application's user object.
 
 !!! tip "Delegation" Delegation is a design pattern where an object has multiple callbacks that are grouped into an interface. Instead of defining a closure for each callback, a type implements methods that get called by the delegating object. It is a way of organizing large amounts of related callbacks into a tidy class.
 
@@ -128,7 +128,7 @@ Now, create the file `controller/register_controller.dart` and enter the followi
 ```dart
 import 'dart:async';
 
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:heroes/model/user.dart';
 
 class RegisterController extends ResourceController {

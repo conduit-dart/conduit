@@ -15,8 +15,8 @@ An `AuthServer` must persist the data it uses and creates - like client identifi
 This concrete implementation is named `ManagedAuthDelegate<T>`. It exists in a sub-package of Conduit and must be explicitly imported. Here's an example of creating an `AuthServer` and `ManagedAuthDelegate<T>`:
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class MyApplicationChannel extends ApplicationChannel {  
   AuthServer authServer;
@@ -37,8 +37,8 @@ class MyApplicationChannel extends ApplicationChannel {
 While `AuthServer` has methods for handling authorization tasks, it is rarely used directly. Instead, `AuthCodeController` and `AuthController` are hooked up to routes to grant authorization tokens through your application's HTTP API. Instances of `Authorizer` secure routes in channels. All of these types invoke the appropriate methods on the `AuthServer`. Here's an example `ApplicationChannel` subclass that sets up and uses authorization:
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class MyApplicationChannel extends ApplicationChannel {
   AuthServer authServer;
@@ -76,7 +76,7 @@ For more details on authorization controllers like `AuthController`, see [Author
 
 ## Using ManagedAuthDelegate
 
-`ManagedAuthDelegate<T>` is a concrete implementation of `AuthServerDelegate`, providing storage of authorization tokens and clients for an `AuthServer`. Storage is accomplished by Conduit's ORM. `ManagedAuthDelegate<T>`, by default, is not part of the standard `conduit` library. To use this class, an application must import `package:conduit/managed_auth.dart`.
+`ManagedAuthDelegate<T>` is a concrete implementation of `AuthServerDelegate`, providing storage of authorization tokens and clients for an `AuthServer`. Storage is accomplished by Conduit's ORM. `ManagedAuthDelegate<T>`, by default, is not part of the standard `conduit` library. To use this class, an application must import `package:conduit_core/managed_auth.dart`.
 
 The type argument to `ManagedAuthDelegate<T>` represents the application's concept of a 'user' or 'account' - OAuth 2.0 terminology would refer to this type as a _resource owner_. A resource owner must be a `ManagedObject<T>` subclass that is specific to your application. Its table definition _must extend_ `ResourceOwnerTableDefinition` and the instance type must implement `ManagedAuthResourceOwner<T>`, where `T` is the table definition. A basic definition may look like this:
 

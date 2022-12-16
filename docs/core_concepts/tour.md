@@ -19,7 +19,7 @@ conduit serve
 A Conduit application starts at an [ApplicationChannel](../application/channel.md). You subclass it once per application to handle initialization tasks like setting up routes and database connections. An example application looks like this:
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class TodoApp extends ApplicationChannel {
   ManagedContext context;
@@ -96,7 +96,7 @@ All controllers execute their code in an exception handler. If an exception is t
 [ResourceControllers](../http/resource_controller.md) are the most often used controller. Each operation - e.g. `POST /projects`, `GET /projects` and `GET /projects/1` - is mapped to methods in a subclass. Parameters of those methods are annotated to bind the values of the request when the method is invoked.
 
 ```dart
-import 'package:conduit/conduit.dart'
+import 'package:conduit_core/conduit_core.dart'
 
 class ProjectController extends ResourceController {    
   @Operation.get('id')
@@ -159,7 +159,7 @@ class TodoConfig extends Configuration {
 The default name of your configuration file is `config.yaml`, but can be changed at the command-line. You create an instance of your configuration from the configuration file path from your application options:
 
 ```dart
-import 'package:conduit/conduit.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class TodoApp extends ApplicationChannel {
   @override
@@ -185,7 +185,7 @@ Conduit applications are multi-isolate \(multi-threaded\). Each isolate runs a r
 The `Query<T>` class configures and executes database queries. Its type argument determines what table is to be queried and the type of object you will work with in your code.
 
 ```dart
-import 'package:conduit/conduit.dart'
+import 'package:conduit_core/conduit_core.dart'
 
 class ProjectController extends ResourceController {
   ProjectController(this.context);
@@ -312,8 +312,8 @@ You can edit migration files by hand to alter any assumptions or enter required 
 An OAuth 2.0 server implementation handles authentication and authorization for Conduit applications. You create an `AuthServer` and its delegate as services in your application. The delegate is configurable and manages how tokens are generated and stored. By default, access tokens are a random 32-byte string and client identifiers, tokens and access codes are stored in your database using the ORM.
 
 ```dart
-import 'package:conduit/conduit.dart';
-import 'package:conduit/managed_auth.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class AppApplicationChannel extends ApplicationChannel {
   AuthServer authServer;

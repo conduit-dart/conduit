@@ -51,7 +51,7 @@ You may also subclass `MockHTTPServer` and override its `open` method to add log
 A `MockHTTPServer` is created when setting up tests. It must be closed when tearing down tests. If you use the same mock server to across all tests \(e.g., open it in `setUpAll`\), make sure to clear it after each test:
 
 ```dart
-import 'package:conduit/test.dart';
+import 'package:conduit_core/test.dart';
 
 void main() {
   var mockServer = new MockHTTPServer(4000);

@@ -43,7 +43,7 @@ conduit db upgrade --connect postgres://app_name_user:yourpassword@localhost:543
 
 ## Step 3: Add an OAuth 2.0 client.
 
-If you are using `package:conduit/managed_auth`, you'll want to create an OAuth2 client identifier. From the command line, run the following, ensuring that the values for the option `--connect` match the recently created database.
+If you are using `package:conduit_core/managed_auth`, you'll want to create an OAuth2 client identifier. From the command line, run the following, ensuring that the values for the option `--connect` match the recently created database.
 
 ```bash
 conduit auth add-client --id com.app_name.standard --secret abcdefghi --connect postgres://app_name_user:yourpassword@localhost:5432/app_name
