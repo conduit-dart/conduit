@@ -1,5 +1,5 @@
 // ignore: unnecessary_const
-@Tags(["cli"])
+
 import 'dart:async';
 import 'dart:io';
 

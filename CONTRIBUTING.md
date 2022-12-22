@@ -22,7 +22,7 @@ Currently there are three tests that need to be run to hit all the tests:
 ```bash
 melos test-unit
 # These two need to be run inside packages/conduit
-dart test -j1 -t cli test/* # use dart test -j1 -t cli for windows and macos
+dart test -j1 test/* # use dart test -j1 for windows and macos
 dart tool/generated_test_runner.dart
 ```
 The first will run all the unit tests in conduit and all its dependencies. The last two test cli components and string-compiled code respectively.

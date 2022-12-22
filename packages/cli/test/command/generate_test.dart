@@ -1,4 +1,3 @@
-@Tags(["cli"])
 import 'dart:io';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';

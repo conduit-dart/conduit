@@ -1,7 +1,6 @@
 // ignore: unnecessary_const
 // ignore_for_file: always_declare_return_types
 
-@Tags(["cli"])
 import 'dart:async';
 import 'dart:io';
 

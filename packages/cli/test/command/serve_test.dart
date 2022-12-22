@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_dynamic_calls
 
 // ignore: unnecessary_const
-@Tags(["cli"])
+
 import 'dart:async';
 import 'dart:io';
 

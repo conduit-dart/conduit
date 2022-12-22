@@ -1,7 +1,6 @@
 // ignore: unnecessary_const
 // ignore_for_file: avoid_dynamic_calls
 
-@Tags(["cli"])
 import 'dart:convert';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
