@@ -1,11 +1,13 @@
+// ignore_for_file: implementation_imports
+
 import 'dart:async';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/migration_source.dart';
-import 'package:conduit_core/src/cli/mixins/database_connecting.dart';
-import 'package:conduit_core/src/cli/mixins/database_managing.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
-import 'package:conduit_core/src/cli/scripts/run_upgrade.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/migration_source.dart';
+import 'package:conduit/src/cli/mixins/database_connecting.dart';
+import 'package:conduit/src/cli/mixins/database_managing.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/scripts/run_upgrade.dart';
 import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';

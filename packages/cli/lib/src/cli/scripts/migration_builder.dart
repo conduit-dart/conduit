@@ -1,10 +1,10 @@
-// ignore_for_file: avoid_catching_errors
+// ignore_for_file: avoid_catching_errors, directives_ordering
 
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {

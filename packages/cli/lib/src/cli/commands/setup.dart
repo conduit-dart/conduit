@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
 
 class CLISetup extends CLICommand with CLIProject {
   @Flag(

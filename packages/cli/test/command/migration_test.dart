@@ -5,11 +5,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/mixins/database_managing.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/mixins/database_managing.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 void main() {

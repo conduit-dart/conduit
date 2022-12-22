@@ -1,8 +1,8 @@
 @Timeout(Duration(seconds: 120))
 @Tags(["cli"])
+import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:path/path.dart';
 import 'package:test/test.dart';

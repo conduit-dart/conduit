@@ -1,14 +1,14 @@
-// ignore_for_file: no_adjacent_strings_in_list
+// ignore_for_file: no_adjacent_strings_in_list, implementation_imports
 
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit_config/conduit_config.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
-import 'package:conduit_config/conduit_config.dart';
 
 abstract class CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   static const String flavorPostgreSQL = "postgres";

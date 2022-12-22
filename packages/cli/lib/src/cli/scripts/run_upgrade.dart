@@ -1,7 +1,9 @@
+// ignore_for_file: implementation_imports
+
 import 'dart:async';
 import 'dart:mirrors';
 
-import 'package:conduit_core/src/cli/migration_source.dart';
+import 'package:conduit/src/cli/migration_source.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit_core/src/db/query/error.dart';

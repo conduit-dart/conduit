@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/commands/db_generate.dart';
-import 'package:conduit_core/src/cli/commands/db_schema.dart';
-import 'package:conduit_core/src/cli/commands/db_show_migrations.dart';
-import 'package:conduit_core/src/cli/commands/db_upgrade.dart';
-import 'package:conduit_core/src/cli/commands/db_validate.dart';
-import 'package:conduit_core/src/cli/commands/db_version.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/commands/db_generate.dart';
+import 'package:conduit/src/cli/commands/db_schema.dart';
+import 'package:conduit/src/cli/commands/db_show_migrations.dart';
+import 'package:conduit/src/cli/commands/db_upgrade.dart';
+import 'package:conduit/src/cli/commands/db_validate.dart';
+import 'package:conduit/src/cli/commands/db_version.dart';
 
 class CLIDatabase extends CLICommand {
   CLIDatabase() {

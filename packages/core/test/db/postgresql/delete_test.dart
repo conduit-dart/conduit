@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_catching_errors
 
-import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 

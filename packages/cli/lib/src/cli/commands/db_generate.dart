@@ -1,11 +1,13 @@
+// ignore_for_file: implementation_imports
+
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/mixins/database_managing.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
-import 'package:conduit_core/src/cli/scripts/migration_builder.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/mixins/database_managing.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/scripts/migration_builder.dart';
 
 class CLIDatabaseGenerate extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {

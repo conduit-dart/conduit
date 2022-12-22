@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/mixins/database_connecting.dart';
-import 'package:conduit_core/src/cli/mixins/database_managing.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/mixins/database_connecting.dart';
+import 'package:conduit/src/cli/mixins/database_managing.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
 
 /// Used internally.
 class CLIDatabaseVersion extends CLICommand

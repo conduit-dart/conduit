@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: avoid_dynamic_calls, implementation_imports
 
 import 'dart:async';
 import 'dart:isolate';

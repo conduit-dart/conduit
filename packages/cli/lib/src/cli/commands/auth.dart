@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/commands/auth_add_client.dart';
-import 'package:conduit_core/src/cli/commands/auth_scope.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/commands/auth_add_client.dart';
+import 'package:conduit/src/cli/commands/auth_scope.dart';
 
 class CLIAuth extends CLICommand {
   CLIAuth() {

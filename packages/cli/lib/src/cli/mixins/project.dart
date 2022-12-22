@@ -3,9 +3,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/scripts/get_channel_type.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/scripts/get_channel_type.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:pub_semver/pub_semver.dart';

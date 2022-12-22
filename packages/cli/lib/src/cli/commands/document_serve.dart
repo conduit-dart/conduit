@@ -1,13 +1,15 @@
+// ignore_for_file: implementation_imports
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/mixins/openapi_options.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
-import 'package:conduit_core/src/cli/running_process.dart';
-import 'package:conduit_core/src/cli/scripts/openapi_builder.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/mixins/openapi_options.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/running_process.dart';
+import 'package:conduit/src/cli/scripts/openapi_builder.dart';
 import 'package:conduit_core/src/http/http.dart';
 
 /// Used internally.

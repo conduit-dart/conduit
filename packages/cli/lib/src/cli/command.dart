@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, implementation_imports
 
 import 'dart:async';
 import 'dart:io';
@@ -7,8 +7,8 @@ import 'dart:mirrors';
 
 import 'package:args/args.dart' as args;
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/running_process.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/running_process.dart';
 import 'package:conduit_runtime/runtime.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';

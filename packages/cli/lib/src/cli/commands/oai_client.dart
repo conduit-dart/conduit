@@ -4,10 +4,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/mixins/openapi_options.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
-import 'package:conduit_core/src/cli/scripts/openapi_builder.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/mixins/openapi_options.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/scripts/openapi_builder.dart';
 
 /// Used internally.
 class CLIDocumentClient extends CLICommand with CLIProject, CLIDocumentOptions {

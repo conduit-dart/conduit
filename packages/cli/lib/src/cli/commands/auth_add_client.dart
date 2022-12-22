@@ -1,14 +1,12 @@
 import 'dart:async';
 
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/cli/mixins/database_connecting.dart';
+import 'package:conduit/src/cli/mixins/database_managing.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
-import 'package:conduit_core/src/auth/auth.dart';
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
-import 'package:conduit_core/src/cli/mixins/database_connecting.dart';
-import 'package:conduit_core/src/cli/mixins/database_managing.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
-import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/query/query.dart';
 import 'package:crypto/crypto.dart';
 
 class CLIAuthAddClient extends CLICommand

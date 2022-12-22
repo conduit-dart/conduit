@@ -1,5 +1,5 @@
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/metadata.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/metadata.dart';
 
 abstract class CLIDocumentOptions implements CLICommand {
   @Flag(

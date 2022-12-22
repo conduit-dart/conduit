@@ -1,9 +1,9 @@
-// ignore_for_file: avoid_catching_errors
+// ignore_for_file: avoid_catching_errors, implementation_imports
 
 import 'dart:async';
 
-import 'package:conduit_core/src/cli/command.dart';
-import 'package:conduit_core/src/cli/mixins/project.dart';
+import 'package:conduit/src/cli/command.dart';
+import 'package:conduit/src/cli/mixins/project.dart';
 import 'package:conduit_core/src/db/managed/data_model.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
