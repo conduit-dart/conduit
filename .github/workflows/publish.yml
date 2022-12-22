@@ -35,7 +35,7 @@ jobs:
     - name: Uptick versions
       run: melos version --yes
     - name: Changelog
-      run: git diff --unified=0 $GITHUB_SHA packages/conduit/CHANGELOG.md | tail +6 | sed -e 's/^\+//' > CHANGES.txt
+      run: git diff --unified=0 $GITHUB_SHA packages/cli/CHANGELOG.md | tail +6 | sed -e 's/^\+//' > CHANGES.txt
     - name: Cache Source
       run: melos cache-source
     - name: Publish package
@@ -48,7 +48,7 @@ jobs:
         branch: master
     - name: Compute the release tag
       run: |
-        echo "release_tag=v`cat packages/conduit/pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV
+        echo "release_tag=v`cat packages/cli/pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
