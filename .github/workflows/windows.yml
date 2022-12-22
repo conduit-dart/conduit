@@ -52,7 +52,7 @@ jobs:
         icacls "C:\.pub_cache" /grant Users:F /T
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: dev
+        sdk: stable
     - name: Get Dependencies
       run: |
         choco install yq

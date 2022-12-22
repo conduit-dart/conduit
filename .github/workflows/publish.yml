@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: dev
+        sdk: stable
     - name: Prepare pub credentials
       run: |
         mkdir "$XDG_CONFIG_HOME/dart"

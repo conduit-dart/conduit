@@ -1,5 +1,5 @@
 name: utils
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.18.6 <3.0.0"
 dependencies:
   test: ^1.21.6

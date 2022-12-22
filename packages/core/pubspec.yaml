@@ -3,7 +3,7 @@ version: 4.0.1
 homepage: https://github.com/conduit-dart/conduit
 description: This is the core of the framework.
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.18.6 <3.0.0"
 dependencies:
   analyzer: ^5.1.0
   args: ^2.1.1
