@@ -154,7 +154,7 @@ void main() {
           final pubspec = File(join(projectDir.path, "pubspec.yaml"));
           final contents = loadYaml(pubspec.readAsStringSync());
           final projectVersionConstraint = VersionConstraint.parse(
-            contents["dependencies"]["conduit"] as String,
+            contents["dependencies"]["conduit_core"] as String,
           );
           expect(projectVersionConstraint.allows(conduitVersion), isTrue);
         },

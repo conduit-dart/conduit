@@ -240,7 +240,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_core/src/cli/starter.dart';
 import 'package:___PACKAGE_NAME___/___LIBRARY_NAME___.dart';
 
 Future main(List<String> args, dynamic sendPort) async {

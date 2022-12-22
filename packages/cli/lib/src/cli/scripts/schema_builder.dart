@@ -53,7 +53,7 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
 
   static List<String> get imports => [
         "package:conduit_core/conduit_core.dart",
-        "package:conduit_core/src/cli/migration_source.dart",
+        "package:conduit/src/cli/migration_source.dart",
         "package:conduit_runtime/runtime.dart"
       ];
 }

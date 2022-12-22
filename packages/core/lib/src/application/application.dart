@@ -15,6 +15,7 @@ import 'package:logging/logging.dart';
 export 'application_server.dart';
 export 'options.dart';
 export 'service_registry.dart';
+export 'starter.dart';
 
 /// This object starts and stops instances of your [ApplicationChannel].
 ///
