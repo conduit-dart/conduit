@@ -95,7 +95,7 @@ class Build {
         pubspecMap['dev_dependencies'] = devDeps;
       }
 
-      overrides['conduit'] = {
+      overrides['conduit_core'] = {
         'path': appDst.toFilePath(windows: Platform.isWindows)
       };
     }

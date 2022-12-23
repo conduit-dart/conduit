@@ -55,7 +55,7 @@ class ConduitCompiler extends Compiler {
   @override
   void deflectPackage(Directory destinationDirectory) {
     final libFile = File.fromUri(
-      destinationDirectory.uri.resolve("lib/").resolve("conduit.dart"),
+      destinationDirectory.uri.resolve("lib/").resolve("conduit_core.dart"),
     );
     final contents = libFile.readAsStringSync();
     libFile.writeAsStringSync(
@@ -92,8 +92,8 @@ class ConduitCompiler extends Compiler {
         );
       }
 
-      pubspecContents["dependency_overrides"]["conduit"] =
-          pubspecContents["dependencies"]["conduit"];
+      pubspecContents["dependency_overrides"]["conduit_core"] =
+          pubspecContents["dependencies"]["conduit_core"];
       targetPubspecFile.writeAsStringSync(json.encode(pubspecContents));
 
       final conduitPackages = [
@@ -104,7 +104,7 @@ class ConduitCompiler extends Compiler {
         {'name': 'conduit_open_api', 'path': 'open_api'},
         {'name': 'conduit_password_hash', 'path': 'password_hash'},
       ];
-      _overwritePackageDependency(context, 'conduit', conduitPackages);
+      _overwritePackageDependency(context, 'conduit_core', conduitPackages);
 
       final runtimePackages = [
         {'name': 'conduit_isolate_exec', 'path': 'isolate_exec'},
