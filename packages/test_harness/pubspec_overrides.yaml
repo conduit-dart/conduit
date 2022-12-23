@@ -1,7 +1,5 @@
 # melos_managed_dependency_overrides: conduit_common_test
 dependency_overrides:
-  conduit_core:
-    path: ../core
   conduit_codable:
     path: ../codable
   conduit_common:
