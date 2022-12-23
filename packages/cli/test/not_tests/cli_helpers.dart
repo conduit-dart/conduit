@@ -92,18 +92,19 @@ class CLIClient {
           },
           devDependencies: {"test": "^1.6.7"},
           dependencyOverrides: {
-            'conduit_runtime': {'path': join(project, '..', 'runtime')},
+            'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')},
+            'conduit_codable': {'path': join(project, '..', 'codable')},
+            'conduit_common': {'path': join(project, '..', 'common')},
+            'conduit_config': {'path': join(project, '..', 'config')},
+            'conduit_core': {'path': join(project, '..', 'core')},
             'conduit_isolate_exec': {
               'path': join(project, '..', 'isolate_exec')
             },
+            'conduit_open_api': {'path': join(project, '..', 'open_api')},
             'conduit_password_hash': {
               'path': join(project, '..', 'password_hash')
             },
-            'conduit_open_api': {'path': join(project, '..', 'open_api')},
-            'conduit_codable': {'path': join(project, '..', 'codable')},
-            'conduit_config': {'path': join(project, '..', 'config')},
-            'conduit_common': {'path': join(project, '..', 'common')},
-            'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')}
+            'conduit_runtime': {'path': join(project, '..', 'runtime')},
           },
         ),
       );
