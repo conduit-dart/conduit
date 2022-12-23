@@ -67,9 +67,10 @@ class MirrorTypeCodec {
     return item;
   }
 
-  List<dynamic> _decodeList(List value) {
-    final out =
-        (type as ClassMirror).newInstance(Symbol.empty, []).reflectee as List;
+  List _decodeList(List value) {
+    final out = (type as ClassMirror).newInstance(const Symbol('empty'), [], {
+      const Symbol('growable'): true,
+    }).reflectee as List;
     final innerDecoder = MirrorTypeCodec(type.typeArguments.first);
     for (var i = 0; i < value.length; i++) {
       try {

@@ -226,11 +226,9 @@ class ConfigurationException {
     if (keyPath.isEmpty) {
       return "Failed to read '${configuration.runtimeType}'\n\t-> $message";
     }
-
     final joinedKeyPath = StringBuffer();
     for (var i = 0; i < keyPath.length; i++) {
       final thisKey = keyPath[i];
-
       if (thisKey is String) {
         if (i != 0) {
           joinedKeyPath.write(".");
