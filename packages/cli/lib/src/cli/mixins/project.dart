@@ -55,8 +55,9 @@ abstract class CLIProject implements CLICommand {
 
   String? get packageName => projectSpecification!["name"] as String?;
 
-  Version? get projectVersion {
+  Version get projectVersion {
     if (_projectVersion == null) {
+      print(packageConfigUri)
       final lockFile = File.fromUri(packageConfigUri);
       if (!lockFile.existsSync()) {
         throw CLIException("No package_config.json file. Run `pub get`.");
@@ -69,7 +70,7 @@ abstract class CLIProject implements CLICommand {
       _projectVersion = Version.parse(projectVersion);
     }
 
-    return _projectVersion;
+    return _projectVersion!;
   }
 
   Directory? _projectDirectory;
