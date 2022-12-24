@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runner_args: [dart test]
+        runner_args: [melos test-unit-scoped, dart tool/generated_test_runner.dart]
     env:
-      TEST_DIR: packages/cli
+      TEST_DIR: packages/core
     services:
       postgres:
         image: postgres:14.5

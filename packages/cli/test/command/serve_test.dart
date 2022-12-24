@@ -64,7 +64,7 @@ void main() {
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));
     expect(
       projectUnderTestCli.output,
-      contains("Conduit project version: $thisVersion"),
+      contains("Conduit CLI Version: $thisVersion"),
     );
 
     final result = await http.get(Uri.parse("http://localhost:8888/example"));
