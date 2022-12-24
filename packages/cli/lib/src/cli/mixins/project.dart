@@ -57,7 +57,7 @@ abstract class CLIProject implements CLICommand {
 
   Version get projectVersion {
     if (_projectVersion == null) {
-      print(packageConfigUri)
+      print(packageConfigUri);
       final lockFile = File.fromUri(packageConfigUri);
       if (!lockFile.existsSync()) {
         throw CLIException("No package_config.json file. Run `pub get`.");
