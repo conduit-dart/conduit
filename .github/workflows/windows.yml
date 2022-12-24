@@ -57,9 +57,9 @@ jobs:
       run: |
         choco install yq
         dart pub global activate melos
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package
         dart pub global run melos:melos bootstrap
         dart pub global run melos:melos cache-source-win
-        dart pub get --directory=packages/isolate_exec_test_packages/test_package
     - name: Run tests
       env:
         CONDUIT_CI_DIR_LOCATION: ${{ github.workspace }}\ci\

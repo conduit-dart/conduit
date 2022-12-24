@@ -50,9 +50,9 @@ jobs:
     - name: Get Dependencies
       run: |
         dart pub global activate melos
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package
         melos bootstrap
         melos cache-source
-        dart pub get --directory=packages/isolate_exec_test_packages/test_package
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
       run: ${{ matrix.runner_args }}
