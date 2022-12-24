@@ -1,5 +1,4 @@
 @Timeout(Duration(seconds: 120))
-@Tags(["cli"])
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
@@ -23,7 +22,7 @@ void main() {
       DartProjectAgent(
         "application_test",
         dependencies: {
-          "conduit": {"path": project},
+          "conduit_core": {"path": project},
         },
         dependencyOverrides: {
           'conduit_runtime': {'path': join(project, '..', 'runtime')},

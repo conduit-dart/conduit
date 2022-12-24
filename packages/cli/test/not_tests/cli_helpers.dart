@@ -88,7 +88,7 @@ class CLIClient {
         DartProjectAgent(
           name,
           dependencies: {
-            "conduit": {"path": project}
+            "conduit_core": {"path": project}
           },
           devDependencies: {"test": "^1.6.7"},
           dependencyOverrides: {
