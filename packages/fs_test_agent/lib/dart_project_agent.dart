@@ -125,7 +125,7 @@ description: desc
 version: 0.0.1
 
 environment:
-  sdk: ">=2.${nullsafe ? "12" : "0"}.0 <3.0.0"
+  sdk: ">=2.18.6 <3.0.0"
 
 dependencies:
 ${_asYaml(deps, indent: 1)}
