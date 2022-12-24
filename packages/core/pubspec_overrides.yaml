@@ -1,7 +1,5 @@
-# melos_managed_dependency_overrides: conduit_common_test,fs_test_agent,conduit
+# melos_managed_dependency_overrides: conduit_common_test,fs_test_agent
 dependency_overrides:
-  conduit:
-    path: ../cli
   conduit_codable:
     path: ../codable
   conduit_common:
