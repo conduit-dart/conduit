@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        runner_args: [melos test-unit-scoped, dart tool/generated_test_runner.dart]
+        runner_args: [dart test -j1]
     env:
-      TEST_DIR: packages/core
+      TEST_DIR: packages/cli
     services:
       postgres:
         image: postgres:14.5
@@ -39,7 +39,11 @@ jobs:
       - name: Get Dependencies
         run: |
           dart pub global activate melos
+          melos bootstrap
           melos cache-source
+          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+          dart pub get --directory=packages/runtime_test_packages/application --offline
+          dart pub get --directory=packages/runtime_test_packages/dependency --offline
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && ${{ matrix.runner_args }}
