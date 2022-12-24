@@ -43,8 +43,6 @@ void main() {
       ["--machine", "--title", "foobar", "--api-version", "2.0.0"],
     );
 
-    print(terminal.output);
-    print('asdad');
     final map = json.decode(terminal.output);
     expect(map["info"]["title"], "foobar");
     expect(map["info"]["version"], "2.0.0");

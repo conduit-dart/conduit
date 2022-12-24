@@ -31,7 +31,7 @@ class CLIClient {
 
   final StringBuffer _output = StringBuffer();
 
-  static Future activateCLI({String path = "."}) {
+  static Future activateCLI({String path = "../cli"}) {
     const String cmd = "dart";
 
     return Process.run(cmd, ["pub", "global", "activate", "-spath", path]);
