@@ -1,0 +1,8 @@
+# melos_managed_dependency_overrides: conduit_isolate_exec,conduit_runtime,dependency
+dependency_overrides:
+  conduit_isolate_exec:
+    path: ../../isolate_exec
+  conduit_runtime:
+    path: ../../runtime
+  dependency:
+    path: ../dependency
