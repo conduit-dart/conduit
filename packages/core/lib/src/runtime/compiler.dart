@@ -70,9 +70,9 @@ class ConduitCompiler extends Compiler {
   void didFinishPackageGeneration(BuildContext context) {
     if (context.forTests) {
       final devPackages = [
-        {'name': 'conduit_test', 'path': 'test_harness'},
-        {'name': 'conduit_common_test', 'path': 'common_test'},
         {'name': 'fs_test_agent', 'path': 'fs_test_agent'},
+        {'name': 'conduit_common_test', 'path': 'common_test'},
+        {'name': 'conduit_test', 'path': 'test_harness'},
       ];
       final targetPubspecFile =
           File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"));
@@ -103,6 +103,7 @@ class ConduitCompiler extends Compiler {
         {'name': 'conduit_isolate_exec', 'path': 'isolate_exec'},
         {'name': 'conduit_open_api', 'path': 'open_api'},
         {'name': 'conduit_password_hash', 'path': 'password_hash'},
+        {'name': 'conduit_runtime', 'path': 'runtime'},
       ];
       _overwritePackageDependency(context, 'conduit_core', conduitPackages);
 

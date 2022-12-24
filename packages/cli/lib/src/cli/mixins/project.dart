@@ -57,7 +57,6 @@ abstract class CLIProject implements CLICommand {
 
   Version get projectVersion {
     if (_projectVersion == null) {
-      print(packageConfigUri);
       final lockFile = File.fromUri(packageConfigUri);
       if (!lockFile.existsSync()) {
         throw CLIException("No package_config.json file. Run `pub get`.");
@@ -96,7 +95,7 @@ abstract class CLIProject implements CLICommand {
         displayInfo("Conduit project version: $projectVersion");
       }
 
-      if (projectVersion?.major != toolVersion!.major) {
+      if (projectVersion.major != toolVersion!.major) {
         throw CLIException(
           "CLI version is incompatible with project conduit version.",
           instructions: [
