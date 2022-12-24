@@ -41,9 +41,6 @@ jobs:
           dart pub global activate melos
           melos bootstrap
           melos cache-source
-          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
-          dart pub get --directory=packages/runtime_test_packages/application --offline
-          dart pub get --directory=packages/runtime_test_packages/dependency --offline
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && ${{ matrix.runner_args }}
