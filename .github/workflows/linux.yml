@@ -20,7 +20,7 @@ jobs:
       matrix:
         runner_args: [dart test]
     env:
-      TEST_DIR: packages/core
+      TEST_DIR: packages/cli
     services:
       postgres:
         image: postgres:14.5
