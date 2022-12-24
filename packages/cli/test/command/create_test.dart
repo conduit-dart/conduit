@@ -1,7 +1,5 @@
-// ignore: unnecessary_const
 // ignore_for_file: avoid_dynamic_calls
 
-@Tags(["cli"])
 import 'dart:convert';
 import 'dart:io';
 
