@@ -89,6 +89,8 @@ class Build {
       }
     };
 
+    print(pubspecMap);
+
     if (context.forTests) {
       final devDeps = context.sourceApplicationPubspecMap['dev_dependencies'];
       if (devDeps != null) {
