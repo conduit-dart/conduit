@@ -57,10 +57,9 @@ abstract class CLIProject implements CLICommand {
 
   Version? get projectVersion {
     if (_projectVersion == null) {
-      final lockFile =
-          File.fromUri(projectDirectory!.uri.resolve("pubspec.lock"));
+      final lockFile = File.fromUri(packageConfigUri);
       if (!lockFile.existsSync()) {
-        throw CLIException("No pubspec.lock file. Run `pub get`.");
+        throw CLIException("No package_config.json file. Run `pub get`.");
       }
 
       final lockFileContents = loadYaml(lockFile.readAsStringSync()) as Map;

@@ -31,7 +31,7 @@ class CLIClient {
 
   final StringBuffer _output = StringBuffer();
 
-  static Future activateCLI({String path = "../cli"}) {
+  static Future activateCLI({String path = "."}) {
     const String cmd = "dart";
 
     return Process.run(cmd, ["pub", "global", "activate", "-spath", path]);
@@ -82,8 +82,7 @@ class CLIClient {
     String? template,
     bool offline = true,
   }) async {
-    final project = normalize(absolute(join('../cli')));
-    print(project);
+    final project = normalize(absolute(join('.')));
     if (template == null) {
       final client = CLIClient(
         DartProjectAgent(
