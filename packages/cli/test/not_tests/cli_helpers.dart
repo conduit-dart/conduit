@@ -82,7 +82,8 @@ class CLIClient {
     String? template,
     bool offline = true,
   }) async {
-    final project = normalize(absolute(join('.')));
+    final project = normalize(absolute(join('../cli')));
+    print(project);
     if (template == null) {
       final client = CLIClient(
         DartProjectAgent(
@@ -90,7 +91,7 @@ class CLIClient {
           dependencies: {
             "conduit": {"path": project}
           },
-          devDependencies: {"test": "^1.6.7"},
+          devDependencies: {"test": "^1.21.6"},
           dependencyOverrides: {
             'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')},
             'conduit_codable': {'path': join(project, '..', 'codable')},

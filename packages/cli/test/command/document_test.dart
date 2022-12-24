@@ -17,7 +17,6 @@ void main() {
     final t =
         CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
     terminal = await t.createTestProject(template: "db_and_auth");
-    terminal.agent.getDependencies();
   });
 
   tearDownAll(() async {
