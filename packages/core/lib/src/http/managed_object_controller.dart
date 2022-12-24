@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/db.dart';
 import 'package:conduit_core/src/http/http.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
 /// A [Controller] that implements basic CRUD operations for a [ManagedObject].

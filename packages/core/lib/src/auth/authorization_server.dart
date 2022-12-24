@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/auth/auth.dart';
 import 'package:conduit_core/src/utilities/token_generator.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:crypto/crypto.dart';
 

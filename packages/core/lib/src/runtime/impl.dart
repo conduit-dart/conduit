@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:mirrors';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/application/application.dart';
 import 'package:conduit_core/src/application/channel.dart';
 import 'package:conduit_core/src/application/isolate_application_server.dart';
@@ -10,7 +11,6 @@ import 'package:conduit_core/src/http/resource_controller.dart';
 import 'package:conduit_core/src/http/resource_controller_interfaces.dart';
 import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 

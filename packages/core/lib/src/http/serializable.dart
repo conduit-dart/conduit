@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_dynamic_calls
 
-import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_common/conduit_common.dart';
+import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
 

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/auth/auth.dart';
 import 'package:conduit_core/src/http/resource_controller.dart';
 import 'package:conduit_core/src/http/resource_controller_bindings.dart';
 import 'package:conduit_core/src/http/response.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
 /// Provides [AuthRedirectController] with application-specific behavior.

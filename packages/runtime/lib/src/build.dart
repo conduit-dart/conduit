@@ -100,9 +100,6 @@ class Build {
       };
     }
 
-    print('aosdijaoid');
-    print(pubspecMap);
-
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
         .writeAsStringSync(json.encode(pubspecMap));
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/application/channel.dart';
 import 'package:conduit_core/src/application/service_registry.dart';
 import 'package:conduit_core/src/db/managed/data_model_manager.dart' as mm;
@@ -7,7 +8,6 @@ import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/http/http.dart';
-import 'package:conduit_common/conduit_common.dart';
 
 /// A service object that handles connecting to and sending queries to a database.
 ///

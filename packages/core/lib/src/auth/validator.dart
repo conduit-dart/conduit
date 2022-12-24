@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/auth/auth.dart';
 import 'package:conduit_core/src/http/request.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
 /// Instances that implement this type can be used by an [Authorizer] to determine authorization of a request.

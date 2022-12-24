@@ -16,8 +16,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /// See documentation guides at https://conduit.io/docs/.
 library conduit;
 
-export 'package:conduit_core/src/runtime/compiler.dart';
 export 'package:conduit_config/conduit_config.dart';
+export 'package:conduit_core/src/runtime/compiler.dart';
 export 'package:logging/logging.dart';
 
 export 'src/application/application.dart';

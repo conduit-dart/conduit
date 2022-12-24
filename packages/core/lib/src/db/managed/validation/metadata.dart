@@ -1,6 +1,6 @@
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/db.dart';
 import 'package:conduit_core/src/db/managed/validation/impl.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 
 /// Types of operations [ManagedValidator]s will be triggered for.

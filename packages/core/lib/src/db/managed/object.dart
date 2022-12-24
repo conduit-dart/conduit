@@ -1,9 +1,9 @@
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/managed/backing.dart';
 import 'package:conduit_core/src/db/managed/data_model_manager.dart' as mm;
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/http/serializable.dart';
-import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:meta/meta.dart';
 

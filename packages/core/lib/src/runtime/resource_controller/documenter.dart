@@ -1,6 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/auth/objects.dart';
 import 'package:conduit_core/src/http/resource_controller.dart';
 import 'package:conduit_core/src/http/resource_controller_bindings.dart';
@@ -9,8 +10,6 @@ import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/impl.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
-import 'package:conduit_common/conduit_common.dart';
-
 import 'package:conduit_open_api/v3.dart';
 
 bool isSerializable(Type type) {
