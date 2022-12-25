@@ -15,6 +15,9 @@ class WildfireChannel extends ApplicationChannel {
   Future prepare() async {
     logger.onRecord.listen(
         (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+
+    final config = WildfireConfiguration(options!.configurationFilePath!);
+    print(config);
   }
 
   /// Construct the request channel.

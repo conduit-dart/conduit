@@ -1,5 +1,3 @@
-import 'package:wildfire/wildfire.dart';
-
 import 'harness/app.dart';
 
 Future main() async {
