@@ -119,7 +119,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   Uri _packageUri(Directory conduitLocation, String packageDir) {
-    return Directory(join(conduitLocation.path, '..', packageDir)).uri;
+    return Directory(normalize(join(conduitLocation.path, '..', packageDir)))
+        .uri;
   }
 
   bool shouldIncludeItem(FileSystemEntity entity) {
