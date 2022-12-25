@@ -1,3 +1,4 @@
+import 'package:wildfire/model/model.dart';
 import 'package:wildfire/wildfire.dart';
 
 /// This type initializes an application.
@@ -5,6 +6,8 @@ import 'package:wildfire/wildfire.dart';
 /// Override methods in this class to set up routes and initialize services like
 /// database connections. See http://conduit.io/docs/http/channel/.
 class WildfireChannel extends ApplicationChannel {
+  late ManagedContext context;
+
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -15,9 +18,6 @@ class WildfireChannel extends ApplicationChannel {
   Future prepare() async {
     logger.onRecord.listen(
         (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
-
-    final config = WildfireConfiguration(options!.configurationFilePath!);
-    print(config);
   }
 
   /// Construct the request channel.
@@ -38,14 +38,4 @@ class WildfireChannel extends ApplicationChannel {
 
     return router;
   }
-}
-
-/// An instance of this class represents values from a configuration
-/// file specific to this application.
-///
-/// Configuration files must have key-value for the properties in this class.
-/// For more documentation on configuration files, see
-/// https://pub.dartlang.org/packages/safe_config.
-class WildfireConfiguration extends Configuration {
-  WildfireConfiguration(String fileName) : super.fromFile(File(fileName));
 }
