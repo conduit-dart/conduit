@@ -62,6 +62,7 @@ jobs:
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
         dart pub get --directory=packages/runtime_test_packages/application --offline
         dart pub get --directory=packages/runtime_test_packages/dependency --offline
+        dir ../../../../../../runneradmin/.pub-cache/hosted/pub.dev/
     - name: Run tests
       env:
         CONDUIT_CI_DIR_LOCATION: ${{ github.workspace }}\ci\
