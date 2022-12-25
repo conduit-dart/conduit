@@ -1,4 +1,3 @@
-import 'package:wildfire/model/model.dart';
 import 'package:wildfire/wildfire.dart';
 
 /// This type initializes an application.
@@ -6,8 +5,6 @@ import 'package:wildfire/wildfire.dart';
 /// Override methods in this class to set up routes and initialize services like
 /// database connections. See http://conduit.io/docs/http/channel/.
 class WildfireChannel extends ApplicationChannel {
-  late ManagedContext context;
-
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]

@@ -55,11 +55,12 @@ abstract class CLIProject implements CLICommand {
 
   String? get packageName => projectSpecification!["name"] as String?;
 
-  Version get projectVersion {
+  Version? get projectVersion {
     if (_projectVersion == null) {
-      final lockFile = File.fromUri(packageConfigUri);
+      final lockFile =
+          File.fromUri(projectDirectory!.uri.resolve("pubspec.lock"));
       if (!lockFile.existsSync()) {
-        throw CLIException("No package_config.json file. Run `pub get`.");
+        throw CLIException("No pubspec.lock file. Run `pub get`.");
       }
 
       final lockFileContents = loadYaml(lockFile.readAsStringSync()) as Map;
@@ -69,7 +70,7 @@ abstract class CLIProject implements CLICommand {
       _projectVersion = Version.parse(projectVersion);
     }
 
-    return _projectVersion!;
+    return _projectVersion;
   }
 
   Directory? _projectDirectory;
@@ -95,7 +96,7 @@ abstract class CLIProject implements CLICommand {
         displayInfo("Conduit project version: $projectVersion");
       }
 
-      if (projectVersion.major != toolVersion!.major) {
+      if (projectVersion?.major != toolVersion!.major) {
         throw CLIException(
           "CLI version is incompatible with project conduit version.",
           instructions: [
