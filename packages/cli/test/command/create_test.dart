@@ -175,7 +175,7 @@ void main() {
         const String cmd = 'dart';
         final res = Process.runSync(
           cmd,
-          ["test"],
+          ["test", "test/"],
           runInShell: true,
           workingDirectory: cli.agent.workingDirectory.uri
               .resolve("test_project")
