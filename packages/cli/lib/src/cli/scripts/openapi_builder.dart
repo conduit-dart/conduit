@@ -155,6 +155,7 @@ Future<Map<String, dynamic>> documentProject(
   CLIProject project,
   CLIDocumentOptions options,
 ) async {
+  print('sdf');
   final variables = <String, dynamic>{
     "pubspec": project.projectSpecificationFile.readAsStringSync(),
     "hosts": options.hosts.map((u) => u.toString()).toList(),
@@ -170,6 +171,7 @@ Future<Map<String, dynamic>> documentProject(
     "licenseName": options.licenseName,
     "resolveRelativeUrls": options.resolveRelativeUrls
   };
+  print(project.projectSpecificationFile.readAsStringSync());
 
   final result = await IsolateExecutor.run(
     OpenAPIBuilder(variables),

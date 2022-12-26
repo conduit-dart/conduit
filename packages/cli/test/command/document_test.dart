@@ -29,9 +29,7 @@ void main() {
   });
 
   test("Document command uses project pubspec for metadata", () async {
-    print('asss');
     await terminal.run("document", ["--machine"]);
-    print('sdf');
     final map = json.decode(terminal.output);
     expect(map["info"]["title"], "application_test");
     expect(map["info"]["version"], "0.0.1");
