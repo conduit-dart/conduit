@@ -14,7 +14,11 @@ command:
     usePubspecOverrides: true
 scripts:
   test-unit:
-    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -j1"
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test"
+    select-pacakge:
+      no-private: true
+  test-unit-scoped:
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test test/*" #TODO: file a bug report with dart:mirrors
     select-pacakge:
       no-private: true
   test-with-coverage:

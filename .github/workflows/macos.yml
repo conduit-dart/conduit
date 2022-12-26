@@ -18,9 +18,9 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        runner_args: [dart test]
+        runner_args: [melos test-unit-scoped, dart tool/generated_test_runner.dart]
     env:
-      TEST_DIR: packages/cli
+      TEST_DIR: packages/core
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 15432
       POSTGRES_USER: conduit_test_user
