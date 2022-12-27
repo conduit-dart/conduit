@@ -132,9 +132,14 @@ void main() {
           Uri.parse(conduitCorePacakge['rootUri'] as String)
               .resolve(conduitCorePacakge['packageUri'] as String);
 
-      final path = path_lib
-          .normalize(path_lib.fromUri(conduitCoreLocation.resolve('../core')));
-      expect(path, path_lib.join(Directory.current.path, "lib"));
+      final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
+      expect(
+          path,
+          path_lib.join(
+              Directory.current.uri
+                  .resolve('../core')
+                  .toFilePath(windows: Platform.isWindows),
+              "lib"));
     });
 
     /* for every template */
