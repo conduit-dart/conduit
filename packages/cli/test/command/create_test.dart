@@ -130,10 +130,10 @@ void main() {
           packages.firstWhere((element) => element['name'] == 'conduit_core');
       final conduitCoreLocation =
           Uri.parse(conduitCorePacakge['rootUri'] as String)
-              .resolve('../core')
               .resolve(conduitCorePacakge['packageUri'] as String);
 
-      final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
+      final path = path_lib
+          .normalize(path_lib.fromUri(conduitCoreLocation.resolve('../core')));
       expect(path, path_lib.join(Directory.current.path, "lib"));
     });
 
