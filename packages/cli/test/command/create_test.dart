@@ -191,16 +191,14 @@ void main() {
               .toFilePath(windows: Platform.isWindows),
         );
 
+        print(res.stderr);
+
         expect(res.exitCode, 0);
 
         try {
-          try {
-            expect(res.stdout, contains("All tests passed!"));
-          } catch (_) {
-            expect(res.stdout, contains(" passed."));
-          }
+          expect(res.stdout, contains("All tests passed!"));
         } catch (_) {
-          expect(res.stdout, '');
+          expect(res.stdout, contains(" passed."));
         }
       });
     }
