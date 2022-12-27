@@ -134,12 +134,14 @@ void main() {
 
       final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
       expect(
-          path,
-          path_lib.join(
-              Directory.current.uri
-                  .resolve('../core')
-                  .toFilePath(windows: Platform.isWindows),
-              "lib"));
+        path,
+        path_lib.join(
+          Directory.current.uri
+              .resolve('../core')
+              .toFilePath(windows: Platform.isWindows),
+          "lib",
+        ),
+      );
     });
 
     /* for every template */
@@ -182,7 +184,7 @@ void main() {
         const String cmd = 'dart';
         final res = Process.runSync(
           cmd,
-          ["test"],
+          ["pub", "run", "test"],
           runInShell: true,
           workingDirectory: cli.agent.workingDirectory.uri
               .resolve("test_project")
