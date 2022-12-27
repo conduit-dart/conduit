@@ -126,12 +126,14 @@ void main() {
           ),
         ).readAsStringSync(),
       )['packages'] as List;
-      final conduitPacakge =
+      final conduitCorePacakge =
           packages.firstWhere((element) => element['name'] == 'conduit_core');
-      final conduitLocation = Uri.parse(conduitPacakge['rootUri'] as String)
-          .resolve(conduitPacakge['packageUri'] as String);
+      final conduitCoreLocation =
+          Uri.parse(conduitCorePacakge['rootUri'] as String)
+              .resolve('../core')
+              .resolve(conduitCorePacakge['packageUri'] as String);
 
-      final path = path_lib.normalize(path_lib.fromUri(conduitLocation));
+      final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
       expect(path, path_lib.join(Directory.current.path, "lib"));
     });
 
