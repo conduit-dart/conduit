@@ -127,7 +127,7 @@ void main() {
         ).readAsStringSync(),
       )['packages'] as List;
       final conduitPacakge =
-          packages.firstWhere((element) => element['name'] == 'conduit');
+          packages.firstWhere((element) => element['name'] == 'conduit_core');
       final conduitLocation = Uri.parse(conduitPacakge['rootUri'] as String)
           .resolve(conduitPacakge['packageUri'] as String);
 
