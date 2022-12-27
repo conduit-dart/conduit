@@ -192,6 +192,8 @@ void main() {
         );
 
         print(res.stderr);
+        print('asd');
+        print(res.stdout);
 
         expect(res.exitCode, 0);
 
