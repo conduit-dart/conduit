@@ -112,13 +112,8 @@ class DartProjectAgent extends WorkingDirectoryAgent {
     return buf.toString();
   }
 
-  String _pubspecContents(
-    String name,
-    Map<String, dynamic> deps,
-    Map<String, dynamic> devDeps,
-    Map<String, dynamic> dependencyOverrides, {
-    bool nullsafe = true,
-  }) {
+  String _pubspecContents(String name, Map<String, dynamic> deps,
+      Map<String, dynamic> devDeps, Map<String, dynamic> dependencyOverrides) {
     return """
 name: $name
 description: desc

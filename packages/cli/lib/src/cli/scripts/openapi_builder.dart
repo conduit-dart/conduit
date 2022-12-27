@@ -155,7 +155,6 @@ Future<Map<String, dynamic>> documentProject(
   CLIProject project,
   CLIDocumentOptions options,
 ) async {
-  print('sdf');
   final variables = <String, dynamic>{
     "pubspec": project.projectSpecificationFile.readAsStringSync(),
     "hosts": options.hosts.map((u) => u.toString()).toList(),
