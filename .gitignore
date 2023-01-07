@@ -29,6 +29,7 @@ stackoverflow
 **/.failed_tracker
 migration_tmp
 coverage
+application_test/
 
 doc/
 site/
