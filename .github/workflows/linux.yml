@@ -28,7 +28,7 @@ jobs:
       run: |
         conduit create -t db_and_auth wildfire
         cd wildfire/
-        echo "----------- Building test project -----------""
+        echo "----------- Building test project -----------"
         conduit build
   unit:
     needs: smoke
