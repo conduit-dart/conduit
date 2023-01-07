@@ -21,7 +21,7 @@ jobs:
       run: |
         dart pub global activate -spath packages/cli
     - name: Run tests
-      working-directory: ~/
+      working-directory: ../
       run: |
         conduit create -t db_and_auth wildfire
         cd wildfire/
