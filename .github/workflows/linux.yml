@@ -10,7 +10,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linux:
+  smoke:
+    runs-on: linux-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: dev
+    - name: Setup Conduit
+      run: |
+        dart pub global activate -spath packages/cli
+    - name: Run tests
+      working-directory: ~/
+      run: |
+        conduit create -t db_and_auth wildfire
+        cd wildfire/
+        conduit build
+  unit:
+    needs: smoke
     if: |
       startsWith(github.head_ref, 'feature/')
       || startsWith(github.head_ref, 'fix/')
