@@ -90,14 +90,15 @@ nav:
       - 'Deploy on AWS (VM)': 'deploy/deploy_aws.md'
       - 'Deploying without aqueduct serve (VM)': 'deploy/script.md'
   - API:
-      - conduit_open_api: '!include ./packages/open_api/mkdocs.yml'
       - conduit_codable: '!include ./packages/codable/mkdocs.yml'
-      - conduit_password_hash: '!include ./packages/password_hash/mkdocs.yml'
-      - conduit_isolate_exec: '!include ./packages/isolate_exec/mkdocs.yml'
+      - conduit_open_api: '!include ./packages/open_api/mkdocs.yml'
       - conduit_config: '!include ./packages/config/mkdocs.yml'
-      - conduit: '!include ./packages/conduit/mkdocs.yml'
-      - conduit_runtime: '!include ./packages/runtime/mkdocs.yml'
+      - conduit_isolate_exec: '!include ./packages/isolate_exec/mkdocs.yml'
+      - conduit_core: '!include ./packages/core/mkdocs.yml'
+      - conduit: '!include ./packages/cli/mkdocs.yml'
+      - conduit_password_hash: '!include ./packages/password_hash/mkdocs.yml'
       - fs_test_agent: '!include ./packages/fs_test_agent/mkdocs.yml'
+      - conduit_runtime: '!include ./packages/runtime/mkdocs.yml'
       - conduit_test: '!include ./packages/test_harness/mkdocs.yml'
 plugins:
   - monorepo

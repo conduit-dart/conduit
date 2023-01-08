@@ -38,7 +38,7 @@ scripts:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
   gen-docs:
     run: |
-      yq -i 'with(.nav[] | select(has("API")); . = {"API": []})' $MELOS_ROOT_PATH/mkdocs.yml && melos exec --ignore "*common*" -- "dart doc && CONF=\$(echo \$MELOS_PACKAGE_PATH/mkdocs.yml | sed -e 's#^$MELOS_ROOT_PATH#!include .#') yq -i 'with(.nav[] | select(has(\"API\")); .[] += {\"\$MELOS_PACKAGE_NAME\" : strenv(CONF)})' $MELOS_ROOT_PATH/mkdocs.yml"
+      yq -i 'with(.nav[] | select(has("API")); . = {"API": []})' $MELOS_ROOT_PATH/mkdocs.yml && melos exec --ignore "*common*" -c 1 -- "dart doc && CONF=\$(echo \$MELOS_PACKAGE_PATH/mkdocs.yml | sed -e 's#^$MELOS_ROOT_PATH#!include .#') yq -i 'with(.nav[] | select(has(\"API\")); .[] += {\"\$MELOS_PACKAGE_NAME\" : strenv(CONF)})' $MELOS_ROOT_PATH/mkdocs.yml"
     select-pacakge:
       no-private: true
   fix:
