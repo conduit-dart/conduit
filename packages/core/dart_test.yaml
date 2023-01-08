@@ -1,2 +1,2 @@
 timeout: 120s
-concurrency: 2
+concurrency: 1
