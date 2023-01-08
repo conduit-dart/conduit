@@ -44,6 +44,29 @@ class CLIBuild extends CLICommand with CLIProject {
       getScriptSource(await getChannelName()),
     );
 
+    final cfg = await ctx.packageConfig;
+
+    final packageNames = cfg.packages
+        .where((pkg) => pkg.name.startsWith('conduit_'))
+        .map((pkg) => pkg.name);
+
+    const String cmd = "dart";
+    final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];
+    for (final String name in packageNames) {
+      final res = await Process.run(
+        cmd,
+        [...args, name],
+        runInShell: true,
+      );
+      if (res.exitCode != 0) {
+        print("${res.stdout}");
+        print("${res.stderr}");
+        throw StateError(
+          "'pub get' failed with the following message: ${res.stderr}",
+        );
+      }
+    }
+
     final bm = BuildManager(ctx);
     await bm.build();
 

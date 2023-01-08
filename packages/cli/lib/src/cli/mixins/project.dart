@@ -57,8 +57,8 @@ abstract class CLIProject implements CLICommand {
 
   Version? get projectVersion {
     if (_projectVersion == null) {
-      final lockFile = File.fromUri(
-          projectDirectory!.uri.resolve(".dart_tool/package_config.json"));
+      final lockFile =
+          File.fromUri(projectDirectory!.uri.resolve("pubspec.lock"));
       if (!lockFile.existsSync()) {
         throw CLIException("No pubspec.lock file. Run `pub get`.");
       }
