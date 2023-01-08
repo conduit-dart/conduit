@@ -64,10 +64,9 @@ abstract class CLIProject implements CLICommand {
       }
 
       final lockFileContents = loadYaml(lockFile.readAsStringSync()) as Map;
-      print(lockFileContents);
       final projectVersion =
           // ignore: avoid_dynamic_calls
-          lockFileContents["packages"]["conduit"]["version"] as String;
+          lockFileContents["packages"]["conduit_core"]["version"] as String;
       _projectVersion = Version.parse(projectVersion);
     }
 
