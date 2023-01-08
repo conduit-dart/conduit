@@ -59,11 +59,18 @@ class CLIBuild extends CLICommand with CLIProject {
         runInShell: true,
       );
       if (res.exitCode != 0) {
-        print("${res.stdout}");
-        print("${res.stderr}");
-        throw StateError(
-          "'pub get' failed with the following message: ${res.stderr}",
+        final retry = await Process.run(
+          cmd,
+          [...args.sublist(0, 3), name],
+          runInShell: true,
         );
+        if (retry.exitCode != 0) {
+          print("${res.stdout}");
+          print("${res.stderr}");
+          throw StateError(
+            "'pub get' failed with the following message: ${res.stderr}",
+          );
+        }
       }
     }
 
