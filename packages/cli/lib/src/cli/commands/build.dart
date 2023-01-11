@@ -46,9 +46,7 @@ class CLIBuild extends CLICommand with CLIProject {
 
     final cfg = await ctx.packageConfig;
 
-    final packageNames = cfg.packages
-        .where((pkg) => pkg.name.startsWith('conduit_'))
-        .map((pkg) => pkg.name);
+    final packageNames = cfg.packages.map((pkg) => pkg.name);
 
     const String cmd = "dart";
     final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];
