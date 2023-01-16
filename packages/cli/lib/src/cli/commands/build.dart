@@ -53,7 +53,7 @@ class CLIBuild extends CLICommand with CLIProject {
 
     const String cmd = "dart";
     final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];
-    for (final String name in ['conduit', ...packageNames]) {
+    for (final String name in packageNames) {
       final res = await Process.run(
         cmd,
         [...args, name],

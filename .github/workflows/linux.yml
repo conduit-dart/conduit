@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
