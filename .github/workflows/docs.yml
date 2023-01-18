@@ -1,0 +1,30 @@
+name: Docs
+
+on:
+  workflow_dispatch:
+    branches:
+    - master
+
+concurrency:
+  group: "documentation"
+  cancel-in-progress: true
+    
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+    - name: Install melos
+      run: dart pub global activate melos
+    - name: Generate docs
+      run: melos bootstrap && melos gen-docs && echo "mkdocs-monorepo-plugin==1.0.4" > requirements.txt
+    - name: Deploy docs
+      uses: mhausenblas/mkdocs-deploy-gh-pages@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CONFIG_FILE: mkdocs.yml
+        EXTRA_PACKAGES: build-base
+        REQUIREMENTS: requirements.txt
