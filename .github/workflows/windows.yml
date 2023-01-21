@@ -27,6 +27,7 @@ jobs:
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build
+        conduit db generate
   unit:
     needs: smoke
     if: |
