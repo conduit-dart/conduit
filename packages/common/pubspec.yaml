@@ -1,10 +1,10 @@
 name: conduit_common
-version: 4.1.6
+version: 4.1.7
 description: Common classes shared by conduit projects.
 repository: https://github.com/bsutton/conduit-orm
 environment:
   sdk: '>=2.18.6 <3.0.0'
 dependencies:
-  conduit_open_api: ^4.1.6
+  conduit_open_api: ^4.1.7
 dev_dependencies:
   lint: ^2.0.0
