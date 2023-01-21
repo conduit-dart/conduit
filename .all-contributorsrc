@@ -32,6 +32,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "PROGrand",
+      "name": "Vladimir E. Koltunov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8981380?v=4",
+      "profile": "https://mtbo.org",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
