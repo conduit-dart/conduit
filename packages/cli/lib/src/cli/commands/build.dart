@@ -52,7 +52,19 @@ class CLIBuild extends CLICommand with CLIProject {
 
     const String cmd = "dart";
     final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];
+    int currentPackageIndex = 0;
     for (final String name in packageNames) {
+      if (currentPackageIndex != 0) {
+        if (Platform.isWindows) {
+          stdout.write("\x1B[2K\r");
+        } else {
+          stdout.write("\x1B[1A\x1B[2K\r");
+        }
+      }
+      print(
+        "Caching packages ${++currentPackageIndex} of ${packageNames.length}",
+      );
+
       final res = await Process.run(
         cmd,
         [...args, name],
@@ -73,6 +85,7 @@ class CLIBuild extends CLICommand with CLIProject {
         }
       }
     }
+    print("Starting build process...");
 
     final bm = BuildManager(ctx);
     await bm.build();
