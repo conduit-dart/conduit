@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:args/args.dart' as arg_package;
-import 'package:collection/collection.dart';
 import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:conduit/src/cli/mixins/project.dart';
@@ -48,8 +47,8 @@ class CLIBuild extends CLICommand with CLIProject {
     final cfg = await ctx.packageConfig;
 
     final packageNames = cfg.packages
-        .map((pkg) => pkg.name)
-        .whereNot((pkg) => pkg == libraryName);
+        .where((pkg) => pkg.name.startsWith('conduit'))
+        .map((pkg) => pkg.name);
 
     const String cmd = "dart";
     final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];

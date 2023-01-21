@@ -81,6 +81,7 @@ class Build {
         "Copying application package (from '${context.sourceApplicationDirectory.uri}')...",
       );
       await copyPackage(context.sourceApplicationDirectory.uri, appDst);
+      await searchOldPackageUsage(Directory.fromUri(appDst));
       print("Application packaged copied to '$appDst'.");
     }
     pubspecMap['dependencies'] = {
@@ -119,6 +120,26 @@ class Build {
       print("Compiling...");
       await compile(context.targetScriptFileUri, context.executableUri);
       print("Success. Executable is located at '${context.executableUri}'.");
+    }
+  }
+
+  Future<void> searchOldPackageUsage(Directory targetDir) async {
+    final files = targetDir
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((element) => element.path.endsWith(".dart"));
+    for (final file in files) {
+      final content = await file.readAsString();
+      if (content.contains("package:conduit/conduit.dart")) {
+        final newContent = content.replaceAll(
+          "package:conduit/conduit.dart",
+          "package:conduit_core/conduit_core.dart",
+        );
+        print("Found old package usage in ${file.uri}."
+            " please update from package:conduit/conduit.dart"
+            " to package:conduit_core/conduit_core.dart.");
+        await file.writeAsString(newContent);
+      }
     }
   }
 
