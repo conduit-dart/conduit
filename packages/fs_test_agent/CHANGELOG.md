@@ -1,3 +1,7 @@
+## 4.1.7
+
+ - **FIX**: Cache cli ([#169](https://github.com/conduit-dart/conduit/issues/169)). ([959e80b5](https://github.com/conduit-dart/conduit/commit/959e80b5086a9c127d3a38331383a4a5a57d29da))
+
 ## 4.1.6
 
  - **FIX**: investigate build issues ([#167](https://github.com/conduit-dart/conduit/issues/167)). ([ee79f9e6](https://github.com/conduit-dart/conduit/commit/ee79f9e69a4f6dbaefa93db78505eaf7b5a88652))

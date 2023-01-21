@@ -1,5 +1,5 @@
 name: conduit_test
-version: 4.1.6
+version: 4.1.7
 homepage: https://github.com/conduit-dart/conduit
 description: Utilities for writing automated tests for Conduit applications
 environment:
@@ -7,7 +7,7 @@ environment:
 dependencies:
   test: ^1.21.6
   matcher: ^0.12.12
-  conduit_core: ^4.1.6
+  conduit_core: ^4.1.7
 dev_dependencies:
   conduit_common_test:
     path: ../common_test

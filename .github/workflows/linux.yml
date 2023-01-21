@@ -12,6 +12,7 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    container: centos/python-38-centos7:latest
     steps:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
@@ -27,6 +28,7 @@ jobs:
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build
+        conduit db generate
   unit:
     needs: smoke
     if: |
