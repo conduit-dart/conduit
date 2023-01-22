@@ -1,20 +1,18 @@
 site_name: Conduit
 theme:
   name: readthedocs
-  custom_dir: docs/overrides
 markdown_extensions:
   - codehilite
   - markdown.extensions.admonition
-extra_css:
-  - style/css/override.css
 repo_url: https://github.com/conduit-dart/conduit
 site_description: Documentation for Conduit, a Dart server-side framework.
 copyright: Maintained by conduit-dart team
 nav:
   - Home: 'index.md'
-  - Core Concepts: 'core_concepts.md'
   - Getting Started: 'getting_started.md'
+  - Core Concepts: 'core_concepts.md'
   - Tour: 'tour.md'
+  - API: []
   - Best Practices: 'best_practices.md'
   - IntelliJ IDEA Templates: 'intellij.md'
   - Tutorial:
@@ -89,16 +87,5 @@ nav:
       - 'Deploy on Heroku (VM)': 'deploy/deploy_heroku.md'
       - 'Deploy on AWS (VM)': 'deploy/deploy_aws.md'
       - 'Deploying without aqueduct serve (VM)': 'deploy/script.md'
-  - API:
-      - conduit_codable: '!include ./packages/codable/mkdocs.yml'
-      - conduit_open_api: '!include ./packages/open_api/mkdocs.yml'
-      - conduit_config: '!include ./packages/config/mkdocs.yml'
-      - conduit_isolate_exec: '!include ./packages/isolate_exec/mkdocs.yml'
-      - conduit_core: '!include ./packages/core/mkdocs.yml'
-      - conduit: '!include ./packages/cli/mkdocs.yml'
-      - conduit_password_hash: '!include ./packages/password_hash/mkdocs.yml'
-      - fs_test_agent: '!include ./packages/fs_test_agent/mkdocs.yml'
-      - conduit_runtime: '!include ./packages/runtime/mkdocs.yml'
-      - conduit_test: '!include ./packages/test_harness/mkdocs.yml'
 plugins:
   - monorepo

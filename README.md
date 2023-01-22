@@ -1,6 +1,7 @@
 <img src="https://raw.githubusercontent.com/conduit-dart/conduit/master/assets/conduit-name.svg" width="500" height="150">
 
 [![Linux](https://github.com/conduit-dart/conduit/actions/workflows/linux.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/linux.yml) [![Windows](https://github.com/conduit-dart/conduit/actions/workflows/windows.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/windows.yml) [![Macos](https://github.com/conduit-dart/conduit/actions/workflows/macos.yml/badge.svg)](https://github.com/conduit-dart/conduit/actions/workflows/macos.yml) [<img src="https://discord.com/assets/3437c10597c1526c3dbd98c737c2bcae.svg" width="28" height="20">](https://discord.gg/MHz5cqktHW)
+[![melos](https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square)](https://github.com/invertase/melos)
 
 Conduit is a fork of Stablekernel's Aqueduct, a modern Dart HTTP server framework.
 
