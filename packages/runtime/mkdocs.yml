@@ -2,4 +2,4 @@ site_name: conduit_runtime
 docs_dir: doc/api
 
 nav: 
-  - API: "index.html"
+  - Docs: "index.html"

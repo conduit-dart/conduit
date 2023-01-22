@@ -12,7 +12,7 @@ nav:
   - Getting Started: 'getting_started.md'
   - Core Concepts: 'core_concepts.md'
   - Tour: 'tour.md'
-  - API: []
+  - API: '*include ./packages/*/mkdocs.yml'
   - Best Practices: 'best_practices.md'
   - IntelliJ IDEA Templates: 'intellij.md'
   - Tutorial:

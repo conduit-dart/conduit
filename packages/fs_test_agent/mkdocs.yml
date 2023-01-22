@@ -1,4 +1,0 @@
-site_name: fs_test_agent
-docs_dir: doc/api
-nav: 
-  - API: "index.html"
