@@ -423,9 +423,13 @@ class CLIConduitGlobal {
     if (apps.isEmpty) {
       return null;
     }
-    return apps
-        .firstWhere((app) => app.name == "conduit")
-        .getDefiningPackageRef();
+    try {
+      return apps
+          .firstWhere((app) => app.name == "conduit")
+          .getDefiningPackageRef();
+    } catch (_) {
+      return null;
+    }
   }
 
   Uri? get templateDirectory {
