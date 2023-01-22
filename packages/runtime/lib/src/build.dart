@@ -24,9 +24,10 @@ class Build {
     await Future.forEach<Uri>(
       astsToResolve,
       (astUri) async {
-        final Uri package =
-            (await context.getPackageFromUri(astUri))?.packageUriRoot ?? astUri;
-        return context.analyzer.resolveUnitOrLibraryAt(package);
+        final package = await context.getPackageFromUri(astUri);
+        final Uri packageUri =
+            package?.packageUriRoot.resolve(package.name) ?? astUri;
+        return context.analyzer.resolveUnitOrLibraryAt(packageUri);
       },
     );
 
