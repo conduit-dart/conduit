@@ -58,7 +58,7 @@ INSERT INTO _Hero (name) VALUES ('Hero Name');
 
 Re-run your application. In the browser application, click on `Heroes` near the top of the page. Then, enter a name into the `Hero name:` field and click `Add`. The new hero will appear. You can re-run the application and that hero will still be available, because it has been stored in the database on your machine.
 
-![Insert Hero](../assets/docs/run3.png)
+![Insert Hero](../assets/run3.png)
 
 Assigning values one-by-one from a request body to a query is cumbersome. You can also auto-magically ingest a request body into a managed object and assign it to the `values` of a query:
 
@@ -153,7 +153,7 @@ Values in the request body object are decoded into a `Hero` object - each key in
 
 Re-run your `heroes` application. On [http://conduit-tutorial.conduit.dart.io](http://conduit-tutorial.conduit.dart.io), click on the `Heroes` button on the top of the screen. In the text field, enter a new hero name and click `Add`. You'll see your new hero added to the list! You can shutdown your application and run it again and you'll still be able to fetch your new hero.
 
-![Conduit Tutorial Third Run](../assets/docs/run3.png)
+![Conduit Tutorial Third Run](../assets/run3.png)
 
 !!! tip "Query Construction" Properties like `values` and `where` prevent errors by type and name checking columns with the analyzer. They're also great for speeding up writing code because your IDE will autocomplete property names. There is [specific behavior](../db/advanced_queries.md) a query uses to decide whether it should include a value from these two properties in the SQL it generates.
 
