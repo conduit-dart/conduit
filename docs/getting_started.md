@@ -5,13 +5,13 @@
 1. [Install Dart](https://www.dartlang.org/install).
 2. Activate the Conduit CLI
 
-   ```text
-    pub global activate conduit
+   ```bash
+    dart pub global activate conduit
    ```
 
 3. Create a new project.
 
-   ```text
+   ```bash
     conduit create my_project
    ```
 

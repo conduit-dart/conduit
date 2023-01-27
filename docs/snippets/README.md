@@ -1,4 +1,8 @@
-# Snippets
+# Conduit Snippets
 
-The following pages provide a number of useful code snippets.
+These snippets are quick examples of common code that you can use and modify in your application.
+
+* [HTTP Routing, Request and Response Snippets](http.md)
+* [ORM and Database Snippets](orm.md)
+* [Authorization and Authentication Snippets](auth.md)
 

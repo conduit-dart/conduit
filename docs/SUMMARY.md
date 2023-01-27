@@ -55,7 +55,7 @@
   * [Mocking External Services](testing/mock.md)
   * [Debugging Conduit Applications](testing/debugger.md)
 * [Snippets](snippets/README.md)
-  * [Conduit Snippets](snippets/index.md)
+  * [Conduit Snippets](snippets/README.md)
   * [Conduit HTTP Snippets](snippets/http.md)
   * [Conduit ORM Snippets](snippets/orm.md)
   * [Conduit Authorization and Authentication Snippets](snippets/auth.md)
