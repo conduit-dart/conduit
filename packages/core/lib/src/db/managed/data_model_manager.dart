@@ -1,15 +1,13 @@
 import 'package:conduit_core/src/db/managed/data_model.dart';
 import 'package:conduit_core/src/db/managed/entity.dart';
-import 'package:conduit_core/src/utilities/reference_counting_list.dart';
 
-ReferenceCountingList<ManagedDataModel> dataModels =
-    ReferenceCountingList<ManagedDataModel>();
+Map<ManagedDataModel, int> _dataModels = {};
 
 ManagedEntity findEntity(
   Type type, {
   ManagedEntity Function()? orElse,
 }) {
-  for (final d in dataModels) {
+  for (final d in _dataModels.keys) {
     final entity = d.tryEntityForType(type);
     if (entity != null) {
       return entity;
@@ -25,11 +23,15 @@ ManagedEntity findEntity(
   return orElse();
 }
 
-void add(ManagedDataModel model) {
-  final idx = dataModels.indexOf(model);
-  if (idx == -1) {
-    dataModels.add(model);
-  }
+void add(ManagedDataModel dataModel) {
+  _dataModels.update(dataModel, (count) => count + 1, ifAbsent: () => 1);
+}
 
-  model.retain();
+void remove(ManagedDataModel dataModel) {
+  if (_dataModels[dataModel] != null) {
+    _dataModels.update(dataModel, (count) => count - 1);
+    if (_dataModels[dataModel]! < 1) {
+      _dataModels.remove(dataModel);
+    }
+  }
 }

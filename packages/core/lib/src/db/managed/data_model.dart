@@ -2,7 +2,6 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/query/query.dart';
-import 'package:conduit_core/src/utilities/reference_counting_list.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 /// Instances of this class contain descriptions and metadata for mapping [ManagedObject]s to database rows.
@@ -14,9 +13,7 @@ import 'package:conduit_runtime/runtime.dart';
 ///
 /// Most applications do not need to access instances of this type.
 ///
-class ManagedDataModel extends Object
-    with ReferenceCountable
-    implements APIComponentDocumenter {
+class ManagedDataModel extends Object implements APIComponentDocumenter {
   /// Creates an instance of [ManagedDataModel] from a list of types that extend [ManagedObject]. It is preferable
   /// to use [ManagedDataModel.fromCurrentMirrorSystem] over this method.
   ///

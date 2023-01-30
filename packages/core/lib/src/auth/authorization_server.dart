@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/auth/auth.dart';
-import 'package:conduit_core/src/utilities/token_generator.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:crypto/crypto.dart';
 
@@ -644,4 +644,19 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       ..requestedScopes = scopes
       ..expirationDate = now.add(Duration(seconds: expirationInSeconds));
   }
+}
+
+String randomStringOfLength(int length) {
+  const possibleCharacters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  final buff = StringBuffer();
+
+  final r = Random.secure();
+  for (int i = 0; i < length; i++) {
+    buff.write(
+      possibleCharacters[r.nextInt(1000) % possibleCharacters.length],
+    );
+  }
+
+  return buff.toString();
 }

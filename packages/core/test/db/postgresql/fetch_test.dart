@@ -2,6 +2,7 @@
 
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/src/dev/helpers.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -29,14 +30,8 @@ void main() {
   test("Query with dynamic entity and mis-matched context throws exception",
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
-    final store = PostgreSQLPersistentStore.fromConnectionInfo(
-      "dart_app",
-      "dart",
-      "localhost",
-      5432,
-      "my_database_name",
-    );
-    final someOtherContext = ManagedContext(ManagedDataModel([]), store);
+    final someOtherContext =
+        ManagedContext(ManagedDataModel([]), DefaultPersistentStore());
     try {
       Query.forEntity(
         context!.dataModel!.entityForType(TestModel),
