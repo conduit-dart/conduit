@@ -6,7 +6,14 @@ void main() {
       "Mixed in properties with @Serialize() are transient properties fromCurrentMirrorSystem",
       () {
     final dm = ManagedDataModel.fromCurrentMirrorSystem();
-    final ctx = ManagedContext(dm, EmptyStore());
+    final store = PostgreSQLPersistentStore.fromConnectionInfo(
+      "dart_app",
+      "dart",
+      "localhost",
+      5432,
+      "my_database_name",
+    );
+    final ctx = ManagedContext(dm, store);
     final m = ctx.dataModel!.entityForType(Mixin);
     expect(m.attributes["serialized"]!.isTransient, true);
 
@@ -22,7 +29,14 @@ void main() {
       "Mixed in properties with @Serialize() are transient properties from list of types",
       () {
     final dm = ManagedDataModel([Mixin]);
-    final ctx = ManagedContext(dm, EmptyStore());
+    final store = PostgreSQLPersistentStore.fromConnectionInfo(
+      "dart_app",
+      "dart",
+      "localhost",
+      5432,
+      "my_database_name",
+    );
+    final ctx = ManagedContext(dm, store);
     final m = ctx.dataModel!.entityForType(Mixin);
     expect(m.properties.length, 3);
     expect(m.attributes["serialized"]!.isTransient, true);

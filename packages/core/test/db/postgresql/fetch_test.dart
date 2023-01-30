@@ -29,8 +29,14 @@ void main() {
   test("Query with dynamic entity and mis-matched context throws exception",
       () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
-
-    final someOtherContext = ManagedContext(ManagedDataModel([]), EmptyStore());
+    final store = PostgreSQLPersistentStore.fromConnectionInfo(
+      "dart_app",
+      "dart",
+      "localhost",
+      5432,
+      "my_database_name",
+    );
+    final someOtherContext = ManagedContext(ManagedDataModel([]), store);
     try {
       Query.forEntity(
         context!.dataModel!.entityForType(TestModel),

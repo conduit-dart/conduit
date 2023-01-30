@@ -785,7 +785,14 @@ void main() {
 
   test("Can have constructor with only optional args", () {
     final dm = ManagedDataModel([DefaultConstructorHasOptionalArgs]);
-    final _ = ManagedContext(dm, EmptyStore());
+    final store = PostgreSQLPersistentStore.fromConnectionInfo(
+      "dart_app",
+      "dart",
+      "localhost",
+      5432,
+      "my_database_name",
+    );
+    final _ = ManagedContext(dm, store);
     final instance =
         dm.entityForType(DefaultConstructorHasOptionalArgs).instanceOf();
     expect(instance is DefaultConstructorHasOptionalArgs, true);
