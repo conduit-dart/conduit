@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:conduit_core/src/application/service_registry.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/postgresql/postgresql_query.dart';
@@ -25,10 +24,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     bool useSSL = false,
-  }) : isSSLConnection = useSSL {
-    ServiceRegistry.defaultInstance
-        .register<PostgreSQLPersistentStore>(this, (store) => store.close());
-  }
+  }) : isSSLConnection = useSSL;
 
   /// Same constructor as default constructor.
   ///
@@ -41,10 +37,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     bool useSSL = false,
-  }) : isSSLConnection = useSSL {
-    ServiceRegistry.defaultInstance
-        .register<PostgreSQLPersistentStore>(this, (store) => store.close());
-  }
+  }) : isSSLConnection = useSSL;
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
       : isSSLConnection = from.isSSLConnection,
@@ -103,6 +96,9 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// Defaults to 30 seconds.
   final Duration connectTimeout = const Duration(seconds: 30);
 
+  static final Finalizer<PostgreSQLConnection> _finalizer =
+      Finalizer((connection) => connection.close());
+
   PostgreSQLConnection? _databaseConnection;
   Completer<PostgreSQLConnection>? _pendingConnectionCompleter;
 
@@ -142,6 +138,8 @@ class PostgreSQLPersistentStore extends PersistentStore
 
       return _pendingConnectionCompleter!.future;
     }
+
+    _finalizer.attach(this, _databaseConnection!, detach: this);
 
     return _databaseConnection!;
   }
@@ -194,6 +192,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future close() async {
     await _databaseConnection?.close();
+    _finalizer.detach(this);
     _databaseConnection = null;
   }
 

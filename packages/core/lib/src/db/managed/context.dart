@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/application/channel.dart';
-import 'package:conduit_core/src/application/service_registry.dart';
 import 'package:conduit_core/src/db/managed/data_model_manager.dart' as mm;
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
@@ -47,14 +46,16 @@ class ManagedContext implements APIComponentDocumenter {
   /// on this context if its type is in [dataModel].
   ManagedContext(this.dataModel, this.persistentStore) {
     mm.add(dataModel!);
-    ServiceRegistry.defaultInstance
-        .register<ManagedContext>(this, (o) => o.close());
+    _finalizer.attach(this, persistentStore, detach: this);
   }
 
   /// Creates a child context from [parentContext].
   ManagedContext.childOf(ManagedContext parentContext)
       : persistentStore = parentContext.persistentStore,
         dataModel = parentContext.dataModel;
+
+  static final Finalizer<PersistentStore> _finalizer =
+      Finalizer((store) => store.close());
 
   /// The persistent store that [Query]s on this context are executed through.
   PersistentStore persistentStore;
@@ -111,6 +112,7 @@ class ManagedContext implements APIComponentDocumenter {
   /// A context may not be reused once it has been closed.
   Future close() async {
     await persistentStore.close();
+    _finalizer.detach(this);
     dataModel?.release();
   }
 
