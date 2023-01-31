@@ -1,3 +1,9 @@
+## 4.2.1-rc.1
+
+ - finalize on close
+
+ - **FIX**: Attach finalizer on commit. ([5343fc8a](https://github.com/conduit-dart/conduit/commit/5343fc8aac99f6269682f7619283815ff916d829))
+
 ## 4.2.0
 
  - **FEAT**: Replace ServiceRegistry with Finalizers ([#185](https://github.com/conduit-dart/conduit/issues/185)). ([73208e92](https://github.com/conduit-dart/conduit/commit/73208e92ceed79369405933b20d98c9ed48ed0e5))
