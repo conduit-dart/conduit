@@ -85,10 +85,7 @@ class DartProjectAgent extends WorkingDirectoryAgent {
   }
 
   final _analysisOptionsContents = """
-  analyzer:
-  strong-mode:
-    implicit-casts: false
-""";
+  """;
 
   static String _asYaml(Map<String, dynamic> m, {int indent = 0}) {
     final buf = StringBuffer();
@@ -112,15 +109,19 @@ class DartProjectAgent extends WorkingDirectoryAgent {
     return buf.toString();
   }
 
-  String _pubspecContents(String name, Map<String, dynamic> deps,
-      Map<String, dynamic> devDeps, Map<String, dynamic> dependencyOverrides) {
+  String _pubspecContents(
+    String name,
+    Map<String, dynamic> deps,
+    Map<String, dynamic> devDeps,
+    Map<String, dynamic> dependencyOverrides,
+  ) {
     return """
 name: $name
 description: desc
 version: 0.0.1
 
 environment:
-  sdk: ">=2.18.6 <3.0.0"
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
 ${_asYaml(deps, indent: 1)}

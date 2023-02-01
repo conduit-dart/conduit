@@ -108,7 +108,7 @@ class Agent {
   /// for the key 'authorization' in [headers].
   void setBasicAuthorization(String username, String password) {
     headers["authorization"] =
-        "Basic ${base64.encode("$username:${password}".codeUnits)}";
+        "Basic ${base64.encode("$username:$password".codeUnits)}";
   }
 
   /// Adds bearer authorization to requests from this agent.

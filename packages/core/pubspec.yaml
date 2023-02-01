@@ -1,9 +1,9 @@
 name: conduit_core
-version: 4.2.1-rc.1
+version: 4.2.0
 homepage: https://github.com/conduit-dart/conduit
 description: This is the core of the framework.
 environment:
-  sdk: ">=2.18.6 <3.0.0"
+  sdk: ">=2.19.0 <3.0.0"
 dependencies:
   analyzer: ^5.1.0
   args: ^2.1.1
@@ -31,7 +31,6 @@ dev_dependencies:
   fs_test_agent:
     path: ../fs_test_agent
   http: ^0.13.0
-  lint: ^2.0.0
   lints: ^2.0.1
   matcher: ^0.12.12
   mockito: ^5.3.2

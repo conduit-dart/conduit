@@ -43,9 +43,9 @@ class TestResponse {
 
     final headerItems = headers.toString().split("\n");
     headerItems.removeWhere((str) => str == "");
-    headerItems.forEach((header) {
+    for (final header in headerItems) {
       buffer.writeln("  - $header");
-    });
+    }
 
     if (!body.isEmpty) {
       buffer.writeln("Decoded body is:");

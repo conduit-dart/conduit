@@ -331,7 +331,7 @@ void main() async {
             contains("Body after decoding"),
             contains("{'foo': 'notbar'}"),
             contains("body differs for the following reasons"),
-            contains("at location [\'foo\'] is \'bar\' instead of \'notbar\'"),
+            contains("at location ['foo'] is 'bar' instead of 'notbar'"),
           ]));
     });
   });
@@ -384,7 +384,7 @@ void main() async {
       },
           allOf([
             contains("{'foo': 'notbar', 'x': 'y'}"),
-            contains("at location [\'foo\'] is \'bar\' instead of \'notbar\'")
+            contains("at location ['foo'] is 'bar' instead of 'notbar'")
           ]));
     });
 
@@ -401,9 +401,9 @@ void main() async {
           expect(response, hasBody({"foo": isNot(isString), "x": 5}));
         },
         allOf([
-          contains("{'foo': <not <Instance of \'String\'>>, 'x': 5}"),
+          contains("{'foo': <not <Instance of 'String'>>, 'x': 5}"),
           contains(
-              "at location ['foo'] is 'bar' which does not match not <Instance of \'String\'>")
+              "at location ['foo'] is 'bar' which does not match not <Instance of 'String'>")
         ]),
       );
     });
@@ -517,7 +517,7 @@ void main() async {
   });
 }
 
-TestFailure failureFor(void f()) {
+TestFailure failureFor(void Function() f) {
   try {
     f();
   } on TestFailure catch (e) {
@@ -527,7 +527,7 @@ TestFailure failureFor(void f()) {
   throw TestFailure("failureFor succeeded, must not succeed.");
 }
 
-void expectFailureFor(void f(), dynamic matcher) {
+void expectFailureFor(void Function() f, dynamic matcher) {
   final msg = failureFor(f).toString();
   expect(msg, matcher);
 }
