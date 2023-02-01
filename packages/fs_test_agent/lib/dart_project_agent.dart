@@ -85,10 +85,7 @@ class DartProjectAgent extends WorkingDirectoryAgent {
   }
 
   final _analysisOptionsContents = """
-  analyzer:
-  strong-mode:
-    implicit-casts: false
-""";
+  """;
 
   static String _asYaml(Map<String, dynamic> m, {int indent = 0}) {
     final buf = StringBuffer();

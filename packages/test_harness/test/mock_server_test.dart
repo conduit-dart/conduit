@@ -207,12 +207,13 @@ void main() {
   });
 }
 
-Future<Null> Function(List) spawnFunc(int port) {
+Future Function(List) spawnFunc(int port) {
   return (List pair) async {
     final path = pair.first as String;
     final delay = pair.last as int;
     final testClient = Agent.onPort(port);
     sleep(Duration(seconds: delay));
+    // ignore: body_might_complete_normally_catch_error
     await testClient.request(path).get().catchError((_) {});
   };
 }

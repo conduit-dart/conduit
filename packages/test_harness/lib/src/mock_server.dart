@@ -122,7 +122,8 @@ class MockHTTPServer extends MockServer<Request> {
   /// it returns is sent back to the client.
   ///
   /// Optionally includes a [delay] before sending the response to simulate long-running tasks or network issues.
-  void queueHandler(Response handler(Request request), {Duration? delay}) {
+  void queueHandler(Response Function(Request request) handler,
+      {Duration? delay}) {
     _responseQueue.add(
         _MockServerResponse(handler: handler, delay: delay ?? defaultDelay));
   }

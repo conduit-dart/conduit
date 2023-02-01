@@ -24,7 +24,7 @@ class PostgresTestConfig {
 
   PostgresTestConfig._internal();
 
-  static late final PostgresTestConfig _self = PostgresTestConfig._internal();
+  static final PostgresTestConfig _self = PostgresTestConfig._internal();
 
   String get connectionUrl =>
       "postgres://$username:$password@$host:$port/$dbName";
@@ -98,15 +98,15 @@ class PostgresTestConfig {
   int get port {
     if (_port == null) {
       /// Check for an environment variable.
-      const _key = 'POSTGRES_PORT';
-      if (Platform.environment.containsKey(_key)) {
-        final value = Platform.environment[_key];
+      const key = 'POSTGRES_PORT';
+      if (Platform.environment.containsKey(key)) {
+        final value = Platform.environment[key];
         if (value != null) {
           _port = int.tryParse(value);
         }
         if (_port == null) {
           throw ArgumentError(
-              "The Environment Variable $_key does not contain a valid integer. Found: $value");
+              "The Environment Variable $key does not contain a valid integer. Found: $value");
         }
       }
     }

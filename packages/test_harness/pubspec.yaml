@@ -11,4 +11,5 @@ dependencies:
 dev_dependencies:
   conduit_common_test:
     path: ../common_test
+  lints: ^2.0.1
   test_core: ^0.4.18

@@ -170,7 +170,6 @@ Future<Map<String, dynamic>> documentProject(
     "licenseName": options.licenseName,
     "resolveRelativeUrls": options.resolveRelativeUrls
   };
-  print(project.projectSpecificationFile.readAsStringSync());
 
   final result = await IsolateExecutor.run(
     OpenAPIBuilder(variables),

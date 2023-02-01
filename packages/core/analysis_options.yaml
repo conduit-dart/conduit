@@ -1,8 +1,6 @@
-include: package:lint/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
-  strong-mode:
-    implicit-casts: false
   exclude:
     - tmp/**
     - templates/**

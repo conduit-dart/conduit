@@ -7,4 +7,4 @@ environment:
 dependencies:
   conduit_open_api: ^4.2.0
 dev_dependencies:
-  lint: ^2.0.0
+  lints: ^2.0.1

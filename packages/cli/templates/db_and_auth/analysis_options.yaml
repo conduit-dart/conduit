@@ -1,7 +1,3 @@
-analyzer:
-  strong-mode:
-    implicit-casts: false
-
 linter:
   rules:
     - always_declare_return_types
