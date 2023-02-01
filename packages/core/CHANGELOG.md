@@ -3,6 +3,9 @@
  - finalize on close
 
  - **FIX**: Attach finalizer on commit. ([5343fc8a](https://github.com/conduit-dart/conduit/commit/5343fc8aac99f6269682f7619283815ff916d829))
+## 4.2.1
+
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
 
 ## 4.2.0
 

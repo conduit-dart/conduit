@@ -1,5 +1,5 @@
 name: conduit_isolate_exec
-version: 4.2.0
+version: 4.2.1
 homepage: https://github.com/conduit-dart/isolate-exec
 description: This library contains types that allow for executing code in a spawned isolate, perhaps with additional imports.
 environment:

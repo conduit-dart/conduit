@@ -6,7 +6,7 @@ publish_to: none
 environment:
   sdk: ">=2.19.0 <3.0.0"
 dependencies:
-  conduit_common: ^4.2.0
-  conduit_core: ^4.2.0
+  conduit_common: ^4.2.1
+  conduit_core: ^4.2.1
 dev_dependencies:
   lints: ^2.0.1

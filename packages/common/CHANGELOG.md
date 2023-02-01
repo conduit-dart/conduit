@@ -1,3 +1,7 @@
+## 4.2.1
+
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
+
 ## 4.2.0
 
  - **FEAT**: Replace ServiceRegistry with Finalizers ([#185](https://github.com/conduit-dart/conduit/issues/185)). ([73208e92](https://github.com/conduit-dart/conduit/commit/73208e92ceed79369405933b20d98c9ed48ed0e5))
