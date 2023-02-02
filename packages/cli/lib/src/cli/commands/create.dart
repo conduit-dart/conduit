@@ -8,7 +8,6 @@ import 'package:conduit/src/cli/command.dart';
 import 'package:conduit/src/cli/metadata.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path/path.dart';
-import 'package:pub_cache/pub_cache.dart';
 import 'package:yaml/yaml.dart';
 
 /// Used internally.
