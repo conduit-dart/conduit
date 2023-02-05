@@ -150,7 +150,7 @@ class TestSerializable extends Serializable {
   }
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }

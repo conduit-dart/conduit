@@ -3,8 +3,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit/src/cli/runner.dart';
-import 'package:conduit/src/cli/running_process.dart';
+import 'package:conduit/src/runner.dart';
+import 'package:conduit/src/running_process.dart';
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';

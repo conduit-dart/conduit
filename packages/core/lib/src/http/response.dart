@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit_core/src/http/http.dart';
-import 'package:conduit_core/src/utilities/lowercasing_map.dart';
 
 /// Represents the information in an HTTP response.
 ///
@@ -16,7 +16,10 @@ class Response implements RequestOrResponse {
   /// and you should prefer to use those.
   Response(int this.statusCode, Map<String, dynamic>? headers, dynamic body) {
     this.body = body;
-    this.headers = LowercaseMap.fromMap(headers ?? {});
+    this.headers = LinkedHashMap<String, dynamic>(
+        equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+        hashCode: (key) => key.toLowerCase().hashCode);
+    this.headers.addAll(headers ?? {});
   }
 
   /// Represents a 200 response.
@@ -133,10 +136,13 @@ class Response implements RequestOrResponse {
   /// See [contentType] for behavior when setting 'content-type' in this property.
   Map<String, dynamic> get headers => _headers;
   set headers(Map<String, dynamic> h) {
-    _headers = LowercaseMap.fromMap(h);
+    _headers.clear();
+    _headers.addAll(h);
   }
 
-  Map<String, dynamic> _headers = LowercaseMap();
+  final Map<String, dynamic> _headers = LinkedHashMap<String, Object?>(
+      equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+      hashCode: (key) => key.toLowerCase().hashCode);
 
   /// The HTTP status code of this response.
   int? statusCode;
@@ -207,7 +213,12 @@ class Response implements RequestOrResponse {
     Map<String, dynamic>? inputHeaders,
     Map<String, dynamic> otherHeaders,
   ) {
-    final m = LowercaseMap.fromMap(inputHeaders ?? {});
+    final m = LinkedHashMap<String, Object?>(
+        equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+        hashCode: (key) => key.toLowerCase().hashCode);
+    if (inputHeaders != null) {
+      m.addAll(inputHeaders);
+    }
     m.addAll(otherHeaders);
     return m;
   }

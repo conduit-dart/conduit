@@ -1,5 +1,3 @@
-export 'package:conduit_core/src/application/channel.dart';
-
 export 'body_decoder.dart';
 export 'cache_policy.dart';
 export 'controller.dart';

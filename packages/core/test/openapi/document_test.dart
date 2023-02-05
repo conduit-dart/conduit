@@ -509,8 +509,8 @@ class ComplexTypes extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -520,8 +520,8 @@ class InvalidMapKey extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -531,8 +531,8 @@ class InvalidListValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -542,8 +542,8 @@ class InvalidMapValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -554,8 +554,8 @@ class Serial extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 

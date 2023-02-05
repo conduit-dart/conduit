@@ -268,7 +268,7 @@ class _TestModel {
 }
 
 class TestSerializable extends Serializable {
-  Map<String, dynamic>? contents;
+  late Map<String, dynamic> contents;
 
   @override
   void readFromMap(Map<String, dynamic> object) {
@@ -276,7 +276,7 @@ class TestSerializable extends Serializable {
   }
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return contents;
   }
 }
@@ -288,8 +288,8 @@ class CrashModel extends Serializable {
   }
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 

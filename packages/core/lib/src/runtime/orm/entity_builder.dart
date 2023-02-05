@@ -8,8 +8,8 @@ import 'package:conduit_core/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit_core/src/runtime/orm/property_builder.dart';
 import 'package:conduit_core/src/runtime/orm_impl.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
-import 'package:conduit_core/src/utilities/text_case.dart';
 import 'package:logging/logging.dart';
+import 'package:recase/recase.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
