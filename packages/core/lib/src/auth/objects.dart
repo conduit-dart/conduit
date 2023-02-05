@@ -159,7 +159,7 @@ class AuthToken {
   }
 
   /// Emits this instance as a [Map] according to the OAuth 2.0 specification.
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     final map = {
       "access_token": accessToken,
       "token_type": type,

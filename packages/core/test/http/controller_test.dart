@@ -389,7 +389,7 @@ class SomeObject extends Serializable {
   void readFromMap(dynamic any) {}
 
   @override
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return {"name": name};
   }
 }

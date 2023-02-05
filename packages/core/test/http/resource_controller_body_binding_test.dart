@@ -276,7 +276,7 @@ class TestSerializable extends Serializable {
   }
 
   @override
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return contents;
   }
 }
@@ -288,7 +288,7 @@ class CrashModel extends Serializable {
   }
 
   @override
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return {};
   }
 }

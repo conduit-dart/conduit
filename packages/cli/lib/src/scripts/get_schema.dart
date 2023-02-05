@@ -16,7 +16,7 @@ class GetSchemaExecutable extends Executable<Map<String, dynamic>> {
     try {
       final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
       final schema = Schema.fromDataModel(dataModel);
-      return schema.asMap();
+      return schema.asMap()!;
     } on SchemaException catch (e) {
       return {"error": e.message};
     } on ManagedDataModelError catch (e) {

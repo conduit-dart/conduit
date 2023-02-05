@@ -36,7 +36,7 @@ class APIDocument extends APIObject {
   Map<String, APISchemaObject?>? definitions = {};
   Map<String, APISecurityScheme?>? securityDefinitions = {};
 
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return KeyedArchive.archive(this, allowReferences: true);
   }
 

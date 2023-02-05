@@ -247,7 +247,7 @@ class SchemaColumn {
   }
 
   /// Returns portable representation of this instance.
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return {
       "name": name,
       "type": _type,

@@ -179,7 +179,7 @@ class SchemaTable {
   }
 
   /// Returns portable representation of this table.
-  Map<String, dynamic> asMap() {
+  Map<String, dynamic>? asMap() {
     return {
       "name": name,
       "columns": columns.map((c) => c.asMap()).toList(),

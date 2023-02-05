@@ -198,7 +198,7 @@ class APIDocumentContext {
       });
     });
 
-    return document.asMap();
+    return document.asMap()!;
   }
 }
 
