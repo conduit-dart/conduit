@@ -20,6 +20,8 @@ jobs:
     - name: Setup Conduit
       run: |
         dart pub global activate -spath packages/cli
+        dart pub global activate melos
+        melos cache-source
     - name: Run tests
       working-directory: ../
       run: |
