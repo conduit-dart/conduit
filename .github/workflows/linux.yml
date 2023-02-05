@@ -20,10 +20,12 @@ jobs:
     - name: Setup Conduit
       run: |
         dart pub global activate -spath packages/cli
+        dart pub global activate melos
+        melos cache-source
     - name: Run tests
       working-directory: ../
       run: |
-        conduit create -t db_and_auth wildfire
+        conduit create -t db_and_auth --offline wildfire
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build

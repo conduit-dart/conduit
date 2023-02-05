@@ -18,6 +18,7 @@ library conduit;
 
 export 'package:conduit_config/conduit_config.dart';
 export 'package:conduit_core/src/runtime/compiler.dart';
+export 'package:conduit_core/src/application/channel.dart';
 export 'package:logging/logging.dart';
 
 export 'src/application/application.dart';

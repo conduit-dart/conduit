@@ -1,5 +1,5 @@
-import 'package:conduit/src/cli/command.dart';
-import 'package:conduit/src/cli/metadata.dart';
+import 'package:conduit/src/command.dart';
+import 'package:conduit/src/metadata.dart';
 import 'package:test/test.dart';
 
 void main() {

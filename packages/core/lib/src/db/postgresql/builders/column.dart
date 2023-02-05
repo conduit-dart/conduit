@@ -1,5 +1,3 @@
-// ignore_for_file: cast_nullable_to_non_nullable
-
 import 'package:conduit_core/src/db/managed/key_path.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/managed/relationship_type.dart';

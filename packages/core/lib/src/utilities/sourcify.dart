@@ -13,5 +13,5 @@ String sourcifyValue(dynamic v, {String? onError}) {
         "This is not yet implemented - please submit a pull request.");
   }
 
-  return "$v";
+  return v.toString();
 }

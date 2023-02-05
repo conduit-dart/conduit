@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
@@ -84,7 +82,7 @@ abstract class Serializable {
   /// If a [Response.body]'s type implements this interface, this method is invoked prior to any content-type encoding
   /// performed by the [Response].  A [Response.body] may also be a [List<Serializable>], for which this method is invoked on
   /// each element in the list.
-  Map<String, dynamic>? asMap();
+  Map<String, dynamic> asMap();
 
   /// Whether a subclass will automatically be registered as a schema component automatically.
   ///

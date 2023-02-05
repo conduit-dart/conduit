@@ -299,11 +299,12 @@ void main() {
 
   test("mappableOutput properties are emitted in asMap", () {
     var t = TransientTest()..text = "foo";
+    final map = t.asMap();
 
-    expect(t.asMap()["defaultedText"], "Mr. foo");
-    expect(t.asMap()["outputOnly"], "foo");
-    expect(t.asMap()["bothButOnlyOnOne"], "foo");
-    expect(t.asMap()["bothOverQualified"], "foo");
+    expect(map["defaultedText"], "Mr. foo");
+    expect(map["outputOnly"], "foo");
+    expect(map["bothButOnlyOnOne"], "foo");
+    expect(map["bothOverQualified"], "foo");
 
     t = TransientTest()..outputInt = 2;
     expect(t.asMap()["outputInt"], 2);
