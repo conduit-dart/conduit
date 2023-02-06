@@ -91,7 +91,7 @@ If a `Serializable` object is bound to a request body in a `ResourceController`,
 class Person extends Serializable {
   String name;
 
-  Map<String, dynamic>? asMap() => {"name": name};
+  Map<String, dynamic> asMap() => {"name": name};
   void readFromMap(Map<String, dynamic> map) {
     name = map['name'];
   }

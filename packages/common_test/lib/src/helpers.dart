@@ -93,7 +93,7 @@ class TestToken implements AuthToken, AuthCode {
   }
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     final map = {
       "access_token": accessToken,
       "token_type": type,

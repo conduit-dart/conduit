@@ -124,7 +124,7 @@ void main() {
     ];
     user.posts = ManagedSet<Post>.from(posts);
 
-    final m = user.asMap()!;
+    final m = user.asMap();
     expect(m["id"], 1);
     expect(m["name"], "Bob");
     final mPosts = m["posts"];
@@ -187,7 +187,7 @@ void main() {
       Duration.zero,
     );
 
-    final remap = user.asMap()!;
+    final remap = user.asMap();
     expect(remap["dateCreated"], dateString);
 
     map = {"id": 1, "name": "Bob", "dateCreated": 123};
@@ -299,7 +299,7 @@ void main() {
 
   test("mappableOutput properties are emitted in asMap", () {
     var t = TransientTest()..text = "foo";
-    final map = t.asMap()!;
+    final map = t.asMap();
 
     expect(map["defaultedText"], "Mr. foo");
     expect(map["outputOnly"], "foo");
@@ -365,7 +365,7 @@ void main() {
     final m = (TransientTest()
           ..id = 1
           ..text = null)
-        .asMap()!;
+        .asMap();
 
     expect(m.length, 3);
     expect(m["id"], 1);
@@ -378,7 +378,7 @@ void main() {
           ..id = 1
           ..text = "foo"
           ..inputInt = 2)
-        .asMap()!;
+        .asMap();
 
     expect(m.length, 6);
     expect(m["id"], 1);
@@ -396,7 +396,7 @@ void main() {
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertyFromBackingMap("name");
 
-    final m = u.asMap()!;
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -411,7 +411,7 @@ void main() {
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertyFromBackingMap("dummy");
 
-    final m = u.asMap()!;
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), true);
@@ -425,7 +425,7 @@ void main() {
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["name", "dateCreated"]);
 
-    final m = u.asMap()!;
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -440,7 +440,7 @@ void main() {
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["name"]);
 
-    final m = u.asMap()!;
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), false);
@@ -456,7 +456,7 @@ void main() {
       ..dateCreated = DateTime(2018, 1, 30))
       ..removePropertiesFromBackingMap(["dummy1", "dummy2"]);
 
-    final m = u.asMap()!;
+    final m = u.asMap();
 
     expect(m.containsKey("id"), true);
     expect(m.containsKey("name"), true);
@@ -474,7 +474,7 @@ void main() {
                 }
               }),
             ))
-          .asMap()!;
+          .asMap();
 
       expect(m["deepMap"], {
         "ok": {"ik1": 1, "ik2": 2}
@@ -504,7 +504,7 @@ void main() {
               ]
             }),
           ))
-        .asMap()!;
+        .asMap();
 
     expect(m["transientInt"], 5);
     expect(m["transientBigInt"], 123456789);
@@ -617,7 +617,7 @@ void main() {
     } on ValidationException {}
 
     t.notAnAttribute = "foo";
-    expect(t.asMap()!.containsKey("notAnAttribute"), false);
+    expect(t.asMap().containsKey("notAnAttribute"), false);
   });
 
   test(
@@ -671,7 +671,7 @@ void main() {
 
     test("Enum value in asMap is a matching string", () {
       final e = EnumObject()..enumValues = EnumValues.other18;
-      expect(e.asMap()!["enumValues"], "other18");
+      expect(e.asMap()["enumValues"], "other18");
     });
 
     test(

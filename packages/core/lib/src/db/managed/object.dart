@@ -267,7 +267,7 @@ abstract class ManagedObject<T> extends Serializable {
   /// Usage:
   ///     var json = json.encode(model.asMap());
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     final outputMap = <String, dynamic>{};
 
     backing.contents!.forEach((k, v) {

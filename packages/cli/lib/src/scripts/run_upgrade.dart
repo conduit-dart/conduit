@@ -79,7 +79,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
       final updatedSchema = (await store.upgrade(inputSchema, instances))!;
       await store.close();
 
-      return updatedSchema.asMap()!;
+      return updatedSchema.asMap();
     } on QueryException catch (e) {
       if (e.event == QueryExceptionEvent.transport) {
         final databaseUrl =
@@ -155,7 +155,7 @@ class DBInfo {
   final String? timeZone;
   final bool useSSL;
 
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {
       "flavor": flavor,
       "username": username,

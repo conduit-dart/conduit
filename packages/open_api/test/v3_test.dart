@@ -95,7 +95,7 @@ void main() {
       doc.components!.schemas["other"] = APISchemaObject()
         ..referenceURI = Uri(path: "/components/schemas/container");
 
-      final out = doc.asMap()!;
+      final out = doc.asMap();
       expect(
         out["components"]["schemas"]["container"][r"$ref"],
         "#/components/schemas/string",
@@ -245,11 +245,11 @@ void main() {
       );
 
       expect(
-        doc.asMap()!["components"]["schemas"]["freeform"]["type"],
+        doc.asMap()["components"]["schemas"]["freeform"]["type"],
         "object",
       );
       expect(
-        doc.asMap()!["components"]["schemas"]["freeform"]
+        doc.asMap()["components"]["schemas"]["freeform"]
             ["additionalProperties"],
         true,
       );
@@ -274,11 +274,11 @@ void main() {
         APISchemaAdditionalPropertyPolicy.freeForm,
       );
       expect(
-        doc.asMap()!["components"]["schemas"]["freeform"]["type"],
+        doc.asMap()["components"]["schemas"]["freeform"]["type"],
         "object",
       );
       expect(
-        doc.asMap()!["components"]["schemas"]["freeform"]
+        doc.asMap()["components"]["schemas"]["freeform"]
             ["additionalProperties"],
         true,
       );

@@ -37,7 +37,7 @@ class MigrationSource {
     );
   }
 
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {
       "originalName": originalName,
       "name": name,

@@ -208,7 +208,7 @@ void main() {
 
       await ctx.finalize();
 
-      final map = ctx.document.asMap()!;
+      final map = ctx.document.asMap();
       expect(
         map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
         "#/components/responses/whatever",
@@ -509,7 +509,7 @@ class ComplexTypes extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {};
   }
 }
@@ -520,7 +520,7 @@ class InvalidMapKey extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {};
   }
 }
@@ -531,7 +531,7 @@ class InvalidListValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {};
   }
 }
@@ -542,7 +542,7 @@ class InvalidMapValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {};
   }
 }
@@ -554,7 +554,7 @@ class Serial extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {};
   }
 }

@@ -49,7 +49,7 @@ class APIDocument extends APIObject {
   /// The order of the tags can be used to reflect on their order by the parsing tools. Not all tags that are used by the Operation Object must be declared. The tags that are not declared MAY be organized randomly or based on the tools' logic. Each tag name in the list MUST be unique.
   List<APITag?>? tags;
 
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return KeyedArchive.archive(this, allowReferences: true);
   }
 

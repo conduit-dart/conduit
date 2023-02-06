@@ -30,7 +30,7 @@ void main() {
       });
 
       expect(
-        Schema.fromMap(schema.asMap()!).differenceFrom(schema).hasDifferences,
+        Schema.fromMap(schema.asMap()).differenceFrom(schema).hasDifferences,
         false,
       );
     });
@@ -161,7 +161,7 @@ void main() {
       });
 
       expect(
-        Schema.fromMap(schema.asMap()!).differenceFrom(schema).hasDifferences,
+        Schema.fromMap(schema.asMap()).differenceFrom(schema).hasDifferences,
         false,
       );
     });
@@ -316,7 +316,7 @@ void main() {
       });
 
       expect(
-        Schema.fromMap(schema.asMap()!).differenceFrom(schema).hasDifferences,
+        Schema.fromMap(schema.asMap()).differenceFrom(schema).hasDifferences,
         false,
       );
     });
@@ -328,7 +328,7 @@ void main() {
       expect(schema.tables.first.name, "_Unique");
       expect(schema.tables.first.uniqueColumnSet, ["a", "b"]);
 
-      final tableMap = schema.asMap()!["tables"].first as Map<String, dynamic>;
+      final tableMap = schema.asMap()["tables"].first as Map<String, dynamic>;
       expect(tableMap["name"], "_Unique");
       expect(tableMap["unique"], ["a", "b"]);
 
@@ -344,7 +344,7 @@ void main() {
     test("Self-referencing table can be emitted as map", () {
       final dataModel = ManagedDataModel([SelfRef]);
       final schema = Schema.fromDataModel(dataModel);
-      final map = schema.asMap()!;
+      final map = schema.asMap();
       expect(map["tables"].first["columns"].last, {
         'name': 'parent',
         'type': 'bigInteger',
@@ -363,7 +363,7 @@ void main() {
     test("Two tables related to one another can be emitted in asMap", () {
       final dataModel = ManagedDataModel([Left, Right]);
       final schema = Schema.fromDataModel(dataModel);
-      final map = schema.asMap()!;
+      final map = schema.asMap();
       expect(
           map["tables"]
               .firstWhere((t) => t["name"] == "_Left")["columns"]
@@ -408,7 +408,7 @@ void main() {
         [LoadedSingleItem, DefaultItem, LoadedItem, Container],
       );
       final baseSchema = Schema.fromDataModel(dataModel);
-      final newSchema = Schema.fromMap(baseSchema.asMap()!);
+      final newSchema = Schema.fromMap(baseSchema.asMap());
       expect(newSchema.differenceFrom(baseSchema).hasDifferences, false);
       expect(baseSchema.differenceFrom(newSchema).hasDifferences, false);
     });

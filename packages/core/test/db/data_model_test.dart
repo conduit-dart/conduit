@@ -601,7 +601,7 @@ void main() {
       context = ManagedContext(dm, DefaultPersistentStore());
       final ap = Event();
       ap.readFromMap(inputMap);
-      outputMap = ap.asMap()!;
+      outputMap = ap.asMap();
     });
 
     tearDownAll(() async {
@@ -649,7 +649,7 @@ void main() {
       tableSchema = schema.tables.first;
       final ap = AccessPoint();
       ap.readFromMap(inputMap);
-      outputMap = ap.asMap()!;
+      outputMap = ap.asMap();
     });
 
     tearDownAll(() async {

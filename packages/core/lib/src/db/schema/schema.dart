@@ -146,7 +146,7 @@ class Schema {
   }
 
   /// Emits this instance as a transportable [Map].
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {"tables": tables.map((t) => t.asMap()).toList()};
   }
 }

@@ -400,7 +400,7 @@ void main() {
     q = Query<EnumObject>(context!);
     EnumObject? result = await q.fetchOne();
     expect(result!.enumValues, EnumValues.abcd);
-    expect(result.asMap()?["enumValues"], "abcd");
+    expect(result.asMap()["enumValues"], "abcd");
 
     q = Query<EnumObject>(context!)
       ..where((o) => o.enumValues).equalTo(EnumValues.abcd);
@@ -422,7 +422,7 @@ void main() {
     q = Query<EnumObject>(context!);
     final result = (await q.fetchOne())!;
     expect(result.enumValues, null);
-    expect(result.asMap()!["enumValues"], isNull);
+    expect(result.asMap()["enumValues"], isNull);
   });
 
   test("When fetching invalid enum value from db, throws error", () async {

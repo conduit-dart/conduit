@@ -127,7 +127,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         }
       }
 
-      return document.asMap()!;
+      return document.asMap();
     } on ConfigurationException catch (e) {
       return {
         "error":

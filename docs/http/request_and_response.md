@@ -268,7 +268,7 @@ class Person extends Serializable {
   String name;
   String email;
 
-  Map<String, dynamic>? asMap() {
+  Map<String, dynamic> asMap() {
     return {
       "name": name,
       "email": email
