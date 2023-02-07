@@ -72,7 +72,6 @@ class CLIDatabaseGenerate extends CLICommand
         ),
       );
     }
-
     final schema = await schemaByApplyingMigrationSources(projectMigrations);
     final result =
         await generateMigrationFileForProject(this, schema, versionNumber);
