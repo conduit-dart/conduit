@@ -27,7 +27,7 @@ jobs:
       run: |
         conduit create -t db_and_auth wildfire
         cd wildfire/
-        cat $PUB_CACHE/.pub-cache/hosted/pub.dev/conduit-4.2.2/lib/conduit.dart
+        cat $PUB_CACHE/hosted/pub.dev/conduit-4.2.2/lib/conduit.dart
         echo "----------- Building test project -----------"
         conduit build
         conduit db generate
