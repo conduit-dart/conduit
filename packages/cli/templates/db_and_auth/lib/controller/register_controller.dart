@@ -29,7 +29,7 @@ class RegisterController extends ResourceController {
         request?.authorization?.credentials?.password);
 
     final response = AuthController.tokenResponse(token);
-    final newBody = u.asMap()!..["authorization"] = response.body;
+    final newBody = u.asMap()..["authorization"] = response.body;
     return response..body = newBody;
   }
 
