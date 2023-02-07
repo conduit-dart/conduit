@@ -22,11 +22,11 @@ jobs:
         dart pub global activate -spath packages/cli
         dart pub global activate melos
     - name: Run tests
-      working-directory: ../
       run: |
+        melos cache-source
+        cd ../
         conduit create -t db_and_auth wildfire
         cd wildfire/
-        melos cache-source
         cat $PUB_CACHE/hosted/pub.dev/conduit-4.2.2/lib/conduit.dart
         cat ../conduit/packages/cli/lib/conduit.dart
         echo "----------- Building test project -----------"
