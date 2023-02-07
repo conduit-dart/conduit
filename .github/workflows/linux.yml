@@ -27,6 +27,7 @@ jobs:
       run: |
         conduit create -t db_and_auth wildfire
         cd wildfire/
+        cat pubspec.yaml
         echo "----------- Building test project -----------"
         conduit build
         conduit db generate
