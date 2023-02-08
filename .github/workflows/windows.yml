@@ -25,9 +25,9 @@ jobs:
     - name: Run tests
       working-directory: ../
       run: |
-        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
+        ls $env:PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         conduit create -t db_and_auth --offline wildfire
-        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
+        ls $env:PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build
