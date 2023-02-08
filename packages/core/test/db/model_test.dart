@@ -306,11 +306,11 @@ void main() {
     expect(map["bothButOnlyOnOne"], "foo");
     expect(map["bothOverQualified"], "foo");
 
-    t = TransientTest()..outputInt = 2;
-    expect(map["outputInt"], 2);
+    print(t.asMap());
+    expect(t.asMap()["outputInt"], 2);
 
     t = TransientTest()..inOut = 2;
-    expect(map["inOut"], 2);
+    expect(t.asMap()["inOut"], 2);
   });
 
   test("Transient properties are type checked in readMap", () {
