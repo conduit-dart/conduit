@@ -233,9 +233,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     String packageDirectoryPath,
     Map<String, Uri> overrides,
   ) {
-    final pubspecFile =
-        File(path_lib.join(packageDirectoryPath, "pubspec.yaml"));
-    final contents = pubspecFile.readAsStringSync();
+    final overridesFile =
+        File(path_lib.join(packageDirectoryPath, "pubspec_overrides.yaml"));
 
     bool valid = true;
 
@@ -251,7 +250,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
       );
     });
 
-    pubspecFile.writeAsStringSync("$contents\n$overrideBuffer");
+    overridesFile.writeAsStringSync("$overrideBuffer");
 
     return valid;
   }
