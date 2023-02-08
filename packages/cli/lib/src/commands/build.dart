@@ -80,7 +80,7 @@ class CLIBuild extends CLICommand with CLIProject {
           print("${res.stdout}");
           print("${res.stderr}");
           throw StateError(
-            "'pub get' failed with the following message: ${res.stderr}",
+            "'pub cache' failed with the following message: ${res.stderr}",
           );
         }
       }
