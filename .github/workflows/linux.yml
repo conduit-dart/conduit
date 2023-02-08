@@ -21,16 +21,19 @@ jobs:
       run: |
         dart pub global activate -spath packages/cli
         dart pub global activate melos
-        ls $PUB_CACHE/hosted/
         melos cache-source
         ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
     - name: Run tests
       working-directory: ../
       run: |
+        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         conduit create -t db_and_auth wildfire
+        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         cd wildfire/
         echo "----------- Building test project -----------"
+        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         conduit build
+        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
         conduit db generate
   unit:
     needs: smoke
