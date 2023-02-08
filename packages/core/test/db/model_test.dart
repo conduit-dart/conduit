@@ -306,7 +306,7 @@ void main() {
     expect(map["bothButOnlyOnOne"], "foo");
     expect(map["bothOverQualified"], "foo");
 
-    print(t.asMap());
+    t = TransientTest()..outputInt = 2;
     expect(t.asMap()["outputInt"], 2);
 
     t = TransientTest()..inOut = 2;
