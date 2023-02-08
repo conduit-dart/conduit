@@ -23,7 +23,7 @@ jobs:
         dart pub global activate melos
         ls $PUB_CACHE/hosted/
         melos cache-source
-        ls $PUB_CACHE/hosted/pub.dev/conduit*/lib
+        ls $PUB_CACHE/hosted/pub.dev/conduit-*/lib/src
     - name: Run tests
       working-directory: ../
       run: |
