@@ -6,11 +6,8 @@ publish_to: none
 environment:
   sdk: ">=2.19.0 <4.0.0"
 dependencies:
-  conduit_common:
-    path: ../common
-  conduit_core:
-    path: ../core
-  conduit_postgresql:
-    path: ../postgresql
+  conduit_common: ^4.2.2
+  conduit_core: ^4.2.2
+  conduit_postgresql: ^4.2.2
 dev_dependencies:
   lints: ^2.0.1

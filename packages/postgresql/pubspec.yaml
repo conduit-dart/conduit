@@ -7,7 +7,9 @@ environment:
   sdk: '>=2.19.0 <4.0.0'
 
 dependencies:
+  collection: ^1.17.1
   conduit_core: ^4.2.2
+  postgres: ^2.5.2
 
 dev_dependencies:
   conduit_common_test:

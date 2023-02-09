@@ -1,7 +1,6 @@
 import 'column.dart';
 import 'table.dart';
-import 'package:conduit_core/src/db/query/matcher_internal.dart';
-import 'package:conduit_core/src/db/query/query.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
   ColumnExpressionBuilder(

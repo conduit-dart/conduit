@@ -6,8 +6,6 @@ import 'dart:io';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_core/src/db/query/matcher_internal.dart';
-import 'package:conduit_core/src/db/query/mixin.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 

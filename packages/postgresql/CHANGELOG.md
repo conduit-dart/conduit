@@ -1,3 +1,3 @@
-## 1.0.0
+## 4.2.2
 
-- Initial version.
+- Separated postgres from core
