@@ -1,6 +1,6 @@
-import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/builders/table.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'column.dart';
+import 'table.dart';
 
 class ColumnValueBuilder extends ColumnBuilder {
   ColumnValueBuilder(

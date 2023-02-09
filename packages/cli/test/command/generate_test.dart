@@ -21,6 +21,7 @@ void main() {
     projectUnderTestCli = templateCli.replicate(Uri.parse("replica/"));
     projectUnderTestCli.projectAgent.addLibraryFile("application_test", """
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 class TestObject extends ManagedObject<_TestObject> {}
 

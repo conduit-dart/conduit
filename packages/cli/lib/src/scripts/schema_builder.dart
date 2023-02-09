@@ -3,9 +3,9 @@
 import 'dart:async';
 
 import 'package:conduit/src/migration_source.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 import 'package:logging/logging.dart';
 
 class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
@@ -53,6 +53,7 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
 
   static List<String> get imports => [
         "package:conduit_core/conduit_core.dart",
+        "package:conduit_postgresql/conduit_postgresql.dart",
         "package:conduit/src/migration_source.dart",
         "package:conduit_runtime/runtime.dart"
       ];

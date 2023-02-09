@@ -1,12 +1,9 @@
 import 'dart:async';
-
-import 'package:conduit_core/src/db/managed/object.dart';
-import 'package:conduit_core/src/db/managed/property_description.dart';
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_query.dart';
-import 'package:conduit_core/src/db/postgresql/query_builder.dart';
-import 'package:conduit_core/src/db/query/query.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'builders/column.dart';
+import 'postgresql_persistent_store.dart';
+import 'postgresql_query.dart';
+import 'query_builder.dart';
 
 // ignore_for_file: constant_identifier_names
 enum _Reducer {

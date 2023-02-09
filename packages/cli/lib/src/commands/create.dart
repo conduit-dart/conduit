@@ -81,6 +81,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
           "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
           "conduit_password_hash":
               _packageUri(conduitLocation, 'password_hash'),
+          "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
           "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
           "conduit_test": _packageUri(conduitLocation, 'test_harness'),
         })) {

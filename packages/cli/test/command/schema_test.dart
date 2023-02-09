@@ -18,6 +18,7 @@ void main() {
     await cli.agent.getDependencies();
     cli.agent.addOrReplaceFile("lib/application_test.dart", """
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 class TestObject extends ManagedObject<_TestObject> {}
 

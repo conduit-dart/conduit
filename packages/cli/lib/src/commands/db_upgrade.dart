@@ -8,10 +8,10 @@ import 'package:conduit/src/mixins/database_connecting.dart';
 import 'package:conduit/src/mixins/database_managing.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit/src/scripts/run_upgrade.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 /// Used internally.
 class CLIDatabaseUpgrade extends CLICommand

@@ -1,5 +1,4 @@
-import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/schema/schema.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class PostgreSQLSchemaGenerator {
   String get versionTableName => "_conduit_version_pgsql";

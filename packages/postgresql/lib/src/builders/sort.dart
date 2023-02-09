@@ -1,6 +1,6 @@
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/builders/table.dart';
-import 'package:conduit_core/src/db/query/query.dart';
+import 'column.dart';
+import 'table.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 class ColumnSortBuilder extends ColumnBuilder {
   ColumnSortBuilder(TableBuilder table, String? key, QuerySortOrder order)

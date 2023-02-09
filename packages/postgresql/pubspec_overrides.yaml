@@ -1,0 +1,3 @@
+dependency_overrides:
+  conduit_core: 
+    path: ../core

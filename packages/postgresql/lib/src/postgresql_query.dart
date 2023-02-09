@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:conduit_core/src/db/db.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_query_reduce.dart';
-import 'package:conduit_core/src/db/postgresql/query_builder.dart';
-import 'package:conduit_core/src/db/query/mixin.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'postgresql_query_reduce.dart';
+import 'query_builder.dart';
 
 class PostgresQuery<InstanceType extends ManagedObject> extends Object
     with QueryMixin<InstanceType>

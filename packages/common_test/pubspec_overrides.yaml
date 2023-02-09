@@ -15,5 +15,7 @@ dependency_overrides:
     path: ../isolate_exec
   conduit_password_hash:
     path: ../password_hash
+  conduit_postgresql:
+    path: ../postgresql
   conduit_runtime:
     path: ../runtime

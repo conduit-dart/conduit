@@ -1,10 +1,9 @@
-import 'package:conduit_core/src/db/db.dart';
-import 'package:conduit_core/src/db/managed/relationship_type.dart';
-import 'package:conduit_core/src/db/postgresql/builders/sort.dart';
-import 'package:conduit_core/src/db/postgresql/builders/table.dart';
-import 'package:conduit_core/src/db/postgresql/builders/value.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_query.dart';
-import 'package:conduit_core/src/db/postgresql/row_instantiator.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'builders/sort.dart';
+import 'builders/table.dart';
+import 'builders/value.dart';
+import 'postgresql_query.dart';
+import 'row_instantiator.dart';
 
 class PostgresQueryBuilder extends TableBuilder {
   PostgresQueryBuilder(PostgresQuery query, [String prefixIndex = ""])

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 import 'package:test/test.dart';
 
 /*

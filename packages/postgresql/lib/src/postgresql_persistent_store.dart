@@ -1,12 +1,8 @@
 import 'dart:async';
 
-import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_query.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_schema_generator.dart';
-import 'package:conduit_core/src/db/query/query.dart';
-import 'package:conduit_core/src/db/schema/schema.dart';
-import 'package:logging/logging.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'postgresql_query.dart';
+import 'postgresql_schema_generator.dart';
 import 'package:postgres/postgres.dart';
 
 /// The database layer responsible for carrying out [Query]s against PostgreSQL databases.

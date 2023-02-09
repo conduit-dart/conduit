@@ -8,7 +8,7 @@ import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_config/conduit_config.dart';
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_persistent_store.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 abstract class CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   static const String flavorPostgreSQL = "postgres";

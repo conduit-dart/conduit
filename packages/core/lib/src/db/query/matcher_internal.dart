@@ -1,47 +1,10 @@
-/// The operator in a comparison matcher.
-enum PredicateOperator {
-  lessThan,
-  greaterThan,
-  notEqual,
-  lessThanEqualTo,
-  greaterThanEqualTo,
-  equalTo
-}
+import 'package:conduit_core/src/db/query/predicate.dart';
 
 /// The operator in a string matcher.
 enum PredicateStringOperator { beginsWith, contains, endsWith, equals }
 
 abstract class PredicateExpression {
   PredicateExpression get inverse;
-}
-
-class ComparisonExpression implements PredicateExpression {
-  const ComparisonExpression(this.value, this.operator);
-
-  final dynamic value;
-  final PredicateOperator operator;
-
-  @override
-  PredicateExpression get inverse {
-    return ComparisonExpression(value, inverseOperator);
-  }
-
-  PredicateOperator get inverseOperator {
-    switch (operator) {
-      case PredicateOperator.lessThan:
-        return PredicateOperator.greaterThanEqualTo;
-      case PredicateOperator.greaterThan:
-        return PredicateOperator.lessThanEqualTo;
-      case PredicateOperator.notEqual:
-        return PredicateOperator.equalTo;
-      case PredicateOperator.lessThanEqualTo:
-        return PredicateOperator.greaterThan;
-      case PredicateOperator.greaterThanEqualTo:
-        return PredicateOperator.lessThan;
-      case PredicateOperator.equalTo:
-        return PredicateOperator.notEqual;
-    }
-  }
 }
 
 class RangeExpression implements PredicateExpression {

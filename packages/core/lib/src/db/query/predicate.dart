@@ -1,6 +1,8 @@
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
+import 'matcher_internal.dart';
+
 /// A predicate contains instructions for filtering rows when performing a [Query].
 ///
 /// Predicates currently are the WHERE clause in a SQL statement and are used verbatim
@@ -99,4 +101,43 @@ class QueryPredicate {
   /// Input values should not be in the format string, but instead provided in this map.
   /// Keys of this map will be searched for in the format string and be replaced by the value in this map.
   Map<String, dynamic>? parameters;
+}
+
+/// The operator in a comparison matcher.
+enum PredicateOperator {
+  lessThan,
+  greaterThan,
+  notEqual,
+  lessThanEqualTo,
+  greaterThanEqualTo,
+  equalTo
+}
+
+class ComparisonExpression implements PredicateExpression {
+  const ComparisonExpression(this.value, this.operator);
+
+  final dynamic value;
+  final PredicateOperator operator;
+
+  @override
+  PredicateExpression get inverse {
+    return ComparisonExpression(value, inverseOperator);
+  }
+
+  PredicateOperator get inverseOperator {
+    switch (operator) {
+      case PredicateOperator.lessThan:
+        return PredicateOperator.greaterThanEqualTo;
+      case PredicateOperator.greaterThan:
+        return PredicateOperator.lessThanEqualTo;
+      case PredicateOperator.notEqual:
+        return PredicateOperator.equalTo;
+      case PredicateOperator.lessThanEqualTo:
+        return PredicateOperator.greaterThan;
+      case PredicateOperator.greaterThanEqualTo:
+        return PredicateOperator.lessThan;
+      case PredicateOperator.equalTo:
+        return PredicateOperator.notEqual;
+    }
+  }
 }

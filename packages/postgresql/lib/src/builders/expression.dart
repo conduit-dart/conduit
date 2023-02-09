@@ -1,5 +1,5 @@
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/builders/table.dart';
+import 'column.dart';
+import 'table.dart';
 import 'package:conduit_core/src/db/query/matcher_internal.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 

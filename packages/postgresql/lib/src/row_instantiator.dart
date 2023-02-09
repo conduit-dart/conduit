@@ -1,7 +1,6 @@
-import 'package:conduit_core/src/db/db.dart';
-import 'package:conduit_core/src/db/managed/relationship_type.dart';
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/builders/table.dart';
+import 'package:conduit_core/conduit_core.dart';
+import 'builders/column.dart';
+import 'builders/table.dart';
 
 class RowInstantiator {
   RowInstantiator(this.rootTableBuilder, this.returningValues);

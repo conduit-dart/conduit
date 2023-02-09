@@ -1,14 +1,10 @@
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:conduit_core/src/db/managed/key_path.dart';
-import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/managed/relationship_type.dart';
+import 'package:conduit_core/conduit_core.dart';
 
-import 'package:conduit_core/src/db/postgresql/builders/column.dart';
-import 'package:conduit_core/src/db/postgresql/builders/expression.dart';
-import 'package:conduit_core/src/db/postgresql/builders/sort.dart';
-import 'package:conduit_core/src/db/postgresql/postgresql_query.dart';
-import 'package:conduit_core/src/db/query/matcher_internal.dart';
-import 'package:conduit_core/src/db/query/query.dart';
+import 'column.dart';
+import 'expression.dart';
+import 'sort.dart';
+import '../postgresql_query.dart';
 
 class TableBuilder implements Returnable {
   TableBuilder(PostgresQuery query, {this.parent, this.joinedBy})

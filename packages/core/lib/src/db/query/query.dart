@@ -10,6 +10,7 @@ export 'error.dart';
 export 'matcher_expression.dart';
 export 'predicate.dart';
 export 'reduce.dart';
+export 'mixin.dart';
 
 /// An object for configuring and executing a database query.
 ///
