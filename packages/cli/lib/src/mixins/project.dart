@@ -91,22 +91,18 @@ abstract class CLIProject implements CLICommand {
 
   @override
   void preProcess() {
-    try {
-      if (!isMachineOutput) {
-        displayInfo("Conduit project version: $projectVersion");
-      }
+    if (!isMachineOutput) {
+      displayInfo("Conduit project version: $projectVersion");
+    }
 
-      if (projectVersion?.major != toolVersion!.major) {
-        throw CLIException(
-          "CLI version is incompatible with project conduit version.",
-          instructions: [
-            "Install conduit@$projectVersion or upgrade your project to conduit$toolVersion."
-          ],
-        );
-      }
-    } on CLIException {
-      rethrow;
-    } catch (_) {}
+    if (projectVersion?.major != toolVersion!.major) {
+      throw CLIException(
+        "CLI version is incompatible with project conduit version.",
+        instructions: [
+          "Install conduit@$projectVersion or upgrade your project to conduit$toolVersion."
+        ],
+      );
+    }
   }
 
   Future<String> getChannelName() async {
