@@ -11,7 +11,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
-import '../not_tests/cli_helpers.dart';
+import 'not_tests/cli_helpers.dart';
 
 void main() {
   late CLIClient cli;

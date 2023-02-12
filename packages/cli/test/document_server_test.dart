@@ -7,7 +7,7 @@ import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
-import '../not_tests/cli_helpers.dart';
+import 'not_tests/cli_helpers.dart';
 
 void main() {
   late CLIClient templateCli;

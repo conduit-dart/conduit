@@ -1,5 +1,3 @@
-// ignore: unnecessary_const
-
 import 'dart:async';
 import 'dart:io';
 
@@ -13,7 +11,7 @@ import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
 
-import '../not_tests/cli_helpers.dart';
+import 'not_tests/cli_helpers.dart';
 
 late CLIClient cli;
 DatabaseConfiguration connectInfo =
@@ -263,7 +261,6 @@ List<MigrationSource> getOrderedTestMigrations(
 }) {
   final uri = Directory.current.uri
       .resolve("test/")
-      .resolve("command/")
       .resolve("migration_execution_test.dart");
 
   final analyzer = CodeAnalyzer(uri);

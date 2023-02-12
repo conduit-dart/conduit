@@ -12,7 +12,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart' as yaml;
 
-import '../not_tests/cli_helpers.dart';
+import 'not_tests/cli_helpers.dart';
 
 File get certificateFile => File.fromUri(
       Directory.current.uri
