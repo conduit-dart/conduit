@@ -68,7 +68,6 @@ class PostgresQueryBuilder extends TableBuilder {
           return ColumnValueBuilder(
             this,
             property,
-            // ignore: avoid_dynamic_calls
             value[property.destinationEntity.primaryKey],
           );
         }

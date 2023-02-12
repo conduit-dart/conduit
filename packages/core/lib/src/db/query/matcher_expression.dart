@@ -43,7 +43,6 @@ class QueryExpression<T, InstanceType> {
   bool _invertNext = false;
   PredicateExpression? _expression;
 
-  // ignore: use_to_and_as_if_applicable
   QueryExpressionJunction<T, InstanceType> _createJunction() =>
       QueryExpressionJunction<T, InstanceType>._(this);
 

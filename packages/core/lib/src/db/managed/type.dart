@@ -37,7 +37,6 @@ class ManagedType {
   /// [type] must be representable by [ManagedPropertyType].
   ManagedType(this.type, this.kind, this.elements, this.enumerationMap);
 
-  // ignore: prefer_constructors_over_static_methods
   static ManagedType make<T>(
     ManagedPropertyType kind,
     ManagedType? elements,

@@ -1,13 +1,10 @@
-// ignore_for_file: no_adjacent_strings_in_list, implementation_imports
-
 import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
-import 'package:conduit_config/conduit_config.dart';
-import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 abstract class CLIDatabaseConnectingCommand implements CLICommand, CLIProject {

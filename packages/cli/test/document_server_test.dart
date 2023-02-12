@@ -1,5 +1,3 @@
-// ignore: unnecessary_const
-
 import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
@@ -49,7 +47,6 @@ void main() {
     final response = await http.get(Uri.parse("http://localhost:8111"));
     expect(response.body, contains("redoc spec-url='openapi.json'"));
 
-    // ignore: unawaited_futures
     task.process!.stop(0);
     expect(await task.exitCode, 0);
     expect(

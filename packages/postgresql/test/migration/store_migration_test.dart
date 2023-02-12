@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'dart:async';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
@@ -8,8 +6,6 @@ import 'package:test/test.dart';
 
 void main() {
   final store = PostgresTestConfig().persistentStore();
-
-  setUp(() async {});
 
   tearDown(() async {
     await store.close();

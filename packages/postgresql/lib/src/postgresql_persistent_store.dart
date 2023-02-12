@@ -116,7 +116,6 @@ class PostgreSQLPersistentStore extends PersistentStore
       if (_pendingConnectionCompleter == null) {
         _pendingConnectionCompleter = Completer<PostgreSQLConnection>();
 
-        // ignore: unawaited_futures
         _connect().timeout(connectTimeout).then((conn) {
           _databaseConnection = conn;
           _pendingConnectionCompleter!.complete(_databaseConnection);

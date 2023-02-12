@@ -1,5 +1,3 @@
-// ignore_for_file: leading_newlines_in_multiline_strings
-
 import 'dart:mirrors';
 
 import 'package:conduit_core/src/http/resource_controller_bindings.dart';

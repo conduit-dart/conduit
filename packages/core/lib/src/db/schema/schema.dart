@@ -56,7 +56,6 @@ class Schema {
   // Do not set this directly. Use _tables= instead.
   List<SchemaTable>? _tableStorage;
 
-  // ignore: avoid_setters_without_getters
   set _tables(List<SchemaTable> tables) {
     _tableStorage = tables;
     for (final t in _tableStorage!) {

@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, implementation_imports
-
 import 'dart:async';
 import 'dart:io';
 
@@ -8,7 +6,7 @@ import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/migration_source.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit/src/scripts/schema_builder.dart';
-import 'package:conduit_core/src/db/schema/schema.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {

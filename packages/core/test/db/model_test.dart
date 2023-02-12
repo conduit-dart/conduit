@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls, avoid_setters_without_getters
-
 import 'dart:convert';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
@@ -1091,7 +1089,6 @@ class _ConstructorOverride {
 
 class DefaultConstructorHasOptionalArgs
     extends ManagedObject<_ConstructorTableDef> {
-  // ignore: avoid_unused_constructor_parameters
   DefaultConstructorHasOptionalArgs({int? foo});
 }
 

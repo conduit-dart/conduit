@@ -117,8 +117,9 @@ void main() {
       try {
         await persistentStore!.executeQuery("SELECT 1", null, 20);
         expect(true, false);
-        // ignore: empty_catches
-      } on QueryException {}
+      } on QueryException {
+        //empty
+      }
 
       proxy =
           SocketProxy(15433, int.parse(Platform.environment['POSTGRES_PORT']!));

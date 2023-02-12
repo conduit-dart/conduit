@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_catching_errors
 import 'dart:mirrors';
 
 import 'package:conduit_runtime/src/exceptions.dart';

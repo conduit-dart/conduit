@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors
-
 import 'dart:async';
 import 'dart:io';
 
@@ -65,7 +63,6 @@ abstract class CLIProject implements CLICommand {
 
       final lockFileContents = loadYaml(lockFile.readAsStringSync()) as Map;
       final projectVersion =
-          // ignore: avoid_dynamic_calls
           lockFileContents["packages"]["conduit_core"]["version"] as String;
       _projectVersion = Version.parse(projectVersion);
     }

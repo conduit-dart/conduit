@@ -1,9 +1,7 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:async';
 import 'dart:mirrors';
 
-import 'package:conduit_core/src/application/channel.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/runtime.dart';
 

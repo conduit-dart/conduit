@@ -1,12 +1,9 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:async';
 
 import 'package:conduit/src/migration_source.dart';
-import 'package:conduit_core/src/db/schema/schema.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
-import 'package:logging/logging.dart';
 
 class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
   SchemaBuilderExecutable(super.message)

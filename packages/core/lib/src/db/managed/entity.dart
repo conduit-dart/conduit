@@ -331,7 +331,6 @@ class ManagedEntity implements APIComponentDocumenter {
   /// Two entities are considered equal if they have the same [tableName].
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return tableName == other.tableName;
   }
 

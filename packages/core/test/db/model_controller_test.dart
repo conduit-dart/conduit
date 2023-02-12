@@ -25,7 +25,6 @@ void main() {
     router.didAddToChannel();
 
     server.listen((req) async {
-      // ignore: unawaited_futures
       router.receive(Request(req));
     });
   });

@@ -1,7 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls
-
-// ignore: unnecessary_const
-
 import 'dart:async';
 import 'dart:io';
 
@@ -70,7 +66,6 @@ void main() {
     final result = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(result.statusCode, 200);
 
-    // ignore: unawaited_futures
     task.process!.stop(0);
     expect(await task.exitCode, 0);
   });
@@ -82,7 +77,7 @@ void main() {
     );
 
     task = projectUnderTestCli.start("serve", ["-n", "1"]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
 
     expect(await task.exitCode, isNot(0));
@@ -102,7 +97,6 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
 
     task = projectUnderTestCli.start("serve", ["-n", "1"]);
 
-    // ignore: unawaited_futures
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
     expect(projectUnderTestCli.output, contains("Application failed to start"));
@@ -168,13 +162,13 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
 
     task = projectUnderTestCli
         .start("serve", ["--ssl-key-path", "server.key", "-n", "1"]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
 
     task = projectUnderTestCli
         .start("serve", ["--ssl-certificate-path", "server.crt", "-n", "1"]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
   });
@@ -199,7 +193,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       "-n",
       "1"
     ]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
   });
@@ -219,7 +213,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       "-n",
       "1"
     ]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
   });
@@ -230,7 +224,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     });
 
     task = projectUnderTestCli.start("serve", ["-n", "1"]);
-    // ignore: unawaited_futures
+
     task.hasStarted.catchError((e) => e);
 
     expect(await task.exitCode, isNot(0));

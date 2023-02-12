@@ -232,7 +232,6 @@ abstract class Controller
         caughtValue.trace,
       );
 
-      // ignore: unawaited_futures
       request.response.close().catchError((_) => null);
 
       return;
@@ -259,7 +258,7 @@ abstract class Controller
       );
     } catch (e) {
       logger.severe("Failed to send response, draining request. Reason: $e");
-      // ignore: unawaited_futures
+
       request.raw.drain().catchError((_) => null);
     }
   }

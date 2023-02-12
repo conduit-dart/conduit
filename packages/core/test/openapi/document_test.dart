@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, avoid_dynamic_calls
-
 import 'dart:async';
 
 import 'package:conduit_common/conduit_common.dart';
@@ -26,13 +24,12 @@ void main() {
       DefaultChannel.controllerPrepared = Completer();
       DefaultChannel.appPrepared = Completer();
 
-      // ignore: unawaited_futures
       DefaultChannel.appPrepared!.future
           .then((_) => appPrepared = DateTime.now());
-      // ignore: unawaited_futures
+
       DefaultChannel.controllerPrepared!.future
           .then((_) => controllerPrepared = DateTime.now());
-      // ignore: unawaited_futures
+
       DefaultChannel.controllerDocumented!.future
           .then((_) => controllerDocumented = DateTime.now());
       doc = await Application.document(DefaultChannel, ApplicationOptions(), {

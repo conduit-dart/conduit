@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors
-
 import 'dart:async';
 
 import 'package:conduit_common_test/conduit_common_test.dart';

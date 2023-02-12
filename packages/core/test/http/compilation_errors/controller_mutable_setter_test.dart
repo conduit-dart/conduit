@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, avoid_setters_without_getters
-
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';

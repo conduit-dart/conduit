@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/conduit_core.dart';
-// ignore: implementation_imports
 
 void justLogEverything() {
   hierarchicalLoggingEnabled = true;

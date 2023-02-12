@@ -176,7 +176,7 @@ class APIDocumentContext {
   Future<Map<String, dynamic>> finalize() async {
     final dops = _deferredOperations;
     _deferredOperations = [];
-    // ignore: avoid_dynamic_calls
+
     await Future.forEach(dops, (Function dop) => dop());
 
     document.paths!.values

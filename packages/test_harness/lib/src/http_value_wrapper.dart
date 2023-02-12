@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:io';
 
 import 'package:matcher/matcher.dart';
@@ -42,19 +44,15 @@ class HTTPValueMatcherWrapper extends Matcher {
 
     try {
       return onSuccess(num.parse(item));
-      // ignore: empty_catches
     } on FormatException {}
 
     try {
       return onSuccess(HttpDate.parse(item));
-      // ignore: empty_catches
     } on FormatException {
-      // ignore: empty_catches
     } on HttpException {}
 
     try {
       return onSuccess(DateTime.parse(item));
-      // ignore: empty_catches
     } on FormatException {}
 
     return false;

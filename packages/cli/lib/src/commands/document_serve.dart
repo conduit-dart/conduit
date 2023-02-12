@@ -1,5 +1,3 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -10,7 +8,7 @@ import 'package:conduit/src/mixins/openapi_options.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit/src/running_process.dart';
 import 'package:conduit/src/scripts/openapi_builder.dart';
-import 'package:conduit_core/src/http/http.dart';
+import 'package:conduit_core/conduit_core.dart';
 
 /// Used internally.
 class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {

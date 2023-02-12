@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, avoid_print
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -73,7 +71,6 @@ void main() {
         final body = RequestBody(request);
         expect(body.isEmpty, false);
 
-        // ignore: unawaited_futures
         request.response.close();
         await f;
       });
@@ -96,14 +93,12 @@ void main() {
         final body = RequestBody(request);
         expect(body.isEmpty, false);
 
-        // ignore: unawaited_futures
         request.response.close();
         await f;
       });
     });
 
     test("application/json decoder works on valid json", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -123,7 +118,7 @@ void main() {
       final req = await client.postUrl(Uri.parse("http://localhost:8123"));
       req.headers.add(HttpHeaders.contentTypeHeader, "application/json");
       req.add(utf8.encode(json.encode({"a": "val"})));
-      // ignore: unawaited_futures
+
       req.close().catchError((err) => Future.value(MockHttpClientResponse()));
 
       request = Request(await server.first);
@@ -135,7 +130,6 @@ void main() {
 
     test("application/x-form-url-encoded decoder works on valid form data",
         () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -155,7 +149,6 @@ void main() {
     });
 
     test("Any text decoder works on text with charset", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -170,7 +163,6 @@ void main() {
     });
 
     test("No found decoder for primary type returns binary", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -188,7 +180,7 @@ void main() {
       final req = await HttpClient()
           .openUrl("POST", Uri.parse("http://localhost:8123"));
       req.add("foobar".codeUnits);
-      // ignore: unawaited_futures
+
       req.close().catchError((err) => Future.value(MockHttpClientResponse()));
 
       final request = Request(await server.first);
@@ -199,7 +191,6 @@ void main() {
     });
 
     test("Failed decoding throws exception", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -241,7 +232,6 @@ void main() {
     });
 
     test("Added decoder works when content-type matches", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -255,7 +245,6 @@ void main() {
     });
 
     test("Added decoder that matches any subtype works", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),
@@ -276,7 +265,7 @@ void main() {
       final req = await client.postUrl(Uri.parse("http://localhost:8123"));
       req.headers.add(HttpHeaders.contentTypeHeader, "somethingelse/foobar");
       req.add(utf8.encode(json.encode({"a": "val"})));
-      // ignore: unawaited_futures
+
       req.close().catchError((err) => Future.value(MockHttpClientResponse()));
 
       final request = Request(await server.first);
@@ -293,7 +282,7 @@ void main() {
       final req = await client.postUrl(Uri.parse("http://localhost:8123"));
       req.headers.add(HttpHeaders.contentTypeHeader, "application/thingy");
       req.add(utf8.encode(json.encode({"a": "val"})));
-      // ignore: unawaited_futures
+
       req.close().catchError((err) => Future.value(MockHttpClientResponse()));
 
       final request = Request(await server.first);
@@ -324,14 +313,12 @@ void main() {
     });
 
     test("Decode valid decodeAsMap", () async {
-      // ignore: unawaited_futures
       postJSON({"a": "val"});
       final body = RequestBody(await server.first);
       expect(await body.decode<Map<String, dynamic>>(), {"a": "val"});
     });
 
     test("Return valid asMap from already decoded body", () async {
-      // ignore: unawaited_futures
       postJSON({"a": "val"});
       final body = RequestBody(await server.first);
       await body.decode();
@@ -341,7 +328,6 @@ void main() {
     });
 
     test("Call asMap prior to decode throws error", () async {
-      // ignore: unawaited_futures
       postJSON({"a": "val"});
       final body = RequestBody(await server.first);
 
@@ -353,7 +339,6 @@ void main() {
     });
 
     test("decodeAsMap with non-map returns 400", () async {
-      // ignore: unawaited_futures
       postJSON("a");
       final body = RequestBody(await server.first);
 
@@ -366,7 +351,6 @@ void main() {
     });
 
     test("decodeAsMap with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/json"},
@@ -378,7 +362,6 @@ void main() {
     });
 
     test("asMap with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/json"},
@@ -402,7 +385,6 @@ void main() {
     });
 
     test("Decode valid decodeAsList", () async {
-      // ignore: unawaited_futures
       postJSON([
         {"a": "val"}
       ]);
@@ -413,7 +395,6 @@ void main() {
     });
 
     test("Return valid asList from already decoded body", () async {
-      // ignore: unawaited_futures
       postJSON([
         {"a": "val"}
       ]);
@@ -425,7 +406,6 @@ void main() {
     });
 
     test("Call asList prior to decode throws exception", () async {
-      // ignore: unawaited_futures
       postJSON([
         {"a": "val"}
       ]);
@@ -439,7 +419,6 @@ void main() {
     });
 
     test("decodeAsList with non-list returns HTTPBodyException", () async {
-      // ignore: unawaited_futures
       postJSON("a");
       final body = RequestBody(await server.first);
 
@@ -452,7 +431,6 @@ void main() {
     });
 
     test("decodeAsList with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/json"},
@@ -464,7 +442,6 @@ void main() {
     });
 
     test("asList with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/json"},
@@ -488,7 +465,6 @@ void main() {
     });
 
     test("Decode valid decodeAsString", () async {
-      // ignore: unawaited_futures
       postString("abcdef");
       final body = RequestBody(await server.first);
       expect(await body.decode<String>(), "abcdef");
@@ -499,14 +475,12 @@ void main() {
           List.generate(1024 * 1024, (c) => "${c % 10 + 48}".codeUnitAt(0))
               .join();
 
-      // ignore: unawaited_futures
       postString(largeString);
       final body = RequestBody(await server.first);
       expect(await body.decode<String>(), largeString);
     });
 
     test("Return valid asString from already decoded body", () async {
-      // ignore: unawaited_futures
       postString("abcdef");
       final body = RequestBody(await server.first);
       await body.decode();
@@ -514,7 +488,6 @@ void main() {
     });
 
     test("Call asString prior to decode throws exception", () async {
-      // ignore: unawaited_futures
       postString("abcdef");
       final body = RequestBody(await server.first);
 
@@ -526,7 +499,6 @@ void main() {
     });
 
     test("Call asString with non-string data throws exception", () async {
-      // ignore: unawaited_futures
       postJSON({"k": "v"});
       final body = RequestBody(await server.first);
 
@@ -539,7 +511,6 @@ void main() {
     });
 
     test("decodeAsString with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "text/plain; charset=utf-8"},
@@ -551,7 +522,6 @@ void main() {
     });
 
     test("asString with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "text/plain; charset=utf-8"},
@@ -575,14 +545,12 @@ void main() {
     });
 
     test("Decode valid decodeAsBytes", () async {
-      // ignore: unawaited_futures
       postBytes([1, 2, 3, 4]);
       final body = RequestBody(await server.first);
       expect(await body.decode<List<int>>(), [1, 2, 3, 4]);
     });
 
     test("Return valid asBytes from already decoded body", () async {
-      // ignore: unawaited_futures
       postBytes([1, 2, 3, 4]);
       final body = RequestBody(await server.first);
       await body.decode();
@@ -590,7 +558,6 @@ void main() {
     });
 
     test("Call asBytes prior to decode throws error", () async {
-      // ignore: unawaited_futures
       postBytes([1, 2, 3, 4]);
 
       final body = RequestBody(await server.first);
@@ -602,7 +569,6 @@ void main() {
     });
 
     test("decodeAsBytes with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/octet-stream"},
@@ -614,7 +580,6 @@ void main() {
     });
 
     test("asBytes with no data returns null", () async {
-      // ignore: unawaited_futures
       http.post(
         Uri.parse("http://localhost:8123"),
         headers: {"Content-Type": "application/octet-stream"},
@@ -627,7 +592,6 @@ void main() {
 
     test("Throw exception if not retaining bytes and body was decoded",
         () async {
-      // ignore: unawaited_futures
       postJSON({"k": "v"});
       final body = RequestBody(await server.first);
       try {
@@ -638,7 +602,6 @@ void main() {
     });
 
     test("Retain bytes when codec is used", () async {
-      // ignore: unawaited_futures
       postJSON({"k": "v"});
 
       final body = RequestBody(await server.first)..retainOriginalBytes = true;
@@ -648,7 +611,6 @@ void main() {
     });
 
     test("Retain bytes when no codec is used", () async {
-      // ignore: unawaited_futures
       postBytes([1, 2, 3, 4]);
 
       final body = RequestBody(await server.first)..retainOriginalBytes = true;
@@ -669,7 +631,6 @@ void main() {
     });
 
     test("Subsequent decodes do not re-process body", () async {
-      // ignore: unawaited_futures
       http
           .post(
             Uri.parse("http://localhost:8123"),

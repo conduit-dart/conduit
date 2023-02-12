@@ -106,12 +106,10 @@ void main() {
     test("Router matches right route when many are similar", () async {
       final router = Router();
       router.route("/a/[:id]").linkFunction((req) async {
-        // ignore: unawaited_futures
         req.respond(Response(200, null, null));
         return null;
       });
       router.route("/a/:id/f").linkFunction((req) async {
-        // ignore: unawaited_futures
         req.respond(Response(201, null, null));
         return null;
       });

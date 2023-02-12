@@ -6,7 +6,6 @@ import 'package:conduit_open_api/src/v2/types.dart';
 /// Represents a parameter location in the OpenAPI specification.
 enum APIParameterLocation { query, header, path, formData, body }
 
-// ignore: avoid_classes_with_only_static_members
 class APIParameterLocationCodec {
   static APIParameterLocation? decode(String? location) {
     switch (location) {

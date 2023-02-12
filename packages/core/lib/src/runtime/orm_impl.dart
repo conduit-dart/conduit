@@ -1,5 +1,3 @@
-// ignore_for_file: leading_newlines_in_multiline_strings
-
 import 'dart:mirrors';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';

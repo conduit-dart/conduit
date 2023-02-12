@@ -1,6 +1,3 @@
-// ignore: unnecessary_const
-// ignore_for_file: always_declare_return_types
-
 import 'dart:async';
 import 'dart:io';
 
@@ -51,9 +48,7 @@ void main() {
 
       final mig = Migration1();
       mig.version = 1;
-      // ignore: unnecessary_cast
-      final outSchema = await (store.upgrade(schema, [mig], temporary: true)
-          as FutureOr<Schema?>);
+      final outSchema = await store.upgrade(schema, [mig], temporary: true);
 
       expect(outSchema, isNotNull);
 

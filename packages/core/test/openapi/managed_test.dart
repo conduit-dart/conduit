@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_setters_without_getters
-
 import 'dart:async';
 import 'dart:convert';
 

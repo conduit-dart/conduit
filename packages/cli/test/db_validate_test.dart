@@ -1,5 +1,3 @@
-// ignore: unnecessary_const
-
 import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';

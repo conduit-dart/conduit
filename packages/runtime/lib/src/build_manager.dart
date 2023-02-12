@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_void_to_null
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/results.dart';
@@ -6,7 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/runtime.dart';
 
-class BuildExecutable extends Executable<Null> {
+class BuildExecutable extends Executable {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
     context = BuildContext.fromMap(message);
   }
@@ -14,7 +13,7 @@ class BuildExecutable extends Executable<Null> {
   late BuildContext context;
 
   @override
-  Future<Null> execute() async {
+  Future execute() async {
     final build = Build(context);
     await build.execute();
   }

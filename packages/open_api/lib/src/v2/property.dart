@@ -12,7 +12,6 @@ enum APISchemaRepresentation {
 
 enum APICollectionFormat { csv, ssv, tsv, pipes }
 
-// ignore: avoid_classes_with_only_static_members
 class APICollectionFormatCodec {
   static APICollectionFormat? decode(String? location) {
     switch (location) {

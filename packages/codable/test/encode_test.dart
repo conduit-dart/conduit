@@ -154,7 +154,6 @@ void main() {
       try {
         KeyedArchive.archive(container, allowReferences: true);
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("#/definitions/child"));
       }
@@ -176,7 +175,6 @@ void main() {
       try {
         KeyedArchive.archive(container, allowReferences: true);
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("#/definitions/child"));
       }
@@ -196,7 +194,6 @@ void main() {
       try {
         KeyedArchive.archive(container, allowReferences: true);
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("#/definitions/child"));
       }
@@ -319,15 +316,15 @@ void main() {
     expect(encoded["archive"] is KeyedArchive, false);
     expect(encoded["list"] is List<dynamic>, true);
     expect(encoded["list"] is ListArchive, false);
-    // ignore: avoid_dynamic_calls
+
     expect(encoded["list"][0], "value");
-    // ignore: avoid_dynamic_calls
+
     expect(encoded["list"][1] is Map<String, dynamic>, true);
-    // ignore: avoid_dynamic_calls
+
     expect(encoded["list"][1] is KeyedArchive, false);
-    // ignore: avoid_dynamic_calls
+
     expect(encoded["list"][2] is List<dynamic>, true);
-    // ignore: avoid_dynamic_calls
+
     expect(encoded["list"][2] is ListArchive, false);
   });
 }
