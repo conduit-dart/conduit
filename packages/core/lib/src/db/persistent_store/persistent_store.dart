@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:conduit_core/src/db/managed/context.dart';
 import 'package:conduit_core/src/db/managed/entity.dart';
 import 'package:conduit_core/src/db/managed/object.dart';
-import 'package:conduit_core/src/db/query/mixin.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';
 

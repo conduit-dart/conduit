@@ -115,7 +115,7 @@ void main() {
     test("Template gets generated from local path, project points to it",
         () async {
       final res = await cli.run("create", ["test_project", "--offline"]);
-      expect(res, 0);
+      expect(res, isZero);
 
       final List packages = jsonDecode(
         File(

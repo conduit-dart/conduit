@@ -161,7 +161,7 @@ void main() {
         Uri.parse("http://localhost:4040"),
         headers: {"Content-Type": "application/octet-stream"},
         body: [1, 2, 3],
-      ).catchError((err) {});
+      );
 
       expect(response.statusCode, 200);
       expect(response.bodyBytes, [1, 2, 3]);
@@ -247,15 +247,13 @@ Future<http.Response> postJSON(dynamic body) {
     return http.post(
       Uri.parse("http://localhost:4040"),
       headers: {"Content-Type": "application/json"},
-    ).catchError((err) {});
+    );
   }
-  return http
-      .post(
-        Uri.parse("http://localhost:4040"),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(body),
-      )
-      .catchError((err) {});
+  return http.post(
+    Uri.parse("http://localhost:4040"),
+    headers: {"Content-Type": "application/json"},
+    body: json.encode(body),
+  );
 }
 
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
