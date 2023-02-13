@@ -1,5 +1,5 @@
 name: fs_test_agent
-version: 4.3.0
+version: 4.3.1
 homepage: https://stablekernel.com
 description: Utilities for writing tests to validate file system and Dart project directory operations.
 environment:
