@@ -1,6 +1,6 @@
 name: conduit_mysql
 description: The mysql ORM for conduit.
-version: 4.3.0
+version: 4.3.2-alpha
 repository: https://github.com/conduit-dart/conduit
 
 environment:
