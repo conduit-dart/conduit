@@ -1,4 +1,4 @@
-name: conduit_postgresql
+name: conduit_mysql
 description: The mysql ORM for conduit.
 version: 4.3.0
 repository: https://github.com/conduit-dart/conduit

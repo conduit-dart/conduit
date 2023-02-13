@@ -13,6 +13,8 @@ dependency_overrides:
     path: ../core
   conduit_isolate_exec:
     path: ../isolate_exec
+  conduit_mysql:
+    path: ../mysql
   conduit_password_hash:
     path: ../password_hash
   conduit_postgresql:
