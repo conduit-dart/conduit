@@ -1,11 +1,11 @@
 name: conduit_open_api
-version: 4.3.1
+version: 4.3.2
 homepage: https://github.com/conduit-dart/open-api-dart
 description: Data structures for OpenAPI (Swagger) specification. Reads and writes JSON specifications.
 environment:
   sdk: '>=2.19.0 <4.0.0'
 dependencies:
-  conduit_codable: ^4.3.0
+  conduit_codable: ^4.3.2
   meta: ^1.1.5
 dev_dependencies:
   lints: ^2.0.1

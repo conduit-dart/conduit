@@ -1,3 +1,7 @@
+## 4.3.2
+
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+
 ## 4.2.2
 
  - **FIX**: Attach finalizer on commit ([#186](https://github.com/conduit-dart/conduit/issues/186)). ([8408280e](https://github.com/conduit-dart/conduit/commit/8408280e23c5982e80d210034468b4ab5214a368))
