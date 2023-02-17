@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: conduit_codable,conduit_common,conduit_common_test,conduit_config,conduit_isolate_exec,conduit_open_api,conduit_password_hash,conduit_runtime
+# melos_managed_dependency_overrides: conduit_codable,conduit_common,conduit_common_test,conduit_config,conduit_isolate_exec,conduit_open_api,conduit_password_hash,conduit_runtime,conduit_mysql
 dependency_overrides:
   conduit_codable:
     path: ../codable
@@ -12,6 +12,8 @@ dependency_overrides:
     path: ../core
   conduit_isolate_exec:
     path: ../isolate_exec
+  conduit_mysql:
+    path: ../mysql
   conduit_open_api:
     path: ../open_api
   conduit_password_hash:
