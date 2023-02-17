@@ -53,6 +53,15 @@ jobs:
           POSTGRES_PORT: 15432
         ports:
           - 15432:5432
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_USER: conduit_test_user
+          MYSQL_PASSWORD: conduit!
+          MYSQL_DATABASE: conduit_test_db
+          MYSQL_PORT: 13306
+        ports:
+          - 13306:3306
     steps:
       - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1

@@ -16,3 +16,18 @@ services:
     volumes:
     - ./ssl/server.crt:/var/lib/postgresql/server.crt:ro
     - ./ssl/server.key:/var/lib/postgresql/server.key:ro
+  mysql:
+    image: mysql:8.0
+    container_name: conduit_mysql
+    restart: always
+    environment:
+      MYSQL_USER: conduit_test_user
+      MYSQL_PASSWORD: conduit!
+      MYSQL_DATABASE: conduit_test_db
+      MYSQL_PORT: 13306
+    ports:
+      - 0.0.0.0:13306:3306
+    volumes:
+    - ./ssl/server.crt:/var/lib/postgresql/server.crt:ro
+    - ./ssl/server.key:/var/lib/postgresql/server.key:ro
+  
