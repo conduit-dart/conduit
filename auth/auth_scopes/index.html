@@ -1,0 +1,2385 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../cli/">
+      
+      
+        <link rel="next" href="../what_is_oauth/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>OAuth 2.0 Scoping - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#auth_scopes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              OAuth 2.0 Scoping
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/getting-started/" class="md-nav__link">
+        1. Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="true">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="false">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/resource_controller/" class="md-nav__link">
+        Request Binding with Resource Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="false">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/modeling_data/" class="md-nav__link">
+        Modeling Data and Relationships
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/executing_queries/" class="md-nav__link">
+        Basic Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/json_columns/" class="md-nav__link">
+        JSON Document Storage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="true">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          OAuth 2.0 Scoping
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        OAuth 2.0 Scoping
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#granular-authorization-with-oauth-20-scopes" class="md-nav__link">
+    Granular Authorization with OAuth 2.0 Scopes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-usage-in-conduit" class="md-nav__link">
+    Scope Usage in Conduit
+  </a>
+  
+    <nav class="md-nav" aria-label="Scope Usage in Conduit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-scope-restrictions-to-operations" class="md-nav__link">
+    Adding Scope Restrictions to Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-permissible-scope" class="md-nav__link">
+    Defining Permissible Scope
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-application-integration" class="md-nav__link">
+    Client Application Integration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-format-and-hierarchy" class="md-nav__link">
+    Scope Format and Hierarchy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#granular-authorization-with-oauth-20-scopes" class="md-nav__link">
+    Granular Authorization with OAuth 2.0 Scopes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-usage-in-conduit" class="md-nav__link">
+    Scope Usage in Conduit
+  </a>
+  
+    <nav class="md-nav" aria-label="Scope Usage in Conduit">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-scope-restrictions-to-operations" class="md-nav__link">
+    Adding Scope Restrictions to Operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-permissible-scope" class="md-nav__link">
+    Defining Permissible Scope
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-application-integration" class="md-nav__link">
+    Client Application Integration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scope-format-and-hierarchy" class="md-nav__link">
+    Scope Format and Hierarchy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="auth_scopes">auth_scopes</h1>
+<h2 id="granular-authorization-with-oauth-20-scopes">Granular Authorization with OAuth 2.0 Scopes</h2>
+<p>In many applications, operations have varying levels of access control. For example, a user may need special permission to create 'notes', but every user can read notes. In OAuth 2.0, permissions for operations are determined by an access token's <em>scope</em>. Operations can be defined to require certain scopes, and a request may only invoke those operations if its access token was granted with those scopes.</p>
+<p>A scope is a string identifier, like <code>notes</code> or <code>notes.readonly</code>. When a client application authenticates on behalf of a user, it requests one or more of these scope identifiers to be granted to the access token. Valid scopes will be stored with the access token, so that the scope can be referenced by subsequent uses of the access token.</p>
+<h2 id="scope-usage-in-conduit">Scope Usage in Conduit</h2>
+<p>An access token's scope is determined when a user authenticates. During authentication, a client application indicates the requested scope, and the Conduit application determines if that scope is permissible for the client application and the user. This scope information is attached to the access token.</p>
+<p>When a request is made with an access token, an <code>Authorizer</code> retrieves the token's scope. After the request is validated, the <code>Authorizer</code> stores scope information in <code>Request.authorization</code>. Linked controllers can use this information to determine how the request is handled. In general, a controller will reject a request and send a 403 Forbidden response when an access token has insufficient scope for an operation.</p>
+<p>Therefore, adding scopes to an application consists of three steps:</p>
+<ol>
+<li>Adding scope restrictions to operations.</li>
+<li>Adding permissible scopes for OAuth2 client identifiers (and optionally users).</li>
+<li>Updating client applications to request scope when authenticating.</li>
+</ol>
+<h3 id="adding-scope-restrictions-to-operations">Adding Scope Restrictions to Operations</h3>
+<p>When an <code>Authorizer</code> handles a request, it creates an <code>Authorization</code> object that is attached to the request. An <code>Authorization</code> object has a <code>scopes</code> property that contains every scope granted for the access token. This object also has a convenience method for checking if a particular scope is valid for that list of scopes:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">NoteController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">RequestOrResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">(</span><span class="n">Request</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">request</span><span class="p">.</span><span class="n">authorization</span><span class="p">.</span><span class="n">isAuthorizedForScope</span><span class="p">(</span><span class="s2">&quot;notes&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">forbidden</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="kd">await</span><span class="w"> </span><span class="n">getAllNotes</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>!!! warning "Use an Authorizer" The <code>authorization</code> property of <code>Request</code> is only valid after the request is handled by an <code>Authorizer</code>. It is <code>null</code> otherwise.</p>
+<p>An <code>Authorizer</code> may also validate the scope of a request before letting it pass to its linked controller.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/notes&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Authorizer</span><span class="p">.</span><span class="n">bearer</span><span class="p">(</span><span class="n">authServer</span><span class="p">,</span><span class="w"> </span><span class="nl">scopes:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]))</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">NoteController</span><span class="p">());</span>
+</code></pre></div>
+
+<p>In the above, the <code>NoteController</code> will only be reached if the request's bearer token has 'notes' scope. If there is insufficient scope, a 403 Forbidden response is sent. This applies to all operations of the <code>NoteController</code>.</p>
+<p>It often makes sense to have separate scope for different operations on the same resource. The <code>Scope</code> annotation may be added to <code>ResourceController</code> operation methods for this purpose.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">NoteController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Scope</span><span class="p">([</span><span class="s1">&#39;notes.readonly&#39;</span><span class="p">])</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getNotes</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">...;</span>
+
+<span class="w">  </span><span class="nd">@Scope</span><span class="p">([</span><span class="s1">&#39;notes&#39;</span><span class="p">])</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="n">post</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">createNote</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="w"> </span><span class="n">Note</span><span class="w"> </span><span class="n">note</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">...;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If a request does not have sufficient scope for the intended operation method, a 403 Forbidden response is sent. When using <code>Scope</code> annotations, you must link an <code>Authorizer</code> prior to the <code>ResourceController</code>, but it is not necessary to specify <code>Authorizer</code> scopes.</p>
+<p>If a <code>Scope</code> annotation or <code>Authorizer</code> contains multiple scope entries, an access token must have scope for each of those entries. For example, the annotation <code>@Scope(['notes', 'user'])</code> requires an access token to have both 'notes' and 'user' scope.</p>
+<h3 id="defining-permissible-scope">Defining Permissible Scope</h3>
+<p>When a client application authenticates on behalf of a user, it includes a list of request scopes for the access token. A Conduit application will grant the requested scopes to the token if the scopes are permissible for both the authenticating client identifier and the authenticating user.</p>
+<p>To add permissible scopes to an authenticating client, you use the <code>conduit auth</code> command-line tool. When creating a new client identifier, include the <code>--allowed-scopes</code> options:</p>
+<div class="codehilite"><pre><span></span><code>conduit<span class="w"> </span>auth<span class="w"> </span>add-client<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--id<span class="w"> </span>com.app.mobile<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--secret<span class="w"> </span>myspecialsecret<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--allowed-scopes<span class="w"> </span><span class="s1">&#39;notes users&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--connect<span class="w"> </span>postgres://user:password@dbhost:5432/db_name
+</code></pre></div>
+
+<p>When modifying an existing client identifier, use the command <code>conduit auth set-scope</code>:</p>
+<div class="codehilite"><pre><span></span><code>conduit<span class="w"> </span>auth<span class="w"> </span>set-scope<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--id<span class="w"> </span>com.app.mobile<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--scopes<span class="w"> </span><span class="s1">&#39;notes users&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--connect<span class="w"> </span>postgres://user:password@dbhost:5432/db_name
+</code></pre></div>
+
+<p>Each scope is a space-delimited string; the above examples allow clients authenticating with the <code>com.app.mobile</code> client ID to grant access tokens with 'notes' and 'users' scope. If a client application requests scopes that are not available for that client application, the granted access token will not contain that scope. If none of the request scopes are available for the client identifier, no access token is granted. When adding scope restrictions to your application, you must ensure that all of the client applications that have access to those operations are able to grant that scope.</p>
+<p>Scopes may also be limited by some attribute of your application's concept of a 'user'. This user-level filtering is done by overriding <code>getAllowedScopes</code> in <code>AuthServerDelegate</code>. By default, this method returns <code>AuthScope.Any</code> - which means there are no restrictions. If the client application allows the scope, then any user that logs in with that application can request that scope.</p>
+<p>This method may return a list of <code>AuthScope</code>s that are valid for the authenticating user. The following example shows a <code>ManagedAuthDelegate&lt;T&gt;</code> subclass that allows any scope for <code>@conduit.dart.com</code> usernames, no scopes for <code>@hotmail.com</code> addresses and some limited scope for everyone else:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">DomainBasedAuthDelegate</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedAuthDelegate</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">DomainBasedAuthDelegate</span><span class="p">(</span><span class="n">ManagedContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="kt">int</span><span class="w"> </span><span class="nl">tokenLimit:</span><span class="w"> </span><span class="m">40</span><span class="p">})</span><span class="w"> </span><span class="o">:</span>
+<span class="w">        </span><span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="nl">tokenLimit:</span><span class="w"> </span><span class="n">tokenLimit</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">AuthScope</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllowedScopes</span><span class="p">(</span><span class="kd">covariant</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">username</span><span class="p">.</span><span class="n">endsWith</span><span class="p">(</span><span class="s2">&quot;@conduit.dart.com&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">AuthScope</span><span class="p">.</span><span class="n">Any</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">username</span><span class="p">.</span><span class="n">endsWith</span><span class="p">(</span><span class="s2">&quot;@hotmail.com&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="n">AuthScope</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span><span class="w">      </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>user</code> passed to <code>getAllowedScopes</code> is the user being authenticated. It will have previously been fetched by the <code>AuthServer</code>. The <code>AuthServer</code> fetches this object by invoking <code>AuthDelegate.getResourceOwner</code>. The default implementation of this method for <code>ManagedAuthDelegate&lt;T&gt;</code> only fetches the <code>id</code>, <code>username</code>, <code>salt</code> and <code>hashedPassword</code> of the user.</p>
+<p>When using some other attribute of an application's user object to restrict allowed scopes, you must also override <code>getResourceOwner</code> to fetch these attributes. For example, if your application's user has a <code>role</code> attribute, you must fetch it and the other four required properties. Here's an example implementation:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">RoleBasedAuthDelegate</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedAuthDelegate</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">RoleBasedAuthDelegate</span><span class="p">(</span><span class="n">ManagedContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="kt">int</span><span class="w"> </span><span class="nl">tokenLimit:</span><span class="w"> </span><span class="m">40</span><span class="p">})</span><span class="w"> </span><span class="o">:</span>
+<span class="w">        </span><span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="nl">tokenLimit:</span><span class="w"> </span><span class="n">tokenLimit</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getResourceOwner</span><span class="p">(</span>
+<span class="w">      </span><span class="n">AuthServer</span><span class="w"> </span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">username</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">      </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">username</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+<span class="w">      </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="p">[</span><span class="n">t</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">hashedPassword</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">salt</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">role</span><span class="p">]);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">AuthScope</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllowedScopes</span><span class="p">(</span><span class="kd">covariant</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">scopeStrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">role</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">scopeStrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">role</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">scopeStrings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user:email&quot;</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">scopeStrings</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">AuthScope</span><span class="p">(</span><span class="n">str</span><span class="p">)).</span><span class="n">toList</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="client-application-integration">Client Application Integration</h3>
+<p>Client applications that integrate with your scoped Conduit application must include a list of requested scopes when performing authentication. When authenticating through <code>AuthController</code>, a <code>scope</code> parameter must be added to the form data body. This parameter's value must be a space-delimited, URL-encoded list of requested scopes.</p>
+<div class="codehilite"><pre><span></span><code>username=bob&amp;password=foo&amp;grant_type=password&amp;scope=notes%20users
+</code></pre></div>
+
+<p>When authenticating via an <code>AuthCodeController</code>, this same query parameter is added to the initial <code>GET</code> request to render the login form.</p>
+<p>When authentication is complete, the list of granted scopes will be available in the JSON response body as a space-delimited string.</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;access_token&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;refresh_token&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;token_type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bearer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;expires_in&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">3600</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;scopes&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;notes users&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="scope-format-and-hierarchy">Scope Format and Hierarchy</h2>
+<p>There is no definitive guide on what a scope string should look like, other than being restricted to alphanumeric characters and some symbols. Conduit, however, provides a simple scoping structure - there are two special symbols, <code>:</code> and <code>.</code>.</p>
+<p>Hierarchy is specified by the <code>:</code> character. For example, the following is a hierarchy of scopes related to a user and its sub-resources:</p>
+<ul>
+<li><code>user</code> (can read/write everything a user has)</li>
+<li><code>user:email</code> (can read/write a user's email)</li>
+<li><code>user:documents</code> (can read/write a user's documents)</li>
+<li><code>user:documents:spreadsheets</code> (can read/write a user's spreadsheet documents)</li>
+</ul>
+<p>Notice how these scopes form a hierarchy. Each segment makes the scope more restrictive. For example, if an access token has <code>user:email</code> scope, it only allows access to a user's email. However, if the access token has <code>user</code> scope, it allows access to everything a user has, including their email.</p>
+<p>As another example, an access token with <code>user:documents</code> scope can access all of a user's documents, but the scope <code>user:documents:spreadsheets</code> is limited to only spreadsheet documents.</p>
+<p>Scope is often used to indicate read vs. write access. At first glance, it might sound like a good idea to use the hierarchy operator, e.g. <code>user:email:read</code> and <code>user:email:write</code>. However, an access token with <code>user:email:write</code> <em>does not</em> have permission to read email and this is likely unintended.</p>
+<p>This is where <em>scope modifiers</em> come in. A scope modifier is added after a <code>.</code> at the end of a scope string. For example, <code>user:email.readonly</code> grants readonly access to a user's email whereas <code>user:email</code> grants read and write access.</p>
+<p>An access token without a modifier has permission <em>any</em> modifier. Thus, <code>user</code> and <code>user:email</code> can both access <code>user:email.readonly</code> protected resources and actions, but <code>user:email.readonly</code> cannot access resources protected by <code>user:email</code>.</p>
+<p>A scope modifier is only valid for the last segment of a scope string. That is, <code>user:documents.readonly:spreadsheets</code> is not valid, but <code>user:documents:spreadsheets.readonly</code> is.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

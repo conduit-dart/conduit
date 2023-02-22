@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the MockHTTPServer class from the conduit_test library, for the Dart programming language.">
+  <title>MockHTTPServer class - conduit_test library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_test</a></li>
+    <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+    <li class="self-crumb">MockHTTPServer class</li>
+  </ol>
+  <div class="self-name">MockHTTPServer</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">MockHTTPServer</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>This class is used as a 'mock' implementation of another HTTP server.</p>
+<p>Create instances of these types during testing to simulate responses for HTTP requests your application makes to another server.
+All requests your application makes to another server will be sent to this object. Your tests can then verify the
+correct request was sent and your application's behavior can be validated against the possible responses from the other server.</p>
+<p>An instance of this type listens on 'localhost' on <a href="../conduit_test/MockHTTPServer/port.html">port</a>. Your application should use configuration values to provide the base URL and port
+of another server. During testing, your application should use the base URL 'http://localhost:<port>' and instantiate an mock HTTP
+server with that port.</port></p>
+<p>By default, an instance of this type returns a 503 error response, indicating that the service can't be reached. Different
+responses can be returned via <a href="../conduit_test/MockHTTPServer/defaultResponse.html">defaultResponse</a>, <a href="../conduit_test/MockHTTPServer/queueResponse.html">queueResponse</a>, <a href="../conduit_test/MockHTTPServer/queueHandler.html">queueHandler</a>, and <a href="../conduit_test/MockHTTPServer/queueOutage.html">queueOutage</a>.</p>
+<p>Example usages:
+test("POST /nest/pair associates account with Nest service", () async {
+var nestMockServer = MockHTTPServer(7777);
+await nestMockServer.open();</p>
+<pre class="language-dart"><code>      // Expect that POST /nest/pair sends an HTTP request to Nest server.
+      var response = await client.request("/nest/pair", ...).post();
+      expect(response, ...);
+
+      // Verify the path of the HTTP request sent to Nest server.
+      var requestSentToNest = await nestMockServer.next();
+      expect(requestSentToNest.path.segments[1, response["id"]);
+
+      await nestMockServer.close();
+    });
+</code></pre>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></li>
+        <li><a href="../conduit_test/MockServer-class.html">MockServer</a><span class="signature">&lt;<wbr><span class="type-parameter">Request</span>&gt;</span></li>
+      <li>MockHTTPServer</li>
+    </ul>
+  </dd>
+
+        
+        
+
+
+
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="MockHTTPServer" class="callable">
+          <span class="name"><a href="../conduit_test/MockHTTPServer/MockHTTPServer.html">MockHTTPServer</a></span><span class="signature">(<span class="parameter" id="-param-port"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">port</span></span>)</span>
+        </dt>
+        <dd>
+          
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="defaultDelay" class="property">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/defaultDelay.html">defaultDelay</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Duration-class.html">Duration</a>?</span> 
+
+</dt>
+<dd>
+  The delay to be used for responses where a delay is not set
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="defaultResponse" class="property">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/defaultResponse.html">defaultResponse</a></span>
+  <span class="signature">&#8596; Response</span> 
+
+</dt>
+<dd>
+  The response to be returned if there are no queued responses
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="isEmpty" class="property inherited">
+  <span class="name"><a href="../conduit_test/MockServer/isEmpty.html">isEmpty</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd class="inherited">
+  Whether or not there are any messages that have been sent to this instance but have yet to be read.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="port" class="property">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/port.html">port</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd>
+  The port to listen on.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="queuedResponseCount" class="property">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/queuedResponseCount.html">queuedResponseCount</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd>
+  The number of currently queued responses
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="server" class="property">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/server.html">server</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-io/HttpServer-class.html">HttpServer</a></span> 
+
+</dt>
+<dd>
+  The underlying <a href="https://api.dart.dev/stable/2.19.2/dart-io/HttpServer-class.html">HttpServer</a> listening for requests.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="add" class="callable inherited">
+  <span class="name"><a href="../conduit_test/MockServer/add.html">add</a></span><span class="signature">(<wbr><span class="parameter" id="add-param-value"><span class="type-annotation">Request</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Adds an event to this server.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="clear" class="callable inherited">
+  <span class="name"><a href="../conduit_test/MockServer/clear.html">clear</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="close" class="callable">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/close.html">close</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Shuts down the server listening for HTTP requests.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="next" class="callable inherited">
+  <span class="name"><a href="../conduit_test/MockServer/next.html">next</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">Request</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns an event that has been added to this server.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="open" class="callable">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/open.html">open</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Begins listening for HTTP requests on <a href="../conduit_test/MockHTTPServer/port.html">port</a>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="queueHandler" class="callable">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/queueHandler.html">queueHandler</a></span><span class="signature">(<wbr><span class="parameter" id="queueHandler-param-handler"><span class="type-annotation">Response</span> <span class="parameter-name">handler</span>(<span class="parameter" id="param-request"><span class="type-annotation">Request</span> <span class="parameter-name">request</span></span>), </span><span class="parameter" id="queueHandler-param-delay">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">delay</span>}</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Enqueues a function that creates a response for the next request.
+  
+
+</dd>
+
+        <dt id="queueOutage" class="callable">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/queueOutage.html">queueOutage</a></span><span class="signature">(<wbr><span class="parameter" id="queueOutage-param-count">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">count</span> = <span class="default-value">1</span>}</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Enqueues an outage; the next request will not receive a response.
+  
+
+</dd>
+
+        <dt id="queueResponse" class="callable">
+  <span class="name"><a href="../conduit_test/MockHTTPServer/queueResponse.html">queueResponse</a></span><span class="signature">(<wbr><span class="parameter" id="queueResponse-param-resp"><span class="type-annotation">Response</span> <span class="parameter-name">resp</span>, </span><span class="parameter" id="queueResponse-param-delay">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Duration-class.html">Duration</a>?</span> <span class="parameter-name">delay</span>}</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Enqueues a response for the next request.
+  
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_test</a></li>
+  <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+  <li class="self-crumb">MockHTTPServer class</li>
+</ol>
+
+
+    <h5>conduit_test library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#classes">Classes</a></li>
+        <li><a href="../conduit_test/Agent-class.html">Agent</a></li>
+        <li><a href="../conduit_test/MockHTTPServer-class.html">MockHTTPServer</a></li>
+        <li><a href="../conduit_test/MockServer-class.html">MockServer</a></li>
+        <li><a href="../conduit_test/TestHarness-class.html">TestHarness</a></li>
+        <li><a href="../conduit_test/TestHarnessAuthMixin-class.html">TestHarnessAuthMixin</a></li>
+        <li><a href="../conduit_test/TestHarnessORMMixin-class.html">TestHarnessORMMixin</a></li>
+        <li><a href="../conduit_test/TestRequest-class.html">TestRequest</a></li>
+        <li><a href="../conduit_test/TestResponse-class.html">TestResponse</a></li>
+        <li><a href="../conduit_test/TestResponseBody-class.html">TestResponseBody</a></li>
+
+
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#constants">Constants</a></li>
+        <li><a href="../conduit_test/isBoolean-constant.html">isBoolean</a></li>
+        <li><a href="../conduit_test/isDouble-constant.html">isDouble</a></li>
+        <li><a href="../conduit_test/isInteger-constant.html">isInteger</a></li>
+        <li><a href="../conduit_test/isNotPresent-constant.html">isNotPresent</a></li>
+        <li><a href="../conduit_test/isNumber-constant.html">isNumber</a></li>
+        <li><a href="../conduit_test/isString-constant.html">isString</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#properties">Properties</a></li>
+        <li><a href="../conduit_test/isTimestamp.html">isTimestamp</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#functions">Functions</a></li>
+        <li><a href="../conduit_test/expectResponse.html">expectResponse</a></li>
+        <li><a href="../conduit_test/hasBody.html">hasBody</a></li>
+        <li><a href="../conduit_test/hasHeaders.html">hasHeaders</a></li>
+        <li><a href="../conduit_test/hasResponse.html">hasResponse</a></li>
+        <li><a href="../conduit_test/hasStatus.html">hasStatus</a></li>
+        <li><a href="../conduit_test/isAfter.html">isAfter</a></li>
+        <li><a href="../conduit_test/isAfterOrSameMomentAs.html">isAfterOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isBefore.html">isBefore</a></li>
+        <li><a href="../conduit_test/isBeforeOrSameMomentAs.html">isBeforeOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isSameMomentAs.html">isSameMomentAs</a></li>
+        <li><a href="../conduit_test/partial.html">partial</a></li>
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../conduit_test/MockHTTPServer-class.html#constructors">Constructors</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/MockHTTPServer.html">MockHTTPServer</a></li>
+
+
+        <li class="section-title">
+          <a href="../conduit_test/MockHTTPServer-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../conduit_test/MockHTTPServer/defaultDelay.html">defaultDelay</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/defaultResponse.html">defaultResponse</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="../conduit_test/MockServer/isEmpty.html">isEmpty</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/port.html">port</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/queuedResponseCount.html">queuedResponseCount</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/server.html">server</a></li>
+
+        <li class="section-title"><a href="../conduit_test/MockHTTPServer-class.html#instance-methods">Methods</a></li>
+          <li class="inherited"><a href="../conduit_test/MockServer/add.html">add</a></li>
+          <li class="inherited"><a href="../conduit_test/MockServer/clear.html">clear</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/close.html">close</a></li>
+          <li class="inherited"><a href="../conduit_test/MockServer/next.html">next</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/open.html">open</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/queueHandler.html">queueHandler</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/queueOutage.html">queueOutage</a></li>
+          <li><a href="../conduit_test/MockHTTPServer/queueResponse.html">queueResponse</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../conduit_test/MockHTTPServer-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_test
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

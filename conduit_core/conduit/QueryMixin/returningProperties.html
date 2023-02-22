@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the returningProperties method from the QueryMixin class, for the Dart programming language.">
+  <title>returningProperties method - QueryMixin class - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/QueryMixin-class.html">QueryMixin<span class="signature">&lt;<wbr><span class="type-parameter">InstanceType extends ManagedObject</span>&gt;</span></a></li>
+    <li class="self-crumb">returningProperties method</li>
+  </ol>
+  <div class="self-name">returningProperties</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">returningProperties</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+  <div>
+    <ol class="annotation-list">
+        <li>@<a href="https://api.dart.dev/stable/2.19.2/dart-core/override-constant.html">override</a></li>
+    </ol>
+  </div>
+
+<span class="returntype">void</span>
+<span class="name ">returningProperties</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="returningProperties-param-propertyIdentifiers"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a></span> <span class="parameter-name">propertyIdentifiers</span>(<ol class="parameter-list"><li><span class="parameter" id="param-x"><span class="type-annotation">InstanceType</span> <span class="parameter-name">x</span></span></li>
+</ol>
+)</span></li>
+</ol>)
+
+      <div class="features"><span class="feature">override</span></div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Configures the list of properties to be fetched for <code>InstanceType</code>.</p>
+<p>This method configures which properties will be populated for <code>InstanceType</code> when returned
+from this query. This impacts all query execution methods that return <code>InstanceType</code> or <a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a> of <code>InstanceType</code>.</p>
+<p>The following example would configure this instance to fetch the 'id' and 'name' for each returned 'Employee':</p>
+<pre class="language-dart"><code>    var q = Query&lt;Employee&gt;()
+      ..returningProperties((employee) =&gt; [employee.id, employee.name]);
+</code></pre>
+<p>Note that if the primary key property of an object is omitted from this list, it will be added when this
+instance executes. If the primary key value should not be sent back as part of an API response,
+it can be stripped from the returned object(s) with <a href="../../conduit/ManagedObject/removePropertyFromBackingMap.html">ManagedObject.removePropertyFromBackingMap</a>.</p>
+<p>If this method is not invoked, the properties defined by <a href="../../conduit/ManagedEntity/defaultProperties.html">ManagedEntity.defaultProperties</a> are returned.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+void returningProperties(
+  List&lt;dynamic&gt; Function(InstanceType x) propertyIdentifiers,
+) {
+  final properties = entity.identifyProperties(propertyIdentifiers);
+
+  if (properties.any(
+    (kp) =&gt; kp.path.any(
+      (p) =&gt;
+          p is ManagedRelationshipDescription &amp;&amp;
+          p.relationshipType != ManagedRelationshipType.belongsTo,
+    ),
+  )) {
+    throw ArgumentError(
+      &quot;Invalid property selector. Cannot select has-many or has-one relationship properties. Use join instead.&quot;,
+    );
+  }
+
+  _propertiesToFetch = entity.identifyProperties(propertyIdentifiers);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/QueryMixin-class.html">QueryMixin<span class="signature">&lt;<wbr><span class="type-parameter">InstanceType extends ManagedObject</span>&gt;</span></a></li>
+  <li class="self-crumb">returningProperties method</li>
+</ol>
+
+
+    <h5>QueryMixin class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/QueryMixin-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/QueryMixin/QueryMixin.html">QueryMixin</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit/QueryMixin-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../../conduit/QueryMixin/canModifyAllInstances.html">canModifyAllInstances</a></li>
+          <li class="inherited"><a href="../../conduit/Query/context.html">context</a></li>
+          <li class="inherited"><a href="../../conduit/Query/entity.html">entity</a></li>
+          <li><a href="../../conduit/QueryMixin/expressions.html">expressions</a></li>
+          <li><a href="../../conduit/QueryMixin/fetchLimit.html">fetchLimit</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../../conduit/QueryMixin/offset.html">offset</a></li>
+          <li><a href="../../conduit/QueryMixin/pageDescriptor.html">pageDescriptor</a></li>
+          <li><a href="../../conduit/QueryMixin/predicate.html">predicate</a></li>
+          <li><a href="../../conduit/QueryMixin/propertiesToFetch.html">propertiesToFetch</a></li>
+          <li class="inherited"><a href="../../conduit/Query/reduce.html">reduce</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../conduit/QueryMixin/sortDescriptors.html">sortDescriptors</a></li>
+          <li><a href="../../conduit/QueryMixin/subQueries.html">subQueries</a></li>
+          <li><a href="../../conduit/QueryMixin/timeoutInSeconds.html">timeoutInSeconds</a></li>
+          <li><a href="../../conduit/QueryMixin/valueMap.html">valueMap</a></li>
+          <li><a href="../../conduit/QueryMixin/values.html">values</a></li>
+
+        <li class="section-title"><a href="../../conduit/QueryMixin-class.html#instance-methods">Methods</a></li>
+          <li class="inherited"><a href="../../conduit/Query/delete.html">delete</a></li>
+          <li class="inherited"><a href="../../conduit/Query/fetch.html">fetch</a></li>
+          <li class="inherited"><a href="../../conduit/Query/fetchOne.html">fetchOne</a></li>
+          <li class="inherited"><a href="../../conduit/Query/insert.html">insert</a></li>
+          <li class="inherited"><a href="../../conduit/Query/insertMany.html">insertMany</a></li>
+          <li><a href="../../conduit/QueryMixin/join.html">join</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../conduit/QueryMixin/pageBy.html">pageBy</a></li>
+          <li><a href="../../conduit/QueryMixin/returningProperties.html">returningProperties</a></li>
+          <li><a href="../../conduit/QueryMixin/sortBy.html">sortBy</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li class="inherited"><a href="../../conduit/Query/update.html">update</a></li>
+          <li class="inherited"><a href="../../conduit/Query/updateOne.html">updateOne</a></li>
+          <li><a href="../../conduit/QueryMixin/validateInput.html">validateInput</a></li>
+          <li><a href="../../conduit/QueryMixin/where.html">where</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit/QueryMixin-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

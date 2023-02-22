@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the Validate.absent constructor from Class Validate from the conduit library, for the Dart programming language.">
+  <title>Validate.absent constructor - Validate - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/Validate-class.html">Validate</a></li>
+    <li class="self-crumb">Validate.absent const constructor</li>
+  </ol>
+  <div class="self-name">Validate.absent</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-constructor">Validate.absent</span> constructor 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      const
+      <span class="name ">Validate.absent</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="absent-param-onUpdate">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">onUpdate</span> = <span class="default-value">true</span>, </span></li>
+<li><span class="parameter" id="absent-param-onInsert"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">onInsert</span> = <span class="default-value">true</span>}</span></li>
+</ol>)
+    </section>
+
+    
+<section class="desc markdown">
+  <p>A validator for ensuring a property does not have a value when being inserted or updated.</p>
+<p>This metadata requires that a property must NOT be set in <a href="../../conduit/Query/values.html">Query.values</a> before an update
+or insert.</p>
+<p>This validation is used to restrict input during either an insert or update query. For example,
+a 'dateCreated' property would use this validator to ensure that property isn't set during an update.</p>
+<pre class="language-dart"><code>  @Validate.absent(onUpdate: true, onInsert: false)
+  DateTime dateCreated;
+</code></pre>
+<p>If <code>onUpdate</code> is true (the default), this validation requires a property to be absent for update queries.
+If <code>onInsert</code> is true (the default), this validation requires a property to be absent for insert queries.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">const Validate.absent({bool onUpdate = true, bool onInsert = true})
+    : this._(
+        onUpdate: onUpdate,
+        onInsert: onInsert,
+        validator: ValidateType.absent,
+      );</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/Validate-class.html">Validate</a></li>
+  <li class="self-crumb">Validate.absent const constructor</li>
+</ol>
+
+
+    <h5>Validate class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/Validate-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/Validate/Validate.html">Validate</a></li>
+          <li><a href="../../conduit/Validate/Validate.absent.html">absent</a></li>
+          <li><a href="../../conduit/Validate/Validate.compare.html">compare</a></li>
+          <li><a href="../../conduit/Validate/Validate.constant.html">constant</a></li>
+          <li><a href="../../conduit/Validate/Validate.length.html">length</a></li>
+          <li><a href="../../conduit/Validate/Validate.matches.html">matches</a></li>
+          <li><a href="../../conduit/Validate/Validate.oneOf.html">oneOf</a></li>
+          <li><a href="../../conduit/Validate/Validate.present.html">present</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit/Validate-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../../conduit/Validate/runOnInsert.html">runOnInsert</a></li>
+          <li><a href="../../conduit/Validate/runOnUpdate.html">runOnUpdate</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../conduit/Validate/type.html">type</a></li>
+
+        <li class="section-title"><a href="../../conduit/Validate-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit/Validate/compile.html">compile</a></li>
+          <li><a href="../../conduit/Validate/constrainSchemaObject.html">constrainSchemaObject</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li><a href="../../conduit/Validate/validate.html">validate</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit/Validate-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

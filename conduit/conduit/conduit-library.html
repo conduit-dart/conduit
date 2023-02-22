@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="conduit library API docs, for the Dart programming language.">
+  <title>conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit</a></li>
+    <li class="self-crumb">conduit library</li>
+  </ol>
+  <div class="self-name">conduit</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+    
+      <div>
+<h1><span class="kind-library">conduit</span> library 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>The core libraries of the Conduit framework.</p>
+<p>See documentation guides at <a href="https://conduit.io/docs/">https://conduit.io/docs/</a>.</p>
+</section>
+
+
+    <section class="summary offset-anchor" id="classes">
+      <h2>Classes</h2>
+
+      <dl>
+        <dt id="APIConfiguration">
+  <span class="name "><a href="../conduit/APIConfiguration-class.html">APIConfiguration</a></span> 
+
+</dt>
+<dd>
+  A <a href="../conduit/Configuration-class.html">Configuration</a> to represent an external HTTP API.
+</dd>
+
+        <dt id="Configuration">
+  <span class="name "><a href="../conduit/Configuration-class.html">Configuration</a></span> 
+
+</dt>
+<dd>
+  Subclasses of <a href="../conduit/Configuration-class.html">Configuration</a> read YAML strings and files, assigning values from the YAML document to properties
+of an instance of this type.
+</dd>
+
+        <dt id="ConfigurationCompiler">
+  <span class="name "><a href="../conduit/ConfigurationCompiler-class.html">ConfigurationCompiler</a></span> 
+
+</dt>
+<dd>
+  
+</dd>
+
+        <dt id="ConfigurationError">
+  <span class="name "><a href="../conduit/ConfigurationError-class.html">ConfigurationError</a></span> 
+
+</dt>
+<dd>
+  Thrown when <a href="../conduit/Configuration-class.html">Configuration</a> subclass is invalid and requires a change in code.
+</dd>
+
+        <dt id="ConfigurationException">
+  <span class="name "><a href="../conduit/ConfigurationException-class.html">ConfigurationException</a></span> 
+
+</dt>
+<dd>
+  Thrown when reading data into a <a href="../conduit/Configuration-class.html">Configuration</a> fails.
+</dd>
+
+        <dt id="ConfigurationItemAttribute">
+  <span class="name "><a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a></span> 
+
+</dt>
+<dd>
+  <a href="../conduit/Configuration-class.html">Configuration</a> properties may be attributed with these.
+</dd>
+
+        <dt id="ConfigurationRuntime">
+  <span class="name "><a href="../conduit/ConfigurationRuntime-class.html">ConfigurationRuntime</a></span> 
+
+</dt>
+<dd>
+  
+</dd>
+
+        <dt id="DatabaseConfiguration">
+  <span class="name "><a href="../conduit/DatabaseConfiguration-class.html">DatabaseConfiguration</a></span> 
+
+</dt>
+<dd>
+  A <a href="../conduit/Configuration-class.html">Configuration</a> to represent a database connection configuration.
+</dd>
+
+        <dt id="Level">
+  <span class="name "><a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a></span> 
+
+</dt>
+<dd>
+  <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a>s to control logging output. Logging can be enabled to include all
+levels above certain <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a>. <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a>s are ordered using an integer
+value <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/value.html">Level.value</a>. The predefined <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a> constants below are sorted as
+follows (in descending order): <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/SHOUT-constant.html">Level.SHOUT</a>, <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/SEVERE-constant.html">Level.SEVERE</a>,
+<a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/WARNING-constant.html">Level.WARNING</a>, <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/INFO-constant.html">Level.INFO</a>, <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/CONFIG-constant.html">Level.CONFIG</a>, <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/FINE-constant.html">Level.FINE</a>, <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/FINER-constant.html">Level.FINER</a>,
+<a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/FINEST-constant.html">Level.FINEST</a>, and <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level/ALL-constant.html">Level.ALL</a>.
+</dd>
+
+        <dt id="Logger">
+  <span class="name "><a href="https://pub.dev/documentation/logging/1.1.1/logging/Logger-class.html">Logger</a></span> 
+
+</dt>
+<dd>
+  Use a <a href="https://pub.dev/documentation/logging/1.1.1/logging/Logger-class.html">Logger</a> to log debug messages.
+</dd>
+
+        <dt id="LogRecord">
+  <span class="name "><a href="https://pub.dev/documentation/logging/1.1.1/logging/LogRecord-class.html">LogRecord</a></span> 
+
+</dt>
+<dd>
+  A log entry representation used to propagate information from <a href="https://pub.dev/documentation/logging/1.1.1/logging/Logger-class.html">Logger</a> to
+individual handlers.
+</dd>
+
+        <dt id="MigrationSource">
+  <span class="name "><a href="../conduit/MigrationSource-class.html">MigrationSource</a></span> 
+
+</dt>
+<dd>
+  
+</dd>
+
+      </dl>
+    </section>
+
+
+
+    <section class="summary offset-anchor" id="constants">
+      <h2>Constants</h2>
+
+      <dl class="properties">
+        <dt id="defaultLevel" class="constant">
+    <span class="name "><a href="https://pub.dev/documentation/logging/1.1.1/logging/defaultLevel-constant.html">defaultLevel</a></span>
+  <span class="signature">&#8594; const <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a></span>
+  
+
+</dt>
+<dd>
+  The default <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a>.
+  
+
+    <div>
+      <span class="signature"><code>Level.INFO</code></span>
+    </div>
+</dd>
+
+        <dt id="optionalConfiguration" class="constant">
+    <span class="name deprecated"><a class="deprecated" href="../conduit/optionalConfiguration-constant.html">optionalConfiguration</a></span>
+  <span class="signature">&#8594; const <a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a></span>
+  
+
+</dt>
+<dd>
+  A <a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a> for optional properties.
+  
+
+    <div>
+      <span class="signature"><code>ConfigurationItemAttribute._(ConfigurationItemAttributeType.optional)</code></span>
+    </div>
+</dd>
+
+        <dt id="requiredConfiguration" class="constant">
+    <span class="name deprecated"><a class="deprecated" href="../conduit/requiredConfiguration-constant.html">requiredConfiguration</a></span>
+  <span class="signature">&#8594; const <a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a></span>
+  
+
+</dt>
+<dd>
+  A <a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a> for required properties.
+  
+
+    <div>
+      <span class="signature"><code>ConfigurationItemAttribute._(ConfigurationItemAttributeType.required)</code></span>
+    </div>
+</dd>
+
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="hierarchicalLoggingEnabled" class="property">
+  <span class="name"><a href="https://pub.dev/documentation/logging/1.1.1/logging/hierarchicalLoggingEnabled.html">hierarchicalLoggingEnabled</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd>
+  Whether to allow fine-grain logging and configuration of loggers in a
+hierarchy.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="recordStackTraceAtLevel" class="property">
+  <span class="name"><a href="https://pub.dev/documentation/logging/1.1.1/logging/recordStackTraceAtLevel.html">recordStackTraceAtLevel</a></span>
+  <span class="signature">&#8596; <a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a></span> 
+
+</dt>
+<dd>
+  Automatically record stack traces for any message of this level or above.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+
+    <section class="summary offset-anchor" id="enums">
+      <h2>Enums</h2>
+
+      <dl>
+        <dt id="ConfigurationItemAttributeType">
+  <span class="name "><a href="../conduit/ConfigurationItemAttributeType.html">ConfigurationItemAttributeType</a></span> 
+
+</dt>
+<dd>
+  Possible options for a configuration item property's optionality.
+</dd>
+
+      </dl>
+    </section>
+
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit</a></li>
+  <li class="self-crumb">conduit library</li>
+</ol>
+
+
+    <h5><span class="package-name">conduit</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="../conduit/conduit-library.html">conduit</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>conduit library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit/conduit-library.html#classes">Classes</a></li>
+        <li><a href="../conduit/APIConfiguration-class.html">APIConfiguration</a></li>
+        <li><a href="../conduit/Configuration-class.html">Configuration</a></li>
+        <li><a href="../conduit/ConfigurationCompiler-class.html">ConfigurationCompiler</a></li>
+        <li><a href="../conduit/ConfigurationError-class.html">ConfigurationError</a></li>
+        <li><a href="../conduit/ConfigurationException-class.html">ConfigurationException</a></li>
+        <li><a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a></li>
+        <li><a href="../conduit/ConfigurationRuntime-class.html">ConfigurationRuntime</a></li>
+        <li><a href="../conduit/DatabaseConfiguration-class.html">DatabaseConfiguration</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/Logger-class.html">Logger</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/LogRecord-class.html">LogRecord</a></li>
+        <li><a href="../conduit/MigrationSource-class.html">MigrationSource</a></li>
+
+
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#constants">Constants</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/defaultLevel-constant.html">defaultLevel</a></li>
+        <li><a class="deprecated" href="../conduit/optionalConfiguration-constant.html">optionalConfiguration</a></li>
+        <li><a class="deprecated" href="../conduit/requiredConfiguration-constant.html">requiredConfiguration</a></li>
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#properties">Properties</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/hierarchicalLoggingEnabled.html">hierarchicalLoggingEnabled</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/recordStackTraceAtLevel.html">recordStackTraceAtLevel</a></li>
+
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#enums">Enums</a></li>
+        <li><a href="../conduit/ConfigurationItemAttributeType.html">ConfigurationItemAttributeType</a></li>
+
+
+</ol>
+
+  </div><!--/sidebar-offcanvas-right-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

@@ -1,0 +1,2462 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../serialization/">
+      
+      
+        <link rel="next" href="../advanced_queries/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Basic Queries - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#inserting-updating-deleting-and-fetching-objects" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Basic Queries
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/getting-started/" class="md-nav__link">
+        1. Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="true">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="false">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/resource_controller/" class="md-nav__link">
+        Request Binding with Resource Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="true">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling_data/" class="md-nav__link">
+        Modeling Data and Relationships
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Basic Queries
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Basic Queries
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inserting-data-with-a-query" class="md-nav__link">
+    Inserting Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-data-with-a-query" class="md-nav__link">
+    Updating Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-data-with-a-query" class="md-nav__link">
+    Deleting Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fetching-data-with-a-query" class="md-nav__link">
+    Fetching Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sorting" class="md-nav__link">
+    Sorting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-selectors" class="md-nav__link">
+    Property Selectors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-result-properties" class="md-nav__link">
+    Specifying Result Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Specifying Result Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exceptions-and-errors" class="md-nav__link">
+    Exceptions and Errors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statement-reuse" class="md-nav__link">
+    Statement Reuse
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_columns/" class="md-nav__link">
+        JSON Document Storage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="false">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/auth_scopes/" class="md-nav__link">
+        OAuth 2.0 Scoping
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inserting-data-with-a-query" class="md-nav__link">
+    Inserting Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#updating-data-with-a-query" class="md-nav__link">
+    Updating Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deleting-data-with-a-query" class="md-nav__link">
+    Deleting Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fetching-data-with-a-query" class="md-nav__link">
+    Fetching Data with a Query
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sorting" class="md-nav__link">
+    Sorting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-selectors" class="md-nav__link">
+    Property Selectors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specifying-result-properties" class="md-nav__link">
+    Specifying Result Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Specifying Result Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exceptions-and-errors" class="md-nav__link">
+    Exceptions and Errors
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statement-reuse" class="md-nav__link">
+    Statement Reuse
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="inserting-updating-deleting-and-fetching-objects">Inserting, Updating, Deleting and Fetching Objects</h1>
+<p>To send commands to a database - whether to fetch, insert, delete or update objects - you will create, configure and execute instances of <code>Query&lt;T&gt;</code>. The type argument must be a subclass of <code>ManagedObject</code>, which determines the table the query will operate on.</p>
+<p>A query compiles and executes a SQL query and requires a <a href="https://github.com/noojee/conduit/tree/3f4c01be85b7ff135772166173524e76a5f80c32/conduit/doc/source/source/docs/db/connecting.db">ManagedContext</a> to determine the database to connect to. Here's an example of a <code>Query&lt;T&gt;</code> that fetches all instances of <code>User</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">allUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<p>A <code>Query&lt;T&gt;</code> has four basic execution methods: <code>fetch</code>, <code>update</code>, <code>insert</code>, <code>delete</code>.</p>
+<ul>
+<li><code>fetch</code> will retrieve data from a database (it is equivalent to the SQL operation <code>SELECT</code>).</li>
+<li><code>update</code> will modify existing data in a database (it is equivalent to the SQL operation <code>UPDATE</code>).</li>
+<li><code>insert</code> will add new data to a database (it is equivalent to the SQL operation <code>INSERT</code>).</li>
+<li><code>delete</code> will remove data from a database (it is equivalent to the SQL operation <code>DELETE</code>).</li>
+</ul>
+<p>A <code>Query&lt;T&gt;</code> has many configurable properties. These properties will impact which objects get fetched, the data that gets sent to the database, the order that data is returned in, and so on.</p>
+<p>In the following sections, assume that a <code>User</code> managed object subclass exists that is declared like so:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_User</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_User</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_User</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">indexed:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">email</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="inserting-data-with-a-query">Inserting Data with a Query</h3>
+<p>To insert data with a query, you create a new <code>Query&lt;T&gt;</code> object, configure its <code>values</code> property and then call its <code>insert()</code> method.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Bob&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bob@conduit.dart.com&quot;</span><span class="p">;</span><span class="w">  </span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+</code></pre></div>
+
+<p>The <code>values</code> of a <code>Query&lt;T&gt;</code> is an instance of <code>T</code> (the managed object type you are inserting). You can configure individual properties of <code>values</code>, or you can assign <code>values</code> to an instance you have created elsewhere:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">userValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">User</span><span class="p">()</span>
+<span class="w">  </span><span class="p">..</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Bob&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bob@conduit.dart.com&quot;</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)..</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userValues</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Either way, this query is translated into the following SQL:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">_user</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;bob@conduit.dart.com&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">RETURNING</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Notice that only the values set on the <code>values</code> object are included in the SQL INSERT query. In this example, both <code>name</code> and <code>email</code> were set, but not <code>id</code> and therefore only <code>name</code> and <code>email</code> were included in the query. (In this case, the primary key is auto-incrementing and the database will generate it.)</p>
+<p>Values that are explicitly set to <code>null</code> will be sent as <code>NULL</code>. For example, consider the following <code>Query&lt;T&gt;</code> and its SQL:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">..</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bob@conduit.dart.com&quot;</span><span class="p">;</span>
+
+<span class="c1">// INSERT INTO _user (name, email) VALUES (NULL, &#39;bob@conduit.dart.com&#39;) RETURNING id, name, email;</span>
+<span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+</code></pre></div>
+
+<p>An insert query will return a managed object that represents the row that is inserted.</p>
+<p>!!! warning "Prefer the Inserted Object" After you insert an object, you should prefer to use the object returned by an insert query rather than the values you used to populate the query. The object returned from the query will be an accurate representation of the database row, while the object used to build the query may be incomplete or different. For example, an auto-incrementing primary key won't be available in your query-building instance, but will in the object returned from the successful query.</p>
+<p>There is one difference to note when choosing between assigning an instance to <code>values</code>, or configuring the properties of <code>values</code>. In an instance you create, a relationship property must be instantiated before accessing its properties. When accessing the relationship properties of <code>values</code>, an empty instance of the related object is created immediately upon access.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">employee</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Employee</span><span class="p">()</span>
+<span class="w">  </span><span class="p">..</span><span class="n">manager</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// this is a null pointer exception because manager is null</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">manager</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// this is OK because of special behavior of Query</span>
+</code></pre></div>
+
+<p>Once you assign an object to <code>values</code>, it will adopt the behavior of <code>values</code> and instantiate relationships when accessed. Also note that after assigning an object to <code>values</code>, changes to the original object are not reflected in <code>values</code>. In other words, the object is copied instead of referenced.</p>
+<p>For simple insertions and for inserting more than one object, you can use the methods on the context:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ManagedContext</span><span class="p">(...);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">bob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">User</span><span class="p">()..</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Bob&quot;</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">jay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">User</span><span class="p">()..</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Jay&quot;</span><span class="p">;</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">insertedObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">insertObject</span><span class="p">(</span><span class="n">bob</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">insertedObjects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">insertObjects</span><span class="p">([</span><span class="n">bob</span><span class="p">,</span><span class="w"> </span><span class="n">jay</span><span class="p">]);</span>
+</code></pre></div>
+
+<h3 id="updating-data-with-a-query">Updating Data with a Query</h3>
+<p>Updating rows with a <code>Query&lt;T&gt;</code> is similar to inserting data: you set the <code>Query.values</code> for properties you want to change. The type parameter for the <code>Query&lt;T&gt;</code> indicates which database table will get updated when the query is executed.</p>
+<p>An update query can - and likely should - be restricted to a single row or subset of rows. This is done by configuring the <code>Query.where</code> property - which gets translated into the <em>where clause</em> of the SQL command. Here's an example:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// A Query that will change any user&#39;s whose name is &#39;Bob&#39; to &#39;Fred&#39;</span>
+<span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Fred&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">name</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">);</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bobsThatAreNowFreds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">update</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Like <code>values</code>, <code>where</code> is also the same managed object type the query is being executed on. In the above example, then, both <code>values</code> and <code>where</code> and instances of <code>User</code>. This query executes the following SQL:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">UPDATE</span><span class="w"> </span><span class="n">_user</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Fred&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bob&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>The <code>where</code> property is a very powerful and flexible, and so there is an entire section dedicated to it later in this guide. For now, we'll stick to some of the things specific to <code>update()</code>.</p>
+<p>Like <code>insert()</code>, only the values set in the <code>values</code> property of a query get updated when executing <code>update()</code>. Values that are omitted are not included. Values that need to be set to <code>null</code> must explicitly be set to <code>null</code> in the query:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// A Query that will remove names from anyone currently named Bob.</span>
+<span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">name</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>An update query returns every modified row as a result. If no rows are updated, the return value is an empty list.</p>
+<p>There is a variant to <code>Query&lt;T&gt;.update</code> named <code>updateOne</code>. The <code>updateOne</code> method will build and execute a SQL query in the same way a normal <code>update</code> does, however, it will only return the single instance that was updated instead of a list. This is convenience method for the caller to get back a single instance instead of a list:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Update user with id = 1 to have the name &#39;Fred&#39;</span>
+<span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Fred&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+
+<span class="kd">var</span><span class="w"> </span><span class="n">updatedUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">updateOne</span><span class="p">();</span>
+</code></pre></div>
+
+<p>The <code>updateOne</code> method will return <code>null</code> if no rows were updated. It is important to note that if <code>updateOne</code> is used and more than one row is updated, <code>updateOne</code> will throw an exception and the changes to the data <em>are not reversible</em>. Because this is likely a mistake, this is considered an error, hence the exception is thrown. It is up to the programmer to recognize whether or not a particular <code>updateOne</code> query would impact multiple rows.</p>
+<p>Update queries have a safety feature that prevents you from accidentally updating every row. If you try to execute a <code>Query&lt;T&gt;</code> to do an update without configuring <code>where</code>, an exception is thrown prior to carrying out the request. If you actually want to update every row of a table, you must set the <code>Query.canModifyAllInstances</code> to <code>true</code> prior to execution. (This property defaults to <code>false</code>.)</p>
+<h3 id="deleting-data-with-a-query">Deleting Data with a Query</h3>
+<p>A <code>Query&lt;T&gt;</code> will delete rows from a database when using <code>delete()</code>. Like update queries, you should specify a row or rows using <code>where</code> properties of the <code>Query&lt;T&gt;</code>. The result of a delete operation will be a <code>Future&lt;int&gt;</code> with the number of rows deleted.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">usersDeleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">delete</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Also like update queries, delete queries have a safety feature that prevents you from accidentally deleting every row in a table with <code>canModifyAllInstances</code>.</p>
+<p>Any properties set in the query's <code>values</code> are ignored when executing a delete.</p>
+<h3 id="fetching-data-with-a-query">Fetching Data with a Query</h3>
+<p>Of the four basic operations of a <code>Query&lt;T&gt;</code>, fetching data is the most configurable. A simple <code>Query&lt;T&gt;</code> that would fetch every instance of some entity looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">allUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Fetch queries can be limited to a number of instances with the <code>fetchLimit</code> property. You may also set the <code>offset</code> of a <code>Query&lt;T&gt;</code> to skip the first <code>offset</code> number of rows. Between <code>fetchLimit</code> and <code>offset</code>, you can implement naive paging. However, this type of paging suffers from a number of problems and so there is another paging mechanism covered in later sections.</p>
+<p>A fetch <code>Query&lt;T&gt;</code> uses its <code>where</code> property to filter the result set, just like delete and update queries. The <code>values</code> of a query are ignored when fetching objects. You may also fetch a single instance with <code>fetchOne</code>. If no instance is found, <code>null</code> is returned. Only use this method when the search criteria is guaranteed to be unique.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+
+<span class="n">User</span><span class="w"> </span><span class="n">oneUser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+</code></pre></div>
+
+<p>When you are fetching an object by its primary key, you can use a shorthand method <code>ManagedContext.fetchObjectWithID</code>. The method must be able to infer the type of the object, or you must provide it:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">fetchObjectWithID</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="sorting">Sorting</h3>
+<p>Results of a fetch can be sorted using the <code>sortBy</code> method of a <code>Query&lt;T&gt;</code>. Here's an example:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">sortBy</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">dateCreated</span><span class="p">,</span><span class="w"> </span><span class="n">QuerySortOrder</span><span class="p">.</span><span class="n">ascending</span><span class="p">);</span>
+</code></pre></div>
+
+<p><code>sortBy</code> takes two arguments: a closure that returns which property to sort by and the order of the sort.</p>
+<p>A <code>Query&lt;T&gt;</code> results can be sorted by multiple properties. When multiple <code>sortBy</code>s are invoked on a <code>Query&lt;T&gt;</code>, later <code>sortBy</code>s are used to break ties in previous <code>sortBy</code>s. For example, the following query will sort by last name, then by first name:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">sortBy</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">lastName</span><span class="p">,</span><span class="w"> </span><span class="n">QuerySortOrder</span><span class="p">.</span><span class="n">ascending</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">sortBy</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">firstName</span><span class="p">,</span><span class="w"> </span><span class="n">QuerySortOrder</span><span class="p">.</span><span class="n">ascending</span><span class="p">);</span>
+</code></pre></div>
+
+<p>Thus, the following three names would be ordered like so: 'Sally Smith', 'John Wu', 'Sally Wu'.</p>
+<h3 id="property-selectors">Property Selectors</h3>
+<p>In the section on sorting, you saw the use of a <em>property selector</em> to select the property of the user to sort by. This syntax is used for many other query manipulations, like filtering and joining. A property selector is a closure that gives you an object of the type you are querying and must return a property of that object. The selector <code>(u) =&gt; u.lastName</code> in the previous section is a property selector that selects the last name of a user.</p>
+<p>The Dart analyzer will infer that the argument of a property selector, and it is always the same type as the object being queried. This enables IDE auto-completion, static error checking, and other tools like project-wide renaming.</p>
+<p>!!! tip "Live Templates" To speed up query building, create a Live Template in IntelliJ that generates a property selector when typing 'ps'. The source of the template is <code>(o) =&gt; o.$END$</code>. A downloadable settings configuration for IntelliJ exists <a href="">here</a> that includes this shortcut.</p>
+<h2 id="specifying-result-properties">Specifying Result Properties</h2>
+<p>When executing queries that return managed objects (i.e., <code>insert()</code>, <code>update()</code> and <code>fetch()</code>), the default properties for each object are fetched. The default properties of a managed object are properties that correspond to a database column - attributes declared in the table definition. A managed object's default properties can be modified when declaring its table definition:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">_User</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">omitByDefault:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">hashedPassword</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Any property with <code>omitByDefault</code> set to true will not be fetched by default.</p>
+<p>A property that is <code>omitByDefault</code> can still be fetched. Likewise, a property that is in the defaults can still be omitted. Each <code>Query&lt;T&gt;</code> has a <code>returningProperties</code> method to adjust which properties do get returned from the query. Its usage looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">user</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="n">name</span><span class="p">]);</span>
+</code></pre></div>
+
+<p><code>returningProperties</code> is a multiple property selector - instead of returning just one property, it returns a list of properties.</p>
+<p>You may include 'belongs-to' relationships in <code>returningProperties</code>, but you may not include 'has-many' or 'has-one' relationships. An exception will be thrown if you attempt to. To include properties from relationships like these, see <a href="../advanced_queries/">join in Advanced Queries</a>.</p>
+<p>Note that if you omit the primary key of a managed object from <code>returningProperties</code>, it will automatically be added. The primary key is necessary to transform the rows into instances of their <code>ManagedObject&lt;T&gt;</code> subclass.</p>
+<h3 id="exceptions-and-errors">Exceptions and Errors</h3>
+<p>When executing a query, it may fail for any number of reasons: the query is invalid, a database couldn't be reached, constraints were violated, etc. In many cases, this exception originates from the underlying database driver. When thrown in a controller, these exceptions will trigger a 500 Server Error response.</p>
+<p>Exceptions that are thrown in response to user input (e.g., violating a database constraint, invalid data type) are re-interpreted into a <code>QueryException</code> or <code>ValidationException</code>. Both of these exception types have an associated <code>Response</code> object that is sent instead of the default 500 Server error.</p>
+<p>For this reason, you don't need to catch database query exceptions in a controller; an appropriate response will be sent on your behalf.</p>
+<h3 id="statement-reuse">Statement Reuse</h3>
+<p>Conduit will parameterize and reuse queries when possible. This allows for significant speed and security improvements. Note that you do not have to do anything special to take advantage of this feature. However, currently at this time, you may not disable this feature.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

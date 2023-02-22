@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the AuthScope constructor from Class AuthScope from the conduit library, for the Dart programming language.">
+  <title>AuthScope constructor - AuthScope - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/AuthScope-class.html">AuthScope</a></li>
+    <li class="self-crumb">AuthScope factory constructor</li>
+  </ol>
+  <div class="self-name">AuthScope</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-constructor">AuthScope</span> constructor 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+      <span class="name ">AuthScope</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="-param-scopeString"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">scopeString</span></span></li>
+</ol>)
+    </section>
+
+    
+<section class="desc markdown">
+  <p>Creates an instance of this type from <code>scopeString</code>.</p>
+<p>A simple authorization scope string is a single keyword. Valid characters are</p>
+<pre class="language-dart"><code>    A-Za-z0-9!#\$%&amp;'`()*+,./:;&lt;=&gt;?@[]^_{|}-.
+</code></pre>
+<p>For example, 'account' is a valid scope. An <a href="../../conduit/Authorizer-class.html">Authorizer</a> can require an access token to have
+the 'account' scope to pass through it. Access tokens without the 'account' scope are unauthorized.</p>
+<p>More advanced scopes may contain multiple segments and a modifier. For example, the following are valid scopes:</p>
+<pre class="language-dart"><code>user
+user:settings
+user:posts
+user:posts.readonly
+</code></pre>
+<p>Segments are delimited by the colon character (<code>:</code>). Segments allow more granular scoping options. Each segment adds a
+restriction to the segment prior to it. For example, the scope <code>user</code>
+would allow all user actions, whereas <code>user:settings</code> would only allow access to a user's settings. Routes that are secured
+to either <code>user:settings</code> or <code>user:posts.readonly</code> are accessible by an access token with <code>user</code> scope. A token with <code>user:settings</code>
+would not be able to access a route limited to <code>user:posts</code>.</p>
+<p>A modifier is an additional restrictive measure and follows scope segments and the dot character (<code>.</code>). A scope may only
+have one modifier at the very end of the scope. A modifier can be any string, as long as its characters are in the above
+list of valid characters. A modifier adds an additional restriction to a scope, without having to make up a new segment.
+An example is the 'readonly' modifier above. A route that requires <code>user:posts.readonly</code> would allow passage when the token
+has <code>user</code>, <code>user:posts</code> or <code>user:posts.readonly</code>. A route that required <code>user:posts</code> would not allow <code>user:posts.readonly</code>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">factory AuthScope(String scopeString) {
+  final cached = _cache[scopeString];
+  if (cached != null) {
+    return cached;
+  }
+
+  final scope = AuthScope._parse(scopeString);
+  _cache[scopeString] = scope;
+  return scope;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/AuthScope-class.html">AuthScope</a></li>
+  <li class="self-crumb">AuthScope factory constructor</li>
+</ol>
+
+
+    <h5>AuthScope class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/AuthScope-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/AuthScope/AuthScope.html">AuthScope</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit/AuthScope-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../../conduit/AuthScope/modifier.html">modifier</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../conduit/AuthScope/segments.html">segments</a></li>
+
+        <li class="section-title"><a href="../../conduit/AuthScope-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit/AuthScope/allows.html">allows</a></li>
+          <li><a class="deprecated" href="../../conduit/AuthScope/allowsScope.html">allowsScope</a></li>
+          <li><a href="../../conduit/AuthScope/isExactly.html">isExactly</a></li>
+          <li><a href="../../conduit/AuthScope/isExactlyScope.html">isExactlyScope</a></li>
+          <li><a href="../../conduit/AuthScope/isSubsetOrEqualTo.html">isSubsetOrEqualTo</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../conduit/AuthScope/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit/AuthScope-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+        <li class="section-title"><a href="../../conduit/AuthScope-class.html#static-methods">Static methods</a></li>
+          <li><a href="../../conduit/AuthScope/verify.html">verify</a></li>
+
+        <li class="section-title"><a href="../../conduit/AuthScope-class.html#constants">Constants</a></li>
+          <li><a href="../../conduit/AuthScope/any-constant.html">any</a></li>
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

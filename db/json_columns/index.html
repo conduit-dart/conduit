@@ -1,0 +1,2413 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../db_tools/">
+      
+      
+        <link rel="next" href="../../auth/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>JSON Document Storage - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#json-document-storage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              JSON Document Storage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/getting-started/" class="md-nav__link">
+        1. Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="true">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="false">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/resource_controller/" class="md-nav__link">
+        Request Binding with Resource Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="true">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling_data/" class="md-nav__link">
+        Modeling Data and Relationships
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executing_queries/" class="md-nav__link">
+        Basic Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          JSON Document Storage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        JSON Document Storage
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#json-columns-in-relational-databases" class="md-nav__link">
+    JSON Columns in Relational Databases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-document-data-type" class="md-nav__link">
+    The Document Data Type
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-operations-on-document-properties" class="md-nav__link">
+    Basic Operations on Document Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Operations on Document Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inserting-rows-with-document-properties" class="md-nav__link">
+    Inserting Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fetching-rows-with-document-properties" class="md-nav__link">
+    Fetching Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-rows-with-document-properties" class="md-nav__link">
+    Updating Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-document-values" class="md-nav__link">
+    Accessing Document Values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fetching-sub-documents" class="md-nav__link">
+    Fetching Sub-documents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="false">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/auth_scopes/" class="md-nav__link">
+        OAuth 2.0 Scoping
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#json-columns-in-relational-databases" class="md-nav__link">
+    JSON Columns in Relational Databases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-document-data-type" class="md-nav__link">
+    The Document Data Type
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-operations-on-document-properties" class="md-nav__link">
+    Basic Operations on Document Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Operations on Document Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inserting-rows-with-document-properties" class="md-nav__link">
+    Inserting Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fetching-rows-with-document-properties" class="md-nav__link">
+    Fetching Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-rows-with-document-properties" class="md-nav__link">
+    Updating Rows with Document Properties
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-document-values" class="md-nav__link">
+    Accessing Document Values
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fetching-sub-documents" class="md-nav__link">
+    Fetching Sub-documents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="json-document-storage">JSON Document Storage</h1>
+<p>Learn how to store unstructured, binary JSON data in <code>ManagedObject&lt;T&gt;</code> properties.</p>
+<h2 id="json-columns-in-relational-databases">JSON Columns in Relational Databases</h2>
+<p>PostgreSQL supports many column data types like integers, strings, booleans and dates. A column may also be JSON data. This allows for storing unstructured data and simple objects in a table column. The data from JSON columns can be fetched all at once, or in pieces. Elements of JSON data can be used to filter the results of a query.</p>
+<h2 id="the-document-data-type">The Document Data Type</h2>
+<p>JSON document columns are added to a database table by declaring a <code>Document</code> property in a <code>ManagedObject&lt;T&gt;</code>'s table definition. In PostgreSQL, a <code>Document</code> column data type is <code>jsonb</code>. A document column can only contain JSON-encodable data. This data is typically a <code>Map</code> or <code>List</code> that contains only JSON-encodable data. The following <code>ManagedObject&lt;T&gt;</code> declaration will have a <code>contents</code> column of type <code>jsonb</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Event</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Event</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Event</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Event</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">indexed:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="n">DateTime</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Document</span><span class="w"> </span><span class="n">contents</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A <code>Document</code> object has a <code>data</code> property to hold its JSON-encodable data. When instantiating <code>Document</code>, this property defaults to null unless a value has been provided to the optional, ordered parameter in its constructor.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Document</span><span class="p">();</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">doc</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Document</span><span class="p">({</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">});</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">doc</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">Map</span><span class="p">);</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Document</span><span class="p">([</span><span class="m">0</span><span class="p">]);</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">doc</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">List</span><span class="p">);</span>
+</code></pre></div>
+
+<p>The data in a document can be accessed through its <code>data</code> property, or through its subscript operator. <code>Document</code>'s subscript operator forwards the invocation to its <code>data</code> property.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Document</span><span class="p">({</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">});</span>
+
+<span class="k">assert</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">doc</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]);</span>
+</code></pre></div>
+
+<p>The argument to the subscript operator may be a string (if <code>data</code> is a map) or an integer (if <code>data</code> is a list).</p>
+<h2 id="basic-operations-on-document-properties">Basic Operations on Document Properties</h2>
+<p><code>Document</code> columns are like any other type of column, and can therefore be set during an insert or update, and read during a fetch.</p>
+<h3 id="inserting-rows-with-document-properties">Inserting Rows with Document Properties</h3>
+<p>A <code>Document</code> property is first set when inserting with a <code>Query&lt;T&gt;</code>. The <code>values</code> property of the query is set to a <code>Document</code> object initialized with a JSON-encodable value.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">()</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Document</span><span class="p">({</span>
+<span class="w">    </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;push&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;user&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bob&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+</code></pre></div>
+
+<p>In the above, the argument to <code>Document</code> will be JSON-encoded and stored in the database for column <code>contents</code>. If the object can't be encoded as JSON, an exception will be thrown.</p>
+<h3 id="fetching-rows-with-document-properties">Fetching Rows with Document Properties</h3>
+<p>When fetching an object with <code>Document</code> properties with a <code>Query&lt;T&gt;</code>, you access the column's value through the document's <code>data</code> property.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">event1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+<span class="n">event1</span><span class="p">.</span><span class="n">contents</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;push&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;user&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bob&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">]</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>When fetching <code>Document</code> properties, the JSON data is decoded into the appropriate type. This is likely a <code>Map</code> or <code>List</code>, but can be any JSON-encodable object. Because the data stored in a <code>Document</code> property is unstructured, the type of <code>data</code> is <code>dynamic</code>. It is good practice to store consistent data structures in a column; i.e., always storing a <code>Map</code> or always storing a <code>List</code>.</p>
+<h3 id="updating-rows-with-document-properties">Updating Rows with Document Properties</h3>
+<p>Updating a row with <code>Document</code> properties works the same as inserting rows.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Document</span><span class="p">({</span>
+<span class="w">    </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;push&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;user&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bob&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">updateOne</span><span class="p">();</span>
+</code></pre></div>
+
+<p>When updating in this way, the document stored in the column is replaced entirely.</p>
+<h3 id="accessing-document-values">Accessing Document Values</h3>
+<p>The type of <code>Document.data</code> is <code>dynamic</code> - it can be any valid JSON type and may be casted to the expected type when used. This data can also be nested - a <code>List</code> of <code>Maps</code>, for example. When accessing object keys or list indices, you may use the subscript operator directly on <code>Document</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Object Access by key</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Document</span><span class="p">({</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">});</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">;</span>
+
+<span class="c1">// List Access by index</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Document</span><span class="p">([</span><span class="s2">&quot;v1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;v2&quot;</span><span class="p">]);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;v1&quot;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>You can access nested elements with the same syntax:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">doc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Document</span><span class="p">([</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">1</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">2</span><span class="p">}</span>
+<span class="p">]);</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">obj1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="m">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">];</span><span class="w"> </span><span class="c1">// == 1</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">obj2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doc</span><span class="p">[</span><span class="m">1</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">];</span><span class="w"> </span><span class="c1">// == 2</span>
+</code></pre></div>
+
+<p>Note that using the subscript operator on a <code>Document</code> simply invokes it on its <code>data</code> property. Therefore, any subscript values must be valid for Dart <code>List</code> and <code>Map</code> types.</p>
+<h2 id="fetching-sub-documents">Fetching Sub-documents</h2>
+<p>When fetching a <code>Document</code> property, the default behavior is to return the entire JSON document as it is stored in the database column. You may fetch parts of the document you need by using <code>Query.returningProperties</code> and the subscript operator.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]]);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">eventsWithTags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<p>When using the subscript operator on a returned <code>Document</code> property, only the value for that key is returned. For example, if the above query were executed and the stored column's value were:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;push&quot;</span><span class="p">,</span><span class="w">  </span>
+<span class="w">  </span><span class="s2">&quot;user&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bob&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;tags&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">]</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The value of <code>Event.contents</code> would only contain the array for the key "tags":</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">]</span>
+</code></pre></div>
+
+<p>You may also index arrays in a JSON column using the same subscript operator, and the subscript operator can also be nested. For example, the following query would fetch the "tags" array, and then fetch the string at index 0 from it:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">][</span><span class="m">0</span><span class="p">]]);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">eventsWithFirstTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+<span class="n">eventsWithFirstTag</span><span class="p">.</span><span class="n">contents</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;v1&quot;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>If a key or index does not exist in the JSON document, the value of the returned property will be null. For this reason, you should use null-aware operators when accessing <code>Document.data</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">][</span><span class="m">7</span><span class="p">]]);</span><span class="w"> </span><span class="c1">// 7 is out of bounds</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">eventsWithFirstTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eventsWithFirstTag</span><span class="p">.</span><span class="n">contents</span><span class="o">?</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;v1&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>When fetching elements from a JSON array, you may use negative indices to specify a index from the end of the array.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">][</span><span class="o">-</span><span class="m">1</span><span class="p">]]);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">eventsWithLastTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+</code></pre></div>
+
+<p>Note that you can only fetch a single sub-structure from a <code>Document</code> column per query. That is, you may not do the following:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Invalid</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">returningProperties</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">[</span><span class="n">e</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">contents</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]]);</span>
+</code></pre></div>
+
+<p>For operations not supported by <code>Query&lt;T&gt;</code>, you may use SQL directly:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">eventTagCounts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">persistentStore</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT jsonb_array_length(contents-&gt;&#39;tags&#39;) from _Event&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

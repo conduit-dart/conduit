@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the maximum method from the QueryReduceOperation class, for the Dart programming language.">
+  <title>maximum method - QueryReduceOperation class - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/QueryReduceOperation-class.html">QueryReduceOperation<span class="signature">&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt;</span></a></li>
+    <li class="self-crumb">maximum&lt;<wbr><span class="type-parameter">U</span>&gt; abstract method</li>
+  </ol>
+  <div class="self-name">maximum</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">maximum&lt;<wbr><span class="type-parameter">U</span>&gt;</span> abstract method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">U?</span>&gt;</span></span>
+<span class="name ">maximum</span>&lt;<wbr><span class="type-parameter">U</span>&gt;(<wbr><ol class="parameter-list"><li><span class="parameter" id="maximum-param-selector"><span class="type-annotation">U?</span> <span class="parameter-name">selector</span>(<ol class="parameter-list"><li><span class="parameter" id="param-object"><span class="type-annotation">T</span> <span class="parameter-name">object</span></span></li>
+</ol>
+)</span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Finds the maximum of some <a href="../../conduit/ManagedObject-class.html">ManagedObject</a> property.</p>
+<p><code>selector</code> identifies the property being evaluated, e.g.</p>
+<pre class="language-dart"><code>    var query = Query&lt;User&gt;();
+    var oldestUser = await query.reduce.maximum((user) =&gt; user.age);
+</code></pre>
+<p>The property must be an attribute and its type must be <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>, <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a>, <a href="https://api.dart.dev/stable/2.19.2/dart-core/double-class.html">double</a>, or <a href="https://api.dart.dev/stable/2.19.2/dart-core/DateTime-class.html">DateTime</a>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;U?&gt; maximum&lt;U&gt;(U? Function(T object) selector);</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/QueryReduceOperation-class.html">QueryReduceOperation<span class="signature">&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt;</span></a></li>
+  <li class="self-crumb">maximum&lt;<wbr><span class="type-parameter">U</span>&gt; abstract method</li>
+</ol>
+
+
+    <h5>QueryReduceOperation class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/QueryReduceOperation-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/QueryReduceOperation.html">QueryReduceOperation</a></li>
+
+
+        <li class="section-title inherited">
+          <a href="../../conduit/QueryReduceOperation-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+        <li class="section-title"><a href="../../conduit/QueryReduceOperation-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/average.html">average</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/count.html">count</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/maximum.html">maximum</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/minimum.html">minimum</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../conduit/QueryReduceOperation/sum.html">sum</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit/QueryReduceOperation-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

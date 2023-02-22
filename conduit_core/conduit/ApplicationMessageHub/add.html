@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the add method from the ApplicationMessageHub class, for the Dart programming language.">
+  <title>add method - ApplicationMessageHub class - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/ApplicationMessageHub-class.html">ApplicationMessageHub</a></li>
+    <li class="self-crumb">add method</li>
+  </ol>
+  <div class="self-name">add</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">add</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+  <div>
+    <ol class="annotation-list">
+        <li>@<a href="https://api.dart.dev/stable/2.19.2/dart-core/override-constant.html">override</a></li>
+    </ol>
+  </div>
+
+<span class="returntype">void</span>
+<span class="name ">add</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="add-param-event"><span class="type-annotation">dynamic</span> <span class="parameter-name">event</span></span></li>
+</ol>)
+
+      <div class="features"><span class="feature">override</span></div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Sends a message to all other hubs.</p>
+<p><code>event</code> will be delivered to all other isolates that have set up a callback for <a href="../../conduit/ApplicationMessageHub/listen.html">listen</a>.</p>
+<p><code>event</code> must be isolate-safe data - in general, this means it may not be or contain a closure. Consult the API reference <code>dart:isolate</code> for more details. If <code>event</code>
+is not isolate-safe data, an error is delivered to <a href="../../conduit/ApplicationMessageHub/listen.html">listen</a> on this isolate.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+void add(dynamic event) {
+  _outboundController.sink.add(event);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/ApplicationMessageHub-class.html">ApplicationMessageHub</a></li>
+  <li class="self-crumb">add method</li>
+</ol>
+
+
+    <h5>ApplicationMessageHub class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/ApplicationMessageHub-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/ApplicationMessageHub/ApplicationMessageHub.html">ApplicationMessageHub</a></li>
+
+
+        <li class="section-title inherited">
+          <a href="../../conduit/ApplicationMessageHub-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/first.html">first</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/isBroadcast.html">isBroadcast</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/isEmpty.html">isEmpty</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/last.html">last</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/length.html">length</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/single.html">single</a></li>
+
+        <li class="section-title"><a href="../../conduit/ApplicationMessageHub-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit/ApplicationMessageHub/add.html">add</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/any.html">any</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/asBroadcastStream.html">asBroadcastStream</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/asyncExpand.html">asyncExpand</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/asyncMap.html">asyncMap</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/cast.html">cast</a></li>
+          <li><a href="../../conduit/ApplicationMessageHub/close.html">close</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/contains.html">contains</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/distinct.html">distinct</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/drain.html">drain</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/elementAt.html">elementAt</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/every.html">every</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/expand.html">expand</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/firstWhere.html">firstWhere</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/fold.html">fold</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/forEach.html">forEach</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/handleError.html">handleError</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/join.html">join</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/lastWhere.html">lastWhere</a></li>
+          <li><a href="../../conduit/ApplicationMessageHub/listen.html">listen</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/map.html">map</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/pipe.html">pipe</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/reduce.html">reduce</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/singleWhere.html">singleWhere</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/skip.html">skip</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/skipWhile.html">skipWhile</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/take.html">take</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/takeWhile.html">takeWhile</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/timeout.html">timeout</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/toList.html">toList</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/toSet.html">toSet</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/transform.html">transform</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Stream/where.html">where</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit/ApplicationMessageHub-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

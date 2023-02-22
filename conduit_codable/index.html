@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="conduit_codable API docs, for the Dart programming language.">
+  <title>conduit_codable - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/conduit-dart/conduit-codable">conduit_codable package</a></li>
+  </ol>
+  <div class="self-name">conduit_codable</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="codable">codable</h1>
+<p><a href="https://travis-ci.org/conduit.dart/dart-codable"><img src="https://travis-ci.org/conduit.dart/dart-codable.svg?branch=master" alt="Build Status"></a></p>
+<p>A library for encoding and decoding dynamic data into Dart objects.</p>
+<h2 id="basic-usage">Basic Usage</h2>
+<p>Data objects extend <code>Coding</code>:</p>
+<pre class="language-dart"><code class="language-dart">class Person extends Coding {
+  String name;
+
+  @override
+  void decode(KeyedArchive object) {
+    // must call super
+    super.decode(object);
+
+    name = object.decode("name");   
+  }
+
+  @override
+  void encode(KeyedArchive object) {
+    object.encode("name", name);
+  }
+}
+</code></pre>
+<p>An object that extends <code>Coding</code> can be read from JSON:</p>
+<pre class="language-dart"><code class="language-dart">final json = json.decode(...);
+final archive = KeyedArchive.unarchive(json);
+final person = Person()..decode(archive);
+</code></pre>
+<p>Objects that extend <code>Coding</code> may also be written to JSON:</p>
+<pre class="language-dart"><code class="language-dart">final person = Person()..name = "Bob";
+final archive = KeyedArchive.archive(person);
+final json = json.encode(archive);
+</code></pre>
+<p><code>Coding</code> objects can encode or decode other <code>Coding</code> objects, including lists of <code>Coding</code> objects and maps where <code>Coding</code> objects are values. You must provide a closure that instantiates the <code>Coding</code> object being decoded.</p>
+<pre class="language-dart"><code class="language-dart">class Team extends Coding {
+
+  List&lt;Person&gt; members;
+  Person manager;
+
+  @override
+  void decode(KeyedArchive object) {
+    super.decode(object); // must call super
+
+    members = object.decodeObjects("members", () =&gt; Person());
+    manager = object.decodeObject("manager", () =&gt; Person());
+  }
+
+  @override
+  void encode(KeyedArchive object) {
+    object.encodeObject("manager", manager);
+    object.encodeObjects("members", members);
+  }
+}
+</code></pre>
+<h2 id="dynamic-type-casting">Dynamic Type Casting</h2>
+<p>Types with primitive type arguments (e.g., <code>List&lt;String&gt;</code> or <code>Map&lt;String, int&gt;</code>) are a particular pain point when decoding. Override <code>castMap</code> in <code>Coding</code> to perform type coercion.
+You must import <code>package:codable/cast.dart as cast</code> and prefix type names with <code>cast</code>.</p>
+<pre class="language-dart"><code class="language-dart">import 'package:codable/cast.dart' as cast;
+class Container extends Coding {  
+  List&lt;String&gt; things;
+
+  @override
+  Map&lt;String, cast.Cast&lt;dynamic&gt;&gt; get castMap =&gt; {
+    "things": cast.List(cast.String)
+  };
+  
+
+  @override
+  void decode(KeyedArchive object) {
+    super.decode(object);
+
+    things = object.decode("things");
+  }
+
+  @override
+  void encode(KeyedArchive object) {
+    object.encode("things", things);
+  }
+}
+
+</code></pre>
+<h2 id="document-references">Document References</h2>
+<p><code>Coding</code> objects may be referred to multiple times in a document without duplicating their structure. An object is referenced with the <code>$key</code> key.
+For example, consider the following JSON:</p>
+<pre class="language-json"><code class="language-json">{
+  "components": {
+    "thing": {
+      "name": "The Thing"
+    }    
+  },
+  "data": {
+    "$ref": "#/components/thing"
+  }
+}
+</code></pre>
+<p>In the above, the decoded value of <code>data</code> inherits all properties from <code>/components/thing</code>:</p>
+<pre class="language-json"><code class="language-json">{
+  "$ref": "#/components/thing",
+  "name": "The Thing"
+}
+</code></pre>
+<p>You may create references in your in-memory data structures through the <code>Coding.referenceURI</code>.</p>
+<pre class="language-dart"><code class="language-dart">final person = Person()..referenceURI = Uri(path: "/teams/engineering/manager");
+</code></pre>
+<p>The above person is encoded as:</p>
+<pre class="language-json"><code class="language-json">{
+  "$ref": "#/teams/engineering/manager"
+}
+</code></pre>
+<p>You may have cyclical references.</p>
+<p>See the specification for <a href="http://json-schema.org">JSON Schema</a> and the <code>$ref</code> keyword for more details.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="cast">
+  <span class="name"><a href="cast/cast-library.html">cast</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="conduit_codable">
+  <span class="name"><a href="conduit_codable/conduit_codable-library.html">conduit_codable</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/conduit-dart/conduit-codable">conduit_codable package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">conduit_codable</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="cast/cast-library.html">cast</a></li>
+      <li><a href="conduit_codable/conduit_codable-library.html">conduit_codable</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_codable
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

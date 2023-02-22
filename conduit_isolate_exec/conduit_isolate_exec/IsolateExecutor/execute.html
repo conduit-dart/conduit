@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the execute method from the IsolateExecutor class, for the Dart programming language.">
+  <title>execute method - IsolateExecutor class - conduit_isolate_exec library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_isolate_exec</a></li>
+    <li><a href="../../conduit_isolate_exec/conduit_isolate_exec-library.html">conduit_isolate_exec</a></li>
+    <li><a href="../../conduit_isolate_exec/IsolateExecutor-class.html">IsolateExecutor<span class="signature">&lt;<wbr><span class="type-parameter">U</span>&gt;</span></a></li>
+    <li class="self-crumb">execute method</li>
+  </ol>
+  <div class="self-name">execute</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">execute</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">U</span>&gt;</span></span>
+<span class="name ">execute</span>(<wbr>)
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;U&gt; execute() async {
+  if (packageConfigURI != null &amp;&amp;
+      !File.fromUri(packageConfigURI!).existsSync()) {
+    throw StateError(
+      &quot;Package file &#39;$packageConfigURI&#39; not found. Run &#39;pub get&#39; and retry.&quot;,
+    );
+  }
+
+  final scriptSource = Uri.encodeComponent(await generator.scriptSource);
+
+  final onErrorPort = ReceivePort()
+    ..listen((err) async {
+      if (err is List) {
+        final stack =
+            StackTrace.fromString(err.last.replaceAll(scriptSource, &quot;&quot;));
+
+        completer.completeError(StateError(err.first), stack);
+      } else {
+        completer.completeError(err);
+      }
+    });
+
+  final controlPort = ReceivePort()
+    ..listen((results) {
+      if (results is Map &amp;&amp; results.length == 1) {
+        if (results.containsKey(&quot;_result&quot;)) {
+          completer.complete(results[&#39;_result&#39;]);
+          return;
+        } else if (results.containsKey(&quot;_line_&quot;)) {
+          _logListener.add(results[&quot;_line_&quot;]);
+          return;
+        }
+      }
+      _eventListener.add(results);
+    });
+  try {
+    message[&quot;_sendPort&quot;] = controlPort.sendPort;
+
+    final dataUri = Uri.parse(
+      &quot;data:application&#47;dart;charset=utf-8,$scriptSource&quot;,
+    );
+
+    await Isolate.spawnUri(
+      dataUri,
+      [],
+      message,
+      onError: onErrorPort.sendPort,
+      packageConfig: packageConfigURI,
+      automaticPackageResolution: packageConfigURI == null,
+    );
+    return await completer.future;
+  } finally {
+    onErrorPort.close();
+    controlPort.close();
+    _eventListener.close();
+    _logListener.close();
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_isolate_exec</a></li>
+  <li><a href="../../conduit_isolate_exec/conduit_isolate_exec-library.html">conduit_isolate_exec</a></li>
+  <li><a href="../../conduit_isolate_exec/IsolateExecutor-class.html">IsolateExecutor<span class="signature">&lt;<wbr><span class="type-parameter">U</span>&gt;</span></a></li>
+  <li class="self-crumb">execute method</li>
+</ol>
+
+
+    <h5>IsolateExecutor class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit_isolate_exec/IsolateExecutor-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/IsolateExecutor.html">IsolateExecutor</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit_isolate_exec/IsolateExecutor-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/completer.html">completer</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/console.html">console</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/events.html">events</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/generator.html">generator</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/message.html">message</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/packageConfigURI.html">packageConfigURI</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+        <li class="section-title"><a href="../../conduit_isolate_exec/IsolateExecutor-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/execute.html">execute</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit_isolate_exec/IsolateExecutor-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+        <li class="section-title"><a href="../../conduit_isolate_exec/IsolateExecutor-class.html#static-methods">Static methods</a></li>
+          <li><a href="../../conduit_isolate_exec/IsolateExecutor/run.html">run</a></li>
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_isolate_exec
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

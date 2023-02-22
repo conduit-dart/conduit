@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the ManagedAuthToken class from the conduit.managed_auth library, for the Dart programming language.">
+  <title>ManagedAuthToken class - conduit.managed_auth library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_core</a></li>
+    <li><a href="../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+    <li class="self-crumb">ManagedAuthToken class</li>
+  </ol>
+  <div class="self-name">ManagedAuthToken</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">ManagedAuthToken</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Represent an OAuth 2.0 authorization token and authorization code.</p>
+<p>Instances of this type are created by <a href="../conduit.managed_auth/ManagedAuthDelegate-class.html">ManagedAuthDelegate</a> to store
+authorization tokens and codes on behalf of an <a href="../conduit/AuthServer-class.html">AuthServer</a>. There is no
+need to use this class directly.</p>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></li>
+        <li><a href="../conduit/Serializable-class.html">Serializable</a></li>
+        <li><a href="../conduit/ManagedObject-class.html">ManagedObject</a><span class="signature">&lt;<wbr><span class="type-parameter">_ManagedAuthToken</span>&gt;</span></li>
+      <li>ManagedAuthToken</li>
+    </ul>
+  </dd>
+
+        
+        
+
+
+
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="ManagedAuthToken" class="callable">
+          <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.html">ManagedAuthToken</a></span><span class="signature">()</span>
+        </dt>
+        <dd>
+          Empty instance.
+        </dd>
+        <dt id="ManagedAuthToken.fromCode" class="callable">
+          <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.fromCode.html">ManagedAuthToken.fromCode</a></span><span class="signature">(<span class="parameter" id="fromCode-param-code"><span class="type-annotation"><a href="../conduit/AuthCode-class.html">AuthCode</a></span> <span class="parameter-name">code</span></span>)</span>
+        </dt>
+        <dd>
+          Instance from an <a href="../conduit/AuthCode-class.html">AuthCode</a>.
+        </dd>
+        <dt id="ManagedAuthToken.fromToken" class="callable">
+          <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.fromToken.html">ManagedAuthToken.fromToken</a></span><span class="signature">(<span class="parameter" id="fromToken-param-t"><span class="type-annotation"><a href="../conduit/AuthToken-class.html">AuthToken</a></span> <span class="parameter-name">t</span></span>)</span>
+        </dt>
+        <dd>
+          Instance from an <a href="../conduit/AuthToken-class.html">AuthToken</a>.
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor inherited" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="accessToken" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/accessToken.html">accessToken</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  The access token of an authorization token.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="backing" class="property inherited">
+  <span class="name"><a href="../conduit/ManagedObject/backing.html">backing</a></span>
+  <span class="signature">&#8596; <a href="../conduit/ManagedBacking-class.html">ManagedBacking</a></span> 
+
+</dt>
+<dd class="inherited">
+  The persistent values of this object.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="client" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/client.html">client</a></span>
+  <span class="signature">&#8596; <a href="../conduit.managed_auth/ManagedAuthClient-class.html">ManagedAuthClient</a></span> 
+
+</dt>
+<dd class="inherited">
+  The client this token was issued for.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="code" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/code.html">code</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  The authorization code of this token.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="entity" class="property inherited">
+  <span class="name"><a href="../conduit/ManagedObject/entity.html">entity</a></span>
+  <span class="signature">&#8596; <a href="../conduit/ManagedEntity-class.html">ManagedEntity</a></span> 
+
+</dt>
+<dd class="inherited">
+  The <a href="../conduit/ManagedEntity-class.html">ManagedEntity</a> this instance is described by.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="expirationDate" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/expirationDate.html">expirationDate</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/DateTime-class.html">DateTime</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  When this token will expire.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="id" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/id.html">id</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  A primary key identifier.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="issueDate" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/issueDate.html">issueDate</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/DateTime-class.html">DateTime</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  When this token was last issued or refreshed.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="modelFieldIncludeIfNull" class="property inherited">
+  <span class="name"><a href="../conduit/ManagedObject/modelFieldIncludeIfNull.html">modelFieldIncludeIfNull</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">late</span><span class="feature">final</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="properties" class="property inherited">
+  <span class="name"><a href="../conduit/ManagedObject/properties.html">properties</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span>, <span class="type-parameter"><a href="../conduit/ManagedPropertyDescription-class.html">ManagedPropertyDescription</a>?</span>&gt;</span></span> 
+
+</dt>
+<dd class="inherited">
+  IMPROVEMENT: Cache of entity.properties to reduce property loading time
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="refreshToken" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/refreshToken.html">refreshToken</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  The refresh token of an authorization token.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="resourceOwner" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/resourceOwner.html">resourceOwner</a></span>
+  <span class="signature">&#8596; <a href="../conduit.managed_auth/ResourceOwnerTableDefinition-class.html">ResourceOwnerTableDefinition</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  The resource owner of this token.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="responseKeyProperties" class="property inherited">
+  <span class="name"><a href="../conduit/ManagedObject/responseKeyProperties.html">responseKeyProperties</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span>, <span class="type-parameter"><a href="../conduit/ManagedPropertyDescription-class.html">ManagedPropertyDescription</a>?</span>&gt;</span></span> 
+
+</dt>
+<dd class="inherited">
+  Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="scope" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/scope.html">scope</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  Scopes for this token, delimited by the space character.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="type" class="property inherited">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/type.html">type</a></span>
+  <span class="signature">&#8596; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> 
+
+</dt>
+<dd class="inherited">
+  The value 'bearer'.
+  <div class="features"><span class="feature">read / write</span><span class="feature">inherited</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="asAuthCode" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/asAuthCode.html">asAuthCode</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/AuthCode-class.html">AuthCode</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  As an <a href="../conduit/AuthCode-class.html">AuthCode</a>.
+  
+
+</dd>
+
+        <dt id="asMap" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/asMap.html">asMap</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Converts this instance into a serializable map.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="asToken" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthToken/asToken.html">asToken</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/AuthToken-class.html">AuthToken</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  As an <a href="../conduit/AuthToken-class.html">AuthToken</a>.
+  
+
+</dd>
+
+        <dt id="documentSchema" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/documentSchema.html">documentSchema</a></span><span class="signature">(<wbr><span class="parameter" id="documentSchema-param-context"><span class="type-annotation">APIDocumentContext</span> <span class="parameter-name">context</span></span>)
+    <span class="returntype parameter">&#8594; APISchemaObject</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns an <code>APISchemaObject</code> describing this object's type.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="hasValueForProperty" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/hasValueForProperty.html">hasValueForProperty</a></span><span class="signature">(<wbr><span class="parameter" id="hasValueForProperty-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">propertyName</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Checks whether or not a property has been set in this instances' <a href="../conduit/ManagedObject/backing.html">backing</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="mapKeyName" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/mapKeyName.html">mapKeyName</a></span><span class="signature">(<wbr><span class="parameter" id="mapKeyName-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">propertyName</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="read" class="callable inherited">
+  <span class="name"><a href="../conduit/Serializable/read.html">read</a></span><span class="signature">(<wbr><span class="parameter" id="read-param-object"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">object</span>, </span><span class="parameter" id="read-param-accept">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">accept</span>, </span><span class="parameter" id="read-param-ignore"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">ignore</span>, </span><span class="parameter" id="read-param-reject"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">reject</span>, </span><span class="parameter" id="read-param-require"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">require</span>}</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Reads values from <code>object</code>, after applying filters.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="readFromMap" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/readFromMap.html">readFromMap</a></span><span class="signature">(<wbr><span class="parameter" id="readFromMap-param-object"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">object</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Reads values from <code>object</code>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="removePropertiesFromBackingMap" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/removePropertiesFromBackingMap.html">removePropertiesFromBackingMap</a></span><span class="signature">(<wbr><span class="parameter" id="removePropertiesFromBackingMap-param-propertyNames"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span></span> <span class="parameter-name">propertyNames</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Removes multiple properties from <a href="../conduit/ManagedObject/backing.html">backing</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="removePropertyFromBackingMap" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/removePropertyFromBackingMap.html">removePropertyFromBackingMap</a></span><span class="signature">(<wbr><span class="parameter" id="removePropertyFromBackingMap-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">propertyName</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Removes a property from <a href="../conduit/ManagedObject/backing.html">backing</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="validate" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/validate.html">validate</a></span><span class="signature">(<wbr><span class="parameter" id="validate-param-forEvent">{<span class="type-annotation"><a href="../conduit/Validating.html">Validating</a></span> <span class="parameter-name">forEvent</span> = <span class="default-value">Validating.insert</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/ValidationContext-class.html">ValidationContext</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Validates an object according to its property <a href="../conduit/Validate-class.html">Validate</a> metadata.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="willInsert" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/willInsert.html">willInsert</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Callback to modify an object prior to inserting it with a <a href="../conduit/Query-class.html">Query</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="willUpdate" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/willUpdate.html">willUpdate</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Callback to modify an object prior to updating it with a <a href="../conduit/Query-class.html">Query</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="operator []" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/operator_get.html">operator []</a></span><span class="signature">(<wbr><span class="parameter" id="[]-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">propertyName</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Retrieves a value by property name from <a href="../conduit/ManagedObject/backing.html">backing</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="operator []=" class="callable inherited">
+  <span class="name"><a href="../conduit/ManagedObject/operator_put.html">operator []=</a></span><span class="signature">(<wbr><span class="parameter" id="[]=-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">propertyName</span>, </span><span class="parameter" id="[]=-param-value"><span class="type-annotation">dynamic</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Sets a value by property name in <a href="../conduit/ManagedObject/backing.html">backing</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_core</a></li>
+  <li><a href="../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+  <li class="self-crumb">ManagedAuthToken class</li>
+</ol>
+
+
+    <h5>conduit.managed_auth library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit.managed_auth/conduit.managed_auth-library.html#classes">Classes</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthClient-class.html">ManagedAuthClient</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthDelegate-class.html">ManagedAuthDelegate</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthToken-class.html">ManagedAuthToken</a></li>
+        <li><a href="../conduit.managed_auth/ResourceOwnerTableDefinition-class.html">ResourceOwnerTableDefinition</a></li>
+
+
+
+
+
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../conduit.managed_auth/ManagedAuthToken-class.html#constructors">Constructors</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.html">ManagedAuthToken</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.fromCode.html">fromCode</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthToken/ManagedAuthToken.fromToken.html">fromToken</a></li>
+
+
+        <li class="section-title inherited">
+          <a href="../conduit.managed_auth/ManagedAuthToken-class.html#instance-properties">Properties</a>
+        </li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/accessToken.html">accessToken</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/backing.html">backing</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/client.html">client</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/code.html">code</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/entity.html">entity</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/expirationDate.html">expirationDate</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/id.html">id</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/issueDate.html">issueDate</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/modelFieldIncludeIfNull.html">modelFieldIncludeIfNull</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/properties.html">properties</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/refreshToken.html">refreshToken</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/resourceOwner.html">resourceOwner</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/responseKeyProperties.html">responseKeyProperties</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/scope.html">scope</a></li>
+          <li class="inherited"><a href="../conduit.managed_auth/ManagedAuthToken/type.html">type</a></li>
+
+        <li class="section-title"><a href="../conduit.managed_auth/ManagedAuthToken-class.html#instance-methods">Methods</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthToken/asAuthCode.html">asAuthCode</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/asMap.html">asMap</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthToken/asToken.html">asToken</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/documentSchema.html">documentSchema</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/hasValueForProperty.html">hasValueForProperty</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/mapKeyName.html">mapKeyName</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="../conduit/Serializable/read.html">read</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/readFromMap.html">readFromMap</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/removePropertiesFromBackingMap.html">removePropertiesFromBackingMap</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/removePropertyFromBackingMap.html">removePropertyFromBackingMap</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/validate.html">validate</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/willInsert.html">willInsert</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/willUpdate.html">willUpdate</a></li>
+
+        <li class="section-title inherited"><a href="../conduit.managed_auth/ManagedAuthToken-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/operator_get.html">operator []</a></li>
+          <li class="inherited"><a href="../conduit/ManagedObject/operator_put.html">operator []=</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

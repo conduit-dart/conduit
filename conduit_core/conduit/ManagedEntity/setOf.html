@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the setOf method from the ManagedEntity class, for the Dart programming language.">
+  <title>setOf method - ManagedEntity class - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+    <li><a href="../../conduit/ManagedEntity-class.html">ManagedEntity</a></li>
+    <li class="self-crumb">setOf&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt; method</li>
+  </ol>
+  <div class="self-name">setOf</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">setOf&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt;</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="../../conduit/ManagedSet-class.html">ManagedSet</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span>?</span>
+<span class="name ">setOf</span>&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt;(<wbr><ol class="parameter-list"><li><span class="parameter" id="setOf-param-objects"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a></span> <span class="parameter-name">objects</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">ManagedSet&lt;T&gt;? setOf&lt;T extends ManagedObject&gt;(Iterable&lt;dynamic&gt; objects) {
+  return runtime!.setOfImplementation(objects) as ManagedSet&lt;T&gt;?;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit/conduit-library.html">conduit</a></li>
+  <li><a href="../../conduit/ManagedEntity-class.html">ManagedEntity</a></li>
+  <li class="self-crumb">setOf&lt;<wbr><span class="type-parameter">T extends ManagedObject</span>&gt; method</li>
+</ol>
+
+
+    <h5>ManagedEntity class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit/ManagedEntity-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit/ManagedEntity/ManagedEntity.html">ManagedEntity</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit/ManagedEntity-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../../conduit/ManagedEntity/attributes.html">attributes</a></li>
+          <li><a href="../../conduit/ManagedEntity/defaultProperties.html">defaultProperties</a></li>
+          <li><a href="../../conduit/ManagedEntity/hashCode.html">hashCode</a></li>
+          <li><a href="../../conduit/ManagedEntity/instanceType.html">instanceType</a></li>
+          <li><a href="../../conduit/ManagedEntity/name.html">name</a></li>
+          <li><a href="../../conduit/ManagedEntity/primaryKey.html">primaryKey</a></li>
+          <li><a href="../../conduit/ManagedEntity/primaryKeyAttribute.html">primaryKeyAttribute</a></li>
+          <li><a href="../../conduit/ManagedEntity/properties.html">properties</a></li>
+          <li><a href="../../conduit/ManagedEntity/relationships.html">relationships</a></li>
+          <li><a href="../../conduit/ManagedEntity/runtime.html">runtime</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../conduit/ManagedEntity/symbolMap.html">symbolMap</a></li>
+          <li><a href="../../conduit/ManagedEntity/tableDefinition.html">tableDefinition</a></li>
+          <li><a href="../../conduit/ManagedEntity/tableName.html">tableName</a></li>
+          <li><a href="../../conduit/ManagedEntity/uniquePropertySet.html">uniquePropertySet</a></li>
+          <li><a href="../../conduit/ManagedEntity/validators.html">validators</a></li>
+
+        <li class="section-title"><a href="../../conduit/ManagedEntity-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit/ManagedEntity/document.html">document</a></li>
+          <li><a href="../../conduit/ManagedEntity/documentComponents.html">documentComponents</a></li>
+          <li><a href="../../conduit/ManagedEntity/identifyAttribute.html">identifyAttribute</a></li>
+          <li><a href="../../conduit/ManagedEntity/identifyProperties.html">identifyProperties</a></li>
+          <li><a href="../../conduit/ManagedEntity/identifyProperty.html">identifyProperty</a></li>
+          <li><a href="../../conduit/ManagedEntity/identifyRelationship.html">identifyRelationship</a></li>
+          <li><a href="../../conduit/ManagedEntity/instanceOf.html">instanceOf</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../conduit/ManagedEntity/setOf.html">setOf</a></li>
+          <li><a href="../../conduit/ManagedEntity/toString.html">toString</a></li>
+
+        <li class="section-title"><a href="../../conduit/ManagedEntity-class.html#operators">Operators</a></li>
+          <li><a href="../../conduit/ManagedEntity/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the QueryExpression class from the conduit library, for the Dart programming language.">
+  <title>QueryExpression class - conduit library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_core</a></li>
+    <li><a href="../conduit/conduit-library.html">conduit</a></li>
+    <li class="self-crumb">QueryExpression<span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span> class</li>
+  </ol>
+  <div class="self-name">QueryExpression</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">QueryExpression&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Contains methods for adding logical expressions to properties when building a <a href="../conduit/Query-class.html">Query</a>.</p>
+<p>You do not create instances of this type directly, but instead are returned an instance when selecting a property
+of an object in <a href="../conduit/Query/where.html">Query.where</a>. You invoke methods from this type to add an expression to the query for the selected property.
+Example:</p>
+<pre class="language-dart"><code>    final query = new Query&lt;Employee&gt;()
+      ..where((e) =&gt; e.name).equalTo("Bob");
+</code></pre>
+</section>
+
+
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="QueryExpression" class="callable">
+          <span class="name"><a href="../conduit/QueryExpression/QueryExpression.html">QueryExpression</a></span><span class="signature">(<span class="parameter" id="-param-keyPath"><span class="type-annotation"><a href="../conduit/KeyPath-class.html">KeyPath</a></span> <span class="parameter-name">keyPath</span></span>)</span>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt id="QueryExpression.byAddingKey" class="callable">
+          <span class="name"><a href="../conduit/QueryExpression/QueryExpression.byAddingKey.html">QueryExpression.byAddingKey</a></span><span class="signature">(<span class="parameter" id="byAddingKey-param-original"><span class="type-annotation"><a href="../conduit/QueryExpression-class.html">QueryExpression</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span> <span class="parameter-name">original</span>, </span><span class="parameter" id="byAddingKey-param-byAdding"><span class="type-annotation"><a href="../conduit/ManagedPropertyDescription-class.html">ManagedPropertyDescription</a></span> <span class="parameter-name">byAdding</span></span>)</span>
+        </dt>
+        <dd>
+          
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="expression" class="property">
+  <span class="name"><a href="../conduit/QueryExpression/expression.html">expression</a></span>
+  <span class="signature">&#8596; <a href="../conduit/PredicateExpression-class.html">PredicateExpression</a>?</span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="keyPath" class="property">
+  <span class="name"><a href="../conduit/QueryExpression/keyPath.html">keyPath</a></span>
+  <span class="signature">&#8594; <a href="../conduit/KeyPath-class.html">KeyPath</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="not" class="property">
+  <span class="name"><a href="../conduit/QueryExpression/not.html">not</a></span>
+  <span class="signature">&#8594; <a href="../conduit/QueryExpression-class.html">QueryExpression</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span> 
+
+</dt>
+<dd>
+  Inverts the next expression.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="beginsWith" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/beginsWith.html">beginsWith</a></span><span class="signature">(<wbr><span class="parameter" id="beginsWith-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">value</span>, </span><span class="parameter" id="beginsWith-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'begins with string' expression to a query.
+  
+
+</dd>
+
+        <dt id="between" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/between.html">between</a></span><span class="signature">(<wbr><span class="parameter" id="between-param-lhs"><span class="type-annotation">T</span> <span class="parameter-name">lhs</span>, </span><span class="parameter" id="between-param-rhs"><span class="type-annotation">T</span> <span class="parameter-name">rhs</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'between two values' expression to a query.
+  
+
+</dd>
+
+        <dt id="contains" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/contains.html">contains</a></span><span class="signature">(<wbr><span class="parameter" id="contains-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">value</span>, </span><span class="parameter" id="contains-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'contains string' expression to a query.
+  
+
+</dd>
+
+        <dt id="endsWith" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/endsWith.html">endsWith</a></span><span class="signature">(<wbr><span class="parameter" id="endsWith-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">value</span>, </span><span class="parameter" id="endsWith-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'ends with string' expression to a query.
+  
+
+</dd>
+
+        <dt id="equalTo" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/equalTo.html">equalTo</a></span><span class="signature">(<wbr><span class="parameter" id="equalTo-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, </span><span class="parameter" id="equalTo-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds an equality expression to a query.
+  
+
+</dd>
+
+        <dt id="greaterThan" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/greaterThan.html">greaterThan</a></span><span class="signature">(<wbr><span class="parameter" id="greaterThan-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'greater than' expression to a query.
+  
+
+</dd>
+
+        <dt id="greaterThanEqualTo" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/greaterThanEqualTo.html">greaterThanEqualTo</a></span><span class="signature">(<wbr><span class="parameter" id="greaterThanEqualTo-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'greater than or equal to' expression to a query.
+  
+
+</dd>
+
+        <dt id="identifiedBy" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/identifiedBy.html">identifiedBy</a></span><span class="signature">(<wbr><span class="parameter" id="identifiedBy-param-identifier"><span class="type-annotation">dynamic</span> <span class="parameter-name">identifier</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds an equality expression for foreign key columns to a query.
+  
+
+</dd>
+
+        <dt id="isNotNull" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/isNotNull.html">isNotNull</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'not null check' expression to a query.
+  
+
+</dd>
+
+        <dt id="isNull" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/isNull.html">isNull</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'null check' expression to a query.
+  
+
+</dd>
+
+        <dt id="lessThan" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/lessThan.html">lessThan</a></span><span class="signature">(<wbr><span class="parameter" id="lessThan-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'less than' expression to a query.
+  
+
+</dd>
+
+        <dt id="lessThanEqualTo" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/lessThanEqualTo.html">lessThanEqualTo</a></span><span class="signature">(<wbr><span class="parameter" id="lessThanEqualTo-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'less than or equal to' expression to a query.
+  
+
+</dd>
+
+        <dt id="like" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/like.html">like</a></span><span class="signature">(<wbr><span class="parameter" id="like-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">value</span>, </span><span class="parameter" id="like-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a like expression to a query.
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="notEqualTo" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/notEqualTo.html">notEqualTo</a></span><span class="signature">(<wbr><span class="parameter" id="notEqualTo-param-value"><span class="type-annotation">T</span> <span class="parameter-name">value</span>, </span><span class="parameter" id="notEqualTo-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'not equal' expression to a query.
+  
+
+</dd>
+
+        <dt id="notLike" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/notLike.html">notLike</a></span><span class="signature">(<wbr><span class="parameter" id="notLike-param-value"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">value</span>, </span><span class="parameter" id="notLike-param-caseSensitive">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">caseSensitive</span> = <span class="default-value">true</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'not like' expression to a query.
+  
+
+</dd>
+
+        <dt id="oneOf" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/oneOf.html">oneOf</a></span><span class="signature">(<wbr><span class="parameter" id="oneOf-param-values"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Iterable-class.html">Iterable</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span> <span class="parameter-name">values</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'equal to one of' expression to a query.
+  
+
+</dd>
+
+        <dt id="outsideOf" class="callable">
+  <span class="name"><a href="../conduit/QueryExpression/outsideOf.html">outsideOf</a></span><span class="signature">(<wbr><span class="parameter" id="outsideOf-param-lhs"><span class="type-annotation">T</span> <span class="parameter-name">lhs</span>, </span><span class="parameter" id="outsideOf-param-rhs"><span class="type-annotation">T</span> <span class="parameter-name">rhs</span></span>)
+    <span class="returntype parameter">&#8594; <a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Adds a 'outside of the range crated by two values' expression to a query.
+  
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_core</a></li>
+  <li><a href="../conduit/conduit-library.html">conduit</a></li>
+  <li class="self-crumb">QueryExpression<span class="signature">&lt;<wbr><span class="type-parameter">T</span>, <span class="type-parameter">InstanceType</span>&gt;</span> class</li>
+</ol>
+
+
+    <h5>conduit library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit/conduit-library.html#classes">Classes</a></li>
+        <li><a href="../conduit/APIConfiguration-class.html">APIConfiguration</a></li>
+        <li><a href="../conduit/Application-class.html">Application</a></li>
+        <li><a href="../conduit/ApplicationChannel-class.html">ApplicationChannel</a></li>
+        <li><a href="../conduit/ApplicationMessageHub-class.html">ApplicationMessageHub</a></li>
+        <li><a href="../conduit/ApplicationOptions-class.html">ApplicationOptions</a></li>
+        <li><a href="../conduit/ApplicationServer-class.html">ApplicationServer</a></li>
+        <li><a href="../conduit/AuthBasicCredentials-class.html">AuthBasicCredentials</a></li>
+        <li><a href="../conduit/AuthClient-class.html">AuthClient</a></li>
+        <li><a href="../conduit/AuthCode-class.html">AuthCode</a></li>
+        <li><a class="deprecated" href="../conduit/AuthCodeController-class.html">AuthCodeController</a></li>
+        <li><a class="deprecated" href="../conduit/AuthCodeControllerDelegate-class.html">AuthCodeControllerDelegate</a></li>
+        <li><a href="../conduit/AuthController-class.html">AuthController</a></li>
+        <li><a href="../conduit/Authorization-class.html">Authorization</a></li>
+        <li><a href="../conduit/AuthorizationBasicParser-class.html">AuthorizationBasicParser</a></li>
+        <li><a href="../conduit/AuthorizationBearerParser-class.html">AuthorizationBearerParser</a></li>
+        <li><a href="../conduit/AuthorizationParser-class.html">AuthorizationParser</a></li>
+        <li><a href="../conduit/Authorizer-class.html">Authorizer</a></li>
+        <li><a href="../conduit/AuthRedirectController-class.html">AuthRedirectController</a></li>
+        <li><a href="../conduit/AuthRedirectControllerDelegate-class.html">AuthRedirectControllerDelegate</a></li>
+        <li><a href="../conduit/AuthScope-class.html">AuthScope</a></li>
+        <li><a href="../conduit/AuthServer-class.html">AuthServer</a></li>
+        <li><a href="../conduit/AuthServerDelegate-class.html">AuthServerDelegate</a></li>
+        <li><a href="../conduit/AuthToken-class.html">AuthToken</a></li>
+        <li><a href="../conduit/AuthValidator-class.html">AuthValidator</a></li>
+        <li><a href="../conduit/Bind-class.html">Bind</a></li>
+        <li><a href="../conduit/BodyDecoder-class.html">BodyDecoder</a></li>
+        <li><a href="../conduit/CachePolicy-class.html">CachePolicy</a></li>
+        <li><a href="../conduit/ChannelRuntime-class.html">ChannelRuntime</a></li>
+        <li><a href="../conduit/CodecRegistry-class.html">CodecRegistry</a></li>
+        <li><a href="../conduit/Column-class.html">Column</a></li>
+        <li><a href="../conduit/ComparisonExpression-class.html">ComparisonExpression</a></li>
+        <li><a href="../conduit/ConduitCompiler-class.html">ConduitCompiler</a></li>
+        <li><a href="../conduit/Configuration-class.html">Configuration</a></li>
+        <li><a href="../conduit/ConfigurationCompiler-class.html">ConfigurationCompiler</a></li>
+        <li><a href="../conduit/ConfigurationError-class.html">ConfigurationError</a></li>
+        <li><a href="../conduit/ConfigurationException-class.html">ConfigurationException</a></li>
+        <li><a href="../conduit/ConfigurationItemAttribute-class.html">ConfigurationItemAttribute</a></li>
+        <li><a href="../conduit/ConfigurationRuntime-class.html">ConfigurationRuntime</a></li>
+        <li><a href="../conduit/Controller-class.html">Controller</a></li>
+        <li><a href="../conduit/ControllerRuntime-class.html">ControllerRuntime</a></li>
+        <li><a href="../conduit/CORSPolicy-class.html">CORSPolicy</a></li>
+        <li><a href="../conduit/DatabaseConfiguration-class.html">DatabaseConfiguration</a></li>
+        <li><a href="../conduit/Document-class.html">Document</a></li>
+        <li><a href="../conduit/FileController-class.html">FileController</a></li>
+        <li><a href="../conduit/KeyPath-class.html">KeyPath</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/Level-class.html">Level</a></li>
+        <li><a href="../conduit/Linkable-class.html">Linkable</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/Logger-class.html">Logger</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/LogRecord-class.html">LogRecord</a></li>
+        <li><a href="../conduit/ManagedAttributeDescription-class.html">ManagedAttributeDescription</a></li>
+        <li><a href="../conduit/ManagedBacking-class.html">ManagedBacking</a></li>
+        <li><a href="../conduit/ManagedContext-class.html">ManagedContext</a></li>
+        <li><a href="../conduit/ManagedDataModel-class.html">ManagedDataModel</a></li>
+        <li><a href="../conduit/ManagedEntity-class.html">ManagedEntity</a></li>
+        <li><a href="../conduit/ManagedEntityRuntime-class.html">ManagedEntityRuntime</a></li>
+        <li><a href="../conduit/ManagedObject-class.html">ManagedObject</a></li>
+        <li><a href="../conduit/ManagedObjectController-class.html">ManagedObjectController</a></li>
+        <li><a href="../conduit/ManagedPropertyDescription-class.html">ManagedPropertyDescription</a></li>
+        <li><a href="../conduit/ManagedRelationshipDescription-class.html">ManagedRelationshipDescription</a></li>
+        <li><a href="../conduit/ManagedSet-class.html">ManagedSet</a></li>
+        <li><a href="../conduit/ManagedType-class.html">ManagedType</a></li>
+        <li><a href="../conduit/ManagedValidator-class.html">ManagedValidator</a></li>
+        <li><a href="../conduit/Migration-class.html">Migration</a></li>
+        <li><a href="../conduit/NullCheckExpression-class.html">NullCheckExpression</a></li>
+        <li><a href="../conduit/Operation-class.html">Operation</a></li>
+        <li><a href="../conduit/PersistentStore-class.html">PersistentStore</a></li>
+        <li><a href="../conduit/PredicateExpression-class.html">PredicateExpression</a></li>
+        <li><a href="../conduit/Query-class.html">Query</a></li>
+        <li><a href="../conduit/QueryController-class.html">QueryController</a></li>
+        <li><a href="../conduit/QueryExpression-class.html">QueryExpression</a></li>
+        <li><a href="../conduit/QueryExpressionJunction-class.html">QueryExpressionJunction</a></li>
+        <li><a href="../conduit/QueryMixin-class.html">QueryMixin</a></li>
+        <li><a href="../conduit/QueryPredicate-class.html">QueryPredicate</a></li>
+        <li><a href="../conduit/QueryReduceOperation-class.html">QueryReduceOperation</a></li>
+        <li><a href="../conduit/RangeExpression-class.html">RangeExpression</a></li>
+        <li><a href="../conduit/Recyclable-class.html">Recyclable</a></li>
+        <li><a href="../conduit/Relate-class.html">Relate</a></li>
+        <li><a href="../conduit/Request-class.html">Request</a></li>
+        <li><a href="../conduit/RequestBody-class.html">RequestBody</a></li>
+        <li><a href="../conduit/RequestOrResponse-class.html">RequestOrResponse</a></li>
+        <li><a href="../conduit/RequestPath-class.html">RequestPath</a></li>
+        <li><a href="../conduit/RequiredBinding-class.html">RequiredBinding</a></li>
+        <li><a href="../conduit/ResourceController-class.html">ResourceController</a></li>
+        <li><a href="../conduit/ResourceControllerDocumenter-class.html">ResourceControllerDocumenter</a></li>
+        <li><a href="../conduit/ResourceControllerOperation-class.html">ResourceControllerOperation</a></li>
+        <li><a href="../conduit/ResourceControllerOperationInvocationArgs-class.html">ResourceControllerOperationInvocationArgs</a></li>
+        <li><a href="../conduit/ResourceControllerParameter-class.html">ResourceControllerParameter</a></li>
+        <li><a href="../conduit/ResourceControllerRuntime-class.html">ResourceControllerRuntime</a></li>
+        <li><a href="../conduit/ResourceOwner-class.html">ResourceOwner</a></li>
+        <li><a href="../conduit/Response-class.html">Response</a></li>
+        <li><a href="../conduit/ResponseKey-class.html">ResponseKey</a></li>
+        <li><a href="../conduit/ResponseModel-class.html">ResponseModel</a></li>
+        <li><a href="../conduit/Rollback-class.html">Rollback</a></li>
+        <li><a href="../conduit/RouteNode-class.html">RouteNode</a></li>
+        <li><a href="../conduit/Router-class.html">Router</a></li>
+        <li><a href="../conduit/RouteSegment-class.html">RouteSegment</a></li>
+        <li><a href="../conduit/RouteSpecification-class.html">RouteSpecification</a></li>
+        <li><a href="../conduit/Schema-class.html">Schema</a></li>
+        <li><a href="../conduit/SchemaBuilder-class.html">SchemaBuilder</a></li>
+        <li><a href="../conduit/SchemaColumn-class.html">SchemaColumn</a></li>
+        <li><a href="../conduit/SchemaColumnDifference-class.html">SchemaColumnDifference</a></li>
+        <li><a href="../conduit/SchemaDifference-class.html">SchemaDifference</a></li>
+        <li><a href="../conduit/SchemaTable-class.html">SchemaTable</a></li>
+        <li><a href="../conduit/SchemaTableDifference-class.html">SchemaTableDifference</a></li>
+        <li><a href="../conduit/SchemaTableUniqueSetDifference-class.html">SchemaTableUniqueSetDifference</a></li>
+        <li><a href="../conduit/Scope-class.html">Scope</a></li>
+        <li><a href="../conduit/Serializable-class.html">Serializable</a></li>
+        <li><a href="../conduit/SerializableRuntime-class.html">SerializableRuntime</a></li>
+        <li><a href="../conduit/Serialize-class.html">Serialize</a></li>
+        <li><a href="../conduit/SetMembershipExpression-class.html">SetMembershipExpression</a></li>
+        <li><a href="../conduit/StringExpression-class.html">StringExpression</a></li>
+        <li><a href="../conduit/Table-class.html">Table</a></li>
+        <li><a href="../conduit/Validate-class.html">Validate</a></li>
+        <li><a href="../conduit/ValidationContext-class.html">ValidationContext</a></li>
+
+
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#constants">Constants</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/defaultLevel-constant.html">defaultLevel</a></li>
+        <li><a class="deprecated" href="../conduit/optionalConfiguration-constant.html">optionalConfiguration</a></li>
+        <li><a href="../conduit/primaryKey-constant.html">primaryKey</a></li>
+        <li><a href="../conduit/requiredBinding-constant.html">requiredBinding</a></li>
+        <li><a class="deprecated" href="../conduit/requiredConfiguration-constant.html">requiredConfiguration</a></li>
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#properties">Properties</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/hierarchicalLoggingEnabled.html">hierarchicalLoggingEnabled</a></li>
+        <li><a href="https://pub.dev/documentation/logging/1.1.1/logging/recordStackTraceAtLevel.html">recordStackTraceAtLevel</a></li>
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#functions">Functions</a></li>
+        <li><a href="../conduit/generateAPICredentialPair.html">generateAPICredentialPair</a></li>
+        <li><a href="../conduit/generatePasswordHash.html">generatePasswordHash</a></li>
+        <li><a href="../conduit/generateRandomSalt.html">generateRandomSalt</a></li>
+        <li><a href="../conduit/randomStringOfLength.html">randomStringOfLength</a></li>
+        <li><a href="../conduit/startApplication.html">startApplication</a></li>
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#enums">Enums</a></li>
+        <li><a href="../conduit/AuthorizationParserExceptionReason.html">AuthorizationParserExceptionReason</a></li>
+        <li><a href="../conduit/AuthRequestError.html">AuthRequestError</a></li>
+        <li><a href="../conduit/BindingType.html">BindingType</a></li>
+        <li><a href="../conduit/ConfigurationItemAttributeType.html">ConfigurationItemAttributeType</a></li>
+        <li><a href="../conduit/DeleteRule.html">DeleteRule</a></li>
+        <li><a href="../conduit/ManagedPropertyType.html">ManagedPropertyType</a></li>
+        <li><a href="../conduit/ManagedRelationshipType.html">ManagedRelationshipType</a></li>
+        <li><a href="../conduit/PersistentStoreQueryReturnType.html">PersistentStoreQueryReturnType</a></li>
+        <li><a href="../conduit/PredicateOperator.html">PredicateOperator</a></li>
+        <li><a href="../conduit/PredicateStringOperator.html">PredicateStringOperator</a></li>
+        <li><a href="../conduit/QueryExceptionEvent.html">QueryExceptionEvent</a></li>
+        <li><a href="../conduit/QuerySortOrder.html">QuerySortOrder</a></li>
+        <li><a href="../conduit/Validating.html">Validating</a></li>
+
+
+      <li class="section-title"><a href="../conduit/conduit-library.html#exceptions">Exceptions</a></li>
+        <li><a href="../conduit/ApplicationStartupException-class.html">ApplicationStartupException</a></li>
+        <li><a href="../conduit/AuthorizationParserException-class.html">AuthorizationParserException</a></li>
+        <li><a href="../conduit/AuthServerException-class.html">AuthServerException</a></li>
+        <li><a href="../conduit/HandlerException-class.html">HandlerException</a></li>
+        <li><a href="../conduit/HTTPStreamingException-class.html">HTTPStreamingException</a></li>
+        <li><a href="../conduit/ManagedDataModelError-class.html">ManagedDataModelError</a></li>
+        <li><a href="../conduit/MigrationException-class.html">MigrationException</a></li>
+        <li><a href="../conduit/QueryException-class.html">QueryException</a></li>
+        <li><a href="../conduit/SchemaException-class.html">SchemaException</a></li>
+        <li><a href="../conduit/SerializableException-class.html">SerializableException</a></li>
+        <li><a href="../conduit/ValidateCompilationError-class.html">ValidateCompilationError</a></li>
+        <li><a href="../conduit/ValidationException-class.html">ValidationException</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../conduit/QueryExpression-class.html#constructors">Constructors</a></li>
+          <li><a href="../conduit/QueryExpression/QueryExpression.html">QueryExpression</a></li>
+          <li><a href="../conduit/QueryExpression/QueryExpression.byAddingKey.html">byAddingKey</a></li>
+
+
+        <li class="section-title">
+          <a href="../conduit/QueryExpression-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../conduit/QueryExpression/expression.html">expression</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../conduit/QueryExpression/keyPath.html">keyPath</a></li>
+          <li><a href="../conduit/QueryExpression/not.html">not</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+        <li class="section-title"><a href="../conduit/QueryExpression-class.html#instance-methods">Methods</a></li>
+          <li><a href="../conduit/QueryExpression/beginsWith.html">beginsWith</a></li>
+          <li><a href="../conduit/QueryExpression/between.html">between</a></li>
+          <li><a href="../conduit/QueryExpression/contains.html">contains</a></li>
+          <li><a href="../conduit/QueryExpression/endsWith.html">endsWith</a></li>
+          <li><a href="../conduit/QueryExpression/equalTo.html">equalTo</a></li>
+          <li><a href="../conduit/QueryExpression/greaterThan.html">greaterThan</a></li>
+          <li><a href="../conduit/QueryExpression/greaterThanEqualTo.html">greaterThanEqualTo</a></li>
+          <li><a href="../conduit/QueryExpression/identifiedBy.html">identifiedBy</a></li>
+          <li><a href="../conduit/QueryExpression/isNotNull.html">isNotNull</a></li>
+          <li><a href="../conduit/QueryExpression/isNull.html">isNull</a></li>
+          <li><a href="../conduit/QueryExpression/lessThan.html">lessThan</a></li>
+          <li><a href="../conduit/QueryExpression/lessThanEqualTo.html">lessThanEqualTo</a></li>
+          <li><a href="../conduit/QueryExpression/like.html">like</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../conduit/QueryExpression/notEqualTo.html">notEqualTo</a></li>
+          <li><a href="../conduit/QueryExpression/notLike.html">notLike</a></li>
+          <li><a href="../conduit/QueryExpression/oneOf.html">oneOf</a></li>
+          <li><a href="../conduit/QueryExpression/outsideOf.html">outsideOf</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../conduit/QueryExpression-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

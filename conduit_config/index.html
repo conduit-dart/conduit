@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="conduit_config API docs, for the Dart programming language.">
+  <title>conduit_config - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">conduit_config package</li>
+  </ol>
+  <div class="self-name">conduit_config</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="conduit_config">conduit_config</h1>
+<p>A library to add type and name safety to YAML configuration files.</p>
+<h2 id="basic-usage">Basic Usage</h2>
+<p>conduit_config is simple - it maps YAML files to Dart objects using the keys as property names.
+This mapping ensures that the types of your YAML values are checked at runtime and that
+you haven't typo'ed any YAML key names.</p>
+<p>Consider a case where you want to configure the port and the Server header of your application.
+You define a subclass of <code>Configuration</code> with those properties:</p>
+<pre class="language-dart"><code>class ApplicationConfiguration extends Configuration {
+    ApplicationConfiguration(String fileName) :
+        super.fromFile(File(fileName));
+
+    int port;
+    String serverHeader;
+}
+</code></pre>
+<p>Your YAML file should contain those two, case-sensitive keys:</p>
+<pre class="language-dart"><code>port: 8000
+serverHeader: booyah/1
+</code></pre>
+<p>To read your configuration file:</p>
+<pre class="language-dart"><code>var config = new ApplicationConfiguration("config.yaml");
+print("${config.port}"); // -&gt; 8000
+print("${config.serverHeader}"); // -&gt; "booyah/1"
+</code></pre>
+<p>If port is not an int or is missing, you will get an exception.
+If serverHeader is not a String or missing, you will get an exception.</p>
+<h2 id="useful-usage">Useful Usage</h2>
+<p>You may mark properties in <code>Configuration</code>s as optional.</p>
+<pre class="language-dart"><code>class ApplicationConfiguration extends Configuration {
+    ApplicationConfiguration(String fileName) :
+        super.fromFile(File(fileName));
+
+    int port;
+
+    @optionalConfiguration
+    String serverHeader;
+}
+</code></pre>
+<p>If serverHeader is omitted from your YAML when read, its value will be null and no exception is thrown.</p>
+<p>There are two built-in <code>Configuration</code>, <code>DatabaseConfiguration</code> and <code>APIConfiguration</code>. These contain
+typical properties for common configuration values.</p>
+<p>You may nest <code>Configuration</code> as deeply as you wish:</p>
+<pre class="language-dart"><code>class ApplicationConfiguration extends Configuration {
+    ApplicationConfiguration(String fileName) :
+        super.fromFile(File(fileName));
+
+    int port;
+
+    DatabaseConfiguration userDatabase;
+}
+</code></pre>
+<p>For which the YAML may be:</p>
+<pre class="language-dart"><code>port: 8000
+userDatabase:
+  databaseName: dartstuff
+  host: stablekernel.com
+  port: 5432
+</code></pre>
+<p>You may also use arrays and maps, for which the values can be primitive types or <code>Configuration</code> subclasses.</p>
+<pre class="language-dart"><code>class ApplicationConfiguration extends Configuration {
+    ApplicationConfiguration(String fileName) :
+        super.fromFile(File(fileName));
+
+    Map&lt;String, DatabaseConfiguration&gt; databases;
+}
+</code></pre>
+<p>The YAML here may be:</p>
+<pre class="language-dart"><code>databases:
+  db1:
+    databaseName: dartstuff
+    host: stablekernel.com
+    port: 5432
+  db2:
+    databaseName: otherstuff
+    host: somewhereoutthere.com
+    port: 5432
+</code></pre>
+<p>Then, you may access it as such:</p>
+<pre class="language-dart"><code>var config = new ApplicationConfig("config.yaml");
+
+var databaseOne = config.databases["db1"];
+await database.connect(databaseOne.host,
+    databaseOne.port,
+    databaseOne.databaseName);
+</code></pre>
+<p>A configuration may have multiple YAML representations. For example, a <code>DatabaseConfiguration</code> can be represented as a <code>Map&lt;String, dynamic&gt;</code> of each component (username, host, etc.). It may also be represented as a connection string, e.g. "postgres://user:password@host:port/database". You may allow this behavior by overriding <code>decode</code> in a subclass of <code>Configuration</code>:</p>
+<pre class="language-dart"><code>class AuthorityConfiguration extends Configuration {
+  String username;
+  String password;
+
+  void decode(dynamic anyValue) {
+    if (anyValue is! String) {
+      throw new ConfigurationException("Expected a String for AuthorityConfiguration.";
+    }
+
+    username = anyValue.split(":").first;
+    password = anyValue.split(":").last;
+  }
+}
+</code></pre>
+<p>This configuration could be read in either of these two scenarios:</p>
+<pre class="language-dart"><code>authority:
+    username: "Bob"
+    password: "Fred"
+
+// or
+
+authority: "Bob:Fred"
+</code></pre>
+<p>Configurations may also be redirected to use environment variables. To reference an environment variable in a configuration file, use the '$VARIABLE' syntax as a value:</p>
+<pre class="language-dart"><code>port: $PORT
+</code></pre>
+<p>When read, this configuration file would replace '$PORT' with the environment variable named 'PORT'.</p>
+<p>See the tests for more examples.</p>
+<h2 id="features-and-bugs">Features and bugs</h2>
+<p>Please file feature requests and bugs at the <a href="https://github.com/conduit/conduit_config/issues">issue tracker</a>.</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="conduit_config">
+  <span class="name"><a href="conduit_config/conduit_config-library.html">conduit_config</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li class="self-crumb">conduit_config package</li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">conduit_config</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="conduit_config/conduit_config-library.html">conduit_config</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_config
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

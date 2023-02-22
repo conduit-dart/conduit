@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the BuildContext class from the runtime library, for the Dart programming language.">
+  <title>BuildContext class - runtime library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_runtime</a></li>
+    <li><a href="../runtime/runtime-library.html">runtime</a></li>
+    <li class="self-crumb">BuildContext class</li>
+  </ol>
+  <div class="self-name">BuildContext</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">BuildContext</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Configuration and context values used during <a href="../runtime/Build/execute.html">Build.execute</a>.</p>
+</section>
+
+
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="BuildContext" class="callable">
+          <span class="name"><a href="../runtime/BuildContext/BuildContext.html">BuildContext</a></span><span class="signature">(<span class="parameter" id="-param-rootLibraryFileUri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> <span class="parameter-name">rootLibraryFileUri</span>, </span><span class="parameter" id="-param-buildDirectoryUri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> <span class="parameter-name">buildDirectoryUri</span>, </span><span class="parameter" id="-param-executableUri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> <span class="parameter-name">executableUri</span>, </span><span class="parameter" id="-param-source"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">source</span>, </span><span class="parameter" id="-param-forTests">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">forTests</span> = <span class="default-value">false</span>}</span>)</span>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt id="BuildContext.fromMap" class="callable">
+          <span class="name"><a href="../runtime/BuildContext/BuildContext.fromMap.html">BuildContext.fromMap</a></span><span class="signature">(<span class="parameter" id="fromMap-param-map"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">map</span></span>)</span>
+        </dt>
+        <dd>
+          
+            <div class="constructor-modifier features">factory</div>
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="analyzer" class="property">
+  <span class="name"><a href="../runtime/BuildContext/analyzer.html">analyzer</a></span>
+  <span class="signature">&#8596; <a href="../runtime/CodeAnalyzer-class.html">CodeAnalyzer</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="buildApplicationDirectory" class="property">
+  <span class="name"><a href="../runtime/BuildContext/buildApplicationDirectory.html">buildApplicationDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span> 
+
+</dt>
+<dd>
+  Directory for compiled application
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="buildDirectory" class="property">
+  <span class="name"><a href="../runtime/BuildContext/buildDirectory.html">buildDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span> 
+
+</dt>
+<dd>
+  The directory where build artifacts are stored.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="buildDirectoryUri" class="property">
+  <span class="name"><a href="../runtime/BuildContext/buildDirectoryUri.html">buildDirectoryUri</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> 
+
+</dt>
+<dd>
+  A <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a> to directory where build artifacts are stored during the build process.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="buildPackagesDirectory" class="property">
+  <span class="name"><a href="../runtime/BuildContext/buildPackagesDirectory.html">buildPackagesDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span> 
+
+</dt>
+<dd>
+  Directory for compiled packages
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="buildRuntimeDirectory" class="property">
+  <span class="name"><a href="../runtime/BuildContext/buildRuntimeDirectory.html">buildRuntimeDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span> 
+
+</dt>
+<dd>
+  The generated runtime directory
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="context" class="property">
+  <span class="name"><a href="../runtime/BuildContext/context.html">context</a></span>
+  <span class="signature">&#8594; <a href="../runtime/MirrorContext-class.html">MirrorContext</a></span> 
+
+</dt>
+<dd>
+  The <a href="../runtime/RuntimeContext-class.html">RuntimeContext</a> available during the build process.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="executableUri" class="property">
+  <span class="name"><a href="../runtime/BuildContext/executableUri.html">executableUri</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> 
+
+</dt>
+<dd>
+  A <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a> to the executable build product file.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="forTests" class="property">
+  <span class="name"><a href="../runtime/BuildContext/forTests.html">forTests</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd>
+  Whether dev dependencies of the application package are included in the dependencies of the compiled executable.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="packageConfig" class="property">
+  <span class="name"><a href="../runtime/BuildContext/packageConfig.html">packageConfig</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/package_config/2.1.0/package_config.package_config_types/PackageConfig-class.html">PackageConfig</a></span>&gt;</span></span> 
+
+</dt>
+<dd>
+  Gets dependency package location relative to <a href="../runtime/BuildContext/sourceApplicationDirectory.html">sourceApplicationDirectory</a>.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="rootLibraryFileUri" class="property">
+  <span class="name"><a href="../runtime/BuildContext/rootLibraryFileUri.html">rootLibraryFileUri</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> 
+
+</dt>
+<dd>
+  A <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a> to the library file of the application to be compiled.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="safeMap" class="property">
+  <span class="name"><a href="../runtime/BuildContext/safeMap.html">safeMap</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="source" class="property">
+  <span class="name"><a href="../runtime/BuildContext/source.html">source</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> 
+
+</dt>
+<dd>
+  The source script for the executable.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="sourceApplicationDirectory" class="property">
+  <span class="name"><a href="../runtime/BuildContext/sourceApplicationDirectory.html">sourceApplicationDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span> 
+
+</dt>
+<dd>
+  The directory of the application being compiled.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="sourceApplicationPubspec" class="property">
+  <span class="name"><a href="../runtime/BuildContext/sourceApplicationPubspec.html">sourceApplicationPubspec</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/pubspec/2.3.0/pubspec/PubSpec-class.html">PubSpec</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="sourceApplicationPubspecMap" class="property">
+  <span class="name"><a href="../runtime/BuildContext/sourceApplicationPubspecMap.html">sourceApplicationPubspecMap</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="sourceLibraryFile" class="property">
+  <span class="name"><a href="../runtime/BuildContext/sourceLibraryFile.html">sourceLibraryFile</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/File-class.html">File</a></span> 
+
+</dt>
+<dd>
+  The library file of the application being compiled.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="targetScriptFileUri" class="property">
+  <span class="name"><a href="../runtime/BuildContext/targetScriptFileUri.html">targetScriptFileUri</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> 
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="getAnnotationsFromField" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getAnnotationsFromField.html">getAnnotationsFromField</a></span><span class="signature">(<wbr><span class="parameter" id="getAnnotationsFromField-param-type1"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> <span class="parameter-name">type1</span>, </span><span class="parameter" id="getAnnotationsFromField-param-propertyName"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">propertyName</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/analyzer/5.6.0/dart_ast_ast/Annotation-class.html">Annotation</a></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="getClassDeclarationFromType" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getClassDeclarationFromType.html">getClassDeclarationFromType</a></span><span class="signature">(<wbr><span class="parameter" id="getClassDeclarationFromType-param-type"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> <span class="parameter-name">type</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/analyzer/5.6.0/dart_ast_ast/ClassDeclaration-class.html">ClassDeclaration</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="getDirectory" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getDirectory.html">getDirectory</a></span><span class="signature">(<wbr><span class="parameter" id="getDirectory-param-uri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> <span class="parameter-name">uri</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a <a href="https://api.dart.dev/stable/2.19.2/dart-io/Directory-class.html">Directory</a> at <code>uri</code>, creates it recursively if it doesn't exist.
+  
+
+</dd>
+
+        <dt id="getFile" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getFile.html">getFile</a></span><span class="signature">(<wbr><span class="parameter" id="getFile-param-uri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a></span> <span class="parameter-name">uri</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-io/File-class.html">File</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a <a href="https://api.dart.dev/stable/2.19.2/dart-io/File-class.html">File</a> at <code>uri</code>, creates all parent directories recursively if necessary.
+  
+
+</dd>
+
+        <dt id="getImportDirectives" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getImportDirectives.html">getImportDirectives</a></span><span class="signature">(<wbr><span class="parameter" id="getImportDirectives-param-uri">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a>?</span> <span class="parameter-name">uri</span>, </span><span class="parameter" id="getImportDirectives-param-source"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">source</span>, </span><span class="parameter" id="getImportDirectives-param-alsoImportOriginalFile"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">alsoImportOriginalFile</span> = <span class="default-value">false</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="getPackageFromUri" class="callable">
+  <span class="name"><a href="../runtime/BuildContext/getPackageFromUri.html">getPackageFromUri</a></span><span class="signature">(<wbr><span class="parameter" id="getPackageFromUri-param-uri"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Uri-class.html">Uri</a>?</span> <span class="parameter-name">uri</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/package_config/2.1.0/package_config.package_config_types/Package-class.html">Package</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_runtime</a></li>
+  <li><a href="../runtime/runtime-library.html">runtime</a></li>
+  <li class="self-crumb">BuildContext class</li>
+</ol>
+
+
+    <h5>runtime library</h5>
+    <ol>
+      <li class="section-title"><a href="../runtime/runtime-library.html#classes">Classes</a></li>
+        <li><a href="../runtime/Build-class.html">Build</a></li>
+        <li><a href="../runtime/BuildContext-class.html">BuildContext</a></li>
+        <li><a href="../runtime/BuildExecutable-class.html">BuildExecutable</a></li>
+        <li><a href="../runtime/BuildManager-class.html">BuildManager</a></li>
+        <li><a href="../runtime/CodeAnalyzer-class.html">CodeAnalyzer</a></li>
+        <li><a href="../runtime/Compiler-class.html">Compiler</a></li>
+        <li><a href="../runtime/MirrorContext-class.html">MirrorContext</a></li>
+        <li><a href="../runtime/PreventCompilation-class.html">PreventCompilation</a></li>
+        <li><a href="../runtime/RuntimeCollection-class.html">RuntimeCollection</a></li>
+        <li><a href="../runtime/RuntimeContext-class.html">RuntimeContext</a></li>
+        <li><a href="../runtime/RuntimeGenerator-class.html">RuntimeGenerator</a></li>
+        <li><a href="../runtime/RuntimePackageCompiler-class.html">RuntimePackageCompiler</a></li>
+        <li><a href="../runtime/SourceCompiler-class.html">SourceCompiler</a></li>
+
+
+
+
+      <li class="section-title"><a href="../runtime/runtime-library.html#properties">Properties</a></li>
+        <li><a href="../runtime/instance.html">instance</a></li>
+
+      <li class="section-title"><a href="../runtime/runtime-library.html#functions">Functions</a></li>
+        <li><a href="../runtime/firstMetadataOfType.html">firstMetadataOfType</a></li>
+        <li><a href="../runtime/isTypeFullyPrimitive.html">isTypeFullyPrimitive</a></li>
+        <li><a href="../runtime/runtimeCast.html">runtimeCast</a></li>
+
+
+
+      <li class="section-title"><a href="../runtime/runtime-library.html#exceptions">Exceptions</a></li>
+        <li><a href="../runtime/TypeCoercionException-class.html">TypeCoercionException</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../runtime/BuildContext-class.html#constructors">Constructors</a></li>
+          <li><a href="../runtime/BuildContext/BuildContext.html">BuildContext</a></li>
+          <li><a href="../runtime/BuildContext/BuildContext.fromMap.html">fromMap</a></li>
+
+
+        <li class="section-title">
+          <a href="../runtime/BuildContext-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../runtime/BuildContext/analyzer.html">analyzer</a></li>
+          <li><a href="../runtime/BuildContext/buildApplicationDirectory.html">buildApplicationDirectory</a></li>
+          <li><a href="../runtime/BuildContext/buildDirectory.html">buildDirectory</a></li>
+          <li><a href="../runtime/BuildContext/buildDirectoryUri.html">buildDirectoryUri</a></li>
+          <li><a href="../runtime/BuildContext/buildPackagesDirectory.html">buildPackagesDirectory</a></li>
+          <li><a href="../runtime/BuildContext/buildRuntimeDirectory.html">buildRuntimeDirectory</a></li>
+          <li><a href="../runtime/BuildContext/context.html">context</a></li>
+          <li><a href="../runtime/BuildContext/executableUri.html">executableUri</a></li>
+          <li><a href="../runtime/BuildContext/forTests.html">forTests</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../runtime/BuildContext/packageConfig.html">packageConfig</a></li>
+          <li><a href="../runtime/BuildContext/rootLibraryFileUri.html">rootLibraryFileUri</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../runtime/BuildContext/safeMap.html">safeMap</a></li>
+          <li><a href="../runtime/BuildContext/source.html">source</a></li>
+          <li><a href="../runtime/BuildContext/sourceApplicationDirectory.html">sourceApplicationDirectory</a></li>
+          <li><a href="../runtime/BuildContext/sourceApplicationPubspec.html">sourceApplicationPubspec</a></li>
+          <li><a href="../runtime/BuildContext/sourceApplicationPubspecMap.html">sourceApplicationPubspecMap</a></li>
+          <li><a href="../runtime/BuildContext/sourceLibraryFile.html">sourceLibraryFile</a></li>
+          <li><a href="../runtime/BuildContext/targetScriptFileUri.html">targetScriptFileUri</a></li>
+
+        <li class="section-title"><a href="../runtime/BuildContext-class.html#instance-methods">Methods</a></li>
+          <li><a href="../runtime/BuildContext/getAnnotationsFromField.html">getAnnotationsFromField</a></li>
+          <li><a href="../runtime/BuildContext/getClassDeclarationFromType.html">getClassDeclarationFromType</a></li>
+          <li><a href="../runtime/BuildContext/getDirectory.html">getDirectory</a></li>
+          <li><a href="../runtime/BuildContext/getFile.html">getFile</a></li>
+          <li><a href="../runtime/BuildContext/getImportDirectives.html">getImportDirectives</a></li>
+          <li><a href="../runtime/BuildContext/getPackageFromUri.html">getPackageFromUri</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../runtime/BuildContext-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_runtime
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

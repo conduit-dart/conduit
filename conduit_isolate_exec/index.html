@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="conduit_isolate_exec API docs, for the Dart programming language.">
+  <title>conduit_isolate_exec - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/conduit-dart/isolate-exec">conduit_isolate_exec package</a></li>
+  </ol>
+  <div class="self-name">conduit_isolate_exec</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="conduit_isolate_exec">conduit_isolate_exec</h1>
+<p>This library contains types that allow for executing code in a spawned isolate, perhaps with additional imports.</p>
+<p>Subclass <code>Executable</code> and override its <code>execute</code> method. Invoke <code>IsolateExecutor.executeWithType</code>, passing in that subclass.
+The code in <code>execute</code> will run in another isolate. Any value it returns will be returned by <code>IsolateExecutor.executeWithType</code>.</p>
+<p>A returned value must be a primitive type (anything that is encodable as JSON). You may pass parameters to the other isolate by providing
+a message map.</p>
+<p>Example:</p>
+<pre class="language-dart"><code class="language-dart">class Echo extends Executable {
+  Echo(Map&lt;String, dynamic&gt; message)
+      : echoMessage = message['echo'],
+        super(message);
+
+  final String echoMessage;
+
+  @override
+  Future&lt;dynamic&gt; execute() async {
+    return echoMessage;
+  }
+}
+
+Future main() async {
+    final result = await IsolateExecutor.executeWithType(Echo, message: {'echo': 'hello'});
+    assert(result == 'hello');
+}
+</code></pre>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="conduit_isolate_exec">
+  <span class="name"><a href="conduit_isolate_exec/conduit_isolate_exec-library.html">conduit_isolate_exec</a></span> 
+
+</dt>
+<dd>Executes closures on isolates.
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/conduit-dart/isolate-exec">conduit_isolate_exec package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">conduit_isolate_exec</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="conduit_isolate_exec/conduit_isolate_exec-library.html">conduit_isolate_exec</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_isolate_exec
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

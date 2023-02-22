@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the removeToken method from the ManagedAuthDelegate class, for the Dart programming language.">
+  <title>removeToken method - ManagedAuthDelegate class - conduit.managed_auth library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">conduit_core</a></li>
+    <li><a href="../../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+    <li><a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html">ManagedAuthDelegate<span class="signature">&lt;<wbr><span class="type-parameter">T extends ManagedAuthResourceOwner</span>&gt;</span></a></li>
+    <li class="self-crumb">removeToken method</li>
+  </ol>
+  <div class="self-name">removeToken</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">removeToken</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+  <div>
+    <ol class="annotation-list">
+        <li>@<a href="https://api.dart.dev/stable/2.19.2/dart-core/override-constant.html">override</a></li>
+    </ol>
+  </div>
+
+<span class="returntype"><a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+<span class="name ">removeToken</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="removeToken-param-server"><span class="type-annotation"><a href="../../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span></li>
+<li><span class="parameter" id="removeToken-param-grantedByCode"><span class="type-annotation"><a href="../../conduit/AuthCode-class.html">AuthCode</a></span> <span class="parameter-name">grantedByCode</span></span></li>
+</ol>)
+
+      <div class="features"><span class="feature">override</span></div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Must delete a <a href="../../conduit/AuthToken-class.html">AuthToken</a> granted by <code>grantedByCode</code>.</p>
+<p>If an <a href="../../conduit/AuthToken-class.html">AuthToken</a> has been granted by exchanging <a href="../../conduit/AuthCode-class.html">AuthCode</a>, that token must be revoked
+and can no longer be used to authorize access to a resource. <code>grantedByCode</code> should
+also be removed.</p>
+<p>This method is invoked when attempting to exchange an authorization code that has already granted a token.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+Future removeToken(AuthServer server, AuthCode grantedByCode) {
+  final query = Query&lt;ManagedAuthToken&gt;(context!)
+    ..where((o) =&gt; o.code).equalTo(grantedByCode.code);
+
+  return query.delete();
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">conduit_core</a></li>
+  <li><a href="../../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+  <li><a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html">ManagedAuthDelegate<span class="signature">&lt;<wbr><span class="type-parameter">T extends ManagedAuthResourceOwner</span>&gt;</span></a></li>
+  <li class="self-crumb">removeToken method</li>
+</ol>
+
+
+    <h5>ManagedAuthDelegate class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html#constructors">Constructors</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/ManagedAuthDelegate.html">ManagedAuthDelegate</a></li>
+
+
+        <li class="section-title">
+          <a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/context.html">context</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/tokenLimit.html">tokenLimit</a></li>
+
+        <li class="section-title"><a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html#instance-methods">Methods</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/addClient.html">addClient</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/addCode.html">addCode</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/addToken.html">addToken</a></li>
+          <li class="inherited"><a href="../../conduit/AuthServerDelegate/getAllowedScopes.html">getAllowedScopes</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/getClient.html">getClient</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/getCode.html">getCode</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/getResourceOwner.html">getResourceOwner</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/getToken.html">getToken</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/pruneTokens.html">pruneTokens</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/removeClient.html">removeClient</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/removeCode.html">removeCode</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/removeToken.html">removeToken</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/removeTokens.html">removeTokens</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li><a href="../../conduit.managed_auth/ManagedAuthDelegate/updateToken.html">updateToken</a></li>
+
+        <li class="section-title inherited"><a href="../../conduit.managed_auth/ManagedAuthDelegate-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

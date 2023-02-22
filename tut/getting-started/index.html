@@ -1,0 +1,2541 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../../tour/">
+      
+      
+        <link rel="next" href="../executing-queries/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>1. Getting Started - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1. Getting Started
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="true">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          1. Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        1. Getting Started
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-project" class="md-nav__link">
+    Creating a Project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-http-requests" class="md-nav__link">
+    Handling HTTP Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="Handling HTTP Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller-objects-handle-requests" class="md-nav__link">
+    Controller Objects Handle Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="Controller Objects Handle Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#screenshot-of-heroes-application" class="md-nav__link">
+    Screenshot of Heroes Application
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-controllers" class="md-nav__link">
+    Linking Controllers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-routing" class="md-nav__link">
+    Advanced Routing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resourcecontrollers-and-operation-methods" class="md-nav__link">
+    ResourceControllers and Operation Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-binding" class="md-nav__link">
+    Request Binding
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-more-you-know-multi-threading-and-application-state" class="md-nav__link">
+    The More You Know: Multi-threading and Application State
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="false">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="false">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/resource_controller/" class="md-nav__link">
+        Request Binding with Resource Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="false">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/modeling_data/" class="md-nav__link">
+        Modeling Data and Relationships
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/executing_queries/" class="md-nav__link">
+        Basic Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/json_columns/" class="md-nav__link">
+        JSON Document Storage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="false">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/auth_scopes/" class="md-nav__link">
+        OAuth 2.0 Scoping
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-project" class="md-nav__link">
+    Creating a Project
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-http-requests" class="md-nav__link">
+    Handling HTTP Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="Handling HTTP Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller-objects-handle-requests" class="md-nav__link">
+    Controller Objects Handle Requests
+  </a>
+  
+    <nav class="md-nav" aria-label="Controller Objects Handle Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#screenshot-of-heroes-application" class="md-nav__link">
+    Screenshot of Heroes Application
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-controllers" class="md-nav__link">
+    Linking Controllers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-routing" class="md-nav__link">
+    Advanced Routing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resourcecontrollers-and-operation-methods" class="md-nav__link">
+    ResourceControllers and Operation Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-binding" class="md-nav__link">
+    Request Binding
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-more-you-know-multi-threading-and-application-state" class="md-nav__link">
+    The More You Know: Multi-threading and Application State
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="getting-started">Getting Started</h1>
+<p>By the end of this tutorial, you will have created a Conduit application that serves fictional heroes from a PostgreSQL database. You will learn the following:</p>
+<ul>
+<li>Run a Conduit application</li>
+<li>Route HTTP requests to the appropriate handler in your code</li>
+<li>Store and retrieve database data</li>
+<li>Write automated tests for each endpoint</li>
+<li>Require authorization for HTTP requests</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>Make sure that your system has the latest stable version of dart installed. Find the version suited for your operating system here: <a href="https://dart.dev/get-dart">https://dart.dev/get-dart</a></p>
+<p>Install the <code>conduit</code> command line tool by running the following command in your shell:</p>
+<div class="codehilite"><pre><span></span><code>pub global activate conduit
+</code></pre></div>
+
+<h2 id="creating-a-project">Creating a Project</h2>
+<p>Create a new project named <code>heroes</code> by entering the following in your shell:</p>
+<div class="codehilite"><pre><span></span><code>conduit create heroes
+</code></pre></div>
+
+<p>This creates a <code>heroes</code> project directory with a default server implementation populating it.</p>
+<h2 id="handling-http-requests">Handling HTTP Requests</h2>
+<p>In your browser, navigate to <a href="http://conduit-tutorial.conduit.dart.io">http://conduit-tutorial.conduit.dart.io</a>. This browser application is a 'Hero Manager' - it allows a user to view, create, delete and update heroes. (It is a slightly modified version of the <a href="https://webdev.dartlang.org/angular/tutorial">AngularDart Tour of Heroes Tutorial</a>.) It will make HTTP requests to <code>http://localhost:8888</code> to fetch and manipulate hero data. The application you will build in this tutorial respond to those requests.</p>
+<p>!!! warning "Running the Browser Application Locally" The browser application is served over HTTP so that it can access your Conduit application when it runs locally on your machine. Your browser may warn you about navigating to an insecure webpage, because it is in fact insecure. You can run this application locally by grabbing the source code from <a href="https://github.com/conduit.dart/tour-of-heroes-dart">here</a>.</p>
+<p>In this first chapter, you will write code to handle two requests: one to get a list of heroes, and the other to get a single hero by its identifier. Those requests are:</p>
+<ol>
+<li><code>GET /heroes</code> to the list of heroes</li>
+<li><code>GET /heroes/:id</code> to get an individual hero</li>
+</ol>
+<p>!!! tip "HTTP Operation Shorthand" The term <code>GET /heroes</code> is called an operation. It is the combination of the HTTP method and the path of the request. Each operation is unique to an application, so your code is segmented into units for each operation. Sections with a colon, like the ':id' segment, are variable: they can be 1, 2, 3, and so on.</p>
+<h3 id="controller-objects-handle-requests">Controller Objects Handle Requests</h3>
+<p>Requests are handled by <em>controller objects</em>. A controller object can respond to a request. It can also take other action and let another controller respond. For example, it might check if the request is authorized, or send analytical data to some other service. Controllers are composed together, and each controller in the composition performs its logic in order. This allows for some controllers to be reused, and for better code organization. A composition of controllers is called a <em>channel</em> because requests flow in one direction through the controllers.</p>
+<p>Our application will link two controllers:</p>
+<ul>
+<li>a <code>Router</code> that makes sure the request path is <code>/heroes</code> or <code>/heroes/:id</code></li>
+<li>a <code>HeroesControllers</code> that responds with hero objects</li>
+</ul>
+<p>Your application starts with a channel object called the <em>application channel</em>. You link the controllers in your application to this channel.</p>
+<p><img alt="ApplicationChannel entryPoint" src="../../assets/entrypoint.png" /></p>
+<p>Each application has a subclass of <code>ApplicationChannel</code> that you override methods in to set up your controllers. This type is already declared in <code>lib/channel.dart</code> - open this file and find <code>ApplicationChannel.entryPoint</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Controller</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">entryPoint</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Router</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">router</span>
+<span class="w">      </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/example&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">linkFunction</span><span class="p">((</span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;value&#39;</span><span class="p">});</span>
+<span class="w">      </span><span class="p">});</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">router</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+
+<p>When your application gets a request, the <code>entryPoint</code> controller is the first to handle it. In our case, this is a <code>Router</code> - a subclass of <code>Controller</code>.</p>
+<p>!!! tip "Controller Subclassing" Every controller you use will be a subclass of <code>Controller</code>. There are some controller subclasses already in Conduit for common behaviors.</p>
+<p>You use the <code>route</code> method on a router to attach a controller to a <em>route</em>. A route is a string syntax that matches the path of a request. In our current implementation, the route will match every request with the path <code>/example</code>. When that request is received, a linked function runs and returns a 200 OK response with an example JSON object body.</p>
+<p>We need to route the path <code>/heroes</code> to a controller of our own, so we can control what happens. Let's create a <code>HeroesController</code>. Create a new file in <code>lib/controller/heroes_controller.dart</code> and add the following code (you will need to create the subdirectory <code>lib/controller/</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:conduit_core/conduit_core.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:heroes/heroes.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">HeroesController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Controller</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">_heroes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Mr. Nice&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Narco&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Bombasto&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">14</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Celeritas&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Magneta&#39;</span><span class="p">},</span><span class="w">    </span>
+<span class="w">  </span><span class="p">];</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">RequestOrResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">(</span><span class="n">Request</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">_heroes</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Notice that <code>HeroesController</code> is a subclass of <code>Controller</code>; this is what makes it a controller object. It overrides its <code>handle</code> method by returning a <code>Response</code> object. This response object has a 200 OK status code, and it body contains a JSON-encoded list of hero objects. When a controller returns a <code>Response</code> object from its <code>handle</code> method, it is sent to the client.</p>
+<p>Right now, our <code>HeroesController</code> isn't hooked up to the application channel. We need to link it to the router. First, import our new file at the top of <code>channel.dart</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="s1">&#39;controller/heroes_controller.dart&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>Then link this <code>HeroesController</code> to the <code>Router</code> for the path <code>/heroes</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@override</span>
+<span class="n">Controller</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">entryPoint</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Router</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">router</span>
+<span class="w">    </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/heroes&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">HeroesController</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">router</span>
+<span class="w">    </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/example&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">linkFunction</span><span class="p">((</span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;value&#39;</span><span class="p">});</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">router</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>We now have a application that will return a list of heroes. In the project directory, run the following command from the command-line:</p>
+<div class="codehilite"><pre><span></span><code>conduit serve
+</code></pre></div>
+
+<p>This will start your application running locally. Reload the browser page <code>http://conduit-tutorial.conduit.dart.io</code>. It will make a request to <code>http://localhost:8888/heroes</code> and your application will serve it. You'll see your heroes in your web browser:</p>
+<h4 id="screenshot-of-heroes-application">Screenshot of Heroes Application</h4>
+<p><img alt="Conduit Heroes First Run" src="../../assets/run1.png" /></p>
+<p>You can also see the actual response of your request by entering the following into your shell:</p>
+<div class="codehilite"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span>http://localhost:8888/heroes
+</code></pre></div>
+
+<p>You'll get JSON output like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mf">11</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;Mr. Nice&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mf">12</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;Narco&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mf">13</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;Bombasto&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mf">14</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;Celeritas&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="mf">15</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;Magneta&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>You'll also see this request logged in the shell that you started <code>conduit serve</code> in.</p>
+<h2 id="linking-controllers">Linking Controllers</h2>
+<p>When a controller handles a request, it can either send a response or let one of its linked controllers handle the request. By default, a <code>Router</code> will send a 404 Not Found response for any request. Adding a route to a <code>Router</code> creates an entry point to a new channel that controllers can be linked to. In our application, <code>HeroesController</code> is linked to the route <code>/heroes</code>.</p>
+<p>Controllers come in two different flavors: endpoint and middleware. Endpoint controllers, like <code>HeroesController</code>, always send a response. They implement the behavior that a request is seeking. Middleware controllers, like <code>Router</code>, handles requests before they reach an endpoint controller. A router, for example, handles a request by directing it to the right controller. Controllers like <code>Authorizer</code> verify the authorization of the request. You can create all kinds of controllers to provide any behavior you like.</p>
+<p>A channel can have zero or many middleware controllers, but must end in an endpoint controller. Most controllers can only have one linked controller, but a <code>Router</code> allows for many. For example, a larger application might look like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@override</span>
+<span class="n">Controller</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">entryPoint</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Router</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">router</span>
+<span class="w">    </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/users&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">APIKeyValidator</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Authorizer</span><span class="p">.</span><span class="n">bearer</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">UsersController</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">router</span>
+<span class="w">    </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/posts&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">APIKeyValidator</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">PostsController</span><span class="p">());</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">router</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Each of these objects is a subclass of <code>Controller</code>, giving them the ability to be linked together to handle requests. A request goes through controllers in the order they are linked. A request for the path <code>/users</code> will go through an <code>APIKeyValidator</code>, an <code>Authorizer</code> and finally a <code>UsersController</code>. Each of these controllers has an opportunity to respond, preventing the next controller from receiving the request.</p>
+<h2 id="advanced-routing">Advanced Routing</h2>
+<p>Right now, our application handles <code>GET /heroes</code> requests. The browser application uses the this list to populate its hero dashboard. If we click on an individual hero, the browser application will display an individual hero. When navigating to this page, the browser application makes a request to our server for an individual hero. This request contains the unique id of the selected hero in the path, e.g. <code>/heroes/11</code> or <code>/heroes/13</code>.</p>
+<p>Our server doesn't handle this request yet - it only handles requests that have exactly the path <code>/heroes</code>. Since a request for individual heroes will have a path that changes depending on the hero, we need our route to include a <em>path variable</em>.</p>
+<p>A path variable is a segment of route that matches a value for the same segment in the incoming request path. A path variable is a segment prefixed with a colon (<code>:</code>). For example, the route <code>/heroes/:id</code> contains a path variable named <code>id</code>. If the request path is <code>/heroes/1</code>, <code>/heroes/2</code>, and so on, the request will be sent to our <code>HeroesController</code>. The <code>HeroesController</code> will have access to the value of the path variable to determine which hero to return.</p>
+<p>There's one hiccup. The route <code>/heroes/:id</code> no longer matches the path <code>/heroes</code>. It'd be a lot easier to organize our code if both <code>/heroes</code> and <code>/heroes/:id</code> went to our <code>HeroesController</code>; it does heroic stuff. For this reason, we can declare the <code>:id</code> portion of our route to be optional by wrapping it in square brackets. In <code>channel.dart</code>, modify the <code>/heroes</code> route:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/heroes/[:id]&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">HeroesController</span><span class="p">());</span>
+</code></pre></div>
+
+<p>Since the second segment of the path is optional, the path <code>/heroes</code> still matches the route. If the path contains a second segment, the value of that segment is bound to the path variable named <code>id</code>. We can access path variables through the <code>Request</code> object. In <code>heroes_controller.dart</code>, modify <code>handle</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// In just a moment, we&#39;ll replace this code with something even better,</span>
+<span class="c1">// but it&#39;s important to understand where this information comes from first!</span>
+<span class="nd">@override</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">RequestOrResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">(</span><span class="n">Request</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">.</span><span class="n">containsKey</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]);</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_heroes</span><span class="p">.</span><span class="n">firstWhere</span><span class="p">((</span><span class="n">hero</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">hero</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="nl">orElse:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hero</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">notFound</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">hero</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">_heroes</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In your shell currently running the application, hit Ctrl-C to stop the application. Then, run <code>conduit serve</code> again. In the browser application, click on a hero and you will be taken to a detail page for that hero.</p>
+<p><img alt="Screenshot of Hero Detail Page" src="../../assets/run2.png" /></p>
+<p>You can verify that your server is responding correctly by executing <code>curl -X GET http://localhost:8888/heroes/11</code> to view the single hero object. You can also trigger a 404 Not Found response by getting a hero that doesn't exist.</p>
+<h2 id="resourcecontrollers-and-operation-methods">ResourceControllers and Operation Methods</h2>
+<p>Our <code>HeroesController</code> is OK right now, but it'll soon run into a problem: what happens when we want to create a new hero? Or update an existing hero's name? Our <code>handle</code> method will start to get unmanageable, quickly.</p>
+<p>That's where <code>ResourceController</code> comes in. A <code>ResourceController</code> allows you to create a distinct method for each operation that we can perform on our heroes. One method will handle getting a list of heroes, another will handle getting a single hero, and so on. Each method has an annotation that identifies the HTTP method and path variables the request must have to trigger it.</p>
+<p>In <code>heroes_controller.dart</code>, replace <code>HeroesController</code> with the following:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HeroesController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">_heroes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">11</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Mr. Nice&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Narco&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Bombasto&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">14</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Celeritas&#39;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Magneta&#39;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">];</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllHeroes</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">_heroes</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getHeroByID</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]);</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_heroes</span><span class="p">.</span><span class="n">firstWhere</span><span class="p">((</span><span class="n">hero</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">hero</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="nl">orElse:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hero</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">notFound</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">hero</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Notice that we didn't have to override <code>handle</code> in <code>ResourceController</code>. A <code>ResourceController</code> implements this method to call one of our <em>operation methods</em>. An operation method - like <code>getAllHeroes</code> and <code>getHeroByID</code> - must have an <code>Operation</code> annotation. The named constructor <code>Operation.get</code> means these methods get called when the request's method is GET. An operation method must also return a <code>Future&lt;Response&gt;</code>.</p>
+<p><code>getHeroByID</code>'s annotation also has an argument - the name of our path variable <code>id</code>. If that path variable exists in the request's path, <code>getHeroByID</code> will be called. If it doesn't exist, <code>getAllHeroes</code> will be called.</p>
+<p>!!! tip "Naming Operation Methods" The plain English phrase for an operation - like 'get hero by id' - is a really good name for an operation method and a good name will be useful when you generate OpenAPI documentation from your code.</p>
+<p>Reload the application by hitting Ctrl-C in the terminal that ran <code>conduit serve</code> and then run <code>conduit serve</code> again. The browser application should still behave the same.</p>
+<p>!!! tip "Browser Clients" In addition to <code>curl</code>, you can create a SwaggerUI browser application that executes requests against your locally running application. In your project directory, run <code>conduit document client</code> and it will generate a file named <code>client.html</code>. Open this file in your browser for a UI that constructs and executes requests that your application supports.</p>
+<h2 id="request-binding">Request Binding</h2>
+<p>In our <code>getHeroByID</code> method, we make a dangerous assumption that the path variable 'id' can be parsed into an integer. If 'id' were something else, like a string, <code>int.parse</code> would throw an exception. When exceptions are thrown in operation methods, the controller catches it and sends a 500 Server Error response. 500s are bad, they don't tell the client what's wrong. A 404 Not Found is a better response here, but writing the code to catch that exception and create this response is cumbersome.</p>
+<p>Instead, we can rely on a feature of operation methods called <em>request binding</em>. An operation method can declare parameters and <em>bind</em> them to properties of the request. When our operation method gets called, it will be passed values from the request as arguments. Request bindings automatically parse values into the type of the parameter (and return a better error response if parsing fails). Change the method <code>getHeroByID()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getHeroByID</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_heroes</span><span class="p">.</span><span class="n">firstWhere</span><span class="p">((</span><span class="n">hero</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">hero</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="nl">orElse:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hero</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">notFound</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">hero</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The value of the path variable <code>id</code> will be parsed as an integer and be available to this method in the <code>id</code> parameter. The <code>@Bind</code> annotation on an operation method parameter tells Conduit the value from the request we want bound. Using the named constructor <code>Bind.path</code> binds a path variable, and the name of that variable is indicated in the argument to this constructor.</p>
+<p>You can bind path variables, headers, query parameters and bodies. When binding path variables, we have to specify which path variable with the argument to <code>@Bind.path(pathVariableName)</code>.</p>
+<p>!!! tip "Bound Parameter Names" The name of a bound parameter doesn't have to match the name of the path variable. We could have declared it as <code>@Bind.path('id') int heroID</code>. Only the argument to <code>Bind</code>'s constructor must match the actual name of the path variable. This is valuable for other types of bindings, like headers, that may contain characters that aren't valid Dart variable names, e.g. <code>X-API-Key</code>.</p>
+<h2 id="the-more-you-know-multi-threading-and-application-state">The More You Know: Multi-threading and Application State</h2>
+<p>In this simple exercise, we used a constant list of heroes as our source of data. For a simple getting-your-feet-wet demo, this is fine. However, in a real application, you'd store this data in a database. That way you could add data to it and not risk losing it when the application was restarted.</p>
+<p>More generally, a web server should never hang on to data that can change. While previously just a best practice, stateless web servers are becoming a requirement with the prevalence of containerization and tools like Kubernetes. Conduit makes it a bit easier to detect violations of this rule with its multi-threading strategy.</p>
+<p>When you run a Conduit application, it creates multiple threads. Each of these threads has its own isolated heap in memory; meaning data that exists on one thread can't be accessed from other threads. In Dart, these isolated threads are called <em>isolates</em>.</p>
+<p>An instance of your application channel is created for each isolate. Each HTTP request is given to just one of the isolates to be handled. In a sense, your one application behaves the same as running your application on multiple servers behind a load balancer. (It also makes your application substantially faster.)</p>
+<p>If you are storing any data in your application, you'll find out really quickly. Why? A request that changes data will only change that data in one of your application's isolates. When you make a request to get that data again, its unlikely that you'll see the changes - another isolate with different data will probably handle that request.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

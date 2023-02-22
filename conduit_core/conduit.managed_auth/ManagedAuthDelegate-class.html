@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the ManagedAuthDelegate class from the conduit.managed_auth library, for the Dart programming language.">
+  <title>ManagedAuthDelegate class - conduit.managed_auth library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_core</a></li>
+    <li><a href="../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+    <li class="self-crumb">ManagedAuthDelegate<span class="signature">&lt;<wbr><span class="type-parameter">T extends <a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a></span>&gt;</span> class</li>
+  </ol>
+  <div class="self-name">ManagedAuthDelegate</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">ManagedAuthDelegate&lt;<wbr><span class="type-parameter">T extends ManagedAuthResourceOwner</span>&gt;</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p><a href="../conduit/AuthServerDelegate-class.html">AuthServerDelegate</a> implementation for an <a href="../conduit/AuthServer-class.html">AuthServer</a> using <a href="../conduit/ManagedObject-class.html">ManagedObject</a>s.</p>
+<p>An instance of this class manages storage and retrieval of OAuth 2.0 tokens, clients and resource owners
+using the <a href="../conduit/ManagedObject-class.html">ManagedObject</a>s declared in this library.</p>
+<p>The type argument must be the application-specific resource owner that implements <a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a>.</p>
+<p>Provide an instance of this type to an <a href="../conduit/AuthServer-class.html">AuthServer</a> at startup. For example, if the application has a type named <code>User</code> that fulfills
+<a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a>,</p>
+<pre class="language-dart"><code>    var context = ManagedContext(dataModel, store);
+    var storage = ManagedAuthStorage&lt;User&gt;(context)
+    var authServer = AuthServer(storage);
+</code></pre>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+  <dt>Inheritance</dt>
+  <dd>
+    <ul class="gt-separated dark clazz-relationships">
+      <li><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></li>
+        <li><a href="../conduit/AuthServerDelegate-class.html">AuthServerDelegate</a></li>
+      <li>ManagedAuthDelegate</li>
+    </ul>
+  </dd>
+
+        
+        
+
+
+
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="ManagedAuthDelegate" class="callable">
+          <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/ManagedAuthDelegate.html">ManagedAuthDelegate</a></span><span class="signature">(<span class="parameter" id="-param-context"><span class="type-annotation"><a href="../conduit/ManagedContext-class.html">ManagedContext</a>?</span> <span class="parameter-name">context</span>, </span><span class="parameter" id="-param-tokenLimit">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">tokenLimit</span> = <span class="default-value">40</span>}</span>)</span>
+        </dt>
+        <dd>
+          Creates an instance of this type.
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="context" class="property">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/context.html">context</a></span>
+  <span class="signature">&#8594; <a href="../conduit/ManagedContext-class.html">ManagedContext</a>?</span> 
+
+</dt>
+<dd>
+  The <a href="../conduit/ManagedContext-class.html">ManagedContext</a> this instance uses to store and retrieve values.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="tokenLimit" class="property">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/tokenLimit.html">tokenLimit</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd>
+  The number of tokens and authorization codes a user can have at a time.
+  <div class="features"><span class="feature">final</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="addClient" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/addClient.html">addClient</a></span><span class="signature">(<wbr><span class="parameter" id="addClient-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="addClient-param-client"><span class="type-annotation"><a href="../conduit/AuthClient-class.html">AuthClient</a></span> <span class="parameter-name">client</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must store <code>client</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="addCode" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/addCode.html">addCode</a></span><span class="signature">(<wbr><span class="parameter" id="addCode-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="addCode-param-code"><span class="type-annotation"><a href="../conduit/AuthCode-class.html">AuthCode</a></span> <span class="parameter-name">code</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must store <code>code</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="addToken" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/addToken.html">addToken</a></span><span class="signature">(<wbr><span class="parameter" id="addToken-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="addToken-param-token"><span class="type-annotation"><a href="../conduit/AuthToken-class.html">AuthToken</a></span> <span class="parameter-name">token</span>, </span><span class="parameter" id="addToken-param-issuedFrom">{<span class="type-annotation"><a href="../conduit/AuthCode-class.html">AuthCode</a>?</span> <span class="parameter-name">issuedFrom</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must store <code>token</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="getAllowedScopes" class="callable inherited">
+  <span class="name"><a href="../conduit/AuthServerDelegate/getAllowedScopes.html">getAllowedScopes</a></span><span class="signature">(<wbr><span class="parameter" id="getAllowedScopes-param-owner"><span class="type-annotation"><a href="../conduit/ResourceOwner-class.html">ResourceOwner</a></span> <span class="parameter-name">owner</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../conduit/AuthScope-class.html">AuthScope</a></span>&gt;</span>?</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Returns list of allowed scopes for a given <a href="../conduit/ResourceOwner-class.html">ResourceOwner</a>.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="getClient" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/getClient.html">getClient</a></span><span class="signature">(<wbr><span class="parameter" id="getClient-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="getClient-param-clientID"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">clientID</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../conduit/AuthClient-class.html">AuthClient</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must return <code>AuthClient</code> for a client ID.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="getCode" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/getCode.html">getCode</a></span><span class="signature">(<wbr><span class="parameter" id="getCode-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="getCode-param-code"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">code</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../conduit/AuthCode-class.html">AuthCode</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must return <code>AuthCode</code> for its identifiying <code>code</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="getResourceOwner" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/getResourceOwner.html">getResourceOwner</a></span><span class="signature">(<wbr><span class="parameter" id="getResourceOwner-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="getResourceOwner-param-username"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">username</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must return a <code>ResourceOwner</code> for a <code>username</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="getToken" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/getToken.html">getToken</a></span><span class="signature">(<wbr><span class="parameter" id="getToken-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="getToken-param-byAccessToken">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">byAccessToken</span>, </span><span class="parameter" id="getToken-param-byRefreshToken"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">byRefreshToken</span>}</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../conduit/AuthToken-class.html">AuthToken</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns a <code>AuthToken</code> searching by its access token or refresh token.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="pruneTokens" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/pruneTokens.html">pruneTokens</a></span><span class="signature">(<wbr><span class="parameter" id="pruneTokens-param-resourceOwnerIdentifier"><span class="type-annotation">dynamic</span> <span class="parameter-name">resourceOwnerIdentifier</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Deletes expired tokens for <code>resourceOwnerIdentifier</code>.
+  
+
+</dd>
+
+        <dt id="removeClient" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/removeClient.html">removeClient</a></span><span class="signature">(<wbr><span class="parameter" id="removeClient-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="removeClient-param-clientID"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">clientID</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Removes an <a href="../conduit/AuthClient-class.html">AuthClient</a> for a client ID.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="removeCode" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/removeCode.html">removeCode</a></span><span class="signature">(<wbr><span class="parameter" id="removeCode-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="removeCode-param-code"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">code</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must remove <a href="../conduit/AuthCode-class.html">AuthCode</a> identified by <code>code</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="removeToken" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/removeToken.html">removeToken</a></span><span class="signature">(<wbr><span class="parameter" id="removeToken-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="removeToken-param-grantedByCode"><span class="type-annotation"><a href="../conduit/AuthCode-class.html">AuthCode</a></span> <span class="parameter-name">grantedByCode</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must delete a <a href="../conduit/AuthToken-class.html">AuthToken</a> granted by <code>grantedByCode</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="removeTokens" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/removeTokens.html">removeTokens</a></span><span class="signature">(<wbr><span class="parameter" id="removeTokens-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="removeTokens-param-resourceOwnerID"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> <span class="parameter-name">resourceOwnerID</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  This method must delete all <a href="../conduit/AuthToken-class.html">AuthToken</a> and <a href="../conduit/AuthCode-class.html">AuthCode</a>s for a <a href="../conduit/ResourceOwner-class.html">ResourceOwner</a>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="updateToken" class="callable">
+  <span class="name"><a href="../conduit.managed_auth/ManagedAuthDelegate/updateToken.html">updateToken</a></span><span class="signature">(<wbr><span class="parameter" id="updateToken-param-server"><span class="type-annotation"><a href="../conduit/AuthServer-class.html">AuthServer</a></span> <span class="parameter-name">server</span>, </span><span class="parameter" id="updateToken-param-oldAccessToken"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">oldAccessToken</span>, </span><span class="parameter" id="updateToken-param-newAccessToken"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a>?</span> <span class="parameter-name">newAccessToken</span>, </span><span class="parameter" id="updateToken-param-newIssueDate"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">newIssueDate</span>, </span><span class="parameter" id="updateToken-param-newExpirationDate"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/DateTime-class.html">DateTime</a>?</span> <span class="parameter-name">newExpirationDate</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Must update <a href="../conduit/AuthToken-class.html">AuthToken</a> with [newAccessToken, [newIssueDate, <code>newExpirationDate</code>.
+  <div class="features"><span class="feature">override</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_core</a></li>
+  <li><a href="../conduit.managed_auth/conduit.managed_auth-library.html">conduit.managed_auth</a></li>
+  <li class="self-crumb">ManagedAuthDelegate<span class="signature">&lt;<wbr><span class="type-parameter">T extends <a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a></span>&gt;</span> class</li>
+</ol>
+
+
+    <h5>conduit.managed_auth library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit.managed_auth/conduit.managed_auth-library.html#classes">Classes</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthClient-class.html">ManagedAuthClient</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthDelegate-class.html">ManagedAuthDelegate</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthResourceOwner-class.html">ManagedAuthResourceOwner</a></li>
+        <li><a href="../conduit.managed_auth/ManagedAuthToken-class.html">ManagedAuthToken</a></li>
+        <li><a href="../conduit.managed_auth/ResourceOwnerTableDefinition-class.html">ResourceOwnerTableDefinition</a></li>
+
+
+
+
+
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../conduit.managed_auth/ManagedAuthDelegate-class.html#constructors">Constructors</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/ManagedAuthDelegate.html">ManagedAuthDelegate</a></li>
+
+
+        <li class="section-title">
+          <a href="../conduit.managed_auth/ManagedAuthDelegate-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/context.html">context</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/tokenLimit.html">tokenLimit</a></li>
+
+        <li class="section-title"><a href="../conduit.managed_auth/ManagedAuthDelegate-class.html#instance-methods">Methods</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/addClient.html">addClient</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/addCode.html">addCode</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/addToken.html">addToken</a></li>
+          <li class="inherited"><a href="../conduit/AuthServerDelegate/getAllowedScopes.html">getAllowedScopes</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/getClient.html">getClient</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/getCode.html">getCode</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/getResourceOwner.html">getResourceOwner</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/getToken.html">getToken</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/pruneTokens.html">pruneTokens</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/removeClient.html">removeClient</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/removeCode.html">removeCode</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/removeToken.html">removeToken</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/removeTokens.html">removeTokens</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+          <li><a href="../conduit.managed_auth/ManagedAuthDelegate/updateToken.html">updateToken</a></li>
+
+        <li class="section-title inherited"><a href="../conduit.managed_auth/ManagedAuthDelegate-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_core
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

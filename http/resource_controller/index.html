@@ -1,0 +1,2733 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../routing/">
+      
+      
+        <link rel="next" href="../serving_files/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Request Binding with Resource Controllers - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#resourcecontroller" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Request Binding with Resource Controllers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/getting-started/" class="md-nav__link">
+        1. Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="true">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="true">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Request Binding with Resource Controllers
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Request Binding with Resource Controllers
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operation-methods" class="md-nav__link">
+    Operation Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routing-to-a-resourcecontroller" class="md-nav__link">
+    Routing to a ResourceController
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-bindings" class="md-nav__link">
+    Request Bindings
+  </a>
+  
+    <nav class="md-nav" aria-label="Request Bindings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-bindings" class="md-nav__link">
+    Optional Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatically-parsing-bindings" class="md-nav__link">
+    Automatically Parsing Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-bindings" class="md-nav__link">
+    Header Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-parameter-bindings" class="md-nav__link">
+    Query Parameter Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-variable-bindings" class="md-nav__link">
+    Path Variable Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-request-body-bindings" class="md-nav__link">
+    HTTP Request Body Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-binding" class="md-nav__link">
+    Property Binding
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-resourcecontroller-behavior" class="md-nav__link">
+    Other ResourceController Behavior
+  </a>
+  
+    <nav class="md-nav" aria-label="Other ResourceController Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request-and-response-bodies" class="md-nav__link">
+    Request and Response Bodies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-specialized-resourcecontrollers" class="md-nav__link">
+    More Specialized ResourceControllers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="false">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/modeling_data/" class="md-nav__link">
+        Modeling Data and Relationships
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/executing_queries/" class="md-nav__link">
+        Basic Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../db/json_columns/" class="md-nav__link">
+        JSON Document Storage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="false">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/auth_scopes/" class="md-nav__link">
+        OAuth 2.0 Scoping
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#operation-methods" class="md-nav__link">
+    Operation Methods
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#routing-to-a-resourcecontroller" class="md-nav__link">
+    Routing to a ResourceController
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-bindings" class="md-nav__link">
+    Request Bindings
+  </a>
+  
+    <nav class="md-nav" aria-label="Request Bindings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-bindings" class="md-nav__link">
+    Optional Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatically-parsing-bindings" class="md-nav__link">
+    Automatically Parsing Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-bindings" class="md-nav__link">
+    Header Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-parameter-bindings" class="md-nav__link">
+    Query Parameter Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-variable-bindings" class="md-nav__link">
+    Path Variable Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-request-body-bindings" class="md-nav__link">
+    HTTP Request Body Bindings
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#property-binding" class="md-nav__link">
+    Property Binding
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-resourcecontroller-behavior" class="md-nav__link">
+    Other ResourceController Behavior
+  </a>
+  
+    <nav class="md-nav" aria-label="Other ResourceController Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request-and-response-bodies" class="md-nav__link">
+    Request and Response Bodies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-specialized-resourcecontrollers" class="md-nav__link">
+    More Specialized ResourceControllers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="resourcecontroller">ResourceController</h1>
+<p>A <code>ResourceController</code> is a <a href="../controller/">controller</a> that provide conveniences for implementing endpoint controllers. A <code>ResourceController</code> must be subclassed, and in that subclass, you write a method for each operation on that type of resource. For example, a <code>UserController</code> might handle the following operations:</p>
+<ul>
+<li>creating a new user (<code>POST /users</code>)</li>
+<li>getting all users (<code>GET /users</code>)</li>
+<li>getting an individual user (<code>GET /users/:id</code>)</li>
+<li>updating an individual user (<code>PUT /users/:id</code>)</li>
+<li>deleting an individual user (<code>DELETE /users/:id</code>)</li>
+</ul>
+<p>These methods that are invoked for an operation are called <em>operation methods</em>.</p>
+<h2 id="operation-methods">Operation Methods</h2>
+<p>An operation method is an instance method of a <code>ResourceController</code> subclass that has an <code>@Operation</code> annotation. It must return an instance of <code>Future&lt;Response&gt;</code>. Here's an example:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">([</span><span class="s2">&quot;Atlanta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Madison&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Mountain View&quot;</span><span class="p">]);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The above operation method will be invoked when <code>CityController</code> handles <code>GET</code> requests without path variables. To handle operation methods with path variables, the name of the path variable is added to the <code>@Operation</code> annotation:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">([</span><span class="s2">&quot;Atlanta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Madison&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Mountain View&quot;</span><span class="p">]);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCityByName</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">];</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">fetchCityWithName</span><span class="p">(</span><span class="n">name</span><span class="p">));</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>!!! note "Path Variables" This controller would be linked to the route specification <code>/cities/[:name]</code>, so that it can handle both of these operations. Read more about path variables in <a href="../routing/">Routing</a>.</p>
+<p>The named constructor of <code>Operation</code> tells us which HTTP method the operation method handles. The following named constructors exist:</p>
+<ul>
+<li><code>Operation.post()</code></li>
+<li><code>Operation.get()</code></li>
+<li><code>Operation.put()</code></li>
+<li><code>Operation.delete()</code></li>
+</ul>
+<p>The canonical <code>Operation()</code> constructor takes the HTTP method as its first argument for non-standard operations, e.g.:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">(</span><span class="s1">&#39;PATCH&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">patchObjectWithID</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">...;</span>
+</code></pre></div>
+
+<p>All <code>Operation</code> constructors take a variable list of path variables. There can be multiple path variables for an operation. An operation method will only be invoked if all of its path variables are present in the request path. There can be multiple operation methods for a given HTTP method, as long as each expects a different set of path variables.</p>
+<p>Here's an example of an operation that requires two path variables:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;userID&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;itemID&#39;</span><span class="p">)</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getUserItem</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">userID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;userID&#39;</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">itemID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;itemID&#39;</span><span class="p">];</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(...);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If no operation method exists for a request, a 405 Method Not Allowed response is automatically sent and no operation method is invoked.</p>
+<h2 id="routing-to-a-resourcecontroller">Routing to a ResourceController</h2>
+<p>A <code>ResourceController</code> subclass must be preceded by a <code>Router</code> in the application channel. The <code>Router</code> will parse path variables so that the controller can use them to determine which operation method should be invoked. A typical route to a <code>ResourceController</code> contains an optional identifying path variable:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/cities/[:name]&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">CityController</span><span class="p">());</span>
+</code></pre></div>
+
+<p>This route would allow <code>CityController</code> to implement operation methods for all HTTP methods with both no path variables and the 'name' path variable.</p>
+<p>It is considered good practice to break sub-resources into their own controller. For example, the following is preferred:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/cities/[:name]&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">CityController</span><span class="p">());</span>
+
+<span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/cities/:name/attractions/[:id]&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">CityAttractionController</span><span class="p">());</span>
+</code></pre></div>
+
+<p>By contrast, the route <code>/cities/[:name/[attractions/[:id]]]</code>, while valid, makes controller logic much more unwieldy.</p>
+<h2 id="request-bindings">Request Bindings</h2>
+<p>Operation methods may <em>bind</em> properties of an HTTP request to its parameters. When the operation method is invoked, the value of that property is passed as an argument to the operation method. For example, the following binds the header named 'X-API-Key' to the argument <code>apiKey</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCityByName</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;x-api-key&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">apiKey</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isValid</span><span class="p">(</span><span class="n">apiKey</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">unauthorized</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(...);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The following table shows the possible types of bindings:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Property</th>
+<th align="left">Binding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Path Variable</td>
+<td align="left"><code>@Bind.path(pathVariableName)</code></td>
+</tr>
+<tr>
+<td align="left">URL Query Parameter</td>
+<td align="left"><code>@Bind.query(queryParameterName)</code></td>
+</tr>
+<tr>
+<td align="left">Header</td>
+<td align="left"><code>@Bind.header(headerName)</code></td>
+</tr>
+<tr>
+<td align="left">Request Body</td>
+<td align="left"><code>@Bind.body()</code></td>
+</tr>
+</tbody>
+</table>
+<p>You may bind any number of HTTP request properties to a single operation method.</p>
+<h3 id="optional-bindings">Optional Bindings</h3>
+<p>Bindings can be made optional. If a binding is optional, the operation method will still be called even if the binding isn't in a request. To make a binding optional, wrap it in curly brackets.</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">({</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;x-api-key&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">apiKey</span><span class="p">})</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">apiKey</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// No X-API-Key in request</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The curly bracket syntax is a Dart language feature for optional method parameters (<a href="https://www.dartlang.org/guides/language/language-tour#optional-parameters">see more here</a>). If there are multiple optional parameters, use only one pair of curly brackets and list each optional parameter in those brackets.</p>
+<p>A bound parameter will be null if is not present in the request. You can provide a default value for optional parameters.</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">({</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;x-api-key&quot;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="nl">apiKey:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">})</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="automatically-parsing-bindings">Automatically Parsing Bindings</h3>
+<p>Query, header and path bindings can automatically be parsed into other types, such as <code>int</code> or <code>DateTime</code>. Simply declare the bound parameter's type to the desired type:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCityByID</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cityID</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The type of a bound parameter may be <code>String</code> or any type that implements <code>parse</code> (e.g., <code>int</code>, <code>DateTime</code>). Query parameters may also be bound to <code>bool</code> parameters; a boolean query parameter will be true if the query parameter has no value (e.g. <code>/path?boolean</code>).</p>
+<p>If parsing fails for any reason, an error response is sent and the operation method is not called. For example, the above example binds <code>int cityID</code> - if the path variable 'id' can't be parsed into an <code>int</code>, a 404 Not Found response is sent. If a query parameter or header value cannot be parsed, a 400 Bad Request response is sent.</p>
+<p>You may also bind <code>List&lt;T&gt;</code> parameters to headers and query parameters, where <code>T</code> must meet the same criteria as above. Query parameters and headers may appear more than once in a request. For example, the value of <code>ids</code> is <code>[1, 2]</code> if the request URL ends with <code>/path?id=1&amp;id=2</code> and the operation method looks like this:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCitiesByIDs</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ids</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Note that if a parameter is <em>not</em> bound to a list and there are multiple occurrences of that property in the request, a 400 Bad Request response will be sent. If you want to allow multiple values, you must bind to a <code>List&lt;T&gt;</code>.</p>
+<h3 id="header-bindings">Header Bindings</h3>
+<p>The following operation method binds the header named <code>X-API-Key</code> to the <code>apiKey</code> parameter:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s1">&#39;x-api-key&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">apiKey</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isValid</span><span class="p">(</span><span class="n">apiKey</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">unauthorized</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">([</span><span class="s1">&#39;Atlanta&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Madison&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Mountain View&#39;</span><span class="p">]);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If an <code>X-API-Key</code> header is present in the request, its value will be available in <code>apiKey</code>. If it is not, <code>getAllCities(apiKey)</code> would not be called and a 400 Bad Request response will be sent. If <code>apiKey</code> were optional, the method is called as normal and <code>apiKey</code> is null or a default value.</p>
+<p>Header names are case-insensitive per the HTTP specification. Therefore, the header name may be 'X-API-KEY', 'X-Api-Key' 'x-api-key', etc. and <code>apiKey</code> will be bound in all cases.</p>
+<h3 id="query-parameter-bindings">Query Parameter Bindings</h3>
+<p>The following operation methods binds the query parameter named 'name' to the parameter <code>cityName</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getAllCities</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">cityName</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">cities</span><span class="p">.</span><span class="n">where</span><span class="p">((</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cityName</span><span class="p">).</span><span class="n">toList</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Query parameters can be required or optional. If required, a 400 Bad Request response is sent and no operation method is called if the query parameter is not present in the request URL. If optional, the bound variable is null or a default value.</p>
+<p>Query parameters are case-sensitive; this binding will only match the query parameter 'name', but not 'Name' or 'NAME'.</p>
+<p>Query parameters may also bound for query strings in the request body when the content-type is 'application/x-www-form-urlencoded'.</p>
+<h3 id="path-variable-bindings">Path Variable Bindings</h3>
+<p>The following operation method binds the path variable 'id' to the parameter <code>cityID</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCityByID</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">cityID</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">cities</span><span class="p">.</span><span class="n">where</span><span class="p">((</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cityID</span><span class="p">).</span><span class="n">toList</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Path variables are made available when creating <a href="../routing/">routes</a>. A <code>Router</code> must have a route that includes a path variable and that path variable must be listed in the <code>Operation</code> annotation. Path variables are case-sensitive and may not be optional.</p>
+<p>If you attempt to bind a path variable that is not present in the <code>Operation</code>, you will get a runtime exception at startup. You do not have to bind path variables for an operation method to be invoked.</p>
+<h3 id="http-request-body-bindings">HTTP Request Body Bindings</h3>
+<p>The body of an HTTP request can also be bound to a parameter:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">CityController</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">context</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">ManagedContext</span><span class="w"> </span><span class="n">context</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="n">post</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">addCity</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="w"> </span><span class="n">City</span><span class="w"> </span><span class="n">city</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">final</span><span class="w"> </span><span class="n">insertedCity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">insertObject</span><span class="p">(</span><span class="n">city</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">insertedCity</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Since there is only one request body, <code>Bind.body()</code> doesn't take any identifying arguments (however, it does take optional arguments for ignoring, requiring or rejecting keys; this matches the behavior of <code>Serializable.read</code> and only works when the bound type is a <code>Serializable</code> or list of).</p>
+<p>The bound parameter type (<code>City</code> in this example) must implement <code>Serializable</code>. Conduit will automatically decode the request body from it's content-type, create a new instance of the bound parameter type, and invoke its <code>read</code> method. In the above example, a valid request body would be the following JSON:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Atlanta&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>!!! note "HTTP Body Decoding" Request bodies are decoded according to their content-type prior to being deserialized. For more information on request body decoding, including decoding content-types other than JSON, see <a href="../request_and_response/">this guide</a>.</p>
+<p>If parsing fails or <code>read</code> throws an exception, a 400 Bad Request response will be sent and the operation method won't be called.</p>
+<p>You may also bind <code>List&lt;Serializable&gt;</code> parameters to the request body. Consider the following JSON that contains a list of cities:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Atlanta&quot;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Madison&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>This body can be bound by declaring the bound parameter to be a <code>List</code> of the desired type:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">addCity</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cities</span><span class="p">)</span>
+</code></pre></div>
+
+<p>!!! tip "List vs Object" An endpoint should either take a single object or a list of objects, but not both. If the request body is a JSON list and the bound variable is not a list, a 400 Bad Request response will be sent (and vice versa). Declaring a body binding of the appropriate type validates the expected value and aids in automatically generating an OpenAPI specification for your application.</p>
+<p>Note that if the request's <code>Content-Type</code> is 'x-www-form-urlencoded', its must be bound with <code>Bind.query</code> and not <code>Bind.body</code>.</p>
+<p>!!! tip "Key Filters in Bind.body()" Filters can be applied to keys of the object being read. Filters can ignore keys, require keys or throw an error if a key is found. See more <a href="../request_and_response/">here</a>.</p>
+<h3 id="property-binding">Property Binding</h3>
+<p>The properties of an <code>ResourceController</code>s may also have <code>Bind.query</code> and <code>Bind.header</code> metadata. This binds values from the request to the <code>ResourceController</code> instance itself, making them accessible from <em>all</em> operation methods.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CityController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@requiredBinding</span>
+<span class="w">  </span><span class="nd">@Bind</span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s2">&quot;x-timestamp&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">DateTime</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Bind</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">limit</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">()</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCities</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// can use both limit and timestamp</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>In the above, both <code>timestamp</code> and <code>limit</code> are bound prior to <code>getCities</code> being invoked. By default, a bound property is optional. Adding an <code>requiredBinding</code> annotation changes a property to required. If required, any request without the required property fails with a 400 Bad Request status code and none of the operation methods are invoked.</p>
+<h2 id="other-resourcecontroller-behavior">Other ResourceController Behavior</h2>
+<p>Besides binding, <code>ResourceController</code>s have some other behavior that is important to understand.</p>
+<h3 id="request-and-response-bodies">Request and Response Bodies</h3>
+<p>A <code>ResourceController</code> can limit the content type of HTTP request bodies it accepts. By default, a <code>ResourceController</code> will accept only <code>application/json</code> request bodies for its <code>POST</code> and <code>PUT</code> methods. This can be modified by setting the <code>acceptedContentTypes</code> property in the constructor.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">UserController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">UserController</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">acceptedContentTypes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">ContentType</span><span class="p">.</span><span class="n">JSON</span><span class="p">,</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">XML</span><span class="p">];</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>If a request is made with a content type other than the accepted content types, the controller automatically responds with a 415 Unsupported Media Type response.</p>
+<p>The body of an HTTP request is decoded if the content type is accepted and there exists a operation method to handle the request. The body is not decoded if there is not a matching operation method for the request. The body is decoded by <code>ResourceController</code> prior to your operation method being invoked. Therefore, you can always use the synchronous <code>RequestBody.as</code> method to access the body from within an operation method:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="n">post</span><span class="p">()</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">createThing</span><span class="p">()</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// do this:</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bodyMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="k">as</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// no need to do this:</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bodyMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">body</span><span class="p">.</span><span class="n">decode</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">...;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A <code>ResourceController</code> can also have a default content type for its responses. By default, this is <code>application/json</code>. This default can be changed by changing <code>responseContentType</code> in the constructor:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">UserController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">UserController</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">responseContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">XML</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The <code>responseContentType</code> is the <em>default</em> response content type. An individual <code>Response</code> may set its own <code>contentType</code>, which takes precedence over the <code>responseContentType</code>. For example, the following controller returns JSON by default, but if the request specifically asks for XML, that's what it will return:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">UserController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ResourceController</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">UserController</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">responseContentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">JSON</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getUserByID</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(...);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">headers</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="n">Bind</span><span class="p">.</span><span class="n">headers</span><span class="p">.</span><span class="n">ACCEPT</span><span class="p">).</span><span class="n">startsWith</span><span class="p">(</span><span class="s2">&quot;application/xml&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">response</span><span class="p">.</span><span class="n">contentType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">XML</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">response</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="more-specialized-resourcecontrollers">More Specialized ResourceControllers</h3>
+<p>Many <code>ResourceController</code> subclasses will execute <a href="../../db/executing_queries/">queries</a>. There are helpful <code>ResourceController</code> subclasses for reducing boilerplate code.</p>
+<p>A <code>QueryController&lt;T&gt;</code> builds a <code>Query&lt;T&gt;</code> based on the incoming request. If the request has a body, this <code>Query&lt;T&gt;</code>'s <code>values</code> property is read from that body. If the request has a path variable, the <code>Query&lt;T&gt;</code> assigns an expression to the primary key value. For example, in a normal <code>ResourceController</code> that responds to a PUT request, you might write the following:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Operation</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">updateUser</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="nd">@Bind</span><span class="p">.</span><span class="n">body</span><span class="p">()</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">    </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="p">..</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">updateOne</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A <code>QueryController&lt;T&gt;</code> builds this query before a operation method is invoked, storing it in the inherited <code>query</code> property. A <code>ManagedObject&lt;T&gt;</code> subclass is the type argument to <code>QueryController&lt;T&gt;</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">UserController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">QueryController</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">UserController</span><span class="p">(</span><span class="n">ManagedContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@Operation</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">updateUser</span><span class="p">(</span><span class="nd">@Bind</span><span class="p">.</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// query already exists and is identical to the snippet above</span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">updateOne</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A <code>ManagedObjectController&lt;T&gt;</code> is significantly more powerful; you don't even need to subclass it. It does all the things a CRUD endpoint does without any code. Here's an example usage:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">router</span>
+<span class="w">  </span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/users/[:id]&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">link</span><span class="p">(()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ManagedObjectController</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">));</span>
+</code></pre></div>
+
+<p>This controller has the following behavior:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Request</th>
+<th align="left">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">POST /users</td>
+<td align="left">Inserts a user into the database with values from the request body</td>
+</tr>
+<tr>
+<td align="left">GET /users</td>
+<td align="left">Fetches all users in the database</td>
+</tr>
+<tr>
+<td align="left">GET /users/:id</td>
+<td align="left">Fetches a single user by id</td>
+</tr>
+<tr>
+<td align="left">DELETE /users/:id</td>
+<td align="left">Deletes a single user by id</td>
+</tr>
+<tr>
+<td align="left">PUT /users/:id</td>
+<td align="left">Updated a single user by id, using values from the request body</td>
+</tr>
+</tbody>
+</table>
+<p>The objects returned from getting the collection - e.g, <code>GET /users</code> - can be modified with query parameters. For example, the following request will return the users sorted by their name in ascending order:</p>
+<div class="codehilite"><pre><span></span><code>GET /users?sortBy=name,asc
+</code></pre></div>
+
+<p>The results can be paged (see <a href="../../db/advanced_queries/">Paging in Advanced Queries</a>) with query parameters <code>offset</code>, <code>count</code>, <code>pageBy</code>, <code>pageAfter</code> and <code>pagePrior</code>.</p>
+<p>A <code>ManagedObjectController&lt;T&gt;</code> can also be subclassed. A subclass allows for callbacks to be overridden to adjust the query before execution, or the results before sending the respond. Each operation - fetch, update, delete, etc. - has a pair of methods to do this. For example, the following subclass alters the query and results before any update via <code>PUT</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">UserController</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObjectController</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">UserController</span><span class="p">(</span><span class="n">ManagedContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">willUpdateObjectWithQuery</span><span class="p">(</span>
+<span class="w">      </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">query</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="n">lastUpdatedAt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">().</span><span class="n">toUtc</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">query</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Response</span><span class="o">&gt;</span><span class="w"> </span><span class="n">didUpdateObject</span><span class="p">(</span><span class="n">User</span><span class="w"> </span><span class="n">object</span><span class="p">)</span><span class="w"> </span><span class="kd">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">object</span><span class="p">.</span><span class="n">removePropertyFromBackingMap</span><span class="p">(</span><span class="s2">&quot;private&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Response</span><span class="p">.</span><span class="n">ok</span><span class="p">(</span><span class="n">object</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>See the chapter on <a href="../../db/validations/">validations</a>, which are powerful when combined with <code>ManagedObjectController&lt;T&gt;</code>.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

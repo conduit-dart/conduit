@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the TestHarness class from the conduit_test library, for the Dart programming language.">
+  <title>TestHarness class - conduit_test library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_test</a></li>
+    <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+    <li class="self-crumb">TestHarness<span class="signature">&lt;<wbr><span class="type-parameter">T extends ApplicationChannel</span>&gt;</span> class</li>
+  </ol>
+  <div class="self-name">TestHarness</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">TestHarness&lt;<wbr><span class="type-parameter">T extends ApplicationChannel</span>&gt;</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Manages application lifecycle for the purpose of testing the application.</p>
+<p>You install a test harness at the beginning of a test's <code>main</code> function. Before test cases are run,
+the harness starts an instance of your application on the same isolate as the tests. After your tests complete,
+the harness stops the application from running.</p>
+<p>You typically create a subclass of <a href="../conduit_test/TestHarness-class.html">TestHarness</a> that is used for all tests in an application. The subclass
+overrides callbacks <a href="../conduit_test/TestHarness/beforeStart.html">beforeStart</a> and <a href="../conduit_test/TestHarness/afterStart.html">afterStart</a> to configure the application. This configuration might be
+adding an application's database schema to a test database, or to create OAuth2 client identifiers
+for use during test. See also <a href="../conduit_test/TestHarnessORMMixin-class.html">TestHarnessORMMixin</a> and <a href="../conduit_test/TestHarnessAuthMixin-class.html">TestHarnessAuthMixin</a> for adding common behaviors
+like these to your harness.</p>
+<p>Usage:</p>
+<pre class="language-dart"><code>    class Harness extends ApplicationHarness&lt;MyChannel&gt; {
+      @override
+      Future afterStart() async {
+        channel.service.uri = Uri.parse("http://localhost:4040");
+      }
+    }
+
+    void main() {
+      final harness = Harness()..install();
+
+      test("GET /example returns 200", () async {
+        final response = await harness.agent.get("/example");
+        expectResponse(response, 200);
+      });
+    }
+</code></pre>
+</section>
+
+
+    <section>
+      <dl class="dl-horizontal">
+        
+
+        
+        
+
+        <dt>Implementers</dt>
+        <dd><ul class="comma-separated clazz-relationships">
+          <li><a href="../conduit_test/TestHarnessAuthMixin-class.html">TestHarnessAuthMixin</a></li>
+        </ul></dd>
+
+
+        
+
+
+      </dl>
+    </section>
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="TestHarness" class="callable">
+          <span class="name"><a href="../conduit_test/TestHarness/TestHarness.html">TestHarness</a></span><span class="signature">()</span>
+        </dt>
+        <dd>
+          
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="agent" class="property">
+  <span class="name"><a href="../conduit_test/TestHarness/agent.html">agent</a></span>
+  <span class="signature">&#8596; <a href="../conduit_test/Agent-class.html">Agent</a>?</span> 
+
+</dt>
+<dd>
+  The default <a href="../conduit_test/Agent-class.html">Agent</a> that makes requests to the application being tested.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="application" class="property">
+  <span class="name"><a href="../conduit_test/TestHarness/application.html">application</a></span>
+  <span class="signature">&#8594; Application<span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span>?</span> 
+
+</dt>
+<dd>
+  The application being tested.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="channel" class="property">
+  <span class="name"><a href="../conduit_test/TestHarness/channel.html">channel</a></span>
+  <span class="signature">&#8594; T?</span> 
+
+</dt>
+<dd>
+  The channel of the running application.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="options" class="property">
+  <span class="name"><a href="../conduit_test/TestHarness/options.html">options</a></span>
+  <span class="signature">&#8596; ApplicationOptions</span> 
+
+</dt>
+<dd>
+  Application options for the application being tested.
+  <div class="features"><span class="feature">read / write</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="afterStart" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/afterStart.html">afterStart</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Override this method to provide post-startup behavior for the application under test.
+  
+
+</dd>
+
+        <dt id="beforeStart" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/beforeStart.html">beforeStart</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Override this method to provide configuration for the application under test.
+  
+
+</dd>
+
+        <dt id="install" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/install.html">install</a></span><span class="signature">(<wbr><span class="parameter" id="install-param-restartForEachTest">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">restartForEachTest</span> = <span class="default-value">false</span>}</span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  Installs this handler to automatically start before tests begin running,
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="onSetUp" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/onSetUp.html">onSetUp</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Override this method to register a <a href="https://pub.dev/documentation/test_core/0.4.24/test_core.scaffolding/setUp.html">setUp</a> closure.
+  
+
+</dd>
+
+        <dt id="onTearDown" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/onTearDown.html">onTearDown</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Override this method to register a <a href="https://pub.dev/documentation/test_core/0.4.24/test_core.scaffolding/tearDown.html">tearDown</a> closure.
+  
+
+</dd>
+
+        <dt id="start" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/start.html">start</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Initializes a test application and starts it.
+  
+
+</dd>
+
+        <dt id="stop" class="callable">
+  <span class="name"><a href="../conduit_test/TestHarness/stop.html">stop</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-async/Future-class.html">Future</a></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Stops the test application from running.
+  
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_test</a></li>
+  <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+  <li class="self-crumb">TestHarness<span class="signature">&lt;<wbr><span class="type-parameter">T extends ApplicationChannel</span>&gt;</span> class</li>
+</ol>
+
+
+    <h5>conduit_test library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#classes">Classes</a></li>
+        <li><a href="../conduit_test/Agent-class.html">Agent</a></li>
+        <li><a href="../conduit_test/MockHTTPServer-class.html">MockHTTPServer</a></li>
+        <li><a href="../conduit_test/MockServer-class.html">MockServer</a></li>
+        <li><a href="../conduit_test/TestHarness-class.html">TestHarness</a></li>
+        <li><a href="../conduit_test/TestHarnessAuthMixin-class.html">TestHarnessAuthMixin</a></li>
+        <li><a href="../conduit_test/TestHarnessORMMixin-class.html">TestHarnessORMMixin</a></li>
+        <li><a href="../conduit_test/TestRequest-class.html">TestRequest</a></li>
+        <li><a href="../conduit_test/TestResponse-class.html">TestResponse</a></li>
+        <li><a href="../conduit_test/TestResponseBody-class.html">TestResponseBody</a></li>
+
+
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#constants">Constants</a></li>
+        <li><a href="../conduit_test/isBoolean-constant.html">isBoolean</a></li>
+        <li><a href="../conduit_test/isDouble-constant.html">isDouble</a></li>
+        <li><a href="../conduit_test/isInteger-constant.html">isInteger</a></li>
+        <li><a href="../conduit_test/isNotPresent-constant.html">isNotPresent</a></li>
+        <li><a href="../conduit_test/isNumber-constant.html">isNumber</a></li>
+        <li><a href="../conduit_test/isString-constant.html">isString</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#properties">Properties</a></li>
+        <li><a href="../conduit_test/isTimestamp.html">isTimestamp</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#functions">Functions</a></li>
+        <li><a href="../conduit_test/expectResponse.html">expectResponse</a></li>
+        <li><a href="../conduit_test/hasBody.html">hasBody</a></li>
+        <li><a href="../conduit_test/hasHeaders.html">hasHeaders</a></li>
+        <li><a href="../conduit_test/hasResponse.html">hasResponse</a></li>
+        <li><a href="../conduit_test/hasStatus.html">hasStatus</a></li>
+        <li><a href="../conduit_test/isAfter.html">isAfter</a></li>
+        <li><a href="../conduit_test/isAfterOrSameMomentAs.html">isAfterOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isBefore.html">isBefore</a></li>
+        <li><a href="../conduit_test/isBeforeOrSameMomentAs.html">isBeforeOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isSameMomentAs.html">isSameMomentAs</a></li>
+        <li><a href="../conduit_test/partial.html">partial</a></li>
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../conduit_test/TestHarness-class.html#constructors">Constructors</a></li>
+          <li><a href="../conduit_test/TestHarness/TestHarness.html">TestHarness</a></li>
+
+
+        <li class="section-title">
+          <a href="../conduit_test/TestHarness-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../conduit_test/TestHarness/agent.html">agent</a></li>
+          <li><a href="../conduit_test/TestHarness/application.html">application</a></li>
+          <li><a href="../conduit_test/TestHarness/channel.html">channel</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../conduit_test/TestHarness/options.html">options</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+        <li class="section-title"><a href="../conduit_test/TestHarness-class.html#instance-methods">Methods</a></li>
+          <li><a href="../conduit_test/TestHarness/afterStart.html">afterStart</a></li>
+          <li><a href="../conduit_test/TestHarness/beforeStart.html">beforeStart</a></li>
+          <li><a href="../conduit_test/TestHarness/install.html">install</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../conduit_test/TestHarness/onSetUp.html">onSetUp</a></li>
+          <li><a href="../conduit_test/TestHarness/onTearDown.html">onTearDown</a></li>
+          <li><a href="../conduit_test/TestHarness/start.html">start</a></li>
+          <li><a href="../conduit_test/TestHarness/stop.html">stop</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/toString.html">toString</a></li>
+
+        <li class="section-title inherited"><a href="../conduit_test/TestHarness-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_test
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

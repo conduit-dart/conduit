@@ -1,0 +1,2873 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for Conduit, a Dart server-side framework.">
+      
+      
+      
+      
+        <link rel="prev" href="../connecting/">
+      
+      
+        <link rel="next" href="../serialization/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.6">
+    
+    
+      
+        <title>Modeling Data and Relationships - Conduit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modeling-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Conduit" class="md-header__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Conduit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Modeling Data and Relationships
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Conduit" class="md-nav__button md-logo" aria-label="Conduit" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Conduit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/conduit-dart/conduit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core_concepts/" class="md-nav__link">
+        Core Concepts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tour/" class="md-nav__link">
+        Tour
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5" tabindex="0" aria-expanded="false">
+          Tutorial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/getting-started/" class="md-nav__link">
+        1. Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/executing-queries/" class="md-nav__link">
+        2. Reading from a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/storing-data/" class="md-nav__link">
+        3. Storing Data in a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/writing-tests/" class="md-nav__link">
+        4. Configuration and Testing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tut/oauth2/" class="md-nav__link">
+        5. Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6" tabindex="0" aria-expanded="false">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_1" type="checkbox" id="__nav_6_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_1" tabindex="0" aria-expanded="false">
+          conduit
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          conduit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_2" tabindex="0" aria-expanded="false">
+          conduit_codable
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_codable" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_codable
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_codable/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_3" tabindex="0" aria-expanded="false">
+          conduit_config
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_config" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_config
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_config/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_4" tabindex="0" aria-expanded="false">
+          conduit_core
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_core" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_core/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_5" tabindex="0" aria-expanded="false">
+          conduit_isolate_exec
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_isolate_exec" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_isolate_exec
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_isolate_exec/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_6" tabindex="0" aria-expanded="false">
+          conduit_open_api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_open_api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_open_api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_open_api/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_7" tabindex="0" aria-expanded="false">
+          conduit_password_hash
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_password_hash" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_password_hash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_password_hash/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_8" tabindex="0" aria-expanded="false">
+          conduit_runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_runtime" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_runtime/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_9" tabindex="0" aria-expanded="false">
+          conduit_test
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="conduit_test" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          conduit_test
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conduit_test/" class="md-nav__link">
+        Docs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../best_practices/" class="md-nav__link">
+        Best Practices
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8" type="checkbox" id="__nav_8" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" tabindex="0" aria-expanded="true">
+          Guides
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Guides" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Guides
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_1" type="checkbox" id="__nav_8_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_1" tabindex="0" aria-expanded="false">
+          Application Configuration and Behavior
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Application Configuration and Behavior" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_1">
+          <span class="md-nav__icon md-icon"></span>
+          Application Configuration and Behavior
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/channel/" class="md-nav__link">
+        Starting and Stopping Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/configure/" class="md-nav__link">
+        Configuring an Application and its Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/structure/" class="md-nav__link">
+        Application and Project Structure
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/threading/" class="md-nav__link">
+        Multi-threading
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_2" tabindex="0" aria-expanded="false">
+          Handling HTTP Requests
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Handling HTTP Requests" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Handling HTTP Requests
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/controller/" class="md-nav__link">
+        Handling Requests and Sending Response
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/request_and_response/" class="md-nav__link">
+        Serializing Request and Response Bodies
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/resource_controller/" class="md-nav__link">
+        Request Binding with Resource Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/serving_files/" class="md-nav__link">
+        Serving Files and Caching
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/websockets/" class="md-nav__link">
+        Websockets
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../http/file_upload/" class="md-nav__link">
+        Uploading Files
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_3" tabindex="0" aria-expanded="true">
+          Databases and ORM
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Databases and ORM" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Databases and ORM
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connecting/" class="md-nav__link">
+        Connecting to a Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Modeling Data and Relationships
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Modeling Data and Relationships
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-a-table" class="md-nav__link">
+    Defining a Table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-a-managed-object-subclass" class="md-nav__link">
+    Defining a Managed Object Subclass
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modeling-relationships" class="md-nav__link">
+    Modeling Relationships
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-behaviors" class="md-nav__link">
+    Special Behaviors
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Behaviors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-types" class="md-nav__link">
+    Enum Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-variables" class="md-nav__link">
+    Private Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transient-properties" class="md-nav__link">
+    Transient Properties
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-file-structure" class="md-nav__link">
+    Project File Structure
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-one-to-many-relationship" class="md-nav__link">
+    Example: One-to-Many Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-one-to-one-relationship" class="md-nav__link">
+    Example: One-to-One Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-many-to-many-relationship" class="md-nav__link">
+    Example: Many-to-Many Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-hierarchical-relationships-self-referencing" class="md-nav__link">
+    Example: Hierarchical Relationships (Self Referencing)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serialization/" class="md-nav__link">
+        Serialization and Deserialization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../executing_queries/" class="md-nav__link">
+        Basic Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced_queries/" class="md-nav__link">
+        Advanced Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactions/" class="md-nav__link">
+        Transactions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validations/" class="md-nav__link">
+        Validations
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../db_tools/" class="md-nav__link">
+        Migration and Tooling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json_columns/" class="md-nav__link">
+        JSON Document Storage
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_4" tabindex="0" aria-expanded="false">
+          Authorization and OAuth 2.0
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Authorization and OAuth 2.0" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Authorization and OAuth 2.0
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/server/" class="md-nav__link">
+        Setting up Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/authorizer/" class="md-nav__link">
+        Protecting Routes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/controllers/" class="md-nav__link">
+        Issuing Access Tokens
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/cli/" class="md-nav__link">
+        Managing OAuth 2.0 Clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/auth_scopes/" class="md-nav__link">
+        OAuth 2.0 Scoping
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../auth/what_is_oauth/" class="md-nav__link">
+        What is OAuth 2.0?
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_5" type="checkbox" id="__nav_8_5" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_5" tabindex="0" aria-expanded="false">
+          Development and Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development and Testing" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development and Testing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/tests/" class="md-nav__link">
+        Writing Tests
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mixins/" class="md-nav__link">
+        Testing with the ORM and OAuth 2.0
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/debugger/" class="md-nav__link">
+        Using the Debugger
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/clients/" class="md-nav__link">
+        Developing Client Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../testing/mock/" class="md-nav__link">
+        Mocking Services
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_6" type="checkbox" id="__nav_8_6" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_6" tabindex="0" aria-expanded="false">
+          OpenAPI Documentation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OpenAPI Documentation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_6">
+          <span class="md-nav__icon md-icon"></span>
+          OpenAPI Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/cli/" class="md-nav__link">
+        Creating an OpenAPI Document
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/components/" class="md-nav__link">
+        Documenting Components
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/endpoint/" class="md-nav__link">
+        Documenting Endpoint Controllers
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openapi/middleware/" class="md-nav__link">
+        Documenting Middleware Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_7" type="checkbox" id="__nav_8_7" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_7" tabindex="0" aria-expanded="false">
+          Command-line Tooling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Command-line Tooling" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_7">
+          <span class="md-nav__icon md-icon"></span>
+          Command-line Tooling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/create/" class="md-nav__link">
+        Creating Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/running/" class="md-nav__link">
+        Running Applications
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/document/" class="md-nav__link">
+        Generating an OpenAPI/Swagger Specification
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_8" type="checkbox" id="__nav_8_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_8" tabindex="0" aria-expanded="false">
+          Deployment
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deployment" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/build/" class="md-nav__link">
+        Creating a Conduit Executable
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_local/" class="md-nav__link">
+        Deploy Locally (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_docker/" class="md-nav__link">
+        Deploying with Docker and Kubernetes (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_heroku/" class="md-nav__link">
+        Deploy on Heroku (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/deploy_aws/" class="md-nav__link">
+        Deploy on AWS (VM)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/script/" class="md-nav__link">
+        Deploying without aqueduct serve (VM)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_8_9" type="checkbox" id="__nav_8_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8_9" tabindex="0" aria-expanded="false">
+          Migration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Migration" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_9">
+          <span class="md-nav__icon md-icon"></span>
+          Migration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration/4.1.8/" class="md-nav__link">
+        4.1.8
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" tabindex="0" aria-expanded="false">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Snippets" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Snippets
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/http/" class="md-nav__link">
+        HTTP
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/orm/" class="md-nav__link">
+        ORM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/auth/" class="md-nav__link">
+        Authentication and Authorization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../snippets/test/" class="md-nav__link">
+        Testing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-a-table" class="md-nav__link">
+    Defining a Table
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-a-managed-object-subclass" class="md-nav__link">
+    Defining a Managed Object Subclass
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modeling-relationships" class="md-nav__link">
+    Modeling Relationships
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-behaviors" class="md-nav__link">
+    Special Behaviors
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Behaviors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enum-types" class="md-nav__link">
+    Enum Types
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-variables" class="md-nav__link">
+    Private Variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transient-properties" class="md-nav__link">
+    Transient Properties
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-file-structure" class="md-nav__link">
+    Project File Structure
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-one-to-many-relationship" class="md-nav__link">
+    Example: One-to-Many Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-one-to-one-relationship" class="md-nav__link">
+    Example: One-to-One Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-many-to-many-relationship" class="md-nav__link">
+    Example: Many-to-Many Relationship
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-hierarchical-relationships-self-referencing" class="md-nav__link">
+    Example: Hierarchical Relationships (Self Referencing)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+<h1 id="modeling-data">Modeling Data</h1>
+<p>In this guide, you will learn how to create types that are mapped to database tables. At the end of this guide are additional examples of data model types.</p>
+<h2 id="defining-a-table">Defining a Table</h2>
+<p>In your application, you declare types whose instances are stored in a database. Each of these types is mapped to a database table, where each property of the type is a column of the table. For example, consider modeling newspaper articles, where each article has a unique identifier, text contents and published date:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// This is a table definition of an &#39;article&#39;</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Article</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">primaryKey:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">contents</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">indexed:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="n">DateTime</span><span class="w"> </span><span class="n">publishedDate</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This plain Dart class is called a <em>table definition</em> because it defines a database table named <code>_Article</code>. The table has three columns, <code>id</code>, <code>contents</code>, <code>publishedDate</code>. An example of the data stored in this table might look like this:</p>
+<table>
+<thead>
+<tr>
+<th align="left">id</th>
+<th align="left">contents</th>
+<th align="left">publishedDate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">1</td>
+<td align="left">Today, the local...</td>
+<td align="left">2018-02-01 00:00:00.000</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">In other news, ...</td>
+<td align="left">2018-03-01 04:30:00.000</td>
+</tr>
+</tbody>
+</table>
+<p>A property in a table definition can optionally have a <code>Column</code> annotation. This annotation configures the behavior of the associated database column. If a property doesn't have an annotation, the column has default behavior. These behaviors are shown in the table below:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Option</th>
+<th align="left">Type</th>
+<th align="left">Behavior</th>
+<th align="left">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">primaryKey</td>
+<td align="left"><code>bool</code></td>
+<td align="left">sets primary key column</td>
+<td align="left">false (not primary key)</td>
+</tr>
+<tr>
+<td align="left">databaseType</td>
+<td align="left"><code>ManagedPropertyType</code></td>
+<td align="left">sets underlying column type</td>
+<td align="left">inferred from Dart type</td>
+</tr>
+<tr>
+<td align="left">nullable</td>
+<td align="left"><code>bool</code></td>
+<td align="left">toggles whether column can be null</td>
+<td align="left">false (not nullable)</td>
+</tr>
+<tr>
+<td align="left">unique</td>
+<td align="left"><code>bool</code></td>
+<td align="left">toggles whether column is unique across all rows</td>
+<td align="left">false (not unique)</td>
+</tr>
+<tr>
+<td align="left">defaultValue</td>
+<td align="left"><code>String</code></td>
+<td align="left">provides default value for new rows when value is undefined</td>
+<td align="left">null</td>
+</tr>
+<tr>
+<td align="left">indexed</td>
+<td align="left"><code>bool</code></td>
+<td align="left">whether an index should be created for the column</td>
+<td align="left">false (no index)</td>
+</tr>
+<tr>
+<td align="left">omitByDefault</td>
+<td align="left"><code>bool</code></td>
+<td align="left">whether this column should be left out by default</td>
+<td align="left">false (fetch column value)</td>
+</tr>
+<tr>
+<td align="left">autoincrement</td>
+<td align="left"><code>bool</code></td>
+<td align="left">whether this column's value is automatically generated from a series</td>
+<td align="left">false (not generated)</td>
+</tr>
+</tbody>
+</table>
+<p>You must use either zero or one <code>Column</code> annotation per property, and you must set all behaviors in one annotation, e.g.:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Column</span><span class="p">(</span><span class="nl">nullable:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nl">unique:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nl">indexed:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">field</span><span class="p">;</span>
+</code></pre></div>
+
+<p>The data type of a column is inferred from the Dart type of the property as shown by the following table.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Dart Type</th>
+<th align="left">General Column Type</th>
+<th align="left">PostgreSQL Column Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>int</code></td>
+<td align="left">integer number</td>
+<td align="left"><code>INT</code> or <code>SERIAL</code></td>
+</tr>
+<tr>
+<td align="left"><code>double</code></td>
+<td align="left">floating point number</td>
+<td align="left"><code>DOUBLE PRECISION</code></td>
+</tr>
+<tr>
+<td align="left"><code>String</code></td>
+<td align="left">text</td>
+<td align="left"><code>TEXT</code></td>
+</tr>
+<tr>
+<td align="left"><code>DateTime</code></td>
+<td align="left">timestamp</td>
+<td align="left"><code>TIMESTAMP</code></td>
+</tr>
+<tr>
+<td align="left"><code>bool</code></td>
+<td align="left">boolean</td>
+<td align="left"><code>BOOLEAN</code></td>
+</tr>
+<tr>
+<td align="left"><code>Document</code></td>
+<td align="left">a JSON object or array</td>
+<td align="left"><code>JSONB</code></td>
+</tr>
+<tr>
+<td align="left">Any <code>enum</code></td>
+<td align="left">text, restricted to enum cases</td>
+<td align="left"><code>TEXT</code></td>
+</tr>
+</tbody>
+</table>
+<p>Some types can be represented by many database types; for example, an integer can be stored as 2, 4 or 8 bytes. Use the <code>databaseType</code> of a <code>Column</code> annotation to specify:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Column</span><span class="p">(</span><span class="nl">databaseType:</span><span class="w"> </span><span class="n">ManagedPropertyType</span><span class="p">.</span><span class="n">bigInteger</span><span class="p">)</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">bigNumber</span><span class="p">;</span>
+</code></pre></div>
+
+<p>The only requirement of a table definition type is that it has exactly one primary key property. A primary key is an indexed, unique identifier for a database row and is set through the <code>Column</code> annotation.</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Column</span><span class="p">(</span><span class="nl">primaryKey:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+</code></pre></div>
+
+<p>A primary key can be any supported data type, and it is always unique and indexed. It is common for primary keys to be 64-bit, auto-incrementing integers. The <code>primaryKey</code> constant exists as a convenience for a <code>Column</code> with these behaviors.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">_Article</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span><span class="w"> </span><span class="c1">// equivalent to @Column(primaryKey: true, databaseType: ManagedPropertyType.bigInteger, autoincrement: true)</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>!!! note "Creating Tables" Tables are created in a database by using the <code>conduit</code> command line tool to generate and execute migration scripts. The tool inspects your database types and automatically synchronizes a databases schema to match your them.</p>
+<p>By default, the name of the table definition is the name of the database table. You can configure this with the <code>Table</code> annotation.</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Table</span><span class="p">(</span><span class="nl">name:</span><span class="w"> </span><span class="s2">&quot;ArticleTable&quot;</span><span class="p">)</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Article</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">contents</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Column</span><span class="p">(</span><span class="nl">indexed:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="n">DateTime</span><span class="w"> </span><span class="n">publishedDate</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>It is convention that table definitions are <em>private classes</em>, that is, their name is prefixed with an underscore (<code>_</code>). This convention is discussed later in this guide.</p>
+<h2 id="defining-a-managed-object-subclass">Defining a Managed Object Subclass</h2>
+<p>A table definition by itself is just a plain Dart class. You must also declare a <code>ManagedObject</code> subclass to bring your table definition to life. Here's an example:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Article</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Article</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Article</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+
+<p>A managed object subclass, also called the <em>instance type</em>, is the object type that you work with in your application code. For example, when you fetch rows from a database, you will get a list of managed objects. A managed object subclass declares its table definition in two places: once as the type argument of its superclass, and again as an interface it implements.</p>
+<p>A managed object subclass inherits all of the properties from its table definition; i.e., an <code>Article</code> has an <code>id</code>, <code>contents</code> and <code>publishedDate</code> because <code>_Article</code> declares those properties. You create and use instances of a managed object subclass like any other object:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">article</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Article</span><span class="p">();</span>
+<span class="n">article</span><span class="p">.</span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Today, ...&quot;</span><span class="p">;</span>
+<span class="n">article</span><span class="p">.</span><span class="n">publishedDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">();</span>
+</code></pre></div>
+
+<p>!!! warning "Managed Object Constructors" You can add new constructors to a managed object subclass, but you must always have a default, no-argument constructor. This default constructor is used when the ORM creates instances from rows in your database.</p>
+<h2 id="modeling-relationships">Modeling Relationships</h2>
+<p>A managed object can have <em>relationships</em> to other managed objects. For example, an author can have many books, an article can belong to a newspaper, and an employee can have a manager. In a relational database, relationships between tables are established by storing the primary key of a table row in a column of the related table. This column is a <em>foreign key reference</em> to the related table.</p>
+<p>When a table has a foreign key reference, it is said to <em>belong to</em> the related table. In the example of an employee and manager, the employee <em>belongs to</em> the manager and therefore the employee table has a foreign key reference to the manager table. The inverse of this statement is also true: a manager <em>has</em> employees. A manager has-many employees - this is called a <em>has-many relationship</em>. There are also <em>has-one relationships</em> - for example, a country has-one capital.</p>
+<p>The following is an example of a country and a has-one relationship to a capital city:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">City</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_City</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_City</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_City</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">capital</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Country</span><span class="w"> </span><span class="n">country</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">Country</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Country</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Country</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Country</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">City</span><span class="w"> </span><span class="n">capital</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A relationship is formed between two tables by declaring properties in both table definition types. The type of those properties is the related managed object subclass - so a <code>Country</code> has a property of type <code>City</code>, and a <code>City</code> has a property of type <code>Country</code>.</p>
+<p>Exactly one of those properties must have a <code>Relate</code> annotation. The <code>Relate</code> annotation designates the underlying column as a foreign key column. In this example, the city table has a foreign key column to the country table. Conceptually, then, a city <em>belongs to</em> a country and a country has-one capital city. A city can only belong to one country through this relationship, and that is true of all belongs-to relationship properties.</p>
+<p>!!! note "Foreign Key Column Names" A foreign key column in the database is named by joining the name of the relationship property and the primary key of the related table with an underscore. For example, the column in the city table is named <code>country_id</code>.</p>
+<p>The property without <code>Relate</code> is the <em>inverse</em> of the relationship and is conceptually either a has-one or has-many relationship property. In this example, a country's relationship to its capital is has-one. A relationship is has-many when the type of the inverse property is a <code>ManagedSet</code>. For example, if we wanted to model a relationship between a country and all of its cities, we'd declare a <code>ManagedSet&lt;City&gt;</code> property in the country:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">City</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_City</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_City</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_City</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">cities</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Country</span><span class="w"> </span><span class="n">country</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">Country</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Country</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Country</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Country</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+
+<span class="w">  </span><span class="n">ManagedSet</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cities</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>!!! note "ManagedSet Behavior" A <code>Relate</code> property can never be a <code>ManagedSet</code>. A <code>ManagedSet</code> is a <code>List</code>, and therefore can be used in the same way a list is used.</p>
+<p>Notice that the <code>Relate</code> annotation takes at least one argument: a symbol that matches the name of the inverse property. This is what links two relationship properties to each other. In the first example, this argument was <code>#capital</code> because the name of the inverse property is <code>capital</code>; likewise, <code>#cities</code> and <code>cities</code>. This pairing name must match or an error will be thrown.</p>
+<p>!!! note "Symbols" A symbol is a name identifier in Dart; a symbol can refer to a class, method, or property. The <code>#name</code> syntax is a <em>symbol literal</em>.</p>
+<p>The <code>Relate</code> annotation has optional arguments to further define the relationship. Like <code>Column</code>, these are optional arguments, e.g.:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">cities</span><span class="p">,</span><span class="w"> </span><span class="nl">isRequired:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nl">onDelete:</span><span class="w"> </span><span class="n">DeleteRule</span><span class="p">.</span><span class="n">cascade</span><span class="p">)</span>
+</code></pre></div>
+
+<p>A relationship may be be required or optional. For example, if <code>City.country</code> were required, then a <code>City</code> must always have a <code>Country</code>. By default, relationships are optional.</p>
+<p>A relationship has a delete rule. When an object is deleted, any objects that belong to its relationships are subject to this rule. The following table shows the rules and their behavior:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Rule</th>
+<th align="left">Behavior</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">nullify (default)</td>
+<td align="left">inverse is set to null</td>
+<td align="left">When deleting an author, its articles' author becomes null</td>
+</tr>
+<tr>
+<td align="left">cascade</td>
+<td align="left">related objects are also deleted</td>
+<td align="left">When deleting an author, its articles are deleted</td>
+</tr>
+<tr>
+<td align="left">restrict</td>
+<td align="left">delete fails</td>
+<td align="left">When attempting to delete an author with articles, the delete operation fails</td>
+</tr>
+<tr>
+<td align="left">default</td>
+<td align="left">inverse set to a default value</td>
+<td align="left">When deleting an author, its articles author is set to the default value of the column</td>
+</tr>
+</tbody>
+</table>
+<h2 id="special-behaviors">Special Behaviors</h2>
+<h3 id="enum-types">Enum Types</h3>
+<p>Enums types can be used to declare properties in a table definition. The database will store the column as a string representation of the enumeration. Here's an example where a user can be an administrator or a normal user:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">enum</span><span class="w"> </span><span class="n">UserType</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">admin</span><span class="p">,</span><span class="w"> </span><span class="n">user</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_User</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_User</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_User</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">UserType</span><span class="w"> </span><span class="n">role</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">var</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Bob&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UserType</span><span class="p">.</span><span class="n">admin</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">bob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+
+<span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">role</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="n">UserType</span><span class="p">.</span><span class="n">admin</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">allAdmins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<p>In the database, the <code>role</code> column is stored as a string. Its value is either "admin" or "user".</p>
+<h3 id="private-variables">Private Variables</h3>
+<p>A private variable in a table definition removes it from the serialized representation of an object. A private variable is always fetched when making a database query, but it is not read when invoking <code>read</code> and is not written when invoking <code>asMap</code>. Both of these methods are invoked when reading a managed object from a request body, or writing it to a response body.</p>
+<h3 id="transient-properties">Transient Properties</h3>
+<p>Properties declared in a managed object subclass are called <em>transient</em> because they are not stored in a database. For example, consider an <code>Author</code> type that stores first and last name as separate columns. Instead of redundantly storing a 'full name' in the database, a transient property can combine the first and last name:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Author</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Author</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Author</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">$</span><span class="n">firstName</span><span class="s2"> </span><span class="si">$</span><span class="n">lastName</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">set</span><span class="w"> </span><span class="n">name</span><span class="p">(</span><span class="kt">String</span><span class="w"> </span><span class="n">fullName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">firstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fullName</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="n">lastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fullName</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">).</span><span class="n">last</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Author</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">firstName</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">lastName</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>By default, a transient property is ignored when reading an object from a request body or writing the object to a response body (see the guide on <a href="../serialization/">serialization</a> for more details). You can annotate a transient property with <code>Serialize</code> so that it is able to be read from a request body, written to a response body, or both. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Author</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Author</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Author</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Serialize</span><span class="p">()</span>
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="kd">get</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">$</span><span class="n">firstName</span><span class="s2"> </span><span class="si">$</span><span class="n">lastName</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Serialize</span><span class="p">()</span>
+<span class="w">  </span><span class="kd">set</span><span class="w"> </span><span class="n">name</span><span class="p">(</span><span class="kt">String</span><span class="w"> </span><span class="n">fullName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">firstName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fullName</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">).</span><span class="n">first</span><span class="p">;</span>
+<span class="w">    </span><span class="n">lastName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fullName</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">).</span><span class="n">last</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>You may declare getters, setters and properties to be serialized in this way. When declaring a property, you can control it with arguments to <code>Serialize</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Author</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Author</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Author</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Serialize</span><span class="p">(</span><span class="nl">input:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nl">output:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">isCurrentlyPromoted</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2 id="project-file-structure">Project File Structure</h2>
+<p>A managed object subclass and its table definition together are called an <em>entity</em>. Each entity should be declared in the same file, and the table definition should be prefixed with an <code>_</code> to prevent it from being used elsewhere in the project. It is preferable to declare one entity per file, and store all entities in the <code>lib/model/</code> directory of your project.</p>
+<p>The files your model definitions are declared in must be visible to Conduit tooling. In normal circumstances, this happens automatically because of the following:</p>
+<ol>
+<li>Conduit tooling can find any file that is imported (directly or transitively) from your library file.</li>
+<li>Your library file, by default, can see the file your <code>ApplicationChannel</code> is declared in.</li>
+<li>Your application channel file must import any controller that it links.</li>
+<li>Your controllers must import any model file they use.</li>
+</ol>
+<p>When you use the <code>conduit</code> CLI to generate database migration scripts, it will report all of the <code>ManagedObject</code>s in your application that it was able to find. If a particular type is not listed, it may reveal that you aren't using that type. If you need to ensure that the tooling can see a particular model file that it is not locating, you may import it in your <code>channel.dart</code> file.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="example-one-to-many-relationship">Example: One-to-Many Relationship</h3>
+<p>An author has many books:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Author</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Author</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Author</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Author</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ManagedSet</span><span class="o">&lt;</span><span class="n">Book</span><span class="o">&gt;</span><span class="w"> </span><span class="n">books</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">Book</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Book</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Book</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Book</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">books</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Author</span><span class="w"> </span><span class="n">author</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>To insert an author and a book associated with that author:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">authorQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Author</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Fred&quot;</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">authorQuery</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">bookQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Book</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Title&quot;</span>
+<span class="w">  </span><span class="p">..</span><span class="n">values</span><span class="p">.</span><span class="n">author</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">author</span><span class="p">.</span><span class="n">id</span><span class="p">;</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">bookQuery</span><span class="p">.</span><span class="n">insert</span><span class="p">();</span>
+</code></pre></div>
+
+<p>To fetch authors and their books:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Author</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">join</span><span class="p">(</span><span class="kd">set</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">books</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">authors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<p>To fetch a book and their full author object:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Book</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">join</span><span class="p">(</span><span class="nl">object:</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">author</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">books</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="example-one-to-one-relationship">Example: One-to-One Relationship</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Country</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Country</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Country</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Country</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">City</span><span class="w"> </span><span class="n">capital</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">City</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_City</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_City</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_City</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">capital</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Country</span><span class="w"> </span><span class="n">country</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>To fetch a country and its capital:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Country</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">join</span><span class="p">(</span><span class="nl">object:</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">capital</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">countries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetch</span><span class="p">();</span>
+</code></pre></div>
+
+<h3 id="example-many-to-many-relationship">Example: Many-to-Many Relationship</h3>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Team</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Team</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Team</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Team</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ManagedSet</span><span class="o">&lt;</span><span class="n">TeamPlayer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">teamPlayers</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// This type is a join table</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">TeamPlayer</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_TeamPlayer</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_TeamPlayer</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_TeamPlayer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w">  </span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">teamPlayers</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Team</span><span class="w"> </span><span class="n">team</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">teamPlayers</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Player</span><span class="w"> </span><span class="n">player</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">Player</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Player</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Player</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Player</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ManagedSet</span><span class="o">&lt;</span><span class="n">TeamPlayer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">teamPlayers</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>To fetch a team and its players:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// Note that the final join is not cascaded from the Team query,</span>
+<span class="c1">// but from the Query created by joining with TeamPlayer</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Query</span><span class="o">&lt;</span><span class="n">Team</span><span class="o">&gt;</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">where</span><span class="p">((</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">id</span><span class="p">).</span><span class="n">equalTo</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">..</span><span class="n">join</span><span class="p">(</span><span class="kd">set</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">teamPlayers</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="nl">object:</span><span class="w"> </span><span class="p">(</span><span class="n">tp</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">tp</span><span class="p">.</span><span class="n">player</span><span class="p">);</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">team</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">await</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">fetchOne</span><span class="p">();</span>
+</code></pre></div>
+
+<p>The structure of this object is:</p>
+<div class="codehilite"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Badgers&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;teamPlayers&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;team&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="s2">&quot;player&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Fred&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>You can flatten this structure in a number of ways. In the simplest form, add a <code>Serialize</code>-annotated transient property to the <code>ManagedObject</code> subclass, and each time you fetch, remove the join table from the object and place the players in the transient property.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Team</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Team</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Team</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@Serialize</span><span class="p">(</span><span class="nl">input:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nl">output:</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">players</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">team</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+<span class="n">team</span><span class="p">.</span><span class="n">players</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">team</span><span class="p">.</span><span class="n">teamPlayers</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">player</span><span class="p">.</span><span class="n">asMap</span><span class="p">()).</span><span class="n">toList</span><span class="p">();</span>
+<span class="c1">// Remove teamPlayers; it is redundant</span>
+<span class="n">team</span><span class="p">.</span><span class="n">backing</span><span class="p">.</span><span class="n">removeProperty</span><span class="p">(</span><span class="s2">&quot;teamPlayers&quot;</span><span class="p">);</span>
+</code></pre></div>
+
+<h3 id="example-hierarchical-relationships-self-referencing">Example: Hierarchical Relationships (Self Referencing)</h3>
+<p>Hierarchical relationships follow the same rules as all other relationship, but declare the foreign key property and the inverse in the same type.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">Person</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">ManagedObject</span><span class="o">&lt;</span><span class="n">_Person</span><span class="o">&gt;</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">_Person</span><span class="w"> </span><span class="p">{}</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">_Person</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nd">@primaryKey</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">ManagedSet</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="w"> </span><span class="n">children</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Relate</span><span class="p">(</span><span class="err">#</span><span class="n">children</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Person</span><span class="w"> </span><span class="n">parent</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by conduit-dart team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>

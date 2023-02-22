@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the cast function from the slow_coerce library, for the Dart programming language.">
+  <title>cast function - slow_coerce library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_runtime</a></li>
+    <li><a href="../slow_coerce/slow_coerce-library.html">slow_coerce</a></li>
+    <li class="self-crumb">cast&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
+  </ol>
+  <div class="self-name">cast</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">cast&lt;<wbr><span class="type-parameter">T</span>&gt;</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype">T</span>
+<span class="name ">cast</span>&lt;<wbr><span class="type-parameter">T</span>&gt;(<wbr><ol class="parameter-list"><li><span class="parameter" id="cast-param-input"><span class="type-annotation">dynamic</span> <span class="parameter-name">input</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">T cast&lt;T&gt;(dynamic input) {
+  try {
+    var typeString = T.toString();
+    if (typeString.endsWith(&#39;?&#39;)) {
+      if (input == null) {
+        return null as T;
+      } else {
+        typeString = typeString.substring(0, typeString.length - 1);
+      }
+    }
+    if (typeString.startsWith(_listPrefix)) {
+      if (input is! List) {
+        throw TypeError();
+      }
+
+      if (typeString.startsWith(&quot;List&lt;int&gt;&quot;)) {
+        return List&lt;int&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;num&gt;&quot;)) {
+        return List&lt;num&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;double&gt;&quot;)) {
+        return List&lt;double&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;String&gt;&quot;)) {
+        return List&lt;String&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;bool&gt;&quot;)) {
+        return List&lt;bool&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;int?&gt;&quot;)) {
+        return List&lt;int?&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;num?&gt;&quot;)) {
+        return List&lt;num?&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;double?&gt;&quot;)) {
+        return List&lt;double?&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;String?&gt;&quot;)) {
+        return List&lt;String?&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;bool?&gt;&quot;)) {
+        return List&lt;bool?&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;Map&lt;String, dynamic&gt;&gt;&quot;)) {
+        return List&lt;Map&lt;String, dynamic&gt;&gt;.from(input) as T;
+      } else if (typeString.startsWith(&quot;List&lt;Map&lt;String, dynamic&gt;?&gt;&quot;)) {
+        return List&lt;Map&lt;String, dynamic&gt;?&gt;.from(input) as T;
+      }
+    } else if (typeString.startsWith(_mapPrefix)) {
+      if (input is! Map) {
+        throw TypeError();
+      }
+
+      final inputMap = input as Map&lt;String, dynamic&gt;;
+      if (typeString.startsWith(&quot;Map&lt;String, int&gt;&quot;)) {
+        return Map&lt;String, int&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, num&gt;&quot;)) {
+        return Map&lt;String, num&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, double&gt;&quot;)) {
+        return Map&lt;String, double&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, String&gt;&quot;)) {
+        return Map&lt;String, String&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, bool&gt;&quot;)) {
+        return Map&lt;String, bool&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, int?&gt;&quot;)) {
+        return Map&lt;String, int?&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, num?&gt;&quot;)) {
+        return Map&lt;String, num?&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, double?&gt;&quot;)) {
+        return Map&lt;String, double?&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, String?&gt;&quot;)) {
+        return Map&lt;String, String?&gt;.from(inputMap) as T;
+      } else if (typeString.startsWith(&quot;Map&lt;String, bool?&gt;&quot;)) {
+        return Map&lt;String, bool?&gt;.from(inputMap) as T;
+      }
+    }
+
+    return input as T;
+  } on TypeError catch (_) {
+    throw TypeCoercionException(T, input.runtimeType);
+  }
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_runtime</a></li>
+  <li><a href="../slow_coerce/slow_coerce-library.html">slow_coerce</a></li>
+  <li class="self-crumb">cast&lt;<wbr><span class="type-parameter">T</span>&gt; function</li>
+</ol>
+
+
+    <h5>slow_coerce library</h5>
+    <ol>
+
+
+
+
+
+      <li class="section-title"><a href="../slow_coerce/slow_coerce-library.html#functions">Functions</a></li>
+        <li><a href="../slow_coerce/cast.html">cast</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_runtime
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

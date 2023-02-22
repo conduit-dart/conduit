@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the hasResponse function from the conduit_test library, for the Dart programming language.">
+  <title>hasResponse function - conduit_test library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">conduit_test</a></li>
+    <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+    <li class="self-crumb">hasResponse function</li>
+  </ol>
+  <div class="self-name">hasResponse</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">hasResponse</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://pub.dev/documentation/matcher/0.12.14/matcher/Matcher-class.html">Matcher</a></span>
+<span class="name ">hasResponse</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="hasResponse-param-statusCode"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">statusCode</span>, </span></li>
+<li><span class="parameter" id="hasResponse-param-body">{<span class="type-annotation">dynamic</span> <span class="parameter-name">body</span>, </span></li>
+<li><span class="parameter" id="hasResponse-param-headers"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/2.19.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span>?</span> <span class="parameter-name">headers</span>, </span></li>
+<li><span class="parameter" id="hasResponse-param-failIfContainsUnmatchedHeader"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">failIfContainsUnmatchedHeader</span> = <span class="default-value">false</span>}</span></li>
+</ol>)
+
+        
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Validates that <a href="../conduit_test/TestResponse-class.html">TestResponse</a> has matching <code>statusCode</code>, <code>body</code>, and <code>headers</code>.</p>
+<p>This method composes <a href="../conduit_test/hasStatus.html">hasStatus</a>, <a href="../conduit_test/hasBody.html">hasBody</a>, and <a href="../conduit_test/hasHeaders.html">hasHeaders</a> into a single matcher. See
+each of these individual method for behavior details.</p>
+<p>If either <code>body</code> or <code>headers</code> is null or not provided, they will not be matched and
+any value will be acceptable.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>var response = await client.request("/foo").get();
+expect(response, hasResponse(200, body: ["a"], headers: {
+  "x-version" : "1.0"
+});
+</code></pre>
+<p>For details on <code>failIfContainsUnmatchedHeader</code>, see <a href="../conduit_test/hasHeaders.html">hasHeaders</a>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Matcher hasResponse(int? statusCode,
+    {dynamic body,
+    Map&lt;String, dynamic&gt;? headers,
+    bool failIfContainsUnmatchedHeader = false}) {
+  return HTTPResponseMatcher(
+      statusCode,
+      headers != null
+          ? HTTPHeaderMatcher(headers,
+              shouldFailIfOthersPresent: failIfContainsUnmatchedHeader)
+          : null,
+      body != null ? HTTPBodyMatcher(body) : null);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">conduit_test</a></li>
+  <li><a href="../conduit_test/conduit_test-library.html">conduit_test</a></li>
+  <li class="self-crumb">hasResponse function</li>
+</ol>
+
+
+    <h5>conduit_test library</h5>
+    <ol>
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#classes">Classes</a></li>
+        <li><a href="../conduit_test/Agent-class.html">Agent</a></li>
+        <li><a href="../conduit_test/MockHTTPServer-class.html">MockHTTPServer</a></li>
+        <li><a href="../conduit_test/MockServer-class.html">MockServer</a></li>
+        <li><a href="../conduit_test/TestHarness-class.html">TestHarness</a></li>
+        <li><a href="../conduit_test/TestHarnessAuthMixin-class.html">TestHarnessAuthMixin</a></li>
+        <li><a href="../conduit_test/TestHarnessORMMixin-class.html">TestHarnessORMMixin</a></li>
+        <li><a href="../conduit_test/TestRequest-class.html">TestRequest</a></li>
+        <li><a href="../conduit_test/TestResponse-class.html">TestResponse</a></li>
+        <li><a href="../conduit_test/TestResponseBody-class.html">TestResponseBody</a></li>
+
+
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#constants">Constants</a></li>
+        <li><a href="../conduit_test/isBoolean-constant.html">isBoolean</a></li>
+        <li><a href="../conduit_test/isDouble-constant.html">isDouble</a></li>
+        <li><a href="../conduit_test/isInteger-constant.html">isInteger</a></li>
+        <li><a href="../conduit_test/isNotPresent-constant.html">isNotPresent</a></li>
+        <li><a href="../conduit_test/isNumber-constant.html">isNumber</a></li>
+        <li><a href="../conduit_test/isString-constant.html">isString</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#properties">Properties</a></li>
+        <li><a href="../conduit_test/isTimestamp.html">isTimestamp</a></li>
+
+      <li class="section-title"><a href="../conduit_test/conduit_test-library.html#functions">Functions</a></li>
+        <li><a href="../conduit_test/expectResponse.html">expectResponse</a></li>
+        <li><a href="../conduit_test/hasBody.html">hasBody</a></li>
+        <li><a href="../conduit_test/hasHeaders.html">hasHeaders</a></li>
+        <li><a href="../conduit_test/hasResponse.html">hasResponse</a></li>
+        <li><a href="../conduit_test/hasStatus.html">hasStatus</a></li>
+        <li><a href="../conduit_test/isAfter.html">isAfter</a></li>
+        <li><a href="../conduit_test/isAfterOrSameMomentAs.html">isAfterOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isBefore.html">isBefore</a></li>
+        <li><a href="../conduit_test/isBeforeOrSameMomentAs.html">isBeforeOrSameMomentAs</a></li>
+        <li><a href="../conduit_test/isSameMomentAs.html">isSameMomentAs</a></li>
+        <li><a href="../conduit_test/partial.html">partial</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    conduit_test
+      4.3.6
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
