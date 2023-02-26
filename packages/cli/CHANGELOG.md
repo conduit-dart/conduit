@@ -1,3 +1,7 @@
+## 4.3.7-beta
+
+ - More testing
+
 ## 4.3.7-alpha
 
  - Print out for debug of templates
