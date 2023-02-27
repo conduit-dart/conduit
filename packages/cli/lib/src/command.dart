@@ -267,6 +267,7 @@ abstract class CLICommand {
       final toolPubspecContents =
           loadYaml(toolPubspecFile.readAsStringSync()) as Map;
       final toolVersion = toolPubspecContents["version"] as String;
+      print(toolVersion);
       _toolVersion = Version.parse(toolVersion);
     } catch (e) {
       print(e);

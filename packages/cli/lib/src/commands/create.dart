@@ -428,7 +428,6 @@ Future<Directory?> templateDirectory(String toolVersion) async {
       ["pub", "cache", "list"],
       runInShell: true,
     );
-    print(toolVersion);
     final packageDir = Uri.directory(
         jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location'],
         windows: Platform.isWindows);
@@ -441,6 +440,5 @@ Future<Directory?> templateDirectory(String toolVersion) async {
 Future<Uri?> getTemplateLocation(
     String templateName, String toolVersion) async {
   final dirUri = await templateDirectory(toolVersion);
-  print(await templateDirectory(toolVersion));
   return dirUri?.uri.resolve("$templateName/");
 }
