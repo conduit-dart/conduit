@@ -362,7 +362,6 @@ class CLITemplateCreator extends CLICommand {
 
   /// test if the given package dir exists in the test path
   bool _testPackagePath(String testPath, String packageName) {
-    print(testPath);
     final String packagePath = _truepath(testPath);
     if (!_exists(packagePath)) {
       displayError(
