@@ -1,3 +1,9 @@
+## 4.3.7-epsilon
+
+ - test fix
+
+ - **REFACTOR**: Remove pub_cache. ([18837180](https://github.com/conduit-dart/conduit/commit/18837180b5f68ad6559ff6e005dcf1be3aa6a0c9))
+
 ## 4.3.6
 
  - **FIX**: trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))
