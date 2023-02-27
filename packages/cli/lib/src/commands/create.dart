@@ -428,6 +428,7 @@ Future<Directory?> templateDirectory(String toolVersion) async {
       ["pub", "cache", "list"],
       runInShell: true,
     );
+    print(jsonDecode(res.stdout)['packages']['conduit']);
     final packageDir = Uri.directory(
         jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location'],
         windows: Platform.isWindows);
