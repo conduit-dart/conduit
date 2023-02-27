@@ -245,7 +245,6 @@ class CLITemplateCreator extends CLICommand {
     overrideBuffer.writeln("dependency_overrides:");
     overrides.forEach((packageName, location) {
       final path = location.toFilePath(windows: Platform.isWindows);
-      print(path);
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
@@ -363,6 +362,7 @@ class CLITemplateCreator extends CLICommand {
 
   /// test if the given package dir exists in the test path
   bool _testPackagePath(String testPath, String packageName) {
+    print(testPath);
     final String packagePath = _truepath(testPath);
     if (!_exists(packagePath)) {
       displayError(
