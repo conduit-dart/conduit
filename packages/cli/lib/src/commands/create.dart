@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
 /// Used internally.
-class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
+class CLITemplateCreator extends CLICommand {
   CLITemplateCreator() {
     registerCommand(CLITemplateList());
   }
@@ -53,8 +53,8 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
     destDirectory.createSync();
 
-    final templateSourceDirectory =
-        Directory.fromUri(getTemplateLocation(templateName) ?? Uri());
+    final templateSourceDirectory = Directory.fromUri(
+        await getTemplateLocation(templateName, toolVersion.toString()));
     if (!templateSourceDirectory.existsSync()) {
       displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
@@ -66,27 +66,36 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
 
     createProjectSpecificFiles(destDirectory.path);
     try {
-      if (conduitPackageRef?.sourceType == "path") {
-        final conduitLocation = conduitPackageRef!.resolve()!.location;
-        if (!addDependencyOverridesToPackage(destDirectory.path, {
-          "conduit_codable": _packageUri(conduitLocation, 'codable'),
-          "conduit_common": _packageUri(conduitLocation, 'common'),
-          "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
-          "conduit_config": _packageUri(conduitLocation, 'config'),
-          "conduit_core": _packageUri(conduitLocation, 'core'),
-          "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
-          "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
-          "conduit_password_hash":
-              _packageUri(conduitLocation, 'password_hash'),
-          "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
-          "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
-          "conduit_test": _packageUri(conduitLocation, 'test_harness'),
-        })) {
-          displayError(
-            'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.',
-          );
-          throw StateError;
-        }
+      const String cmd = "dart";
+
+      final res = await Process.run(
+        cmd,
+        ["pub", "cache", "list"],
+        runInShell: true,
+      );
+      RegExp regex =
+          RegExp(r'^.*conduit.* at path "(/[^"]+)"$', multiLine: true);
+
+      Match? match = regex.firstMatch(res.stdout);
+      Directory conduitLocation = Directory(match!.group(1)!);
+
+      if (!addDependencyOverridesToPackage(destDirectory.path, {
+        "conduit_codable": _packageUri(conduitLocation, 'codable'),
+        "conduit_common": _packageUri(conduitLocation, 'common'),
+        "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
+        "conduit_config": _packageUri(conduitLocation, 'config'),
+        "conduit_core": _packageUri(conduitLocation, 'core'),
+        "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
+        "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
+        "conduit_password_hash": _packageUri(conduitLocation, 'password_hash'),
+        "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
+        "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
+        "conduit_test": _packageUri(conduitLocation, 'test_harness'),
+      })) {
+        displayError(
+          'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.',
+        );
+        throw StateError;
       }
     } catch (e) {
       displayError(e.toString());
@@ -371,10 +380,11 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   String _truepath(String path) => canonicalize(absolute(path));
 }
 
-class CLITemplateList extends CLICommand with CLIConduitGlobal {
+class CLITemplateList extends CLICommand {
   @override
   Future<int> handle() async {
-    final templateRootDirectory = Directory.fromUri(templateDirectory ?? Uri());
+    final templateRootDirectory =
+        (await templateDirectory(toolVersion.toString()))!;
     final templateDirectories = await templateRootDirectory
         .list()
         .where((fse) => fse is Directory)
@@ -412,28 +422,25 @@ class CLITemplateList extends CLICommand with CLIConduitGlobal {
   }
 }
 
-class CLIConduitGlobal {
-  PubCache pub = PubCache();
+Future<Directory?> templateDirectory(String toolVersion) async {
+  const String cmd = "dart";
 
-  PackageRef? get conduitPackageRef {
-    final apps = pub.getGlobalApplications();
-    if (apps.isEmpty) {
-      return null;
-    }
-    try {
-      return apps
-          .firstWhere((app) => app.name == "conduit")
-          .getDefiningPackageRef();
-    } catch (_) {
-      return null;
-    }
+  try {
+    final res = await Process.run(
+      cmd,
+      ["pub", "cache", "list"],
+      runInShell: true,
+    );
+    final packageDir = Uri.directory(
+        jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location'],
+        windows: Platform.isWindows);
+    return Directory.fromUri(packageDir.resolve('templates'));
+  } catch (_) {
+    return null;
   }
+}
 
-  Uri? get templateDirectory {
-    return conduitPackageRef?.resolve()?.location.uri.resolve("templates/");
-  }
-
-  Uri? getTemplateLocation(String templateName) {
-    return templateDirectory?.resolve("$templateName/");
-  }
+Future<Uri> getTemplateLocation(String templateName, String toolVersion) async {
+  final dirUri = await templateDirectory(toolVersion);
+  return dirUri!.uri.resolve("$templateName/");
 }
