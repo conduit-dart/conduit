@@ -373,7 +373,7 @@ class CLITemplateCreator extends CLICommand {
     return true;
   }
 
-  String _truepath(String path) => canonicalize(path);
+  String _truepath(String path) => absolute(path);
 }
 
 class CLITemplateList extends CLICommand {
