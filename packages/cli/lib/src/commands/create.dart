@@ -425,7 +425,7 @@ class CLIConduitGlobal {
       return apps
           .firstWhere((app) => app.name == "conduit")
           .getDefiningPackageRef();
-    } catch (_) {
+    } catch (e) {
       return null;
     }
   }

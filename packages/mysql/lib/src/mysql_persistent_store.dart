@@ -385,7 +385,7 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
       useSSL: isSSLConnection,
     );
 
-    return MySqlConnection.connect(settings, isUnixSocket: !Platform.isWindows);
+    return MySqlConnection.connect(settings);
   }
 }
 

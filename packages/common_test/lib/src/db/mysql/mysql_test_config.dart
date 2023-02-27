@@ -45,7 +45,6 @@ class MySqlTestConfig {
     host ??= this.host;
     port ??= this.port;
     dbName ??= this.dbName;
-
     return MySqlPersistentStore(username, password, host, port, dbName);
   }
 
@@ -124,7 +123,7 @@ class MySqlTestConfig {
   String get password => _password ??= _fromEnv('MYSQL_PASSWORD')!;
 
   String? _dbName;
-  String get dbName => _dbName ??= _fromEnv('MYSQL_DB')!;
+  String get dbName => _dbName ??= _fromEnv('MYSQL_DATABASE')!;
 
   String? _fromEnv(String key) {
     String? value;
