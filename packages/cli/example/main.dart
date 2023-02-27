@@ -13,6 +13,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 Future main() async {
   final app = Application<App>()

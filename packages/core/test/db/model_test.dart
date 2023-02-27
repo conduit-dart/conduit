@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls, avoid_setters_without_getters
-
 import 'dart:convert';
 
 import 'package:conduit_common_test/conduit_common_test.dart';
@@ -299,11 +297,12 @@ void main() {
 
   test("mappableOutput properties are emitted in asMap", () {
     var t = TransientTest()..text = "foo";
+    final map = t.asMap();
 
-    expect(t.asMap()["defaultedText"], "Mr. foo");
-    expect(t.asMap()["outputOnly"], "foo");
-    expect(t.asMap()["bothButOnlyOnOne"], "foo");
-    expect(t.asMap()["bothOverQualified"], "foo");
+    expect(map["defaultedText"], "Mr. foo");
+    expect(map["outputOnly"], "foo");
+    expect(map["bothButOnlyOnOne"], "foo");
+    expect(map["bothOverQualified"], "foo");
 
     t = TransientTest()..outputInt = 2;
     expect(t.asMap()["outputInt"], 2);
@@ -1090,7 +1089,6 @@ class _ConstructorOverride {
 
 class DefaultConstructorHasOptionalArgs
     extends ManagedObject<_ConstructorTableDef> {
-  // ignore: avoid_unused_constructor_parameters
   DefaultConstructorHasOptionalArgs({int? foo});
 }
 

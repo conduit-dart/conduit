@@ -10,3 +10,4 @@ export 'set.dart';
 export 'type.dart';
 export 'validation/managed.dart';
 export 'validation/metadata.dart';
+export 'key_path.dart';

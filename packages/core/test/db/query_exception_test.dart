@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 

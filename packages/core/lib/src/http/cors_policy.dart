@@ -46,7 +46,6 @@ class CORSPolicy {
   /// You may modify this default policy. All instances of [CORSPolicy] are instantiated
   /// using the values of this default policy. Do not modify this property
   /// unless you want the defaults to change application-wide.
-  // ignore: prefer_constructors_over_static_methods
   static CORSPolicy get defaultPolicy {
     return _defaultPolicy ??= CORSPolicy._defaults();
   }

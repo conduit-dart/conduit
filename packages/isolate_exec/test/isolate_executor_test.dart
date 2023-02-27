@@ -110,8 +110,6 @@ class AdditionalContents { int get id => 10; }
             Uri.file(join(projDir, ".dart_tool/package_config.json")),
       );
       fail('unreachable');
-
-      //ignore: avoid_catching_errors
     } on StateError catch (e, st) {
       expect(e.toString(), contains("thrower-error"));
       expect(st.toString().contains("import"), false);
@@ -196,7 +194,7 @@ class AdditionalContentsInstantiator extends Executable {
   @override
   Future<dynamic> execute() async {
     final obj = instanceOf("AdditionalContents");
-    // ignore: avoid_dynamic_calls
+
     return obj.id;
   }
 }

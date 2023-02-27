@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit/src/cli/runner.dart';
+import 'package:conduit/src/runner.dart';
 
 Future main(List<String> args) async {
   final runner = Runner();

@@ -1,7 +1,4 @@
-import 'package:conduit_core/src/db/managed/key_path.dart';
-
 import 'package:conduit_core/src/db/managed/managed.dart';
-import 'package:conduit_core/src/db/query/matcher_internal.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
 /// Contains binary logic operations to be applied to a [QueryExpression].
@@ -46,7 +43,6 @@ class QueryExpression<T, InstanceType> {
   bool _invertNext = false;
   PredicateExpression? _expression;
 
-  // ignore: use_to_and_as_if_applicable
   QueryExpressionJunction<T, InstanceType> _createJunction() =>
       QueryExpressionJunction<T, InstanceType>._(this);
 

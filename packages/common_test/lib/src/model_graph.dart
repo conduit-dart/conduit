@@ -14,7 +14,6 @@ class RootObject extends ManagedObject<_RootObject> implements _RootObject {
 
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return rid == other.cid;
   }
 
@@ -46,7 +45,6 @@ class ChildObject extends ManagedObject<_ChildObject> implements _ChildObject {
 
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return cid == other.cid;
   }
 
@@ -83,7 +81,6 @@ class GrandChildObject extends ManagedObject<_GrandChildObject>
 
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return gid == other.cid;
   }
 
@@ -117,7 +114,6 @@ class OtherRootObject extends ManagedObject<_OtherRootObject>
 
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return id == other.cid;
   }
 
@@ -139,7 +135,6 @@ class RootJoinObject extends ManagedObject<_RootJoinObject>
     implements _RootJoinObject {
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return id == other.cid;
   }
 

@@ -1,6 +1,5 @@
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/managed/backing.dart';
-import 'package:conduit_core/src/db/managed/key_path.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/managed/relationship_type.dart';
 import 'package:conduit_core/src/db/query/query.dart';
@@ -332,7 +331,6 @@ class ManagedEntity implements APIComponentDocumenter {
   /// Two entities are considered equal if they have the same [tableName].
   @override
   bool operator ==(dynamic other) {
-    // ignore: avoid_dynamic_calls
     return tableName == other.tableName;
   }
 

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic_calls, overridden_fields
+// ignore_for_file: overridden_fields
 
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';

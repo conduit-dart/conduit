@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_dynamic_calls
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,7 +31,6 @@ void main() {
             ..referenceURI = Uri.parse("#/components/schemas/foo"),
         );
         expect(true, false);
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Invalid reference URI"));
       }
@@ -43,7 +40,6 @@ void main() {
           APISchemaObject()..referenceURI = Uri.parse("#/components/schemas"),
         );
         expect(true, false);
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Invalid reference URI"));
       }
@@ -53,7 +49,6 @@ void main() {
           APISchemaObject()..referenceURI = Uri.parse("/components/foobar/foo"),
         );
         expect(true, false);
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.message, contains("Invalid reference URI"));
       }

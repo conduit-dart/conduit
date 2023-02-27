@@ -1,3 +1,19 @@
+## 4.3.6
+
+ - **FIX**: trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))
+
+## 4.3.5
+
+ - **FIX**: test publish CI. ([7444f6ed](https://github.com/conduit-dart/conduit/commit/7444f6ed7042bfab50ce6bc285fa16530c69d34d))
+
+## 4.3.2
+
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+
+## 4.2.2
+
+ - **FIX**: Attach finalizer on commit ([#186](https://github.com/conduit-dart/conduit/issues/186)). ([8408280e](https://github.com/conduit-dart/conduit/commit/8408280e23c5982e80d210034468b4ab5214a368))
+
 ## 4.2.1-rc.1
 
  - finalize on close

@@ -35,7 +35,7 @@ void main() {
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
-      // ignore: unawaited_futures
+
       sc.close();
 
       final result = await resultFuture;
@@ -55,7 +55,7 @@ void main() {
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
       sc.addError(Exception("Whatever"));
-      // ignore: unawaited_futures
+
       sc.close();
 
       final resp = await resultFuture;
@@ -86,7 +86,7 @@ void main() {
 
       sc.add([1, 2, 3, 4]);
       sc.add([5, 6, 7, 8]);
-      // ignore: unawaited_futures
+
       sc.close();
 
       // The test fails for a different reason in checked vs. unchecked mode.
@@ -116,7 +116,7 @@ void main() {
 
       sc.add("abcd");
       sc.add("efgh");
-      // ignore: unawaited_futures
+
       sc.close();
 
       final result = await resultFuture;
@@ -138,7 +138,7 @@ void main() {
 
       sc.add("abcd");
       sc.add("efgh");
-      // ignore: unawaited_futures
+
       sc.close();
 
       try {
@@ -184,7 +184,7 @@ void main() {
 
       sc.add("abcd");
       sc.add("efgh");
-      // ignore: unawaited_futures
+
       sc.close();
 
       final resp = await respFuture;
@@ -217,7 +217,7 @@ void main() {
 
       sc.add("abcd");
       sc.add("efgh");
-      // ignore: unawaited_futures
+
       sc.close();
 
       final resp = await respFuture;
@@ -247,7 +247,7 @@ void main() {
       final respFuture = req.close();
 
       sc.add([1, 2, 3, 4]);
-      // ignore: unawaited_futures
+
       sc.close();
 
       final resp = await respFuture;
@@ -274,7 +274,7 @@ void main() {
       final respFuture = req.close();
 
       sc.add("abcd");
-      // ignore: unawaited_futures
+
       sc.close();
 
       final resp = await respFuture;

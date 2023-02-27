@@ -1,5 +1,3 @@
-// ignore_for_file: comment_references
-
 import 'package:conduit_core/src/http/request_path.dart';
 import 'package:conduit_core/src/http/resource_controller.dart';
 import 'package:conduit_core/src/http/serializable.dart';

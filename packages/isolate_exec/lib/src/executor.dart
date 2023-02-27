@@ -38,7 +38,6 @@ class IsolateExecutor<U> {
       ..listen((err) async {
         if (err is List) {
           final stack =
-              // ignore: avoid_dynamic_calls
               StackTrace.fromString(err.last.replaceAll(scriptSource, ""));
 
           completer.completeError(StateError(err.first), stack);

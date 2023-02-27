@@ -105,7 +105,6 @@ void main() {
 
       var responseReturned = false;
       final responseFuture = testClient.request("/hello").get();
-      // ignore: unawaited_futures
       responseFuture.whenComplete(() => responseReturned = true);
 
       await Future.delayed(const Duration(milliseconds: 100));
@@ -122,7 +121,6 @@ void main() {
 
       var responseReturned = false;
       var responseFuture = testClient.request("/hello").get();
-      // ignore: unawaited_futures
       responseFuture.whenComplete(() => responseReturned = true);
 
       await Future.delayed(const Duration(milliseconds: 100));
@@ -135,7 +133,7 @@ void main() {
 
       responseReturned = false;
       responseFuture = testClient.request("/hello").get();
-      // ignore: unawaited_futures
+
       responseFuture.whenComplete(() => responseReturned = true);
 
       await Future.delayed(const Duration(milliseconds: 100));
@@ -149,7 +147,7 @@ void main() {
 
       var responseReturned = false;
       final responseFuture = testClient.request("/hello").get();
-      // ignore: unawaited_futures
+
       responseFuture.whenComplete(() => responseReturned = true);
 
       await Future.delayed(const Duration(milliseconds: 100));
@@ -213,8 +211,7 @@ Future Function(List) spawnFunc(int port) {
     final delay = pair.last as int;
     final testClient = Agent.onPort(port);
     sleep(Duration(seconds: delay));
-    // ignore: body_might_complete_normally_catch_error
-    await testClient.request(path).get().catchError((_) {});
+    await testClient.request(path).get();
   };
 }
 

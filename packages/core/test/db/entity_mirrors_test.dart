@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, empty_catches, cast_nullable_to_non_nullable
-
 import 'dart:mirrors';
 
 import 'package:conduit_core/conduit_core.dart';
@@ -30,20 +28,28 @@ void main() {
     try {
       getManagedTypeFromType(typeOf(#invalidMapKey));
       fail("unreachable");
-    } on UnsupportedError {}
+    } on UnsupportedError {
+      //empty
+    }
     try {
       getManagedTypeFromType(typeOf(#invalidMapValue));
       fail("unreachable");
-    } on UnsupportedError {}
+    } on UnsupportedError {
+      //empty
+    }
     try {
       getManagedTypeFromType(typeOf(#invalidList));
       fail("unreachable");
-    } on UnsupportedError {}
+    } on UnsupportedError {
+      //empty
+    }
 
     try {
       getManagedTypeFromType(typeOf(#uri));
       fail("unreachable");
-    } on UnsupportedError {}
+    } on UnsupportedError {
+      //empty
+    }
   });
   test("Private channel fails and notifies with appropriate message", () async {
     final crashingApp = Application<_PrivateChannel>();

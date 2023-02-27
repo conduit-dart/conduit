@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors
-
 import 'package:conduit_core/src/db/managed/data_model.dart';
 import 'package:conduit_core/src/db/managed/entity.dart';
 import 'package:conduit_core/src/db/managed/relationship_type.dart';

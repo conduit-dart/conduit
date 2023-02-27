@@ -7,7 +7,6 @@ import 'package:conduit_open_api/src/v3/parameter.dart';
 
 enum APISecuritySchemeType { apiKey, http, oauth2, openID }
 
-// ignore: avoid_classes_with_only_static_members
 class APISecuritySchemeTypeCodec {
   static APISecuritySchemeType? decode(String? type) {
     switch (type) {

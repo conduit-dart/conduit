@@ -4,12 +4,13 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=2.19.0 <4.0.0"
 
 dependencies:
-  conduit: ^4.1.6
-  conduit_core: ^4.0.0
+  conduit: ^4.3.0
+  conduit_core: ^4.3.0
+  conduit_postgresql: ^4.3.0
 
 dev_dependencies:
   test: ^1.21.6
-  conduit_test: ^4.0.0
+  conduit_test: ^4.3.0

@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: conduit_common_test
+# melos_managed_dependency_overrides: conduit_common_test,conduit_postgresql
 dependency_overrides:
   conduit_codable:
     path: ../codable
@@ -16,5 +16,7 @@ dependency_overrides:
     path: ../open_api
   conduit_password_hash:
     path: ../password_hash
+  conduit_postgresql:
+    path: ../postgresql
   conduit_runtime:
     path: ../runtime

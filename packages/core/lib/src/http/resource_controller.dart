@@ -1,5 +1,3 @@
-// ignore_for_file: comment_references, avoid_catching_errors
-
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
@@ -312,7 +310,6 @@ abstract class ResourceController extends Controller
     final errors = <String>[];
     dynamic errorCatchWrapper(ResourceControllerParameter p, f) {
       try {
-        // ignore: avoid_dynamic_calls
         return f();
       } on ArgumentError catch (e) {
         errors.add(

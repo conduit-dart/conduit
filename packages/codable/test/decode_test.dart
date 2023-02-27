@@ -170,7 +170,6 @@ void main() {
       try {
         archive.decodeObject("key", () => Parent());
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError {
         // no action required
       }
@@ -199,7 +198,6 @@ void main() {
       try {
         archive.decodeObjects("key", () => Parent());
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError {
         // no op
       }
@@ -217,7 +215,6 @@ void main() {
       try {
         archive.decodeObjects("key", () => Parent());
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on TypeError {
         // no op
       }
@@ -243,7 +240,6 @@ void main() {
       try {
         archive.decodeObjectMap("key", () => Parent());
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on ArgumentError {
         // no op
       }
@@ -258,7 +254,6 @@ void main() {
       try {
         archive.decodeObjectMap("key", () => Parent());
         fail('unreachable');
-        // ignore: avoid_catching_errors
       } on TypeError {
         // no op
       }
@@ -351,7 +346,6 @@ void main() {
           allowReferences: true,
         );
         fail("unreachable");
-        // ignore: avoid_catching_errors
       } on ArgumentError catch (e) {
         expect(e.toString(), contains("/child"));
       }

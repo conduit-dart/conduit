@@ -95,8 +95,8 @@ class A extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -107,8 +107,8 @@ class B extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -116,7 +116,7 @@ class FailsToDocument extends Serializable {
   HttpServer? nonsenseProperty;
 
   @override
-  Map<String, dynamic>? asMap() => null;
+  Map<String, dynamic> asMap() => {};
 
   @override
   void readFromMap(Map<String, dynamic> requestBody) {}
@@ -129,7 +129,7 @@ class OverrideDocument extends Serializable {
   }
 
   @override
-  Map<String, dynamic>? asMap() => null;
+  Map<String, dynamic> asMap() => {};
 
   @override
   void readFromMap(Map<String, dynamic> requestBody) {}
@@ -139,7 +139,7 @@ class BoundBody extends Serializable {
   int? x;
 
   @override
-  Map<String, dynamic>? asMap() => null;
+  Map<String, dynamic> asMap() => {};
 
   @override
   void readFromMap(Map<String, dynamic> requestBody) {}

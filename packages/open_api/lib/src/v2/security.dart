@@ -11,7 +11,6 @@ enum APISecuritySchemeFlow {
   authorizationCode
 }
 
-// ignore: avoid_classes_with_only_static_members
 class APISecuritySchemeFlowCodec {
   static APISecuritySchemeFlow? decode(String? flow) {
     switch (flow) {

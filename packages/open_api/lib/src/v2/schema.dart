@@ -35,33 +35,33 @@ class APISchemaObject extends APIProperty {
       {"required": const cast.List(cast.string)};
 
   @override
-  void decode(KeyedArchive json) {
-    super.decode(json);
+  void decode(KeyedArchive object) {
+    super.decode(object);
 
-    title = json.decode("title");
-    description = json.decode("description");
-    isRequired = json.decode("required");
-    example = json.decode("example");
-    readOnly = json.decode("readOnly") ?? false;
+    title = object.decode("title");
+    description = object.decode("description");
+    isRequired = object.decode("required");
+    example = object.decode("example");
+    readOnly = object.decode("readOnly") ?? false;
 
-    items = json.decodeObject("items", () => APISchemaObject());
+    items = object.decodeObject("items", () => APISchemaObject());
     additionalProperties =
-        json.decodeObject("additionalProperties", () => APISchemaObject());
-    properties = json.decodeObjectMap("properties", () => APISchemaObject());
+        object.decodeObject("additionalProperties", () => APISchemaObject());
+    properties = object.decodeObjectMap("properties", () => APISchemaObject());
   }
 
   @override
-  void encode(KeyedArchive json) {
-    super.encode(json);
+  void encode(KeyedArchive object) {
+    super.encode(object);
 
-    json.encode("title", title);
-    json.encode("description", description);
-    json.encode("required", isRequired);
-    json.encode("example", example);
-    json.encode("readOnly", readOnly);
+    object.encode("title", title);
+    object.encode("description", description);
+    object.encode("required", isRequired);
+    object.encode("example", example);
+    object.encode("readOnly", readOnly);
 
-    json.encodeObject("items", items);
-    json.encodeObject("additionalProperties", additionalProperties);
-    json.encodeObjectMap("properties", properties);
+    object.encodeObject("items", items);
+    object.encodeObject("additionalProperties", additionalProperties);
+    object.encodeObjectMap("properties", properties);
   }
 }

@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catching_errors, avoid_dynamic_calls
-
 import 'dart:async';
 
 import 'package:conduit_common/conduit_common.dart';
@@ -26,13 +24,12 @@ void main() {
       DefaultChannel.controllerPrepared = Completer();
       DefaultChannel.appPrepared = Completer();
 
-      // ignore: unawaited_futures
       DefaultChannel.appPrepared!.future
           .then((_) => appPrepared = DateTime.now());
-      // ignore: unawaited_futures
+
       DefaultChannel.controllerPrepared!.future
           .then((_) => controllerPrepared = DateTime.now());
-      // ignore: unawaited_futures
+
       DefaultChannel.controllerDocumented!.future
           .then((_) => controllerDocumented = DateTime.now());
       doc = await Application.document(DefaultChannel, ApplicationOptions(), {
@@ -509,8 +506,8 @@ class ComplexTypes extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -520,8 +517,8 @@ class InvalidMapKey extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -531,8 +528,8 @@ class InvalidListValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -542,8 +539,8 @@ class InvalidMapValue extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 
@@ -554,8 +551,8 @@ class Serial extends Serializable {
   void readFromMap(Map<String, dynamic> requestBody) {}
 
   @override
-  Map<String, dynamic>? asMap() {
-    return null;
+  Map<String, dynamic> asMap() {
+    return {};
   }
 }
 

@@ -1,9 +1,9 @@
 name: conduit_password_hash
-version: 4.2.1
+version: 4.3.6
 homepage: https://github.com/conduit/dart-password-hash
 description: PBKDF2 password hashing utility
 environment:
-  sdk: '>=2.19.0 <3.0.0'
+  sdk: '>=2.19.0 <4.0.0'
 dependencies:
   crypto: ^3.0.2
 dev_dependencies:

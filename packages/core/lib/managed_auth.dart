@@ -302,7 +302,6 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
     extends AuthServerDelegate {
   /// Creates an instance of this type.
   ///
-  // ignore: comment_references
   /// [context]'s [ManagedDataModel] must contain [T], [ManagedAuthToken] and [ManagedAuthClient].
   ManagedAuthDelegate(this.context, {this.tokenLimit = 40});
 

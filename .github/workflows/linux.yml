@@ -20,10 +20,12 @@ jobs:
     - name: Setup Conduit
       run: |
         dart pub global activate -spath packages/cli
+        dart pub global activate melos
+        melos cache-source
     - name: Run tests
       working-directory: ../
       run: |
-        conduit create -t db_and_auth wildfire
+        conduit create -t db_and_auth --offline wildfire
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build
@@ -66,4 +68,4 @@ jobs:
           dart pub get --directory=packages/runtime_test_packages/dependency --offline
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
-        run: . ../../ci/.env && ${{ matrix.runner_args }} && psql -p15432 -U conduit_test_user -h 127.0.0.1 -c "SELECT * FROM pg_stat_activity;"
+        run: . ../../ci/.env && ${{ matrix.runner_args }}

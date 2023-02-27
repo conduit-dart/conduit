@@ -28,11 +28,11 @@ scripts:
     select-pacakge:
       no-private: true
   cache-source:
-    run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && cp -R '\$MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
+    run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && cp -rf '\$MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
       no-private: true
   cache-source-win:
-    run: melos exec -- "mkdir %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION && xcopy $MELOS_PACKAGE_PATH %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION"
+    run: melos exec -- "mkdir %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION && xcopy $MELOS_PACKAGE_PATH %PUB_CACHE%\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION /Y /s /e"
     select-pacakge:
       no-private: true
   hard-clean:
@@ -47,5 +47,5 @@ scripts:
     select-pacakge:
       no-private: true
 environment:
-  sdk: ">=2.19.0 <3.0.0"
+  sdk: ">=2.19.0 <4.0.0"
   

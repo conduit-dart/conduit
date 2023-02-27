@@ -1,6 +1,5 @@
 enum APIType { string, number, integer, boolean, array, object }
 
-// ignore: avoid_classes_with_only_static_members
 class APITypeCodec {
   static APIType? decode(String? type) {
     switch (type) {

@@ -1,5 +1,3 @@
-// ignore_for_file: no_adjacent_strings_in_list
-
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/managed/relationship_type.dart';
@@ -92,7 +90,6 @@ class SchemaTable {
   List<SchemaColumn>? _columnStorage;
   List<String>? _uniqueColumnSet;
 
-  // ignore: avoid_setters_without_getters
   set _columns(List<SchemaColumn> columns) {
     _columnStorage = columns;
     for (final c in _columnStorage!) {
