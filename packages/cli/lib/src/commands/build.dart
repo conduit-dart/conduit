@@ -6,6 +6,7 @@ import 'dart:mirrors';
 
 import 'package:args/args.dart' as arg_package;
 import 'package:conduit/src/command.dart';
+import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_core/conduit_core.dart';
@@ -49,29 +50,8 @@ class CLIBuild extends CLICommand with CLIProject {
         .where((pkg) => pkg.name.startsWith('conduit_'))
         .map((pkg) => pkg.name);
 
-    const String cmd = "dart";
-    final args = ["pub", "cache", "add", "-v", projectVersion!.toString()];
-    for (final String name in packageNames) {
-      final res = await Process.run(
-        cmd,
-        [...args, name],
-        runInShell: true,
-      );
-      if (res.exitCode != 0) {
-        final retry = await Process.run(
-          cmd,
-          [...args.sublist(0, 3), name],
-          runInShell: true,
-        );
-        if (retry.exitCode != 0) {
-          print("${res.stdout}");
-          print("${res.stderr}");
-          throw StateError(
-            "'pub cache' failed with the following message: ${res.stderr}",
-          );
-        }
-      }
-    }
+    await cachePackages(packageNames, projectVersion!.toString());
+
     print("Starting build process...");
 
     final bm = BuildManager(ctx);

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit/src/command.dart';
+import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path/path.dart';
@@ -53,6 +54,7 @@ class CLITemplateCreator extends CLICommand {
 
     destDirectory.createSync();
 
+    await cachePackages(['conduit'], toolVersion!.toString());
     final templateSourceDirectory = Directory.fromUri(
         await getTemplateLocation(templateName, toolVersion.toString()) ??
             Uri());
