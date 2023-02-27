@@ -53,8 +53,37 @@ class CLITemplateCreator extends CLICommand {
     }
 
     destDirectory.createSync();
+    Uri? globalPath = await findGlobalPath();
+    if (globalPath != null) {
+      Directory conduitLocation = Directory(globalPath.toString());
+      try {
+        if (!addDependencyOverridesToPackage(destDirectory.path, {
+          "conduit_codable": _packageUri(conduitLocation, 'codable'),
+          "conduit_common": _packageUri(conduitLocation, 'common'),
+          "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
+          "conduit_config": _packageUri(conduitLocation, 'config'),
+          "conduit_core": _packageUri(conduitLocation, 'core'),
+          "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
+          "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
+          "conduit_password_hash":
+              _packageUri(conduitLocation, 'password_hash'),
+          "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
+          "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
+          "conduit_test": _packageUri(conduitLocation, 'test_harness'),
+        })) {
+          displayError(
+            'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.',
+          );
+          throw StateError;
+        }
+      } catch (e) {
+        displayError(e.toString());
+        return 1;
+      }
+    } else {
+      await cachePackages(['conduit'], toolVersion!.toString());
+    }
 
-    await cachePackages(['conduit'], toolVersion!.toString());
     final templateSourceDirectory = Directory.fromUri(
         await getTemplateLocation(templateName, toolVersion.toString()) ??
             Uri());
@@ -68,42 +97,6 @@ class CLITemplateCreator extends CLICommand {
     copyProjectFiles(destDirectory, templateSourceDirectory, projectName);
 
     createProjectSpecificFiles(destDirectory.path);
-    try {
-      const String cmd = "dart";
-
-      final res = await Process.run(
-        cmd,
-        ["pub", "global", "list"],
-        runInShell: true,
-      );
-      RegExp regex =
-          RegExp(r'^.*conduit.* at path "(/[^"]+)"$', multiLine: true);
-
-      Match? match = regex.firstMatch(res.stdout);
-      Directory conduitLocation = Directory(match!.group(1)!);
-
-      if (!addDependencyOverridesToPackage(destDirectory.path, {
-        "conduit_codable": _packageUri(conduitLocation, 'codable'),
-        "conduit_common": _packageUri(conduitLocation, 'common'),
-        "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
-        "conduit_config": _packageUri(conduitLocation, 'config'),
-        "conduit_core": _packageUri(conduitLocation, 'core'),
-        "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
-        "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
-        "conduit_password_hash": _packageUri(conduitLocation, 'password_hash'),
-        "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
-        "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
-        "conduit_test": _packageUri(conduitLocation, 'test_harness'),
-      })) {
-        displayError(
-          'You are running from a local source (pub global activate --source=path) version of conduit and are missing the source for some dependencies.',
-        );
-        throw StateError;
-      }
-    } catch (e) {
-      displayError(e.toString());
-      return 1;
-    }
 
     displayInfo(
       "Fetching project dependencies (pub get ${offline ? "--offline" : ""})...",
