@@ -87,6 +87,7 @@ class CLITemplateCreator extends CLICommand {
     final templateSourceDirectory = Directory.fromUri(
         await getTemplateLocation(templateName, toolVersion.toString()) ??
             Uri());
+    print(templateSourceDirectory);
     if (!templateSourceDirectory.existsSync()) {
       displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
