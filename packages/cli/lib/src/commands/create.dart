@@ -373,7 +373,8 @@ class CLITemplateCreator extends CLICommand {
     return true;
   }
 
-  String _truepath(String path) => absolute(path);
+  String _truepath(String path) =>
+      Uri.parse(path).toFilePath(windows: Platform.isWindows);
 }
 
 class CLITemplateList extends CLICommand {
