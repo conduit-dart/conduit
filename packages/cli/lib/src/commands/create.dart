@@ -245,7 +245,7 @@ class CLITemplateCreator extends CLICommand {
     overrideBuffer.writeln("dependency_overrides:");
     overrides.forEach((packageName, location) {
       final path = location.toFilePath(windows: Platform.isWindows);
-
+      print(path);
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
