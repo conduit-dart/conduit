@@ -256,7 +256,7 @@ abstract class CLICommand {
         currentMirrorSystem().findLibrary(#conduit).uri,
       ))!
           .toFilePath(windows: Platform.isWindows);
-      print(toolLibraryFilePath);
+      print(currentMirrorSystem().findLibrary(#conduit).uri);
       final conduitDirectory = Directory(
         FileSystemEntity.parentOf(
           FileSystemEntity.parentOf(toolLibraryFilePath),
