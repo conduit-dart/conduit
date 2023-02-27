@@ -440,5 +440,6 @@ Future<Directory?> templateDirectory(String toolVersion) async {
 Future<Uri?> getTemplateLocation(
     String templateName, String toolVersion) async {
   final dirUri = await templateDirectory(toolVersion);
+  print(await templateDirectory(toolVersion));
   return dirUri?.uri.resolve("$templateName/");
 }
