@@ -73,16 +73,14 @@ class CLITemplateCreator extends CLICommand {
 
       final res = await Process.run(
         cmd,
-        ["pub", "cache", "list"],
+        ["pub", "global", "list"],
         runInShell: true,
       );
       RegExp regex =
           RegExp(r'^.*conduit.* at path "(/[^"]+)"$', multiLine: true);
 
-      print(res.stdout);
       Match? match = regex.firstMatch(res.stdout);
-      print(match!.group(1)!);
-      Directory conduitLocation = Directory(match.group(1)!);
+      Directory conduitLocation = Directory(match!.group(1)!);
 
       if (!addDependencyOverridesToPackage(destDirectory.path, {
         "conduit_codable": _packageUri(conduitLocation, 'codable'),
