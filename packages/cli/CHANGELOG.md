@@ -1,16 +1,6 @@
-## 4.3.7-groot
+## 4.3.7
 
- - ye
-
-## 4.3.7-frogger
-
- - yup
-
-## 4.3.7-epsilon
-
- - test fix
-
- - **REFACTOR**: Remove pub_cache. ([18837180](https://github.com/conduit-dart/conduit/commit/18837180b5f68ad6559ff6e005dcf1be3aa6a0c9))
+ - Fix template path
 
 ## 4.3.6
 
