@@ -256,6 +256,7 @@ abstract class CLICommand {
         currentMirrorSystem().findLibrary(#conduit).uri,
       ))!
           .toFilePath(windows: Platform.isWindows);
+      print(toolLibraryFilePath);
       final conduitDirectory = Directory(
         FileSystemEntity.parentOf(
           FileSystemEntity.parentOf(toolLibraryFilePath),
@@ -267,7 +268,6 @@ abstract class CLICommand {
       final toolPubspecContents =
           loadYaml(toolPubspecFile.readAsStringSync()) as Map;
       final toolVersion = toolPubspecContents["version"] as String;
-      print(toolVersion);
       _toolVersion = Version.parse(toolVersion);
     } catch (e) {
       print(e);
