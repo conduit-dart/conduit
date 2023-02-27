@@ -54,7 +54,8 @@ class CLITemplateCreator extends CLICommand {
     destDirectory.createSync();
 
     final templateSourceDirectory = Directory.fromUri(
-        await getTemplateLocation(templateName, toolVersion.toString()));
+        await getTemplateLocation(templateName, toolVersion.toString()) ??
+            Uri());
     if (!templateSourceDirectory.existsSync()) {
       displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
@@ -440,7 +441,8 @@ Future<Directory?> templateDirectory(String toolVersion) async {
   }
 }
 
-Future<Uri> getTemplateLocation(String templateName, String toolVersion) async {
+Future<Uri?> getTemplateLocation(
+    String templateName, String toolVersion) async {
   final dirUri = await templateDirectory(toolVersion);
-  return dirUri!.uri.resolve("$templateName/");
+  return dirUri?.uri.resolve("$templateName/");
 }
