@@ -57,9 +57,9 @@ Future<String?> findGlobalVersion() async {
     ["pub", "global", "list"],
     runInShell: true,
   );
-  RegExp lineRegex = RegExp(r'^conduit\b.*$');
+  RegExp lineRegex = RegExp(r'^conduit .*$');
   RegExp versionRegex =
-      RegExp(r'\b\d+\.\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*)?\b');
+      RegExp(r'\d+\.\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*)?');
   print(res.stdout);
   Match? lineMatch = lineRegex.firstMatch(res.stdout);
   if (lineMatch != null) {
