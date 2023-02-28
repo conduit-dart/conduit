@@ -48,3 +48,25 @@ Future<Uri?> findGlobalPath() async {
   }
   return null;
 }
+
+Future<String?> findGlobalVersion() async {
+  const String cmd = "dart";
+
+  final res = await Process.run(
+    cmd,
+    ["pub", "global", "list"],
+    runInShell: true,
+  );
+  RegExp lineRegex = RegExp(r'^conduit\b.*$');
+  RegExp versionRegex =
+      RegExp(r'\b\d+\.\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*)?\b');
+
+  Match? lineMatch = lineRegex.firstMatch(res.stdout);
+  if (lineMatch != null) {
+    Match? versionMatch = versionRegex.firstMatch(lineMatch.group(0)!);
+    if (versionMatch != null) {
+      return versionMatch.group(0)!;
+    }
+  }
+  return null;
+}

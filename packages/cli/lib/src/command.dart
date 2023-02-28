@@ -7,6 +7,7 @@ import 'dart:mirrors';
 
 import 'package:args/args.dart' as args;
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/running_process.dart';
 import 'package:conduit_runtime/runtime.dart';
@@ -252,23 +253,8 @@ abstract class CLICommand {
 
   Future determineToolVersion() async {
     try {
-      final toolLibraryFilePath = (await Isolate.resolvePackageUri(
-        currentMirrorSystem().findLibrary(#conduit).uri,
-      ))!
-          .toFilePath(windows: Platform.isWindows);
-      print(currentMirrorSystem().findLibrary(#conduit).uri);
-      final conduitDirectory = Directory(
-        FileSystemEntity.parentOf(
-          FileSystemEntity.parentOf(toolLibraryFilePath),
-        ),
-      );
-      final toolPubspecFile =
-          File.fromUri(conduitDirectory.absolute.uri.resolve("pubspec.yaml"));
-
-      final toolPubspecContents =
-          loadYaml(toolPubspecFile.readAsStringSync()) as Map;
-      final toolVersion = toolPubspecContents["version"] as String;
-      _toolVersion = Version.parse(toolVersion);
+      final toolVersion = await findGlobalVersion();
+      _toolVersion = Version.parse(toolVersion!);
     } catch (e) {
       print(e);
     }
