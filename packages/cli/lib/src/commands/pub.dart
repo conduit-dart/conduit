@@ -63,8 +63,10 @@ Future<String?> findGlobalVersion() async {
 
   Match? lineMatch = lineRegex.firstMatch(res.stdout);
   if (lineMatch != null) {
+    print(lineMatch.group(0));
     Match? versionMatch = versionRegex.firstMatch(lineMatch.group(0)!);
     if (versionMatch != null) {
+      print(versionMatch.group(0));
       return versionMatch.group(0)!;
     }
   }
