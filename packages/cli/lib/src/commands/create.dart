@@ -249,7 +249,7 @@ class CLITemplateCreator extends CLICommand {
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
-        "    path:  ${location.toFilePath(windows: Platform.isWindows)}",
+        "    path:  ${_truepath(path)}",
       );
     });
 

@@ -60,13 +60,10 @@ Future<String?> findGlobalVersion() async {
   RegExp lineRegex = RegExp(r'^conduit .*');
   RegExp versionRegex =
       RegExp(r'\d+\.\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*)?');
-  print(res.stdout);
   Match? lineMatch = lineRegex.firstMatch(res.stdout);
   if (lineMatch != null) {
-    print(lineMatch.group(0));
     Match? versionMatch = versionRegex.firstMatch(lineMatch.group(0)!);
     if (versionMatch != null) {
-      print(versionMatch.group(0));
       return versionMatch.group(0)!;
     }
   }
