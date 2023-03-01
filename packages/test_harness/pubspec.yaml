@@ -1,15 +1,15 @@
 name: conduit_test
-version: 4.3.6
+version: 4.3.7
 homepage: https://github.com/conduit-dart/conduit
 description: Utilities for writing automated tests for Conduit applications
 environment:
-  sdk: ">=2.19.0 <4.0.0"
+  sdk: ">=2.19.2 <4.0.0"
 dependencies:
   test: ^1.21.6
   matcher: ^0.12.12
-  conduit_core: ^4.3.6
+  conduit_core: ^4.3.8
 dev_dependencies:
-  conduit_common_test:
-    path: ../common_test
+  conduit_postgresql:
+    path: ../postgresql
   lints: ^2.0.1
   test_core: ^0.4.18

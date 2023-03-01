@@ -29,7 +29,6 @@ void main() {
 
   tearDownAll(() {
     DartProjectAgent.tearDownAll();
-    CLIClient.deactivateCLI();
   });
 
   group("Project naming", () {
@@ -126,9 +125,8 @@ void main() {
       )['packages'] as List;
       final conduitCorePacakge =
           packages.firstWhere((element) => element['name'] == 'conduit_core');
-      final conduitCoreLocation =
-          Uri.parse(conduitCorePacakge['rootUri'] as String)
-              .resolve(conduitCorePacakge['packageUri'] as String);
+      final conduitCoreLocation = Uri.parse('${conduitCorePacakge['rootUri']}/')
+          .resolve(conduitCorePacakge['packageUri'] as String);
 
       final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
       expect(

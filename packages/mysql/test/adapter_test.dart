@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_mysql/conduit_mysql.dart';
 import 'package:test/test.dart';
+
+import 'not_tests/mysql_test_config.dart';
 
 void main() {
   group("Behavior", () {

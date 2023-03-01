@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## 4.3.7-gamma
 
  - asd
@@ -17,6 +18,20 @@
  - **FIX**: trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))
  - **FIX**: trigger. ([cfd406c0](https://github.com/conduit-dart/conduit/commit/cfd406c07b1595316061ac5840b4625e4503f13a))
  - **FIX**: trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+=======
+## 4.3.9
+
+ - **REFACTOR**: Remove common test. ([cebcc417](https://github.com/conduit-dart/conduit/commit/cebcc417fc2849f18b7e9a2a1bbab412eda621ff))
+
+## 4.3.8
+
+ - **REFACTOR**: Remove pub_cache ([#188](https://github.com/conduit-dart/conduit/issues/188)). ([6d5beca1](https://github.com/conduit-dart/conduit/commit/6d5beca119fceaa7938402f171fc8983678c40b3))
+ - **REFACTOR**: Remove pub_cache. ([18837180](https://github.com/conduit-dart/conduit/commit/18837180b5f68ad6559ff6e005dcf1be3aa6a0c9))
+
+## 4.3.7
+
+ - Fix template path
+>>>>>>> f29784369cc52e8b54109f6b057a043ae9522416
 
 ## 4.3.6
 

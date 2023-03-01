@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: conduit_common_test,fs_test_agent,conduit_mysql
+# melos_managed_dependency_overrides: fs_test_agent
 dependency_overrides:
   conduit_codable:
     path: ../codable

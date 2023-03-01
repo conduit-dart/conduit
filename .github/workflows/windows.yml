@@ -72,6 +72,7 @@ jobs:
     - name: Get Dependencies
       run: |
         choco install yq
+        dart pub global activate -spath packages/cli
         dart pub global activate melos
         dart pub global run melos:melos bootstrap
         dart pub global run melos:melos cache-source-win

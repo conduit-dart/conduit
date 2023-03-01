@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit/src/command.dart';
+import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:path/path.dart' as path_lib;
 import 'package:path/path.dart';
-import 'package:pub_cache/pub_cache.dart';
 import 'package:yaml/yaml.dart';
 
 /// Used internally.
-class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
+class CLITemplateCreator extends CLICommand {
   CLITemplateCreator() {
     registerCommand(CLITemplateList());
   }
@@ -53,26 +53,13 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     }
 
     destDirectory.createSync();
-
-    final templateSourceDirectory =
-        Directory.fromUri(getTemplateLocation(templateName) ?? Uri());
-    if (!templateSourceDirectory.existsSync()) {
-      displayError("No template at ${templateSourceDirectory.path}.");
-      return 1;
-    }
-
-    displayProgress("Template source is: ${templateSourceDirectory.path}");
-    displayProgress("See more templates with 'conduit create list-templates'");
-    copyProjectFiles(destDirectory, templateSourceDirectory, projectName);
-
-    createProjectSpecificFiles(destDirectory.path);
-    try {
-      if (conduitPackageRef?.sourceType == "path") {
-        final conduitLocation = conduitPackageRef!.resolve()!.location;
+    Uri? globalPath = await findGlobalPath();
+    if (globalPath != null) {
+      Directory conduitLocation = Directory(globalPath.toString());
+      try {
         if (!addDependencyOverridesToPackage(destDirectory.path, {
           "conduit_codable": _packageUri(conduitLocation, 'codable'),
           "conduit_common": _packageUri(conduitLocation, 'common'),
-          "conduit_common_test": _packageUri(conduitLocation, 'common_test'),
           "conduit_config": _packageUri(conduitLocation, 'config'),
           "conduit_core": _packageUri(conduitLocation, 'core'),
           "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
@@ -88,11 +75,27 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
           );
           throw StateError;
         }
+      } catch (e) {
+        displayError(e.toString());
+        return 1;
       }
-    } catch (e) {
-      displayError(e.toString());
+    } else {
+      await cachePackages(['conduit'], (await toolVersion).toString());
+    }
+
+    final templateSourceDirectory = Directory.fromUri(await getTemplateLocation(
+            templateName, (await toolVersion).toString()) ??
+        Uri());
+    if (!templateSourceDirectory.existsSync()) {
+      displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
     }
+
+    displayProgress("Template source is: ${templateSourceDirectory.path}");
+    displayProgress("See more templates with 'conduit create list-templates'");
+    copyProjectFiles(destDirectory, templateSourceDirectory, projectName);
+
+    createProjectSpecificFiles(destDirectory.path);
 
     displayInfo(
       "Fetching project dependencies (pub get ${offline ? "--offline" : ""})...",
@@ -118,7 +121,7 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
   }
 
   Uri _packageUri(Directory conduitLocation, String packageDir) {
-    return Directory(join(conduitLocation.path, '..', packageDir)).uri;
+    return conduitLocation.uri.resolve('..').resolve(packageDir);
   }
 
   bool shouldIncludeItem(FileSystemEntity entity) {
@@ -241,11 +244,10 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     overrideBuffer.writeln("dependency_overrides:");
     overrides.forEach((packageName, location) {
       final path = location.toFilePath(windows: Platform.isWindows);
-
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
       overrideBuffer.writeln(
-        "    path:  ${location.toFilePath(windows: Platform.isWindows)}",
+        "    path:  ${_truepath(path)}",
       );
     });
 
@@ -369,13 +371,15 @@ class CLITemplateCreator extends CLICommand with CLIConduitGlobal {
     return true;
   }
 
-  String _truepath(String path) => canonicalize(absolute(path));
+  String _truepath(String path) =>
+      Uri.parse(path).toFilePath(windows: Platform.isWindows);
 }
 
-class CLITemplateList extends CLICommand with CLIConduitGlobal {
+class CLITemplateList extends CLICommand {
   @override
   Future<int> handle() async {
-    final templateRootDirectory = Directory.fromUri(templateDirectory ?? Uri());
+    final templateRootDirectory =
+        (await templateDirectory((await toolVersion).toString()))!;
     final templateDirectories = await templateRootDirectory
         .list()
         .where((fse) => fse is Directory)
@@ -413,28 +417,26 @@ class CLITemplateList extends CLICommand with CLIConduitGlobal {
   }
 }
 
-class CLIConduitGlobal {
-  PubCache pub = PubCache();
+Future<Directory?> templateDirectory(String toolVersion) async {
+  const String cmd = "dart";
 
-  PackageRef? get conduitPackageRef {
-    final apps = pub.getGlobalApplications();
-    if (apps.isEmpty) {
-      return null;
-    }
-    try {
-      return apps
-          .firstWhere((app) => app.name == "conduit")
-          .getDefiningPackageRef();
-    } catch (e) {
-      return null;
-    }
+  try {
+    final res = await Process.run(
+      cmd,
+      ["pub", "cache", "list"],
+      runInShell: true,
+    );
+    final packageDir = Uri.directory(
+        jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location'],
+        windows: Platform.isWindows);
+    return Directory.fromUri(packageDir.resolve('templates'));
+  } catch (_) {
+    return null;
   }
+}
 
-  Uri? get templateDirectory {
-    return conduitPackageRef?.resolve()?.location.uri.resolve("templates/");
-  }
-
-  Uri? getTemplateLocation(String templateName) {
-    return templateDirectory?.resolve("$templateName/");
-  }
+Future<Uri?> getTemplateLocation(
+    String templateName, String toolVersion) async {
+  final dirUri = await templateDirectory(toolVersion);
+  return dirUri?.uri.resolve("$templateName/");
 }

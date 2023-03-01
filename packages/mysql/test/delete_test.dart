@@ -1,7 +1,8 @@
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
-import 'package:postgres/postgres.dart';
+import 'package:mysql1/mysql1.dart';
+
 import 'package:test/test.dart';
+import 'not_tests/mysql_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -161,7 +162,7 @@ void main() {
       successful = true;
     } on QueryException catch (e) {
       expect(e.event, QueryExceptionEvent.input);
-      expect((e.underlyingException as PostgreSQLException).code, "23503");
+      expect((e.underlyingException as MySqlException).errorNumber, "23503");
     }
     expect(successful, false);
   });

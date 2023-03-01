@@ -1,6 +1,8 @@
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
+
+import 'not_tests/helpers.dart';
+import 'not_tests/mysql_test_config.dart';
 
 void main() {
   ManagedContext? context;

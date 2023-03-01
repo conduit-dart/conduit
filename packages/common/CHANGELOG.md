@@ -1,3 +1,7 @@
+## 4.3.7
+
+ - **REFACTOR**: Remove common test. ([cebcc417](https://github.com/conduit-dart/conduit/commit/cebcc417fc2849f18b7e9a2a1bbab412eda621ff))
+
 ## 4.3.6
 
  - **FIX**: trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))

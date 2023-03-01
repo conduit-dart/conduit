@@ -1,6 +1,8 @@
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
+
+import 'not_tests/model_graph.dart';
+import 'not_tests/mysql_test_config.dart';
 
 /*
   The more rigid tests on joining are covered by tiered_where, has_many and has_one tests.

@@ -1,7 +1,8 @@
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
-import 'package:postgres/postgres.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:test/test.dart';
+
+import 'not_tests/mysql_test_config.dart';
 
 void main() {
   ManagedContext? context;
@@ -698,7 +699,8 @@ Matcher doesNotContain(Object? matcher) => isNot(contains(matcher));
 void expectNullViolation(QueryException exception, {String? columnName}) {
   expect(exception.event, QueryExceptionEvent.input);
   expect(exception.message, contains("non_null_violation"));
-  expect((exception.underlyingException as PostgreSQLException).code, "23502");
+  expect(
+      (exception.underlyingException as MySqlException).errorNumber, "23502");
 
   if (columnName != null) {
     expect(exception.response.body["detail"], contains("simple.name"));
@@ -708,6 +710,7 @@ void expectNullViolation(QueryException exception, {String? columnName}) {
 void expectUniqueViolation(QueryException exception) {
   expect(exception.event, QueryExceptionEvent.conflict);
   expect(exception.message, contains("entity_already_exists"));
-  expect((exception.underlyingException as PostgreSQLException).code, "23505");
+  expect(
+      (exception.underlyingException as MySqlException).errorNumber, "23505");
   expect(exception.response.statusCode, 409);
 }

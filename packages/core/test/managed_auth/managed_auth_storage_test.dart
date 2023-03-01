@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/postgres_test_config.dart';
 
 // These tests mostly duplicate authenticate_test.dart, but also add a few more
 // to manage long-term storage/cleanup of tokens and related items.

@@ -4,10 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:conduit_common_test/conduit_common_test.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+import '../not_tests/postgres_test_config.dart';
 
 void main() {
   Controller.letUncaughtExceptionsEscape = true;

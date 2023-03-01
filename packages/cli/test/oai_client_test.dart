@@ -21,7 +21,6 @@ void main() {
   });
 
   tearDownAll(() async {
-    await CLIClient.deactivateCLI();
     DartProjectAgent.tearDownAll();
   });
 
