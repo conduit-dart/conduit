@@ -110,7 +110,13 @@ abstract class CLICommand {
     }
   }
 
-  Version? get toolVersion => _toolVersion;
+  Future<Version> get toolVersion async {
+    if (_toolVersion == null) {
+      await determineToolVersion();
+    }
+    return _toolVersion!;
+  }
+
   Version? _toolVersion;
 
   static const _delimiter = "-- ";
@@ -215,18 +221,16 @@ abstract class CLICommand {
     try {
       _argumentValues = results;
 
-      await determineToolVersion();
-
       if (showVersion) {
-        outputSink.writeln("Conduit CLI version: $toolVersion");
+        outputSink.writeln("Conduit CLI version: ${await toolVersion}");
         return 0;
       }
 
       if (!isMachineOutput) {
-        displayInfo("Conduit CLI Version: $toolVersion");
+        displayInfo("Conduit CLI Version: ${await toolVersion}");
       }
 
-      preProcess();
+      await preProcess();
 
       if (helpMeItsScary) {
         printHelp(parentCommandName: parentCommandNames.join(" "));
@@ -260,7 +264,7 @@ abstract class CLICommand {
     }
   }
 
-  void preProcess() {}
+  Future preProcess() async {}
 
   void displayError(
     String? errorMessage, {

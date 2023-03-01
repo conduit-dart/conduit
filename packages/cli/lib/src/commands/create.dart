@@ -81,13 +81,12 @@ class CLITemplateCreator extends CLICommand {
         return 1;
       }
     } else {
-      await cachePackages(['conduit'], toolVersion!.toString());
+      await cachePackages(['conduit'], (await toolVersion).toString());
     }
 
-    final templateSourceDirectory = Directory.fromUri(
-        await getTemplateLocation(templateName, toolVersion.toString()) ??
-            Uri());
-    print(templateSourceDirectory);
+    final templateSourceDirectory = Directory.fromUri(await getTemplateLocation(
+            templateName, (await toolVersion).toString()) ??
+        Uri());
     if (!templateSourceDirectory.existsSync()) {
       displayError("No template at ${templateSourceDirectory.path}.");
       return 1;
@@ -381,7 +380,7 @@ class CLITemplateList extends CLICommand {
   @override
   Future<int> handle() async {
     final templateRootDirectory =
-        (await templateDirectory(toolVersion.toString()))!;
+        (await templateDirectory((await toolVersion).toString()))!;
     final templateDirectories = await templateRootDirectory
         .list()
         .where((fse) => fse is Directory)

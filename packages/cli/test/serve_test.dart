@@ -58,9 +58,15 @@ void main() {
     );
     final thisVersion = Version.parse(thisPubspec["version"] as String);
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));
+
+    final coreVersion = Version.parse(
+        (((thisPubspec["dependencies"] as yaml.YamlMap)
+                .entries
+                .firstWhere((p) => p.key == "conduit_core")).value as String)
+            .replaceAll('^', ''));
     expect(
       projectUnderTestCli.output,
-      contains("Conduit project version: $thisVersion"),
+      contains("Conduit project version: $coreVersion"),
     );
 
     final result = await http.get(Uri.parse("http://localhost:8888/example"));
