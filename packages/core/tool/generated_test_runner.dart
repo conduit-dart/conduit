@@ -47,6 +47,7 @@ Future main(List<String> args) async {
         '(Pass: ${passingFiles.length} Fail: ${failingFiles.length} Remain: $remainingCounter)';
 
     print('Running tests derived from ${f.path}...');
+
     final ctx = BuildContext(
       conduitDir.resolve('lib/').resolve('conduit_core.dart'),
       Directory.current.uri.resolve('../').resolve('_build/'),
@@ -55,8 +56,8 @@ Future main(List<String> args) async {
       forTests: true,
     );
     final bm = BuildManager(ctx);
-    await bm.build();
 
+    await bm.build();
     final result = await Process.start(
       'dart',
       ['test/main_test.dart'],

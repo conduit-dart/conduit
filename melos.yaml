@@ -5,6 +5,7 @@ packages:
 ignore:
   - packages/cli/templates/**
   - packages/tmp/**
+  - packages/not_tests/**
   - packages/runtime_test_packages/**
   - packages/isolate_exec_test_packages/**
 command:
