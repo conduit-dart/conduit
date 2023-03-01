@@ -12,7 +12,5 @@ dependencies:
   mysql1: ^0.20.0
 
 dev_dependencies:
-  conduit_common_test:
-    path: ../common_test
   lints: ^2.0.1
   test: ^1.21.6
