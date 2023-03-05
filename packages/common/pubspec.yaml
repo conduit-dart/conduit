@@ -8,3 +8,4 @@ dependencies:
   conduit_open_api: ^4.3.7
 dev_dependencies:
   lints: ^2.0.1
+  test: ^1.21.6
