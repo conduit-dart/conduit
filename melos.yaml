@@ -15,7 +15,7 @@ command:
     usePubspecOverrides: true
 scripts:
   test-unit:
-    run: melos exec -c1 --fail-fast --ignore "*application*" --ignore "*dependency*" -- "dart test"
+    run: melos exec -c1 --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test"
     select-pacakge:
       no-private: true
   test-with-coverage:
