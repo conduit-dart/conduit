@@ -490,7 +490,9 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         case ManagedPropertyType.string:
           return value;
         case ManagedPropertyType.bigInteger:
+        case ManagedPropertyType.bigUnsigned:
           return int.parse(value);
+        case ManagedPropertyType.unsigned:
         case ManagedPropertyType.integer:
           return int.parse(value);
         case ManagedPropertyType.datetime:

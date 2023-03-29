@@ -106,7 +106,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// set in their [Column] and all [ManagedRelationshipType.belongsTo] relationships.
   ///
   /// This list cannot be modified.
-  List<String>? get defaultProperties {
+  List<String> get defaultProperties {
     if (_defaultProperties == null) {
       final elements = <String?>[];
       elements.addAll(
@@ -127,7 +127,7 @@ class ManagedEntity implements APIComponentDocumenter {
       );
       _defaultProperties = List.unmodifiable(elements);
     }
-    return _defaultProperties;
+    return _defaultProperties!;
   }
 
   /// Name of primary key property.
@@ -295,7 +295,6 @@ class ManagedEntity implements APIComponentDocumenter {
     final tracker = ManagedAccessTrackingBacking();
     final obj = instanceOf<U>(backing: tracker);
     propertiesIdentifier(obj);
-
     return tracker.keyPaths;
   }
 

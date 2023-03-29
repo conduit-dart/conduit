@@ -318,7 +318,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<dynamic> executeQuery(
     String formatString,
-    Map<String?, dynamic>? values,
+    Map<String?, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType =
         PersistentStoreQueryReturnType.rows,
@@ -344,7 +344,7 @@ class PostgreSQLPersistentStore extends PersistentStore
 
       logger.fine(
         () =>
-            "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString Substitutes: ${values ?? "{}"} -> $results",
+            "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString Substitutes: $values -> $results",
       );
 
       return results;

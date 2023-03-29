@@ -499,7 +499,9 @@ class Validate {
     final supportedOneOfTypes = [
       ManagedPropertyType.string,
       ManagedPropertyType.integer,
-      ManagedPropertyType.bigInteger
+      ManagedPropertyType.unsigned,
+      ManagedPropertyType.bigInteger,
+      ManagedPropertyType.bigUnsigned
     ];
     if (!supportedOneOfTypes.contains(typeBeingValidated.kind) ||
         relationshipInverseType != null) {

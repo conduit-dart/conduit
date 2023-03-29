@@ -38,7 +38,8 @@ class QueryPredicate {
   ///
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
-  factory QueryPredicate.and(Iterable<QueryPredicate?>? predicates) {
+  factory QueryPredicate.and(Iterable<QueryPredicate?>? predicates,
+      {String variablePrefix = '@'}) {
     final predicateList = predicates
         ?.where((p) => p?.format != null && p!.format.isNotEmpty)
         .toList();
@@ -53,7 +54,6 @@ class QueryPredicate {
     if (predicateList.length == 1) {
       return predicateList.first!;
     }
-
     // If we have duplicate keys anywhere, we need to disambiguate them.
     int dupeCounter = 0;
     final allFormatStrings = [];
@@ -69,7 +69,8 @@ class QueryPredicate {
         final Map<String?, String> dupeMap = {};
         for (final key in duplicateKeys) {
           final replacementKey = "$key$dupeCounter";
-          fmt = fmt.replaceAll("@$key", "@$replacementKey");
+          fmt = fmt.replaceAll(
+              "$variablePrefix$key", "$variablePrefix$replacementKey");
           dupeMap[key] = replacementKey;
           dupeCounter++;
         }

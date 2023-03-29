@@ -8,6 +8,8 @@ dependency_overrides:
     path: ../config
   conduit_isolate_exec:
     path: ../isolate_exec
+  conduit_mysql:
+    path: ../mysql
   conduit_open_api:
     path: ../open_api
   conduit_password_hash:

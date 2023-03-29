@@ -37,7 +37,7 @@ abstract class QueryMixin<InstanceType extends ManagedObject>
 
   List<KeyPath> get propertiesToFetch =>
       _propertiesToFetch ??
-      entity.defaultProperties!
+      entity.defaultProperties
           .map((k) => KeyPath(entity.properties[k]))
           .toList();
 

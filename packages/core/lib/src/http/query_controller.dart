@@ -47,7 +47,9 @@ abstract class QueryController<InstanceType extends ManagedObject>
           query!.where((o) => o[query!.entity.primaryKey]).equalTo(idValue);
         } else if (primaryKeyDesc.type!.kind ==
                 ManagedPropertyType.bigInteger ||
-            primaryKeyDesc.type!.kind == ManagedPropertyType.integer) {
+            primaryKeyDesc.type!.kind == ManagedPropertyType.integer ||
+            primaryKeyDesc.type!.kind == ManagedPropertyType.bigUnsigned ||
+            primaryKeyDesc.type!.kind == ManagedPropertyType.unsigned) {
           try {
             query!
                 .where((o) => o[query!.entity.primaryKey])

@@ -1,3 +1,24 @@
+<<<<<<< HEAD
+## 4.3.7-gamma
+
+ - asd
+
+## 4.3.7-delta
+
+ - More testing
+
+## 4.3.7-beta
+
+ - More testing
+
+## 4.3.7-alpha
+
+ - Print out for debug of templates
+
+ - **FIX**: trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))
+ - **FIX**: trigger. ([cfd406c0](https://github.com/conduit-dart/conduit/commit/cfd406c07b1595316061ac5840b4625e4503f13a))
+ - **FIX**: trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+=======
 ## 4.3.9
 
  - **REFACTOR**: Remove common test. ([cebcc417](https://github.com/conduit-dart/conduit/commit/cebcc417fc2849f18b7e9a2a1bbab412eda621ff))
@@ -10,6 +31,7 @@
 ## 4.3.7
 
  - Fix template path
+>>>>>>> f29784369cc52e8b54109f6b057a043ae9522416
 
 ## 4.3.6
 

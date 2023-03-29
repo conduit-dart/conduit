@@ -39,8 +39,8 @@ void main() {
 
       for (final r in results) {
         expect(r.backing.contents!.containsKey("child"), false);
-        expect(r.backing.contents!.length, r.entity.defaultProperties!.length);
-        for (final property in r.entity.defaultProperties!) {
+        expect(r.backing.contents!.length, r.entity.defaultProperties.length);
+        for (final property in r.entity.defaultProperties) {
           expect(r.backing.contents!.containsKey(property), true);
         }
       }
@@ -53,9 +53,9 @@ void main() {
       for (final r in results) {
         expect(
           r.backing.contents!.length,
-          r.entity.defaultProperties!.length + 1,
+          r.entity.defaultProperties.length + 1,
         ); // +1 is for key containing 'child'
-        for (final property in r.entity.defaultProperties!) {
+        for (final property in r.entity.defaultProperties) {
           expect(r.backing.contents!.containsKey(property), true);
         }
 
@@ -64,9 +64,9 @@ void main() {
         if (r.child != null) {
           expect(
             r.child!.backing.contents!.length,
-            r.child!.entity.defaultProperties!.length,
+            r.child!.entity.defaultProperties.length,
           );
-          for (final property in r.child!.entity.defaultProperties!) {
+          for (final property in r.child!.entity.defaultProperties) {
             expect(r.child!.backing.contents!.containsKey(property), true);
           }
         }
@@ -92,9 +92,9 @@ void main() {
       for (final r in results) {
         expect(
           r.backing.contents!.length,
-          r.entity.defaultProperties!.length + 1,
+          r.entity.defaultProperties.length + 1,
         ); // +1 is for key containing 'child'
-        for (final property in r.entity.defaultProperties!) {
+        for (final property in r.entity.defaultProperties) {
           expect(r.backing.contents!.containsKey(property), true);
         }
 
@@ -103,9 +103,9 @@ void main() {
         if (r.child != null) {
           expect(
             r.child!.backing.contents!.length,
-            r.child!.entity.defaultProperties!.length,
+            r.child!.entity.defaultProperties.length,
           );
-          for (final property in r.child!.entity.defaultProperties!) {
+          for (final property in r.child!.entity.defaultProperties) {
             expect(r.child!.backing.contents!.containsKey(property), true);
           }
           expect(r.child!.backing.contents!.containsKey("grandChild"), false);
@@ -122,9 +122,9 @@ void main() {
       for (final r in results) {
         expect(
           r.backing.contents!.length,
-          r.entity.defaultProperties!.length + 1,
+          r.entity.defaultProperties.length + 1,
         ); // +1 is for key containing 'child'
-        for (final property in r.entity.defaultProperties!) {
+        for (final property in r.entity.defaultProperties) {
           expect(r.backing.contents!.containsKey(property), true);
         }
 
@@ -132,9 +132,9 @@ void main() {
         if (r.child != null) {
           expect(
             r.child!.backing.contents!.length,
-            r.child!.entity.defaultProperties!.length + 1,
+            r.child!.entity.defaultProperties.length + 1,
           ); // +1 is for key containing 'grandchild
-          for (final property in r.child!.entity.defaultProperties!) {
+          for (final property in r.child!.entity.defaultProperties) {
             expect(r.child!.backing.contents!.containsKey(property), true);
           }
 
@@ -142,10 +142,10 @@ void main() {
           if (r.child!.grandChild != null) {
             expect(
               r.child!.grandChild!.backing.contents!.length,
-              r.child!.grandChild!.entity.defaultProperties!.length,
+              r.child!.grandChild!.entity.defaultProperties.length,
             );
             for (final property
-                in r.child!.grandChild!.entity.defaultProperties!) {
+                in r.child!.grandChild!.entity.defaultProperties) {
               expect(
                 r.child!.grandChild!.backing.contents!.containsKey(property),
                 true,
@@ -509,9 +509,9 @@ void main() {
       for (final r in results) {
         expect(
           r.backing.contents!.length,
-          r.entity.defaultProperties!.length + 1,
+          r.entity.defaultProperties.length + 1,
         ); // +1 is for child
-        for (final property in r.entity.defaultProperties!) {
+        for (final property in r.entity.defaultProperties) {
           expect(r.backing.contents!.containsKey(property), true);
         }
         expect(r.child!.backing.contents!.length, 1);
