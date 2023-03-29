@@ -151,8 +151,9 @@ class Column {
     this.validators = const [],
     this.useSnakeCaseName,
     this.name,
+    this.keyLength = 0,
   })  : isPrimaryKey = primaryKey,
-        isNullable = nullable,
+        isNullable = nullable || omitByDefault,
         isUnique = unique,
         isIndexed = indexed,
         shouldOmitByDefault = omitByDefault;
@@ -161,6 +162,9 @@ class Column {
   ///
   /// Only one property of a class may have primaryKey equal to true.
   final bool isPrimaryKey;
+
+  /// Sets the length of a text key.
+  final int keyLength;
 
   /// The type of the field in the database.
   ///
@@ -307,6 +311,12 @@ class Serialize {
 const Column primaryKey = Column(
   primaryKey: true,
   databaseType: ManagedPropertyType.bigInteger,
+  autoincrement: true,
+  validators: [Validate.constant()],
+);
+const Column primaryKeyUnsigned = Column(
+  primaryKey: true,
+  databaseType: ManagedPropertyType.bigUnsigned,
   autoincrement: true,
   validators: [Validate.constant()],
 );

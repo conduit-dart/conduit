@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:conduit_core/conduit_core.dart';
-import 'package:mysql1/mysql1.dart';
+import 'package:mysql_client/exception.dart';
+import 'package:mysql_client/mysql_client.dart';
 
 import 'mysql_schema_generator.dart';
 import 'mysql_query.dart';
@@ -19,7 +21,7 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
     this.host,
     this.port,
     this.databaseName, {
-    bool useSSL = false,
+    bool useSSL = true,
   }) : isSSLConnection = useSSL;
 
   /// Same constructor as default constructor.
@@ -68,11 +70,12 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
   /// Defaults to 30 seconds.
   final Duration connectTimeout = const Duration(seconds: 30);
 
-  static final Finalizer<MySqlConnection> _finalizer =
+  static final Finalizer<MySQLConnectionPool> _finalizer =
       Finalizer((connection) => connection.close());
 
-  MySqlConnection? _databaseConnection;
-  Completer<MySqlConnection>? _pendingConnectionCompleter;
+  MySQLConnectionPool? _databaseConnectionPool;
+  MySQLConnection? _singleThread;
+  Completer<MySQLConnectionPool>? _pendingConnectionCompleter;
 
   /// Retrieves a connection to the database this instance connects to.
   ///
@@ -80,16 +83,16 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
   ///
   /// When executing queries, prefer to use [executionContext] instead. Failure to do so might result
   /// in issues when executing queries during a transaction.
-  Future<MySqlConnection> getDatabaseConnection() async {
-    if (_databaseConnection == null) {
+  Future<MySQLConnectionPool> getDatabaseConnectionPool() async {
+    if (_databaseConnectionPool == null) {
       if (_pendingConnectionCompleter == null) {
-        _pendingConnectionCompleter = Completer<MySqlConnection>();
+        _pendingConnectionCompleter = Completer<MySQLConnectionPool>();
 
-        _connect().timeout(connectTimeout).then((conn) {
-          _databaseConnection = conn;
-          _pendingConnectionCompleter!.complete(_databaseConnection);
+        _connect().timeout(connectTimeout).then((pool) {
+          _databaseConnectionPool = pool;
+          _pendingConnectionCompleter!.complete(_databaseConnectionPool);
           _pendingConnectionCompleter = null;
-          _finalizer.attach(this, _databaseConnection!, detach: this);
+          _finalizer.attach(this, _databaseConnectionPool!, detach: this);
         }).catchError((e) {
           _pendingConnectionCompleter!.completeError(
             QueryException.transport(
@@ -104,7 +107,21 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
       return _pendingConnectionCompleter!.future;
     }
 
-    return _databaseConnection!;
+    return _databaseConnectionPool!;
+  }
+
+  Future<MySQLConnection> _getPersistentThread() async {
+    if (_databaseConnectionPool == null) {
+      await getDatabaseConnectionPool()
+          .then((pool) => pool.withConnection((conn) {
+                _singleThread = conn;
+              }));
+    } else if (_singleThread == null) {
+      await _databaseConnectionPool!.withConnection((conn) {
+        _singleThread = conn;
+      });
+    }
+    return _singleThread!;
   }
 
   @override
@@ -128,34 +145,41 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
   }) async {
     timeout ??= const Duration(seconds: 30);
     final now = DateTime.now().toUtc();
-    final dbConnection = await getDatabaseConnection();
     try {
-      final rows = await dbConnection.query(
+      final conn = await _getPersistentThread();
+      substitutionValues?.updateAll((_, v) {
+        if (v is Map || v is List) {
+          return jsonEncode(v);
+        }
+        return v;
+      });
+      final result = await conn.execute(
         sql,
-        substitutionValues?.entries.map((e) => e.value).toList(),
+        substitutionValues,
       );
 
-      final mappedRows = rows.map((row) => row.toList()).toList();
+      final mappedRows = result.rows.map((row) => row.typedAssoc()).toList();
       logger.finest(
         () =>
             "Query:execute (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $sql -> $mappedRows",
       );
       return mappedRows;
-    } on MySqlException catch (_) {
-      // final interpreted = _interpretException(e);
-      // if (interpreted != null) {
-      //   throw interpreted;
-      // }
+    } on MySQLServerException catch (e) {
+      final interpreted = _interpretException(e);
+      if (interpreted != null) {
+        throw interpreted;
+      }
 
       rethrow;
+    } on SocketException catch (e) {
+      throw QueryException.transport(e.message);
     }
   }
 
   @override
   Future close() async {
-    await _databaseConnection?.close();
     _finalizer.detach(this);
-    _databaseConnection = null;
+    _databaseConnectionPool = null;
   }
 
   @override
@@ -163,12 +187,12 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
     ManagedContext transactionContext,
     Future<T?> Function(ManagedContext transaction) transactionBlock,
   ) async {
-    final dbConnection = await getDatabaseConnection();
+    final dbConnection = await getDatabaseConnectionPool();
 
     T? output;
     Rollback? rollback;
     try {
-      await dbConnection.transaction((dbTransactionContext) async {
+      await dbConnection.transactional((dbTransactionContext) async {
         transactionContext.persistentStore = _TransactionProxy(
           this,
           dbTransactionContext,
@@ -183,14 +207,14 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
           /// The documented method of checking the return value from this method
           /// does not work.
           rollback = e;
-          dbTransactionContext.rollback();
+          dbTransactionContext.close();
         }
       });
-    } on MySqlException catch (_) {
-      // final interpreted = _interpretException(e);
-      // if (interpreted != null) {
-      //   throw interpreted;
-      // }
+    } on MySQLServerException catch (e) {
+      final interpreted = _interpretException(e);
+      if (interpreted != null) {
+        throw interpreted;
+      }
 
       rethrow;
     }
@@ -207,17 +231,16 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
     try {
       final values = await execute(
         "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC",
-      ) as List<List<dynamic>>;
+      ) as List<Map<String, dynamic>>;
       if (values.isEmpty) {
         return 0;
       }
 
-      final version = await values.last.first;
-      return version as int;
-    } on MySqlException catch (_) {
-      // if (e.code == MySqlErrorCode.undefinedTable) {
-      //   return 0;
-      // }
+      return values.last['versionNumber']!;
+    } on MySQLServerException catch (e) {
+      if (e.errorCode == 1146) {
+        return 0;
+      }
       rethrow;
     }
   }
@@ -228,11 +251,11 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
-    final connection = await getDatabaseConnection();
+    final connection = await getDatabaseConnectionPool();
 
     Schema? schema = fromSchema;
 
-    await connection.transaction((ctx) async {
+    await connection.transactional((ctx) async {
       final transactionStore = _TransactionProxy(this, ctx);
       await _createVersionTableIfNecessary(ctx, temporary);
 
@@ -243,12 +266,12 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
             SchemaBuilder(transactionStore, schema, isTemporary: temporary);
         migration.database.store = transactionStore;
 
-        final existingVersionRows = await ctx.query(
+        final prepared = await ctx.prepare(
           "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= ?",
-          [migration.version],
         );
-        if (existingVersionRows.isNotEmpty) {
-          final date = existingVersionRows.first.last;
+        final existingVersionRows = await prepared.execute([migration.version]);
+        if (existingVersionRows.rows.isNotEmpty) {
+          final date = existingVersionRows.rows.last;
           throw MigrationException(
             "Trying to upgrade database to version ${migration.version}, but that migration has already been performed on $date.",
           );
@@ -259,16 +282,15 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
 
         for (final cmd in migration.database.commands) {
           logger.info("\t$cmd");
-          await ctx.query(cmd);
+          await ctx.execute(cmd);
         }
 
         logger.info(
           "Seeding data from migration version ${migration.version}...",
         );
         await migration.seed();
-
-        await ctx.query(
-          "INSERT INTO $versionTableName (versionNumber, dateOfUpgrade) VALUES (${migration.version}, '${DateTime.now().toUtc().toIso8601String()}')",
+        await ctx.execute(
+          "INSERT INTO $versionTableName (versionNumber, dateOfUpgrade) VALUES (${migration.version}, NOW())",
         );
 
         logger
@@ -284,108 +306,132 @@ class MySqlPersistentStore extends PersistentStore with MySqlSchemaGenerator {
   @override
   Future<dynamic> executeQuery(
     String formatString,
-    Map<String?, dynamic>? values,
+    Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType =
         PersistentStoreQueryReturnType.rows,
   }) async {
     final now = DateTime.now().toUtc();
     try {
-      final dbConnection = await getDatabaseConnection();
-      dynamic results;
+      var pool = await getDatabaseConnectionPool();
+      values.updateAll((_, v) {
+        if (v is Map || v is List) {
+          return jsonEncode(v);
+        }
+        return v;
+      });
+      MySQLConnection? conn;
+      try {
+        conn = await pool.withConnection((conn) => conn);
+      } catch (_) {
+        _databaseConnectionPool = null;
+        pool = await getDatabaseConnectionPool();
+      }
+      while (conn == null || !conn.connected) {
+        conn = await pool.withConnection((conn) => conn);
+      }
 
-      results = await dbConnection.query(
-          formatString, values?.entries.map((e) => e.value).toList());
-
+      final IResultSet results = await conn.execute(formatString, values);
       logger.fine(
         () =>
-            "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString Substitutes: ${values ?? "{}"} -> $results",
+            "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString Substitutes: $values -> $results",
       );
-
       return results;
+    } on SocketException catch (e) {
+      throw QueryException.transport(
+        e.message,
+        underlyingException: e,
+      );
     } on TimeoutException catch (e) {
       throw QueryException.transport(
         "timed out connection to database",
         underlyingException: e,
       );
-    } on MySqlException catch (e) {
+    } on MySQLServerException catch (e) {
       logger.fine(
         () =>
             "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString $values",
       );
       logger.warning(e.toString);
-      // final interpreted = _interpretException(e);
-      // if (interpreted != null) {
-      //   throw interpreted;
-      // }
+      final interpreted = _interpretException(e);
+      if (interpreted != null) {
+        throw interpreted;
+      }
 
       rethrow;
     }
   }
 
-  // QueryException<MySqlException>? _interpretException(
-  //   MySqlException exception,
-  // ) {
-  //   switch (exception.code) {
-  //     case MySqlErrorCode.uniqueViolation:
-  //       return QueryException.conflict(
-  //         "entity_already_exists",
-  //         ["${exception.tableName}.${exception.columnName}"],
-  //         underlyingException: exception,
-  //       );
-  //     case MySqlErrorCode.notNullViolation:
-  //       return QueryException.input(
-  //         "non_null_violation",
-  //         ["${exception.tableName}.${exception.columnName}"],
-  //         underlyingException: exception,
-  //       );
-  //     case MySqlErrorCode.foreignKeyViolation:
-  //       return QueryException.input(
-  //         "foreign_key_violation",
-  //         ["${exception.tableName}.${exception.columnName}"],
-  //         underlyingException: exception,
-  //       );
-  //   }
+  QueryException<MySQLServerException>? _interpretException(
+    MySQLServerException exception,
+  ) {
+    switch (exception.errorCode) {
+      case 1050:
+      case 1062:
+      case 1136:
+      case 1169:
+      case 3730:
+        return QueryException.conflict(
+          exception.message,
+          [],
+          underlyingException: exception,
+        );
+      case 1044:
+      case 1048:
+      case 1170:
+        return QueryException.input(
+          exception.message,
+          [],
+          underlyingException: exception,
+        );
+    }
 
-  //   return null;
-  // }
+    return null;
+  }
 
   Future _createVersionTableIfNecessary(
-    TransactionContext context,
+    MySQLConnection context,
     bool temporary,
   ) async {
     final table = versionTable;
     final commands = createTable(table, isTemporary: temporary);
-    final exists = await context.query(
-      "SELECT to_regclass(@tableName:text)",
-      [
-        {"tableName": table.name}
-      ],
+    final exists = await context.execute(
+      """SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_schema = 'databaseName' AND table_name = 'tableName';""",
+      {"tableName": table.name, 'databaseName': databaseName},
     );
 
-    if (exists.first.first != null) {
+    if (exists.rows.isEmpty) {
       return;
     }
 
     logger.info("Initializating database...");
-    for (final cmd in commands) {
-      logger.info("\t$cmd");
-      await context.query(cmd);
+    try {
+      for (final cmd in commands) {
+        logger.info("\t$cmd");
+        await context.execute(cmd);
+      }
+    } on MySQLServerException catch (e) {
+      if (e.errorCode == 1050) {
+        return;
+      }
+      rethrow;
     }
   }
 
-  Future<MySqlConnection> _connect() async {
+  Future<MySQLConnectionPool> _connect() async {
     logger.info("MySql connecting, $username@$host:$port/$databaseName.");
-    final settings = ConnectionSettings(
+
+    return MySQLConnectionPool(
       host: host!,
       port: port!,
-      db: databaseName,
-      user: username,
+      databaseName: databaseName,
+      userName: username!,
       password: password,
-      useSSL: isSSLConnection,
+      secure: isSSLConnection,
+      maxConnections: 100,
     );
-
-    return MySqlConnection.connect(settings);
   }
 }
 
@@ -403,5 +449,5 @@ class _TransactionProxy extends MySqlPersistentStore {
   _TransactionProxy(this.parent, this.context) : super._from(parent);
 
   final MySqlPersistentStore parent;
-  final TransactionContext context;
+  final MySQLConnection context;
 }

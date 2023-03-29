@@ -331,7 +331,7 @@ class DefaultPersistentStore extends PersistentStore {
   @override
   Future<dynamic> executeQuery(
     String formatString,
-    Map<String?, dynamic> values,
+    Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
   }) async =>

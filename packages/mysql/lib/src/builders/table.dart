@@ -144,7 +144,7 @@ class TableBuilder implements Returnable {
       ...expressionBuilders.map((c) => c.predicate)
     ];
 
-    predicate = QueryPredicate.and(allExpressions);
+    predicate = QueryPredicate.and(allExpressions, variablePrefix: ':');
     if (predicate?.parameters != null) {
       variables.addAll(predicate!.parameters!);
     }
@@ -314,7 +314,7 @@ class TableBuilder implements Returnable {
     }
 
     final totalJoinPredicate =
-        QueryPredicate.and([joiningPredicate, predicate]);
+        QueryPredicate.and([joiningPredicate, predicate], variablePrefix: ':');
     final thisJoin =
         "LEFT OUTER JOIN $sqlTableName ON ${totalJoinPredicate.format}";
 

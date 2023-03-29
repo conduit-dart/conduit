@@ -542,7 +542,7 @@ void main() {
 class Game extends ManagedObject<_Game> implements _Game {}
 
 class _Game {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? homeScore;
@@ -558,7 +558,7 @@ class _Game {
 class Team extends ManagedObject<_Team> implements _Team {}
 
 class _Team {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;

@@ -1,11 +1,18 @@
 import 'package:conduit_core/conduit_core.dart';
-import 'package:mysql1/mysql1.dart';
+import 'package:mysql_client/exception.dart';
 
 import 'package:test/test.dart';
 import 'not_tests/mysql_test_config.dart';
 
 void main() {
   ManagedContext? context;
+
+  setUp(() async {
+    await MySqlTestConfig().contextWithModels([]).then((context) async {
+      await context.persistentStore.execute(
+          'DROP TABLE IF EXISTS _TestModel,_MultiUnique,_InnerModel,_GenUser,GenUser,_GenPost,_Transient,simple,_PrivateField,_EnumObject,_NullableObject');
+    });
+  });
 
   tearDown(() async {
     await context?.close();
@@ -162,7 +169,7 @@ void main() {
       successful = true;
     } on QueryException catch (e) {
       expect(e.event, QueryExceptionEvent.input);
-      expect((e.underlyingException as MySqlException).errorNumber, "23503");
+      expect((e.underlyingException as MySQLException).message, "23503");
     }
     expect(successful, false);
   });
@@ -193,7 +200,7 @@ class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
 
 @Table(name: "simple")
 class _TestModel {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -212,7 +219,7 @@ class _TestModel {
 class RefModel extends ManagedObject<_RefModel> implements _RefModel {}
 
 class _RefModel {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Relate(Symbol('ref'), isRequired: false, onDelete: DeleteRule.nullify)
@@ -223,7 +230,7 @@ class GRestrictInverse extends ManagedObject<_GRestrictInverse>
     implements _GRestrictInverse {}
 
 class _GRestrictInverse {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -234,7 +241,7 @@ class _GRestrictInverse {
 class GRestrict extends ManagedObject<_GRestrict> implements _GRestrict {}
 
 class _GRestrict {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.restrict)
@@ -245,7 +252,7 @@ class GCascadeInverse extends ManagedObject<_GCascadeInverse>
     implements _GCascadeInverse {}
 
 class _GCascadeInverse {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -256,7 +263,7 @@ class _GCascadeInverse {
 class GCascade extends ManagedObject<_GCascade> implements _GCascade {}
 
 class _GCascade {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.cascade)

@@ -356,7 +356,7 @@ void main() {
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
 
 class _TestModel {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -368,7 +368,7 @@ class _TestModel {
 class Child extends ManagedObject<_Child> implements _Child {}
 
 class _Child {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -380,7 +380,7 @@ class _Child {
 class Parent extends ManagedObject<_Parent> implements _Child {}
 
 class _Parent {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -391,7 +391,7 @@ class _Parent {
 class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
 
 class _EnumObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   EnumValues? enumValues;

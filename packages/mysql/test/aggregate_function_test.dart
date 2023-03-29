@@ -19,6 +19,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      ctx.persistentStore.execute(
+          'DROP TABLE IF EXISTS _Test,_TestModel,_MultiUnique,_InnerModel,_GenUser,GenUser,_GenPost,_Transient,simple,_PrivateField,_EnumObject,_NullableObject');
       await ctx.close();
     });
 
@@ -33,7 +35,7 @@ void main() {
       });
       test("Reduce functions work correctly in a tansaction", () async {
         int? result;
-        await ctx.transaction((t) async {
+        await ctx.transaction((ManagedContext t) async {
           await t.insertObject(
             Test()
               ..i = 1
@@ -243,7 +245,7 @@ void main() {
 class Test extends ManagedObject<_Test> implements _Test {}
 
 class _Test {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? s;
@@ -254,7 +256,7 @@ class _Test {
 
 Future<List<Test>> populate(ManagedContext ctx, {bool overflow = false}) async {
   var s = "a";
-  var dt = DateTime.now();
+  var dt = DateTime.now().toUtc();
   var d = 0.0;
   var i = 0;
 

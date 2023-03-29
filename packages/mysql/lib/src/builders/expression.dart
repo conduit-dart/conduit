@@ -48,7 +48,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
     return QueryPredicate(
-      "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName$sqlTypeSuffix",
+      "$name ${ColumnBuilder.symbolTable[operator!]} :$variableName",
       {variableName: convertValueForStorage(value)},
     );
   }
@@ -65,7 +65,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
       final prefix = "$defaultPrefix${counter}_";
 
       final variableName = sqlColumnName(withPrefix: prefix);
-      tokenList.add("@$variableName$sqlTypeSuffix");
+      tokenList.add(":$variableName");
       pairedMap[variableName] = convertValueForStorage(value);
 
       counter++;
@@ -91,12 +91,10 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final rhsName = sqlColumnName(withPrefix: "${defaultPrefix}rhs_");
     final operation = insideRange ? "BETWEEN" : "NOT BETWEEN";
 
-    return QueryPredicate(
-        "$name $operation @$lhsName$sqlTypeSuffix AND @$rhsName$sqlTypeSuffix",
-        {
-          lhsName: convertValueForStorage(lhsValue),
-          rhsName: convertValueForStorage(rhsValue)
-        });
+    return QueryPredicate("$name $operation :$lhsName AND :$rhsName", {
+      lhsName: convertValueForStorage(lhsValue),
+      rhsName: convertValueForStorage(rhsValue)
+    });
   }
 
   QueryPredicate stringPredicate(
@@ -130,7 +128,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     }
 
     return QueryPredicate(
-      "$n $operation @$variableName$sqlTypeSuffix",
+      "$n $operation :$variableName",
       {variableName: matchValue},
     );
   }

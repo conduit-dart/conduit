@@ -10,11 +10,13 @@ class RowInstantiator {
 
   Map<TableBuilder, Map<dynamic, ManagedObject>> distinctObjects = {};
 
-  List<U> instancesForRows<U extends ManagedObject>(List<List<dynamic>> rows) {
+  List<U> instancesForRows<U extends ManagedObject>(
+      String? primaryKey, List<Map<String, dynamic>> rows) {
     try {
       return rows
           .map(
-            (row) => instanceFromRow(row.iterator, returningValues!.iterator),
+            (row) =>
+                instanceFromRow(primaryKey, row, returningValues!.iterator),
           )
           .where((wrapper) => wrapper?.isNew ?? false)
           .map((wrapper) => wrapper!.instance as U)
@@ -25,22 +27,13 @@ class RowInstantiator {
   }
 
   InstanceWrapper? instanceFromRow(
-    Iterator<dynamic> rowIterator,
+    String? primaryKey,
+    Map<String, dynamic> row,
     Iterator<Returnable> returningIterator, {
     TableBuilder? table,
   }) {
     table ??= rootTableBuilder;
-
-    // Inspect the primary key first.  We are guaranteed to have the primary key come first in any rowIterator.
-    rowIterator.moveNext();
-    returningIterator.moveNext();
-
-    final primaryKeyValue = rowIterator.current;
-    if (primaryKeyValue == null) {
-      exhaustNullInstanceIterator(rowIterator, returningIterator);
-      return null;
-    }
-
+    final primaryKeyValue = row[primaryKey];
     var alreadyExists = true;
     var instance = getExistingInstance(table, primaryKeyValue);
     if (instance == null) {
@@ -51,10 +44,9 @@ class RowInstantiator {
     while (returningIterator.moveNext()) {
       final ret = returningIterator.current;
       if (ret is ColumnBuilder) {
-        rowIterator.moveNext();
-        applyColumnValueToProperty(instance, ret, rowIterator.current);
+        applyColumnValueToProperty(instance, ret, row[ret.sqlColumnName()]);
       } else if (ret is TableBuilder) {
-        applyRowValuesToInstance(instance, ret, rowIterator);
+        applyRowValuesToInstance(primaryKey, instance, ret, row);
       }
     }
 
@@ -66,9 +58,7 @@ class RowInstantiator {
     dynamic primaryKeyValue,
   ) {
     final instance = table.entity.instanceOf();
-
     instance[table.entity.primaryKey] = primaryKeyValue;
-
     var typeMap = distinctObjects[table];
     if (typeMap == null) {
       typeMap = {};
@@ -93,16 +83,18 @@ class RowInstantiator {
   }
 
   void applyRowValuesToInstance(
+    String? primaryKey,
     ManagedObject instance,
     TableBuilder table,
-    Iterator<dynamic> rowIterator,
+    Map<String, dynamic> row,
   ) {
     if (table.flattenedColumnsToReturn.isEmpty) {
       return;
     }
 
-    final innerInstanceWrapper =
-        instanceFromRow(rowIterator, table.returning.iterator, table: table);
+    final innerInstanceWrapper = instanceFromRow(
+        primaryKey, row, table.returning.iterator,
+        table: table);
 
     if (table.joinedBy!.relationshipType == ManagedRelationshipType.hasMany) {
       // If to many, put in a managed set.
@@ -146,20 +138,6 @@ class RowInstantiator {
       }
     } else if (desc is ManagedAttributeDescription) {
       instance[desc.name] = column.convertValueFromStorage(value);
-    }
-  }
-
-  void exhaustNullInstanceIterator(
-    Iterator<dynamic> rowIterator,
-    Iterator<Returnable> returningIterator,
-  ) {
-    while (returningIterator.moveNext()) {
-      final ret = returningIterator.current;
-      if (ret is TableBuilder) {
-        final _ = instanceFromRow(rowIterator, ret.returning.iterator);
-      } else {
-        rowIterator.moveNext();
-      }
     }
   }
 }

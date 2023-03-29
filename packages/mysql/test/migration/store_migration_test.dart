@@ -1,12 +1,19 @@
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_mysql/src/mysql_persistent_store.dart';
 import 'package:test/test.dart';
 
 import '../not_tests/mysql_test_config.dart';
 
 void main() {
-  final store = MySqlTestConfig().persistentStore();
+  late MySqlPersistentStore store;
+
+  setUp(() async {
+    store = MySqlTestConfig().persistentStore();
+    await store
+        .execute('DROP TABLE IF EXISTS foo,bar,t,u,v,_conduit_version_mysql');
+  });
 
   tearDown(() async {
     await store.close();
@@ -27,10 +34,10 @@ void main() {
     );
 
     final rows = await store.execute(
-      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_mysql",
     );
     expect(rows.length, 1);
-    expect(rows.first.first, 1);
+    expect(rows.first['versionNumber'], 1);
   });
 
   test(
@@ -44,11 +51,11 @@ void main() {
     await store.upgrade(s1, [EmptyMigration()..version = 2], temporary: true);
 
     final rows = await store.execute(
-      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_mysql",
     );
     expect(rows.length, 2);
-    expect(rows.first.first, 1);
-    expect(rows.last.first, 2);
+    expect(rows.first['versionNumber'], 1);
+    expect(rows.last['versionNumber'], 2);
   });
 
   test("Trying to upgrade to version that already exists fails", () async {
@@ -111,11 +118,10 @@ void main() {
     await store.upgrade(
       Schema.empty(),
       [MCase11()..version = 1, MCase12()..version = 2],
-      temporary: true,
     );
     expect(await store.schemaVersion, 2);
     expect(await store.execute("SELECT id, v FROM t"), [
-      [1, 10]
+      {'id': 1, 'v': 10}
     ]);
   });
 }

@@ -719,7 +719,7 @@ void main() {
 class SelfRef extends ManagedObject<_SelfRef> implements _SelfRef {}
 
 class _SelfRef {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -733,7 +733,7 @@ class _SelfRef {
 class Left extends ManagedObject<_Left> implements _Left {}
 
 class _Left {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -747,7 +747,7 @@ class _Left {
 class Right extends ManagedObject<_Right> implements _Right {}
 
 class _Right {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;

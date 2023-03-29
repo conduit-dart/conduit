@@ -511,7 +511,7 @@ void main() {
 class Parent extends ManagedObject<_Parent> implements _Parent {}
 
 class _Parent {
-  @primaryKey
+  @primaryKeyUnsigned
   int? pid;
   String? name;
 
@@ -521,7 +521,7 @@ class _Parent {
 class Child extends ManagedObject<_Child> implements _Child {}
 
 class _Child {
-  @primaryKey
+  @primaryKeyUnsigned
   int? cid;
   String? name;
 
@@ -536,7 +536,7 @@ class _Child {
 class Toy extends ManagedObject<_Toy> implements _Toy {}
 
 class _Toy {
-  @primaryKey
+  @primaryKeyUnsigned
   int? tid;
 
   String? name;
@@ -548,7 +548,7 @@ class _Toy {
 class Vaccine extends ManagedObject<_Vaccine> implements _Vaccine {}
 
 class _Vaccine {
-  @primaryKey
+  @primaryKeyUnsigned
   int? vid;
   String? kind;
 

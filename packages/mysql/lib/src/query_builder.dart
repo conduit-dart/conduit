@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'builders/sort.dart';
 import 'builders/table.dart';
@@ -7,16 +10,15 @@ import 'row_instantiator.dart';
 
 class MySqlQueryBuilder extends TableBuilder {
   MySqlQueryBuilder(MySqlQuery query, [String prefixIndex = ""])
-      : valueKeyPrefix = "v${prefixIndex}_",
-        placeholderKeyPrefix = "@v${prefixIndex}_",
+      : placeholderKeyPrefix = ":",
         super(query) {
-    (query.valueMap ?? query.values.backing.contents)!
-        .forEach(addColumnValueBuilder);
-
+    for (var key in entity.defaultProperties) {
+      addColumnValueBuilder(
+          key, (query.valueMap ?? query.values.backing.contents)?[key]);
+    }
     finalize(variables);
   }
 
-  final String valueKeyPrefix;
   final String placeholderKeyPrefix;
 
   final Map<String, dynamic> variables = {};
@@ -42,13 +44,18 @@ class MySqlQueryBuilder extends TableBuilder {
   void addColumnValueBuilder(String? key, dynamic value) {
     final builder = _createColumnValueBuilder(key, value)!;
     columnValueBuildersByKey[builder.sqlColumnName()] = builder;
-    variables[builder.sqlColumnName(withPrefix: valueKeyPrefix)] =
-        builder.value;
+    var val = builder.value;
+    if (builder.value is Map) {
+      val = json.encode(val);
+    }
+    variables[builder.sqlColumnName()] = val;
   }
 
-  List<T> instancesForRows<T extends ManagedObject>(List<List<dynamic>> rows) {
+  List<T> instancesForRows<T extends ManagedObject>(
+      String? primaryKey, List<Map<String, dynamic>> rows) {
     final instantiator = RowInstantiator(this, returning);
-    return instantiator.instancesForRows<T>(rows);
+    final res = instantiator.instancesForRows<T>(primaryKey, rows);
+    return res;
   }
 
   ColumnValueBuilder? _createColumnValueBuilder(String? key, dynamic value) {
@@ -90,7 +97,6 @@ class MySqlQueryBuilder extends TableBuilder {
       final columnName = m.sqlColumnName();
       final variableName = m.sqlColumnName(
         withPrefix: placeholderKeyPrefix,
-        withTypeSuffix: true,
       );
       return "$columnName=$variableName";
     }).join(",");
@@ -98,31 +104,10 @@ class MySqlQueryBuilder extends TableBuilder {
 
   String get sqlColumnsToInsert => columnValueKeys.join(",");
 
-  String get sqlValuesToInsert => valuesToInsert(columnValueKeys);
-
-  String valuesToInsert(Iterable<String?> forKeys) {
-    if (forKeys.isEmpty) {
-      return "DEFAULT";
-    }
-    return forKeys.map(_valueToInsert).join(",");
-  }
-
-  String? _valueToInsert(String? key) {
-    final builder = columnValueBuildersByKey[key];
-    if (builder == null) {
-      return "DEFAULT";
-    }
-
-    return builder.sqlColumnName(
-      withTypeSuffix: true,
-      withPrefix: placeholderKeyPrefix,
-    );
-  }
-
-  String get sqlColumnsToReturn {
+  List<String> get sqlColumnsToReturn {
     return flattenedColumnsToReturn
         .map((p) => p.sqlColumnName(withTableNamespace: containsJoins))
-        .join(",");
+        .toList();
   }
 
   String get sqlOrderBy {

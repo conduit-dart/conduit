@@ -9,7 +9,7 @@ environment:
 dependencies:
   collection: ^1.17.1
   conduit_core: ^4.3.0
-  mysql1: ^0.20.0
+  mysql_client: ^0.0.27
 
 dev_dependencies:
   lints: ^2.0.1

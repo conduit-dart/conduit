@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:conduit_core/conduit_core.dart';
 import 'table.dart';
-import 'package:postgres/postgres.dart';
 
 /// Common interface for values that can be mapped to/from a database.
 abstract class Returnable {}
@@ -62,16 +63,6 @@ class ColumnBuilder extends Returnable {
     return property;
   }
 
-  static Map<ManagedPropertyType, PostgreSQLDataType> typeMap = {
-    ManagedPropertyType.integer: PostgreSQLDataType.integer,
-    ManagedPropertyType.bigInteger: PostgreSQLDataType.bigInteger,
-    ManagedPropertyType.string: PostgreSQLDataType.text,
-    ManagedPropertyType.datetime: PostgreSQLDataType.timestampWithoutTimezone,
-    ManagedPropertyType.boolean: PostgreSQLDataType.boolean,
-    ManagedPropertyType.doublePrecision: PostgreSQLDataType.double,
-    ManagedPropertyType.document: PostgreSQLDataType.jsonb
-  };
-
   static Map<PredicateOperator, String> symbolTable = {
     PredicateOperator.lessThan: "<",
     PredicateOperator.greaterThan: ">",
@@ -123,26 +114,14 @@ class ColumnBuilder extends Returnable {
         }
         return p.enumerationValueMap[value];
       } else if (p.type!.kind == ManagedPropertyType.document) {
-        return Document(value);
+        return Document(jsonDecode(value));
       }
     }
 
     return value;
   }
 
-  String get sqlTypeSuffix {
-    final type = PostgreSQLFormat.dataTypeStringForDataType(
-      typeMap[property!.type!.kind],
-    );
-    if (type != null) {
-      return ":$type";
-    }
-
-    return "";
-  }
-
   String sqlColumnName({
-    bool withTypeSuffix = false,
     bool withTableNamespace = false,
     String? withPrefix,
   }) {
@@ -154,13 +133,13 @@ class ColumnBuilder extends Returnable {
           .primaryKey;
       name = "${name}_$relatedPrimaryKey";
     } else if (documentKeyPath != null) {
-      final keys =
-          documentKeyPath!.map((k) => k is String ? "'$k'" : k).join("->");
-      name = "$name->$keys";
-    }
-
-    if (withTypeSuffix) {
-      name = "$name$sqlTypeSuffix";
+      final keys = documentKeyPath!.map((k) {
+        if (k is String) {
+          k = int.tryParse(k) ?? k;
+        }
+        return k is int ? "[$k]" : ".$k";
+      }).join();
+      name = "$name->'\$$keys'";
     }
 
     if (withTableNamespace) {

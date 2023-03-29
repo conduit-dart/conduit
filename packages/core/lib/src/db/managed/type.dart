@@ -8,6 +8,12 @@ enum ManagedPropertyType {
   /// Represented by instances of [int].
   bigInteger,
 
+  /// Represented by instances of [int].
+  unsigned,
+
+  /// Represented by instances of [int].
+  bigUnsigned,
+
   /// Represented by instances of [String].
   string,
 
@@ -73,8 +79,10 @@ class ManagedType {
 
     switch (kind) {
       case ManagedPropertyType.bigInteger:
+      case ManagedPropertyType.bigUnsigned:
         return dartValue is int;
       case ManagedPropertyType.integer:
+      case ManagedPropertyType.unsigned:
         return dartValue is int;
       case ManagedPropertyType.boolean:
         return dartValue is bool;
@@ -110,6 +118,10 @@ class ManagedType {
   static ManagedPropertyType get integer => ManagedPropertyType.integer;
 
   static ManagedPropertyType get bigInteger => ManagedPropertyType.bigInteger;
+
+  static ManagedPropertyType get unsigned => ManagedPropertyType.unsigned;
+
+  static ManagedPropertyType get bigUnsigned => ManagedPropertyType.bigUnsigned;
 
   static ManagedPropertyType get string => ManagedPropertyType.string;
 

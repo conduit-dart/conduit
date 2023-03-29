@@ -22,7 +22,7 @@ class RootObject extends ManagedObject<_RootObject> implements _RootObject {
 }
 
 class _RootObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? rid;
 
   int? value1;
@@ -53,7 +53,7 @@ class ChildObject extends ManagedObject<_ChildObject> implements _ChildObject {
 }
 
 class _ChildObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? cid;
 
   int? value1;
@@ -89,7 +89,7 @@ class GrandChildObject extends ManagedObject<_GrandChildObject>
 }
 
 class _GrandChildObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? gid;
 
   int? value1;
@@ -122,7 +122,7 @@ class OtherRootObject extends ManagedObject<_OtherRootObject>
 }
 
 class _OtherRootObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? value1;
@@ -143,7 +143,7 @@ class RootJoinObject extends ManagedObject<_RootJoinObject>
 }
 
 class _RootJoinObject {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Relate(Symbol('join'))

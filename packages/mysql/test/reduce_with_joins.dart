@@ -168,7 +168,7 @@ Future populate() async {
 class Company extends ManagedObject<_Company> implements _Company {}
 
 class _Company {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? budget;
@@ -180,7 +180,7 @@ class _Company {
 class Employee extends ManagedObject<_Employee> implements _Employee {}
 
 class _Employee {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? salary;
@@ -194,7 +194,7 @@ class _Employee {
 class Record extends ManagedObject<_Record> implements _Record {}
 
 class _Record {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? payedLeaveLeft;
@@ -206,7 +206,7 @@ class _Record {
 class Report extends ManagedObject<_Report> implements _Report {}
 
 class _Report {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   int? earnings;

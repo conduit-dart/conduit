@@ -430,7 +430,7 @@ void main() {
         () {
       final dataModel = ManagedDataModel([TotalModel, PartialReferenceModel]);
       final defaultProperties =
-          dataModel.entityForType(TotalModel).defaultProperties!;
+          dataModel.entityForType(TotalModel).defaultProperties;
       expect(defaultProperties.contains("id"), true);
       expect(defaultProperties.contains("field"), true);
       expect(defaultProperties.contains("addedField"), true);
@@ -438,7 +438,7 @@ void main() {
       expect(
         dataModel
             .entityForType(PartialReferenceModel)
-            .defaultProperties!
+            .defaultProperties
             .contains("foreignKeyColumn"),
         true,
       );

@@ -26,6 +26,10 @@ services:
       MYSQL_ROOT_PASSWORD: conduit!
       MYSQL_DATABASE: conduit_test_db
       MYSQL_PORT: 13306
+      MYSQL_INITDB_TEMP_TABLE_USE: true
+      MYSQL_INITDB_ALLOW_LOCAL_INFILE: true
+      MYSQL_INITDB_LOCAL_INFILE: true
+      MYSQL_INIT_COMMAND: "GRANT SELECT ON information_schema.* TO 'conduit_test_user'@'localhost'; set global sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';"
     ports:
       - 0.0.0.0:13306:3306
     volumes:

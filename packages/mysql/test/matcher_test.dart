@@ -515,7 +515,7 @@ void main() {
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
 
 class _TestModel {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;
@@ -529,7 +529,7 @@ class _TestModel {
 class InnerModel extends ManagedObject<_InnerModel> implements _InnerModel {}
 
 class _InnerModel {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? name;

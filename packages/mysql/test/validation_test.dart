@@ -158,7 +158,7 @@ void main() {
 class T extends ManagedObject<_T> implements _T {}
 
 class _T {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Validate.oneOf(["a", "b"])
@@ -187,7 +187,7 @@ class U extends ManagedObject<_U> implements _U {
 }
 
 class _U {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   String? q;
@@ -201,7 +201,7 @@ class V extends ManagedObject<_V> implements _V {
 }
 
 class _V {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Validate.oneOf(["a", "b"])
@@ -217,7 +217,7 @@ class W extends ManagedObject<_W> implements _W {
 }
 
 class _W {
-  @primaryKey
+  @primaryKeyUnsigned
   int? id;
 
   @Validate.oneOf(["a", "b"])

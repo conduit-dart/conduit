@@ -119,8 +119,9 @@ abstract class ManagedPropertyDescription {
   static APISchemaObject _typedSchemaObject(ManagedType type) {
     switch (type.kind) {
       case ManagedPropertyType.integer:
-        return APISchemaObject.integer();
+      case ManagedPropertyType.unsigned:
       case ManagedPropertyType.bigInteger:
+      case ManagedPropertyType.bigUnsigned:
         return APISchemaObject.integer();
       case ManagedPropertyType.doublePrecision:
         return APISchemaObject.number();

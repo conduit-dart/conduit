@@ -15,6 +15,7 @@ class SchemaColumn {
     this.isUnique = false,
     this.defaultValue,
     this.isPrimaryKey = false,
+    this.keyLength = 0,
   }) {
     _type = typeStringForType(type);
   }
@@ -31,6 +32,9 @@ class SchemaColumn {
   }) {
     isIndexed = true;
     _type = typeStringForType(type);
+    if (_type == 'string') {
+      keyLength = 255;
+    }
     _deleteRule = deleteRuleStringForDeleteRule(rule);
   }
 
@@ -51,6 +55,9 @@ class SchemaColumn {
     }
 
     _type = typeStringForType(desc.type!.kind);
+    if (_type == 'string') {
+      keyLength = 255;
+    }
     isNullable = desc.isNullable;
     autoincrement = desc.autoincrement;
     isUnique = desc.isUnique;
@@ -60,6 +67,7 @@ class SchemaColumn {
   /// Creates a copy of [otherColumn].
   SchemaColumn.from(SchemaColumn otherColumn) {
     name = otherColumn.name;
+    keyLength = otherColumn.keyLength;
     _type = otherColumn._type;
     isIndexed = otherColumn.isIndexed;
     isNullable = otherColumn.isNullable;
@@ -77,6 +85,7 @@ class SchemaColumn {
   /// Where [map] is typically created by [asMap].
   SchemaColumn.fromMap(Map<String, dynamic> map) {
     name = map["name"] as String;
+    keyLength = map["keyLength"] as int;
     _type = map["type"] as String?;
     isIndexed = map["indexed"] as bool?;
     isNullable = map["nullable"] as bool?;
@@ -99,6 +108,9 @@ class SchemaColumn {
   ///
   /// May be null if not assigned to a table.
   SchemaTable? table;
+
+  /// Sets the length of a text column
+  int keyLength = 0;
 
   /// The [String] representation of this column's type.
   String? get typeString => _type;
@@ -174,10 +186,14 @@ class SchemaColumn {
     switch (type) {
       case ManagedPropertyType.integer:
         return "integer";
+      case ManagedPropertyType.unsigned:
+        return "unsigned";
       case ManagedPropertyType.doublePrecision:
         return "double";
       case ManagedPropertyType.bigInteger:
         return "bigInteger";
+      case ManagedPropertyType.bigUnsigned:
+        return "bigUnsigned";
       case ManagedPropertyType.boolean:
         return "boolean";
       case ManagedPropertyType.datetime:
@@ -200,8 +216,12 @@ class SchemaColumn {
     switch (type) {
       case "integer":
         return ManagedPropertyType.integer;
+      case "unsigned":
+        return ManagedPropertyType.unsigned;
       case "double":
         return ManagedPropertyType.doublePrecision;
+      case "bigUnsigned":
+        return ManagedPropertyType.bigUnsigned;
       case "bigInteger":
         return ManagedPropertyType.bigInteger;
       case "boolean":

@@ -86,11 +86,11 @@ class MySqlQueryReduce<T extends ManagedObject>
     }
 
     final store = query.context.persistentStore as MySqlPersistentStore;
-    final connection = await store.getDatabaseConnection();
+    final connection = await store.getDatabaseConnectionPool();
     try {
       final result = await connection
-          .query(buffer.toString(), [builder.variables]).timeout(
-              Duration(seconds: query.timeoutInSeconds));
+          .execute(buffer.toString(), builder.variables)
+          .timeout(Duration(seconds: query.timeoutInSeconds));
       return result.first.first as U;
     } on TimeoutException catch (e) {
       throw QueryException.transport(

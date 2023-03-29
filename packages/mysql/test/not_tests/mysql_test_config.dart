@@ -27,8 +27,7 @@ class MySqlTestConfig {
 
   static final MySqlTestConfig _self = MySqlTestConfig._internal();
 
-  String get connectionUrl =>
-      "mysql://$username:$password@$host:$port/$dbName";
+  String get connectionUrl => "mysql://$username:$password@$host:$port/$dbName";
 
   /// Returns a [PostgreSQLPersistentStore] that has been initialised
   /// using the  db settings configured via .settings.yaml
@@ -57,10 +56,10 @@ class MySqlTestConfig {
         MySqlPersistentStore(username, password, host, port, dbName);
 
     final dataModel = ManagedDataModel(instanceTypes);
-    final commands = commandsFromDataModel(dataModel, temporary: true);
+    final commands = commandsFromDataModel(dataModel);
     final context = ManagedContext(dataModel, persistentStore);
-
     for (var cmd in commands) {
+      print(cmd);
       await persistentStore.execute(cmd);
     }
 
@@ -86,7 +85,7 @@ class MySqlTestConfig {
     final tables = List<SchemaTable>.from(schema.tables);
     while (tables.isNotEmpty) {
       try {
-        await store.execute("DROP TABLE IF EXISTS ${tables.last.name}");
+        await store.execute("  ${tables.last.name}");
         tables.removeLast();
       } catch (_) {
         tables.insert(0, tables.removeLast());

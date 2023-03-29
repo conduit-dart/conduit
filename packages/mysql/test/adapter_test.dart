@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_mysql/conduit_mysql.dart';
+import 'package:mysql_client/mysql_client.dart';
 import 'package:test/test.dart';
 
 import 'not_tests/mysql_test_config.dart';
@@ -10,25 +11,23 @@ import 'not_tests/mysql_test_config.dart';
 void main() {
   group("Behavior", () {
     MySqlPersistentStore? persistentStore;
-    SocketProxy? proxy;
 
     tearDown(() async {
       await persistentStore?.close();
-      await proxy?.close();
     });
 
     test("A down connection will restart", () async {
       persistentStore = MySqlTestConfig().persistentStore();
       var result = await persistentStore!.execute("select 1");
       expect(result, [
-        [1]
+        {'1': 1}
       ]);
 
       await persistentStore!.close();
 
       result = await persistentStore!.execute("select 1");
       expect(result, [
-        [1]
+        {'1': 1}
       ]);
     });
 
@@ -38,7 +37,7 @@ void main() {
       persistentStore = MySqlTestConfig().persistentStore();
       final connections = await Future.wait(
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-            .map((_) => persistentStore!.getDatabaseConnection()),
+            .map((_) => persistentStore!.getDatabaseConnectionPool()),
       );
       final first = connections.first;
       expect(connections, everyElement(first));
@@ -57,7 +56,7 @@ void main() {
         expectedValues
             .map(
               (v) => [
-                [v]
+                {'$v': v}
               ],
             )
             .toList(),
@@ -91,9 +90,9 @@ void main() {
       );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy =
-          SocketProxy(15434, int.parse(Platform.environment['POSTGRES_PORT']!));
-      await proxy?.open();
+      SocketProxy proxy =
+          SocketProxy(15434, int.parse(Platform.environment['MYSQL_PORT']!));
+      await proxy.open();
 
       expectedValues = [5, 6, 7, 8, 9];
       values = await Future.wait(
@@ -104,11 +103,12 @@ void main() {
         expectedValues
             .map(
               (v) => [
-                [v]
+                {'$v': v}
               ],
             )
             .toList(),
       );
+      proxy.close();
     });
 
     test("Connect to bad db fails gracefully, can then be used again",
@@ -116,36 +116,21 @@ void main() {
       persistentStore = MySqlTestConfig().persistentStore(port: 15433);
 
       try {
-        await persistentStore!.executeQuery("SELECT 1", null, 20);
+        await persistentStore!.executeQuery("SELECT 1", {}, 20);
         expect(true, false);
       } on QueryException {
         //empty
       }
 
-      proxy =
-          SocketProxy(15433, int.parse(Platform.environment['POSTGRES_PORT']!));
-      await proxy!.open();
+      SocketProxy proxy =
+          SocketProxy(15433, int.parse(Platform.environment['MYSQL_PORT']!));
+      await proxy.open();
 
-      final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
-      expect(x, [
-        [1]
-      ]);
+      final x = await persistentStore!.executeQuery("SELECT 1", {}, 20);
+      expect((x as ResultSet).rows.first.typedAssoc(), {'1': 1});
+      proxy.close();
     });
   });
-
-  // group("Registration", () {
-  //   test("Create with default constructor registers and handles shutdown",
-  //       () async {
-  //     final store = MySqlTestConfig().persistentStore();
-
-  //     await store.execute("SELECT 1");
-  //     expect(store.isConnected, true);
-
-  //     await store.close();
-
-  //     expect(store.isConnected, false);
-  //   });
-  // });
 }
 
 class SocketProxy {
@@ -160,9 +145,9 @@ class SocketProxy {
   final List<SocketPair> _pairs = [];
 
   Future open() async {
-    _server = await ServerSocket.bind("localhost", src);
+    _server = await ServerSocket.bind("0.0.0.0", src);
     _server!.listen((socket) async {
-      final outgoing = await Socket.connect("localhost", dest);
+      final outgoing = await Socket.connect("0.0.0.0", dest);
 
       outgoing.listen((bytes) {
         if (isEnabled) {
@@ -181,6 +166,7 @@ class SocketProxy {
   }
 
   Future close() async {
+    isEnabled = false;
     await _server?.close();
     await Future.wait(
       _pairs.map((sp) async {

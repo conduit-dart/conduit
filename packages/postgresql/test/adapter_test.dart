@@ -116,7 +116,7 @@ void main() {
       persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
       try {
-        await persistentStore!.executeQuery("SELECT 1", null, 20);
+        await persistentStore!.executeQuery("SELECT 1", {}, 20);
         expect(true, false);
       } on QueryException {
         //empty
@@ -126,7 +126,7 @@ void main() {
           SocketProxy(15433, int.parse(Platform.environment['POSTGRES_PORT']!));
       await proxy!.open();
 
-      final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
+      final x = await persistentStore!.executeQuery("SELECT 1", {}, 20);
       expect(x, [
         [1]
       ]);
