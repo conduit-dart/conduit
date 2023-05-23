@@ -48,5 +48,5 @@ scripts:
     select-pacakge:
       no-private: true
 environment:
-  sdk: ">=2.19.2 <4.0.0"
+  sdk: ">=3.0.1 <4.0.0"
   

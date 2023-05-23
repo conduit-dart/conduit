@@ -4,7 +4,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.2 <4.0.0"
+  sdk: ">=3.0.1 <4.0.0"
 
 dependencies:
   conduit: ^4.3.7
