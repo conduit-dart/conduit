@@ -24,6 +24,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
       final isRequired = allDeclarations[decl.simpleName]!
           .metadata
           .any((im) => im.reflectee is RequiredBinding);
+
       return getParameterForVariable(decl, isRequired: isRequired);
     }).toList();
 
