@@ -4,6 +4,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/runtime.dart';
+import 'package:io/io.dart';
 
 class BuildExecutable extends Executable {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
@@ -52,6 +53,11 @@ class BuildManager {
     }
 
     strippedScriptFile.writeAsStringSync(scriptSource);
+
+    copyPath(
+        context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
+        context.buildDirectoryUri.resolve('not_tests').path);
+
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
       packageConfigURI:

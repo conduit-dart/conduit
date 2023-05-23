@@ -489,7 +489,7 @@ class CrashingEncoder extends Converter<String, List<int>> {
   }
 }
 
-class CrashingSink extends ChunkedConversionSink<String> {
+class CrashingSink implements ChunkedConversionSink<String> {
   CrashingSink(this.sink);
 
   Sink<List<int>> sink;

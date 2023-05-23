@@ -109,11 +109,6 @@ class ConduitCompiler extends Compiler {
       ];
       _overwritePackageDependency(context, 'conduit_runtime', runtimePackages);
 
-      final commonTestPackages = [
-        {'name': 'conduit_common', 'path': 'common'},
-      ];
-      _overwritePackageDependency(context, 'common_test', commonTestPackages);
-
       final commonPackages = [
         {'name': 'conduit_open_api', 'path': 'open_api'},
       ];

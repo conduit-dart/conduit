@@ -241,7 +241,7 @@ class _FormDecoder extends Converter<String, Map<String, dynamic>> {
   }
 }
 
-class _FormSink extends ChunkedConversionSink<String> {
+class _FormSink implements ChunkedConversionSink<String> {
   _FormSink(this._outSink);
 
   final _FormDecoder decoder = const _FormDecoder();

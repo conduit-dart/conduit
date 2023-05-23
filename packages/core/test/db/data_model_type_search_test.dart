@@ -50,7 +50,7 @@ class _Mixin {
   int? id;
 }
 
-abstract class MixinEntity {
+mixin MixinEntity {
   @Serialize()
   String? serialized;
 
