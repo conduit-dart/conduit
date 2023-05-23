@@ -33,7 +33,7 @@ scripts:
     select-pacakge:
       no-private: true
   cache-source-win:
-    run: melos exec -- "mkdir $env:PUB_CACHE\hosted\pub.dev\$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION"
+    run: melos exec -- "mkdir %PUB_CACHE%/hosted/pub.dev/$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION"
     select-pacakge:
       no-private: true
   hard-clean:
