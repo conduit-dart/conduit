@@ -1,6 +1,6 @@
 import 'package:conduit_core/conduit_core.dart';
 
-class PostgreSQLSchemaGenerator {
+mixin PostgreSQLSchemaGenerator {
   String get versionTableName => "_conduit_version_pgsql";
 
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) {

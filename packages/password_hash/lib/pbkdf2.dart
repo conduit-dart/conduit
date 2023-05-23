@@ -94,7 +94,7 @@ class PBKDF2Exception implements Exception {
   String toString() => "PBKDF2Exception: $message";
 }
 
-class _XORDigestSink extends Sink<Digest> {
+class _XORDigestSink implements Sink<Digest> {
   _XORDigestSink(ByteData inputBuffer, Hmac hmac) {
     lastDigest = hmac.convert(inputBuffer.buffer.asUint8List()).bytes;
     bytes = ByteData(lastDigest.length)
