@@ -9,7 +9,7 @@ import 'package:path/path.dart' as path_lib;
 import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
 
-abstract class CLIProject implements CLICommand {
+mixin CLIProject implements CLICommand {
   @Option(
     "directory",
     abbr: "d",

@@ -5,7 +5,7 @@ import 'package:conduit_core/src/db/query/page.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/db/query/sort_descriptor.dart';
 
-abstract class QueryMixin<InstanceType extends ManagedObject>
+mixin QueryMixin<InstanceType extends ManagedObject>
     implements Query<InstanceType> {
   @override
   int offset = 0;

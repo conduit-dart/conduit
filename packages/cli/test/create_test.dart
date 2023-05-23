@@ -187,6 +187,8 @@ void main() {
               .toFilePath(windows: Platform.isWindows),
         );
 
+        print(res.stdout);
+        print(res.stderr);
         expect(res.exitCode, 0);
 
         try {

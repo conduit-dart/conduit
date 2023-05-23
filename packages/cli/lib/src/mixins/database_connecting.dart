@@ -7,7 +7,7 @@ import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
 
-abstract class CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
+mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   static const String flavorPostgreSQL = "postgres";
 
   late DatabaseConfiguration connectedDatabase;

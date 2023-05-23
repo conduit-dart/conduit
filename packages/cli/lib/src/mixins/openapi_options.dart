@@ -1,7 +1,7 @@
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/metadata.dart';
 
-abstract class CLIDocumentOptions implements CLICommand {
+mixin CLIDocumentOptions implements CLICommand {
   @Flag(
     "resolve-relative-urls",
     defaultsTo: true,

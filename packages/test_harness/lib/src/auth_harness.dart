@@ -34,7 +34,7 @@ import 'package:conduit_test/conduit_test.dart';
 ///               publicAgent = await addClient("com.public.client");
 ///             }
 ///         }
-abstract class TestHarnessAuthMixin<T extends ApplicationChannel>
+mixin TestHarnessAuthMixin<T extends ApplicationChannel>
     implements TestHarness<T> {
   /// Must override to return [authServer] of application under test.
   ///

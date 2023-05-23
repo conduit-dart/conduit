@@ -9,7 +9,7 @@ import 'package:conduit/src/scripts/schema_builder.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
-abstract class CLIDatabaseManagingCommand implements CLICommand, CLIProject {
+mixin CLIDatabaseManagingCommand implements CLICommand, CLIProject {
   @Option(
     "migration-directory",
     help:
