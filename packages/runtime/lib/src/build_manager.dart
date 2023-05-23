@@ -54,9 +54,11 @@ class BuildManager {
 
     strippedScriptFile.writeAsStringSync(scriptSource);
 
-    copyPath(
-        context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
-        context.buildDirectoryUri.resolve('not_tests').path);
+    try {
+      copyPath(
+          context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
+          context.buildDirectoryUri.resolve('not_tests').path);
+    } catch (_) {}
 
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
