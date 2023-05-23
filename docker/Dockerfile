@@ -1,7 +1,9 @@
 FROM dart:stable
 
+COPY ci/ ci/
 COPY packages/ packages/
 COPY melos.yaml melos.yaml
+COPY pubspec.yaml pubspec.yaml
 RUN dart pub global activate -spath packages/cli
 RUN dart pub global activate melos
 ENV PUB_CACHE=/root/.pub-cache

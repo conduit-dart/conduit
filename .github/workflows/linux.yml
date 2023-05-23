@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
@@ -36,7 +36,7 @@ jobs:
       startsWith(github.head_ref, 'feature/')
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'refactor/')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         runner_args: [melos test-unit, dart tool/generated_test_runner.dart]
