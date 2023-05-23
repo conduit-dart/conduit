@@ -55,7 +55,7 @@ class BuildManager {
     strippedScriptFile.writeAsStringSync(scriptSource);
 
     try {
-      copyPath(
+      await copyPath(
           context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
           context.buildDirectoryUri.resolve('not_tests').path);
     } catch (_) {}
