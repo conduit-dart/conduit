@@ -3,7 +3,7 @@ version: 4.3.7
 homepage: https://stablekernel.com
 description: Utilities for writing tests to validate file system and Dart project directory operations.
 environment:
-  sdk: '>=2.19.2 <4.0.0'
+  sdk: '>=3.0.1 <4.0.0'
 dependencies:
   path: ^1.0.0
   pubspec: ^2.0.1

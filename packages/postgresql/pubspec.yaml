@@ -4,7 +4,7 @@ version: 4.3.7
 repository: https://github.com/conduit-dart/conduit
 
 environment:
-  sdk: '>=2.19.2 <4.0.0'
+  sdk: '>=3.0.1 <4.0.0'
 
 dependencies:
   collection: ^1.17.1
