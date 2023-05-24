@@ -11,7 +11,7 @@ import 'package:conduit_open_api/v3.dart';
 /// header of the [Request].
 ///
 /// [AuthServer] implements this interface.
-abstract class AuthValidator {
+mixin AuthValidator {
   /// Returns an [Authorization] if [authorizationData] is valid.
   ///
   /// This method is invoked by [Authorizer] to validate the Authorization header of a request. [authorizationData]
