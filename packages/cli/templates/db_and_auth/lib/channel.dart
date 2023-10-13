@@ -8,7 +8,7 @@ import 'package:wildfire/wildfire.dart';
 /// This type initializes an application.
 ///
 /// Override methods in this class to set up routes and initialize services like
-/// database connections. See http://conduit.io/docs/http/channel/.
+/// database connections. See https://docs.theconduit.dev/http/channel/.
 class WildfireChannel extends ApplicationChannel
     implements AuthRedirectControllerDelegate {
   final HTMLRenderer htmlRenderer = HTMLRenderer();
