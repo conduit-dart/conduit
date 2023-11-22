@@ -1,3 +1,7 @@
+## 4.3.10
+
+ - Graduate package to a stable release. See pre-releases prior to this version for changelog entries.
+
 ## 4.3.10-dev.0
 
  - **REFACTOR**(postgres): BREAKING CHANGE major release for postgres driver. ([d6bf1165](https://github.com/conduit-dart/conduit/commit/d6bf1165f6903cb133b1ec4bf3d66242646f548b))
