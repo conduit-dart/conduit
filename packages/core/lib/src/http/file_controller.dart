@@ -6,6 +6,11 @@ import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
 
+typedef FileControllerClosure = FutureOr<Response> Function(
+  FileController controller,
+  Request req,
+);
+
 /// Serves files from a directory on the filesystem.
 ///
 /// See the constructor for usage.
@@ -39,11 +44,7 @@ class FileController extends Controller {
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
   FileController(
     String pathOfDirectoryToServe, {
-    FutureOr<Response> Function(
-      FileController controller,
-      Request req,
-    )?
-        onFileNotFound,
+    FileControllerClosure? onFileNotFound,
   })  : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
         _onFileNotFound = onFileNotFound;
 
@@ -171,7 +172,7 @@ class FileController extends Controller {
 
     if (!file.existsSync()) {
       if (_onFileNotFound != null) {
-        return _onFileNotFound!(this, request);
+        return (_onFileNotFound as FileControllerClosure)(this, request);
       }
 
       final response = Response.notFound();

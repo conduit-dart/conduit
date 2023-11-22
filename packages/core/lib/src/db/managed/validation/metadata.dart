@@ -464,7 +464,7 @@ class Validate {
             }
 
             if (_lessThan is int) {
-              object.maxLength = (-1) + (_lessThan! as int);
+              object.maxLength = (-1) + (_lessThan as int);
             } else if (_lessThanEqualTo != null) {
               object.maximum = _lessThanEqualTo as int?;
             }
