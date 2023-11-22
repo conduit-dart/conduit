@@ -5,8 +5,7 @@ import 'package:conduit_core/src/db/query/page.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 import 'package:conduit_core/src/db/query/sort_descriptor.dart';
 
-mixin QueryMixin<InstanceType extends ManagedObject>
-    implements Query<InstanceType> {
+mixin QueryMixin<InstanceType extends ManagedObject> implements Query<InstanceType> {
   @override
   int offset = 0;
 
@@ -25,6 +24,9 @@ mixin QueryMixin<InstanceType extends ManagedObject>
   @override
   QueryPredicate? predicate;
 
+  @override
+  QuerySortPredicate? sortPredicate;
+
   QueryPage? pageDescriptor;
   List<QuerySortDescriptor>? sortDescriptors;
   Map<ManagedRelationshipDescription, Query>? subQueries;
@@ -36,10 +38,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
   List<KeyPath>? _propertiesToFetch;
 
   List<KeyPath> get propertiesToFetch =>
-      _propertiesToFetch ??
-      entity.defaultProperties!
-          .map((k) => KeyPath(entity.properties[k]))
-          .toList();
+      _propertiesToFetch ?? entity.defaultProperties!.map((k) => KeyPath(entity.properties[k])).toList();
 
   @override
   InstanceType get values {
@@ -99,8 +98,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
     T? boundingValue,
   }) {
     final attribute = entity.identifyAttribute(propertyIdentifier);
-    pageDescriptor =
-        QueryPage(order, attribute.name, boundingValue: boundingValue);
+    pageDescriptor = QueryPage(order, attribute.name, boundingValue: boundingValue);
   }
 
   @override
@@ -122,9 +120,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
 
     if (properties.any(
       (kp) => kp.path.any(
-        (p) =>
-            p is ManagedRelationshipDescription &&
-            p.relationshipType != ManagedRelationshipType.belongsTo,
+        (p) => p is ManagedRelationshipDescription && p.relationshipType != ManagedRelationshipType.belongsTo,
       ),
     )) {
       throw ArgumentError(
@@ -168,8 +164,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
             .map((r) => "'${r!.name}'")
             .join(", ");
 
-        throw StateError(
-            "Invalid query construction. This query joins '${fromRelationship.entity.tableName}' "
+        throw StateError("Invalid query construction. This query joins '${fromRelationship.entity.tableName}' "
             "with '${fromRelationship.inverse!.entity.tableName}' on property '${fromRelationship.name}'. "
             "However, '${fromRelationship.inverse!.entity.tableName}' "
             "has also joined '${fromRelationship.entity.tableName}' on this property's inverse "

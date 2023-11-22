@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/conduit_core.dart';
 
+import '../postgresql_query.dart';
 import 'column.dart';
 import 'expression.dart';
 import 'sort.dart';
-import '../postgresql_query.dart';
 
 class TableBuilder implements Returnable {
   TableBuilder(PostgresQuery query, {this.parent, this.joinedBy})
@@ -19,6 +19,15 @@ class TableBuilder implements Returnable {
             ?.map((s) => ColumnSortBuilder(this, s.key, s.order))
             .toList() ??
         [];
+    if (query.sortPredicate != null) {
+      columnSortBuilders.add(
+        ColumnSortPredicateBuilder(
+          this,
+          query.sortPredicate!.predicate,
+          query.sortPredicate!.order,
+        ),
+      );
+    }
 
     if (query.pageDescriptor != null) {
       columnSortBuilders.add(

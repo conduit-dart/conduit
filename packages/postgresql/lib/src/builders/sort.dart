@@ -1,6 +1,7 @@
+import 'package:conduit_core/conduit_core.dart';
+
 import 'column.dart';
 import 'table.dart';
-import 'package:conduit_core/conduit_core.dart';
 
 class ColumnSortBuilder extends ColumnBuilder {
   ColumnSortBuilder(TableBuilder table, String? key, QuerySortOrder order)
@@ -10,4 +11,16 @@ class ColumnSortBuilder extends ColumnBuilder {
   final String order;
 
   String get sqlOrderBy => "${sqlColumnName(withTableNamespace: true)} $order";
+}
+
+class ColumnSortPredicateBuilder extends ColumnSortBuilder {
+  ColumnSortPredicateBuilder(
+      TableBuilder table, String key, QuerySortOrder order)
+      : _key = key,
+        super(table, key, order);
+
+  final String _key;
+
+  @override
+  String get sqlOrderBy => "$_key $order";
 }

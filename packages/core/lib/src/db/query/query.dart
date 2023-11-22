@@ -5,12 +5,14 @@ import 'package:conduit_core/src/db/query/error.dart';
 import 'package:conduit_core/src/db/query/matcher_expression.dart';
 import 'package:conduit_core/src/db/query/predicate.dart';
 import 'package:conduit_core/src/db/query/reduce.dart';
+import 'package:conduit_core/src/db/query/sort_predicate.dart';
 
 export 'error.dart';
 export 'matcher_expression.dart';
+export 'mixin.dart';
 export 'predicate.dart';
 export 'reduce.dart';
-export 'mixin.dart';
+export 'sort_predicate.dart';
 
 /// An object for configuring and executing a database query.
 ///
@@ -239,6 +241,12 @@ abstract class Query<InstanceType extends ManagedObject> {
   /// A predicate will identify the rows being accessed, see [QueryPredicate] for more details. Prefer to use
   /// [where] instead of this property directly.
   QueryPredicate? predicate;
+
+  /// A predicate for sorting the result.
+  ///
+  /// A predicate will identify the rows being accessed, see [QuerySortPredicate] for more details. Prefer to use
+  /// [sortBy] instead of this property directly.
+  QuerySortPredicate? sortPredicate;
 
   /// Values to be used when inserting or updating an object.
   ///
