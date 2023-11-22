@@ -14,10 +14,8 @@ class ColumnSortBuilder extends ColumnBuilder {
 }
 
 class ColumnSortPredicateBuilder extends ColumnSortBuilder {
-  ColumnSortPredicateBuilder(
-      TableBuilder table, String key, QuerySortOrder order)
-      : _key = key,
-        super(table, key, order);
+  ColumnSortPredicateBuilder(super.table, String super.key, super.order)
+      : _key = key;
 
   final String _key;
 

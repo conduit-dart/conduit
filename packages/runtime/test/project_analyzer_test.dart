@@ -23,6 +23,6 @@ void main() {
     );
     expect(klass, isNotNull);
     expect(klass!.name.value(), "ConsumerSubclass");
-    expect(klass.extendsClause!.superclass.name.name, "Consumer");
+    expect(klass.extendsClause!.superclass.name2.stringValue, "Consumer");
   });
 }

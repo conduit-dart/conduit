@@ -291,19 +291,19 @@ class APIComponentCollection<T extends APIObject?> {
 
   T _getInstanceOf() {
     switch (T) {
-      case APISchemaObject:
+      case const (APISchemaObject):
         return APISchemaObject.empty() as T;
-      case APIResponse:
+      case const (APIResponse):
         return APIResponse.empty() as T;
-      case APIParameter:
+      case const (APIParameter):
         return APIParameter.empty() as T;
-      case APIRequestBody:
+      case const (APIRequestBody):
         return APIRequestBody.empty() as T;
-      case APIHeader:
+      case const (APIHeader):
         return APIHeader.empty() as T;
-      case APISecurityScheme:
+      case const (APISecurityScheme):
         return APISecurityScheme.empty() as T;
-      case APICallback:
+      case const (APICallback):
         return APICallback.empty() as T;
     }
 

@@ -161,7 +161,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     final dbConnection = await executionContext;
     try {
       final rows = await dbConnection!.execute(
-        sql,
+        Sql.named(sql),
         parameters: substitutionValues,
         timeout: timeout,
         queryMode: QueryMode.extended,

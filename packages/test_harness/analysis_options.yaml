@@ -1,1 +1,5 @@
 include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    use_string_in_part_of_directives: false
