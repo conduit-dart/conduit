@@ -24,7 +24,6 @@ void main() {
       ..values.name = "Bob's"
       ..values.owner = (TestModel()..id = 1);
     await q.insert();
-
     q = Query<InnerModel>(context!)..values.name = "No one's";
     await q.insert();
   });

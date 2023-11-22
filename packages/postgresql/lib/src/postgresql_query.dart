@@ -142,7 +142,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   }
 
   @override
-  Future<int?> delete() async {
+  Future<int> delete() async {
     final builder = PostgresQueryBuilder(this);
 
     final buffer = StringBuffer();
@@ -154,13 +154,13 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       throw canModifyAllInstancesError;
     }
 
-    final result = await context.persistentStore.executeQuery(
+    final int result = await context.persistentStore.executeQuery(
       buffer.toString(),
       builder.variables,
       timeoutInSeconds,
       returnType: PersistentStoreQueryReturnType.rowCount,
     );
-    return result as int?;
+    return result;
   }
 
   @override
@@ -170,7 +170,6 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     if (!builder.containsJoins) {
       fetchLimit = 1;
     }
-
     final results = await _fetch(builder);
     if (results.length == 1) {
       return results.first;
@@ -229,10 +228,8 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     if (offset != 0) {
       buffer.write("OFFSET $offset ");
     }
-
     final results = await context.persistentStore
         .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
-
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 

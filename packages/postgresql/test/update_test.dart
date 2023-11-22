@@ -1,4 +1,5 @@
 import 'package:conduit_core/conduit_core.dart';
+import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 
 import 'not_tests/postgres_test_config.dart';
@@ -26,7 +27,8 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name = @name", {"name": "Bob"})
+      ..predicate =
+          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
       ..values = m;
 
     final response = await req.update();
@@ -53,7 +55,8 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name = @name", {"name": "Bob"})
+      ..predicate =
+          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
       ..values = m;
 
     try {
@@ -124,7 +127,8 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name = @name", {"name": "John"})
+      ..predicate = QueryPredicate(
+          "name = @name", {"name": TypedValue(Type.text, "John")})
       ..values = m;
 
     final response = await req.update();
@@ -203,7 +207,8 @@ void main() {
     await req.insert();
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name = @name", {"name": "Bob"})
+      ..predicate =
+          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
       ..values.name = "John";
 
     var response = await req.updateOne();
@@ -212,7 +217,8 @@ void main() {
     expect(response.emailAddress, "1@a.com");
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name = @name", {"name": "Bob"})
+      ..predicate =
+          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
       ..values.name = "John";
 
     response = await req.updateOne();
@@ -236,7 +242,7 @@ void main() {
     await req.insert();
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name is not null", null)
+      ..predicate = QueryPredicate("name is not null")
       ..values.name = "Joe";
 
     try {

@@ -37,7 +37,7 @@ abstract class ManagedBacking {
   }
 
   /// A map of all set values of this instance.
-  Map<String?, dynamic>? get contents;
+  Map<String, dynamic>? get contents;
 }
 
 /// An object that represents a database row.
@@ -271,7 +271,7 @@ abstract class ManagedObject<T> extends Serializable {
     final outputMap = <String, dynamic>{};
 
     backing.contents!.forEach((k, v) {
-      if (!_isPropertyPrivate(k!)) {
+      if (!_isPropertyPrivate(k)) {
         final property = properties[k];
         final value = property!.convertToPrimitiveValue(v);
         if (value == null && !_includeIfNull(property)) {

@@ -1,3 +1,5 @@
+import 'package:postgres/postgres.dart';
+
 import 'column.dart';
 import 'table.dart';
 import 'package:conduit_core/conduit_core.dart';
@@ -48,8 +50,11 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
     return QueryPredicate(
-      "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName$sqlTypeSuffix",
-      {variableName: convertValueForStorage(value)},
+      "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName",
+      {
+        variableName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+            convertValueForStorage(value)),
+      },
     );
   }
 
@@ -58,15 +63,17 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     bool within = true,
   }) {
     final tokenList = [];
-    final pairedMap = <String, dynamic>{};
+    final pairedMap = <String, TypedValue>{};
 
     var counter = 0;
     for (final value in values) {
       final prefix = "$defaultPrefix${counter}_";
 
       final variableName = sqlColumnName(withPrefix: prefix);
-      tokenList.add("@$variableName$sqlTypeSuffix");
-      pairedMap[variableName] = convertValueForStorage(value);
+      tokenList.add("@$variableName");
+      pairedMap[variableName] = TypedValue(
+          ColumnBuilder.typeMap[property!.type!.kind]!,
+          convertValueForStorage(value));
 
       counter++;
     }
@@ -91,12 +98,12 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final rhsName = sqlColumnName(withPrefix: "${defaultPrefix}rhs_");
     final operation = insideRange ? "BETWEEN" : "NOT BETWEEN";
 
-    return QueryPredicate(
-        "$name $operation @$lhsName$sqlTypeSuffix AND @$rhsName$sqlTypeSuffix",
-        {
-          lhsName: convertValueForStorage(lhsValue),
-          rhsName: convertValueForStorage(rhsValue)
-        });
+    return QueryPredicate("$name $operation @$lhsName AND @$rhsName", {
+      lhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+          convertValueForStorage(lhsValue)),
+      rhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+          convertValueForStorage(rhsValue)),
+    });
   }
 
   QueryPredicate stringPredicate(
@@ -130,8 +137,8 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     }
 
     return QueryPredicate(
-      "$n $operation @$variableName$sqlTypeSuffix",
-      {variableName: matchValue},
+      "$n $operation @$variableName",
+      {variableName: TypedValue(Type.text, matchValue)},
     );
   }
 

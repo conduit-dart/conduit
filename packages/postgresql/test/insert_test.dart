@@ -179,8 +179,8 @@ void main() {
       await insertReq.insert();
 
       final readReq = Query<TestModel>(context!)
-        ..predicate =
-            QueryPredicate("emailAddress = @email", {"email": "2@a.com"});
+        ..predicate = QueryPredicate("emailAddress = @email",
+            {"email": TypedValue(Type.text, "2@a.com")});
 
       final checkInsert = await readReq.fetchOne();
       expect(checkInsert, isNotNull);
@@ -701,7 +701,7 @@ Matcher doesNotContain(Object? matcher) => isNot(contains(matcher));
 void expectNullViolation(QueryException exception, {String? columnName}) {
   expect(exception.event, QueryExceptionEvent.input);
   expect(exception.message, contains("non_null_violation"));
-  expect((exception.underlyingException as PostgreSQLException).code, "23502");
+  expect((exception.underlyingException as ServerException).code, "23502");
 
   if (columnName != null) {
     expect(exception.response.body["detail"], contains("simple.name"));
@@ -711,6 +711,6 @@ void expectNullViolation(QueryException exception, {String? columnName}) {
 void expectUniqueViolation(QueryException exception) {
   expect(exception.event, QueryExceptionEvent.conflict);
   expect(exception.message, contains("entity_already_exists"));
-  expect((exception.underlyingException as PostgreSQLException).code, "23505");
+  expect((exception.underlyingException as ServerException).code, "23505");
   expect(exception.response.statusCode, 409);
 }

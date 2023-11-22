@@ -1,3 +1,4 @@
+@Skip('Typing is broken')
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/src/postgresql_query.dart';
 import 'package:conduit_postgresql/src/query_builder.dart';

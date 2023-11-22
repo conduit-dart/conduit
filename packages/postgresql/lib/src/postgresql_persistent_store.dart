@@ -46,7 +46,7 @@ class PostgreSQLPersistentStore extends PersistentStore
 
   factory PostgreSQLPersistentStore._transactionProxy(
     PostgreSQLPersistentStore parent,
-    PostgreSQLExecutionContext ctx,
+    TxSession ctx,
   ) {
     return _TransactionProxy(parent, ctx);
   }
@@ -84,7 +84,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       return false;
     }
 
-    return !_databaseConnection!.isClosed;
+    return _databaseConnection!.isOpen;
   }
 
   /// Amount of time to wait before connection fails to open.
@@ -92,18 +92,17 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// Defaults to 30 seconds.
   final Duration connectTimeout = const Duration(seconds: 30);
 
-  static final Finalizer<PostgreSQLConnection> _finalizer =
+  static final Finalizer<Connection> _finalizer =
       Finalizer((connection) => connection.close());
 
-  PostgreSQLConnection? _databaseConnection;
-  Completer<PostgreSQLConnection>? _pendingConnectionCompleter;
+  Connection? _databaseConnection;
+  Completer<Connection>? _pendingConnectionCompleter;
 
   /// Retrieves the query execution context of this store.
   ///
   /// Use this property to execute raw queries on the underlying database connection.
   /// If running a transaction, this context is the transaction context.
-  Future<PostgreSQLExecutionContext?> get executionContext =>
-      getDatabaseConnection();
+  Future<Session?> get executionContext => getDatabaseConnection();
 
   /// Retrieves a connection to the database this instance connects to.
   ///
@@ -111,10 +110,10 @@ class PostgreSQLPersistentStore extends PersistentStore
   ///
   /// When executing queries, prefer to use [executionContext] instead. Failure to do so might result
   /// in issues when executing queries during a transaction.
-  Future<PostgreSQLConnection> getDatabaseConnection() async {
-    if (_databaseConnection == null || _databaseConnection!.isClosed) {
+  Future<Connection> getDatabaseConnection() async {
+    if (_databaseConnection == null || !_databaseConnection!.isOpen) {
       if (_pendingConnectionCompleter == null) {
-        _pendingConnectionCompleter = Completer<PostgreSQLConnection>();
+        _pendingConnectionCompleter = Completer<Connection>();
 
         _connect().timeout(connectTimeout).then((conn) {
           _databaseConnection = conn;
@@ -161,10 +160,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     final now = DateTime.now().toUtc();
     final dbConnection = await executionContext;
     try {
-      final rows = await dbConnection!.query(
+      final rows = await dbConnection!.execute(
         sql,
-        substitutionValues: substitutionValues,
-        timeoutInSeconds: timeout.inSeconds,
+        parameters: substitutionValues,
+        timeout: timeout,
+        queryMode: QueryMode.extended,
       );
 
       final mappedRows = rows.map((row) => row.toList()).toList();
@@ -173,7 +173,7 @@ class PostgreSQLPersistentStore extends PersistentStore
             "Query:execute (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $sql -> $mappedRows",
       );
       return mappedRows;
-    } on PostgreSQLException catch (e) {
+    } on ServerException catch (e) {
       final interpreted = _interpretException(e);
       if (interpreted != null) {
         throw interpreted;
@@ -195,12 +195,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     ManagedContext transactionContext,
     Future<T?> Function(ManagedContext transaction) transactionBlock,
   ) async {
-    final dbConnection = await getDatabaseConnection();
+    final Connection dbConnection = await getDatabaseConnection();
 
     T? output;
-    Rollback? rollback;
     try {
-      await dbConnection.transaction((dbTransactionContext) async {
+      await dbConnection.runTx((dbTransactionContext) async {
         transactionContext.persistentStore =
             PostgreSQLPersistentStore._transactionProxy(
           this,
@@ -209,27 +208,23 @@ class PostgreSQLPersistentStore extends PersistentStore
 
         try {
           output = await transactionBlock(transactionContext);
-        } on Rollback catch (e) {
+        } on Rollback {
           /// user triggered a manual rollback.
           /// TODO: there is currently no reliable way for a user to detect
           /// that a manual rollback occured.
           /// The documented method of checking the return value from this method
           /// does not work.
-          rollback = e;
-          dbTransactionContext.cancelTransaction(reason: rollback!.reason);
+          await dbTransactionContext.rollback();
+          rethrow;
         }
       });
-    } on PostgreSQLException catch (e) {
+    } on ServerException catch (e) {
       final interpreted = _interpretException(e);
       if (interpreted != null) {
         throw interpreted;
       }
 
       rethrow;
-    }
-
-    if (rollback != null) {
-      throw rollback!;
     }
 
     return output;
@@ -247,7 +242,7 @@ class PostgreSQLPersistentStore extends PersistentStore
 
       final version = await values.last.first;
       return version as int;
-    } on PostgreSQLException catch (e) {
+    } on ServerException catch (e) {
       if (e.code == PostgreSQLErrorCode.undefinedTable) {
         return 0;
       }
@@ -261,11 +256,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
-    final connection = await getDatabaseConnection();
+    final Connection connection = await getDatabaseConnection();
 
     Schema? schema = fromSchema;
 
-    await connection.transaction((ctx) async {
+    await connection.runTx((ctx) async {
       final transactionStore =
           PostgreSQLPersistentStore._transactionProxy(this, ctx);
       await _createVersionTableIfNecessary(ctx, temporary);
@@ -277,9 +272,11 @@ class PostgreSQLPersistentStore extends PersistentStore
             SchemaBuilder(transactionStore, schema, isTemporary: temporary);
         migration.database.store = transactionStore;
 
-        final existingVersionRows = await ctx.query(
-          "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= @v:int4",
-          substitutionValues: {"v": migration.version},
+        final existingVersionRows = await ctx.execute(
+          Sql.named(
+              "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= @v:int4"),
+          parameters: {"v": migration.version},
+          queryMode: QueryMode.extended,
         );
         if (existingVersionRows.isNotEmpty) {
           final date = existingVersionRows.first.last;
@@ -318,7 +315,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<dynamic> executeQuery(
     String formatString,
-    Map<String?, dynamic>? values,
+    Map<String, dynamic>? values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType =
         PersistentStoreQueryReturnType.rows,
@@ -326,34 +323,27 @@ class PostgreSQLPersistentStore extends PersistentStore
     final now = DateTime.now().toUtc();
     try {
       final dbConnection = await executionContext;
-      dynamic results;
-
-      if (returnType == PersistentStoreQueryReturnType.rows) {
-        results = await dbConnection!.query(
-          formatString,
-          substitutionValues: values as Map<String, dynamic>?,
-          timeoutInSeconds: timeoutInSeconds,
-        );
-      } else {
-        results = await dbConnection!.execute(
-          formatString,
-          substitutionValues: values as Map<String, dynamic>?,
-          timeoutInSeconds: timeoutInSeconds,
-        );
-      }
+      final Result results = await dbConnection!.execute(
+        Sql.named(formatString),
+        parameters: values,
+        timeout: Duration(seconds: timeoutInSeconds),
+        queryMode: QueryMode.extended,
+      );
 
       logger.fine(
         () =>
             "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString Substitutes: ${values ?? "{}"} -> $results",
       );
 
-      return results;
+      return returnType == PersistentStoreQueryReturnType.rows
+          ? results
+          : results.affectedRows;
     } on TimeoutException catch (e) {
       throw QueryException.transport(
         "timed out connection to database",
         underlyingException: e,
       );
-    } on PostgreSQLException catch (e) {
+    } on ServerException catch (e) {
       logger.fine(
         () =>
             "Query (${DateTime.now().toUtc().difference(now).inMilliseconds}ms) $formatString $values",
@@ -368,8 +358,8 @@ class PostgreSQLPersistentStore extends PersistentStore
     }
   }
 
-  QueryException<PostgreSQLException>? _interpretException(
-    PostgreSQLException exception,
+  QueryException<ServerException>? _interpretException(
+    ServerException exception,
   ) {
     switch (exception.code) {
       case PostgreSQLErrorCode.uniqueViolation:
@@ -396,14 +386,15 @@ class PostgreSQLPersistentStore extends PersistentStore
   }
 
   Future _createVersionTableIfNecessary(
-    PostgreSQLExecutionContext context,
+    TxSession context,
     bool temporary,
   ) async {
     final table = versionTable;
     final commands = createTable(table, isTemporary: temporary);
-    final exists = await context.query(
-      "SELECT to_regclass(@tableName:text)",
-      substitutionValues: {"tableName": table.name},
+    final exists = await context.execute(
+      Sql.named("SELECT to_regclass(@tableName:text)"),
+      parameters: {"tableName": table.name},
+      queryMode: QueryMode.extended,
     );
 
     if (exists.first.first != null) {
@@ -417,25 +408,23 @@ class PostgreSQLPersistentStore extends PersistentStore
     }
   }
 
-  Future<PostgreSQLConnection> _connect() async {
+  Future<Connection> _connect() {
     logger.info("PostgreSQL connecting, $username@$host:$port/$databaseName.");
-    final connection = PostgreSQLConnection(
-      host!,
-      port!,
-      databaseName!,
-      username: username,
-      password: password,
-      timeZone: timeZone!,
-      useSSL: isSSLConnection,
-    );
-    try {
-      await connection.open();
-    } catch (e) {
-      await connection.close();
-      rethrow;
-    }
 
-    return connection;
+    return Connection.open(
+      Endpoint(
+        host: host!,
+        database: databaseName!,
+        port: port!,
+        username: username,
+        password: password,
+      ),
+      settings: ConnectionSettings(
+        timeZone: timeZone!,
+        sslMode: isSSLConnection ? SslMode.verifyFull : SslMode.disable,
+        ignoreSuperfluousParameters: true,
+      ),
+    );
   }
 }
 
@@ -456,8 +445,8 @@ class _TransactionProxy extends PostgreSQLPersistentStore {
   _TransactionProxy(this.parent, this.context) : super._from(parent);
 
   final PostgreSQLPersistentStore parent;
-  final PostgreSQLExecutionContext context;
+  final TxSession context;
 
   @override
-  Future<PostgreSQLExecutionContext> get executionContext async => context;
+  Future<Session> get executionContext async => context;
 }

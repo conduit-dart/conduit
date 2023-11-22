@@ -167,7 +167,7 @@ void main() {
       successful = true;
     } on QueryException catch (e) {
       expect(e.event, QueryExceptionEvent.input);
-      expect((e.underlyingException as PostgreSQLException).code, "23503");
+      expect((e.underlyingException as ServerException).code, "23503");
     }
     expect(successful, false);
   });

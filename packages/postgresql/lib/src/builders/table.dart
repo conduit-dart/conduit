@@ -125,7 +125,7 @@ class TableBuilder implements Returnable {
 
     final leftColumn = left.sqlColumnName(withTableNamespace: true);
     final rightColumn = right.sqlColumnName(withTableNamespace: true);
-    return QueryPredicate("$leftColumn=$rightColumn", null);
+    return QueryPredicate("$leftColumn=$rightColumn");
   }
 
   String createTableAlias() {
@@ -138,17 +138,15 @@ class TableBuilder implements Returnable {
     return "t$aliasCounter";
   }
 
-  void finalize(Map<String?, dynamic> variables) {
+  void finalize(Map<String, dynamic> variables) {
     final allExpressions = [
       _manualPredicate,
       ...expressionBuilders.map((c) => c.predicate)
     ];
-
     predicate = QueryPredicate.and(allExpressions);
     if (predicate?.parameters != null) {
-      variables.addAll(predicate!.parameters!);
+      variables.addAll(predicate!.parameters);
     }
-
     returning.whereType<TableBuilder>().forEach((r) {
       r.finalize(variables);
     });

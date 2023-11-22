@@ -1,3 +1,5 @@
+import 'package:postgres/postgres.dart';
+
 import 'not_tests/helpers.dart';
 import 'not_tests/postgres_test_config.dart';
 import 'package:conduit_core/conduit_core.dart';
@@ -19,6 +21,7 @@ void main() {
 
     req = Query<TestModel>(context!)
       ..predicate = QueryPredicate("id = @id", {"id": item.id});
+
     item = (await req.fetchOne())!;
 
     expect(item.name, "Joe");
@@ -98,7 +101,8 @@ void main() {
 
     var req = Query<TestModel>(context!)
       ..sortBy((t) => t.email, QuerySortOrder.ascending)
-      ..predicate = QueryPredicate("email like @key", {"key": "asc%"});
+      ..predicate = QueryPredicate(
+          "email like @key", {"key": TypedValue(Type.text, "asc%")});
 
     var result = await req.fetch();
 
@@ -131,7 +135,8 @@ void main() {
 
     final req = Query<TestModel>(context!)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
-      ..predicate = QueryPredicate("email like @key", {"key": "desc%"});
+      ..predicate = QueryPredicate(
+          "email like @key", {"key": TypedValue(Type.text, "desc%")});
     final result = await req.fetch();
 
     for (int i = 0; i < 10; i++) {
@@ -189,7 +194,8 @@ void main() {
     final req = Query<TestModel>(context!)
       ..sortBy((t) => t.name, QuerySortOrder.ascending)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
-      ..predicate = QueryPredicate("email like @key", {"key": "multi%"});
+      ..predicate = QueryPredicate(
+          "email like @key", {"key": TypedValue(Type.text, "multi%")});
 
     final result = await req.fetch();
 

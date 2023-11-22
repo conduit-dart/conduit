@@ -16,9 +16,7 @@ class QueryPredicate {
   /// Default constructor
   ///
   /// The [format] and [parameters] of this predicate. [parameters] may be null.
-  QueryPredicate(this.format, this.parameters) {
-    parameters ??= {};
-  }
+  QueryPredicate(this.format, [this.parameters = const {}]);
 
   /// Creates an empty predicate.
   ///
@@ -59,10 +57,9 @@ class QueryPredicate {
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {
-      final duplicateKeys = predicate!.parameters?.keys
-              .where((k) => valueMap.keys.contains(k))
-              .toList() ??
-          [];
+      final duplicateKeys = predicate!.parameters.keys
+          .where((k) => valueMap.keys.contains(k))
+          .toList();
 
       if (duplicateKeys.isNotEmpty) {
         var fmt = predicate.format;
@@ -75,12 +72,12 @@ class QueryPredicate {
         }
 
         allFormatStrings.add(fmt);
-        predicate.parameters?.forEach((key, value) {
+        predicate.parameters.forEach((key, value) {
           valueMap[dupeMap[key] ?? key] = value;
         });
       } else {
         allFormatStrings.add(predicate.format);
-        valueMap.addAll(predicate.parameters ?? {});
+        valueMap.addAll(predicate.parameters);
       }
     }
 
@@ -98,7 +95,7 @@ class QueryPredicate {
   ///
   /// Input values should not be in the format string, but instead provided in this map.
   /// Keys of this map will be searched for in the format string and be replaced by the value in this map.
-  Map<String, dynamic>? parameters;
+  Map<String, dynamic> parameters;
 }
 
 /// The operator in a comparison matcher.

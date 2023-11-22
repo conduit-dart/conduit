@@ -62,14 +62,14 @@ class ColumnBuilder extends Returnable {
     return property;
   }
 
-  static Map<ManagedPropertyType, PostgreSQLDataType> typeMap = {
-    ManagedPropertyType.integer: PostgreSQLDataType.integer,
-    ManagedPropertyType.bigInteger: PostgreSQLDataType.bigInteger,
-    ManagedPropertyType.string: PostgreSQLDataType.text,
-    ManagedPropertyType.datetime: PostgreSQLDataType.timestampWithoutTimezone,
-    ManagedPropertyType.boolean: PostgreSQLDataType.boolean,
-    ManagedPropertyType.doublePrecision: PostgreSQLDataType.double,
-    ManagedPropertyType.document: PostgreSQLDataType.jsonb
+  static Map<ManagedPropertyType, Type> typeMap = {
+    ManagedPropertyType.integer: Type.integer,
+    ManagedPropertyType.bigInteger: Type.bigInteger,
+    ManagedPropertyType.string: Type.text,
+    ManagedPropertyType.datetime: Type.timestampWithoutTimezone,
+    ManagedPropertyType.boolean: Type.boolean,
+    ManagedPropertyType.doublePrecision: Type.double,
+    ManagedPropertyType.document: Type.jsonb
   };
 
   static Map<PredicateOperator, String> symbolTable = {
@@ -130,19 +130,7 @@ class ColumnBuilder extends Returnable {
     return value;
   }
 
-  String get sqlTypeSuffix {
-    final type = PostgreSQLFormat.dataTypeStringForDataType(
-      typeMap[property!.type!.kind],
-    );
-    if (type != null) {
-      return ":$type";
-    }
-
-    return "";
-  }
-
   String sqlColumnName({
-    bool withTypeSuffix = false,
     bool withTableNamespace = false,
     String? withPrefix,
   }) {
@@ -157,10 +145,6 @@ class ColumnBuilder extends Returnable {
       final keys =
           documentKeyPath!.map((k) => k is String ? "'$k'" : k).join("->");
       name = "$name->$keys";
-    }
-
-    if (withTypeSuffix) {
-      name = "$name$sqlTypeSuffix";
     }
 
     if (withTableNamespace) {

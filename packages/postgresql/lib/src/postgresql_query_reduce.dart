@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:conduit_core/conduit_core.dart';
+import 'package:postgres/postgres.dart';
 import 'builders/column.dart';
 import 'postgresql_persistent_store.dart';
 import 'postgresql_query.dart';
@@ -88,9 +89,12 @@ class PostgresQueryReduce<T extends ManagedObject>
     final store = query.context.persistentStore as PostgreSQLPersistentStore;
     final connection = await store.executionContext;
     try {
-      final result = await connection!
-          .query(buffer.toString(), substitutionValues: builder.variables)
-          .timeout(Duration(seconds: query.timeoutInSeconds));
+      final result = await connection!.execute(
+        Sql.named(buffer.toString()),
+        parameters: builder.variables,
+        queryMode: QueryMode.extended,
+        timeout: Duration(seconds: query.timeoutInSeconds),
+      );
       return result.first.first as U;
     } on TimeoutException catch (e) {
       throw QueryException.transport(

@@ -12,7 +12,6 @@ class PostgresQueryBuilder extends TableBuilder {
         super(query) {
     (query.valueMap ?? query.values.backing.contents)!
         .forEach(addColumnValueBuilder);
-
     finalize(variables);
   }
 
@@ -39,7 +38,7 @@ class PostgresQueryBuilder extends TableBuilder {
     return predicate!.format;
   }
 
-  void addColumnValueBuilder(String? key, dynamic value) {
+  void addColumnValueBuilder(String key, dynamic value) {
     final builder = _createColumnValueBuilder(key, value)!;
     columnValueBuildersByKey[builder.sqlColumnName()] = builder;
     variables[builder.sqlColumnName(withPrefix: valueKeyPrefix)] =
@@ -90,7 +89,6 @@ class PostgresQueryBuilder extends TableBuilder {
       final columnName = m.sqlColumnName();
       final variableName = m.sqlColumnName(
         withPrefix: placeholderKeyPrefix,
-        withTypeSuffix: true,
       );
       return "$columnName=$variableName";
     }).join(",");
@@ -114,7 +112,6 @@ class PostgresQueryBuilder extends TableBuilder {
     }
 
     return builder.sqlColumnName(
-      withTypeSuffix: true,
       withPrefix: placeholderKeyPrefix,
     );
   }

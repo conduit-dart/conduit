@@ -52,7 +52,7 @@ void main() {
     });
 
     test("And'ing predicate with no parameters", () {
-      final valid = QueryPredicate("x=y", null);
+      final valid = QueryPredicate("x=y");
       final p = QueryPredicate.and([valid]);
       expect(p.format, valid.format);
       expect(p.parameters, {});

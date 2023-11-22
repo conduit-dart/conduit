@@ -1,4 +1,5 @@
 import 'package:conduit_core/conduit_core.dart';
+import 'package:postgres/postgres.dart';
 import 'column.dart';
 import 'table.dart';
 
@@ -8,8 +9,9 @@ class ColumnValueBuilder extends ColumnBuilder {
     ManagedPropertyDescription super.property,
     dynamic value,
   ) {
-    this.value = convertValueForStorage(value);
+    this.value = TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+        convertValueForStorage(value));
   }
 
-  dynamic value;
+  late TypedValue value;
 }
