@@ -103,7 +103,7 @@ class CodeAnalyzer {
         .declarations
         .whereType<ClassDeclaration>()
         .where((c) =>
-            c.extendsClause?.superclass.name2.stringValue == superclassName)
+            c.extendsClause?.superclass.name2.toString() == superclassName)
         .toList();
   }
 

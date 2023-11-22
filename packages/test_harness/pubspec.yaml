@@ -12,4 +12,4 @@ dev_dependencies:
   conduit_postgresql:
     path: ../postgresql
   lints: ^3.0.0
-  test_core: ^0.4.18
+  test_core: ^0.5.9

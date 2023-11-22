@@ -93,10 +93,10 @@ class Agent {
   /// The base URL that this agent's requests will be made against.
   String get baseURL {
     if (_application != null) {
-      if (!_application!.isRunning) {
+      if (!_application.isRunning) {
         throw StateError("Application under test is not running.");
       }
-      return "${_application!.server.requiresHTTPS ? "https" : "http"}://localhost:${_application!.channel.server.server!.port}";
+      return "${_application.server.requiresHTTPS ? "https" : "http"}://localhost:${_application.channel.server.server!.port}";
     }
 
     return "$_scheme://$_host:$_port";

@@ -5,7 +5,7 @@ repository: https://github.com/conduit-dart/conduit-runtime
 environment:
   sdk: '>=3.2.0 <4.0.0'
 dependencies:
-  analyzer: ^5.1.0
+  analyzer: ^6.3.0
   args: ^2.0.0
   conduit_isolate_exec: ^4.3.7
   io: ^1.0.3

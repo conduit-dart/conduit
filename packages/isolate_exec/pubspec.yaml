@@ -5,7 +5,7 @@ description: This library contains types that allow for executing code in a spaw
 environment:
   sdk: ">=3.2.0 <4.0.0"
 dependencies:
-  analyzer: ^5.1.0
+  analyzer: ^6.3.0
   glob: ^2.0.0
   path: ^1.8.0
 dev_dependencies:
