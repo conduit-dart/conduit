@@ -11,17 +11,16 @@ concurrency:
 
 jobs:
   smoke:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
         sdk: dev
     - name: Setup Conduit
       run: |
-        dart pub global activate -spath packages/cli
         dart pub global activate melos
-        melos bootstrap
+        dart pub global activate -spath packages/cli
         melos cache-source
     - name: Run tests
       working-directory: ../
@@ -55,7 +54,7 @@ jobs:
         ports:
           - 15432:5432
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: dev

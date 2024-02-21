@@ -94,6 +94,7 @@ class CLIClient {
           devDependencies: {"test": "^1.21.6"},
           dependencyOverrides: {
             'fs_test_agent': {'path': join(project, '..', 'fs_test_agent')},
+            'conduit': {'path': join(project, '..', 'cli')},
             'conduit_codable': {'path': join(project, '..', 'codable')},
             'conduit_common': {'path': join(project, '..', 'common')},
             'conduit_config': {'path': join(project, '..', 'config')},

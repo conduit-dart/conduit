@@ -20,7 +20,7 @@ jobs:
       || (github.event.pull_request.merged && startsWith(github.head_ref, 'docs/'))
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
         sdk: stable

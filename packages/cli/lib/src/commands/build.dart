@@ -6,7 +6,6 @@ import 'dart:mirrors';
 
 import 'package:args/args.dart' as arg_package;
 import 'package:conduit/src/command.dart';
-import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_core/conduit_core.dart';
@@ -43,14 +42,6 @@ class CLIBuild extends CLICommand with CLIProject {
       root.resolve("$packageName.aot"),
       getScriptSource(await getChannelName()),
     );
-
-    final cfg = await ctx.packageConfig;
-
-    final packageNames = cfg.packages
-        .where((pkg) => pkg.name.startsWith('conduit_'))
-        .map((pkg) => pkg.name);
-
-    await cachePackages(packageNames, projectVersion!.toString());
 
     print("Starting build process...");
 

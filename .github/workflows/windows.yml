@@ -13,15 +13,14 @@ jobs:
   smoke:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
         sdk: dev
     - name: Setup Conduit
       run: |
-        dart pub global activate -spath packages/cli
         dart pub global activate melos
-        dart pub global run melos:melos bootstrap
+        dart pub global activate -spath packages/cli
         dart pub global run melos:melos cache-source-win
     - name: Run tests
       working-directory: ../
@@ -66,7 +65,7 @@ jobs:
         & $env:PGBIN\createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
         & $env:PGBIN\psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
         & $env:PGBIN\createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
         sdk: dev

@@ -51,7 +51,7 @@ class Build {
     final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
-      'environment': {'sdk': '>=2.19.2 <4.0.0'},
+      'environment': {'sdk': '>=3.3.0 <4.0.0'},
       'dependency_overrides': {}
     };
     final overrides = pubspecMap['dependency_overrides'] as Map;
@@ -135,7 +135,6 @@ class Build {
     );
     if (res.exitCode != 0) {
       print("${res.stdout}");
-      print("${res.stderr}");
       throw StateError(
         "'pub get' failed with the following message: ${res.stderr}",
       );

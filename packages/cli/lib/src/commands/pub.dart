@@ -23,7 +23,6 @@ Future cachePackages(
       );
       if (retry.exitCode != 0) {
         print("${res.stdout}");
-        print("${res.stderr}");
         throw StateError(
           "'pub cache' failed with the following message: ${res.stderr}",
         );
@@ -40,7 +39,7 @@ Future<Uri?> findGlobalPath() async {
     ["pub", "global", "list"],
     runInShell: true,
   );
-  RegExp regex = RegExp(r'^.*conduit.* at path "(/[^"]+)"$', multiLine: true);
+  RegExp regex = RegExp(r'conduit.* at path "(/[^"]+)"$', multiLine: true);
 
   Match? match = regex.firstMatch(res.stdout);
   if (match != null) {

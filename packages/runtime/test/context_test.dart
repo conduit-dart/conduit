@@ -12,18 +12,13 @@ void main() {
   late BuildContext ctx;
 
   setUpAll(() async {
-    String cmd;
-    if (Platform.isWindows) {
-      cmd = (await Process.run("where", ["pub.bat"])).stdout as String;
-    } else {
-      cmd = (await Process.run("which", ["pub"])).stdout as String;
-    }
+    String cmd = 'dart';
 
     final testPackagesUri =
         Directory.current.uri.resolve("../").resolve("runtime_test_packages/");
     await Process.run(
       cmd,
-      ["get", "--offline"],
+      ["pub", "get", "--offline"],
       workingDirectory: testPackagesUri
           .resolve("application/")
           .toFilePath(windows: Platform.isWindows),
@@ -31,7 +26,7 @@ void main() {
     );
     await Process.run(
       cmd,
-      ["get", "--offline"],
+      ["pub", "get", "--offline"],
       workingDirectory: testPackagesUri
           .resolve("dependency/")
           .toFilePath(windows: Platform.isWindows),

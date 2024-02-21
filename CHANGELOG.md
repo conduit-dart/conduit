@@ -11,7 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
- - [`conduit` - `v4.3.10`](#conduit---v4310)
+ - [`conduit` - `v4.4.0`](#conduit---v4310)
  - [`conduit_codable` - `v4.3.8`](#conduit_codable---v438)
  - [`conduit_common` - `v4.3.8`](#conduit_common---v438)
  - [`conduit_config` - `v4.3.8`](#conduit_config---v438)
@@ -29,7 +29,7 @@ Packages with other changes:
 
 Packages graduated to a stable release (see pre-releases prior to the stable version for changelog entries):
 
- - `conduit` - `v4.3.10`
+ - `conduit` - `v4.4.0`
  - `conduit_codable` - `v4.3.8`
  - `conduit_common` - `v4.3.8`
  - `conduit_config` - `v4.3.8`
@@ -44,7 +44,7 @@ Packages graduated to a stable release (see pre-releases prior to the stable ver
 
 ---
 
-#### `conduit` - `v4.3.10`
+#### `conduit` - `v4.4.0`
 
 #### `conduit_codable` - `v4.3.8`
 
@@ -81,7 +81,7 @@ Packages with breaking changes:
 
 Packages with other changes:
 
- - [`conduit` - `v4.3.10-dev.0`](#conduit---v4310-dev0)
+ - [`conduit` - `v4.4.0-dev.0`](#conduit---v4310-dev0)
  - [`conduit_codable` - `v4.3.8-dev.0`](#conduit_codable---v438-dev0)
  - [`conduit_common` - `v4.3.8-dev.0`](#conduit_common---v438-dev0)
  - [`conduit_config` - `v4.3.8-dev.0`](#conduit_config---v438-dev0)
@@ -96,7 +96,7 @@ Packages with other changes:
 
 ---
 
-#### `conduit` - `v4.3.10-dev.0`
+#### `conduit` - `v4.4.0-dev.0`
 
  - **REFACTOR**(postgres): BREAKING CHANGE major release for postgres driver. ([d6bf1165](https://github.com/conduit-dart/conduit/commit/d6bf1165f6903cb133b1ec4bf3d66242646f548b))
  - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))

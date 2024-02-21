@@ -1,8 +1,8 @@
-## 4.3.10
+## 4.4.0
 
  - Graduate package to a stable release. See pre-releases prior to this version for changelog entries.
 
-## 4.3.10-dev.0
+## 4.4.0-dev.0
 
  - **REFACTOR**(postgres): BREAKING CHANGE major release for postgres driver. ([d6bf1165](https://github.com/conduit-dart/conduit/commit/d6bf1165f6903cb133b1ec4bf3d66242646f548b))
  - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))
