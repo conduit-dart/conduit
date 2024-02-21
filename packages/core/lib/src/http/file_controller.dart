@@ -172,7 +172,7 @@ class FileController extends Controller {
 
     if (!file.existsSync()) {
       if (_onFileNotFound != null) {
-        return (_onFileNotFound as FileControllerClosure)(this, request);
+        return _onFileNotFound(this, request);
       }
 
       final response = Response.notFound();

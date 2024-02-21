@@ -169,7 +169,7 @@ class Router extends Controller {
 
   Future _handleUnhandledRequest(Request req) async {
     if (_unmatchedController != null) {
-      return (_unmatchedController as Function(Request))(req);
+      return _unmatchedController(req);
     }
     final response = Response.notFound();
     if (req.acceptsContentType(ContentType.html)) {
