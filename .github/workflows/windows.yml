@@ -21,6 +21,7 @@ jobs:
       run: |
         dart pub global activate -spath packages/cli
         dart pub global activate melos
+        dart pub global run melos:melos bootstrap
         dart pub global run melos:melos cache-source-win
     - name: Run tests
       working-directory: ../

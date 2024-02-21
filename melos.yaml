@@ -45,8 +45,6 @@ scripts:
       no-private: true
   fix:
     run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart fix --apply ."
-    select-pacakge:
-      no-private: true
 environment:
   sdk: ">=3.3.0 <4.0.0"
   
