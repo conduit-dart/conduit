@@ -3,6 +3,6 @@
 ///
 library conduit_isolate_exec;
 
-export 'src/executable.dart';
-export 'src/executor.dart';
-export 'src/source_generator.dart';
+export 'package:conduit_isolate_exec/src/executable.dart';
+export 'package:conduit_isolate_exec/src/executor.dart';
+export 'package:conduit_isolate_exec/src/source_generator.dart';

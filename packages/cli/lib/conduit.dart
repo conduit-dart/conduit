@@ -17,5 +17,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 library conduit;
 
 export 'package:conduit_config/conduit_config.dart';
-export 'src/migration_source.dart';
+export 'package:conduit/src/migration_source.dart';
 export 'package:logging/logging.dart';

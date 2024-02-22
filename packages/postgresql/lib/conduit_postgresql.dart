@@ -3,4 +3,4 @@
 /// More dartdocs go here.
 library conduit_postgresql;
 
-export 'src/postgresql_persistent_store.dart';
+export 'package:conduit_postgresql/src/postgresql_persistent_store.dart';

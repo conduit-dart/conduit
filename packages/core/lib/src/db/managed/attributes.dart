@@ -113,9 +113,7 @@ class Relate {
   /// By setting this value to true, an instance of this entity cannot be created without a valid value for the relationship property.
   final bool isRequired;
 
-  bool get isDeferred {
-    return inversePropertyName == _deferredSymbol;
-  }
+  bool get isDeferred => inversePropertyName == _deferredSymbol;
 
   static const Symbol _deferredSymbol = #mdrDeferred;
 }

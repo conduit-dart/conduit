@@ -13,9 +13,9 @@
 /// }
 library conduit_test;
 
-export 'src/agent.dart';
-export 'src/auth_harness.dart';
-export 'src/db_harness.dart';
-export 'src/harness.dart';
-export 'src/matchers.dart';
-export 'src/mock_server.dart';
+export 'package:conduit_test/src/agent.dart';
+export 'package:conduit_test/src/auth_harness.dart';
+export 'package:conduit_test/src/db_harness.dart';
+export 'package:conduit_test/src/harness.dart';
+export 'package:conduit_test/src/matchers.dart';
+export 'package:conduit_test/src/mock_server.dart';

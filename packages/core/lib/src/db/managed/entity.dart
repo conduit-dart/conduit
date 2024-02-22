@@ -43,8 +43,8 @@ class ManagedEntity implements APIComponentDocumenter {
   ///
   /// If running in default mode (mirrors enabled), is a set of mirror operations. Otherwise,
   /// code generated.
-  ManagedEntityRuntime? get runtime =>
-      RuntimeContext.current[instanceType] as ManagedEntityRuntime?;
+  ManagedEntityRuntime get runtime =>
+      RuntimeContext.current[instanceType] as ManagedEntityRuntime;
 
   /// The name of type of persistent instances represented by this entity.
   ///
@@ -142,7 +142,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// A map from accessor symbol name to property name.
   ///
   /// This map should not be modified.
-  late Map<Symbol, String?> symbolMap;
+  late Map<Symbol, String> symbolMap;
 
   /// Name of table in database this entity maps to.
   ///
@@ -153,11 +153,11 @@ class ManagedEntity implements APIComponentDocumenter {
   ///
   /// You may implement the static method [tableName] on the table definition of a [ManagedObject] to return a [String] table
   /// name override this default.
-  String? get tableName {
+  String get tableName {
     return _tableName;
   }
 
-  final String? _tableName;
+  final String _tableName;
   List<String>? _defaultProperties;
 
   /// Derived from this' [tableName].
@@ -172,14 +172,14 @@ class ManagedEntity implements APIComponentDocumenter {
   /// If [backing] is non-null, it will be the backing map of the returned object.
   T instanceOf<T extends ManagedObject>({ManagedBacking? backing}) {
     if (backing != null) {
-      return (runtime!.instanceOfImplementation(backing: backing)
-        ..entity = this) as T;
+      return (runtime.instanceOfImplementation(backing: backing)..entity = this)
+          as T;
     }
-    return (runtime!.instanceOfImplementation()..entity = this) as T;
+    return (runtime.instanceOfImplementation()..entity = this) as T;
   }
 
   ManagedSet<T>? setOf<T extends ManagedObject>(Iterable<dynamic> objects) {
-    return runtime!.setOfImplementation(objects) as ManagedSet<T>?;
+    return runtime.setOfImplementation(objects) as ManagedSet<T>?;
   }
 
   /// Returns an attribute in this entity for a property selector.

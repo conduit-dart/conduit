@@ -1,3 +1,3 @@
-export 'src/coding.dart';
-export 'src/keyed_archive.dart';
-export 'src/list.dart';
+export 'package:conduit_codable/src/coding.dart';
+export 'package:conduit_codable/src/keyed_archive.dart';
+export 'package:conduit_codable/src/list.dart';

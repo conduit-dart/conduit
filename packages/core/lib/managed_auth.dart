@@ -84,7 +84,7 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
       ..issueDate = issueDate
       ..expirationDate = expirationDate
       ..type = type
-      ..resourceOwnerIdentifier = resourceOwner!.id
+      ..resourceOwnerIdentifier = resourceOwner.id
       ..scopes = scope?.split(" ").map((s) => AuthScope(s)).toList()
       ..clientID = client.id;
   }
@@ -94,7 +94,7 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
     return AuthCode()
       ..hasBeenExchanged = accessToken != null
       ..code = code
-      ..resourceOwnerIdentifier = resourceOwner!.id
+      ..resourceOwnerIdentifier = resourceOwner.id
       ..issueDate = issueDate
       ..requestedScopes = scope?.split(" ").map((s) => AuthScope(s)).toList()
       ..expirationDate = expirationDate
@@ -148,7 +148,7 @@ class _ManagedAuthToken {
   /// [ResourceOwnerTableDefinition] must be implemented by some [ManagedObject] subclass in an application.
   /// That subclass will be the 'owner' of tokens. See [ResourceOwnerTableDefinition] for more details.
   @Relate.deferred(DeleteRule.cascade, isRequired: true)
-  ResourceOwnerTableDefinition? resourceOwner;
+  late ResourceOwnerTableDefinition resourceOwner;
 
   /// The client this token was issued for.
   @Relate(Symbol('tokens'), onDelete: DeleteRule.cascade, isRequired: true)

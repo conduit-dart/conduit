@@ -16,9 +16,9 @@ class ValidatorBuilder {
 
   ManagedValidator? get managedValidator => _validator;
 
-  void compile(List<EntityBuilder>? entityBuilders) {}
+  void compile(final List<EntityBuilder> entityBuilders) {}
 
-  void validate(List<EntityBuilder>? entityBuilders) {
+  void validate(final List<EntityBuilder> entityBuilders) {
     if (property.isRelationship) {
       if (property.relationshipType != ManagedRelationshipType.belongsTo) {
         throw ManagedDataModelError(

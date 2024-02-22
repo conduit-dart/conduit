@@ -25,7 +25,8 @@ class ConfigurationCompiler extends Compiler {
     );
     final contents = libFile.readAsStringSync();
     libFile.writeAsStringSync(
-      contents.replaceFirst("export 'src/compiler.dart';", ""),
+      contents.replaceFirst(
+          "export 'package:conduit_config/src/compiler.dart';", ""),
     );
   }
 }

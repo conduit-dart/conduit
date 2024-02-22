@@ -59,7 +59,7 @@ class EntityBuilder {
   String get tableDefinitionTypeName =>
       MirrorSystem.getName(tableDefinitionType.simpleName);
 
-  void compile(List<EntityBuilder>? entityBuilders) {
+  void compile(final List<EntityBuilder> entityBuilders) {
     for (final p in properties) {
       p.compile(entityBuilders);
     }
@@ -68,7 +68,7 @@ class EntityBuilder {
         metadata?.uniquePropertySet?.map(MirrorSystem.getName).toList();
   }
 
-  void validate(List<EntityBuilder>? entityBuilders) {
+  void validate(final List<EntityBuilder> entityBuilders) {
     // Check that we have a default constructor
     if (!classHasDefaultConstructor(instanceType)) {
       throw ManagedDataModelErrorImpl.noConstructor(instanceType);
@@ -234,9 +234,7 @@ class EntityBuilder {
         .map((p) => PropertyBuilder(this, p))
         .toList();
 
-    return [transientProperties, persistentProperties]
-        .expand((l) => l)
-        .toList();
+    return [...transientProperties, ...persistentProperties];
   }
 
   Iterable<PropertyBuilder> _getTransientAttributes() {

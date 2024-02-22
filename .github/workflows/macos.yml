@@ -40,6 +40,7 @@ jobs:
     strategy:
       matrix:
         runner_args: [melos test-unit, dart tool/generated_test_runner.dart]
+        sdk: [stable, main]
     env:
       TEST_DIR: packages/core
       POSTGRES_HOST: localhost
@@ -67,7 +68,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: dev
+        sdk: ${{ matrix.sdk }}
     - name: Get Dependencies
       run: |
         dart pub global activate -spath packages/cli

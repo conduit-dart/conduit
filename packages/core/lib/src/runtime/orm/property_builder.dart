@@ -72,7 +72,7 @@ class PropertyBuilder {
   DeleteRule? deleteRule;
   List<ValidatorBuilder>? _validators;
 
-  void compile(List<EntityBuilder>? entityBuilders) {
+  void compile(final List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (relate != null) {
         relatedProperty =
@@ -102,7 +102,7 @@ class PropertyBuilder {
     }
   }
 
-  void validate(List<EntityBuilder>? entityBuilders) {
+  void validate(final List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (!isRelationship ||
           relationshipType == ManagedRelationshipType.belongsTo) {
@@ -287,10 +287,11 @@ class PropertyBuilder {
         : name;
   }
 
-  EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder>? builders) {
+  EntityBuilder _getRelatedEntityBuilderFrom(
+      final List<EntityBuilder> builders) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
-      return builders!.firstWhere(
+      return builders.firstWhere(
         (b) => b.instanceType == expectedInstanceType,
         orElse: () {
           throw ManagedDataModelErrorImpl.noDestinationEntity(
@@ -302,7 +303,7 @@ class PropertyBuilder {
       );
     }
 
-    final possibleEntities = builders!.where((e) {
+    final possibleEntities = builders.where((e) {
       return e.tableDefinitionType == expectedInstanceType ||
           e.tableDefinitionType.isSubtypeOf(expectedInstanceType);
     }).toList();

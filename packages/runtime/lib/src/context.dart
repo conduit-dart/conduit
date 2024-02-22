@@ -1,4 +1,4 @@
-import 'package:conduit_runtime/src/mirror_context.dart' as context;
+import 'package:conduit_runtime/src/mirror_context.dart';
 
 /// Contextual values used during runtime.
 abstract class RuntimeContext {
@@ -6,7 +6,7 @@ abstract class RuntimeContext {
   ///
   /// Is either a `MirrorContext` or a `GeneratedContext`,
   /// depending on the execution type.
-  static final RuntimeContext current = context.instance;
+  static final RuntimeContext current = instance;
 
   /// The runtimes available to the executing application.
   late RuntimeCollection runtimes;
