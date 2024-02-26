@@ -32,10 +32,10 @@ scripts:
     run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && cp -rf '\$MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
     select-pacakge:
       no-private: true
-  cache-source-win:
-    run: melos exec -- mkdir %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% && melos exec -- xcopy %MELOS_PACKAGE_PATH% %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% /Y /s /e
-    select-pacakge:
-      no-private: true
+  # cache-source-win:
+  #   run: melos exec -- mkdir %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% && melos exec -- xcopy %MELOS_PACKAGE_PATH% %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% /Y /s /e
+  #   select-pacakge:
+  #     no-private: true
   hard-clean:
     run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
   gen-docs:
