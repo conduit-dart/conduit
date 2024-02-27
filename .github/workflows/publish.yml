@@ -37,7 +37,7 @@ jobs:
     - name: Format
       run: dart fix --apply && dart format --fix .
     - name: Uptick versions
-      run: melos version --yes
+      run: melos sync-version
     - name: Changelog
       run: git diff --unified=0 $GITHUB_SHA packages/cli/CHANGELOG.md | tail +6 | sed -e 's/^\+//' > CHANGES.txt
     - name: Cache Source

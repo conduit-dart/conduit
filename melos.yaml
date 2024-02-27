@@ -45,8 +45,8 @@ scripts:
       no-private: true
   fix:
     run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart fix --apply ."
-  manual-version:
-    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "melos version -V \$MELOS_PACKAGE_NAME:\$MELOS_PARENT_PACKAGE_VERSION"
+  sync-version:
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- melos version -y -V MELOS_PACKAGE_NAME:`dart pub deps -s list | grep conduit_workspace | awk '{print $2}' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'`
 environment:
   sdk: ">=3.3.0 <4.0.0"
   
