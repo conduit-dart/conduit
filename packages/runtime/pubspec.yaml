@@ -3,7 +3,7 @@ version: 4.3.8
 description: Provides behaviors and base types for packages that can use mirrors and be AOT compiled.
 repository: https://github.com/conduit-dart/conduit-runtime
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 dependencies:
   analyzer: ^6.3.0
   args: ^2.0.0

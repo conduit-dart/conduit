@@ -336,7 +336,7 @@ class FilterController extends ResourceController {
       require: ["required"],
       reject: ["error"],
     )
-        TestSerializable tm,
+    TestSerializable tm,
   ) async {
     return Response.ok(tm);
   }
@@ -351,7 +351,7 @@ class FilterListController extends ResourceController {
       require: ["required"],
       reject: ["error"],
     )
-        List<TestSerializable> tm,
+    List<TestSerializable> tm,
   ) async {
     return Response.ok(tm);
   }

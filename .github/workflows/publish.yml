@@ -18,7 +18,6 @@ jobs:
       || startsWith(github.event.head_commit.message, 'perf')
       || startsWith(github.event.head_commit.message, 'refactor')
       || startsWith(github.event.head_commit.message, 'revert')
-      || startsWith(github.event.head_commit.message, 'trigger')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -34,9 +33,9 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
     - name: Install melos
-      run: dart pub global activate melos
-    - name: Format
-      run: dart fix --apply && dart format --fix .
+      run: |
+        cat pubspec.yaml
+        dart pub global activate melos
     - name: Uptick versions
       run: melos sync-version
     - name: Changelog
