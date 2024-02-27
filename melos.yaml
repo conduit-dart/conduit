@@ -45,6 +45,8 @@ scripts:
       no-private: true
   fix:
     run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart fix --apply ."
+  manual-version:
+    run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "melos version -V \$MELOS_PACKAGE_NAME:\$MELOS_PARENT_PACKAGE_VERSION"
 environment:
   sdk: ">=3.3.0 <4.0.0"
   
