@@ -12,11 +12,14 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sdk: [stable, main]
     steps:
     - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: main
+        sdk: ${{ matrix.sdk }}
     - name: Setup Conduit
       run: |
         dart pub global activate melos
