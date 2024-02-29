@@ -36,6 +36,7 @@ void main() {
           'conduit_password_hash': {
             'path': join(project, '..', 'password_hash')
           },
+          'conduit_postgresql': {'path': join(project, '..', 'postgresql')},
           'conduit_runtime': {'path': join(project, '..', 'runtime')},
         },
       ),

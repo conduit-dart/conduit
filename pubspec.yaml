@@ -1,5 +1,5 @@
 name: conduit_workspace
-version: 5.0.1
+version: 5.0.2
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

@@ -103,6 +103,7 @@ class CLIClient {
               'path': join(project, '..', 'isolate_exec')
             },
             'conduit_open_api': {'path': join(project, '..', 'open_api')},
+            'conduit_postgresql': {'path': join(project, '..', 'postgresql')},
             'conduit_password_hash': {
               'path': join(project, '..', 'password_hash')
             },
