@@ -1,7 +1,7 @@
 name: conduit_workspace
-version: 5.0.2
+version: 5.0.1
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 dev_dependencies:
   melos: ^4.1.0

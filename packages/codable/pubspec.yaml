@@ -1,9 +1,9 @@
 name: conduit_codable
-version: 5.0.2
+version: 5.0.1
 homepage: https://github.com/conduit-dart/conduit-codable
 description: A serialization library for converting dynamic, structured data (JSON, YAML) into Dart types.
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 dependencies:
   meta: ^1.3.0
 dev_dependencies:
