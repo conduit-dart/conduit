@@ -1,5 +1,5 @@
 name: conduit
-version: 5.0.1
+version: 5.0.2
 homepage: https://github.com/conduit-dart/conduit
 description: A modern HTTP server application framework, ORM and OAuth2 provider with OpenAPI 3.0 integration. Foundation for REST, RPC or GraphQL services.
 environment:
@@ -8,14 +8,14 @@ dependencies:
   analyzer: ^6.3.0
   args: ^2.1.1
   collection: ^1.15.0
-  conduit_common: ^5.0.1
-  conduit_config: ^5.0.1
-  conduit_core: ^5.0.1
-  conduit_isolate_exec: ^5.0.1
-  conduit_open_api: ^5.0.1
-  conduit_password_hash: ^5.0.1
-  conduit_postgresql: ^5.0.1
-  conduit_runtime: ^5.0.1
+  conduit_common: ^5.0.2
+  conduit_config: ^5.0.2
+  conduit_core: ^5.0.2
+  conduit_isolate_exec: ^5.0.2
+  conduit_open_api: ^5.0.2
+  conduit_password_hash: ^5.0.2
+  conduit_postgresql: ^5.0.2
+  conduit_runtime: ^5.0.2
   crypto: ^3.0.2
   io: ^1.0.3
   logging: ^1.0.0

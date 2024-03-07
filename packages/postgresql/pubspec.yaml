@@ -1,6 +1,6 @@
 name: conduit_postgresql
 description: The postgresql ORM for conduit.
-version: 5.0.1
+version: 5.0.2
 repository: https://github.com/conduit-dart/conduit
 
 environment:
@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   collection: ^1.17.1
-  conduit_core: ^5.0.1
+  conduit_core: ^5.0.2
   postgres: ^3.0.0
 
 dev_dependencies:
