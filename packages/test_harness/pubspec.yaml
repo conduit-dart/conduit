@@ -1,5 +1,5 @@
 name: conduit_test
-version: 5.0.2
+version: 5.0.1
 description: Utilities for writing automated tests for Conduit applications
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
@@ -7,12 +7,12 @@ issue_tracker: https://github.com/conduit-dart/conduit/issues
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
-  
+
 dependencies:
   test: ^1.25.2
   matcher: ^0.12.16+1
-  conduit_core: ^5.0.2
-  
+  conduit_core: ^5.0.1
+
 dev_dependencies:
   conduit_postgresql:
     path: ../postgresql

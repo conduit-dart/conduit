@@ -1,5 +1,5 @@
 name: conduit_isolate_exec
-version: 5.0.2
+version: 5.0.1
 description: This library contains types that allow for executing code in a spawned isolate, perhaps with additional imports.
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
