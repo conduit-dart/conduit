@@ -1,5 +1,5 @@
 name: Conduit
-repository: https://github.com/conduit-dart/conduit.git
+repository: https://github.com/conduit-dart/conduit
 packages:
   - packages/**
 ignore:
