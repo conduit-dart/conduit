@@ -1,10 +1,12 @@
 name: conduit_common
-version: 5.0.1
 description: Common classes shared by conduit projects.
-repository: https://github.com/bsutton/conduit-orm
+version: 5.0.2
+home: https://www.theconduit.dev
+repository: https://github.com/conduit-dart/conduit
+issue_tracker: https://github.com/conduit-dart/conduit/issues
 environment:
   sdk: ">=3.3.0 <4.0.0"
 dependencies:
-  conduit_open_api: ^5.0.1
+  conduit_open_api: ^5.0.2
 dev_dependencies:
   lints: ^3.0.0

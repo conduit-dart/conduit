@@ -1,5 +1,5 @@
 name: Conduit
-repository: https://github.com/conduit-dart/conduit
+repository: https://github.com/conduit-dart/conduit.git
 packages:
   - packages/**
 ignore:
@@ -11,38 +11,42 @@ ignore:
 command:
   version:
     linkToCommits: true
-  bootstrap:
-    usePubspecOverrides: true
 scripts:
   test-unit:
     run: melos exec -c1 --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test"
-    select-pacakge:
-      no-private: true
+    packageFilters:
+      noPrivate: true
   test-with-coverage:
-    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart $MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
-    select-pacakge:
-      no-private: true
+    run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
+    packageFilters:
+      noPrivate: true
   analyze: melos exec -- dart analyze .
   upgrade: melos exec -- dart pub upgrade
+  outdated:
+    run: melos exec -- "dart pub outdated"
   activate-all:
-    run: melos exec -- "dart pub global activate '\$MELOS_PACKAGE_NAME'"
-    select-pacakge:
-      no-private: true
+    run: melos exec -- "dart pub global activate -spath MELOS_PACKAGE_PATH"
+    packageFilters:
+      noPrivate: true
+  deactivate-all:
+    run: melos exec -- "dart pub global deactivate MELOS_PACKAGE_NAME"
+    packageFilters:
+      noPrivate: true
   cache-source:
-    run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION' && cp -rf '\$MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/\$MELOS_PACKAGE_NAME-\$MELOS_PACKAGE_VERSION'"
-    select-pacakge:
-      no-private: true
-  # cache-source-win:
-  #   run: melos exec -- mkdir %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% && melos exec -- xcopy %MELOS_PACKAGE_PATH% %PUB_CACHE%/hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% /Y /s /e
-  #   select-pacakge:
-  #     no-private: true
+    run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION' && cp -rf 'MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION'"
+    packageFilters:
+      noPrivate: true
+  cache-source-win:
+    run: melos exec -- mkdir %PUB_CACHE%\hosted\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION && melos exec -- xcopy MELOS_PACKAGE_PATH %PUB_CACHE%\hosted\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION /Y /s /e
+    packageFilters:
+      noPrivate: true
   hard-clean:
-    run: melos exec -- "rm -rf '\$MELOS_PACKAGE_PATH/.dart_tool' '\$MELOS_PACKAGE_PATH/pubspec.lock'"
+    run: melos exec -- "rm -rf 'MELOS_PACKAGE_PATH/.dart_tool' 'MELOS_PACKAGE_PATH/pubspec.lock'"
   gen-docs:
     run: |
       melos exec --ignore "*common*" --ignore "fs_test_agent" -- "dart doc"
-    select-pacakge:
-      no-private: true
+    packageFilters:
+      noPrivate: true
   fix:
     run: melos exec --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart fix --apply ."
   sync-version:
@@ -60,6 +64,3 @@ scripts:
                           -V conduit_runtime:$v \
                           -V conduit_test:$v \
                           -V fs_test_agent:$v
-environment:
-  sdk: ">=3.3.0 <4.0.0"
-  
