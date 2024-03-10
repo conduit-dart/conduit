@@ -1,12 +1,17 @@
 name: fs_test_agent
 version: 5.0.1
-homepage: https://stablekernel.com
 description: Utilities for writing tests to validate file system and Dart project directory operations.
+home: https://www.theconduit.dev
+repository: https://github.com/conduit-dart/conduit
+issue_tracker: https://github.com/conduit-dart/conduit/issues
+
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
+
 dependencies:
-  path: ^1.0.0
-  pubspec: ^2.0.1
+  path: ^1.9.0
+  pubspec: ^2.3.0
+
 dev_dependencies:
   lints: ^3.0.0
-  test: ^1.21.6
+  test: ^1.25.2

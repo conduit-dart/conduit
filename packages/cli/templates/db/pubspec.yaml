@@ -1,6 +1,7 @@
 name: wildfire
 description: An conduit application with a database connection and data model.
 version: 0.0.1
+homepage: https://github.com/conduit-dart/conduit-codable
 publish_to: none
 
 environment:
@@ -12,5 +13,5 @@ dependencies:
   conduit_postgresql: ^5.0.1
 
 dev_dependencies:
-  test: ^1.21.6
+  test: ^1.25.2
   conduit_test: ^5.0.1

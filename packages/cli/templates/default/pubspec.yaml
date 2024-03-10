@@ -11,5 +11,5 @@ dependencies:
   conduit_core: ^5.0.1
 
 dev_dependencies:
-  test: ^1.21.6
+  test: ^1.25.2
   conduit_test: ^5.0.1
