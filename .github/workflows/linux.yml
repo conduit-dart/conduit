@@ -49,7 +49,7 @@ jobs:
       TEST_DIR: packages/core
     services:
       postgres:
-        image: postgres:14.5
+        image: postgres:16.2
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!

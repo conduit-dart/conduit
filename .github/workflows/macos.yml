@@ -56,19 +56,13 @@ jobs:
       TEST_VALUE: 1
       TEST_BOOL: true
     steps:
-    - name: Start PostgreSQL
-      run: |
-        mkdir -p $HOME/datadir
-        initdb -U postgres -D $HOME/datadir
-        pg_ctl -o "-p ${{ env.POSTGRES_PORT }}" -D $HOME/datadir start
-    - name: Create database
-      env:
-        PGUSER: postgres
-        PGPORT: 15432
-      run: |
-        createuser -s -e -g postgres ${{ env.POSTGRES_USER }}
-        psql --command="ALTER USER ${{ env.POSTGRES_USER }} WITH PASSWORD '${{ env.POSTGRES_PASSWORD }}'"
-        createdb --owner=${{ env.POSTGRES_USER }} ${{ env.POSTGRES_DB }}
+    - name: Setup PostgreSQL for Linux/macOS/Windows
+      uses: ikalnytskyi/action-setup-postgres@v6
+      with:
+        username: conduit_test_user
+        password: conduit!
+        database: conduit_test_db
+        port: 15432
     - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
