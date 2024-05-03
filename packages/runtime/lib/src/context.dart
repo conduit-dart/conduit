@@ -34,7 +34,7 @@ class RuntimeCollection {
 
   Iterable<dynamic> get iterable => map.values;
 
-  Object operator [](Type t) {
+  dynamic operator [](Type t) {
     //todo: optimize by keeping a cache where keys are of type [Type] to avoid the
     // expensive indexOf and substring calls in this method
     final typeName = t.toString();

@@ -63,7 +63,11 @@ class MirrorContext extends RuntimeContext {
 
   @override
   T coerce<T>(dynamic input) {
-    return runtimeCast(input, reflectType(T)) as T;
+    try {
+      return input as T;
+    } catch (_) {
+      return runtimeCast(input, reflectType(T)) as T;
+    }
   }
 }
 

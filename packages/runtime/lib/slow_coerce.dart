@@ -40,8 +40,6 @@ T cast<T>(dynamic input) {
         return List<bool?>.from(input) as T;
       } else if (typeString.startsWith("List<Map<String, dynamic>>")) {
         return List<Map<String, dynamic>>.from(input) as T;
-      } else if (typeString.startsWith("List<Map<String, dynamic>?>")) {
-        return List<Map<String, dynamic>?>.from(input) as T;
       }
     } else if (typeString.startsWith(_mapPrefix)) {
       if (input is! Map) {
