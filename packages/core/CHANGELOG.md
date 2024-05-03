@@ -1,3 +1,27 @@
+## 5.0.3
+
+ - **REFACTOR**: ci and code quality ([#222](https://github.com/conduit-dart/conduit/issues/222)). ([d6e60631](https://github.com/conduit-dart/conduit/commit/d6e606315f55e851b80237984cd6082c4abfbdc2))
+ - **REFACTOR**(postgres): BREAKING CHANGE major release for postgres driver. ([d6bf1165](https://github.com/conduit-dart/conduit/commit/d6bf1165f6903cb133b1ec4bf3d66242646f548b))
+ - **REFACTOR**: Remove common test. ([cebcc417](https://github.com/conduit-dart/conduit/commit/cebcc417fc2849f18b7e9a2a1bbab412eda621ff))
+ - **REFACTOR**: Remove pub_cache ([#188](https://github.com/conduit-dart/conduit/issues/188)). ([6d5beca1](https://github.com/conduit-dart/conduit/commit/6d5beca119fceaa7938402f171fc8983678c40b3))
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
+ - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))
+ - **FIX**(ci): trigger. ([6f986c5f](https://github.com/conduit-dart/conduit/commit/6f986c5f875bfa7eb633a68394b546605da3dd9b))
+ - **FIX**(ci): trigger. ([6239d395](https://github.com/conduit-dart/conduit/commit/6239d395098538e1c0484c704d534c6b41d92207))
+ - **FIX**(ci): trigger. ([33c0f1ab](https://github.com/conduit-dart/conduit/commit/33c0f1ab4fe88945488758a576bd0986ee7af6f2))
+ - **FIX**(ci): trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+ - **FIX**(ci): test publish CI. ([7444f6ed](https://github.com/conduit-dart/conduit/commit/7444f6ed7042bfab50ce6bc285fa16530c69d34d))
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+ - **FIX**: Versioning issues and upkeep ([#191](https://github.com/conduit-dart/conduit/issues/191)). ([faa916ba](https://github.com/conduit-dart/conduit/commit/faa916ba6fe25ce3d3ce3878b8508741e611e2af))
+ - **FIX**: Attach finalizer on commit ([#186](https://github.com/conduit-dart/conduit/issues/186)). ([8408280e](https://github.com/conduit-dart/conduit/commit/8408280e23c5982e80d210034468b4ab5214a368))
+ - **FIX**: core docs. ([1470ee70](https://github.com/conduit-dart/conduit/commit/1470ee70940fe6c4bbd4ba6d498eaed826297f51))
+ - **FIX**: Check cli integrity ([#164](https://github.com/conduit-dart/conduit/issues/164)). ([5fd4e403](https://github.com/conduit-dart/conduit/commit/5fd4e4036d7316c91c2bfac3a06a2526096a9fac))
+ - **FEAT**: sort predicate ([#203](https://github.com/conduit-dart/conduit/issues/203)). ([1f51879c](https://github.com/conduit-dart/conduit/commit/1f51879c26a37e4671206a79b2f319629173f046))
+ - **FEAT**: Prepping for orm ([#190](https://github.com/conduit-dart/conduit/issues/190)). ([e82dfa6f](https://github.com/conduit-dart/conduit/commit/e82dfa6f6fc70a3a41f7e832fbf787a15343266d))
+ - **FEAT**: Replace ServiceRegistry with Finalizers ([#185](https://github.com/conduit-dart/conduit/issues/185)). ([73208e92](https://github.com/conduit-dart/conduit/commit/73208e92ceed79369405933b20d98c9ed48ed0e5))
+ - **FEAT**: Separates core framework and cli ([#161](https://github.com/conduit-dart/conduit/issues/161)). ([28445bbe](https://github.com/conduit-dart/conduit/commit/28445bbe2c012a3a16d372f6ddf29d344939e72f))
+ - **DOCS**: improve doc gen ([#180](https://github.com/conduit-dart/conduit/issues/180)). ([8d18f872](https://github.com/conduit-dart/conduit/commit/8d18f872fa70ceec3052077c0e6adbc6c7ac6953))
+
 ## 5.0.1
 
  - Bump "conduit_core" to `5.0.1`.

@@ -1,3 +1,28 @@
+## 5.0.3
+
+ - **REFACTOR**: ci and code quality ([#222](https://github.com/conduit-dart/conduit/issues/222)). ([d6e60631](https://github.com/conduit-dart/conduit/commit/d6e606315f55e851b80237984cd6082c4abfbdc2))
+ - **REFACTOR**(postgres): BREAKING CHANGE major release for postgres driver. ([d6bf1165](https://github.com/conduit-dart/conduit/commit/d6bf1165f6903cb133b1ec4bf3d66242646f548b))
+ - **REFACTOR**: House Keeping July 22. ([cf1eb45e](https://github.com/conduit-dart/conduit/commit/cf1eb45e035a202a97c6baab3348c030a667628b))
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
+ - **REFACTOR**: Limit ci runs and uptick lint package ([#160](https://github.com/conduit-dart/conduit/issues/160)). ([f8d1de60](https://github.com/conduit-dart/conduit/commit/f8d1de600bc66f02827789b5baed3c35abbd2d27))
+ - **REFACTOR**: Uptick min dart version ([#139](https://github.com/conduit-dart/conduit/issues/139)). ([45723b81](https://github.com/conduit-dart/conduit/commit/45723b81f99259998dac08e1db3f5f8aa64f80dd))
+ - **REFACTOR**: Apply standard lint analysis, refactor some nullables ([#129](https://github.com/conduit-dart/conduit/issues/129)). ([17f71bbb](https://github.com/conduit-dart/conduit/commit/17f71bbbe32cdb69947b6175f4ea46941be20410))
+ - **REFACTOR**: Run analyzer and fix lint issues, possible perf improvements ([#128](https://github.com/conduit-dart/conduit/issues/128)). ([0675a4eb](https://github.com/conduit-dart/conduit/commit/0675a4ebe0e9e7574fed73c753f753d82c378cb9))
+ - **REFACTOR**: Analyzer changes and publishing ([#127](https://github.com/conduit-dart/conduit/issues/127)). ([034ceb59](https://github.com/conduit-dart/conduit/commit/034ceb59542250553ff26695d1f8f10b0f3fd31b))
+ - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))
+ - **FIX**(ci): trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+ - **FIX**(ci): test publish CI. ([7444f6ed](https://github.com/conduit-dart/conduit/commit/7444f6ed7042bfab50ce6bc285fa16530c69d34d))
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+ - **FIX**: Versioning issues and upkeep ([#191](https://github.com/conduit-dart/conduit/issues/191)). ([faa916ba](https://github.com/conduit-dart/conduit/commit/faa916ba6fe25ce3d3ce3878b8508741e611e2af))
+ - **FIX**: Handle private class in isolate ([#152](https://github.com/conduit-dart/conduit/issues/152)). ([28b87457](https://github.com/conduit-dart/conduit/commit/28b87457498242e353301ebbde00c858dd265482))
+ - **FIX**(cli): Fix build binary command ([#121](https://github.com/conduit-dart/conduit/issues/121)). ([daba4b13](https://github.com/conduit-dart/conduit/commit/daba4b139558f429190acd530d76395bbe0e2405))
+ - **FIX**: Upgrade to latest dependencies ([#120](https://github.com/conduit-dart/conduit/issues/120)). ([2be7f7aa](https://github.com/conduit-dart/conduit/commit/2be7f7aa6fb8085cd21956fead60dc8d10f5daf2))
+ - **FEAT**: Prepping for orm ([#190](https://github.com/conduit-dart/conduit/issues/190)). ([e82dfa6f](https://github.com/conduit-dart/conduit/commit/e82dfa6f6fc70a3a41f7e832fbf787a15343266d))
+ - **FEAT**: Separates core framework and cli ([#161](https://github.com/conduit-dart/conduit/issues/161)). ([28445bbe](https://github.com/conduit-dart/conduit/commit/28445bbe2c012a3a16d372f6ddf29d344939e72f))
+ - **FEAT**: Works with latest version of dart (2.19), CI works, websockets fixed, melos tasks added:wq. ([616a99be](https://github.com/conduit-dart/conduit/commit/616a99be9624b34c0a01acd7ff4a67b0d8b9a75f))
+ - **DOCS**: improve doc gen ([#180](https://github.com/conduit-dart/conduit/issues/180)). ([8d18f872](https://github.com/conduit-dart/conduit/commit/8d18f872fa70ceec3052077c0e6adbc6c7ac6953))
+ - **DOCS**: Add doc generation and housekeeping ([#156](https://github.com/conduit-dart/conduit/issues/156)). ([89f303c8](https://github.com/conduit-dart/conduit/commit/89f303c88251ec2228e58d807fc553839c3c967d))
+
 ## 5.0.1
 
  - Bump "conduit_open_api" to `5.0.1`.
