@@ -44,15 +44,15 @@ class EntityBuilder {
   final Table? metadata;
   final ResponseModel? responseModel;
 
-  ManagedEntityRuntime? runtime;
+  late final ManagedEntityRuntime runtime;
 
   late final String name = _getName();
-  late ManagedEntity entity;
+  late final ManagedEntity entity;
   List<String>? uniquePropertySet;
-  late PropertyBuilder primaryKeyProperty;
-  List<PropertyBuilder> properties = [];
-  Map<String?, ManagedAttributeDescription?> attributes = {};
-  Map<String?, ManagedRelationshipDescription?> relationships = {};
+  late final PropertyBuilder primaryKeyProperty;
+  late final List<PropertyBuilder> properties;
+  final Map<String, ManagedAttributeDescription?> attributes = {};
+  final Map<String, ManagedRelationshipDescription?> relationships = {};
 
   String get instanceTypeName => MirrorSystem.getName(instanceType.simpleName);
 

@@ -33,9 +33,9 @@ dynamic runtimeCast(dynamic object, TypeMirror intoType) {
       });
       return output;
     }
-  } on TypeError catch (_) {
+  } on TypeError {
     throw exceptionToThrow;
-  } on TypeCoercionException catch (_) {
+  } on TypeCoercionException {
     throw exceptionToThrow;
   }
 

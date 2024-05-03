@@ -245,7 +245,7 @@ void _registerType(APIDocumentContext context, TypeMirror typeMirror) {
 
   final classMirror = typeMirror;
   if (!context.schema.hasRegisteredType(classMirror.reflectedType) &&
-      _shouldDocumentSerializable(classMirror.reflectedType)!) {
+      _shouldDocumentSerializable(classMirror.reflectedType)) {
     final instance =
         classMirror.newInstance(Symbol.empty, []).reflectee as Serializable;
     context.schema.register(
@@ -256,7 +256,7 @@ void _registerType(APIDocumentContext context, TypeMirror typeMirror) {
   }
 }
 
-bool? _shouldDocumentSerializable(Type type) {
+bool _shouldDocumentSerializable(Type type) {
   final hierarchy = classHierarchyForClass(reflectClass(type));
   final definingType = hierarchy.firstWhereOrNull(
     (cm) => cm.staticMembers.containsKey(#shouldAutomaticallyDocument),
@@ -264,5 +264,5 @@ bool? _shouldDocumentSerializable(Type type) {
   if (definingType == null) {
     return Serializable.shouldAutomaticallyDocument;
   }
-  return definingType.getField(#shouldAutomaticallyDocument).reflectee as bool?;
+  return definingType.getField(#shouldAutomaticallyDocument).reflectee as bool;
 }

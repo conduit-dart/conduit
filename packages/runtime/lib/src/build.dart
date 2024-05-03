@@ -48,7 +48,7 @@ class Build {
     print("Generated runtime at '${context.buildRuntimeDirectory.uri}'.");
 
     final nameOfPackageBeingCompiled = context.sourceApplicationPubspec.name;
-    final pubspecMap = <String, dynamic>{
+    final pubspecMap = <String, Object>{
       'name': 'runtime_target',
       'version': '1.0.0',
       'environment': {'sdk': '>=3.3.0 <4.0.0'},

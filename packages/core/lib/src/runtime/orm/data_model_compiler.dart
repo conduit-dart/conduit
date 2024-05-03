@@ -5,8 +5,8 @@ import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 class DataModelCompiler {
-  Map<String, dynamic> compile(MirrorContext context) {
-    final m = <String, dynamic>{};
+  Map<String, Object> compile(MirrorContext context) {
+    final m = <String, Object>{};
 
     final instanceTypes = context.types
         .where(_isTypeManagedObjectSubclass)

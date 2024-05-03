@@ -287,5 +287,5 @@ abstract class ChannelRuntime {
 
   ApplicationChannel instantiateChannel();
 
-  Future? runGlobalInitialization(ApplicationOptions config);
+  Future runGlobalInitialization(ApplicationOptions config);
 }

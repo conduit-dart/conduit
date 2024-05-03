@@ -71,7 +71,7 @@ class AuthController extends ResourceController {
     AuthBasicCredentials basicRecord;
     try {
       basicRecord = _parser.parse(authHeader);
-    } on AuthorizationParserException catch (_) {
+    } on AuthorizationParserException {
       return _responseForError(AuthRequestError.invalidClient);
     }
 

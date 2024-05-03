@@ -726,7 +726,7 @@ void main() {
     try {
       final _ = OptionalEmbeddedContainer.fromString(yamlString);
       fail('unreachable');
-    } on ConfigurationException catch (_) {}
+    } on ConfigurationException {}
   });
 
   test("Database configuration can come from string", () {

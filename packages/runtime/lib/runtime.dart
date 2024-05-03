@@ -22,7 +22,7 @@ import 'package:conduit_runtime/src/mirror_context.dart';
 /// a generated runtime to the replica's pubspec.
 class RuntimePackageCompiler extends Compiler {
   @override
-  Map<String, dynamic> compile(MirrorContext context) => {};
+  Map<String, Object> compile(MirrorContext context) => {};
 
   @override
   void deflectPackage(Directory destinationDirectory) {

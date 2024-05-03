@@ -73,7 +73,7 @@ T cast<T>(dynamic input) {
     }
 
     return input as T;
-  } on TypeError catch (_) {
+  } on TypeError {
     throw TypeCoercionException(T, input.runtimeType);
   }
 }

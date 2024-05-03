@@ -43,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner_args: [melos test-unit, dart tool/generated_test_runner.dart]
+        runner_args: [melos test-unit --no-select, dart tool/generated_test_runner.dart]
         sdk: [stable, main]
     env:
       TEST_DIR: packages/core

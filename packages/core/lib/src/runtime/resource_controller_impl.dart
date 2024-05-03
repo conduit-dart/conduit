@@ -322,7 +322,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
               args.positionalArguments,
               args.namedArguments.map((k, v) => MapEntry(Symbol(k), v)),
             )
-            .reflectee as Future<Response?>;
+            .reflectee as Future<Response>;
       },
     );
   }

@@ -9,7 +9,7 @@ enum Validating { update, insert }
 /// Information about a validation being performed.
 class ValidationContext {
   /// Whether this validation is occurring during update or insert.
-  Validating? event;
+  late Validating event;
 
   /// The property being validated.
   ManagedPropertyDescription? property;
