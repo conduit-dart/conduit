@@ -1,1 +1,4 @@
+analyzer:
+  errors:
+    empty_catches: ignore
 include: package:lints/recommended.yaml

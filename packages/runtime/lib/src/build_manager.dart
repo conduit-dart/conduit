@@ -11,7 +11,7 @@ class BuildExecutable extends Executable {
     context = BuildContext.fromMap(message);
   }
 
-  late BuildContext context;
+  late final BuildContext context;
 
   @override
   Future execute() async {

@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:path/path.dart';
-import 'package:pubspec/pubspec.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 
 /// A [WorkingDirectoryAgent] with additional behavior for managing a 'Dart package' directory.
 class DartProjectAgent extends WorkingDirectoryAgent {
@@ -51,8 +51,8 @@ class DartProjectAgent extends WorkingDirectoryAgent {
       );
     }
 
-    final pubspec = PubSpec.fromYamlString(pubspecFile.readAsStringSync());
-    name = pubspec.name!;
+    final pubspec = Pubspec.parse(pubspecFile.readAsStringSync());
+    name = pubspec.name;
   }
 
   /// Temporary directory where projects are stored ('/tmp/conduit')

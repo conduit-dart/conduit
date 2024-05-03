@@ -14,8 +14,8 @@ import 'package:yaml/yaml.dart';
 
 class ConduitCompiler extends Compiler {
   @override
-  Map<String, dynamic> compile(MirrorContext context) {
-    final m = <String, dynamic>{};
+  Map<String, Object> compile(MirrorContext context) {
+    final m = <String, Object>{};
 
     m.addEntries(
       context

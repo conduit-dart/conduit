@@ -7,7 +7,7 @@ import 'package:conduit_runtime/runtime.dart';
 
 class ConfigurationCompiler extends Compiler {
   @override
-  Map<String, dynamic> compile(MirrorContext context) {
+  Map<String, Object> compile(MirrorContext context) {
     return Map.fromEntries(
       context.getSubclassesOf(Configuration).map((c) {
         return MapEntry(

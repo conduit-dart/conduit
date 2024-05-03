@@ -43,16 +43,14 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   }
 
   @override
-  Future? runGlobalInitialization(ApplicationOptions config) {
+  Future runGlobalInitialization(ApplicationOptions config) async {
     if (hasGlobalInitializationMethod) {
-      return type.invoke(_globalStartSymbol, [config]).reflectee as Future?;
+      return type.invoke(_globalStartSymbol, [config]).reflectee as Future;
     }
-
-    return null;
   }
 
   @override
-  Iterable<APIComponentDocumenter?> getDocumentableChannelComponents(
+  Iterable<APIComponentDocumenter> getDocumentableChannelComponents(
     ApplicationChannel channel,
   ) {
     final documenter = reflectType(APIComponentDocumenter);
@@ -65,7 +63,7 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
         .map((dm) {
       return reflect(channel).getField(dm.simpleName).reflectee
           as APIComponentDocumenter?;
-    }).where((o) => o != null);
+    }).whereType<APIComponentDocumenter>();
   }
 
   @override

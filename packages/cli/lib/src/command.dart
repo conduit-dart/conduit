@@ -172,7 +172,7 @@ abstract class CLICommand {
         throw CLIException('Invalid integer value "$val" for argument "$key".');
       }
       return RuntimeContext.current.coerce<T>(val);
-    } on TypeCoercionException catch (_) {
+    } on TypeCoercionException {
       throw CLIException(
         'The value "$val" for argument "$key" could not be coerced to a $T.',
       );

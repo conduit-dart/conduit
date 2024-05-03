@@ -64,7 +64,7 @@ mixin CLIDocumentOptions implements CLICommand {
     try {
       final uri = Uri.parse(str);
       return uri;
-    } on FormatException catch (_) {
+    } on FormatException {
       throw CLIException(
         "Invalid Host Option",
         instructions: [

@@ -43,13 +43,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner_args: [melos test-unit, dart tool/generated_test_runner.dart]
+        runner_args: [melos test-unit --no-select, dart tool/generated_test_runner.dart]
         sdk: [stable, main]
     env:
       TEST_DIR: packages/core
     services:
       postgres:
-        image: postgres:14.5
+        image: postgres:16.2
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!

@@ -20,16 +20,17 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
 
   @override
   ManagedObject instanceOfImplementation({ManagedBacking? backing}) {
-    final object =
-        instanceType.newInstance(Symbol.empty, []).reflectee as ManagedObject?;
+    try {
+      final object =
+          instanceType.newInstance(Symbol.empty, []).reflectee as ManagedObject;
 
-    if (object == null) {
+      if (backing != null) {
+        object.backing = backing;
+      }
+      return object;
+    } on TypeError {
       throw StateError('No implementation found for $instanceType');
     }
-    if (backing != null) {
-      object.backing = backing;
-    }
-    return object;
   }
 
   @override

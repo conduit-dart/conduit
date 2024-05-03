@@ -7,7 +7,7 @@ import 'package:conduit_runtime/src/context.dart';
 import 'package:conduit_runtime/src/mirror_context.dart';
 import 'package:package_config/package_config.dart';
 import 'package:path/path.dart';
-import 'package:pubspec/pubspec.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:yaml/yaml.dart';
 
 /// Configuration and context values used during [Build.execute].
@@ -40,7 +40,7 @@ class BuildContext {
         'forTests': forTests
       };
 
-  late CodeAnalyzer analyzer;
+  late final CodeAnalyzer analyzer;
 
   /// A [Uri] to the library file of the application to be compiled.
   final Uri rootLibraryFileUri;
@@ -68,7 +68,7 @@ class BuildContext {
           .resolve("main_test.dart")
       : buildDirectoryUri.resolve("main.dart");
 
-  PubSpec get sourceApplicationPubspec => PubSpec.fromYamlString(
+  Pubspec get sourceApplicationPubspec => Pubspec.parse(
         File.fromUri(sourceApplicationDirectory.uri.resolve("pubspec.yaml"))
             .readAsStringSync(),
       );
@@ -104,8 +104,8 @@ class BuildContext {
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].
   Future<PackageConfig> get packageConfig async {
-    _packageConfig ??= (await findPackageConfig(sourceApplicationDirectory))!;
-    return _packageConfig!;
+    return _packageConfig ??=
+        (await findPackageConfig(sourceApplicationDirectory))!;
   }
 
   /// Returns a [Directory] at [uri], creates it recursively if it doesn't exist.

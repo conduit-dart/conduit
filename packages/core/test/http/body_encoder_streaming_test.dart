@@ -95,7 +95,7 @@ void main() {
         final result = await resultFuture;
         expect(result.statusCode, 500);
         expect(result.bodyBytes, []);
-      } on http.ClientException catch (_) {}
+      } on http.ClientException {}
     });
   });
 
@@ -373,7 +373,7 @@ void main() {
       try {
         final response = await req.close();
         expect(response.statusCode, 413);
-      } on SocketException catch (_) {
+      } on SocketException {
         if (!Platform.isMacOS) {
           rethrow;
         }

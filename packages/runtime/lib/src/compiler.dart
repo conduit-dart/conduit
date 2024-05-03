@@ -15,7 +15,7 @@ abstract class Compiler {
   void deflectPackage(Directory destinationDirectory);
 
   /// Returns a map of runtime objects that can be used at runtime while running in mirrored mode.
-  Map<String, dynamic> compile(MirrorContext context);
+  Map<String, Object> compile(MirrorContext context);
 
   void didFinishPackageGeneration(BuildContext context) {}
 
