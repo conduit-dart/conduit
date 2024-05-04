@@ -130,17 +130,16 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         return [];
       }
 
-      final type = element.variable.type;
+      final type = element.variable2!.type;
       final isSubclassOrInstanceOfValidate =
-          type.getDisplayString(withNullability: true) == "Validate" ||
+          type.getDisplayString() == "Validate" ||
               buildCtx.context.getSubclassesOf(Validate).any(
                 (subclass) {
                   return MirrorSystem.getName(subclass.simpleName) ==
-                      type.getDisplayString(withNullability: true);
+                      type.getDisplayString();
                 },
               );
-      final isInstanceOfColumn =
-          type.getDisplayString(withNullability: true) == "Column";
+      final isInstanceOfColumn = type.getDisplayString() == "Column";
 
       if (isSubclassOrInstanceOfValidate) {
         importUris.add(annotation.element!.source!.uri);
@@ -149,7 +148,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         final originatingLibrary = element.session!
             .getParsedLibraryByElement(element.library) as ParsedLibraryResult;
         final elementDeclaration = originatingLibrary
-            .getElementDeclaration(element.variable)!
+            .getElementDeclaration(element.variable2!)!
             .node as VariableDeclaration;
 
         return _getConstructorSourcesFromColumnArgList(

@@ -6,10 +6,10 @@ repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
-  analyzer: ^6.4.1
+  analyzer: ^6.5.0
   args: ^2.4.2
   collection: ^1.18.0
   conduit_common: ^5.0.3
