@@ -6,13 +6,12 @@ import 'postgresql_persistent_store.dart';
 import 'postgresql_query.dart';
 import 'query_builder.dart';
 
-// ignore_for_file: constant_identifier_names
 enum _Reducer {
-  AVG,
-  COUNT,
-  MAX,
-  MIN,
-  SUM,
+  avg,
+  count,
+  max,
+  min,
+  sum,
 }
 
 class PostgresQueryReduce<T extends ManagedObject>
@@ -25,29 +24,29 @@ class PostgresQueryReduce<T extends ManagedObject>
   @override
   Future<double?> average(num? Function(T object) selector) {
     return _execute<double?>(
-      _Reducer.AVG,
+      _Reducer.avg,
       query.entity.identifyAttribute(selector),
     );
   }
 
   @override
   Future<int> count() {
-    return _execute<int>(_Reducer.COUNT);
+    return _execute<int>(_Reducer.count);
   }
 
   @override
   Future<U?> maximum<U>(U? Function(T object) selector) {
-    return _execute<U?>(_Reducer.MAX, query.entity.identifyAttribute(selector));
+    return _execute<U?>(_Reducer.max, query.entity.identifyAttribute(selector));
   }
 
   @override
   Future<U?> minimum<U>(U? Function(T object) selector) {
-    return _execute<U?>(_Reducer.MIN, query.entity.identifyAttribute(selector));
+    return _execute<U?>(_Reducer.min, query.entity.identifyAttribute(selector));
   }
 
   @override
   Future<U?> sum<U extends num>(U? Function(T object) selector) {
-    return _execute<U?>(_Reducer.SUM, query.entity.identifyAttribute(selector));
+    return _execute<U?>(_Reducer.sum, query.entity.identifyAttribute(selector));
   }
 
   String _columnName(ManagedAttributeDescription? property) {
@@ -62,7 +61,7 @@ class PostgresQueryReduce<T extends ManagedObject>
   String _function(_Reducer reducer, ManagedAttributeDescription? property) {
     return "${reducer.toString().split('.').last}" // The aggregation function
         "(${_columnName(property)})" // The Column for the aggregation
-        "${reducer == _Reducer.AVG ? '::float' : ''}"; // Optional cast to float for AVG
+        "${reducer == _Reducer.avg ? '::float' : ''}"; // Optional cast to float for AVG
   }
 
   Future<U> _execute<U>(
@@ -89,7 +88,7 @@ class PostgresQueryReduce<T extends ManagedObject>
     final store = query.context.persistentStore as PostgreSQLPersistentStore;
     final connection = await store.executionContext;
     try {
-      final result = await connection!.execute(
+      final result = await connection.execute(
         Sql.named(buffer.toString()),
         parameters: builder.variables,
         queryMode: QueryMode.extended,

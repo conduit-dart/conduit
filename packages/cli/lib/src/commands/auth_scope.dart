@@ -49,7 +49,7 @@ class CLIAuthScopeClient extends CLICommand
     );
 
     final query = Query<ManagedAuthClient>(context)
-      ..where((o) => o.id).equalTo(clientID)
+      ..where((o) => o.id).equalTo(clientID!)
       ..values.allowedScope =
           scopingClient.allowedScopes?.map((s) => s.toString()).join(" ");
 

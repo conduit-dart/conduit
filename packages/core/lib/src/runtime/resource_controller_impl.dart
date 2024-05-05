@@ -227,7 +227,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
           }
           decoder = (value) {
             return _convertParameterListWithMirror(
-              value as List<String>?,
+              value as List<String>,
               boundType,
             );
           };
@@ -242,7 +242,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
             );
           }
           decoder = (value) {
-            return _convertParameterWithMirror(value as String?, mirror.type);
+            return _convertParameterWithMirror(value as String, mirror.type);
           };
         }
         break;
@@ -258,7 +258,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
           }
           decoder = (value) {
             return _convertParameterListWithMirror(
-              value as List<String>?,
+              value as List<String>,
               mirror.type,
             );
           };
@@ -365,17 +365,17 @@ void _enforceTypeCanBeParsedFromString(
 }
 
 dynamic _convertParameterListWithMirror(
-  List<String>? parameterValues,
+  List<String> parameterValues,
   TypeMirror typeMirror,
 ) {
   if (typeMirror.isSubtypeOf(reflectType(List))) {
-    final iterable = parameterValues!.map(
+    final iterable = parameterValues.map(
       (str) => _convertParameterWithMirror(str, typeMirror.typeArguments.first),
     );
 
     return (typeMirror as ClassMirror).newInstance(#from, [iterable]).reflectee;
   } else {
-    if (parameterValues!.length > 1) {
+    if (parameterValues.length > 1) {
       throw ArgumentError("multiple values not expected");
     }
     return _convertParameterWithMirror(parameterValues.first, typeMirror);
@@ -383,7 +383,7 @@ dynamic _convertParameterListWithMirror(
 }
 
 dynamic _convertParameterWithMirror(
-  String? parameterValue,
+  String parameterValue,
   TypeMirror typeMirror,
 ) {
   if (typeMirror.isSubtypeOf(reflectType(bool))) {

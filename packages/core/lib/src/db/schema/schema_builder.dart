@@ -60,10 +60,10 @@ class SchemaBuilder {
   }
 
   /// The starting schema of this builder.
-  Schema? inputSchema;
+  late Schema inputSchema;
 
   /// The resulting schema of this builder as operations are applied to it.
-  Schema? schema;
+  late Schema schema;
 
   /// The persistent store to validate and construct operations.
   ///
@@ -82,7 +82,7 @@ class SchemaBuilder {
 
   /// Validates and adds a table to [schema].
   void createTable(SchemaTable table) {
-    schema!.addTable(table);
+    schema.addTable(table);
 
     if (store != null) {
       commands.addAll(store!.createTable(table, isTemporary: isTemporary));
@@ -93,12 +93,12 @@ class SchemaBuilder {
 
   /// Validates and renames a table in [schema].
   void renameTable(String currentTableName, String newName) {
-    final table = schema!.tableForName(currentTableName);
+    final table = schema.tableForName(currentTableName);
     if (table == null) {
       throw SchemaException("Table $currentTableName does not exist.");
     }
 
-    schema!.renameTable(table, newName);
+    schema.renameTable(table, newName);
     if (store != null) {
       commands.addAll(store!.renameTable(table, newName));
     } else {
@@ -108,12 +108,12 @@ class SchemaBuilder {
 
   /// Validates and deletes a table in [schema].
   void deleteTable(String tableName) {
-    final table = schema!.tableForName(tableName);
+    final table = schema.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
-    schema!.removeTable(table);
+    schema.removeTable(table);
 
     if (store != null) {
       commands.addAll(store!.deleteTable(table));
@@ -127,14 +127,14 @@ class SchemaBuilder {
     String tableName,
     void Function(SchemaTable targetTable) modify,
   ) {
-    final existingTable = schema!.tableForName(tableName);
+    final existingTable = schema.tableForName(tableName);
     if (existingTable == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
 
     final newTable = SchemaTable.from(existingTable);
     modify(newTable);
-    schema!.replaceTable(existingTable, newTable);
+    schema.replaceTable(existingTable, newTable);
 
     final shouldAddUnique = existingTable.uniqueColumnSet == null &&
         newTable.uniqueColumnSet != null;
@@ -187,7 +187,7 @@ class SchemaBuilder {
     SchemaColumn column, {
     String? unencodedInitialValue,
   }) {
-    final table = schema!.tableForName(tableName);
+    final table = schema.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
@@ -210,7 +210,7 @@ class SchemaBuilder {
 
   /// Validates and deletes a column in a table in [schema].
   void deleteColumn(String tableName, String columnName) {
-    final table = schema!.tableForName(tableName);
+    final table = schema.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
@@ -231,7 +231,7 @@ class SchemaBuilder {
 
   /// Validates and renames a column in a table in [schema].
   void renameColumn(String tableName, String columnName, String newName) {
-    final table = schema!.tableForName(tableName);
+    final table = schema.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }
@@ -270,7 +270,7 @@ class SchemaBuilder {
     void Function(SchemaColumn targetColumn) modify, {
     String? unencodedInitialValue,
   }) {
-    final table = schema!.tableForName(tableName);
+    final table = schema.tableForName(tableName);
     if (table == null) {
       throw SchemaException("Table $tableName does not exist.");
     }

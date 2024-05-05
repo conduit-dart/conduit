@@ -30,10 +30,9 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
         )
         .toList();
 
-    final notFound = expectedRuntimes.where((e) => e == null).toList();
-    if (notFound.isNotEmpty) {
+    if (expectedRuntimes.any((e) => e == null)) {
       throw ManagedDataModelError(
-        "Data model types were not found: ${notFound.map((e) => e!.entity.name).join(", ")}",
+        "Data model types were not found!",
       );
     }
 

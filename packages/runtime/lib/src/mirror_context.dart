@@ -76,7 +76,7 @@ T? firstMetadataOfType<T>(DeclarationMirror dm, {TypeMirror? dynamicType}) {
   try {
     return dm.metadata
         .firstWhere((im) => im.type.isSubtypeOf(tMirror))
-        .reflectee as T?;
+        .reflectee as T;
   } on StateError {
     return null;
   }

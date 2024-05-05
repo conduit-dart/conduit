@@ -190,7 +190,7 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
     (RuntimeContext.current[runtimeType] as ChannelRuntime)
         .getDocumentableChannelComponents(this)
         .forEach((component) {
-      component!.documentComponents(registry);
+      component.documentComponents(registry);
     });
   }
 }
@@ -275,7 +275,7 @@ class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
 }
 
 abstract class ChannelRuntime {
-  Iterable<APIComponentDocumenter?> getDocumentableChannelComponents(
+  Iterable<APIComponentDocumenter> getDocumentableChannelComponents(
     ApplicationChannel channel,
   );
 

@@ -83,7 +83,7 @@ class CORSPolicy {
   /// Whether or not to allow use of credentials, including Authorization and cookies.
   ///
   /// Defaults to true. In the specification (http://www.w3.org/TR/cors/), this is 'supports credentials'.
-  bool? allowCredentials;
+  late bool allowCredentials;
 
   /// Which response headers to expose to the client.
   ///
@@ -121,7 +121,7 @@ class CORSPolicy {
           exposedResponseHeaders.join(", ");
     }
 
-    if (allowCredentials!) {
+    if (allowCredentials) {
       headers["Access-Control-Allow-Credentials"] = "true";
     }
 
@@ -188,7 +188,7 @@ class CORSPolicy {
       "Access-Control-Allow-Headers": allowedRequestHeaders.join(", ")
     };
 
-    if (allowCredentials!) {
+    if (allowCredentials) {
       headers["Access-Control-Allow-Credentials"] = "true";
     }
 

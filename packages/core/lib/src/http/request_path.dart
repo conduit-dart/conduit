@@ -27,7 +27,7 @@ class RequestPath {
 
       if (segment.isVariable) {
         variables[segment.variableName.toString()] = requestSegment;
-        orderedVariableNames.add(segment.variableName);
+        orderedVariableNames.add(segment.variableName!);
       } else if (segment.isRemainingMatcher) {
         final remaining = [];
         remaining.add(requestIterator.current);
@@ -51,7 +51,7 @@ class RequestPath {
   ///     /users/2
   /// This property will be {'id' : '2'}.
   ///
-  Map<String?, String> variables = {};
+  Map<String, String> variables = {};
 
   /// A list of the segments in a matched path.
   ///
@@ -73,7 +73,7 @@ class RequestPath {
   /// available for the specific request are in this list. For example, if a route has two path variables,
   /// but the incoming request this [RequestPath] represents only has one variable, only that one variable
   /// will appear in this property.
-  List<String?> orderedVariableNames = [];
+  List<String> orderedVariableNames = [];
 
   /// The path of the requested URI.
   ///

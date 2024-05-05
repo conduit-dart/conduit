@@ -73,7 +73,7 @@ void main() {
         ]),
       );
 
-      expect(outSchema!.differenceFrom(schema).hasDifferences, false);
+      expect(outSchema.differenceFrom(schema).hasDifferences, false);
 
       final insertResults = await store.execute(
         "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn",

@@ -59,25 +59,25 @@ void main() {
           expect(entity.properties[key] == attr, true);
         });
 
-        entity.relationships!.forEach((key, attr) {
+        entity.relationships.forEach((key, attr) {
           expect(entity.properties[key] == attr, true);
         });
       }
     });
 
     test("Relationships aren't attributes and vice versa", () {
-      expect(dataModel.entityForType(User).relationships!["id"], isNull);
+      expect(dataModel.entityForType(User).relationships["id"], isNull);
       expect(dataModel.entityForType(User).attributes["id"], isNotNull);
 
       expect(dataModel.entityForType(User).attributes["manager"], isNull);
       expect(
-        dataModel.entityForType(User).relationships!["manager"],
+        dataModel.entityForType(User).relationships["manager"],
         isNotNull,
       );
 
       expect(dataModel.entityForType(Manager).attributes["worker"], isNull);
       expect(
-        dataModel.entityForType(Manager).relationships!["worker"],
+        dataModel.entityForType(Manager).relationships["worker"],
         isNotNull,
       );
     });
@@ -138,12 +138,12 @@ void main() {
 
     test("Relationships have appropriate values set", () {
       var entity = dataModel.entityForType(Item);
-      var relDesc = entity.relationships!["user"]!;
+      var relDesc = entity.relationships["user"]!;
       expect(relDesc.isNullable, false);
       expect(relDesc.inverseKey, "items");
       expect(
         relDesc.inverse ==
-            dataModel.entityForType(User).relationships![relDesc.inverseKey],
+            dataModel.entityForType(User).relationships[relDesc.inverseKey],
         true,
       );
       expect(relDesc.deleteRule, DeleteRule.cascade);
@@ -151,12 +151,12 @@ void main() {
       expect(relDesc.relationshipType, ManagedRelationshipType.belongsTo);
 
       entity = dataModel.entityForType(Manager);
-      relDesc = entity.relationships!["worker"]!;
+      relDesc = entity.relationships["worker"]!;
       expect(relDesc.isNullable, true);
       expect(relDesc.inverseKey, "manager");
       expect(
         relDesc.inverse ==
-            dataModel.entityForType(User).relationships![relDesc.inverseKey],
+            dataModel.entityForType(User).relationships[relDesc.inverseKey],
         true,
       );
       expect(relDesc.deleteRule, DeleteRule.nullify);
@@ -164,11 +164,11 @@ void main() {
       expect(relDesc.relationshipType, ManagedRelationshipType.belongsTo);
 
       entity = dataModel.entityForType(User);
-      relDesc = entity.relationships!["manager"]!;
+      relDesc = entity.relationships["manager"]!;
       expect(relDesc.inverseKey, "worker");
       expect(
         relDesc.inverse ==
-            dataModel.entityForType(Manager).relationships![relDesc.inverseKey],
+            dataModel.entityForType(Manager).relationships[relDesc.inverseKey],
         true,
       );
       expect(
@@ -178,7 +178,7 @@ void main() {
       expect(relDesc.relationshipType, ManagedRelationshipType.hasOne);
 
       expect(
-        entity.relationships!["items"]!.relationshipType,
+        entity.relationships["items"]!.relationshipType,
         ManagedRelationshipType.hasMany,
       );
     });
@@ -219,66 +219,66 @@ void main() {
       expect(
         dm
             .entityForType(CyclicLeft)
-            .relationships!["leftRef"]!
+            .relationships["leftRef"]!
             .destinationEntity
             .name,
         "CyclicRight",
       );
       expect(
-        dm.entityForType(CyclicLeft).relationships!["leftRef"]!.inverse!.name,
+        dm.entityForType(CyclicLeft).relationships["leftRef"]!.inverse!.name,
         "from",
       );
       expect(
-        dm.entityForType(CyclicLeft).relationships!["leftRef"]!.isBelongsTo,
+        dm.entityForType(CyclicLeft).relationships["leftRef"]!.isBelongsTo,
         true,
       );
       expect(
         dm
             .entityForType(CyclicLeft)
-            .relationships!["from"]!
+            .relationships["from"]!
             .destinationEntity
             .name,
         "CyclicRight",
       );
       expect(
-        dm.entityForType(CyclicLeft).relationships!["from"]!.inverse!.name,
+        dm.entityForType(CyclicLeft).relationships["from"]!.inverse!.name,
         "rightRef",
       );
       expect(
-        dm.entityForType(CyclicLeft).relationships!["from"]!.isBelongsTo,
+        dm.entityForType(CyclicLeft).relationships["from"]!.isBelongsTo,
         false,
       );
 
       expect(
         dm
             .entityForType(CyclicRight)
-            .relationships!["rightRef"]!
+            .relationships["rightRef"]!
             .destinationEntity
             .name,
         "CyclicLeft",
       );
       expect(
-        dm.entityForType(CyclicRight).relationships!["rightRef"]!.inverse!.name,
+        dm.entityForType(CyclicRight).relationships["rightRef"]!.inverse!.name,
         "from",
       );
       expect(
-        dm.entityForType(CyclicRight).relationships!["rightRef"]!.isBelongsTo,
+        dm.entityForType(CyclicRight).relationships["rightRef"]!.isBelongsTo,
         true,
       );
       expect(
         dm
             .entityForType(CyclicRight)
-            .relationships!["from"]!
+            .relationships["from"]!
             .destinationEntity
             .name,
         "CyclicLeft",
       );
       expect(
-        dm.entityForType(CyclicRight).relationships!["from"]!.inverse!.name,
+        dm.entityForType(CyclicRight).relationships["from"]!.inverse!.name,
         "leftRef",
       );
       expect(
-        dm.entityForType(CyclicRight).relationships!["from"]!.isBelongsTo,
+        dm.entityForType(CyclicRight).relationships["from"]!.isBelongsTo,
         false,
       );
     });
@@ -288,7 +288,7 @@ void main() {
       expect(
         dm
             .entityForType(SelfReferential)
-            .relationships!["parent"]!
+            .relationships["parent"]!
             .destinationEntity
             .name,
         "SelfReferential",
@@ -296,33 +296,29 @@ void main() {
       expect(
         dm
             .entityForType(SelfReferential)
-            .relationships!["parent"]!
+            .relationships["parent"]!
             .inverse!
             .name,
         "child",
       );
       expect(
-        dm.entityForType(SelfReferential).relationships!["parent"]!.isBelongsTo,
+        dm.entityForType(SelfReferential).relationships["parent"]!.isBelongsTo,
         true,
       );
       expect(
         dm
             .entityForType(SelfReferential)
-            .relationships!["child"]!
+            .relationships["child"]!
             .destinationEntity
             .name,
         "SelfReferential",
       );
       expect(
-        dm
-            .entityForType(SelfReferential)
-            .relationships!["child"]!
-            .inverse!
-            .name,
+        dm.entityForType(SelfReferential).relationships["child"]!.inverse!.name,
         "parent",
       );
       expect(
-        dm.entityForType(SelfReferential).relationships!["child"]!.isBelongsTo,
+        dm.entityForType(SelfReferential).relationships["child"]!.isBelongsTo,
         false,
       );
     });
@@ -338,7 +334,7 @@ void main() {
 
       final isManyOf = model
           .entityForType(DoubleRelationshipForeignKeyModel)
-          .relationships!["isManyOf"]!;
+          .relationships["isManyOf"]!;
       expect(isManyOf.inverse!.name, "hasManyOf");
       expect(
         isManyOf.destinationEntity.tableName,
@@ -347,7 +343,7 @@ void main() {
 
       final isOneOf = model
           .entityForType(DoubleRelationshipForeignKeyModel)
-          .relationships!["isOneOf"]!;
+          .relationships["isOneOf"]!;
       expect(isOneOf.inverse!.name, "hasOneOf");
       expect(
         isOneOf.destinationEntity.tableName,
@@ -366,7 +362,7 @@ void main() {
 
       final partial = model
           .entityForType(DoubleRelationshipForeignKeyModel)
-          .relationships!["partial"]!;
+          .relationships["partial"]!;
       expect(
         partial.destinationEntity.tableName,
         model.entityForType(SomeOtherRelationshipModel).tableName,
@@ -391,17 +387,17 @@ void main() {
       expect(totalEntity.attributes["field"]!.isIndexed, true);
       expect(
         totalEntity
-            .relationships!["hasManyRelationship"]!.destinationEntity.tableName,
+            .relationships["hasManyRelationship"]!.destinationEntity.tableName,
         referenceEntity.tableName,
       );
       expect(
-        totalEntity.relationships!["hasManyRelationship"]!.relationshipType,
+        totalEntity.relationships["hasManyRelationship"]!.relationshipType,
         ManagedRelationshipType.hasMany,
       );
 
       expect(
         referenceEntity
-            .relationships!["foreignKeyColumn"]!.destinationEntity.tableName,
+            .relationships["foreignKeyColumn"]!.destinationEntity.tableName,
         totalEntity.tableName,
       );
     });
@@ -470,12 +466,12 @@ void main() {
 
     final joinEntity = model.entityForType(JoinMany);
     expect(
-      joinEntity.relationships!["left"]!.destinationEntity.instanceType ==
+      joinEntity.relationships["left"]!.destinationEntity.instanceType ==
           LeftMany,
       true,
     );
     expect(
-      joinEntity.relationships!["right"]!.destinationEntity.instanceType ==
+      joinEntity.relationships["right"]!.destinationEntity.instanceType ==
           RightMany,
       true,
     );

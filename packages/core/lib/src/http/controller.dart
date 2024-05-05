@@ -104,7 +104,7 @@ abstract class Controller
   ///
   /// See [linkFunction] for a variant of this method that takes a closure instead of an object.
   @override
-  Linkable? link(Controller Function() instantiator) {
+  Linkable link(Controller Function() instantiator) {
     final instance = instantiator();
     if (instance is Recyclable) {
       _nextController = _ControllerRecycler(instantiator, instance);
@@ -112,7 +112,7 @@ abstract class Controller
       _nextController = instantiator();
     }
 
-    return _nextController;
+    return _nextController!;
   }
 
   /// Links a function controller to the receiver to form a request channel.
@@ -384,9 +384,9 @@ class _ControllerRecycler<T> extends Controller {
   }
 
   @override
-  Linkable? link(Controller Function() instantiator) {
+  Linkable link(Controller Function() instantiator) {
     final c = super.link(instantiator);
-    nextInstanceToReceive?._nextController = c as Controller?;
+    nextInstanceToReceive?._nextController = c as Controller;
     return c;
   }
 

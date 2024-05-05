@@ -37,12 +37,12 @@ void main() {
       expect(noVarPath.operations.length, 2);
       expect(noVarPath.operations["get"]!.security!.length, 1);
       expect(
-        noVarPath.operations["get"]!.security!.first!.requirements,
+        noVarPath.operations["get"]!.security!.first.requirements,
         {"oauth2-client-authentication": []},
       );
       expect(noVarPath.operations["post"]!.security!.length, 1);
       expect(
-        noVarPath.operations["post"]!.security!.first!.requirements,
+        noVarPath.operations["post"]!.security!.first.requirements,
         {"oauth2-client-authentication": []},
       );
 
@@ -50,7 +50,7 @@ void main() {
       expect(varPath.operations.length, 1);
       expect(varPath.operations["get"]!.security!.length, 1);
       expect(
-        varPath.operations["get"]!.security!.first!.requirements,
+        varPath.operations["get"]!.security!.first.requirements,
         {"oauth2-client-authentication": []},
       );
     });
@@ -61,12 +61,12 @@ void main() {
       expect(noVarPath.operations.length, 2);
       expect(noVarPath.operations["get"]!.security!.length, 1);
       expect(
-        noVarPath.operations["get"]!.security!.first!.requirements,
+        noVarPath.operations["get"]!.security!.first.requirements,
         {"oauth2": []},
       );
       expect(noVarPath.operations["post"]!.security!.length, 1);
       expect(
-        noVarPath.operations["post"]!.security!.first!.requirements,
+        noVarPath.operations["post"]!.security!.first.requirements,
         {"oauth2": []},
       );
     });
@@ -77,11 +77,11 @@ void main() {
       final noVarPath = doc.paths!["/bearer-scope"]!;
       expect(noVarPath.operations.length, 2);
       expect(noVarPath.operations["get"]!.security!.length, 1);
-      expect(noVarPath.operations["get"]!.security!.first!.requirements, {
+      expect(noVarPath.operations["get"]!.security!.first.requirements, {
         "oauth2": ["scope"]
       });
       expect(noVarPath.operations["post"]!.security!.length, 1);
-      expect(noVarPath.operations["post"]!.security!.first!.requirements, {
+      expect(noVarPath.operations["post"]!.security!.first.requirements, {
         "oauth2": ["scope"]
       });
     });
@@ -266,7 +266,7 @@ void main() {
 }
 
 class TestChannel extends ApplicationChannel {
-  AuthServer? authServer;
+  late final AuthServer authServer;
 
   @override
   Future prepare() async {
@@ -355,7 +355,7 @@ class DocumentedController extends Controller {
 }
 
 class AuthControllerOnlyChannel extends ApplicationChannel {
-  AuthServer? authServer;
+  late AuthServer authServer;
 
   @override
   Future prepare() async {
@@ -371,7 +371,7 @@ class AuthControllerOnlyChannel extends ApplicationChannel {
 }
 
 class ScopedControllerChannel extends ApplicationChannel {
-  AuthServer? authServer;
+  late AuthServer authServer;
 
   @override
   Future prepare() async {

@@ -87,7 +87,7 @@ class TestModelController extends QueryController<TestModel> {
       statusCode = 400;
     }
 
-    if (query!.values.backing.contents!.isNotEmpty) {
+    if (query!.values.backing.contents.isNotEmpty) {
       statusCode = 400;
     }
 
@@ -111,7 +111,7 @@ class TestModelController extends QueryController<TestModel> {
       statusCode = 400;
     }
 
-    if (query!.values.backing.contents!.isNotEmpty) {
+    if (query!.values.backing.contents.isNotEmpty) {
       statusCode = 400;
     }
 

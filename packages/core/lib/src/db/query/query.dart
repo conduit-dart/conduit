@@ -412,7 +412,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   ///       var q = Query<User>()
   ///           ..where.id = whereEqualTo(1);
   ///       var deletedCount = await q.delete();
-  Future<int?> delete();
+  Future<int> delete();
 }
 
 /// Order value for [Query.pageBy] and [Query.sortBy].

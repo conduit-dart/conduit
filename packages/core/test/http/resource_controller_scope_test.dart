@@ -101,7 +101,7 @@ void main() {
 }
 
 class Channel extends ApplicationChannel {
-  AuthServer? authServer;
+  late AuthServer authServer;
 
   @override
   Controller get entryPoint {

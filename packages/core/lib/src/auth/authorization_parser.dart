@@ -17,8 +17,8 @@ class AuthorizationBearerParser extends AuthorizationParser<String?> {
   ///
   /// If [authorizationHeader] is malformed or null, throws an [AuthorizationParserException].
   @override
-  String? parse(String? authorizationHeader) {
-    if (authorizationHeader == null) {
+  String? parse(String authorizationHeader) {
+    if (authorizationHeader.isEmpty) {
       throw AuthorizationParserException(
         AuthorizationParserExceptionReason.missing,
       );
@@ -40,10 +40,10 @@ class AuthorizationBearerParser extends AuthorizationParser<String?> {
 /// See [AuthorizationBasicParser] for getting instances of this type.
 class AuthBasicCredentials {
   /// The username of a Basic Authorization header.
-  String? username;
+  late final String username;
 
   /// The password of a Basic Authorization header.
-  String? password;
+  late final String password;
 
   @override
   String toString() => "$username:$password";

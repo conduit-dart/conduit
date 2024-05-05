@@ -172,11 +172,7 @@ class PropertyBuilder {
         indexed: true,
         nullable: nullable,
         includedInDefaultResultSet: includeInDefaultResultSet,
-        validators: validators!
-            .map((v) => v.managedValidator)
-            .where((v) => v != null)
-            .cast<ManagedValidator>()
-            .toList(),
+        validators: validators!.map((v) => v.managedValidator).toList(),
         responseModel: parent.responseModel,
         responseKey: responseKey,
       );

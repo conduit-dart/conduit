@@ -129,8 +129,8 @@ void main() {
       ..id = 1
       ..name = "bob";
 
-    expect(q.values.backing.contents!.keys, ["parent"]);
-    expect(q.values.backing.contents!["parent"].backing.contents, {"id": 1});
+    expect(q.values.backing.contents.keys, ["parent"]);
+    expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
 
     try {
       q.values.parent.name = "bob";
@@ -176,8 +176,8 @@ void main() {
         () {
       final q = Query<Child>(ctx);
       q.values = Child()..parent = (Root()..name = "fred");
-      expect(q.values.backing.contents!.keys, ["parent"]);
-      expect(q.values.backing.contents!["parent"].backing.contents, {});
+      expect(q.values.backing.contents.keys, ["parent"]);
+      expect(q.values.backing.contents["parent"].backing.contents, {});
     });
 
     test(
@@ -201,8 +201,8 @@ void main() {
           ..name = "fred")
         ..name = "fred";
 
-      expect(q.values.backing.contents!.keys, ["parent", "name"]);
-      expect(q.values.backing.contents!["parent"].backing.contents, {"id": 1});
+      expect(q.values.backing.contents.keys, ["parent", "name"]);
+      expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
     });
   });
 }

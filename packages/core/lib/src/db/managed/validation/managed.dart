@@ -22,7 +22,7 @@ class ManagedValidator {
     final context = ValidationContext();
 
     for (final validator in object.entity.validators) {
-      context.property = validator!.property;
+      context.property = validator.property;
       context.event = event;
       context.state = validator.state;
       if (!validator.definition.runOnInsert && event == Validating.insert) {
@@ -34,17 +34,17 @@ class ManagedValidator {
       }
 
       var contents = object.backing.contents;
-      String? key = validator.property!.name;
+      String key = validator.property!.name;
 
       if (validator.definition.type == ValidateType.present) {
         if (validator.property is ManagedRelationshipDescription) {
           final inner = object[validator.property!.name] as ManagedObject?;
           if (inner == null ||
-              !inner.backing.contents!.containsKey(inner.entity.primaryKey)) {
+              !inner.backing.contents.containsKey(inner.entity.primaryKey)) {
             context.addError("key '${validator.property!.name}' is required "
                 "for ${_getEventName(event)}s.");
           }
-        } else if (!contents!.containsKey(key)) {
+        } else if (!contents.containsKey(key)) {
           context.addError("key '${validator.property!.name}' is required "
               "for ${_getEventName(event)}s.");
         }
@@ -55,7 +55,7 @@ class ManagedValidator {
             context.addError("key '${validator.property!.name}' is not allowed "
                 "for ${_getEventName(event)}s.");
           }
-        } else if (contents!.containsKey(key)) {
+        } else if (contents.containsKey(key)) {
           context.addError("key '${validator.property!.name}' is not allowed "
               "for ${_getEventName(event)}s.");
         }
@@ -63,14 +63,14 @@ class ManagedValidator {
         if (validator.property is ManagedRelationshipDescription) {
           final inner = object[validator.property!.name] as ManagedObject?;
           if (inner == null ||
-              inner.backing.contents![inner.entity.primaryKey] == null) {
+              inner.backing.contents[inner.entity.primaryKey] == null) {
             continue;
           }
           contents = inner.backing.contents;
           key = inner.entity.primaryKey;
         }
 
-        final value = contents![key];
+        final value = contents[key];
         if (value != null) {
           validator.validate(context, value);
         }

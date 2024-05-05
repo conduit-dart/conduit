@@ -34,9 +34,9 @@ abstract class PersistentStore {
     PersistentStoreQueryReturnType? returnType,
   });
 
-  Future<T?> transaction<T>(
+  Future<T> transaction<T>(
     ManagedContext transactionContext,
-    Future<T?> Function(ManagedContext transaction) transactionBlock,
+    Future<T> Function(ManagedContext transaction) transactionBlock,
   );
 
   /// Closes the underlying database connection.
@@ -92,7 +92,7 @@ abstract class PersistentStore {
 
   Future<int> get schemaVersion;
 
-  Future<Schema?> upgrade(
+  Future<Schema> upgrade(
     Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,

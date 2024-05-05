@@ -22,7 +22,7 @@ abstract class Migration {
   ///
   /// During migration, this value will be modified as [SchemaBuilder] operations
   /// are executed. See [SchemaBuilder].
-  Schema? get currentSchema => database.schema;
+  Schema get currentSchema => database.schema;
 
   /// The [PersistentStore] that represents the database being migrated.
   PersistentStore? get store => database.store;

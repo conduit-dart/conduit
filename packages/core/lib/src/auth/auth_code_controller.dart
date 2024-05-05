@@ -27,11 +27,11 @@ abstract class AuthCodeControllerDelegate {
   ///
   ///
   /// If not null, [scope] should also be included as an additional form parameter.
-  Future<String> render(
+  Future<String?> render(
     AuthCodeController forController,
     Uri requestUri,
     String? responseType,
-    String? clientID,
+    String clientID,
     String? state,
     String? scope,
   );
@@ -101,12 +101,16 @@ class AuthCodeController extends ResourceController {
     /// A space-delimited list of access scopes to be requested by the form submission on the returned page.
     @Bind.query("scope") String? scope,
   }) async {
+    if (clientID == null) {
+      return Response.badRequest();
+    }
+
     if (delegate == null) {
       return Response(405, {}, null);
     }
 
     final renderedPage = await delegate!
-        .render(this, request!.raw.uri, responseType, clientID, state, scope);
+        .render(this, request!.raw.uri, responseType, clientID!, state, scope);
 
     return Response.ok(renderedPage)..contentType = ContentType.html;
   }
@@ -129,7 +133,7 @@ class AuthCodeController extends ResourceController {
     /// A space-delimited list of access scopes being requested.
     @Bind.query("scope") String? scope,
   }) async {
-    final client = await authServer.getClient(clientID);
+    final client = await authServer.getClient(clientID!);
 
     if (state == null) {
       return _redirectResponse(
@@ -157,7 +161,7 @@ class AuthCodeController extends ResourceController {
       final authCode = await authServer.authenticateForCode(
         username,
         password,
-        clientID,
+        clientID!,
         requestedScopes: scopes,
       );
       return _redirectResponse(client!.redirectURI, state, code: authCode.code);
@@ -193,13 +197,13 @@ class AuthCodeController extends ResourceController {
   }
 
   @override
-  List<APIParameter?> documentOperationParameters(
+  List<APIParameter> documentOperationParameters(
     APIDocumentContext context,
     Operation? operation,
   ) {
     final params = super.documentOperationParameters(context, operation)!;
-    params.where((p) => p!.name != "scope").forEach((p) {
-      p!.isRequired = true;
+    params.where((p) => p.name != "scope").forEach((p) {
+      p.isRequired = true;
     });
     return params;
   }

@@ -63,7 +63,7 @@ class RowInstantiator {
 
   ManagedObject createInstanceWithPrimaryKeyValue(
     TableBuilder table,
-    dynamic primaryKeyValue,
+    Object primaryKeyValue,
   ) {
     final instance = table.entity.instanceOf();
 

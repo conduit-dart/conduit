@@ -33,7 +33,7 @@ class SchemaTable {
     _columns =
         validProperties.map((p) => SchemaColumn.fromProperty(p!)).toList();
 
-    uniqueColumnSet = entity.uniquePropertySet?.map((p) => p!.name).toList();
+    uniqueColumnSet = entity.uniquePropertySet?.map((p) => p.name).toList();
   }
 
   /// Creates a deep copy of [otherTable].
@@ -71,7 +71,7 @@ class SchemaTable {
   List<String>? get uniqueColumnSet =>
       _uniqueColumnSet != null ? List.unmodifiable(_uniqueColumnSet!) : null;
 
-  set uniqueColumnSet(List<String?>? columnNames) {
+  set uniqueColumnSet(List<String>? columnNames) {
     if (columnNames != null) {
       _uniqueColumnSet = List.from(columnNames);
       _uniqueColumnSet?.sort((String a, String b) => a.compareTo(b));

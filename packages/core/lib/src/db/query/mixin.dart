@@ -29,8 +29,8 @@ mixin QueryMixin<InstanceType extends ManagedObject>
   QuerySortPredicate? sortPredicate;
 
   QueryPage? pageDescriptor;
-  List<QuerySortDescriptor>? sortDescriptors;
-  Map<ManagedRelationshipDescription, Query>? subQueries;
+  final List<QuerySortDescriptor> sortDescriptors = <QuerySortDescriptor>[];
+  final Map<ManagedRelationshipDescription, Query> subQueries = {};
 
   QueryMixin? _parentQuery;
   List<QueryExpression<dynamic, dynamic>> expressions = [];
@@ -113,8 +113,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
   ) {
     final attribute = entity.identifyAttribute(propertyIdentifier);
 
-    sortDescriptors ??= <QuerySortDescriptor>[];
-    sortDescriptors!.add(QuerySortDescriptor(attribute.name, order));
+    sortDescriptors.add(QuerySortDescriptor(attribute.name, order));
   }
 
   @override
@@ -156,7 +155,7 @@ mixin QueryMixin<InstanceType extends ManagedObject>
   Query<T> _createSubquery<T extends ManagedObject>(
     ManagedRelationshipDescription fromRelationship,
   ) {
-    if (subQueries?.containsKey(fromRelationship) ?? false) {
+    if (subQueries.containsKey(fromRelationship)) {
       throw StateError(
         "Invalid query. Cannot join same property more than once.",
       );
@@ -165,8 +164,8 @@ mixin QueryMixin<InstanceType extends ManagedObject>
     // Ensure we don't cyclically join
     var parent = _parentQuery;
     while (parent != null) {
-      if (parent.subQueries!.containsKey(fromRelationship.inverse)) {
-        final validJoins = fromRelationship.entity.relationships!.values
+      if (parent.subQueries.containsKey(fromRelationship.inverse)) {
+        final validJoins = fromRelationship.entity.relationships.values
             .where((r) => !identical(r, fromRelationship))
             .map((r) => "'${r!.name}'")
             .join(", ");
@@ -183,11 +182,9 @@ mixin QueryMixin<InstanceType extends ManagedObject>
       parent = parent._parentQuery;
     }
 
-    subQueries ??= {};
-
     final subquery = Query<T>(context);
     (subquery as QueryMixin)._parentQuery = this;
-    subQueries![fromRelationship] = subquery;
+    subQueries[fromRelationship] = subquery;
 
     return subquery;
   }

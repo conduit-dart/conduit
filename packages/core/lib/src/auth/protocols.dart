@@ -53,7 +53,7 @@ abstract class AuthServerDelegate {
   ///
   /// This method must return an instance of [AuthClient] if one exists for [clientID]. Otherwise, it must return null.
   /// [server] is the [AuthServer] requesting the [AuthClient].
-  FutureOr<AuthClient?> getClient(AuthServer server, String? clientID);
+  FutureOr<AuthClient?> getClient(AuthServer server, String clientID);
 
   /// Removes an [AuthClient] for a client ID.
   ///
@@ -74,7 +74,7 @@ abstract class AuthServerDelegate {
   /// If no match is found, return null.
   ///
   /// [server] is the [AuthServer] requesting the [AuthToken].
-  FutureOr<AuthToken?>? getToken(
+  FutureOr<AuthToken?> getToken(
     AuthServer server, {
     String? byAccessToken,
     String? byRefreshToken,
@@ -131,7 +131,7 @@ abstract class AuthServerDelegate {
   ///
   /// This must return an instance of [AuthCode] where [AuthCode.code] matches [code].
   /// Return null if no matching code.
-  FutureOr<AuthCode?>? getCode(AuthServer server, String code);
+  FutureOr<AuthCode?> getCode(AuthServer server, String code);
 
   /// Must remove [AuthCode] identified by [code].
   ///

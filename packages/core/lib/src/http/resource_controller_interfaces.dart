@@ -30,7 +30,7 @@ abstract class ResourceControllerRuntime {
 abstract class ResourceControllerDocumenter {
   void documentComponents(ResourceController rc, APIDocumentContext context);
 
-  List<APIParameter?> documentOperationParameters(
+  List<APIParameter> documentOperationParameters(
     ResourceController rc,
     APIDocumentContext context,
     Operation? operation,
@@ -69,7 +69,7 @@ class ResourceControllerOperation {
   final List<ResourceControllerParameter> positionalParameters;
   final List<ResourceControllerParameter> namedParameters;
 
-  final Future<Response?> Function(
+  final Future<Response> Function(
     ResourceController resourceController,
     ResourceControllerOperationInvocationArgs args,
   ) invoker;

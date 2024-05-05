@@ -59,7 +59,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
     final buffer = StringBuffer();
 
-    final allColumns = <String?>{};
+    final allColumns = <String>{};
     final builders = <PostgresQueryBuilder>[];
 
     for (int i = 0; i < objects.length; i++) {
@@ -195,12 +195,11 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
     if (pageDescriptor != null) {
       validatePageDescriptor();
-    }
-
-    if (builder.containsJoins && pageDescriptor != null) {
-      throw StateError(
-        "Invalid query. Cannot set both 'pageDescription' and use 'join' in query.",
-      );
+      if (builder.containsJoins) {
+        throw StateError(
+          "Invalid query. Cannot set both 'pageDescription' and use 'join' in query.",
+        );
+      }
     }
 
     return builder;
@@ -234,17 +233,17 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   }
 
   void validatePageDescriptor() {
-    final prop = entity.attributes[pageDescriptor!.propertyName];
+    final pd = pageDescriptor!;
+    final prop = entity.attributes[pd.propertyName];
     if (prop == null) {
       throw StateError(
-        "Invalid query page descriptor. Column '${pageDescriptor!.propertyName}' does not exist for table '${entity.tableName}'",
+        "Invalid query page descriptor. Column '${pd.propertyName}' does not exist for table '${entity.tableName}'",
       );
     }
 
-    if (pageDescriptor!.boundingValue != null &&
-        !prop.isAssignableWith(pageDescriptor!.boundingValue)) {
+    if (pd.boundingValue != null && !prop.isAssignableWith(pd.boundingValue)) {
       throw StateError(
-        "Invalid query page descriptor. Bounding value for column '${pageDescriptor!.propertyName}' has invalid type.",
+        "Invalid query page descriptor. Bounding value for column '${pd.propertyName}' has invalid type.",
       );
     }
   }

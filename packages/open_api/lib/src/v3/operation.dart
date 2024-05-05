@@ -48,12 +48,12 @@ class APIOperation extends APIObject {
   /// A list of parameters that are applicable for this operation.
   ///
   /// If a parameter is already defined at the Path Item, the definition will override it but can never remove it. The list MUST NOT include duplicated parameters. A unique parameter is defined by a combination of a name and location. The list can use the Reference Object to link to parameters that are defined at the OpenAPI Object's components/parameters.
-  List<APIParameter?>? parameters;
+  List<APIParameter>? parameters;
 
   /// A declaration of which security mechanisms can be used for this operation.
   ///
   /// The list of values includes alternative security requirement objects that can be used. Only one of the security requirement objects need to be satisfied to authorize a request. This definition overrides any declared top-level security. To remove a top-level security declaration, an empty array can be used.
-  List<APISecurityRequirement?>? security;
+  List<APISecurityRequirement>? security;
 
   /// The request body applicable for this operation.
   ///
@@ -82,7 +82,7 @@ class APIOperation extends APIObject {
 
   /// Returns the parameter named [name] or null if it doesn't exist.
   APIParameter? parameterNamed(String name) =>
-      parameters?.firstWhere((p) => p?.name == name, orElse: () => null);
+      parameters?.firstWhere((p) => p.name == name);
 
   /// Adds [parameter] to [parameters].
   ///
@@ -142,14 +142,19 @@ class APIOperation extends APIObject {
     summary = object.decode("summary");
     description = object.decode("description");
     id = object.decode("operationId");
-    parameters = object.decodeObjects("parameters", () => APIParameter.empty());
+    parameters = object
+        .decodeObjects("parameters", () => APIParameter.empty())
+        ?.nonNulls
+        .toList();
     requestBody =
         object.decodeObject("requestBody", () => APIRequestBody.empty());
     responses = object.decodeObjectMap("responses", () => APIResponse.empty());
     callbacks = object.decodeObjectMap("callbacks", () => APICallback());
     deprecated = object.decode("deprecated");
-    security =
-        object.decodeObjects("security", () => APISecurityRequirement.empty());
+    security = object
+        .decodeObjects("security", () => APISecurityRequirement.empty())
+        ?.nonNulls
+        .toList();
     servers =
         object.decodeObjects("servers", () => APIServerDescription.empty());
   }

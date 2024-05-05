@@ -294,13 +294,13 @@ void main() {
           final middlewareParam = op!.parameters!
               .where(
                 (p) =>
-                    p!.referenceURI?.path == "/components/parameters/x-api-key",
+                    p.referenceURI?.path == "/components/parameters/x-api-key",
               )
               .toList();
           expect(middlewareParam.length, 1);
 
           expect(
-            doc.components!.resolve(middlewareParam.first!)!.schema!.type,
+            doc.components!.resolve(middlewareParam.first)!.schema!.type,
             APIType.string,
           );
         }

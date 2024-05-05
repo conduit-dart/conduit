@@ -28,10 +28,9 @@ class Schema {
   }
 
   /// Creates a deep copy of [otherSchema].
-  Schema.from(Schema? otherSchema) {
+  Schema.from(Schema otherSchema) {
     _tables =
-        otherSchema?.tables.map((table) => SchemaTable.from(table)).toList() ??
-            [];
+        otherSchema.tables.map((table) => SchemaTable.from(table)).toList();
   }
 
   /// Creates a instance of this type from [map].
@@ -51,14 +50,14 @@ class Schema {
   /// The tables in this database.
   ///
   /// Returns an immutable list of tables in this schema.
-  List<SchemaTable> get tables => List.unmodifiable(_tableStorage ?? []);
+  List<SchemaTable> get tables => List.unmodifiable(_tableStorage);
 
   // Do not set this directly. Use _tables= instead.
-  List<SchemaTable>? _tableStorage;
+  late List<SchemaTable> _tableStorage;
 
   set _tables(List<SchemaTable> tables) {
     _tableStorage = tables;
-    for (final t in _tableStorage!) {
+    for (final t in _tableStorage) {
       t.schema = this;
     }
   }
@@ -86,19 +85,19 @@ class Schema {
       );
     }
 
-    _tableStorage!.add(table);
+    _tableStorage.add(table);
     table.schema = this;
   }
 
   void replaceTable(SchemaTable existingTable, SchemaTable newTable) {
-    if (!_tableStorage!.contains(existingTable)) {
+    if (!_tableStorage.contains(existingTable)) {
       throw SchemaException(
         "Table ${existingTable.name} does not exist and cannot be replaced.",
       );
     }
 
-    final index = _tableStorage!.indexOf(existingTable);
-    _tableStorage![index] = newTable;
+    final index = _tableStorage.indexOf(existingTable);
+    _tableStorage[index] = newTable;
     newTable.schema = this;
     existingTable.schema = null;
   }
@@ -127,7 +126,7 @@ class Schema {
       throw SchemaException("Table ${table.name} does not exist in schema.");
     }
     table.schema = null;
-    _tableStorage!.remove(table);
+    _tableStorage.remove(table);
   }
 
   /// Returns a [SchemaTable] for [name].

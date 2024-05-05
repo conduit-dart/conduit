@@ -10,7 +10,7 @@ class PostgresQueryBuilder extends TableBuilder {
       : valueKeyPrefix = "v${prefixIndex}_",
         placeholderKeyPrefix = "@v${prefixIndex}_",
         super(query) {
-    (query.valueMap ?? query.values.backing.contents)!
+    (query.valueMap ?? query.values.backing.contents)
         .forEach(addColumnValueBuilder);
     finalize(variables);
   }
@@ -22,7 +22,7 @@ class PostgresQueryBuilder extends TableBuilder {
 
   final Map<String, ColumnValueBuilder> columnValueBuildersByKey = {};
 
-  Iterable<String?> get columnValueKeys =>
+  Iterable<String> get columnValueKeys =>
       columnValueBuildersByKey.keys.toList().reversed;
 
   Iterable<ColumnValueBuilder> get columnValueBuilders =>
@@ -98,7 +98,7 @@ class PostgresQueryBuilder extends TableBuilder {
 
   String get sqlValuesToInsert => valuesToInsert(columnValueKeys);
 
-  String valuesToInsert(Iterable<String?> forKeys) {
+  String valuesToInsert(Iterable<String> forKeys) {
     if (forKeys.isEmpty) {
       return "DEFAULT";
     }

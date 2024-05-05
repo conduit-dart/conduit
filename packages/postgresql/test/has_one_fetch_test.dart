@@ -39,8 +39,8 @@ void main() {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
-        expect(p.backing.contents!["child"], isNull);
-        expect(p.backing.contents!.containsKey("child"), true);
+        expect(p.backing.contents["child"], isNull);
+        expect(p.backing.contents.containsKey("child"), true);
       }
 
       verifier(await q.fetchOne());
@@ -60,8 +60,8 @@ void main() {
         expect(p, isNotNull);
         expect(p!.name, "D");
         expect(p.pid, isNotNull);
-        expect(p.backing.contents!["child"], isNull);
-        expect(p.backing.contents!.containsKey("child"), true);
+        expect(p.backing.contents["child"], isNull);
+        expect(p.backing.contents.containsKey("child"), true);
       }
 
       verifier(await q.fetchOne());
@@ -81,8 +81,8 @@ void main() {
         expect(p.pid, isNotNull);
         expect(p.child!.cid, isNotNull);
         expect(p.child!.name, "C3");
-        expect(p.child!.backing.contents!.containsKey("toy"), false);
-        expect(p.child!.backing.contents!.containsKey("vaccinations"), false);
+        expect(p.child!.backing.contents.containsKey("toy"), false);
+        expect(p.child!.backing.contents.containsKey("vaccinations"), false);
       }
 
       verifier(await q.fetchOne());
@@ -104,7 +104,7 @@ void main() {
         expect(p.pid, isNotNull);
         expect(p.child!.cid, isNotNull);
         expect(p.child!.name, "C2");
-        expect(p.child!.backing.contents!.containsKey("toy"), true);
+        expect(p.child!.backing.contents.containsKey("toy"), true);
         expect(p.child!.toy, isNull);
         expect(p.child!.vaccinations!.length, 1);
         expect(p.child!.vaccinations!.first.vid, isNotNull);
@@ -130,7 +130,7 @@ void main() {
         expect(p.pid, isNotNull);
         expect(p.child!.cid, isNotNull);
         expect(p.child!.name, "C3");
-        expect(p.child!.backing.contents!.containsKey("toy"), true);
+        expect(p.child!.backing.contents.containsKey("toy"), true);
         expect(p.child!.toy, isNull);
         expect(p.child!.vaccinations, []);
       }
@@ -153,7 +153,7 @@ void main() {
 
       expect(results.last.pid, isNotNull);
       expect(results.last.name, "D");
-      expect(results.last.backing.contents!.containsKey("child"), true);
+      expect(results.last.backing.contents.containsKey("child"), true);
       expect(results.last.child, isNull);
     });
 
@@ -244,7 +244,7 @@ void main() {
 
       for (final other in results.sublist(1)) {
         expect(other.child, isNull);
-        expect(other.backing.contents!.containsKey("child"), true);
+        expect(other.backing.contents.containsKey("child"), true);
       }
     });
 
@@ -298,7 +298,7 @@ void main() {
       final res1 = await q.fetchOne();
       expect(res1, isNotNull);
       expect(res1!.pid, 1);
-      expect(res1.backing.contents!.containsKey("child"), false);
+      expect(res1.backing.contents.containsKey("child"), false);
 
       final q2 = Query<Parent>(context!)
         ..where((o) => o.child!.name).equalTo("C1")
@@ -335,12 +335,12 @@ void main() {
       for (final p in parents) {
         expect(p.name, isNotNull);
         expect(p.pid, isNotNull);
-        expect(p.backing.contents!.length, 3);
+        expect(p.backing.contents.length, 3);
 
         if (p.child != null) {
           expect(p.child!.name, isNotNull);
           expect(p.child!.cid, isNotNull);
-          expect(p.child!.backing.contents!.length, 3);
+          expect(p.child!.backing.contents.length, 3);
 
           for (final v in p.child!.vaccinations!) {
             expect(v.kind, isNotNull);
@@ -363,15 +363,15 @@ void main() {
       final parents = await q.fetch();
       for (final p in parents) {
         expect(p.pid, isNotNull);
-        expect(p.backing.contents!.length, 2);
+        expect(p.backing.contents.length, 2);
 
         if (p.child != null) {
           expect(p.child!.cid, isNotNull);
-          expect(p.child!.backing.contents!.length, 2);
+          expect(p.child!.backing.contents.length, 2);
 
           for (final v in p.child!.vaccinations!) {
             expect(v.vid, isNotNull);
-            expect(v.backing.contents!.length, 1);
+            expect(v.backing.contents.length, 1);
           }
         }
       }

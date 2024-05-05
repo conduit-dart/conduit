@@ -58,7 +58,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// transient property declared in the instance type.
   /// The keys are the case-sensitive name of the attribute. Values that represent a relationship to another object
   /// are not stored in [attributes].
-  late Map<String?, ManagedAttributeDescription?> attributes;
+  late Map<String, ManagedAttributeDescription?> attributes;
 
   /// All relationship values of this entity.
   ///
@@ -68,17 +68,15 @@ class ManagedEntity implements APIComponentDocumenter {
   /// for [ManagedRelationshipType.hasMany] or [ManagedRelationshipType.hasOne] properties, as those values are derived by the foreign key reference
   /// on the inverse relationship property.
   /// Keys are the case-sensitive name of the relationship.
-  Map<String?, ManagedRelationshipDescription?>? relationships;
+  late Map<String, ManagedRelationshipDescription?> relationships;
 
   /// All properties (relationships and attributes) of this entity.
   ///
   /// The string key is the name of the property, case-sensitive. Values will be instances of either [ManagedAttributeDescription]
   /// or [ManagedRelationshipDescription]. This is the concatenation of [attributes] and [relationships].
-  Map<String?, ManagedPropertyDescription?> get properties {
-    final all = Map<String?, ManagedPropertyDescription?>.from(attributes);
-    if (relationships != null) {
-      all.addAll(relationships!);
-    }
+  Map<String, ManagedPropertyDescription?> get properties {
+    final all = Map<String, ManagedPropertyDescription?>.from(attributes);
+    all.addAll(relationships);
     return all;
   }
 
@@ -91,12 +89,12 @@ class ManagedEntity implements APIComponentDocumenter {
   /// a unique value for that property.
   ///
   /// This value is set by adding [Table] to the table definition of a [ManagedObject].
-  List<ManagedPropertyDescription?>? uniquePropertySet;
+  List<ManagedPropertyDescription>? uniquePropertySet;
 
   /// List of [ManagedValidator]s for attributes of this entity.
   ///
   /// All validators for all [attributes] in one, flat list. Order is undefined.
-  late List<ManagedValidator?> validators;
+  late List<ManagedValidator> validators;
 
   /// The list of default property names of this object.
   ///
@@ -117,7 +115,7 @@ class ManagedEntity implements APIComponentDocumenter {
       );
 
       elements.addAll(
-        relationships!.values
+        relationships.values
             .where(
               (prop) =>
                   prop!.isIncludedInDefaultResultSet &&
@@ -133,7 +131,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// Name of primary key property.
   ///
   /// This is determined by the attribute with the [primaryKey] annotation.
-  String? primaryKey;
+  late String primaryKey;
 
   ManagedAttributeDescription? get primaryKeyAttribute {
     return attributes[primaryKey];
@@ -213,7 +211,7 @@ class ManagedEntity implements APIComponentDocumenter {
     final propertyName = elements.first!.name;
     final attribute = attributes[propertyName];
     if (attribute == null) {
-      if (relationships!.containsKey(propertyName)) {
+      if (relationships.containsKey(propertyName)) {
         throw ArgumentError(
             "Invalid property selection. Property '$propertyName' on "
             "'$name' "
@@ -258,7 +256,7 @@ class ManagedEntity implements APIComponentDocumenter {
     }
 
     final propertyName = elements.first!.name;
-    final desc = relationships![propertyName];
+    final desc = relationships[propertyName];
     if (desc == null) {
       throw ArgumentError(
         "Invalid property selection. Relationship named '$propertyName' on table '$tableName' is not a relationship.",
@@ -273,7 +271,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// Invokes [identifyProperties] with [propertyIdentifier], and ensures that a single property
   /// on this entity was selected. Returns that property.
   KeyPath identifyProperty<T, U extends ManagedObject>(
-    T Function(U? x) propertyIdentifier,
+    T Function(U x) propertyIdentifier,
   ) {
     final properties = identifyProperties(propertyIdentifier);
     if (properties.length != 1) {
@@ -306,7 +304,7 @@ class ManagedEntity implements APIComponentDocumenter {
     final buffer = StringBuffer();
     if (uniquePropertySet != null) {
       final propString =
-          uniquePropertySet!.map((s) => "'${s!.name}'").join(", ");
+          uniquePropertySet!.map((s) => "'${s.name}'").join(", ");
       buffer.writeln(
         "No two objects may have the same value for all of: $propString.",
       );
@@ -322,7 +320,7 @@ class ManagedEntity implements APIComponentDocumenter {
       }
 
       final schemaProperty = def!.documentSchemaObject(context);
-      schemaProperties[name!] = schemaProperty;
+      schemaProperties[name] = schemaProperty;
     });
 
     return obj;
@@ -344,7 +342,7 @@ class ManagedEntity implements APIComponentDocumenter {
     });
 
     buf.writeln("Relationships:");
-    relationships!.forEach((name, rel) {
+    relationships.forEach((name, rel) {
       buf.writeln("\t$rel");
     });
 

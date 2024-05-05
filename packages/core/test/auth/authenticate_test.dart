@@ -54,9 +54,9 @@ void main() {
       expect(await auth.getClient("com.stablekernel.app1"), isNull);
     });
 
-    test("Cannot revoke null client", () async {
+    test("Cannot revoke empty client", () async {
       try {
-        await auth.removeClient(null);
+        await auth.removeClient('');
         expect(true, false);
         // ignore: empty_catches
       } on AuthServerException {}
@@ -433,7 +433,7 @@ void main() {
 
     test("Cannot refresh token if client id is missing", () async {
       try {
-        await auth.refresh(initialToken.refreshToken, null, "kilimanjaro");
+        await auth.refresh(initialToken.refreshToken, '', "kilimanjaro");
         expect(true, false);
         // ignore: empty_catches
       } on AuthServerException {}
@@ -584,19 +584,20 @@ void main() {
       }
     });
 
-    test("Generate auth code with no client id", () async {
-      try {
-        await auth.authenticateForCode(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          null,
-        );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.client, isNull);
-        expect(e.reason, AuthRequestError.invalidClient);
-      }
-    });
+    // Note: No longer supporting nullable client id
+    // test("Generate auth code with no client id", () async {
+    //   try {
+    //     await auth.authenticateForCode(
+    //       createdUser!.username,
+    //       InMemoryAuthStorage.defaultPassword,
+    //       null,
+    //     );
+    //     expect(true, false);
+    //   } on AuthServerException catch (e) {
+    //     expect(e.client, isNull);
+    //     expect(e.reason, AuthRequestError.invalidClient);
+    //   }
+    // });
   });
 
   group("Exchanging auth code", () {
@@ -734,7 +735,7 @@ void main() {
 
     test("Null client ID fails", () async {
       try {
-        await auth.exchange(code.code, null, "mckinley");
+        await auth.exchange(code.code, '', "mckinley");
 
         expect(true, false);
         // ignore: empty_catches

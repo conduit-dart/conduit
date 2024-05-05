@@ -16,9 +16,8 @@ class TableBuilder implements Returnable {
     returning = ColumnBuilder.fromKeys(this, query.propertiesToFetch);
 
     columnSortBuilders = query.sortDescriptors
-            ?.map((s) => ColumnSortBuilder(this, s.key, s.order))
-            .toList() ??
-        [];
+        .map((s) => ColumnSortBuilder(this, s.key, s.order))
+        .toList();
     if (query.sortPredicate != null) {
       columnSortBuilders.add(
         ColumnSortPredicateBuilder(
@@ -55,7 +54,7 @@ class TableBuilder implements Returnable {
       }
     }
 
-    query.subQueries?.forEach((relationshipDesc, subQuery) {
+    query.subQueries.forEach((relationshipDesc, subQuery) {
       addJoinTableBuilder(
         TableBuilder(
           subQuery as PostgresQuery,
@@ -149,13 +148,11 @@ class TableBuilder implements Returnable {
 
   void finalize(Map<String, dynamic> variables) {
     final allExpressions = [
-      _manualPredicate,
+      if (_manualPredicate != null) _manualPredicate,
       ...expressionBuilders.map((c) => c.predicate)
     ];
     predicate = QueryPredicate.and(allExpressions);
-    if (predicate?.parameters != null) {
-      variables.addAll(predicate!.parameters);
-    }
+    variables.addAll(predicate!.parameters);
     returning.whereType<TableBuilder>().forEach((r) {
       r.finalize(variables);
     });
@@ -216,7 +213,7 @@ class TableBuilder implements Returnable {
         joinedTable,
         inversePrimaryKey,
         expression.expression,
-        prefix: tableAlias,
+        prefix: tableAlias!,
       );
       expressionBuilders.add(expr);
     } else {
@@ -224,7 +221,7 @@ class TableBuilder implements Returnable {
         joinedTable,
         lastElement,
         expression.expression,
-        prefix: tableAlias,
+        prefix: tableAlias!,
       );
       expressionBuilders.add(expr);
     }
@@ -275,7 +272,7 @@ class TableBuilder implements Returnable {
       Methods that return portions of a SQL statement for this object
    */
 
-  String? get sqlTableName {
+  String get sqlTableName {
     if (tableAlias == null) {
       return entity.tableName;
     }
@@ -283,7 +280,7 @@ class TableBuilder implements Returnable {
     return "${entity.tableName} $tableAlias";
   }
 
-  String? get sqlTableReference => tableAlias ?? entity.tableName;
+  String get sqlTableReference => tableAlias ?? entity.tableName;
 
   String get sqlInnerSelect {
     final nestedJoins =
@@ -320,8 +317,8 @@ class TableBuilder implements Returnable {
       return sqlInnerSelect;
     }
 
-    final totalJoinPredicate =
-        QueryPredicate.and([joiningPredicate, predicate]);
+    final totalJoinPredicate = QueryPredicate.and(
+        [joiningPredicate, if (predicate != null) predicate!]);
     final thisJoin =
         "LEFT OUTER JOIN $sqlTableName ON ${totalJoinPredicate.format}";
 

@@ -337,14 +337,14 @@ void main() {
 
     final result = await iq.insert();
     expect(result.id, greaterThan(0));
-    expect(result.backing.contents!["text"], isNull);
+    expect(result.backing.contents["text"], isNull);
 
     final fq = Query<Omit>(context!)
       ..predicate = QueryPredicate("id=@id", {"id": result.id});
 
     final fResult = (await fq.fetchOne())!;
     expect(fResult.id, result.id);
-    expect(fResult.backing.contents!["text"], isNull);
+    expect(fResult.backing.contents["text"], isNull);
   });
 
   test(
@@ -390,7 +390,7 @@ void main() {
 
     final result = (await q.fetchOne())!;
     expect(result.owner!.id, 1);
-    expect(result.owner!.backing.contents!.length, 1);
+    expect(result.owner!.backing.contents.length, 1);
 
     try {
       q = Query<GenPost>(context!)

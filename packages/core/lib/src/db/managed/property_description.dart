@@ -22,7 +22,7 @@ abstract class ManagedPropertyDescription {
     bool nullable = false,
     bool includedInDefaultResultSet = true,
     this.autoincrement = false,
-    List<ManagedValidator?> validators = const [],
+    List<ManagedValidator> validators = const [],
     this.responseModel,
     this.responseKey,
   })  : isUnique = unique,
@@ -31,7 +31,7 @@ abstract class ManagedPropertyDescription {
         isIncludedInDefaultResultSet = includedInDefaultResultSet,
         _validators = validators {
     for (final v in _validators) {
-      v!.property = this;
+      v.property = this;
     }
   }
 
@@ -84,9 +84,9 @@ abstract class ManagedPropertyDescription {
   }
 
   /// [ManagedValidator]s for this instance.
-  List<ManagedValidator?> get validators => _validators;
+  List<ManagedValidator> get validators => _validators;
 
-  final List<ManagedValidator?> _validators;
+  final List<ManagedValidator> _validators;
 
   final ResponseModel? responseModel;
   final ResponseKey? responseKey;
@@ -274,7 +274,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     // Add'l schema info
     prop.isNullable = isNullable;
     for (final v in validators) {
-      v!.definition.constrainSchemaObject(context, prop);
+      v.definition.constrainSchemaObject(context, prop);
     }
 
     if (isEnumeratedValue) {
@@ -410,7 +410,7 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     super.indexed,
     super.nullable,
     super.includedInDefaultResultSet,
-    List<ManagedValidator> super.validators = const [],
+    super.validators = const [],
     super.responseModel,
     super.responseKey,
   });
@@ -460,11 +460,11 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
   final ManagedRelationshipType relationshipType;
 
   /// The name of the [ManagedRelationshipDescription] on [destinationEntity] that represents the inverse of this relationship.
-  final String? inverseKey;
+  final String inverseKey;
 
   /// The [ManagedRelationshipDescription] on [destinationEntity] that represents the inverse of this relationship.
   ManagedRelationshipDescription? get inverse =>
-      destinationEntity.relationships![inverseKey];
+      destinationEntity.relationships[inverseKey];
 
   /// Whether or not this relationship is on the belonging side.
   bool get isBelongsTo => relationshipType == ManagedRelationshipType.belongsTo;
@@ -487,10 +487,10 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
     } else if (value is ManagedObject) {
       // If we're only fetching the foreign key, don't do a full asMap
       if (relationshipType == ManagedRelationshipType.belongsTo &&
-          value.backing.contents!.length == 1 &&
-          value.backing.contents!.containsKey(destinationEntity.primaryKey)) {
-        return <String, dynamic>{
-          destinationEntity.primaryKey!: value[destinationEntity.primaryKey]
+          value.backing.contents.length == 1 &&
+          value.backing.contents.containsKey(destinationEntity.primaryKey)) {
+        return <String, Object>{
+          destinationEntity.primaryKey: value[destinationEntity.primaryKey]
         };
       }
 

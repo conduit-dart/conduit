@@ -52,7 +52,7 @@ abstract class BodyDecoder {
       );
     }
 
-    return (_decodedData as Object?).runtimeType;
+    return _decodedData.runtimeType;
   }
 
   /// The raw bytes of this request body.

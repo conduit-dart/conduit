@@ -28,7 +28,7 @@ class ApplicationServer {
   ApplicationOptions options;
 
   /// The underlying [HttpServer].
-  HttpServer? server;
+  late final HttpServer server;
 
   /// The instance of [ApplicationChannel] serving requests.
   late ApplicationChannel channel;
@@ -98,9 +98,7 @@ class ApplicationServer {
   /// Closes this HTTP server and channel.
   Future close() async {
     logger.fine("ApplicationServer($identifier).close Closing HTTP listener");
-    if (server != null) {
-      await server!.close(force: true);
-    }
+    await server.close(force: true);
     logger.fine("ApplicationServer($identifier).close Closing channel");
     await channel.close();
 
@@ -113,10 +111,10 @@ class ApplicationServer {
   ///
   /// [ApplicationChannel.willStartReceivingRequests] is invoked after this opening has completed.
   Future didOpen() async {
-    server!.serverHeader = "conduit/$identifier";
+    server.serverHeader = "conduit/$identifier";
 
     logger.fine("ApplicationServer($identifier).didOpen start listening");
-    server!.map((baseReq) => Request(baseReq)).listen(entryPoint.receive);
+    server.map((baseReq) => Request(baseReq)).listen(entryPoint.receive);
 
     channel.willStartReceivingRequests();
     logger.info("Server conduit/$identifier started.");

@@ -42,7 +42,7 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
   /// Return that [AuthServer] from this method, e.g.,
   ///
   ///             AuthServer get authServer => channel.authServer;
-  AuthServer? get authServer;
+  AuthServer get authServer;
 
   /// Creates a new OAuth2 client identifier and returns an [Agent] that makes requests on behalf of that client.
   ///
@@ -65,7 +65,7 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
         ..redirectURI = redirectUri;
     }
 
-    await authServer!.addClient(client);
+    await authServer.addClient(client);
 
     final authorizationHeader =
         "Basic ${base64.encode("$id:${secret ?? ""}".codeUnits)}";
@@ -90,7 +90,7 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
     final credentials = parser.parse(authorizationHeader);
 
     try {
-      final token = await authServer!.authenticate(
+      final token = await authServer.authenticate(
           username, password, credentials.username, credentials.password,
           requestedScopes: scopes?.map(AuthScope.new).toList());
       return Agent.from(fromAgent)

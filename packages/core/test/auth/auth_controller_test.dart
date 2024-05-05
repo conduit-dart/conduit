@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 int port = 8887;
 void main() {
   HttpServer? server;
-  AuthServer? authenticationServer;
+  late AuthServer authenticationServer;
   Router? router;
   ////////////
   setUp(() async {
@@ -188,7 +188,7 @@ void main() {
 
   group("Success Cases: authorization_code", () {
     test("Exchange valid code gets access token with refresh token", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.redirect",
@@ -199,7 +199,7 @@ void main() {
     });
 
     test("If code is scoped, token has same scope", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.scoped",
@@ -327,7 +327,7 @@ void main() {
 
   group("code Failure Cases", () {
     test("code is invalid (not issued)", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.redirect",
@@ -351,7 +351,7 @@ void main() {
     });
 
     test("code is duplicated", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.redirect",
@@ -379,7 +379,7 @@ void main() {
     });
 
     test("code is from a different client", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.redirect",
@@ -596,7 +596,7 @@ void main() {
     setUp(() async {
       client = Agent.onPort(port);
 
-      refreshTokenString = (await authenticationServer!.authenticate(
+      refreshTokenString = (await authenticationServer.authenticate(
         user1["username"],
         user1["password"],
         "com.stablekernel.app1",
@@ -675,7 +675,7 @@ void main() {
     setUp(() async {
       client = Agent.onPort(port);
 
-      code = (await authenticationServer!.authenticateForCode(
+      code = (await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.redirect",
@@ -727,7 +727,7 @@ void main() {
 
   group("Scope failure cases", () {
     test("Try to add scope to code exchange is invalid_request", () async {
-      final code = await authenticationServer!.authenticateForCode(
+      final code = await authenticationServer.authenticateForCode(
         user1["username"],
         user1["password"],
         "com.stablekernel.scoped",

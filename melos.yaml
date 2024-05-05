@@ -13,7 +13,7 @@ command:
     linkToCommits: true
 scripts:
   test-unit:
-    run: melos exec -c1 --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test"
+    run: melos exec -c1 --fail-fast --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart test -r failures-only"
     packageFilters:
       noPrivate: true
   test-with-coverage:

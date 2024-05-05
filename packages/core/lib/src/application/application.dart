@@ -158,7 +158,7 @@ class Application<T extends ApplicationChannel> {
     });
 
     try {
-      await server.server!.close(force: true);
+      await server.server.close(force: true);
     } catch (e) {
       logger.severe(e);
     }

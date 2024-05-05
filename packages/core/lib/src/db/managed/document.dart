@@ -37,7 +37,7 @@ class Document {
   ///
   /// When [data] is a [List], [keyOrIndex] must be a [int] and will return the object at the index
   /// in that list.
-  dynamic operator [](dynamic keyOrIndex) {
+  dynamic operator [](Object keyOrIndex) {
     return data[keyOrIndex];
   }
 
@@ -51,7 +51,7 @@ class Document {
   /// When [data] is a [List], [keyOrIndex] must be a [int] and will set [value] for the index
   /// [keyOrIndex]. This index must be within the length of [data]. For all other [List] operations,
   /// you may cast [data] to [List].
-  void operator []=(dynamic keyOrIndex, dynamic value) {
+  void operator []=(Object keyOrIndex, dynamic value) {
     data[keyOrIndex] = value;
   }
 }

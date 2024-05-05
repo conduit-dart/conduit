@@ -4,7 +4,7 @@ import 'column.dart';
 import 'table.dart';
 
 class ColumnSortBuilder extends ColumnBuilder {
-  ColumnSortBuilder(TableBuilder table, String? key, QuerySortOrder order)
+  ColumnSortBuilder(TableBuilder table, String key, QuerySortOrder order)
       : order = order == QuerySortOrder.ascending ? "ASC" : "DESC",
         super(table, table.entity.properties[key]);
 
@@ -14,7 +14,7 @@ class ColumnSortBuilder extends ColumnBuilder {
 }
 
 class ColumnSortPredicateBuilder extends ColumnSortBuilder {
-  ColumnSortPredicateBuilder(super.table, String super.key, super.order)
+  ColumnSortPredicateBuilder(super.table, super.key, super.order)
       : _key = key;
 
   final String _key;

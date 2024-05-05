@@ -12,8 +12,8 @@ import 'package:wildfire/wildfire.dart';
 class WildfireChannel extends ApplicationChannel
     implements AuthRedirectControllerDelegate {
   final HTMLRenderer htmlRenderer = HTMLRenderer();
-  AuthServer? authServer;
-  ManagedContext? context;
+  late final authServer;
+  late ManagedContext context;
 
   /// Initialize services in this method.
   ///
@@ -49,25 +49,25 @@ class WildfireChannel extends ApplicationChannel
 
     router
         .route("/auth/form")
-        .link(() => AuthRedirectController(authServer!, delegate: this));
+        .link(() => AuthRedirectController(authServer, delegate: this));
 
     /* Create an account */
     router
         .route("/register")
-        .link(() => Authorizer.basic(authServer!))!
-        .link(() => RegisterController(context!, authServer!));
+        .link(() => Authorizer.basic(authServer))!
+        .link(() => RegisterController(context!, authServer));
 
     /* Gets profile for user with bearer token */
     router
         .route("/me")
-        .link(() => Authorizer.bearer(authServer!))!
+        .link(() => Authorizer.bearer(authServer))!
         .link(() => IdentityController(context!));
 
     /* Gets all users or one specific user by id */
     router
         .route("/users/[:id]")
-        .link(() => Authorizer.bearer(authServer!))!
-        .link(() => UserController(context!, authServer!));
+        .link(() => Authorizer.bearer(authServer))!
+        .link(() => UserController(context!, authServer));
 
     return router;
   }
@@ -94,7 +94,7 @@ class WildfireChannel extends ApplicationChannel
       AuthRedirectController forController,
       Uri requestUri,
       String? responseType,
-      String? clientID,
+      String clientID,
       String? state,
       String? scope) async {
     final map = {

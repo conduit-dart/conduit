@@ -23,7 +23,7 @@ void main() {
     return req.post();
   }
 
-  Future<TestResponse> tokenResponse(Map<String, String?> form) {
+  Future<TestResponse> tokenResponse(Map<String, String> form) {
     final m = Map<String, String>.from(form);
     m.addAll({"response_type": "token"});
 
@@ -46,8 +46,8 @@ void main() {
   });
 
   setUp(() async {
-    (application.channel.authServer!.delegate as InMemoryAuthStorage).reset();
-    (application.channel.authServer!.delegate as InMemoryAuthStorage)
+    (application.channel.authServer.delegate as InMemoryAuthStorage).reset();
+    (application.channel.authServer.delegate as InMemoryAuthStorage)
         .createUsers(2);
   });
 
@@ -238,7 +238,7 @@ void main() {
 
       final redirectURI = Uri.parse(resp.headers["location"]!.first);
       final codeParam = redirectURI.queryParameters["code"];
-      final token = await application.channel.authServer!
+      final token = await application.channel.authServer
           .exchange(codeParam, "com.stablekernel.scoped", "kilimanjaro");
       expect(token.scopes!.length, 1);
       expect(token.scopes!.first.isExactly("user"), true);
@@ -261,7 +261,7 @@ void main() {
 
       final redirectURI = Uri.parse(resp.headers["location"]!.first);
       final codeParam = redirectURI.queryParameters["code"];
-      final token = await application.channel.authServer!
+      final token = await application.channel.authServer
           .exchange(codeParam, "com.stablekernel.scoped", "kilimanjaro");
       expect(token.scopes!.length, 2);
       expect(token.scopes!.any((s) => s.isExactly("user")), true);
@@ -550,7 +550,7 @@ void main() {
     test("password is incorrect yields 302 with error", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.public.redirect",
-        "username": user1["username"],
+        "username": user1["username"]!,
         "password": "nonsense",
         "state": "a"
       });
@@ -565,7 +565,7 @@ void main() {
     test("password is empty returns 302 with error", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.public.redirect",
-        "username": user1["username"],
+        "username": user1["username"]!,
         "password": "",
         "state": "a"
       });
@@ -580,7 +580,7 @@ void main() {
     test("password is missing returns 302 with error", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.public.redirect",
-        "username": user1["username"],
+        "username": user1["username"]!,
         "state": "a"
       });
       expectTokenErrorRedirect(
@@ -663,8 +663,8 @@ void main() {
   group("client_id failures", () {
     test("Omit client_id returns 400", () async {
       final resp = await tokenResponse({
-        "username": user1["username"],
-        "password": user1["password"],
+        "username": user1["username"]!,
+        "password": user1["password"]!,
         "state": "a"
       });
       expect(resp, hasStatus(400));
@@ -673,8 +673,8 @@ void main() {
     test("client_id does not exist for app returns 400", () async {
       final resp = await tokenResponse({
         "client_id": "abc",
-        "username": user1["username"],
-        "password": user1["password"],
+        "username": user1["username"]!,
+        "password": user1["password"]!,
         "state": "a"
       });
       expect(resp, hasStatus(400));
@@ -683,8 +683,8 @@ void main() {
     test("client_id that does not have redirectURI returns 400", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.app1",
-        "username": user1["username"],
-        "password": user1["password"],
+        "username": user1["username"]!,
+        "password": user1["password"]!,
         "state": "a"
       });
       expect(resp, hasStatus(400));
@@ -716,8 +716,8 @@ void main() {
     test("client_id is empty returns 400", () async {
       final resp = await tokenResponse({
         "client_id": "",
-        "username": user1["username"],
-        "password": user1["password"],
+        "username": user1["username"]!,
+        "password": user1["password"]!,
         "state": "a"
       });
       expect(resp, hasStatus(400));
@@ -806,7 +806,7 @@ void main() {
     test("Omit state is error", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.public.redirect",
-        "username": user1["username"],
+        "username": user1["username"]!,
         "password": InMemoryAuthStorage.defaultPassword
       });
 
@@ -835,7 +835,7 @@ void main() {
     test("Failed password + state still returns state in error", () async {
       final resp = await tokenResponse({
         "client_id": "com.stablekernel.public.redirect",
-        "username": user1["username"],
+        "username": user1["username"]!,
         "password": "nonsense",
         "state": "xyz"
       });
@@ -887,7 +887,7 @@ void main() {
 
 class TestChannel extends ApplicationChannel
     implements AuthRedirectControllerDelegate {
-  AuthServer? authServer;
+  late final AuthServer authServer;
   BadAuthRedirectDelegate badDelegate = BadAuthRedirectDelegate();
 
   @override
@@ -919,11 +919,11 @@ class TestChannel extends ApplicationChannel
   }
 
   @override
-  Future<String> render(
+  Future<String?> render(
     AuthRedirectController forController,
     Uri requestUri,
     String? responseType,
-    String? clientID,
+    String clientID,
     String? state,
     String? scope,
   ) async {
@@ -943,7 +943,7 @@ class BadAuthRedirectDelegate implements AuthRedirectControllerDelegate {
     AuthRedirectController forController,
     Uri requestUri,
     String? responseType,
-    String? clientID,
+    String clientID,
     String? state,
     String? scope,
   ) async {

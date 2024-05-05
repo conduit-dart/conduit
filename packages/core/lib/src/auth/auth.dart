@@ -46,7 +46,7 @@ String generateRandomSalt({int hashLength = 32}) {
 /// Note that [secret] is hashed with a randomly generated salt, and therefore cannot be retrieved
 /// later. The plain-text secret must be stored securely elsewhere.
 AuthClient generateAPICredentialPair(
-  String? clientID,
+  String clientID,
   String? secret, {
   String? redirectURI,
   int hashLength = 32,
@@ -54,7 +54,7 @@ AuthClient generateAPICredentialPair(
   Hash? hashFunction,
 }) {
   if (secret == null) {
-    return AuthClient.withRedirectURI(clientID, null, null, redirectURI);
+    return AuthClient.public(clientID, redirectURI: redirectURI);
   }
 
   final salt = generateRandomSalt(hashLength: hashLength);

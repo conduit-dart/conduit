@@ -16,7 +16,7 @@ class AuthClient {
   /// If this client supports scopes, [allowedScopes] must contain a list of scopes that tokens may request when authorized
   /// by this client.
   AuthClient(
-    String? id,
+    String id,
     String? hashedSecret,
     String? salt, {
     List<AuthScope>? allowedScopes,
@@ -29,12 +29,13 @@ class AuthClient {
         );
 
   /// Creates an instance of a public [AuthClient].
-  AuthClient.public(String id, {List<AuthScope>? allowedScopes})
+  AuthClient.public(String id,
+      {List<AuthScope>? allowedScopes, String? redirectURI})
       : this.withRedirectURI(
           id,
           null,
           null,
-          null,
+          redirectURI,
           allowedScopes: allowedScopes,
         );
 
@@ -54,7 +55,7 @@ class AuthClient {
   List<AuthScope>? _allowedScopes;
 
   /// The ID of the client.
-  String? id;
+  final String id;
 
   /// The hashed secret of the client.
   ///
@@ -148,7 +149,7 @@ class AuthToken {
   int? resourceOwnerIdentifier;
 
   /// The client ID this token was issued from.
-  String? clientID;
+  late String clientID;
 
   /// Scopes this token has access to.
   List<AuthScope>? scopes;
@@ -190,7 +191,7 @@ class AuthCode {
   String? code;
 
   /// The client ID the authorization code was issued under.
-  String? clientID;
+  late String clientID;
 
   /// The identifier of the resource owner.
   ///
@@ -234,7 +235,7 @@ class Authorization {
   });
 
   /// The client ID the permission was granted under.
-  final String? clientID;
+  final String clientID;
 
   /// The identifier for the owner of the resource, if provided.
   ///
@@ -374,7 +375,7 @@ class AuthScope {
     });
   }
 
-  static final Map<String?, AuthScope> _cache = {};
+  static final Map<String, AuthScope> _cache = {};
 
   final String _scopeString;
 

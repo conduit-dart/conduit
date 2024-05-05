@@ -5,5 +5,5 @@ List<String>? removeNullsFromList(List<String?>? list) {
   if (list == null) return null;
 
   // remove nulls and convert to List<String>
-  return List.from(list.where((c) => c != null));
+  return list.nonNulls.toList();
 }

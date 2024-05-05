@@ -24,8 +24,8 @@ Future main() async {
 }
 
 class App extends ApplicationChannel {
-  ManagedContext? context;
-  AuthServer? authServer;
+  late ManagedContext context;
+  late final AuthServer authServer;
 
   @override
   Future prepare() async {
@@ -61,7 +61,7 @@ class UserController extends ResourceController {
   UserController(this.context, this.authServer);
 
   final ManagedContext? context;
-  final AuthServer? authServer;
+  final AuthServer authServer;
 
   @Operation.get()
   Future<Response> getUsers() async {
@@ -90,7 +90,7 @@ class UserController extends ResourceController {
     }
 
     final salt = generateRandomSalt();
-    final hashedPassword = authServer!.hashPassword(user.password!, salt);
+    final hashedPassword = authServer.hashPassword(user.password!, salt);
 
     final query = Query<User>(context!)
       ..values = user
@@ -99,7 +99,7 @@ class UserController extends ResourceController {
       ..values.email = user.username;
 
     final u = await query.insert();
-    final token = await authServer!.authenticate(
+    final token = await authServer.authenticate(
       u.username,
       query.values.password,
       request!.authorization!.credentials!.username,

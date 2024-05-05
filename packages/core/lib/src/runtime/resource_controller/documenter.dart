@@ -62,7 +62,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
   }
 
   @override
-  List<APIParameter?> documentOperationParameters(
+  List<APIParameter> documentOperationParameters(
     ResourceController rc,
     APIDocumentContext context,
     Operation? operation,
@@ -85,7 +85,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
 
           return _documentParameter(context, operation, param);
         })
-        .where((p) => p != null)
+        .nonNulls
         .toList();
   }
 
@@ -153,12 +153,12 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
 
     return opsForPath.fold(<String, APIOperation>{}, (prev, opObj) {
       final instanceMembers = reflect(rc).type.instanceMembers;
-      final Operation? metadata =
+      final Operation metadata =
           firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
 
       final operationDoc = APIOperation(
         opObj.dartMethodName,
-        rc.documentOperationResponses(context, metadata!),
+        rc.documentOperationResponses(context, metadata),
         summary: rc.documentOperationSummary(context, metadata),
         description: rc.documentOperationDescription(context, metadata),
         parameters: rc.documentOperationParameters(context, metadata),
@@ -169,7 +169,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
       if (opObj.scopes != null) {
         context.defer(() async {
           operationDoc.security?.forEach((sec) {
-            sec!.requirements!.forEach((name, operationScopes) {
+            sec.requirements!.forEach((name, operationScopes) {
               final secType =
                   context.document.components!.securitySchemes[name];
               if (secType?.type == APISecuritySchemeType.oauth2 ||

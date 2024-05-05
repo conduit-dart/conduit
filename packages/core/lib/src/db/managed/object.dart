@@ -32,12 +32,12 @@ abstract class ManagedBacking {
   /// Removes a property from this instance.
   ///
   /// Use this method to use any reference of a property from this instance.
-  void removeProperty(String? propertyName) {
-    contents!.remove(propertyName);
+  void removeProperty(String propertyName) {
+    contents.remove(propertyName);
   }
 
   /// A map of all set values of this instance.
-  Map<String, dynamic>? get contents;
+  Map<String, dynamic> get contents;
 }
 
 /// An object that represents a database row.
@@ -66,12 +66,11 @@ abstract class ManagedBacking {
 /// See more documentation on defining a data model at http://conduit.io/docs/db/modeling_data/
 abstract class ManagedObject<T> extends Serializable {
   /// IMPROVEMENT: Cache of entity.properties to reduce property loading time
-  late Map<String?, ManagedPropertyDescription?> properties = entity.properties;
+  late Map<String, ManagedPropertyDescription?> properties = entity.properties;
 
   /// Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
-  late Map<String?, ManagedPropertyDescription?> responseKeyProperties = {
-    for (final key in properties.keys)
-      if (key != null) mapKeyName(key): properties[key]
+  late Map<String, ManagedPropertyDescription?> responseKeyProperties = {
+    for (final key in properties.keys) mapKeyName(key): properties[key]
   };
 
   late final bool modelFieldIncludeIfNull = properties.isEmpty ||
@@ -98,7 +97,7 @@ abstract class ManagedObject<T> extends Serializable {
   ManagedBacking backing = ManagedValueBacking();
 
   /// Retrieves a value by property name from [backing].
-  dynamic operator [](String? propertyName) {
+  dynamic operator [](String propertyName) {
     final prop = properties[propertyName];
     if (prop == null) {
       throw ArgumentError("Invalid property access for '${entity.name}'. "
@@ -122,7 +121,7 @@ abstract class ManagedObject<T> extends Serializable {
   /// Removes a property from [backing].
   ///
   /// This will remove a value from the backing map.
-  void removePropertyFromBackingMap(String? propertyName) {
+  void removePropertyFromBackingMap(String propertyName) {
     backing.removeProperty(propertyName);
   }
 
@@ -135,7 +134,7 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Checks whether or not a property has been set in this instances' [backing].
   bool hasValueForProperty(String propertyName) {
-    return backing.contents!.containsKey(propertyName);
+    return backing.contents.containsKey(propertyName);
   }
 
   /// Callback to modify an object prior to updating it with a [Query].
@@ -270,7 +269,7 @@ abstract class ManagedObject<T> extends Serializable {
   Map<String, dynamic> asMap() {
     final outputMap = <String, dynamic>{};
 
-    backing.contents!.forEach((k, v) {
+    backing.contents.forEach((k, v) {
       if (!_isPropertyPrivate(k)) {
         final property = properties[k];
         final value = property!.convertToPrimitiveValue(v);

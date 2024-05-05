@@ -95,7 +95,7 @@ class CLIAuthAddClient extends CLICommand
     context = ManagedContext(dataModel, persistentStore);
 
     final credentials = generateAPICredentialPair(
-      clientID,
+      clientID!,
       secret,
       redirectURI: redirectUri,
       hashLength: hashLength,

@@ -89,7 +89,7 @@ abstract class ResourceController extends Controller
   /// These values are attached by a [Router] instance that precedes this [Controller]. Is null
   /// if no [Router] preceded the controller and is the empty map if there are no values. The keys
   /// are the case-sensitive name of the path variables as defined by [Router.route].
-  Map<String?, String>? get pathVariables => request!.path.variables;
+  Map<String, String> get pathVariables => request!.path.variables;
 
   /// Types of content this [ResourceController] will accept.
   ///
@@ -135,7 +135,7 @@ abstract class ResourceController extends Controller
   }
 
   @override
-  FutureOr<RequestOrResponse?> handle(Request request) async {
+  FutureOr<RequestOrResponse> handle(Request request) async {
     this.request = request;
 
     final preprocessedResult = await willProcessRequest(request);
@@ -157,7 +157,7 @@ abstract class ResourceController extends Controller
   /// this method. When overriding this method, call the superclass' implementation and add the additional parameters
   /// to the returned list before returning the combined list.
   @mustCallSuper
-  List<APIParameter?>? documentOperationParameters(
+  List<APIParameter>? documentOperationParameters(
     APIDocumentContext context,
     Operation? operation,
   ) {
@@ -258,7 +258,7 @@ abstract class ResourceController extends Controller
         .toList();
   }
 
-  Future<Response?> _process() async {
+  Future<Response> _process() async {
     if (!request!.body.isEmpty) {
       if (!_requestContentTypeIsSupported(request)) {
         return Response(HttpStatus.unsupportedMediaType, null, null);
@@ -386,10 +386,8 @@ abstract class ResourceController extends Controller
     /* bind and invoke */
     _runtime!.applyRequestProperties(this, args);
     final response = await operation.invoker(this, args);
-    if (response != null) {
-      if (!response.hasExplicitlySetContentType) {
-        response.contentType = responseContentType;
-      }
+    if (!response.hasExplicitlySetContentType) {
+      response.contentType = responseContentType;
     }
 
     return response;

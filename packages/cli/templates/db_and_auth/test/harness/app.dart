@@ -26,7 +26,7 @@ class Harness extends TestHarness<WildfireChannel>
   ManagedContext? get context => channel?.context;
 
   @override
-  AuthServer? get authServer => channel?.authServer;
+  AuthServer get authServer => channel!.authServer;
 
   Agent? publicAgent;
 

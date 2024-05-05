@@ -12,7 +12,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     this.prefix = "",
   });
 
-  final String? prefix;
+  final String prefix;
   PredicateExpression? expression;
 
   String get defaultPrefix => "$prefix${table!.sqlTableReference}_";

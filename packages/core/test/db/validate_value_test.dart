@@ -298,7 +298,7 @@ void main() {
     });
 
     test("Implicitly added to enum types", () {
-      final e = EnumObject()..backing.contents!["enumValues"] = "foobar";
+      final e = EnumObject()..backing.contents["enumValues"] = "foobar";
       expect(e.validate().isValid, false);
       e.enumValues = EnumValues.abcd;
       expect(e.validate().isValid, true);

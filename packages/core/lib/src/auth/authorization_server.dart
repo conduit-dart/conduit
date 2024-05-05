@@ -64,8 +64,8 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
     this.delegate, {
     this.hashRounds = 1000,
     this.hashLength = 32,
-    Hash? hashFunction,
-  }) : hashFunction = hashFunction ?? sha256;
+    this.hashFunction = sha256,
+  });
 
   /// The object responsible for carrying out the storage mechanisms of this instance.
   ///
@@ -117,6 +117,12 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   ///
   /// [delegate] will store this client for future use.
   Future addClient(AuthClient client) async {
+    if (client.id.isEmpty) {
+      throw ArgumentError(
+        "A client must have an id.",
+      );
+    }
+
     if (client.redirectURI != null && client.hashedSecret == null) {
       throw ArgumentError(
         "A client with a redirectURI must have a client secret.",
@@ -129,7 +135,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// Returns a [AuthClient] record for its [clientID].
   ///
   /// Returns null if none exists.
-  Future<AuthClient?> getClient(String? clientID) async {
+  Future<AuthClient?> getClient(String clientID) async {
     return delegate.getClient(this, clientID);
   }
 
@@ -137,8 +143,8 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   ///
   /// Removes cached occurrences of [AuthClient] for [clientID].
   /// Asks [delegate] to remove an [AuthClient] by its ID via [AuthServerDelegate.removeClient].
-  Future removeClient(String? clientID) async {
-    if (clientID == null) {
+  Future removeClient(String clientID) async {
+    if (clientID.isEmpty) {
       throw AuthServerException(AuthRequestError.invalidClient, null);
     }
 
@@ -166,12 +172,12 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   Future<AuthToken> authenticate(
     String? username,
     String? password,
-    String? clientID,
+    String clientID,
     String? clientSecret, {
     Duration expiration = const Duration(hours: 24),
     List<AuthScope>? requestedScopes,
   }) async {
-    if (clientID == null) {
+    if (clientID.isEmpty) {
       throw AuthServerException(AuthRequestError.invalidClient, null);
     }
 
@@ -240,7 +246,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
     if (t == null || t.isExpired) {
       throw AuthServerException(
         AuthRequestError.invalidGrant,
-        AuthClient(t?.clientID, null, null),
+        AuthClient(t?.clientID ?? '', null, null),
       );
     }
 
@@ -268,11 +274,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// If not successful, it will throw an [AuthRequestError].
   Future<AuthToken> refresh(
     String? refreshToken,
-    String? clientID,
+    String clientID,
     String? clientSecret, {
     List<AuthScope>? requestedScopes,
   }) async {
-    if (clientID == null) {
+    if (clientID.isEmpty) {
       throw AuthServerException(AuthRequestError.invalidClient, null);
     }
 
@@ -356,11 +362,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   Future<AuthCode> authenticateForCode(
     String? username,
     String? password,
-    String? clientID, {
+    String clientID, {
     int expirationInSeconds = 600,
     List<AuthScope>? requestedScopes,
   }) async {
-    if (clientID == null) {
+    if (clientID.isEmpty) {
       throw AuthServerException(AuthRequestError.invalidClient, null);
     }
 
@@ -407,11 +413,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// it will throw an appropriate [AuthRequestError].
   Future<AuthToken> exchange(
     String? authCodeString,
-    String? clientID,
+    String clientID,
     String? clientSecret, {
     int expirationInSeconds = 3600,
   }) async {
-    if (clientID == null) {
+    if (clientID.isEmpty) {
       throw AuthServerException(AuthRequestError.invalidClient, null);
     }
 
@@ -561,7 +567,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
-    if (client.hashedSecret != hashPassword(password!, client.salt!)) {
+    if (client.hashedSecret != hashPassword(password, client.salt!)) {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
@@ -607,7 +613,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
 
   AuthToken _generateToken(
     int? ownerID,
-    String? clientID,
+    String clientID,
     int expirationInSeconds, {
     bool allowRefresh = true,
     List<AuthScope>? scopes,

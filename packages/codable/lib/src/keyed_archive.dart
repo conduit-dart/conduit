@@ -118,15 +118,17 @@ class KeyedArchive extends Object
     if (schema == null) {
       return;
     }
-
+    if (_casted) return;
+    _casted = true;
     final caster = cast.Keyed(schema);
     _map = caster.cast(_map);
 
     if (_objectReference != null) {
-      // todo: can optimize this by only running it once
       _objectReference!._map = caster.cast(_objectReference!._map);
     }
   }
+
+  bool _casted = false;
 
   /// store the [key]/[value] pair into the map
   @override
@@ -160,7 +162,7 @@ class KeyedArchive extends Object
     return out;
   }
 
-  dynamic _getValue(String? key) {
+  dynamic _getValue(String key) {
     if (_map.containsKey(key)) {
       return _map[key];
     }
@@ -319,7 +321,7 @@ class KeyedArchive extends Object
 
   /* encode */
 
-  Map<String?, dynamic>? _encodedObject(Coding? object) {
+  Map<String, dynamic>? _encodedObject(Coding? object) {
     if (object == null) {
       return null;
     }

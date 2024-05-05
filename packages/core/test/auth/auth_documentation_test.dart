@@ -59,7 +59,7 @@ void main() {
     test("POST requires client authorization", () {
       expect(operations!["post"]!.security!.length, 1);
       expect(
-        operations!["post"]!.security!.first!.requirements,
+        operations!["post"]!.security!.first.requirements,
         {"oauth2-client-authentication": []},
       );
     });
@@ -179,7 +179,7 @@ void main() {
       final op = operations!["get"]!;
       expect(op.parameters!.length, 4);
       expect(
-        op.parameters!.every((p) => p!.location == APIParameterLocation.query),
+        op.parameters!.every((p) => p.location == APIParameterLocation.query),
         true,
       );
       expect(op.parameterNamed("client_id")!.schema!.type, APIType.string);

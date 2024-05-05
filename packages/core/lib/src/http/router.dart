@@ -89,7 +89,7 @@ class Router extends Controller {
 
   /// Routers override this method to throw an exception. Use [route] instead.
   @override
-  Linkable? link(Controller Function() generatorFunction) {
+  Linkable link(Controller Function() generatorFunction) {
     throw ArgumentError(
       "Invalid link. 'Router' cannot directly link to controllers. Use 'route'.",
     );

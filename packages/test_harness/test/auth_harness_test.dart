@@ -117,8 +117,8 @@ void main() {
 }
 
 class Channel extends ApplicationChannel {
-  ManagedContext? context;
-  AuthServer? authServer;
+  late ManagedContext context;
+  late final AuthServer authServer;
 
   @override
   Future prepare() async {
@@ -144,7 +144,7 @@ class HarnessSubclass extends TestHarness<Channel>
   Future seed() async {}
 
   @override
-  AuthServer? get authServer => channel!.authServer;
+  AuthServer get authServer => channel!.authServer;
 
   @override
   ManagedContext? get context => channel!.context;

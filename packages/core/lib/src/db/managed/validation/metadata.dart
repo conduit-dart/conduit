@@ -324,7 +324,7 @@ class Validate {
   /// If compilation fails, throw a [ValidateCompilationError] with a message describing the issue. The entity
   /// and property will automatically be added to the error.
   dynamic compile(
-    ManagedType? typeBeingValidated, {
+    ManagedType typeBeingValidated, {
     Type? relationshipInverseType,
   }) {
     switch (type) {
@@ -335,7 +335,7 @@ class Validate {
       case ValidateType.oneOf:
         {
           return _oneOfCompiler(
-            typeBeingValidated!,
+            typeBeingValidated,
             relationshipInverseType: relationshipInverseType,
           );
         }
@@ -631,10 +631,10 @@ class Validate {
   }
 
   dynamic _lengthCompiler(
-    ManagedType? typeBeingValidated, {
+    ManagedType typeBeingValidated, {
     Type? relationshipInverseType,
   }) {
-    if (typeBeingValidated?.kind != ManagedPropertyType.string) {
+    if (typeBeingValidated.kind != ManagedPropertyType.string) {
       throw ValidateCompilationError(
         "Validate.length is only valid for 'String' properties.",
       );

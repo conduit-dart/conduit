@@ -71,7 +71,7 @@ class TestToken implements AuthToken, AuthCode {
   @override
   int? resourceOwnerIdentifier;
   @override
-  String? clientID;
+  late final String clientID;
   @override
   String? code;
   @override
@@ -114,7 +114,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   static const String defaultPassword = "foobaraxegrind21%";
 
-  Map<String?, AuthClient>? clients;
+  Map<String, AuthClient>? clients;
   Map<int, TestUser> users = {};
   List<TestToken> tokens = [];
   List<AuthScope>? allowedScopes;
@@ -197,7 +197,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   }
 
   @override
-  FutureOr<AuthToken>? getToken(
+  FutureOr<AuthToken?> getToken(
     AuthServer server, {
     String? byAccessToken,
     String? byRefreshToken,
@@ -296,7 +296,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
       tokens.removeWhere((c) => c.code == code);
 
   @override
-  FutureOr<AuthClient?> getClient(AuthServer server, String? clientID) =>
+  FutureOr<AuthClient?> getClient(AuthServer server, String clientID) =>
       clients?[clientID];
 
   @override
@@ -331,7 +331,7 @@ class DefaultPersistentStore extends PersistentStore {
   @override
   Future<dynamic> executeQuery(
     String formatString,
-    Map<String?, dynamic> values,
+    Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
   }) async =>
@@ -341,7 +341,7 @@ class DefaultPersistentStore extends PersistentStore {
   Future close() async {}
 
   @override
-  Future<T?> transaction<T>(
+  Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T?> Function(ManagedContext transaction) transactionBlock,
   ) async =>
@@ -423,12 +423,12 @@ class DefaultPersistentStore extends PersistentStore {
   Future<int> get schemaVersion async => 0;
 
   @override
-  Future<Schema?> upgrade(
+  Future<Schema> upgrade(
     Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
-    Schema? out = fromSchema;
+    Schema out = fromSchema;
     for (final migration in withMigrations) {
       migration.database = SchemaBuilder(this, out);
       await migration.upgrade();

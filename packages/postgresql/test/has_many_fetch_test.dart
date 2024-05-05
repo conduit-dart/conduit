@@ -79,9 +79,9 @@ void main() {
         expect(p.pid, isNotNull);
         expect(p.children!.first.cid, isNotNull);
         expect(p.children!.first.name, "C5");
-        expect(p.children!.first.backing.contents!.containsKey("toy"), false);
+        expect(p.children!.first.backing.contents.containsKey("toy"), false);
         expect(
-          p.children!.first.backing.contents!.containsKey("vaccinations"),
+          p.children!.first.backing.contents.containsKey("vaccinations"),
           false,
         );
       }
@@ -106,7 +106,7 @@ void main() {
         expect(p.pid, isNotNull);
         expect(p.children!.first.cid, isNotNull);
         expect(p.children!.first.name, "C3");
-        expect(p.children!.first.backing.contents!.containsKey("toy"), true);
+        expect(p.children!.first.backing.contents.containsKey("toy"), true);
         expect(p.children!.first.toy, isNull);
         expect(p.children!.first.vaccinations!.length, 1);
         expect(p.children!.first.vaccinations!.first.vid, isNotNull);
@@ -114,7 +114,7 @@ void main() {
 
         expect(p.children!.last.cid, isNotNull);
         expect(p.children!.last.name, "C4");
-        expect(p.children!.last.backing.contents!.containsKey("toy"), true);
+        expect(p.children!.last.backing.contents.containsKey("toy"), true);
         expect(p.children!.last.toy, isNull);
         expect(p.children!.last.vaccinations, []);
       }
@@ -174,21 +174,21 @@ void main() {
       expect(results.first.children!.length, 2);
       expect(results.first.children!.first.name, "C1");
       expect(
-        results.first.children!.first.backing.contents!.containsKey("toy"),
+        results.first.children!.first.backing.contents.containsKey("toy"),
         false,
       );
       expect(
-        results.first.children!.first.backing.contents!
+        results.first.children!.first.backing.contents
             .containsKey("vaccinations"),
         false,
       );
       expect(results.first.children!.last.name, "C2");
       expect(
-        results.first.children!.last.backing.contents!.containsKey("toy"),
+        results.first.children!.last.backing.contents.containsKey("toy"),
         false,
       );
       expect(
-        results.first.children!.last.backing.contents!
+        results.first.children!.last.backing.contents
             .containsKey("vaccinations"),
         false,
       );
@@ -198,16 +198,11 @@ void main() {
       expect(results[1].children!.length, 1);
       expect(results[1].children!.first.name, "C5");
       expect(
-        results[1].children!.first.backing.contents!.containsKey("toy"),
+        results[1].children!.first.backing.contents.containsKey("toy"),
         false,
       );
       expect(
-        results[1]
-            .children!
-            .first
-            .backing
-            .contents!
-            .containsKey("vaccinations"),
+        results[1].children!.first.backing.contents.containsKey("vaccinations"),
         false,
       );
 

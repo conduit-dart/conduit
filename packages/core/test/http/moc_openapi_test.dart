@@ -108,7 +108,7 @@ void main() {
 
       expect(op.responses!.length, 2);
       expect(op.parameters!.length, 6);
-      expect(op.parameters!.every((p) => p!.isRequired == false), true);
+      expect(op.parameters!.every((p) => p.isRequired == false), true);
 
       expect(op.responses!["400"], isNotNull);
       expect(

@@ -25,10 +25,11 @@ void main() {
       expect(QueryPredicate.and([]).parameters, {});
     });
 
-    test("If null, return empty predicate", () {
-      expect(QueryPredicate.and(null).format, "");
-      expect(QueryPredicate.and(null).parameters, {});
-    });
+    // No Longer allowing null values
+    // test("If null, return empty predicate", () {
+    //   expect(QueryPredicate.and(null).format, "");
+    //   expect(QueryPredicate.and(null).parameters, {});
+    // });
 
     test("If only one element in list, return that element", () {
       final valid = QueryPredicate("x=@a", {"a": 0});
@@ -44,12 +45,13 @@ void main() {
       expect(p.parameters, valid.parameters);
     });
 
-    test("If and'ing null predicate, ignore it", () {
-      final valid = QueryPredicate("x=@a", {"a": 0});
-      final p = QueryPredicate.and([valid, null]);
-      expect(p.format, valid.format);
-      expect(p.parameters, valid.parameters);
-    });
+    // Not allowing null values
+    // test("If and'ing null predicate, ignore it", () {
+    //   final valid = QueryPredicate("x=@a", {"a": 0});
+    //   final p = QueryPredicate.and([valid, null]);
+    //   expect(p.format, valid.format);
+    //   expect(p.parameters, valid.parameters);
+    // });
 
     test("And'ing predicate with no parameters", () {
       final valid = QueryPredicate("x=y");

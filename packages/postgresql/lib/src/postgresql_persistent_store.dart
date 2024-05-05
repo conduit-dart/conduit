@@ -102,7 +102,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   ///
   /// Use this property to execute raw queries on the underlying database connection.
   /// If running a transaction, this context is the transaction context.
-  Future<Session?> get executionContext => getDatabaseConnection();
+  Future<Session> get executionContext => getDatabaseConnection();
 
   /// Retrieves a connection to the database this instance connects to.
   ///
@@ -160,7 +160,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     final now = DateTime.now().toUtc();
     final dbConnection = await executionContext;
     try {
-      final rows = await dbConnection!.execute(
+      final rows = await dbConnection.execute(
         Sql.named(sql),
         parameters: substitutionValues,
         timeout: timeout,
@@ -191,15 +191,14 @@ class PostgreSQLPersistentStore extends PersistentStore
   }
 
   @override
-  Future<T?> transaction<T>(
+  Future<T> transaction<T>(
     ManagedContext transactionContext,
-    Future<T?> Function(ManagedContext transaction) transactionBlock,
+    Future<T> Function(ManagedContext transaction) transactionBlock,
   ) async {
     final Connection dbConnection = await getDatabaseConnection();
 
-    T? output;
     try {
-      await dbConnection.runTx((dbTransactionContext) async {
+      return await dbConnection.runTx((dbTransactionContext) async {
         transactionContext.persistentStore =
             PostgreSQLPersistentStore._transactionProxy(
           this,
@@ -207,7 +206,7 @@ class PostgreSQLPersistentStore extends PersistentStore
         );
 
         try {
-          output = await transactionBlock(transactionContext);
+          return await transactionBlock(transactionContext);
         } on Rollback {
           /// user triggered a manual rollback.
           /// TODO: there is currently no reliable way for a user to detect
@@ -226,8 +225,6 @@ class PostgreSQLPersistentStore extends PersistentStore
 
       rethrow;
     }
-
-    return output;
   }
 
   @override
@@ -251,14 +248,14 @@ class PostgreSQLPersistentStore extends PersistentStore
   }
 
   @override
-  Future<Schema?> upgrade(
-    Schema? fromSchema,
+  Future<Schema> upgrade(
+    Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
     final Connection connection = await getDatabaseConnection();
 
-    Schema? schema = fromSchema;
+    Schema schema = fromSchema;
 
     await connection.runTx((ctx) async {
       final transactionStore =
@@ -323,7 +320,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     final now = DateTime.now().toUtc();
     try {
       final dbConnection = await executionContext;
-      final Result results = await dbConnection!.execute(
+      final Result results = await dbConnection.execute(
         Sql.named(formatString),
         parameters: values,
         timeout: Duration(seconds: timeoutInSeconds),

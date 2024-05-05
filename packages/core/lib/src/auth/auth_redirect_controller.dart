@@ -30,7 +30,7 @@ abstract class AuthRedirectControllerDelegate {
     AuthRedirectController forController,
     Uri requestUri,
     String? responseType,
-    String? clientID,
+    String clientID,
     String? state,
     String? scope,
   );
@@ -69,7 +69,7 @@ class AuthRedirectController extends ResourceController {
   )..contentType = ContentType.html;
 
   /// A reference to the [AuthServer] used to grant authorization codes and access tokens.
-  final AuthServer? authServer;
+  late final AuthServer authServer;
 
   /// When true, the controller allows for the Implicit Grant Flow
   final bool allowsImplicit;
@@ -121,7 +121,7 @@ class AuthRedirectController extends ResourceController {
     }
 
     final renderedPage = await delegate!
-        .render(this, request!.raw.uri, responseType, clientID, state, scope);
+        .render(this, request!.raw.uri, responseType, clientID!, state, scope);
     if (renderedPage == null) {
       return Response.notFound();
     }
@@ -147,7 +147,11 @@ class AuthRedirectController extends ResourceController {
     /// A space-delimited list of access scopes being requested.
     @Bind.query("scope") String? scope,
   }) async {
-    final client = await authServer!.getClient(clientID);
+    if (clientID == null) {
+      return Response.badRequest();
+    }
+
+    final client = await authServer.getClient(clientID!);
 
     if (client?.redirectURI == null) {
       return Response.badRequest();
@@ -180,10 +184,10 @@ class AuthRedirectController extends ResourceController {
           );
         }
 
-        final authCode = await authServer!.authenticateForCode(
+        final authCode = await authServer.authenticateForCode(
           username,
           password,
-          clientID,
+          clientID!,
           requestedScopes: scopes,
         );
         return _redirectResponse(
@@ -192,10 +196,10 @@ class AuthRedirectController extends ResourceController {
           code: authCode.code,
         );
       } else if (responseType == "token") {
-        final token = await authServer!.authenticate(
+        final token = await authServer.authenticate(
           username,
           password,
-          clientID,
+          clientID!,
           null,
           requestedScopes: scopes,
         );
@@ -248,13 +252,13 @@ class AuthRedirectController extends ResourceController {
   }
 
   @override
-  List<APIParameter?> documentOperationParameters(
+  List<APIParameter> documentOperationParameters(
     APIDocumentContext context,
     Operation? operation,
   ) {
     final params = super.documentOperationParameters(context, operation)!;
-    params.where((p) => p!.name != "scope").forEach((p) {
-      p!.isRequired = true;
+    params.where((p) => p.name != "scope").forEach((p) {
+      p.isRequired = true;
     });
     return params;
   }
@@ -304,8 +308,8 @@ class AuthRedirectController extends ResourceController {
   ) {
     final ops = super.documentOperations(context, route, path);
     final uri = Uri(path: route.substring(1));
-    authServer!.documentedAuthorizationCodeFlow.authorizationURL = uri;
-    authServer!.documentedImplicitFlow.authorizationURL = uri;
+    authServer.documentedAuthorizationCodeFlow.authorizationURL = uri;
+    authServer.documentedImplicitFlow.authorizationURL = uri;
     return ops;
   }
 
@@ -330,7 +334,7 @@ class AuthRedirectController extends ResourceController {
     }
 
     final queryParameters =
-        Map<String, String?>.from(redirectURI.queryParameters);
+        Map<String, String>.from(redirectURI.queryParameters);
     String? fragment;
 
     if (responseType == "code") {

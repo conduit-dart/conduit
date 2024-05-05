@@ -36,20 +36,15 @@ class QueryPredicate {
   ///
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
-  factory QueryPredicate.and(Iterable<QueryPredicate?>? predicates) {
-    final predicateList = predicates
-        ?.where((p) => p?.format != null && p!.format.isNotEmpty)
-        .toList();
-    if (predicateList == null) {
-      return QueryPredicate.empty();
-    }
+  factory QueryPredicate.and(Iterable<QueryPredicate> predicates) {
+    final predicateList = predicates.where((p) => p.format.isNotEmpty).toList();
 
     if (predicateList.isEmpty) {
       return QueryPredicate.empty();
     }
 
     if (predicateList.length == 1) {
-      return predicateList.first!;
+      return predicateList.first;
     }
 
     // If we have duplicate keys anywhere, we need to disambiguate them.
@@ -57,13 +52,13 @@ class QueryPredicate {
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {
-      final duplicateKeys = predicate!.parameters.keys
+      final duplicateKeys = predicate.parameters.keys
           .where((k) => valueMap.keys.contains(k))
           .toList();
 
       if (duplicateKeys.isNotEmpty) {
         var fmt = predicate.format;
-        final Map<String?, String> dupeMap = {};
+        final Map<String, String> dupeMap = {};
         for (final key in duplicateKeys) {
           final replacementKey = "$key$dupeCounter";
           fmt = fmt.replaceAll("@$key", "@$replacementKey");

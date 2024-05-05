@@ -424,7 +424,7 @@ class Parent extends Coding {
   String? name;
   Child? child;
   List<Child?>? children;
-  Map<String?, Child?>? childMap;
+  Map<String, Child?>? childMap;
   List<String?>? things;
 
   @override

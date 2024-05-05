@@ -438,22 +438,22 @@ return entity.symbolMap[Symbol(symbolName)];
     final className = MirrorSystem.getName(instanceType.simpleName);
     final originalFileUri = instanceType.location!.sourceUri.toString();
     final relationshipsStr = (await Future.wait(
-      entity.relationships!.keys.map((name) async {
-        return "'$name': ${await _getRelationshipInstantiator(ctx, entity.relationships![name]!, importUris: importUris)}";
+      entity.relationships.keys.map((name) async {
+        return "'$name': ${await _getRelationshipInstantiator(ctx, entity.relationships[name]!, importUris: importUris)}";
       }),
     ))
         .join(", ");
 
     final uniqueStr = entity.uniquePropertySet == null
         ? "null"
-        : "[${entity.uniquePropertySet!.map((u) => "'${u!.name}'").join(",")}].map((k) => entity.properties[k]).toList()";
+        : "[${entity.uniquePropertySet!.map((u) => "'${u.name}'").join(",")}].map((k) => entity.properties[k]).nonNulls.toList()";
 
     final entityConstructor =
         await _getEntityConstructor(ctx, importUris: importUris);
 
     // Need to import any relationships types and metadata types
     // todo: limit import of importUris to only show symbols required to replicate metadata
-    final directives = entity.relationships!.values.map((r) {
+    final directives = entity.relationships.values.map((r) {
       var mirror = reflectType(r!.declaredType!);
       if (mirror.isSubtypeOf(reflectType(ManagedSet))) {
         mirror = mirror.typeArguments.first;
@@ -487,7 +487,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
     _entity.relationships = {$relationshipsStr};
     _entity.validators = [];
     _entity.validators.addAll(_entity.attributes.values.expand((a) => a!.validators));
-    _entity.validators.addAll(_entity.relationships?.values.expand((a) => a!.validators) ?? []);
+    _entity.validators.addAll(_entity.relationships.values.expand((a) => a!.validators));
 
     entity.uniquePropertySet = $uniqueStr;
   }

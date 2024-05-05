@@ -221,7 +221,7 @@ mixin PostgreSQLSchemaGenerator {
     return elements.join(" ");
   }
 
-  String? _columnNameForColumn(SchemaColumn column) {
+  String _columnNameForColumn(SchemaColumn column) {
     if (column.relatedColumnName != null) {
       return "${column.name}_${column.relatedColumnName}";
     }

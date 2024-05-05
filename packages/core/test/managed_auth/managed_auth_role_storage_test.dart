@@ -10,7 +10,7 @@ import '../not_tests/postgres_test_config.dart';
 // have scope rules.
 void main() {
   RoleBasedAuthStorage storage;
-  ManagedContext? context;
+  late ManagedContext context;
   late AuthServer auth;
   late List<User> createdUsers;
 
@@ -44,15 +44,14 @@ void main() {
           ..redirectURI = ac.redirectURI,
       )
           .map((mc) {
-        final q = Query<ManagedAuthClient>(context!)..values = mc;
+        final q = Query<ManagedAuthClient>(context)..values = mc;
         return q.insert();
       }),
     );
   });
 
   tearDownAll(() async {
-    await context?.close();
-    context = null;
+    await context.close();
   });
 
   group("Resource owner", () {
@@ -358,7 +357,7 @@ class RoleBasedAuthStorage extends ManagedAuthDelegate<User> {
 
   @override
   Future<User?> getResourceOwner(AuthServer server, String username) {
-    final query = Query<User>(context!)
+    final query = Query<User>(context)
       ..where((o) => o.username).equalTo(username)
       ..returningProperties(
         (t) => [t.id, t.hashedPassword, t.salt, t.username, t.role],
