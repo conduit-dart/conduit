@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'postgresql_query.dart';
 import 'postgresql_schema_generator.dart';
@@ -19,8 +20,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.port,
     this.databaseName, {
     this.timeZone = "UTC",
+    String? sslMode,
+    @Deprecated('Use sslMode instead')
     bool useSSL = false,
-  }) : isSSLConnection = useSSL;
+  }) : isSSLConnection = useSSL,
+       sslMode = SslMode.values.singleWhereOrNull((e) => e.name == sslMode);
 
   /// Same constructor as default constructor.
   ///
@@ -32,8 +36,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.port,
     this.databaseName, {
     this.timeZone = "UTC",
+    String? sslMode,
+    @Deprecated('Use sslMode instead')
     bool useSSL = false,
-  }) : isSSLConnection = useSSL;
+  }) : isSSLConnection = useSSL,
+       sslMode = SslMode.values.singleWhereOrNull((e) => e.name == sslMode);
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
       : isSSLConnection = from.isSSLConnection,
@@ -42,7 +49,8 @@ class PostgreSQLPersistentStore extends PersistentStore
         host = from.host,
         port = from.port,
         databaseName = from.databaseName,
-        timeZone = from.timeZone;
+        timeZone = from.timeZone,
+        sslMode = from.sslMode;
 
   factory PostgreSQLPersistentStore._transactionProxy(
     PostgreSQLPersistentStore parent,
@@ -73,7 +81,11 @@ class PostgreSQLPersistentStore extends PersistentStore
   final String? timeZone;
 
   /// Whether this connection is established over SSL.
+  @Deprecated('Use sslMode instead')
   final bool isSSLConnection;
+
+  /// The SSL mode of the connection to the database.
+  final SslMode? sslMode;
 
   /// Whether or not the underlying database connection is open.
   ///
@@ -418,7 +430,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       ),
       settings: ConnectionSettings(
         timeZone: timeZone!,
-        sslMode: isSSLConnection ? SslMode.verifyFull : SslMode.disable,
+        sslMode: sslMode ?? (isSSLConnection ? SslMode.verifyFull : SslMode.disable),
         ignoreSuperfluousParameters: true,
       ),
     );
