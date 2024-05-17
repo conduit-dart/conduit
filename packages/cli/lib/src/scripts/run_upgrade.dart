@@ -49,7 +49,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
         dbInfo.port,
         dbInfo.databaseName,
         timeZone: dbInfo.timeZone,
-        useSSL: dbInfo.useSSL,
+        sslMode: dbInfo.sslMode,
       );
     }
 
@@ -129,7 +129,7 @@ class DBInfo {
     this.port,
     this.databaseName,
     this.timeZone, {
-    this.useSSL = false,
+    this.sslMode,
   });
 
   DBInfo.fromMap(Map<String, dynamic> map)
@@ -140,7 +140,7 @@ class DBInfo {
         port = map["port"] as int?,
         databaseName = map["databaseName"] as String?,
         timeZone = map["timeZone"] as String?,
-        useSSL = (map["useSSL"] ?? false) as bool;
+        sslMode = map["sslMode"] as String?;
 
   final String? flavor;
   final String? username;
@@ -149,7 +149,7 @@ class DBInfo {
   final int? port;
   final String? databaseName;
   final String? timeZone;
-  final bool useSSL;
+  final String? sslMode;
 
   Map<String, dynamic>? asMap() {
     return {
@@ -160,7 +160,7 @@ class DBInfo {
       "port": port,
       "databaseName": databaseName,
       "timeZone": timeZone,
-      "useSSL": useSSL
+      "sslMode": sslMode
     };
   }
 }

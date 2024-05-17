@@ -117,7 +117,7 @@ class CLIDatabaseUpgrade extends CLICommand
         s.port,
         s.databaseName,
         s.timeZone,
-        useSSL: s.isSSLConnection,
+        sslMode: s.sslMode,
       );
     }
 

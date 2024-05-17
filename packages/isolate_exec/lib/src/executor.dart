@@ -75,6 +75,9 @@ class IsolateExecutor<U> {
         automaticPackageResolution: packageConfigURI == null,
       );
       return await completer.future;
+    } catch (e) {
+      print(e);
+      rethrow;
     } finally {
       onErrorPort.close();
       controlPort.close();

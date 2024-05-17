@@ -14,10 +14,16 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
 
   @Flag(
     "use-ssl",
-    help: "Whether or not the database connection should use SSL",
+    help: "DEPRECATED: Use ssl-mode instead",
     defaultsTo: false,
   )
   bool get useSSL => decode("use-ssl");
+
+  @Option("ssl-mode",
+      help:
+          "Whether or not the database connection should use SSL (disable/require/verifyFull)",
+      defaultsTo: "disable")
+  String get sslMode => decode("ssl-mode");
 
   @Option(
     "connect",
@@ -102,7 +108,7 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
         connectedDatabase.host,
         connectedDatabase.port,
         connectedDatabase.databaseName,
-        useSSL: useSSL,
+        sslMode: sslMode,
       );
     }
 

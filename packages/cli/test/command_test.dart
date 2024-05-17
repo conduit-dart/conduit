@@ -1,5 +1,7 @@
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/metadata.dart';
+import 'package:conduit_postgresql/conduit_postgresql.dart';
+import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -153,7 +155,7 @@ void main() {
     final results = cmd.options.parse(args);
     cmd.process(results);
 
-    expect(cmd.useSSl, equals(true));
+    expect(cmd.useSSL, equals(true));
   });
 
   test('Command bool conversion - negated ', () {
@@ -164,7 +166,18 @@ void main() {
     final results = cmd.options.parse(args);
     cmd.process(results);
 
-    expect(cmd.useSSl, equals(false));
+    expect(cmd.useSSL, equals(false));
+  });
+
+  test('Enum checks on sslMode, correct value', () {
+    final cmd = TestCLICommand();
+
+    final args = ['--sslMode=require'];
+
+    final results = cmd.options.parse(args);
+    cmd.process(results);
+
+    expect(cmd.sslMode.toSslMode(), equals(SslMode.require));
   });
 }
 
@@ -208,10 +221,13 @@ class TestCLICommand extends CLICommand {
   int get guaranteed => decodeOptional("guaranteed", orElse: () => 1)!;
 
   @Flag("useSSL", abbr: "u", help: "UseSSL.", negatable: true)
-  bool get useSSl => decode("useSSL");
+  bool get useSSL => decode("useSSL");
 
-  @Flag("useSSLWithDefault", abbr: "d", help: "useSSlWithDefault.")
-  bool get useSSlWithDefault => decode("useSSlWithDefault");
+  @Flag("useSSLWithDefault", abbr: "d", help: "useSSLWithDefault.")
+  bool get useSSLWithDefault => decode("useSSLWithDefault");
+
+  @Option("sslMode")
+  String get sslMode => decode("sslMode");
 
   @Option(
     "scopes",

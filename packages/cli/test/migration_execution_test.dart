@@ -20,7 +20,7 @@ String connectString =
     "postgres://${connectInfo.username}:${connectInfo.password}@${connectInfo.host}:${connectInfo.port}/${connectInfo.databaseName}";
 
 void main() {
-  late PostgreSQLPersistentStore store;
+  PostgreSQLPersistentStore? store;
 
   setUpAll(() async {
     final t =
@@ -54,10 +54,10 @@ void main() {
 
     await Future.wait(
       tables.map((t) {
-        return store.execute("DROP TABLE IF EXISTS $t");
-      }),
+        return store?.execute("DROP TABLE IF EXISTS $t");
+      }).nonNulls,
     );
-    await store.close();
+    await store?.close();
   });
 
   tearDownAll(DartProjectAgent.tearDownAll);
@@ -69,12 +69,12 @@ void main() {
 
   test("Generate and execute initial schema makes workable DB", () async {
     expect(await runMigrationCases(["Case1"]), isZero);
-    final version =
-        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    final version = await store!
+        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
     ]);
-    expect(await columnsOfTable(store, "_testobject"), ["id", "foo"]);
+    expect(await columnsOfTable(store!, "_testobject"), ["id", "foo"]);
   });
 
   test(
@@ -82,7 +82,7 @@ void main() {
     () async {
       expect(await runMigrationCases(["Case2"]), isZero);
 
-      var versionRow = await store.execute(
+      var versionRow = await store!.execute(
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
       ) as List<List<dynamic>>;
       expect(versionRow.first.first, 1);
@@ -90,7 +90,7 @@ void main() {
 
       cli.clearOutput();
       expect(await runMigrationCases(["Case2"]), isZero);
-      versionRow = await store.execute(
+      versionRow = await store!.execute(
         "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
       ) as List<List>;
       expect(versionRow.length, 1);
@@ -102,45 +102,45 @@ void main() {
   test("Multiple migration files are ran", () async {
     expect(await runMigrationCases(["Case31", "Case32"]), isZero);
 
-    final version =
-        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    final version = await store!
+        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
       [2]
     ]);
-    expect(await columnsOfTable(store, "_testobject"), ["id", "foo"]);
-    expect(await columnsOfTable(store, "_foo"), ["id", "testobject_id"]);
+    expect(await columnsOfTable(store!, "_testobject"), ["id", "foo"]);
+    expect(await columnsOfTable(store!, "_foo"), ["id", "testobject_id"]);
   });
 
   test("Only later migration files are ran if already at a version", () async {
     expect(await runMigrationCases(["Case41"]), isZero);
-    var version =
-        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    var version = await store!
+        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1]
     ]);
     cli.clearOutput();
 
-    expect(await columnsOfTable(store, "_testobject"), ["id", "foo"]);
-    expect(await tableExists(store, "_foo"), isFalse);
+    expect(await columnsOfTable(store!, "_testobject"), ["id", "foo"]);
+    expect(await tableExists(store!, "_foo"), isFalse);
 
     expect(await runMigrationCases(["Case42"], fromVersion: 1), isZero);
-    version =
-        await store.execute("SELECT versionNumber FROM _conduit_version_pgsql");
+    version = await store!
+        .execute("SELECT versionNumber FROM _conduit_version_pgsql");
     expect(version, [
       [1],
       [2]
     ]);
 
-    expect(await columnsOfTable(store, "_testobject"), ["id", "foo"]);
-    expect(await columnsOfTable(store, "_foo"), ["id", "testobject_id"]);
+    expect(await columnsOfTable(store!, "_testobject"), ["id", "foo"]);
+    expect(await columnsOfTable(store!, "_foo"), ["id", "testobject_id"]);
   });
 
   test("If migration throws exception, rollback any changes", () async {
     expect(await runMigrationCases(["Case5"]), isNonZero);
 
-    expect(await tableExists(store, store.versionTable.name), isFalse);
-    expect(await tableExists(store, "_testobject"), isFalse);
+    expect(await tableExists(store!, store!.versionTable.name), isFalse);
+    expect(await tableExists(store!, "_testobject"), isFalse);
   });
 
   test(
@@ -164,9 +164,9 @@ void main() {
       );
       expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
-      expect(await tableExists(store, store.versionTable.name), isFalse);
-      expect(await tableExists(store, "_testobject"), isFalse);
-      expect(await tableExists(store, "_foo"), isFalse);
+      expect(await tableExists(store!, store!.versionTable.name), isFalse);
+      expect(await tableExists(store!, "_testobject"), isFalse);
+      expect(await tableExists(store!, "_foo"), isFalse);
     },
   );
 
@@ -187,23 +187,23 @@ void main() {
 
       expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
-      final version = await store
+      final version = await store!
           .execute("SELECT versionNumber FROM _conduit_version_pgsql");
       expect(version, [
         [1],
       ]);
 
-      expect(await tableExists(store, store.versionTable.name), isTrue);
-      expect(await tableExists(store, "_testobject"), isTrue);
-      expect(await tableExists(store, "_foo"), isFalse);
+      expect(await tableExists(store!, store!.versionTable.name), isTrue);
+      expect(await tableExists(store!, "_testobject"), isTrue);
+      expect(await tableExists(store!, "_foo"), isFalse);
     },
   );
 
   test("If seed fails, all schema changes are rolled back", () async {
     expect(await runMigrationCases(["Case7"]), isNonZero);
 
-    expect(await tableExists(store, store.versionTable.name), isFalse);
-    expect(await tableExists(store, "_testobject"), isFalse);
+    expect(await tableExists(store!, store!.versionTable.name), isFalse);
+    expect(await tableExists(store!, "_testobject"), isFalse);
   });
 
   test(
@@ -256,7 +256,7 @@ MigrationSource migrationSourceFromClassDeclaration(ClassDeclaration cu) {
 }
 
 List<MigrationSource> getOrderedTestMigrations(
-  List<String?> names, {
+  List<String> names, {
   int fromVersion = 0,
 }) {
   final uri = Directory.current.uri
@@ -279,7 +279,7 @@ List<MigrationSource> getOrderedTestMigrations(
 }
 
 Future runMigrationCases(
-  List<String?> migrationNames, {
+  List<String> migrationNames, {
   int fromVersion = 0,
   StringSink? log,
 }) async {
@@ -297,6 +297,8 @@ Future runMigrationCases(
   }
 
   final String useSsl = Platform.environment["USE_SSL"] ?? "";
+
+  print(useSsl);
 
   final res =
       await cli.run("db", ["upgrade", useSsl, "--connect", connectString]);
