@@ -9,7 +9,7 @@ import 'package:conduit_codable/src/resolver.dart';
 ///
 /// This object is a [List] that has additional behavior for encoding and decoding [Coding] objects.
 class ListArchive extends Object
-    with ListMixin<dynamic>
+    with ListBase<dynamic>
     implements Referencable {
   final List<dynamic> _inner;
 

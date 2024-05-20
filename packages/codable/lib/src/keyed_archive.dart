@@ -26,7 +26,7 @@ import 'package:conduit_codable/src/resolver.dart';
 ///         final json = json.encode(archive);
 ///
 class KeyedArchive extends Object
-    with MapMixin<String, dynamic>
+    with MapBase<String, dynamic>
     implements Referencable {
   /// Use [unarchive] instead.
   KeyedArchive(this._map) {
@@ -391,11 +391,8 @@ class KeyedArchive extends Object
   ///
   /// This invokes [Coding.encode] on each value in [value] and adds the map of objects
   /// to this archive for the key [key].
-  void encodeObjectMap<T extends Coding?>(String key, Map<String, T>? value) {
-    if (value == null) {
-      return;
-    }
-
+  void encodeObjectMap<T extends Coding>(String key, Map<String, T?>? value) {
+    if (value == null) return;
     final object = KeyedArchive({});
     value.forEach((k, v) {
       object[k] = _encodedObject(v);

@@ -154,24 +154,24 @@ class List<E> extends Cast<core.List<E?>> {
   }
 }
 
-class Keyed<K, V> extends Cast<core.Map<K, V?>> {
+class Keyed<K, V> extends Cast<core.Map<K, V>> {
   Iterable<K> get keys => _map.keys;
   final core.Map<K, Cast<V>> _map;
   const Keyed(core.Map<K, Cast<V>> map) : _map = map;
   @override
-  core.Map<K, V?> _cast(dynamic from, core.String context, dynamic key) {
-    final core.Map<K, V?> result = {};
+  core.Map<K, V> _cast(dynamic from, core.String context, dynamic key) {
+    final core.Map<K, V> result = {};
     if (from is core.Map) {
       for (final K key in from.keys as core.Iterable<K>) {
         if (_map.containsKey(key)) {
           result[key] = _map[key]!._cast(from[key], "map entry", key);
         } else {
-          result[key] = from[key] as V?;
+          result[key] = from[key] as V;
         }
       }
       return result;
     }
-    return throw FailedCast(context, key, "not a map");
+    throw FailedCast(context, key, "not a map");
   }
 }
 
