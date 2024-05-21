@@ -8,5 +8,5 @@ RUN dart pub global activate -spath packages/cli
 RUN dart pub global activate melos
 ENV PUB_CACHE=/root/.pub-cache
 ENV PATH=$PATH:$PUB_CACHE/bin
-RUN melos cache-source
+RUN melos cache-source --no-select
 RUN dart --disable-analytics
