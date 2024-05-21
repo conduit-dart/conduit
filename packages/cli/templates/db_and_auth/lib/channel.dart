@@ -3,6 +3,7 @@ import 'package:wildfire/controller/register_controller.dart';
 import 'package:wildfire/controller/user_controller.dart';
 import 'package:wildfire/model/user.dart';
 import 'package:wildfire/utility/html_template.dart';
+
 import 'package:wildfire/wildfire.dart';
 
 /// This type initializes an application.
@@ -12,7 +13,7 @@ import 'package:wildfire/wildfire.dart';
 class WildfireChannel extends ApplicationChannel
     implements AuthRedirectControllerDelegate {
   final HTMLRenderer htmlRenderer = HTMLRenderer();
-  late final authServer;
+  late final AuthServer authServer;
   late ManagedContext context;
 
   /// Initialize services in this method.
@@ -55,19 +56,19 @@ class WildfireChannel extends ApplicationChannel
     router
         .route("/register")
         .link(() => Authorizer.basic(authServer))!
-        .link(() => RegisterController(context!, authServer));
+        .link(() => RegisterController(context, authServer));
 
     /* Gets profile for user with bearer token */
     router
         .route("/me")
         .link(() => Authorizer.bearer(authServer))!
-        .link(() => IdentityController(context!));
+        .link(() => IdentityController(context));
 
     /* Gets all users or one specific user by id */
     router
         .route("/users/[:id]")
         .link(() => Authorizer.bearer(authServer))!
-        .link(() => UserController(context!, authServer));
+        .link(() => UserController(context, authServer));
 
     return router;
   }
