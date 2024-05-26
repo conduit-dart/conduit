@@ -17,6 +17,7 @@ class BuildContext {
     this.buildDirectoryUri,
     this.executableUri,
     this.source, {
+    this.environment,
     this.forTests = false,
   }) {
     analyzer = CodeAnalyzer(sourceApplicationDirectory.uri);
@@ -24,11 +25,12 @@ class BuildContext {
 
   factory BuildContext.fromMap(Map<String, dynamic> map) {
     return BuildContext(
-      Uri.parse(map['rootLibraryFileUri'] as String),
-      Uri.parse(map['buildDirectoryUri'] as String),
-      Uri.parse(map['executableUri'] as String),
-      map['source'] as String,
-      forTests: map['forTests'] as bool? ?? false,
+      Uri.parse(map['rootLibraryFileUri']),
+      Uri.parse(map['buildDirectoryUri']),
+      Uri.parse(map['executableUri']),
+      map['source'],
+      environment: map['environment'],
+      forTests: map['forTests'] ?? false,
     );
   }
 
@@ -37,6 +39,7 @@ class BuildContext {
         'buildDirectoryUri': buildDirectoryUri.toString(),
         'source': source,
         'executableUri': executableUri.toString(),
+        'environment': environment,
         'forTests': forTests
       };
 
@@ -58,6 +61,8 @@ class BuildContext {
   final bool forTests;
 
   PackageConfig? _packageConfig;
+
+  final Map<String, String>? environment;
 
   /// The [RuntimeContext] available during the build process.
   MirrorContext get context => RuntimeContext.current as MirrorContext;

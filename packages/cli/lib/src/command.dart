@@ -177,6 +177,10 @@ abstract class CLICommand {
     }
   }
 
+  List<String> decodeMulti(String key) {
+    return _argumentValues.multiOption(key);
+  }
+
   T? _orElse<T>(T? Function()? orElse) {
     return (orElse != null) ? orElse() : null;
   }

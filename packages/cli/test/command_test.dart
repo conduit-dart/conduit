@@ -179,6 +179,21 @@ void main() {
 
     expect(cmd.sslMode.toSslMode(), equals(SslMode.require));
   });
+
+  test('Decodes multiple string args of the same key', () {
+    final cmd = TestCLICommand();
+
+    final args = [
+      '--define=foo',
+      '--define=bar',
+      '--define=baz',
+    ];
+
+    final results = cmd.options.parse(args);
+    cmd.process(results);
+
+    expect(cmd.declarations, equals(['foo', 'bar', 'baz']));
+  });
 }
 
 class TestCLICommand extends CLICommand {
@@ -228,6 +243,9 @@ class TestCLICommand extends CLICommand {
 
   @Option("sslMode")
   String get sslMode => decode("sslMode");
+
+  @MultiOption("define")
+  List<String> get declarations => decodeMulti("define");
 
   @Option(
     "scopes",

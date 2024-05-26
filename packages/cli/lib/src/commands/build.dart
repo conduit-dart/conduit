@@ -32,6 +32,16 @@ class CLIBuild extends CLICommand with CLIProject {
             .toFilePath(windows: Platform.isWindows),
       ).absolute;
 
+  @Option("define",
+      help:
+          "Adds an environment variable to use during runtime. This can be added more than once.",
+      abbr: "D")
+  Map<String, String> get environment =>
+      Map.fromEntries(decodeMulti("define").map((entry) {
+        final pair = entry.split("=");
+        return MapEntry(pair[0], pair[1]);
+      }));
+
   @override
   Future<int> handle() async {
     final root = projectDirectory!.uri;
