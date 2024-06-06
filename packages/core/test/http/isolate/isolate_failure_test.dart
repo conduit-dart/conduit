@@ -17,7 +17,7 @@ void main() {
       final crashingApp = Application<CrashChannel>();
 
       try {
-        crashingApp.options.context = {"crashIn": "addRoutes"};
+        crashingApp.options.context["crashIn"] = "addRoutes";
         await crashingApp.start(consoleLogging: true);
         expect(true, false);
       } on ApplicationStartupException catch (e) {
@@ -25,14 +25,14 @@ void main() {
       }
 
       try {
-        crashingApp.options.context = {"crashIn": "prepare"};
+        crashingApp.options.context["crashIn"] = "prepare";
         await crashingApp.start(consoleLogging: true);
         expect(true, false);
       } on ApplicationStartupException catch (e) {
         expect(e.toString(), contains("TestException: prepare"));
       }
 
-      crashingApp.options.context = {"crashIn": "dontCrash"};
+      crashingApp.options.context["crashIn"] = "dontCrash";
       await crashingApp.start(consoleLogging: true);
       final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);
@@ -62,7 +62,7 @@ void main() {
         () async {
       final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
-        ..options.context = {"timeout1": 10};
+        ..options.context["timeout1"] = 10;
 
       try {
         await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
@@ -80,7 +80,7 @@ void main() {
         () async {
       final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
-        ..options.context = {"timeout2": 10};
+        ..options.context["timeout2"] = 10;
 
       try {
         await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);

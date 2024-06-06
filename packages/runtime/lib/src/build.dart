@@ -146,8 +146,8 @@ class Build {
       [
         "compile",
         "exe",
-        ...context.environment?.entries.map((e) => "-D${e.key}=${e.value}") ??
-            [],
+        ...(context.environment?.entries.map((e) => "-D${e.key}=${e.value}") ??
+            []),
         "-v",
         srcUri.toFilePath(windows: Platform.isWindows),
         "-o",
@@ -157,6 +157,7 @@ class Build {
           .toFilePath(windows: Platform.isWindows),
       runInShell: true,
     );
+
     if (res.exitCode != 0) {
       throw StateError(
         "'dart2native' failed with the following message: ${res.stderr}",

@@ -102,7 +102,7 @@ void main() {
       final crashingApp = Application<CrashingTestChannel>();
 
       try {
-        crashingApp.options.context = {"crashIn": "addRoutes"};
+        crashingApp.options.context["crashIn"] = "addRoutes";
         await crashingApp.startOnCurrentIsolate();
         expect(true, false);
       } on Exception catch (e) {
@@ -110,14 +110,14 @@ void main() {
       }
 
       try {
-        crashingApp.options.context = {"crashIn": "prepare"};
+        crashingApp.options.context["crashIn"] = "prepare";
         await crashingApp.startOnCurrentIsolate();
         expect(true, false);
       } on Exception catch (e) {
         expect(e.toString(), contains("prepare"));
       }
 
-      crashingApp.options.context = {"crashIn": "dontCrash"};
+      crashingApp.options.context["crashIn"] = "dontCrash";
       await crashingApp.startOnCurrentIsolate();
       final response = await http.get(Uri.parse("http://localhost:8888/t"));
       expect(response.statusCode, 200);

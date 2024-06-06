@@ -32,7 +32,7 @@ class CLIBuild extends CLICommand with CLIProject {
             .toFilePath(windows: Platform.isWindows),
       ).absolute;
 
-  @Option("define",
+  @MultiOption("define",
       help:
           "Adds an environment variable to use during runtime. This can be added more than once.",
       abbr: "D")
@@ -51,6 +51,7 @@ class CLIBuild extends CLICommand with CLIProject {
       buildDirectory.uri,
       root.resolve("$packageName.aot"),
       getScriptSource(await getChannelName()),
+      environment: environment,
     );
 
     print("Starting build process...");
@@ -153,7 +154,6 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
   }
 
   final app = Application<ApplicationChannel>();
-
   app.options = ApplicationOptions()
     ..port = int.parse(values['port'] as String)
     ..address = values['address']
@@ -161,7 +161,6 @@ Future _runnerFunc(List<String> args, dynamic sendPort) async {
     ..configurationFilePath = values['config-path'] as String?
     ..certificateFilePath = values['ssl-certificate-path'] as String?
     ..privateKeyFilePath = values['ssl-key-path'] as String?;
-
   final isolateCountString = values['isolates'];
   if (isolateCountString == null) {
     await app.startOnCurrentIsolate();

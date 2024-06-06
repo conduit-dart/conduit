@@ -52,7 +52,7 @@ void main() {
         () async {
       app = Application<HubChannel>()
         ..options.port = 8000
-        ..options.context = {"sendIn": "prepare"};
+        ..options.context["sendIn"] = "prepare";
       await app.start(numberOfInstances: 3);
 
       expect(
@@ -85,7 +85,7 @@ void main() {
     test("Message hub stream can have multiple listeners", () async {
       app = Application<HubChannel>()
         ..options.port = 8000
-        ..options.context = {"multipleListeners": true};
+        ..options.context["multipleListeners"] = true;
       await app.start(numberOfInstances: 3);
 
       final resp = await postMessage("msg1");

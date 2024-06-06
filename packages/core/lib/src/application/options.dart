@@ -54,5 +54,5 @@ class ApplicationOptions {
   ///
   /// This is a user-specific set of configuration options provided by [ApplicationChannel.initializeApplication].
   /// Each instance of [ApplicationChannel] has access to these values if set.
-  Map<String, dynamic> context = {};
+  final Map<String, dynamic> context = {};
 }
