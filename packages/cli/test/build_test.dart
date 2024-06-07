@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
-import 'package:path/path.dart';
 import 'package:test/test.dart';
+import 'package:http/http.dart' as http;
 
 import 'not_tests/cli_helpers.dart';
 
@@ -70,15 +70,15 @@ void main() {
   });
 
   test("Build works with define", () async {
-    final File mainFile = File(
-        join(cli.agent.workingDirectory.path, "test_project/bin/main.dart"));
+    final File mainFile = File(cli.agent.workingDirectory.uri
+        .resolve("test_project/lib/channel.dart")
+        .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
       mainFile.writeAsStringSync(source.replaceFirst(
-          'await app.startOnCurrentIsolate();',
-          'if (String.fromEnvironment("FOO").isNotEmpty) throw "";await app.startOnCurrentIsolate();'));
+          'return Response.ok({"key": "value"});',
+          '''const lit = String.fromEnvironment("FOO");
+          return Response.ok({"key": lit});'''));
     });
-
-    print(mainFile.readAsStringSync());
 
     final res = await cli.run("build", [
       "--define=FOO=BAR",
@@ -86,10 +86,6 @@ void main() {
       "test_project/",
     ]);
     expect(res, 0);
-
-    print(File(
-      join(cli.agent.workingDirectory.path, "/test_project/test_project.aot"),
-    ));
 
     final binPath = cli.agent.workingDirectory.uri
         .resolve("test_project/test_project.aot")
@@ -103,9 +99,10 @@ void main() {
 
     final binRes = await Process.start(binPath, []);
     pids.add(binRes.pid);
-
-    expect(String.fromCharCodes(await binRes.stdout.first), isEmpty);
-    expect(await binRes.exitCode, 1);
+    expect(String.fromCharCodes(await binRes.stdout.first),
+        contains("[INFO] conduit: Server conduit/1 started."));
+    final response = await http.get(Uri.parse('http://0.0.0.0:8888/example'));
+    expect(response.body, contains("BAR"));
     Process.killPid(binRes.pid);
   });
 }
