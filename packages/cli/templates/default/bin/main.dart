@@ -1,6 +1,6 @@
 import 'package:wildfire/wildfire.dart';
 
-Future main() async {
+Future main(List<String> args) async {
   final values = ApplicationOptions.parser.parse(args);
   if (values["help"] == true) {
     print(ApplicationOptions.parser.usage);
