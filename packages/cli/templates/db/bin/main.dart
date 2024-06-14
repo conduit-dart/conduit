@@ -1,12 +1,24 @@
 import 'package:wildfire/wildfire.dart';
 
 Future main() async {
-  final app = Application<WildfireChannel>()
-    ..options.configurationFilePath = "config.yaml"
-    ..options.port = 8888;
+  final values = ApplicationOptions.parser.parse(args);
+  if (values["help"] == true) {
+    print(ApplicationOptions.parser.usage);
+    return 0;
+  }
 
-  await app.startOnCurrentIsolate();
-
-  print("Application started on port: ${app.options.port}.");
-  print("Use Ctrl-C (SIGINT) to stop running the application.");
+  final app = Application<WildfireChannel>();
+  app.options = ApplicationOptions()
+    ..port = int.parse(values['port'] as String)
+    ..address = values['address']
+    ..isIpv6Only = values['ipv6-only'] == true
+    ..configurationFilePath = values['config-path'] as String?
+    ..certificateFilePath = values['ssl-certificate-path'] as String?
+    ..privateKeyFilePath = values['ssl-key-path'] as String?;
+  final isolateCountString = values['isolates'];
+  if (isolateCountString == null) {
+    await app.startOnCurrentIsolate();
+  } else {
+    await app.start(numberOfInstances: int.parse(isolateCountString as String));
+  }
 }

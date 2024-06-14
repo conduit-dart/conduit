@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
 import 'package:conduit_core/src/application/application.dart';
 import 'package:conduit_core/src/application/channel.dart';
 
@@ -55,4 +56,52 @@ class ApplicationOptions {
   /// This is a user-specific set of configuration options provided by [ApplicationChannel.initializeApplication].
   /// Each instance of [ApplicationChannel] has access to these values if set.
   final Map<String, dynamic> context = {};
+
+  static final parser = ArgParser()
+    ..addOption(
+      "address",
+      abbr: "a",
+      help: "The address to listen on. See HttpServer.bind for more details."
+          " Using the default will listen on any address.",
+    )
+    ..addOption(
+      "config-path",
+      abbr: "c",
+      help:
+          "The path to a configuration file. This File is available in the ApplicationOptions "
+          "for a ApplicationChannel to use to read application-specific configuration values. Relative paths are relative to [directory].",
+      defaultsTo: "config.yaml",
+    )
+    ..addOption(
+      "isolates",
+      abbr: "n",
+      help: "Number of isolates handling requests.",
+    )
+    ..addOption(
+      "port",
+      abbr: "p",
+      help: "The port number to listen for HTTP requests on.",
+      defaultsTo: "8888",
+    )
+    ..addFlag(
+      "ipv6-only",
+      help: "Limits listening to IPv6 connections only.",
+      negatable: false,
+    )
+    ..addOption(
+      "ssl-certificate-path",
+      help:
+          "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+    )
+    ..addOption(
+      "ssl-key-path",
+      help:
+          "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+    )
+    ..addOption(
+      "timeout",
+      help: "Number of seconds to wait to ensure startup succeeded.",
+      defaultsTo: "45",
+    )
+    ..addFlag("help");
 }
