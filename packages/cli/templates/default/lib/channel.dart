@@ -3,7 +3,7 @@ import 'package:wildfire/wildfire.dart';
 /// This type initializes an application.
 ///
 /// Override methods in this class to set up routes and initialize services like
-/// database connections. See http://conduit.io/docs/http/channel/.
+/// database connections. See https://docs.theconduit.dev/http/channel/.
 class WildfireChannel extends ApplicationChannel {
   /// Initialize services in this method.
   ///
@@ -28,7 +28,7 @@ class WildfireChannel extends ApplicationChannel {
     final router = Router();
 
     // Prefer to use `link` instead of `linkFunction`.
-    // See: https://conduit.io/docs/http/request_controller/
+    // See: https://docs.theconduit.dev/http/request_controller/
     router.route("/example").linkFunction((request) async {
       return Response.ok({"key": "value"});
     });

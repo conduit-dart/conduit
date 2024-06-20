@@ -18,4 +18,4 @@ The default configuration file used when testing is `config.src.yaml`. This file
 
 ## Deploying an Application
 
-See the documentation for [Deployment](https://conduit.io/docs/deploy/).
+See the documentation for [Deployment](https://docs.theconduit.dev/deploy/).
