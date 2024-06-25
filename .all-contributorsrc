@@ -42,6 +42,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "edlman",
+      "name": "Martin Edlman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3896384?v=4",
+      "profile": "https://anycode.dev",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -49,5 +58,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "conduit",
-  "projectOwner": "conduit-dart"
+  "projectOwner": "conduit-dart",
+  "commitType": "docs"
 }
