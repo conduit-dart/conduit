@@ -136,7 +136,10 @@ void main() {
       });
       fail('unreachable');
     } on QueryException catch (e) {
-      expect(e.toString(), contains("timed out"));
+      expect(
+          e.toString(),
+          contains(
+              "Attempting to execute query on connection while inside a `runTx` call."));
     }
 
     final q = Query<Model>(context);

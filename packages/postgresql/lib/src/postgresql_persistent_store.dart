@@ -371,8 +371,12 @@ class PostgreSQLPersistentStore extends PersistentStore
       if (interpreted != null) {
         throw interpreted;
       }
-
       rethrow;
+    } on PgException catch (e) {
+      throw QueryException.transport(
+        e.message,
+        underlyingException: e,
+      );
     }
   }
 

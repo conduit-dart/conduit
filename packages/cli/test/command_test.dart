@@ -16,7 +16,7 @@ void main() {
         predicate<FormatException>(
           (e) =>
               e.message ==
-              '"test" is not an allowed value for option "flavor".',
+              '"test" is not an allowed value for option "--flavor".',
         ),
       ),
     );
@@ -31,7 +31,7 @@ void main() {
       () => cmd.options.parse(args),
       throwsA(
         predicate<FormatException>(
-          (e) => e.message == 'Could not find an option named "bad".',
+          (e) => e.message == 'Could not find an option named "--bad".',
         ),
       ),
     );
