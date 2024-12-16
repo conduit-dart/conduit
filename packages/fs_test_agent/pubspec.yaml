@@ -6,7 +6,7 @@ repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
   path: ^1.9.0
