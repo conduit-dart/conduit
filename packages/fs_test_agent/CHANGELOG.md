@@ -4,6 +4,28 @@
 
 ## 5.1.3
 
+ - **REFACTOR**: Upgrading packages and refactoring ([#238](https://github.com/conduit-dart/conduit/issues/238)). ([75b86fae](https://github.com/conduit-dart/conduit/commit/75b86fae9ce6e01107e34df05bdd74ba40f5533d))
+ - **REFACTOR**: Dart version bump 3.4 ([#223](https://github.com/conduit-dart/conduit/issues/223)). ([e70f5fe1](https://github.com/conduit-dart/conduit/commit/e70f5fe194e3d2e29b98896e41d2e53afebc0a88))
+ - **REFACTOR**: ci and code quality ([#222](https://github.com/conduit-dart/conduit/issues/222)). ([d6e60631](https://github.com/conduit-dart/conduit/commit/d6e606315f55e851b80237984cd6082c4abfbdc2))
+ - **REFACTOR**: housekeeping 2 20 24 ([#216](https://github.com/conduit-dart/conduit/issues/216)). ([5fd4d59b](https://github.com/conduit-dart/conduit/commit/5fd4d59bd1e20485f7af4871995a689e910a969d))
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
+ - **REFACTOR**: Limit ci runs and uptick lint package ([#160](https://github.com/conduit-dart/conduit/issues/160)). ([f8d1de60](https://github.com/conduit-dart/conduit/commit/f8d1de600bc66f02827789b5baed3c35abbd2d27))
+ - **REFACTOR**: Uptick min dart version ([#139](https://github.com/conduit-dart/conduit/issues/139)). ([45723b81](https://github.com/conduit-dart/conduit/commit/45723b81f99259998dac08e1db3f5f8aa64f80dd))
+ - **REFACTOR**: Run analyzer and fix lint issues, possible perf improvements ([#128](https://github.com/conduit-dart/conduit/issues/128)). ([0675a4eb](https://github.com/conduit-dart/conduit/commit/0675a4ebe0e9e7574fed73c753f753d82c378cb9))
+ - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))
+ - **FIX**(ci): trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+ - **FIX**(ci): test publish CI. ([7444f6ed](https://github.com/conduit-dart/conduit/commit/7444f6ed7042bfab50ce6bc285fa16530c69d34d))
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+ - **FIX**: Versioning issues and upkeep ([#191](https://github.com/conduit-dart/conduit/issues/191)). ([faa916ba](https://github.com/conduit-dart/conduit/commit/faa916ba6fe25ce3d3ce3878b8508741e611e2af))
+ - **FIX**: Upgrade to latest dependencies ([#120](https://github.com/conduit-dart/conduit/issues/120)). ([2be7f7aa](https://github.com/conduit-dart/conduit/commit/2be7f7aa6fb8085cd21956fead60dc8d10f5daf2))
+ - **FEAT**: Prepping for orm ([#190](https://github.com/conduit-dart/conduit/issues/190)). ([e82dfa6f](https://github.com/conduit-dart/conduit/commit/e82dfa6f6fc70a3a41f7e832fbf787a15343266d))
+ - **FEAT**: Separates core framework and cli ([#161](https://github.com/conduit-dart/conduit/issues/161)). ([28445bbe](https://github.com/conduit-dart/conduit/commit/28445bbe2c012a3a16d372f6ddf29d344939e72f))
+ - **FEAT**: Works with latest version of dart (2.19), CI works, websockets fixed, melos tasks added:wq. ([616a99be](https://github.com/conduit-dart/conduit/commit/616a99be9624b34c0a01acd7ff4a67b0d8b9a75f))
+ - **DOCS**: improve doc gen ([#180](https://github.com/conduit-dart/conduit/issues/180)). ([8d18f872](https://github.com/conduit-dart/conduit/commit/8d18f872fa70ceec3052077c0e6adbc6c7ac6953))
+ - **DOCS**: Add doc generation and housekeeping ([#156](https://github.com/conduit-dart/conduit/issues/156)). ([89f303c8](https://github.com/conduit-dart/conduit/commit/89f303c88251ec2228e58d807fc553839c3c967d))
+
+## 5.1.3
+
  - **REFACTOR**(cli): Change build source to bin/main.dart ([#231](https://github.com/conduit-dart/conduit/issues/231)). ([e9f43ede](https://github.com/conduit-dart/conduit/commit/e9f43ede8eb2a7700f00872c68edbb17a0390548))
  - **REFACTOR**: Dart version bump 3.4 ([#223](https://github.com/conduit-dart/conduit/issues/223)). ([e70f5fe1](https://github.com/conduit-dart/conduit/commit/e70f5fe194e3d2e29b98896e41d2e53afebc0a88))
  - **REFACTOR**: ci and code quality ([#222](https://github.com/conduit-dart/conduit/issues/222)). ([d6e60631](https://github.com/conduit-dart/conduit/commit/d6e606315f55e851b80237984cd6082c4abfbdc2))
