@@ -1,3 +1,7 @@
+## 5.1.4
+
+ - Bump "conduit_config" to `5.1.4`.
+
 ## 5.1.3
 
  - **REFACTOR**(cli): Change build source to bin/main.dart ([#231](https://github.com/conduit-dart/conduit/issues/231)). ([e9f43ede](https://github.com/conduit-dart/conduit/commit/e9f43ede8eb2a7700f00872c68edbb17a0390548))

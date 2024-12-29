@@ -1,3 +1,7 @@
+## 5.1.4
+
+ - Bump "conduit_test" to `5.1.4`.
+
 ## 5.1.3
 
 > Note: This release has breaking changes.

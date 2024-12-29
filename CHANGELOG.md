@@ -3,6 +3,82 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-12-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`conduit` - `v5.1.4`](#conduit---v514)
+ - [`conduit_codable` - `v5.1.4`](#conduit_codable---v514)
+ - [`conduit_common` - `v5.1.4`](#conduit_common---v514)
+ - [`conduit_config` - `v5.1.4`](#conduit_config---v514)
+ - [`conduit_core` - `v5.1.4`](#conduit_core---v514)
+ - [`conduit_isolate_exec` - `v5.1.4`](#conduit_isolate_exec---v514)
+ - [`conduit_open_api` - `v5.1.4`](#conduit_open_api---v514)
+ - [`conduit_password_hash` - `v5.1.4`](#conduit_password_hash---v514)
+ - [`conduit_postgresql` - `v5.1.4`](#conduit_postgresql---v514)
+ - [`conduit_runtime` - `v5.1.4`](#conduit_runtime---v514)
+ - [`conduit_test` - `v5.1.4`](#conduit_test---v514)
+ - [`fs_test_agent` - `v5.1.4`](#fs_test_agent---v514)
+
+---
+
+#### `conduit` - `v5.1.4`
+
+ - **REFACTOR**: Upgrading packages and refactoring. ([e6189d54](https://github.com/conduit-dart/conduit/commit/e6189d548b038efab4e6d94e82f95306ceec1a93))
+
+#### `conduit_codable` - `v5.1.4`
+
+ - Bump "conduit_codable" to `5.1.4`.
+
+#### `conduit_common` - `v5.1.4`
+
+ - Bump "conduit_common" to `5.1.4`.
+
+#### `conduit_config` - `v5.1.4`
+
+ - Bump "conduit_config" to `5.1.4`.
+
+#### `conduit_core` - `v5.1.4`
+
+ - Bump "conduit_core" to `5.1.4`.
+
+#### `conduit_isolate_exec` - `v5.1.4`
+
+ - Bump "conduit_isolate_exec" to `5.1.4`.
+
+#### `conduit_open_api` - `v5.1.4`
+
+ - Bump "conduit_open_api" to `5.1.4`.
+
+#### `conduit_password_hash` - `v5.1.4`
+
+ - Bump "conduit_password_hash" to `5.1.4`.
+
+#### `conduit_postgresql` - `v5.1.4`
+
+ - **REFACTOR**: Upgrading packages and refactoring. ([e6189d54](https://github.com/conduit-dart/conduit/commit/e6189d548b038efab4e6d94e82f95306ceec1a93))
+
+#### `conduit_runtime` - `v5.1.4`
+
+ - Bump "conduit_runtime" to `5.1.4`.
+
+#### `conduit_test` - `v5.1.4`
+
+ - Bump "conduit_test" to `5.1.4`.
+
+#### `fs_test_agent` - `v5.1.4`
+
+ - Bump "fs_test_agent" to `5.1.4`.
+
+
 ## 2024-06-14
 
 ### Changes

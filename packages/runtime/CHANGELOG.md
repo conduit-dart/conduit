@@ -1,3 +1,7 @@
+## 5.1.4
+
+ - Bump "conduit_runtime" to `5.1.4`.
+
 ## 5.1.3
 
 > Note: This release has breaking changes.
