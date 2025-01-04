@@ -4,7 +4,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library open_api_v2;
+library;
 
 export 'package:conduit_open_api/src/v2/document.dart';
 export 'package:conduit_open_api/src/v2/header.dart';

@@ -11,7 +11,7 @@
 /// void main() {
 ///   test("...", () async => ...);
 /// }
-library conduit_test;
+library;
 
 export 'package:conduit_test/src/agent.dart';
 export 'package:conduit_test/src/auth_harness.dart';

@@ -1,4 +1,4 @@
-library runtime;
+library;
 
 import 'dart:io';
 

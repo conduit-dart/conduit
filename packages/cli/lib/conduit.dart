@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /// The core libraries of the Conduit framework.
 ///
 /// See documentation guides at https://conduit.io/docs/.
-library conduit;
+library;
 
 export 'package:conduit_config/conduit_config.dart';
 export 'package:conduit/src/migration_source.dart';

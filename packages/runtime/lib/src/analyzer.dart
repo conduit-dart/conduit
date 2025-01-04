@@ -88,7 +88,10 @@ class CodeAnalyzer {
           .whereType<ClassDeclaration>()
           .firstWhere((c) => c.name.value() == className);
     } catch (e) {
-      if (e is StateError || e is TypeError || e is ArgumentError) {
+      if (e is StateError ||
+          e is TypeError ||
+          e is ArgumentError ||
+          e is UnsupportedError) {
         return null;
       }
       rethrow;

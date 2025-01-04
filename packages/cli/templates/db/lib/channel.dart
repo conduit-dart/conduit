@@ -37,6 +37,12 @@ class WildfireChannel extends ApplicationChannel {
         .route("/model/[:id]")
         .link(() => ManagedObjectController<Model>(context));
 
+    // Prefer to use `link` instead of `linkFunction`.
+    // See: https://conduit.io/docs/http/request_controller/
+    router.route("/example").linkFunction((request) async {
+      return Response.ok({"key": "value"});
+    });
+
     return router;
   }
 

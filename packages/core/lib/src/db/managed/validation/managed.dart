@@ -98,8 +98,6 @@ class ManagedValidator {
         return "insert";
       case Validating.update:
         return "update";
-      default:
-        return "unknown";
     }
   }
 }
