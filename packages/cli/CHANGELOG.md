@@ -1,5 +1,30 @@
 ## 5.1.4
 
+ - **REFACTOR**(cli): Change build source to bin/main.dart ([#231](https://github.com/conduit-dart/conduit/issues/231)). ([e9f43ede](https://github.com/conduit-dart/conduit/commit/e9f43ede8eb2a7700f00872c68edbb17a0390548))
+ - **REFACTOR**: Dart version bump 3.4 ([#223](https://github.com/conduit-dart/conduit/issues/223)). ([e70f5fe1](https://github.com/conduit-dart/conduit/commit/e70f5fe194e3d2e29b98896e41d2e53afebc0a88))
+ - **REFACTOR**: ci and code quality ([#222](https://github.com/conduit-dart/conduit/issues/222)). ([d6e60631](https://github.com/conduit-dart/conduit/commit/d6e606315f55e851b80237984cd6082c4abfbdc2))
+ - **REFACTOR**: housekeeping 2 20 24 ([#216](https://github.com/conduit-dart/conduit/issues/216)). ([5fd4d59b](https://github.com/conduit-dart/conduit/commit/5fd4d59bd1e20485f7af4871995a689e910a969d))
+ - **REFACTOR**: Remove common test. ([cebcc417](https://github.com/conduit-dart/conduit/commit/cebcc417fc2849f18b7e9a2a1bbab412eda621ff))
+ - **REFACTOR**: Remove pub_cache ([#188](https://github.com/conduit-dart/conduit/issues/188)). ([6d5beca1](https://github.com/conduit-dart/conduit/commit/6d5beca119fceaa7938402f171fc8983678c40b3))
+ - **REFACTOR**: Bump min required dart version ([#187](https://github.com/conduit-dart/conduit/issues/187)). ([0e870402](https://github.com/conduit-dart/conduit/commit/0e8704028d55d2e924aa72fa8e5e72711c8f4a07))
+ - **FIX**: Melos stuff ([#199](https://github.com/conduit-dart/conduit/issues/199)). ([20bc466d](https://github.com/conduit-dart/conduit/commit/20bc466daea0f82019aaf4c04edeab64a83038f9))
+ - **FIX**(ci): trigger. ([00cc11e6](https://github.com/conduit-dart/conduit/commit/00cc11e6ac20f7c9274e3296294f64db62104e62))
+ - **FIX**(ci): trigger. ([cfd406c0](https://github.com/conduit-dart/conduit/commit/cfd406c07b1595316061ac5840b4625e4503f13a))
+ - **FIX**(ci): trigger. ([36e63b05](https://github.com/conduit-dart/conduit/commit/36e63b05bd5b21c858cdf52808b195323b931d4a))
+ - **FIX**(ci): test publish CI. ([7444f6ed](https://github.com/conduit-dart/conduit/commit/7444f6ed7042bfab50ce6bc285fa16530c69d34d))
+ - **FIX**: remove common_test from core. ([94867de3](https://github.com/conduit-dart/conduit/commit/94867de38d11d020895fbf984fbac7167db928e1))
+ - **FIX**: Versioning issues and upkeep ([#191](https://github.com/conduit-dart/conduit/issues/191)). ([faa916ba](https://github.com/conduit-dart/conduit/commit/faa916ba6fe25ce3d3ce3878b8508741e611e2af))
+ - **FIX**: catch no templates scenario ([#181](https://github.com/conduit-dart/conduit/issues/181)). ([eaeecc4d](https://github.com/conduit-dart/conduit/commit/eaeecc4df649ef6fcd90451e8c80cadbb11af7e8))
+ - **FIX**: Cache cli ([#169](https://github.com/conduit-dart/conduit/issues/169)). ([8dd84221](https://github.com/conduit-dart/conduit/commit/8dd842210e117dcd63c3c1fe6ce5045389cd5b2f))
+ - **FIX**: investigate build issues ([#167](https://github.com/conduit-dart/conduit/issues/167)). ([ee79f9e6](https://github.com/conduit-dart/conduit/commit/ee79f9e69a4f6dbaefa93db78505eaf7b5a88652))
+ - **FIX**: Check cli integrity ([#164](https://github.com/conduit-dart/conduit/issues/164)). ([5fd4e403](https://github.com/conduit-dart/conduit/commit/5fd4e4036d7316c91c2bfac3a06a2526096a9fac))
+ - **FEAT**: Prepping for orm ([#190](https://github.com/conduit-dart/conduit/issues/190)). ([e82dfa6f](https://github.com/conduit-dart/conduit/commit/e82dfa6f6fc70a3a41f7e832fbf787a15343266d))
+ - **FEAT**: Replace ServiceRegistry with Finalizers ([#185](https://github.com/conduit-dart/conduit/issues/185)). ([73208e92](https://github.com/conduit-dart/conduit/commit/73208e92ceed79369405933b20d98c9ed48ed0e5))
+ - **FEAT**: Separates core framework and cli ([#161](https://github.com/conduit-dart/conduit/issues/161)). ([28445bbe](https://github.com/conduit-dart/conduit/commit/28445bbe2c012a3a16d372f6ddf29d344939e72f))
+ - **DOCS**: improve doc gen ([#180](https://github.com/conduit-dart/conduit/issues/180)). ([8d18f872](https://github.com/conduit-dart/conduit/commit/8d18f872fa70ceec3052077c0e6adbc6c7ac6953))
+
+## 5.1.4
+
  - **REFACTOR**: Upgrading packages and refactoring. ([e6189d54](https://github.com/conduit-dart/conduit/commit/e6189d548b038efab4e6d94e82f95306ceec1a93))
 
 ## 5.1.3
