@@ -3,8 +3,7 @@ import 'dart:isolate';
 import 'dart:mirrors';
 
 import 'package:analyzer/dart/analysis/analysis_context.dart';
-import 'package:analyzer/dart/analysis/context_builder.dart';
-import 'package:analyzer/dart/analysis/context_locator.dart';
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/file_system.dart';
@@ -85,12 +84,8 @@ AnalysisContext _createContext(
   ResourceProvider? resourceProvider,
 }) {
   resourceProvider ??= PhysicalResourceProvider.INSTANCE;
-  final builder = ContextBuilder(resourceProvider: resourceProvider);
-  final contextLocator = ContextLocator(
-    resourceProvider: resourceProvider,
-  );
-  final root = contextLocator.locateRoots(
-    includedPaths: [path],
-  );
-  return builder.createContext(contextRoot: root.first);
+  final builder = AnalysisContextCollection(
+      resourceProvider: resourceProvider, includedPaths: [path]);
+
+  return builder.contextFor(path);
 }
