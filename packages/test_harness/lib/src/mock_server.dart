@@ -57,7 +57,7 @@ abstract class MockServer<T> {
 /// correct request was sent and your application's behavior can be validated against the possible responses from the other server.
 ///
 /// An instance of this type listens on 'localhost' on [port]. Your application should use configuration values to provide the base URL and port
-/// of another server. During testing, your application should use the base URL 'http://localhost:<port>' and instantiate an mock HTTP
+/// of another server. During testing, your application should use the base URL 'http://localhost:\<port>' and instantiate an mock HTTP
 /// server with that port.
 ///
 /// By default, an instance of this type returns a 503 error response, indicating that the service can't be reached. Different

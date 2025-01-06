@@ -81,7 +81,7 @@ class Validate {
   ///
   /// This constructor is used so that subclasses can pass [onUpdate] and [onInsert].
   /// Example:
-  ///         class CustomValidate extends Validate<String> {
+  ///         class CustomValidate extends Validate\<String> {
   ///           CustomValidate({bool onUpdate: true, bool onInsert: true})
   ///             : super(onUpdate: onUpdate, onInsert: onInsert);
   ///
@@ -89,7 +89,7 @@ class Validate {
   ///              ValidateOperation operation,
   ///              ManagedAttributeDescription property,
   ///              String value,
-  ///              List<String> errors) {
+  ///              List\<String> errors) {
   ///                return someCondition;
   ///            }
   ///         }

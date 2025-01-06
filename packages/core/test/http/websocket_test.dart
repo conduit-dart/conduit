@@ -1,6 +1,8 @@
 // ignore_for_file: null_argument_to_non_null_type
 
 @Timeout(Duration(seconds: 120))
+library;
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
