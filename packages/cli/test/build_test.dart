@@ -75,7 +75,7 @@ void main() {
       ],
     );
     final File mainFile = File(cli.agent.workingDirectory.uri
-        .resolve("test_project/lib/channel.dart")
+        .resolve("test_project/lib/controller/simple_controller.dart")
         .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
       mainFile.writeAsStringSync(source.replaceFirst(
@@ -121,12 +121,11 @@ void main() {
       ],
     );
     final File mainFile = File(cli.agent.workingDirectory.uri
-        .resolve("test_project/lib/channel.dart")
+        .resolve("test_project/lib/controller/simple_controller.dart")
         .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
       mainFile.writeAsStringSync(
           source.replaceFirst('return Response.ok({"key": "value"});', '''
-          print(context);
           return Response.ok({"key": (context.persistentStore as PostgreSQLPersistentStore).databaseName});'''));
     });
 

@@ -1,3 +1,4 @@
+import 'package:wildfire/controller/simple_controller.dart';
 import 'package:wildfire/model/model.dart';
 import 'package:wildfire/wildfire.dart';
 
@@ -37,11 +38,7 @@ class WildfireChannel extends ApplicationChannel {
         .route("/model/[:id]")
         .link(() => ManagedObjectController<Model>(context));
 
-    // Prefer to use `link` instead of `linkFunction`.
-    // See: https://www.theconduit.dev//docs/http/request_controller/
-    router.route("/example").linkFunction((request) async {
-      return Response.ok({"key": "value"});
-    });
+    router.route("/example").link(() => SimpleController(context));
 
     return router;
   }

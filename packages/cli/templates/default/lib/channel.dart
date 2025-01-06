@@ -1,3 +1,4 @@
+import 'package:wildfire/controller/simple_controller.dart';
 import 'package:wildfire/wildfire.dart';
 
 /// This type initializes an application.
@@ -27,11 +28,7 @@ class WildfireChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-    // Prefer to use `link` instead of `linkFunction`.
-    // See: https://www.theconduit.dev//docs/http/request_controller/
-    router.route("/example").linkFunction((request) async {
-      return Response.ok({"key": "value"});
-    });
+    router.route("/example").link(() => SimpleController());
 
     return router;
   }
