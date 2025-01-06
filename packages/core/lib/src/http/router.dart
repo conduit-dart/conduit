@@ -45,7 +45,7 @@ class Router extends Controller {
   /// Routers allow for multiple linked controllers. A request that matches [pattern]
   /// will be sent to the controller linked to this method's return value.
   ///
-  /// The [pattern] must follow the rules of route patterns (see also http://conduit.io/docs/http/routing/).
+  /// The [pattern] must follow the rules of route patterns (see also http://www.theconduit.dev//docs/http/routing/).
   ///
   /// A pattern consists of one or more path segments, e.g. "/path" or "/path/to".
   ///
@@ -95,6 +95,7 @@ class Router extends Controller {
     );
   }
 
+  @Deprecated('Prefer to use `link` instead of `linkFunction`.')
   @override
   Linkable? linkFunction(
     FutureOr<RequestOrResponse?> Function(Request request) handle,

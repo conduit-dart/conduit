@@ -63,7 +63,7 @@ abstract class ManagedBacking {
 /// A subclass of this type must implement its table definition and use it as the type argument of [ManagedObject]. Properties and methods
 /// declared in the subclass (also called the 'instance type') are not stored in the database.
 ///
-/// See more documentation on defining a data model at http://conduit.io/docs/db/modeling_data/
+/// See more documentation on defining a data model at http://www.theconduit.dev//docs/db/modeling_data/
 abstract class ManagedObject<T> extends Serializable {
   /// IMPROVEMENT: Cache of entity.properties to reduce property loading time
   late Map<String, ManagedPropertyDescription?> properties = entity.properties;
