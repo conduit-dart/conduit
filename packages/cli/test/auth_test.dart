@@ -1,4 +1,6 @@
 @Timeout(Duration(seconds: 120))
+library;
+
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
 import 'package:fs_test_agent/dart_project_agent.dart';

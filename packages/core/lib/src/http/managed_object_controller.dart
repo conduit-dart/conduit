@@ -11,19 +11,19 @@ import 'package:conduit_open_api/v3.dart';
 /// directly to a database [Query]. For example, this [Controller] handles an HTTP PUT request by executing an update [Query]; the path variable in the request
 /// indicates the value of the primary key for the updated row and the HTTP request body are the values updated.
 ///
-/// When routing to a [ManagedObjectController], you must provide the following route pattern, where <name> can be any string:
+/// When routing to a [ManagedObjectController], you must provide the following route pattern, where \<name> can be any string:
 ///
-///       router.route("/<name>/[:id]")
+///       router.route("/\<name>/[:id]")
 ///
 /// You may optionally use the static method [ManagedObjectController.routePattern] to create this string for you.
 ///
 /// The mapping for HTTP request to action is as follows:
 ///
-/// - GET /<name>/:id -> Fetch Object by ID
-/// - PUT /<name>/:id -> Update Object by ID, HTTP Request Body contains update values.
-/// - DELETE /<name>/:id -> Delete Object by ID
-/// - POST /<name> -> Create new Object, HTTP Request Body contains update values.
-/// - GET /<name> -> Fetch instances of Object
+/// - GET /\<name>/:id -> Fetch Object by ID
+/// - PUT /\<name>/:id -> Update Object by ID, HTTP Request Body contains update values.
+/// - DELETE /\<name>/:id -> Delete Object by ID
+/// - POST /\<name> -> Create new Object, HTTP Request Body contains update values.
+/// - GET /\<name> -> Fetch instances of Object
 ///
 /// You may use this class without subclassing, but you may also subclass it to modify the executed [Query] prior to its execution, or modify the returned [Response] after the query has been completed.
 ///

@@ -1,4 +1,4 @@
-part of conduit_test.client;
+part of 'agent.dart';
 
 /// Object to construct and execute an HTTP request during testing.
 ///

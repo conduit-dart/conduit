@@ -1,4 +1,4 @@
-part of conduit_test.client;
+part of 'agent.dart';
 
 /// An HTTP response from a test application.
 ///

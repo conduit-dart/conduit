@@ -21,7 +21,7 @@
 /// An application using this library must ensure that these two types have corresponding database tables.
 /// The `conduit db` tool will create database tables for these types as long as they are visible
 /// to the application's library file, as noted above.
-library conduit.managed_auth;
+library;
 
 import 'dart:async';
 

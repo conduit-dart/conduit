@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library terminal;
+library;
 
 import 'dart:async';
 import 'dart:io';

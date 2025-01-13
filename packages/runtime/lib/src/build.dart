@@ -27,7 +27,11 @@ class Build {
         final package = await context.getPackageFromUri(astUri);
         final Uri packageUri =
             package?.packageUriRoot.resolve(package.name) ?? astUri;
-        return context.analyzer.resolveUnitOrLibraryAt(packageUri);
+        try {
+          await context.analyzer.resolveUnitOrLibraryAt(packageUri);
+        } catch (e) {
+          print('Invalid path at $astUri');
+        }
       },
     );
 

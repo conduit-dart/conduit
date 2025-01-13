@@ -1,4 +1,4 @@
-library conduit_test.client;
+library;
 
 import 'dart:async';
 import 'dart:convert';

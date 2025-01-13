@@ -129,8 +129,6 @@ class Authorizer extends Controller {
         );
       case AuthorizationParserExceptionReason.missing:
         return Response.unauthorized();
-      default:
-        return Response.serverError();
     }
   }
 

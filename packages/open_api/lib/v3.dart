@@ -1,4 +1,4 @@
-library open_api_v3;
+library;
 
 export 'package:conduit_open_api/src/object.dart';
 export 'package:conduit_open_api/src/v3/callback.dart';
