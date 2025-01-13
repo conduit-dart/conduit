@@ -5,7 +5,7 @@ import 'package:wildfire/wildfire.dart';
 /// This type initializes an application.
 ///
 /// Override methods in this class to set up routes and initialize services like
-/// database connections. See http://www.theconduit.dev//docs/http/channel/.
+/// database connections. See http://www.theconduit.dev/docs/http/channel/.
 class WildfireChannel extends ApplicationChannel {
   late ManagedContext context;
 
@@ -65,7 +65,7 @@ class WildfireChannel extends ApplicationChannel {
 /// file specific to this application.
 ///
 /// Configuration files must have key-value for the properties in this class.
-/// For more documentation on configuration files, see https://www.theconduit.dev//docs/configure/ and
+/// For more documentation on configuration files, see https://www.theconduit.dev/docs/configure/ and
 /// https://pub.dartlang.org/packages/safe_config.
 class WildfireConfiguration extends Configuration {
   WildfireConfiguration(String fileName) : super.fromFile(File(fileName));
