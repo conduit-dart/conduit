@@ -45,7 +45,7 @@ class Router extends Controller {
   /// Routers allow for multiple linked controllers. A request that matches [pattern]
   /// will be sent to the controller linked to this method's return value.
   ///
-  /// The [pattern] must follow the rules of route patterns (see also http://conduit.io/docs/http/routing/).
+  /// The [pattern] must follow the rules of route patterns (see also https://docs.theconduit.dev/http/routing/).
   ///
   /// A pattern consists of one or more path segments, e.g. "/path" or "/path/to".
   ///
