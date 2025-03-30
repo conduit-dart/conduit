@@ -4,4 +4,4 @@ description: test dependency
 publish_to: none
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
