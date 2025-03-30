@@ -1,3 +1,8 @@
+## 5.1.5
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
 ## 5.1.4
 
  - **REFACTOR**(cli): Change build source to bin/main.dart ([#231](https://github.com/conduit-dart/conduit/issues/231)). ([e9f43ede](https://github.com/conduit-dart/conduit/commit/e9f43ede8eb2a7700f00872c68edbb17a0390548))

@@ -3,6 +3,96 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-03-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`conduit` - `v5.1.5`](#conduit---v515)
+ - [`conduit_codable` - `v5.1.5`](#conduit_codable---v515)
+ - [`conduit_common` - `v5.1.5`](#conduit_common---v515)
+ - [`conduit_config` - `v5.1.5`](#conduit_config---v515)
+ - [`conduit_core` - `v5.1.5`](#conduit_core---v515)
+ - [`conduit_isolate_exec` - `v5.1.5`](#conduit_isolate_exec---v515)
+ - [`conduit_open_api` - `v5.1.5`](#conduit_open_api---v515)
+ - [`conduit_password_hash` - `v5.1.5`](#conduit_password_hash---v515)
+ - [`conduit_postgresql` - `v5.1.5`](#conduit_postgresql---v515)
+ - [`conduit_runtime` - `v5.1.5`](#conduit_runtime---v515)
+ - [`conduit_test` - `v5.1.5`](#conduit_test---v515)
+ - [`fs_test_agent` - `v5.1.5`](#fs_test_agent---v515)
+
+---
+
+#### `conduit` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+ - **REFACTOR**: Upgrading packages and refactoring. ([e6189d54](https://github.com/conduit-dart/conduit/commit/e6189d548b038efab4e6d94e82f95306ceec1a93))
+
+#### `conduit_codable` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_common` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_config` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_core` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_isolate_exec` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_open_api` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_password_hash` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_postgresql` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+ - **REFACTOR**: Upgrading packages and refactoring. ([e6189d54](https://github.com/conduit-dart/conduit/commit/e6189d548b038efab4e6d94e82f95306ceec1a93))
+
+#### `conduit_runtime` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `conduit_test` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+#### `fs_test_agent` - `v5.1.5`
+
+ - **REFACTOR**: Fix and upgrade for cli and packages respectively. ([10778b91](https://github.com/conduit-dart/conduit/commit/10778b914d2d2fd66de100bb00a77d40bf4caa0a))
+ - **REFACTOR**: Uptick the version. ([3b9486f1](https://github.com/conduit-dart/conduit/commit/3b9486f1fad4b410977c304ae618255dfcd2be91))
+
+
 ## 2024-12-29
 
 ### Changes

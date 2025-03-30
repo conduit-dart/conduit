@@ -1,6 +1,6 @@
 name: conduit_common
 description: Common classes shared by conduit projects.
-version: 5.1.4
+version: 5.1.5
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
@@ -9,7 +9,7 @@ environment:
   sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
-  conduit_open_api: ^5.1.4
+  conduit_open_api: ^5.1.5
 
 dev_dependencies:
   lints: ^5.1.1
