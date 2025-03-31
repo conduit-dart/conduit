@@ -44,7 +44,6 @@ linter:
     - no_duplicate_case_values
     - non_constant_identifier_names
     - null_closures
-    - package_api_docs
     - package_names
     - package_prefixed_library_names
     - parameter_assignments
