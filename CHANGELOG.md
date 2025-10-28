@@ -5,6 +5,24 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 2025-10-28
 
+### Developer Note
+I have changed how the binaries are built with `conduit build`. The build functionality no longer injects argument parsing into the bin file, so you will need to change your main signatures and include `app.options = ApplicationOptions.fromArgs(args);` or something similar in order for the executable to respect the arguments i.e.
+```dart
+/// Used to be Future main(s) async {
+Future main(List<String> args) async {
+  final app = Application<WildfireChannel>();
+
+  /// Add this...
+  app.options = ApplicationOptions.fromArgs(args);
+
+  if (app.options.isolates == 0) {
+    await app.startOnCurrentIsolate();
+  } else {
+    await app.start(numberOfInstances: app.options.isolates);
+  }
+}
+```
+
 ### Changes
 
 ---
