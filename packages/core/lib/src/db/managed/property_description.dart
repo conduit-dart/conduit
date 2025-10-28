@@ -25,11 +25,11 @@ abstract class ManagedPropertyDescription {
     List<ManagedValidator> validators = const [],
     this.responseModel,
     this.responseKey,
-  })  : isUnique = unique,
-        isIndexed = indexed,
-        isNullable = nullable,
-        isIncludedInDefaultResultSet = includedInDefaultResultSet,
-        _validators = validators {
+  }) : isUnique = unique,
+       isIndexed = indexed,
+       isNullable = nullable,
+       isIncludedInDefaultResultSet = includedInDefaultResultSet,
+       _validators = validators {
     for (final v in _validators) {
       v.property = this;
     }
@@ -182,16 +182,16 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     Type super.declaredType,
     this.transientStatus, {
     super.responseKey,
-  })  : isPrimaryKey = false,
-        defaultValue = null,
-        super(
-          unique: false,
-          indexed: false,
-          nullable: false,
-          includedInDefaultResultSet: false,
-          autoincrement: false,
-          validators: [],
-        );
+  }) : isPrimaryKey = false,
+       defaultValue = null,
+       super(
+         unique: false,
+         indexed: false,
+         nullable: false,
+         includedInDefaultResultSet: false,
+         autoincrement: false,
+         validators: [],
+       );
 
   static ManagedAttributeDescription make<T>(
     ManagedEntity entity,
@@ -490,7 +490,7 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
           value.backing.contents.length == 1 &&
           value.backing.contents.containsKey(destinationEntity.primaryKey)) {
         return <String, Object>{
-          destinationEntity.primaryKey: value[destinationEntity.primaryKey]
+          destinationEntity.primaryKey: value[destinationEntity.primaryKey],
         };
       }
 
@@ -540,8 +540,9 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
 
   @override
   APISchemaObject documentSchemaObject(APIDocumentContext context) {
-    final relatedType =
-        context.schema.getObjectWithType(inverse!.entity.instanceType);
+    final relatedType = context.schema.getObjectWithType(
+      inverse!.entity.instanceType,
+    );
 
     if (relationshipType == ManagedRelationshipType.hasMany) {
       return APISchemaObject.array(ofSchema: relatedType)
@@ -555,9 +556,8 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
 
     final destPk = destinationEntity.primaryKeyAttribute!;
     return APISchemaObject.object({
-      destPk.name: ManagedPropertyDescription._typedSchemaObject(destPk.type!)
-    })
-      ..title = name;
+      destPk.name: ManagedPropertyDescription._typedSchemaObject(destPk.type!),
+    })..title = name;
   }
 
   @override

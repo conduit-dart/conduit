@@ -1,7 +1,10 @@
+// ignore_for_file: experimental_member_use
+
 import 'dart:mirrors';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart'
+    show PropertyAccessorElement2;
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/src/db/managed/managed.dart';
@@ -111,7 +114,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Validate)) ?? false) {
       // If the annotation is a const Validate instantiation, we just copy it directly
       // and import the file where the const constructor is declared.
-      importUris.add(annotation.element!.source!.uri);
+      importUris.add(annotation.elementAnnotation!.element2!.library2!.uri);
       return [annotation.toSource().substring(1)];
     } else if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Column)) ??
         false) {
@@ -125,31 +128,32 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     } else if (mirrorOfAnnotationType == null) {
       // Then this is not a const constructor - there is no type - it is a
       // instance (pointing at a const constructor) e.g. @primaryKey.
-      final element = annotation.elementAnnotation?.element;
-      if (element is! PropertyAccessorElement) {
+      final element = annotation.elementAnnotation?.element2;
+      if (element is! PropertyAccessorElement2) {
         return [];
       }
 
-      final type = element.variable2!.type;
+      final type = element.variable3!.type;
       final isSubclassOrInstanceOfValidate =
           type.getDisplayString() == "Validate" ||
-              buildCtx.context.getSubclassesOf(Validate).any(
-                (subclass) {
-                  return MirrorSystem.getName(subclass.simpleName) ==
-                      type.getDisplayString();
-                },
-              );
+          buildCtx.context.getSubclassesOf(Validate).any((subclass) {
+            return MirrorSystem.getName(subclass.simpleName) ==
+                type.getDisplayString();
+          });
       final isInstanceOfColumn = type.getDisplayString() == "Column";
 
       if (isSubclassOrInstanceOfValidate) {
-        importUris.add(annotation.element!.source!.uri);
+        importUris.add(annotation.element2!.library2!.uri);
         return [annotation.toSource().substring(1)];
       } else if (isInstanceOfColumn) {
-        final originatingLibrary = element.session!
-            .getParsedLibraryByElement(element.library) as ParsedLibraryResult;
-        final elementDeclaration = originatingLibrary
-            .getElementDeclaration(element.variable2!)!
-            .node as VariableDeclaration;
+        final originatingLibrary =
+            element.session!.getParsedLibraryByElement2(element.library2)
+                as ParsedLibraryResult;
+        final elementDeclaration =
+            originatingLibrary
+                    .getFragmentDeclaration(element.variable3!.firstFragment)!
+                    .node
+                as VariableDeclaration;
 
         return _getConstructorSourcesFromColumnArgList(
               (elementDeclaration.initializer! as MethodInvocation)
@@ -171,8 +175,9 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     // We also have all of the instances created by these annotations available in some
     // way or another in the [property].
     final fieldAnnotations = await context.getAnnotationsFromField(
-      EntityBuilder.getTableDefinitionForType(property.entity.instanceType)
-          .reflectedType,
+      EntityBuilder.getTableDefinitionForType(
+        property.entity.instanceType,
+      ).reflectedType,
       property.name,
     );
     final constructorInvocations = fieldAnnotations
@@ -188,8 +193,9 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         .toList();
 
     if (property.type?.isEnumerated ?? false) {
-      final enumeratedValues =
-          property.type!.enumerationMap.values.map(sourcifyValue).join(",");
+      final enumeratedValues = property.type!.enumerationMap.values
+          .map(sourcifyValue)
+          .join(",");
       constructorInvocations.add('Validate.oneOf([$enumeratedValues])');
     }
 
@@ -212,10 +218,12 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     ArgumentList argList, {
     required List<Uri> importUris,
   }) {
-    final expression = argList.arguments
-        .whereType<NamedExpression>()
-        .firstWhereOrNull((c) => c.name.label.name == "validators")
-        ?.expression as ListLiteral?;
+    final expression =
+        argList.arguments
+                .whereType<NamedExpression>()
+                .firstWhereOrNull((c) => c.name.label.name == "validators")
+                ?.expression
+            as ListLiteral?;
     if (expression == null) {
       return null;
     }
@@ -247,10 +255,11 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
         ? "null"
         : _getManagedTypeInstantiator(type.elements);
 
-    final enumStr = "{${type.enumerationMap.keys.map((k) {
-      final vStr = sourcifyValue(type.enumerationMap[k]);
-      return "'$k': $vStr";
-    }).join(",")}}";
+    final enumStr =
+        "{${type.enumerationMap.keys.map((k) {
+          final vStr = sourcifyValue(type.enumerationMap[k]);
+          return "'$k': $vStr";
+        }).join(",")}}";
 
     return "ManagedType.make<${type.type}>(${type.kind}, $elementStr, $enumStr)";
   }
@@ -337,20 +346,19 @@ ManagedRelationshipDescription.make<${relationship.declaredType}>(
       entity.attributes.keys.map((name) async {
         return "'$name': ${await _getAttributeInstantiator(context, entity.attributes[name]!, importUris: importUris)}";
       }),
-    ))
-        .join(", ");
+    )).join(", ");
     final symbolMapBuffer = StringBuffer();
     entity.properties.forEach((str, val) {
       final sourcifiedKey = sourcifyValue(str);
       symbolMapBuffer.write("Symbol($sourcifiedKey): $sourcifiedKey,");
-      symbolMapBuffer
-          .write("Symbol(${sourcifyValue("$str=")}): $sourcifiedKey,");
+      symbolMapBuffer.write(
+        "Symbol(${sourcifyValue("$str=")}): $sourcifiedKey,",
+      );
     });
 
-    final tableDef =
-        EntityBuilder.getTableDefinitionForType(entity.instanceType)
-            .reflectedType
-            .toString();
+    final tableDef = EntityBuilder.getTableDefinitionForType(
+      entity.instanceType,
+    ).reflectedType.toString();
 
     return """() {
 final entity = ManagedEntity('${entity.tableName}', ${entity.instanceType}, ${sourcifyValue(tableDef)});
@@ -366,8 +374,9 @@ return entity
         .where((attr) => attr!.isTransient)
         .where((attr) => attr!.transientStatus!.isAvailableAsInput)
         .map((attr) {
-      return "case '${attr!.name}': (object as ${instanceType.reflectedType}).${attr.name} = value as ${attr.declaredType}; break;";
-    }).join("\n");
+          return "case '${attr!.name}': (object as ${instanceType.reflectedType}).${attr.name} = value as ${attr.declaredType}; break;";
+        })
+        .join("\n");
 
     return """switch (key) {
     $cases
@@ -379,8 +388,9 @@ return entity
         .where((attr) => attr!.isTransient)
         .where((attr) => attr!.transientStatus!.isAvailableAsOutput)
         .map((attr) {
-      return "case '${attr!.name}': return (object as ${instanceType.reflectedType}).${attr.name};";
-    }).join("\n");
+          return "case '${attr!.name}': return (object as ${instanceType.reflectedType}).${attr.name};";
+        })
+        .join("\n");
 
     return """switch (key) {
     $cases
@@ -441,15 +451,16 @@ return entity.symbolMap[Symbol(symbolName)];
       entity.relationships.keys.map((name) async {
         return "'$name': ${await _getRelationshipInstantiator(ctx, entity.relationships[name]!, importUris: importUris)}";
       }),
-    ))
-        .join(", ");
+    )).join(", ");
 
     final uniqueStr = entity.uniquePropertySet == null
         ? "null"
         : "[${entity.uniquePropertySet!.map((u) => "'${u.name}'").join(",")}].map((k) => entity.properties[k]).nonNulls.toList()";
 
-    final entityConstructor =
-        await _getEntityConstructor(ctx, importUris: importUris);
+    final entityConstructor = await _getEntityConstructor(
+      ctx,
+      importUris: importUris,
+    );
 
     // Need to import any relationships types and metadata types
     // todo: limit import of importUris to only show symbols required to replicate metadata
@@ -461,8 +472,7 @@ return entity.symbolMap[Symbol(symbolName)];
 
       final uri = mirror.location!.sourceUri;
       return "import '$uri' show ${mirror.reflectedType};";
-    }).toList()
-      ..addAll(Set.from(importUris).map((uri) => "import '$uri';"));
+    }).toList()..addAll(Set.from(importUris).map((uri) => "import '$uri';"));
 
     return """
 import 'package:conduit_core/conduit_core.dart';

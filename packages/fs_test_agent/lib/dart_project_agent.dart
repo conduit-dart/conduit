@@ -121,7 +121,7 @@ description: desc
 version: 0.0.1
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
 ${_asYaml(deps, indent: 1)}
@@ -138,14 +138,11 @@ ${_asYaml(dependencyOverrides, indent: 1)}
   ///
   /// Imports the library file for this terminal.
   void addSourceFile(String fileName, String contents, {bool export = true}) {
-    addOrReplaceFile(
-      "lib/src/$fileName.dart",
-      """
+    addOrReplaceFile("lib/src/$fileName.dart", """
 import 'package:$name/$name.dart';
 
 $contents
-  """,
-    );
+  """);
 
     addLibraryExport("src/$fileName.dart");
   }
@@ -154,14 +151,11 @@ $contents
   ///
   /// Imports the library file for this terminal.
   void addLibraryFile(String fileName, String contents, {bool export = true}) {
-    addOrReplaceFile(
-      "lib/$fileName.dart",
-      """
+    addOrReplaceFile("lib/$fileName.dart", """
 import 'package:$name/$name.dart';
 
 $contents
-  """,
-    );
+  """);
 
     addLibraryExport("$fileName.dart");
   }
