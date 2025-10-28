@@ -57,7 +57,7 @@ jobs:
       TEST_BOOL: true
     steps:
     - name: Setup PostgreSQL for Linux/macOS/Windows
-      uses: ikalnytskyi/action-setup-postgres@v6
+      uses: ikalnytskyi/action-setup-postgres@v8
       with:
         username: conduit_test_user
         password: conduit!

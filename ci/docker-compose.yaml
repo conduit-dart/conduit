@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16.6
+    image: postgres:18.0
     # command: -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
     container_name: conduit_postgres
     restart: always

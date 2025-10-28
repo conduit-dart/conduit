@@ -125,7 +125,13 @@ class Application<T extends ApplicationChannel> {
       );
     }
 
-    options.address ??= InternetAddress.loopbackIPv4;
+    if (options.address == null) {
+      if (options.isIpv6Only) {
+        options.address = InternetAddress.anyIPv6;
+      } else {
+        options.address = InternetAddress.anyIPv4;
+      }
+    }
 
     try {
       await _runtime.runGlobalInitialization(options);
@@ -147,8 +153,10 @@ class Application<T extends ApplicationChannel> {
   /// The [ServiceRegistry] will close any of its resources.
   Future stop() async {
     _hasFinishedLaunching = false;
-    await Future.wait(supervisors.map((s) => s.stop()))
-        .onError((error, stackTrace) {
+    await Future.wait(supervisors.map((s) => s.stop())).onError((
+      error,
+      stackTrace,
+    ) {
       if (error.runtimeType.toString() == 'LateError') {
         throw StateError(
           'Channel type $T was not loaded in the current isolate. Check that the class was declared and public.',
@@ -214,8 +222,11 @@ class Application<T extends ApplicationChannel> {
       receivePort.sendPort,
       logToConsole: logToConsole,
     );
-    final isolate =
-        await Isolate.spawn(entryPoint, initialMessage, paused: true);
+    final isolate = await Isolate.spawn(
+      entryPoint,
+      initialMessage,
+      paused: true,
+    );
 
     return ApplicationIsolateSupervisor(
       application,

@@ -52,15 +52,15 @@ class PostgreSQLPersistentStore extends PersistentStore
   }) : isSSLConnection = useSSL || sslMode.toSslMode() != SslMode.disable;
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
-      : isSSLConnection =
-            from.isSSLConnection || from.sslMode.toSslMode() != SslMode.disable,
-        username = from.username,
-        password = from.password,
-        host = from.host,
-        port = from.port,
-        databaseName = from.databaseName,
-        timeZone = from.timeZone,
-        sslMode = from.sslMode;
+    : isSSLConnection =
+          from.isSSLConnection || from.sslMode.toSslMode() != SslMode.disable,
+      username = from.username,
+      password = from.password,
+      host = from.host,
+      port = from.port,
+      databaseName = from.databaseName,
+      timeZone = from.timeZone,
+      sslMode = from.sslMode;
 
   factory PostgreSQLPersistentStore._transactionProxy(
     PostgreSQLPersistentStore parent,
@@ -113,8 +113,9 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// Defaults to 30 seconds.
   final Duration connectTimeout = const Duration(seconds: 30);
 
-  static final Finalizer<Connection> _finalizer =
-      Finalizer((connection) => connection.close());
+  static final Finalizer<Connection> _finalizer = Finalizer(
+    (connection) => connection.close(),
+  );
 
   Connection? _databaseConnection;
   Completer<Connection>? _pendingConnectionCompleter;
@@ -136,20 +137,23 @@ class PostgreSQLPersistentStore extends PersistentStore
       if (_pendingConnectionCompleter == null) {
         _pendingConnectionCompleter = Completer<Connection>();
 
-        _connect().timeout(connectTimeout).then((conn) {
-          _databaseConnection = conn;
-          _pendingConnectionCompleter!.complete(_databaseConnection);
-          _pendingConnectionCompleter = null;
-          _finalizer.attach(this, _databaseConnection!, detach: this);
-        }).catchError((e) {
-          _pendingConnectionCompleter!.completeError(
-            QueryException.transport(
-              "unable to connect to database",
-              underlyingException: e,
-            ),
-          );
-          _pendingConnectionCompleter = null;
-        });
+        _connect()
+            .timeout(connectTimeout)
+            .then((conn) {
+              _databaseConnection = conn;
+              _pendingConnectionCompleter!.complete(_databaseConnection);
+              _pendingConnectionCompleter = null;
+              _finalizer.attach(this, _databaseConnection!, detach: this);
+            })
+            .catchError((e) {
+              _pendingConnectionCompleter!.completeError(
+                QueryException.transport(
+                  "unable to connect to database",
+                  underlyingException: e,
+                ),
+              );
+              _pendingConnectionCompleter = null;
+            });
       }
 
       return _pendingConnectionCompleter!.future;
@@ -222,9 +226,9 @@ class PostgreSQLPersistentStore extends PersistentStore
       return await dbConnection.runTx((dbTransactionContext) async {
         transactionContext.persistentStore =
             PostgreSQLPersistentStore._transactionProxy(
-          this,
-          dbTransactionContext,
-        );
+              this,
+              dbTransactionContext,
+            );
 
         try {
           return await transactionBlock(transactionContext);
@@ -251,9 +255,11 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<int> get schemaVersion async {
     try {
-      final values = await execute(
-        "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC",
-      ) as List<List<dynamic>>;
+      final values =
+          await execute(
+                "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC",
+              )
+              as List<List<dynamic>>;
       if (values.isEmpty) {
         return 0;
       }
@@ -279,20 +285,26 @@ class PostgreSQLPersistentStore extends PersistentStore
     Schema schema = fromSchema;
 
     await connection.runTx((ctx) async {
-      final transactionStore =
-          PostgreSQLPersistentStore._transactionProxy(this, ctx);
+      final transactionStore = PostgreSQLPersistentStore._transactionProxy(
+        this,
+        ctx,
+      );
       await _createVersionTableIfNecessary(ctx, temporary);
 
       withMigrations.sort((m1, m2) => m1.version!.compareTo(m2.version!));
 
       for (final migration in withMigrations) {
-        migration.database =
-            SchemaBuilder(transactionStore, schema, isTemporary: temporary);
+        migration.database = SchemaBuilder(
+          transactionStore,
+          schema,
+          isTemporary: temporary,
+        );
         migration.database.store = transactionStore;
 
         final existingVersionRows = await ctx.execute(
           Sql.named(
-              "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= @v:int4"),
+            "SELECT versionNumber, dateOfUpgrade FROM $versionTableName WHERE versionNumber >= @v:int4",
+          ),
           parameters: {"v": migration.version},
           queryMode: QueryMode.extended,
         );
@@ -320,8 +332,9 @@ class PostgreSQLPersistentStore extends PersistentStore
           "INSERT INTO $versionTableName (versionNumber, dateOfUpgrade) VALUES (${migration.version}, '${DateTime.now().toUtc().toIso8601String()}')",
         );
 
-        logger
-            .info("Applied schema version ${migration.version} successfully.");
+        logger.info(
+          "Applied schema version ${migration.version} successfully.",
+        );
 
         schema = migration.currentSchema;
       }
@@ -373,10 +386,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       }
       rethrow;
     } on PgException catch (e) {
-      throw QueryException.transport(
-        e.message,
-        underlyingException: e,
-      );
+      throw QueryException.transport(e.message, underlyingException: e);
     }
   }
 
@@ -385,23 +395,17 @@ class PostgreSQLPersistentStore extends PersistentStore
   ) {
     switch (exception.code) {
       case PostgreSQLErrorCode.uniqueViolation:
-        return QueryException.conflict(
-          "entity_already_exists",
-          ["${exception.tableName}.${exception.columnName}"],
-          underlyingException: exception,
-        );
+        return QueryException.conflict("entity_already_exists", [
+          "${exception.tableName}.${exception.columnName}",
+        ], underlyingException: exception);
       case PostgreSQLErrorCode.notNullViolation:
-        return QueryException.input(
-          "non_null_violation",
-          ["${exception.tableName}.${exception.columnName}"],
-          underlyingException: exception,
-        );
+        return QueryException.input("non_null_violation", [
+          "${exception.tableName}.${exception.columnName}",
+        ], underlyingException: exception);
       case PostgreSQLErrorCode.foreignKeyViolation:
-        return QueryException.input(
-          "foreign_key_violation",
-          ["${exception.tableName}.${exception.columnName}"],
-          underlyingException: exception,
-        );
+        return QueryException.input("foreign_key_violation", [
+          "${exception.tableName}.${exception.columnName}",
+        ], underlyingException: exception);
     }
 
     return null;
@@ -446,6 +450,28 @@ class PostgreSQLPersistentStore extends PersistentStore
         ignoreSuperfluousParameters: true,
       ),
     );
+  }
+
+  Pool getConnectionPool() {
+    final settings = PoolSettings(
+      maxConnectionCount: 10,
+      queryTimeout: Duration(minutes: 10),
+      connectTimeout: Duration(seconds: 30),
+      timeZone: timeZone!,
+      sslMode: sslMode.toSslMode(),
+      ignoreSuperfluousParameters: true,
+    );
+    final endpoints = [
+      Endpoint(
+        host: host!,
+        database: databaseName!,
+        port: port!,
+        username: username,
+        password: password,
+      ),
+    ];
+    final pool = Pool.withEndpoints(endpoints, settings: settings);
+    return pool;
   }
 }
 

@@ -51,17 +51,42 @@ class ApplicationOptions {
   /// over how HTTPS is configured for an application, see [ApplicationChannel.securityContext].
   String? privateKeyFilePath;
 
+  /// The number of isolates the application should start.
+  ///
+  /// If null, the application will start on the current isolate.
+  int isolates = 0;
+
   /// Contextual configuration values for each [ApplicationChannel].
   ///
   /// This is a user-specific set of configuration options provided by [ApplicationChannel.initializeApplication].
   /// Each instance of [ApplicationChannel] has access to these values if set.
   final Map<String, dynamic> context = {};
 
+  static ApplicationOptions fromArgs(List<String> args) {
+    if (args.contains("help")) {
+      print(parser.usage);
+      exit(0);
+    }
+    final values = parser.parse(args);
+    final options = ApplicationOptions()
+      ..address = values['address']
+      ..configurationFilePath = values['config-path'] as String?
+      ..port = int.parse(values['port'] as String)
+      ..isIpv6Only = values['ipv6-only'] == true
+      ..certificateFilePath = values['ssl-certificate-path'] as String?
+      ..privateKeyFilePath = values['ssl-key-path'] as String?
+      ..isolates = values['isolates'] != null
+          ? int.parse(values['isolates'] as String)
+          : 0;
+    return options;
+  }
+
   static final parser = ArgParser()
     ..addOption(
       "address",
       abbr: "a",
-      help: "The address to listen on. See HttpServer.bind for more details."
+      help:
+          "The address to listen on. See HttpServer.bind for more details."
           " Using the default will listen on any address.",
     )
     ..addOption(
