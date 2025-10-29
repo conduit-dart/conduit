@@ -1,10 +1,10 @@
 name: fs_test_agent
-version: 5.1.5
+version: 6.0.0
 description: Utilities for writing tests to validate file system and Dart project directory operations.
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
-
+resolution: workspace
 environment:
   sdk: ">=3.9.0 <4.0.0"
 

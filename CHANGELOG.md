@@ -5,6 +5,83 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 2025-10-28
 
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`conduit` - `v6.0.0`](#conduit---v600)
+ - [`conduit_codable` - `v6.0.0`](#conduit_codable---v600)
+ - [`conduit_common` - `v6.0.0`](#conduit_common---v600)
+ - [`conduit_config` - `v6.0.0`](#conduit_config---v600)
+ - [`conduit_core` - `v6.0.0`](#conduit_core---v600)
+ - [`conduit_isolate_exec` - `v6.0.0`](#conduit_isolate_exec---v600)
+ - [`conduit_open_api` - `v6.0.0`](#conduit_open_api---v600)
+ - [`conduit_password_hash` - `v6.0.0`](#conduit_password_hash---v600)
+ - [`conduit_postgresql` - `v6.0.0`](#conduit_postgresql---v600)
+ - [`conduit_runtime` - `v6.0.0`](#conduit_runtime---v600)
+ - [`conduit_test` - `v6.0.0`](#conduit_test---v600)
+ - [`fs_test_agent` - `v6.0.0`](#fs_test_agent---v600)
+
+---
+
+#### `conduit` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+ - **REFACTOR**: Trigger CI. ([090d4205](https://github.com/conduit-dart/conduit/commit/090d4205ec4da88d2d39a66d8fd950a056a5feae))
+
+#### `conduit_codable` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_common` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_config` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_core` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_isolate_exec` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_open_api` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_password_hash` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_postgresql` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_runtime` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `conduit_test` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+#### `fs_test_agent` - `v6.0.0`
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+
+## 2025-10-28
+
 ### Developer Note
 I have changed how the binaries are built with `conduit build`. The build functionality no longer injects argument parsing into the bin file, so you will need to change your main signatures and include `app.options = ApplicationOptions.fromArgs(args);` or something similar in order for the executable to respect the arguments i.e.
 ```dart

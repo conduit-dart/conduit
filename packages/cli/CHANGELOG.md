@@ -1,3 +1,8 @@
+## 6.0.0
+
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+ - **REFACTOR**: Trigger CI. ([090d4205](https://github.com/conduit-dart/conduit/commit/090d4205ec4da88d2d39a66d8fd950a056a5feae))
+
 ## 5.1.5
 
  - **REFACTOR**: Trigger CI. ([090d4205](https://github.com/conduit-dart/conduit/commit/090d4205ec4da88d2d39a66d8fd950a056a5feae))
