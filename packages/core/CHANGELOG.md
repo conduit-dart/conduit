@@ -1,5 +1,9 @@
 ## 5.1.5
 
+ - **REFACTOR**: Trigger CI. ([e01b0dde](https://github.com/conduit-dart/conduit/commit/e01b0ddeea1d3a3bdea0c21cbeba0f94dd341827))
+
+## 5.1.5
+
  - **REFACTOR**: Upgrading packages and refactoring ([#238](https://github.com/conduit-dart/conduit/issues/238)). ([75b86fae](https://github.com/conduit-dart/conduit/commit/75b86fae9ce6e01107e34df05bdd74ba40f5533d))
  - **REFACTOR**(cli): Change build source to bin/main.dart ([#231](https://github.com/conduit-dart/conduit/issues/231)). ([e9f43ede](https://github.com/conduit-dart/conduit/commit/e9f43ede8eb2a7700f00872c68edbb17a0390548))
  - **REFACTOR**: Dart version bump 3.4 ([#223](https://github.com/conduit-dart/conduit/issues/223)). ([e70f5fe1](https://github.com/conduit-dart/conduit/commit/e70f5fe194e3d2e29b98896e41d2e53afebc0a88))
