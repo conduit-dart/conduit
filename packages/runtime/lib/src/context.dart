@@ -34,12 +34,17 @@ class RuntimeCollection {
 
   Iterable<Object> get iterable => map.values;
 
+  final Map<Type, Object> _cache = {};
+
   Object operator [](Type t) {
-    //todo: optimize by keeping a cache where keys are of type [Type] to avoid the
-    // expensive indexOf and substring calls in this method
+    if (_cache.containsKey(t)) {
+      return _cache[t]!;
+    }
+
     final typeName = t.toString();
     final r = map[typeName];
     if (r != null) {
+      _cache[t] = r;
       return r;
     }
 
@@ -54,6 +59,7 @@ class RuntimeCollection {
       throw ArgumentError("Runtime not found for type '$t'.");
     }
 
+    _cache[t] = out;
     return out;
   }
 }

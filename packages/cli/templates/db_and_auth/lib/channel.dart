@@ -25,7 +25,8 @@ class WildfireChannel extends ApplicationChannel
   @override
   Future prepare() async {
     logger.onRecord.listen(
-        (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+      (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"),
+    );
 
     final config = WildfireConfiguration(options!.configurationFilePath!);
 
@@ -78,30 +79,33 @@ class WildfireChannel extends ApplicationChannel
    */
 
   ManagedContext contextWithConnectionInfo(
-      DatabaseConfiguration connectionInfo) {
+    DatabaseConfiguration connectionInfo,
+  ) {
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final psc = PostgreSQLPersistentStore(
-        connectionInfo.username,
-        connectionInfo.password,
-        connectionInfo.host,
-        connectionInfo.port,
-        connectionInfo.databaseName);
+      connectionInfo.username,
+      connectionInfo.password,
+      connectionInfo.host,
+      connectionInfo.port,
+      connectionInfo.databaseName,
+    );
 
     return ManagedContext(dataModel, psc);
   }
 
   @override
   Future<String?> render(
-      AuthRedirectController forController,
-      Uri requestUri,
-      String? responseType,
-      String clientID,
-      String? state,
-      String? scope) async {
+    AuthRedirectController forController,
+    Uri requestUri,
+    String? responseType,
+    String clientID,
+    String? state,
+    String? scope,
+  ) async {
     final map = {
       "response_type": responseType,
       "client_id": clientID,
-      "state": state
+      "state": state,
     };
 
     map["path"] = requestUri.path;
@@ -118,7 +122,7 @@ class WildfireChannel extends ApplicationChannel
 ///
 /// Configuration files must have key-value for the properties in this class.
 /// For more documentation on configuration files, see
-/// https://pub.dartlang.org/packages/safe_config.
+/// https://pub.dev/packages/conduit_config.
 class WildfireConfiguration extends Configuration {
   WildfireConfiguration(String fileName) : super.fromFile(File(fileName));
 

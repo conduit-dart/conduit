@@ -1,5 +1,0 @@
-dependency_overrides: 
-  conduit_isolate_exec: 
-    path: ../isolate_exec
-  conduit_runtime: 
-    path: ../runtime

@@ -18,7 +18,8 @@ class WildfireChannel extends ApplicationChannel {
   @override
   Future prepare() async {
     logger.onRecord.listen(
-        (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
+      (rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"),
+    );
 
     final config = WildfireConfiguration(options!.configurationFilePath!);
     context = contextWithConnectionInfo(config.database!);
@@ -48,14 +49,16 @@ class WildfireChannel extends ApplicationChannel {
    */
 
   ManagedContext contextWithConnectionInfo(
-      DatabaseConfiguration connectionInfo) {
+    DatabaseConfiguration connectionInfo,
+  ) {
     final dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final psc = PostgreSQLPersistentStore(
-        connectionInfo.username,
-        connectionInfo.password,
-        connectionInfo.host,
-        connectionInfo.port,
-        connectionInfo.databaseName);
+      connectionInfo.username,
+      connectionInfo.password,
+      connectionInfo.host,
+      connectionInfo.port,
+      connectionInfo.databaseName,
+    );
 
     return ManagedContext(dataModel, psc);
   }
@@ -66,7 +69,7 @@ class WildfireChannel extends ApplicationChannel {
 ///
 /// Configuration files must have key-value for the properties in this class.
 /// For more documentation on configuration files, see https://www.theconduit.dev/docs/configure/ and
-/// https://pub.dartlang.org/packages/safe_config.
+/// https://pub.dev/packages/conduit_config.
 class WildfireConfiguration extends Configuration {
   WildfireConfiguration(String fileName) : super.fromFile(File(fileName));
 

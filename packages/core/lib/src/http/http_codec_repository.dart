@@ -154,6 +154,7 @@ class CodecRegistry {
       if (charsetCodec != null) {
         return contentCodec.fuse(charsetCodec);
       }
+
       if (contentCodec is! Codec<dynamic, List<int>>) {
         throw StateError("Invalid codec selected. Does not emit 'List<int>'.");
       }
