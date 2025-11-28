@@ -22,6 +22,35 @@ cd my_project
 conduit serve
 ```
 
+## Building from Source
+
+If you want to contribute to Conduit or build it from source, you will need [Melos](https://pub.dev/packages/melos).
+
+1. Install Melos:
+```bash
+dart pub global activate melos
+```
+
+2. Bootstrap the project:
+```bash
+melos bootstrap
+```
+
+3. Run tests:
+> [!IMPORTANT]
+> Tests require a running PostgreSQL instance and specific environment variables.
+> You can start the database using Docker: `docker-compose -f ci/docker-compose.yaml up -d`
+
+```bash
+export POSTGRES_USER=conduit_test_user
+export POSTGRES_PASSWORD=conduit!
+export POSTGRES_DB=conduit_test_db
+export POSTGRES_PORT=15432
+export POSTGRES_HOST=localhost
+
+melos run test-unit
+```
+
 ## Tutorials, Documentation and Examples
 
 We are currently in the process of collating helpful resources for your edification. Our main docs live [here](https://docs.theconduit.dev/).

@@ -6,7 +6,8 @@ repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
 
 environment:
-  sdk: ">=3.9.0 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
+resolution: workspace
 
 dependencies:
   conduit_codable: ^6.0.0

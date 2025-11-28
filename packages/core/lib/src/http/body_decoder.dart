@@ -10,7 +10,7 @@ import 'package:conduit_runtime/runtime.dart';
 /// See [RequestBody] for a concrete implementation.
 abstract class BodyDecoder {
   BodyDecoder(Stream<List<int>> bodyByteStream)
-      : _originalByteStream = bodyByteStream;
+    : _originalByteStream = bodyByteStream;
 
   /// The stream of bytes to decode.
   ///
@@ -89,8 +89,9 @@ abstract class BodyDecoder {
       return _cast<T>(_decodedData);
     }
 
-    final codec =
-        CodecRegistry.defaultInstance.codecForContentType(contentType);
+    final codec = CodecRegistry.defaultInstance.codecForContentType(
+      contentType,
+    );
     final originalBytes = await _readBytes(bytes);
 
     if (retainOriginalBytes) {

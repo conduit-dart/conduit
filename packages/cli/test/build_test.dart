@@ -158,13 +158,21 @@ database:
   databaseName: foo
       ''');
 
+    final port = await getUnusedPort();
     final binRes =
-        await Process.start(binPath, ['-p8081', '-c', configPath.path]);
+        await Process.start(binPath, ['-p$port', '-c', configPath.path]);
     pids.add(binRes.pid);
     expect(String.fromCharCodes(await binRes.stdout.first),
         contains("[INFO] conduit: Server conduit/1 started."));
-    final response = await http.get(Uri.parse('http://0.0.0.0:8081/example'));
+    final response = await http.get(Uri.parse('http://0.0.0.0:$port/example'));
     expect(response.body, contains("foo"));
     Process.killPid(binRes.pid);
   });
+}
+
+Future<int> getUnusedPort() async {
+  final socket = await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+  final port = socket.port;
+  await socket.close();
+  return port;
 }

@@ -11,7 +11,7 @@ enum APISchemaAdditionalPropertyPolicy {
   freeForm,
 
   /// When [APISchemaObject.additionalPropertySchema] contains a schema object
-  restricted
+  restricted,
 }
 
 /// Represents a schema object in the OpenAPI specification.
@@ -40,7 +40,7 @@ class APISchemaObject extends APIObject {
     }
   }
   APISchemaObject.array({APIType? ofType, APISchemaObject? ofSchema})
-      : type = APIType.array {
+    : type = APIType.array {
     if (ofType != null) {
       items = APISchemaObject()..type = ofType;
     } else if (ofSchema != null) {
@@ -53,12 +53,12 @@ class APISchemaObject extends APIObject {
   }
   APISchemaObject.object(this.properties) : type = APIType.object;
   APISchemaObject.file({bool isBase64Encoded = false})
-      : type = APIType.string,
-        format = isBase64Encoded ? "byte" : "binary";
+    : type = APIType.string,
+      format = isBase64Encoded ? "byte" : "binary";
 
   APISchemaObject.freeForm()
-      : type = APIType.object,
-        additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.freeForm;
+    : type = APIType.object,
+      additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.freeForm;
 
   /// A title for the object.
   String? title;
@@ -111,14 +111,14 @@ class APISchemaObject extends APIObject {
   /// than, or equal to, the value of this keyword.
   ///
   /// The length of a string instance is defined as the number of its
-  /// characters as defined by RFC 7159 [RFC7159].
+  /// characters as defined by RFC 7159 [RFC7159](https://www.rfc-editor.org/info/rfc7159).
   int? maxLength;
 
   /// A string instance is valid against this keyword if its length is
   /// greater than, or equal to, the value of this keyword.
   ///
   /// The length of a string instance is defined as the number of its
-  /// characters as defined by RFC 7159 [RFC7159].
+  /// characters as defined by RFC 7159 [RFC7159](https://www.rfc-editor.org/info/rfc7159).
   ///
   /// The value of this keyword MUST be an integer.  This integer MUST be
   /// greater than, or equal to, 0.
@@ -246,8 +246,9 @@ class APISchemaObject extends APIObject {
   bool? deprecated;
 
   @override
-  Map<String, cast.Cast> get castMap =>
-      {"required": const cast.List(cast.string)};
+  Map<String, cast.Cast> get castMap => {
+    "required": const cast.List(cast.string),
+  };
 
   @override
   void decode(KeyedArchive object) {
@@ -292,8 +293,10 @@ class APISchemaObject extends APIObject {
       additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.freeForm;
     } else {
       additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.restricted;
-      additionalPropertySchema =
-          object.decodeObject("additionalProperties", () => APISchemaObject());
+      additionalPropertySchema = object.decodeObject(
+        "additionalProperties",
+        () => APISchemaObject(),
+      );
     }
 
     description = object.decode("description");

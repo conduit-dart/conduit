@@ -1,3 +1,0 @@
-dependency_overrides: 
-  conduit_codable: 
-    path: ../codable

@@ -237,8 +237,9 @@ void main() {
     test("Can compress without content-type/codec pair", () async {
       final ct = ContentType("application", "2");
       CodecRegistry.defaultInstance.setAllowsCompression(ct, true);
+      final largeBody = List.generate(2000, (i) => i % 255);
       server =
-          await bindAndRespondWith(Response.ok([1, 2, 3, 4])..contentType = ct);
+          await bindAndRespondWith(Response.ok(largeBody)..contentType = ct);
       final req = await client.getUrl(Uri.parse("http://localhost:8888"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
@@ -248,7 +249,7 @@ void main() {
       expect(resp.headers.value("content-encoding"), "gzip");
 
       expect(resp.statusCode, 200);
-      expect(await resp.first, [1, 2, 3, 4]);
+      expect(await resp.first, largeBody);
     });
 
     test(
@@ -319,8 +320,8 @@ class BadDataCodec extends Codec {
   Converter get decoder => throw UnimplementedError();
 }
 
-class BadDataEncoder extends Converter<String, String> {
+class BadDataEncoder extends Converter<String, int> {
   const BadDataEncoder();
   @override
-  String convert(String object) => object;
+  int convert(String object) => 1;
 }
