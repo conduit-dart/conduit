@@ -44,7 +44,7 @@ class _TestObject {
     ).deleteSync();
     File.fromUri(
       projectUnderTestCli.agent.workingDirectory.uri.resolve(
-        "../../.dart_tool/package_config.json",
+        ".dart_tool/package_config.json",
       ),
     ).deleteSync();
 

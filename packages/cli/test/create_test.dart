@@ -118,7 +118,7 @@ void main() {
                     join(
                       cli.agent.workingDirectory.path,
                       "test_project",
-                      "../../.dart_tool/package_config.json",
+                      ".dart_tool/package_config.json",
                     ),
                   ).readAsStringSync(),
                 )['packages']

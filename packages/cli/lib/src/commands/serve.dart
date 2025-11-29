@@ -152,7 +152,7 @@ class CLIServer extends CLICommand with CLIProject {
       messagePort!.sendPort,
       onError: errorPort!.sendPort,
       packageConfig: fileInProjectDirectory(
-        "../../.dart_tool/package_config.json",
+        ".dart_tool/package_config.json",
       ).uri,
       paused: true,
     );

@@ -47,7 +47,7 @@ mixin CLIProject implements CLICommand {
       File.fromUri(projectDirectory!.uri.resolve("pubspec.yaml"));
 
   Uri get packageConfigUri =>
-      projectDirectory!.uri.resolve("../../.dart_tool/package_config.json");
+      projectDirectory!.uri.resolve(".dart_tool/package_config.json");
 
   String? get libraryName => packageName;
 
