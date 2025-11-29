@@ -154,7 +154,11 @@ class CodecRegistry {
       if (charsetCodec != null) {
         return contentCodec.fuse(charsetCodec);
       }
+
       if (contentCodec is! Codec<dynamic, List<int>>) {
+        if (contentCodec is JsonCodec) {
+          return contentCodec.fuse(utf8);
+        }
         throw StateError("Invalid codec selected. Does not emit 'List<int>'.");
       }
       return contentCodec;

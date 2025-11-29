@@ -13,8 +13,8 @@ import 'package:conduit_core/src/http/http.dart';
 class Request implements RequestOrResponse {
   /// Creates an instance of [Request], no need to do so manually.
   Request(this.raw)
-      : path = RequestPath(raw.uri.pathSegments),
-        body = RequestBody(raw);
+    : path = RequestPath(raw.uri.pathSegments),
+      body = RequestBody(raw);
 
   /// The underlying [HttpRequest] of this instance.
   ///
@@ -86,7 +86,8 @@ class Request implements RequestOrResponse {
   List<ContentType> get acceptableContentTypes {
     if (_cachedAcceptableTypes == null) {
       try {
-        final contentTypes = raw.headers[HttpHeaders.acceptHeader]
+        final contentTypes =
+            raw.headers[HttpHeaders.acceptHeader]
                 ?.expand((h) => h.split(",").map((s) => s.trim()))
                 .where((h) => h.isNotEmpty)
                 .map(ContentType.parse)
@@ -274,8 +275,10 @@ class Request implements RequestOrResponse {
 
     if (body is List<int>) {
       if (compressionType.value != null) {
-        response.headers
-            .add(HttpHeaders.contentEncodingHeader, compressionType.value!);
+        response.headers.add(
+          HttpHeaders.contentEncodingHeader,
+          compressionType.value!,
+        );
       }
       response.headers.add(HttpHeaders.contentLengthHeader, body.length);
 
@@ -286,17 +289,22 @@ class Request implements RequestOrResponse {
       // Otherwise, body is stream
       final bodyStream = _responseBodyStream(conduitResponse, compressionType);
       if (compressionType.value != null) {
-        response.headers
-            .add(HttpHeaders.contentEncodingHeader, compressionType.value!);
+        response.headers.add(
+          HttpHeaders.contentEncodingHeader,
+          compressionType.value!,
+        );
       }
       response.headers.add(HttpHeaders.transferEncodingHeader, "chunked");
       response.bufferOutput = conduitResponse.bufferOutput;
 
-      return response.addStream(bodyStream).then((_) {
-        return response.close();
-      }).catchError((e, StackTrace st) {
-        throw HTTPStreamingException(e, st);
-      });
+      return response
+          .addStream(bodyStream)
+          .then((_) {
+            return response.close();
+          })
+          .catchError((e, StackTrace st) {
+            throw HTTPStreamingException(e, st);
+          });
     }
 
     throw StateError("Invalid response body. Could not encode.");
@@ -312,15 +320,18 @@ class Request implements RequestOrResponse {
 
     Codec<dynamic, List<int>>? codec;
     if (resp.encodeBody) {
-      codec =
-          CodecRegistry.defaultInstance.codecForContentType(resp.contentType);
+      codec = CodecRegistry.defaultInstance.codecForContentType(
+        resp.contentType,
+      );
     }
 
     // todo(joeconwaystk): Set minimum threshold on number of bytes needed to perform gzip, do not gzip otherwise.
     // There isn't a great way of doing this that I can think of except splitting out gzip from the fused codec,
     // have to measure the value of fusing vs the cost of gzipping smaller data.
-    final canGzip = CodecRegistry.defaultInstance
-            .isContentTypeCompressable(resp.contentType) &&
+    final canGzip =
+        CodecRegistry.defaultInstance.isContentTypeCompressable(
+          resp.contentType,
+        ) &&
         _acceptsGzipResponseBody;
 
     if (codec == null) {
@@ -352,12 +363,15 @@ class Request implements RequestOrResponse {
   ) {
     Codec<dynamic, List<int>>? codec;
     if (resp.encodeBody) {
-      codec =
-          CodecRegistry.defaultInstance.codecForContentType(resp.contentType);
+      codec = CodecRegistry.defaultInstance.codecForContentType(
+        resp.contentType,
+      );
     }
 
-    final canGzip = CodecRegistry.defaultInstance
-            .isContentTypeCompressable(resp.contentType) &&
+    final canGzip =
+        CodecRegistry.defaultInstance.isContentTypeCompressable(
+          resp.contentType,
+        ) &&
         _acceptsGzipResponseBody;
     if (codec == null) {
       if (resp.body is! Stream<List<int>>) {
@@ -384,8 +398,9 @@ class Request implements RequestOrResponse {
   }
 
   bool get _acceptsGzipResponseBody {
-    return raw.headers[HttpHeaders.acceptEncodingHeader]
-            ?.any((v) => v.split(",").any((s) => s.trim() == "gzip")) ??
+    return raw.headers[HttpHeaders.acceptEncodingHeader]?.any(
+          (v) => v.split(",").any((s) => s.trim() == "gzip"),
+        ) ??
         false;
   }
 
@@ -417,8 +432,9 @@ class Request implements RequestOrResponse {
       builder.write("${raw.uri} ");
     }
     if (includeElapsedTime && respondDate != null) {
-      builder
-          .write("${respondDate!.difference(receivedDate).inMilliseconds}ms ");
+      builder.write(
+        "${respondDate!.difference(receivedDate).inMilliseconds}ms ",
+      );
     }
     if (includeStatusCode) {
       builder.write("${raw.response.statusCode} ");
