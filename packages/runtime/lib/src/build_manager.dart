@@ -40,8 +40,9 @@ class BuildManager {
       ..writeAsStringSync(scriptSource);
     final analyzer = CodeAnalyzer(strippedScriptFile.absolute.uri);
     final analyzerContext = analyzer.contexts.contextFor(analyzer.path);
-    final parsedUnit = analyzerContext.currentSession
-        .getParsedUnit(analyzer.path) as ParsedUnitResult;
+    final parsedUnit =
+        analyzerContext.currentSession.getParsedUnit(analyzer.path)
+            as ParsedUnitResult;
 
     final mainFunctions = parsedUnit.unit.declarations
         .whereType<FunctionDeclaration>()
@@ -56,17 +57,19 @@ class BuildManager {
 
     try {
       await copyPath(
-          context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
-          context.buildDirectoryUri.resolve('not_tests').path);
+        context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
+        context.buildDirectoryUri.resolve('not_tests').path,
+      );
     } catch (_) {}
 
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
-      packageConfigURI:
-          sourceDirectoryUri.resolve('.dart_tool/package_config.json'),
+      packageConfigURI: sourceDirectoryUri.resolve(
+        '../../.dart_tool/package_config.json',
+      ),
       imports: [
         "package:conduit_runtime/runtime.dart",
-        context.targetScriptFileUri.toString()
+        context.targetScriptFileUri.toString(),
       ],
       logHandler: (s) => print(s), //ignore: avoid_print
     );

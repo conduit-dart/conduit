@@ -15,8 +15,9 @@ void main() {
   test("Can run an Executable and get its return value", () async {
     final result = await IsolateExecutor.run(
       SimpleReturner({}),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
     );
     expect(result, 1);
   });
@@ -26,8 +27,9 @@ void main() {
     await IsolateExecutor.run(
       SimpleReturner({}),
       logHandler: (msg) => msgs.add(msg),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
     );
     expect(msgs, ["hello"]);
   });
@@ -35,8 +37,9 @@ void main() {
   test("Send values to Executable and use them", () async {
     final result = await IsolateExecutor.run(
       Echo({'echo': 'hello'}),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
     );
     expect(result, 'hello');
   });
@@ -44,8 +47,9 @@ void main() {
   test("Run from another package", () async {
     final result = await IsolateExecutor.run(
       InPackage({}),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
       imports: ["package:test_package/lib.dart"],
     );
 
@@ -53,7 +57,7 @@ void main() {
       "def": "default",
       "pos": "positionalArgs",
       "nam": "namedArgs",
-      "con": "fromID"
+      "con": "fromID",
     });
   });
 
@@ -62,13 +66,14 @@ void main() {
     final futures = [
       completers[0].future,
       completers[1].future,
-      completers[2].future
+      completers[2].future,
     ];
 
     final result = await IsolateExecutor.run(
       Streamer({}),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
       eventHandler: (event) {
         completers.last.complete(event);
         completers.removeLast();
@@ -90,8 +95,9 @@ void main() {
   test("Can instantiate types including in additionalContents", () async {
     final result = await IsolateExecutor.run(
       AdditionalContentsInstantiator({}),
-      packageConfigURI:
-          Uri.file(join(projDir, ".dart_tool/package_config.json")),
+      packageConfigURI: Uri.file(
+        join(projDir, "../../.dart_tool/package_config.json"),
+      ),
       additionalContents: """
 class AdditionalContents { int get id => 10; }
     """,
@@ -101,20 +107,22 @@ class AdditionalContents { int get id => 10; }
   });
 
   test(
-      "If error is thrown, it is made available to consumer and the stack trace has been trimmed of script source",
-      () async {
-    try {
-      await IsolateExecutor.run(
-        Thrower({}),
-        packageConfigURI:
-            Uri.file(join(projDir, ".dart_tool/package_config.json")),
-      );
-      fail('unreachable');
-    } on StateError catch (e, st) {
-      expect(e.toString(), contains("thrower-error"));
-      expect(st.toString().contains("import"), false);
-    }
-  });
+    "If error is thrown, it is made available to consumer and the stack trace has been trimmed of script source",
+    () async {
+      try {
+        await IsolateExecutor.run(
+          Thrower({}),
+          packageConfigURI: Uri.file(
+            join(projDir, "../../.dart_tool/package_config.json"),
+          ),
+        );
+        fail('unreachable');
+      } on StateError catch (e, st) {
+        expect(e.toString(), contains("thrower-error"));
+        expect(st.toString().contains("import"), false);
+      }
+    },
+  );
 }
 
 class SimpleReturner extends Executable {

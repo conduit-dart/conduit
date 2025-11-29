@@ -129,7 +129,7 @@ class CLIServer extends CLICommand with CLIProject {
       "CONFIGURATION_FILE_PATH": configurationFile.path,
       "SSL_KEY_PATH": keyPath,
       "SSL_CERTIFICATE_PATH": certificatePath,
-      "NUMBER_OF_ISOLATES": numberOfIsolates
+      "NUMBER_OF_ISOLATES": numberOfIsolates,
     };
 
     displayInfo("Starting application '$packageName/$libraryName'");
@@ -151,8 +151,9 @@ class CLIServer extends CLICommand with CLIProject {
       [],
       messagePort!.sendPort,
       onError: errorPort!.sendPort,
-      packageConfig:
-          fileInProjectDirectory(".dart_tool/package_config.json").uri,
+      packageConfig: fileInProjectDirectory(
+        "../../.dart_tool/package_config.json",
+      ).uri,
       paused: true,
     );
 
@@ -189,8 +190,9 @@ class CLIServer extends CLICommand with CLIProject {
       }
     }
 
-    final sendPort = await startupCompleter.future
-        .timeout(Duration(seconds: startupTimeout));
+    final sendPort = await startupCompleter.future.timeout(
+      Duration(seconds: startupTimeout),
+    );
     final process = StoppableProcess((reason) async {
       displayInfo("Stopping application.");
       displayProgress("Reason: $reason");
@@ -235,7 +237,8 @@ class CLIServer extends CLICommand with CLIProject {
       keyString = "";
     }
 
-    final contents = """
+    final contents =
+        """
 import 'dart:async';
 import 'dart:io';
 
