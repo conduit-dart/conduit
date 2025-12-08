@@ -65,7 +65,7 @@ class BuildManager {
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
       packageConfigURI: sourceDirectoryUri.resolve(
-        '../../.dart_tool/package_config.json',
+        '.dart_tool/package_config.json',
       ),
       imports: [
         "package:conduit_runtime/runtime.dart",
