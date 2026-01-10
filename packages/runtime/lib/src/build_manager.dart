@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/results.dart';
@@ -62,11 +63,30 @@ class BuildManager {
       );
     } catch (_) {}
 
+    final File workspaceRef = File.fromUri(
+      sourceDirectoryUri.resolve('.dart_tool/pub/workspace_ref.json'),
+    );
+
+    late Uri packageConfigURI;
+
+    if (workspaceRef.existsSync()) {
+      JsonDecoder decoder = const JsonDecoder();
+      final Map<String, dynamic> workspaceRefMap = decoder.convert(
+        workspaceRef.readAsStringSync(),
+      );
+      packageConfigURI = sourceDirectoryUri
+          .resolve('.dart_tool/pub/')
+          .resolve(workspaceRefMap['workspaceRoot']!)
+          .resolve('.dart_tool/package_config.json');
+    } else {
+      packageConfigURI = sourceDirectoryUri.resolve(
+        '.dart_tool/package_config.json',
+      );
+    }
+
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
-      packageConfigURI: sourceDirectoryUri.resolve(
-        '.dart_tool/package_config.json',
-      ),
+      packageConfigURI: packageConfigURI,
       imports: [
         "package:conduit_runtime/runtime.dart",
         context.targetScriptFileUri.toString(),

@@ -35,13 +35,13 @@ class BuildContext {
   }
 
   Map<String, dynamic> get safeMap => {
-        'rootLibraryFileUri': sourceLibraryFile.uri.toString(),
-        'buildDirectoryUri': buildDirectoryUri.toString(),
-        'source': source,
-        'executableUri': executableUri.toString(),
-        'environment': environment,
-        'forTests': forTests
-      };
+    'rootLibraryFileUri': sourceLibraryFile.uri.toString(),
+    'buildDirectoryUri': buildDirectoryUri.toString(),
+    'source': source,
+    'executableUri': executableUri.toString(),
+    'environment': environment,
+    'forTests': forTests,
+  };
 
   late final CodeAnalyzer analyzer;
 
@@ -68,21 +68,24 @@ class BuildContext {
   MirrorContext get context => RuntimeContext.current as MirrorContext;
 
   Uri get targetScriptFileUri => forTests
-      ? getDirectory(buildDirectoryUri.resolve("test/"))
-          .uri
-          .resolve("main_test.dart")
+      ? getDirectory(
+          buildDirectoryUri.resolve("test/"),
+        ).uri.resolve("main_test.dart")
       : buildDirectoryUri.resolve("main.dart");
 
   Pubspec get sourceApplicationPubspec => Pubspec.parse(
-        File.fromUri(sourceApplicationDirectory.uri.resolve("pubspec.yaml"))
-            .readAsStringSync(),
-      );
+    File.fromUri(
+      sourceApplicationDirectory.uri.resolve("pubspec.yaml"),
+    ).readAsStringSync(),
+  );
 
-  Map<dynamic, dynamic> get sourceApplicationPubspecMap => loadYaml(
-        File.fromUri(
-          sourceApplicationDirectory.uri.resolve("pubspec.yaml"),
-        ).readAsStringSync(),
-      ) as Map<dynamic, dynamic>;
+  Map<dynamic, dynamic> get sourceApplicationPubspecMap =>
+      loadYaml(
+            File.fromUri(
+              sourceApplicationDirectory.uri.resolve("pubspec.yaml"),
+            ).readAsStringSync(),
+          )
+          as Map<dynamic, dynamic>;
 
   /// The directory of the application being compiled.
   Directory get sourceApplicationDirectory =>
@@ -104,13 +107,14 @@ class BuildContext {
 
   /// Directory for compiled application
   Directory get buildApplicationDirectory => getDirectory(
-        buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"),
-      );
+    buildPackagesDirectory.uri.resolve("${sourceApplicationPubspec.name}/"),
+  );
 
   /// Gets dependency package location relative to [sourceApplicationDirectory].
   Future<PackageConfig> get packageConfig async {
-    return _packageConfig ??=
-        (await findPackageConfig(sourceApplicationDirectory))!;
+    return _packageConfig ??= (await findPackageConfig(
+      sourceApplicationDirectory,
+    ))!;
   }
 
   /// Returns a [Directory] at [uri], creates it recursively if it doesn't exist.
@@ -210,12 +214,15 @@ class BuildContext {
   Future<FieldDeclaration?> _getField(ClassMirror type, String propertyName) {
     return getClassDeclarationFromType(type.reflectedType).then((cd) {
       try {
-        return cd!.members.firstWhere(
-          (m) => (m as FieldDeclaration)
-              .fields
-              .variables
-              .any((v) => v.name.value() == propertyName),
-        ) as FieldDeclaration;
+        for (final m in cd!.body.childEntities) {
+          if (m is FieldDeclaration) {
+            for (final v in m.fields.variables) {
+              if (v.name.value() == propertyName) {
+                return m;
+              }
+            }
+          }
+        }
       } catch (e) {
         return null;
       }

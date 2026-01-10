@@ -10,7 +10,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^8.4.0
+  analyzer: ^10.0.0
   args: ^2.0.0
   conduit_isolate_exec: ^6.0.0
   io: ^1.0.4

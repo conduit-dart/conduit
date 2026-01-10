@@ -5,7 +5,7 @@ import 'dart:io';
 import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
+// import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -859,4 +859,7 @@ Future postBytes(List<int> bytes) {
       .catchError((err) => Future.value(http.Response.bytes([], 500)));
 }
 
-class MockHttpClientResponse extends Mock implements HttpClientResponse {}
+class MockHttpClientResponse implements HttpClientResponse {
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
