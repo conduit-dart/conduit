@@ -226,6 +226,7 @@ class BuildContext {
       } catch (e) {
         return null;
       }
+      return null;
     });
   }
 
