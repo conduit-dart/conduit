@@ -37,8 +37,9 @@ class IsolateExecutor<U> {
     final onErrorPort = ReceivePort()
       ..listen((err) async {
         if (err is List) {
-          final stack =
-              StackTrace.fromString(err.last.replaceAll(scriptSource, ""));
+          final stack = StackTrace.fromString(
+            err.last.replaceAll(scriptSource, ""),
+          );
 
           completer.completeError(StateError(err.first), stack);
         } else {

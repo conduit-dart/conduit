@@ -20,7 +20,6 @@ class ManagedValidator {
     Validating event = Validating.insert,
   }) {
     final context = ValidationContext();
-
     for (final validator in object.entity.validators) {
       context.property = validator.property;
       context.event = event;
@@ -41,23 +40,31 @@ class ManagedValidator {
           final inner = object[validator.property!.name] as ManagedObject?;
           if (inner == null ||
               !inner.backing.contents.containsKey(inner.entity.primaryKey)) {
-            context.addError("key '${validator.property!.name}' is required "
-                "for ${_getEventName(event)}s.");
+            context.addError(
+              "key '${validator.property!.name}' is required "
+              "for ${_getEventName(event)}s.",
+            );
           }
         } else if (!contents.containsKey(key)) {
-          context.addError("key '${validator.property!.name}' is required "
-              "for ${_getEventName(event)}s.");
+          context.addError(
+            "key '${validator.property!.name}' is required "
+            "for ${_getEventName(event)}s.",
+          );
         }
       } else if (validator.definition.type == ValidateType.absent) {
         if (validator.property is ManagedRelationshipDescription) {
           final inner = object[validator.property!.name] as ManagedObject?;
           if (inner != null) {
-            context.addError("key '${validator.property!.name}' is not allowed "
-                "for ${_getEventName(event)}s.");
+            context.addError(
+              "key '${validator.property!.name}' is not allowed "
+              "for ${_getEventName(event)}s.",
+            );
           }
         } else if (contents.containsKey(key)) {
-          context.addError("key '${validator.property!.name}' is not allowed "
-              "for ${_getEventName(event)}s.");
+          context.addError(
+            "key '${validator.property!.name}' is not allowed "
+            "for ${_getEventName(event)}s.",
+          );
         }
       } else {
         if (validator.property is ManagedRelationshipDescription) {

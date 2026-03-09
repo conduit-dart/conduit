@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/results.dart';
@@ -40,8 +41,9 @@ class BuildManager {
       ..writeAsStringSync(scriptSource);
     final analyzer = CodeAnalyzer(strippedScriptFile.absolute.uri);
     final analyzerContext = analyzer.contexts.contextFor(analyzer.path);
-    final parsedUnit = analyzerContext.currentSession
-        .getParsedUnit(analyzer.path) as ParsedUnitResult;
+    final parsedUnit =
+        analyzerContext.currentSession.getParsedUnit(analyzer.path)
+            as ParsedUnitResult;
 
     final mainFunctions = parsedUnit.unit.declarations
         .whereType<FunctionDeclaration>()
@@ -56,17 +58,38 @@ class BuildManager {
 
     try {
       await copyPath(
-          context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
-          context.buildDirectoryUri.resolve('not_tests').path);
+        context.sourceApplicationDirectory.uri.resolve('test/not_tests').path,
+        context.buildDirectoryUri.resolve('not_tests').path,
+      );
     } catch (_) {}
+
+    final File workspaceRef = File.fromUri(
+      sourceDirectoryUri.resolve('.dart_tool/pub/workspace_ref.json'),
+    );
+
+    late Uri packageConfigURI;
+
+    if (workspaceRef.existsSync()) {
+      JsonDecoder decoder = const JsonDecoder();
+      final Map<String, dynamic> workspaceRefMap = decoder.convert(
+        workspaceRef.readAsStringSync(),
+      );
+      packageConfigURI = sourceDirectoryUri
+          .resolve('.dart_tool/pub/')
+          .resolve(workspaceRefMap['workspaceRoot']!)
+          .resolve('.dart_tool/package_config.json');
+    } else {
+      packageConfigURI = sourceDirectoryUri.resolve(
+        '.dart_tool/package_config.json',
+      );
+    }
 
     await IsolateExecutor.run(
       BuildExecutable(context.safeMap),
-      packageConfigURI:
-          sourceDirectoryUri.resolve('.dart_tool/package_config.json'),
+      packageConfigURI: packageConfigURI,
       imports: [
         "package:conduit_runtime/runtime.dart",
-        context.targetScriptFileUri.toString()
+        context.targetScriptFileUri.toString(),
       ],
       logHandler: (s) => print(s), //ignore: avoid_print
     );

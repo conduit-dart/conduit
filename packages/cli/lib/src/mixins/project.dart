@@ -55,8 +55,9 @@ mixin CLIProject implements CLICommand {
 
   Version? get projectVersion {
     if (_projectVersion == null) {
-      final lockFile =
-          File.fromUri(projectDirectory!.uri.resolve("pubspec.lock"));
+      final lockFile = File.fromUri(
+        projectDirectory!.uri.resolve("pubspec.lock"),
+      );
       if (!lockFile.existsSync()) {
         throw CLIException("No pubspec.lock file. Run `pub get`.");
       }
@@ -96,7 +97,7 @@ mixin CLIProject implements CLICommand {
       throw CLIException(
         "CLI version is incompatible with project conduit version.",
         instructions: [
-          "Install conduit@$projectVersion or upgrade your project to conduit${(await toolVersion)}."
+          "Install conduit@$projectVersion or upgrade your project to conduit${(await toolVersion)}.",
         ],
       );
     }
