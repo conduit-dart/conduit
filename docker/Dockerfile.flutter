@@ -4,7 +4,6 @@ RUN chown -R 1000:1000 /sdks/flutter
 RUN mkdir /conduit
 COPY ci/ /conduit/ci/
 COPY packages/ /conduit/packages/
-COPY melos.yaml /conduit/melos.yaml
 COPY pubspec.yaml /conduit/pubspec.yaml
 RUN chown -R 1000:1000 /conduit
 
