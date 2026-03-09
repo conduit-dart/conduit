@@ -34,8 +34,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
-    @Deprecated('Use sslMode instead') bool useSSL = false,
-  }) : isSSLConnection = useSSL || sslMode.toSslMode() != SslMode.disable;
+  }) : isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   /// Same constructor as default constructor.
   ///
@@ -48,8 +47,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
-    @Deprecated('Use sslMode instead') bool useSSL = false,
-  }) : isSSLConnection = useSSL || sslMode.toSslMode() != SslMode.disable;
+  }) : isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
     : isSSLConnection =
@@ -233,11 +231,9 @@ class PostgreSQLPersistentStore extends PersistentStore
         try {
           return await transactionBlock(transactionContext);
         } on Rollback {
-          /// user triggered a manual rollback.
-          /// TODO: there is currently no reliable way for a user to detect
-          /// that a manual rollback occured.
-          /// The documented method of checking the return value from this method
-          /// does not work.
+          // User triggered a manual rollback.
+          // The documented method of checking the return value from this method
+          // does not work.
           await dbTransactionContext.rollback();
           rethrow;
         }

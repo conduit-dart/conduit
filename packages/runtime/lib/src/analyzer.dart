@@ -51,20 +51,21 @@ class CodeAnalyzer {
         return _resolvedAsts[path]! as ResolvedLibraryResult;
       }
 
-      final output = await ctx.currentSession.getResolvedLibrary(path)
-          as ResolvedLibraryResult;
+      final output =
+          await ctx.currentSession.getResolvedLibrary(path)
+              as ResolvedLibraryResult;
       return _resolvedAsts[path] = output;
     }
 
-    throw ArgumentError("'uri' could not be resolved (contexts: "
-        "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})");
+    throw ArgumentError(
+      "'uri' could not be resolved (contexts: "
+      "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})",
+    );
   }
 
   Future<ResolvedUnitResult> resolveUnitAt(Uri uri) async {
     assert(
-      FileSystemEntity.isFileSync(
-        uri.toFilePath(windows: Platform.isWindows),
-      ),
+      FileSystemEntity.isFileSync(uri.toFilePath(windows: Platform.isWindows)),
     );
     for (final ctx in contexts.contexts) {
       final path = getPath(uri);
@@ -77,16 +78,17 @@ class CodeAnalyzer {
       return _resolvedAsts[path] = output;
     }
 
-    throw ArgumentError("'uri' could not be resolved (contexts: "
-        "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})");
+    throw ArgumentError(
+      "'uri' could not be resolved (contexts: "
+      "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})",
+    );
   }
 
   ClassDeclaration? getClassFromFile(String className, Uri fileUri) {
     try {
-      return _getFileAstRoot(fileUri)
-          .declarations
+      return _getFileAstRoot(fileUri).declarations
           .whereType<ClassDeclaration>()
-          .firstWhere((c) => c.name.value() == className);
+          .firstWhere((c) => c.namePart.typeName.toString() == className);
     } catch (e) {
       if (e is StateError ||
           e is TypeError ||
@@ -102,11 +104,11 @@ class CodeAnalyzer {
     String superclassName,
     Uri fileUri,
   ) {
-    return _getFileAstRoot(fileUri)
-        .declarations
+    return _getFileAstRoot(fileUri).declarations
         .whereType<ClassDeclaration>()
-        .where((c) =>
-            c.extendsClause?.superclass.name2.toString() == superclassName)
+        .where(
+          (c) => c.extendsClause?.superclass.name.toString() == superclassName,
+        )
         .toList();
   }
 
@@ -122,11 +124,16 @@ class CodeAnalyzer {
         return (_resolvedAsts[path]! as ResolvedUnitResult).unit;
       }
     } finally {}
-    final unit = contexts.contextFor(path).currentSession.getParsedUnit(
-          normalize(
-            absolute(fileUri.toFilePath(windows: Platform.isWindows)),
-          ),
-        ) as ParsedUnitResult;
+    final unit =
+        contexts
+                .contextFor(path)
+                .currentSession
+                .getParsedUnit(
+                  normalize(
+                    absolute(fileUri.toFilePath(windows: Platform.isWindows)),
+                  ),
+                )
+            as ParsedUnitResult;
     return unit.unit;
   }
 

@@ -18,7 +18,7 @@ void main() {
       AbsenceBelongsTo,
       AbsenceHas,
       NonDefaultPK,
-      MultiValidate
+      MultiValidate,
     ]),
     DefaultPersistentStore(),
   );
@@ -35,12 +35,13 @@ void main() {
     });
 
     test(
-        "A primary key that isn't @primaryKey does not have Validate.constant()",
-        () {
-      final t = NonDefaultPK()..id = 1;
-      expect(t.validate().isValid, true);
-      expect(t.validate(forEvent: Validating.update).isValid, true);
-    });
+      "A primary key that isn't @primaryKey does not have Validate.constant()",
+      () {
+        final t = NonDefaultPK()..id = 1;
+        expect(t.validate().isValid, true);
+        expect(t.validate(forEvent: Validating.update).isValid, true);
+      },
+    );
   });
 
   group("Foreign keys", () {
@@ -60,23 +61,25 @@ void main() {
     });
 
     test(
-        "If foreign key object doesn't contain primary key, validator is not run",
-        () {
-      final fk = FK();
-      fk.parent = Parent();
-      expect(fk.validate().isValid, true);
-    });
+      "If foreign key object doesn't contain primary key, validator is not run",
+      () {
+        final fk = FK();
+        fk.parent = Parent();
+        expect(fk.validate().isValid, true);
+      },
+    );
 
     test(
-        "If primary key has a validator, it is not run when evaluated as a foreign key",
-        () {
-      final fk = FK();
-      fk.parent = Parent()..id = 10;
-      expect(fk.validate().isValid, true);
+      "If primary key has a validator, it is not run when evaluated as a foreign key",
+      () {
+        final fk = FK();
+        fk.parent = Parent()..id = 10;
+        expect(fk.validate().isValid, true);
 
-      expect(fk.parent.validate().isValid, false);
-      expect(fk.parent.validate().errors.first, contains("Parent.id"));
-    });
+        expect(fk.parent.validate().isValid, false);
+        expect(fk.parent.validate().errors.first, contains("Parent.id"));
+      },
+    );
   });
 
   group("Validate.matches", () {
@@ -242,15 +245,17 @@ void main() {
       expect(fk.validate().isValid, false);
     });
 
-    test("If foreign key object doesn't contain primary key, validator fails",
-        () {
-      final fk = PresenceBelongsTo()..present = PresenceHas();
-      expect(fk.validate().isValid, false);
-      expect(
-        fk.validate().errors.first,
-        contains("PresenceBelongsTo.present.id"),
-      );
-    });
+    test(
+      "If foreign key object doesn't contain primary key, validator fails",
+      () {
+        final fk = PresenceBelongsTo()..present = PresenceHas();
+        expect(fk.validate().isValid, false);
+        expect(
+          fk.validate().errors.first,
+          contains("PresenceBelongsTo.present.id"),
+        );
+      },
+    );
   });
 
   group("Validate.absent", () {
@@ -356,13 +361,15 @@ void main() {
       expect(t.validate().isValid, false);
     });
 
-    test("ManagedObject can provide add'l validations by overriding validate",
-        () async {
-      final v = V()..aOrbButReallyOnlyA = "a";
-      expect(v.validate().isValid, true);
-      v.aOrbButReallyOnlyA = "b";
-      expect(v.validate().isValid, false);
-    });
+    test(
+      "ManagedObject can provide add'l validations by overriding validate",
+      () async {
+        final v = V()..aOrbButReallyOnlyA = "a";
+        expect(v.validate().isValid, true);
+        v.aOrbButReallyOnlyA = "b";
+        expect(v.validate().isValid, false);
+      },
+    );
   });
 
   group("Custom validator verify", () {
@@ -625,7 +632,7 @@ class _MultiValidate {
   @Column(
     validators: [
       Validate.compare(greaterThan: 3),
-      Validate.compare(equalTo: 4)
+      Validate.compare(equalTo: 4),
     ],
   )
   int? canOnlyBe4;

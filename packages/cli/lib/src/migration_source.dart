@@ -28,12 +28,12 @@ class MigrationSource {
 
     final klass = migrationTypes.first;
     final source = klass.toSource();
-    final offset = klass.name.offset - klass.offset;
+    final offset = klass.namePart.offset - klass.offset;
     return MigrationSource(
       source,
       uri.toFilePath(windows: Platform.isWindows),
       offset,
-      offset + klass.name.length,
+      offset + klass.namePart.length,
     );
   }
 
@@ -42,7 +42,7 @@ class MigrationSource {
       "originalName": originalName,
       "name": name,
       "source": source,
-      "uri": uri
+      "uri": uri,
     };
   }
 

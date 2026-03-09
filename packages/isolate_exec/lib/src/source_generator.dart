@@ -37,16 +37,14 @@ class SourceGenerator {
     for (final anImport in imports) {
       builder.writeln("import '$anImport';");
     }
-    builder.writeln(
-      """
+    builder.writeln("""
 Future main (List<String> args, Map<String, dynamic> message) async {
   final sendPort = message['_sendPort'];
   final executable = $typeName(message);
   final result = await executable.execute();
   sendPort.send({"_result": result});
 }
-    """,
-    );
+    """);
     builder.writeln(typeSource);
 
     builder.writeln((await _getClass(Executable)).toSource());
@@ -63,19 +61,21 @@ Future main (List<String> args, Map<String, dynamic> message) async {
   }
 
   static Future<ClassDeclaration> _getClass(Type type) async {
-    final uri =
-        await Isolate.resolvePackageUri(reflectClass(type).location!.sourceUri);
-    final path =
-        absolute(normalize(uri!.toFilePath(windows: Platform.isWindows)));
+    final uri = await Isolate.resolvePackageUri(
+      reflectClass(type).location!.sourceUri,
+    );
+    final path = absolute(
+      normalize(uri!.toFilePath(windows: Platform.isWindows)),
+    );
 
     final context = _createContext(path);
     final session = context.currentSession;
     final unit = session.getParsedUnit(path) as ParsedUnitResult;
     final typeName = MirrorSystem.getName(reflectClass(type).simpleName);
 
-    return unit.unit.declarations
-        .whereType<ClassDeclaration>()
-        .firstWhere((classDecl) => classDecl.name.value() == typeName);
+    return unit.unit.declarations.whereType<ClassDeclaration>().firstWhere(
+      (classDecl) => classDecl.namePart.typeName.toString() == typeName,
+    );
   }
 }
 
@@ -85,7 +85,9 @@ AnalysisContext _createContext(
 }) {
   resourceProvider ??= PhysicalResourceProvider.INSTANCE;
   final builder = AnalysisContextCollection(
-      resourceProvider: resourceProvider, includedPaths: [path]);
+    resourceProvider: resourceProvider,
+    includedPaths: [path],
+  );
 
   return builder.contextFor(path);
 }

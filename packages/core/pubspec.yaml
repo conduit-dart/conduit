@@ -1,23 +1,24 @@
 name: conduit_core
-version: 5.1.5
+version: 6.0.0
 description: This is the core of the framework.
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
 
 environment:
-  sdk: ">=3.9.0 <4.0.0"
+  sdk: ">=3.11.0 <4.0.0"
+resolution: workspace
 
 dependencies:
-  analyzer: ^8.4.0
+  analyzer: ^10.0.0
   args: ^2.4.2
   collection: ^1.18.0
-  conduit_common: ^5.1.5
-  conduit_config: ^5.1.5
-  conduit_isolate_exec: ^5.1.5
-  conduit_open_api: ^5.1.5
-  conduit_password_hash: ^5.1.5
-  conduit_runtime: ^5.1.5
+  conduit_common: ^6.0.0
+  conduit_config: ^6.0.0
+  conduit_isolate_exec: ^6.0.0
+  conduit_open_api: ^6.0.0
+  conduit_password_hash: ^6.0.0
+  conduit_runtime: ^6.0.0
   crypto: ^3.0.3
   io: ^1.0.4
   logging: ^1.2.0
@@ -38,6 +39,6 @@ dev_dependencies:
   http: ^1.2.1
   lints: ^6.0.0
   matcher: ^0.12.16+1
-  mockito: ^5.4.4
+  # mockito: ^5.6.1
   test: ^1.25.2
   web_socket_channel: ^3.0.0

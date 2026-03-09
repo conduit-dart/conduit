@@ -3,8 +3,7 @@
 import 'dart:mirrors';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart'
-    show PropertyAccessorElement2;
+import 'package:analyzer/dart/element/element.dart';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/src/db/managed/managed.dart';
@@ -114,7 +113,7 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Validate)) ?? false) {
       // If the annotation is a const Validate instantiation, we just copy it directly
       // and import the file where the const constructor is declared.
-      importUris.add(annotation.elementAnnotation!.element2!.library2!.uri);
+      importUris.add(annotation.elementAnnotation!.element!.library!.uri);
       return [annotation.toSource().substring(1)];
     } else if (mirrorOfAnnotationType?.isSubtypeOf(reflectType(Column)) ??
         false) {
@@ -128,12 +127,12 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     } else if (mirrorOfAnnotationType == null) {
       // Then this is not a const constructor - there is no type - it is a
       // instance (pointing at a const constructor) e.g. @primaryKey.
-      final element = annotation.elementAnnotation?.element2;
-      if (element is! PropertyAccessorElement2) {
+      final element = annotation.elementAnnotation?.element;
+      if (element is! PropertyAccessorElement) {
         return [];
       }
 
-      final type = element.variable3!.type;
+      final type = element.variable.type;
       final isSubclassOrInstanceOfValidate =
           type.getDisplayString() == "Validate" ||
           buildCtx.context.getSubclassesOf(Validate).any((subclass) {
@@ -143,15 +142,15 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
       final isInstanceOfColumn = type.getDisplayString() == "Column";
 
       if (isSubclassOrInstanceOfValidate) {
-        importUris.add(annotation.element2!.library2!.uri);
+        importUris.add(annotation.element!.library!.uri);
         return [annotation.toSource().substring(1)];
       } else if (isInstanceOfColumn) {
         final originatingLibrary =
-            element.session!.getParsedLibraryByElement2(element.library2)
+            element.session!.getParsedLibraryByElement(element.library)
                 as ParsedLibraryResult;
         final elementDeclaration =
             originatingLibrary
-                    .getFragmentDeclaration(element.variable3!.firstFragment)!
+                    .getFragmentDeclaration(element.variable.firstFragment)!
                     .node
                 as VariableDeclaration;
 

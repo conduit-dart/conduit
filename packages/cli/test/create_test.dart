@@ -33,14 +33,11 @@ void main() {
 
   group("Project naming", () {
     test("Appropriately named project gets created correctly", () async {
-      final res = await cli.run(
-        "create",
-        [
-          "test_project",
-          "--offline",
-          "--stacktrace",
-        ],
-      );
+      final res = await cli.run("create", [
+        "test_project",
+        "--offline",
+        "--stacktrace",
+      ]);
       expect(res, 0);
 
       expect(
@@ -109,36 +106,42 @@ void main() {
       }
     });
 
-    test("Template gets generated from local path, project points to it",
-        () async {
-      final res = await cli.run("create", ["test_project", "--offline"]);
-      expect(res, isZero);
+    test(
+      "Template gets generated from local path, project points to it",
+      () async {
+        final res = await cli.run("create", ["test_project", "--offline"]);
+        expect(res, isZero);
 
-      final List packages = jsonDecode(
-        File(
-          join(
-            cli.agent.workingDirectory.path,
-            "test_project",
-            ".dart_tool/package_config.json",
+        final List packages =
+            jsonDecode(
+                  File(
+                    join(
+                      cli.agent.workingDirectory.path,
+                      "test_project",
+                      ".dart_tool/package_config.json",
+                    ),
+                  ).readAsStringSync(),
+                )['packages']
+                as List;
+        final conduitCorePacakge = packages.firstWhere(
+          (element) => element['name'] == 'conduit_core',
+        );
+        final conduitCoreLocation = Uri.parse(
+          '${conduitCorePacakge['rootUri']}/',
+        ).resolve(conduitCorePacakge['packageUri'] as String);
+
+        final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
+        expect(
+          path,
+          path_lib.join(
+            Directory.current.uri
+                .resolve('../core')
+                .toFilePath(windows: Platform.isWindows),
+            "lib",
           ),
-        ).readAsStringSync(),
-      )['packages'] as List;
-      final conduitCorePacakge =
-          packages.firstWhere((element) => element['name'] == 'conduit_core');
-      final conduitCoreLocation = Uri.parse('${conduitCorePacakge['rootUri']}/')
-          .resolve(conduitCorePacakge['packageUri'] as String);
-
-      final path = path_lib.normalize(path_lib.fromUri(conduitCoreLocation));
-      expect(
-        path,
-        path_lib.join(
-          Directory.current.uri
-              .resolve('../core')
-              .toFilePath(windows: Platform.isWindows),
-          "lib",
-        ),
-      );
-    });
+        );
+      },
+    );
 
     /* for every template */
     final templates = Directory("templates")
@@ -165,15 +168,12 @@ void main() {
 
       test("Tests run on template generated from local path", () async {
         expect(
-          await cli.run(
-            "create",
-            [
-              "test_project",
-              "-t",
-              template,
-              "--offline",
-            ],
-          ),
+          await cli.run("create", [
+            "test_project",
+            "-t",
+            template,
+            "--offline",
+          ]),
           isZero,
         );
 

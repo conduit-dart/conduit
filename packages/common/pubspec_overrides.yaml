@@ -1,5 +1,0 @@
-dependency_overrides: 
-  conduit_codable: 
-    path: ../codable
-  conduit_open_api: 
-    path: ../open_api

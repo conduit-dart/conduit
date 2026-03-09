@@ -18,8 +18,9 @@ abstract class Configuration {
   /// [contents] must be YAML.
   Configuration.fromString(String contents) {
     final yamlMap = loadYaml(contents) as Map<dynamic, dynamic>?;
-    final map =
-        yamlMap?.map<String, dynamic>((k, v) => MapEntry(k.toString(), v));
+    final map = yamlMap?.map<String, dynamic>(
+      (k, v) => MapEntry(k.toString(), v),
+    );
     decode(map);
   }
 
@@ -133,7 +134,7 @@ enum ConfigurationItemAttributeType {
 
   /// [Configuration] properties marked as [optional] will be silently ignored
   /// if their source YAML doesn't contain a matching key.
-  optional
+  optional,
 }
 
 /// [Configuration] properties may be attributed with these.
@@ -157,44 +158,6 @@ class ConfigurationItemAttribute {
   final ConfigurationItemAttributeType type;
 }
 
-/// A [ConfigurationItemAttribute] for required properties.
-///
-/// **NOTICE**: This will be removed in version 2.0.0.
-/// To signify required or optional config you could do:
-/// Example:
-/// ```dart
-/// class MyConfig extends Config {
-///    late String required;
-///    String? optional;
-///    String optionalWithDefult = 'default';
-///    late String optionalWithComputedDefault = _default();
-///
-///    String _default() => 'computed';
-/// }
-/// ```
-@Deprecated("Use `late` property")
-const ConfigurationItemAttribute requiredConfiguration =
-    ConfigurationItemAttribute._(ConfigurationItemAttributeType.required);
-
-/// A [ConfigurationItemAttribute] for optional properties.
-///
-/// **NOTICE**: This will be removed in version 2.0.0.
-/// To signify required or optional config you could do:
-/// Example:
-/// ```dart
-/// class MyConfig extends Config {
-///    late String required;
-///    String? optional;
-///    String optionalWithDefult = 'default';
-///    late String optionalWithComputedDefault = _default();
-///
-///    String _default() => 'computed';
-/// }
-/// ```
-@Deprecated("Use `nullable` property")
-const ConfigurationItemAttribute optionalConfiguration =
-    ConfigurationItemAttribute._(ConfigurationItemAttributeType.optional);
-
 /// Thrown when reading data into a [Configuration] fails.
 class ConfigurationException {
   ConfigurationException(
@@ -208,7 +171,7 @@ class ConfigurationException {
     List<String> missingKeys, {
     this.keyPath = const [],
   }) : message =
-            "missing required key(s): ${missingKeys.map((s) => "'$s'").join(", ")}";
+           "missing required key(s): ${missingKeys.map((s) => "'$s'").join(", ")}";
 
   /// The [Configuration] in which this exception occurred.
   final Configuration configuration;
