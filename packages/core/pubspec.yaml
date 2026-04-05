@@ -10,7 +10,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^10.0.0
+  analyzer: ^12.0.0
   args: ^2.4.2
   collection: ^1.18.0
   conduit_common: ^6.0.0
