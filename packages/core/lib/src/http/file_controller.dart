@@ -33,7 +33,7 @@ class FileController extends Controller {
   /// of the running application.
   ///
   /// If no file is found, the default behavior is to return a 404 Not Found. (If the [Request] accepts 'text/html', a simple 404 page is returned.) You may
-  /// override this behavior by providing [onFileNotFound].
+  /// override this behavior by providing [_onFileNotFound].
   ///
   /// The content type of the response is determined by the file extension of the served file. There are many built-in extension-to-content-type mappings and you may
   /// add more with [setContentTypeForExtension]. Unknown file extension will result in `application/octet-stream` content-type responses.
@@ -44,9 +44,8 @@ class FileController extends Controller {
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
   FileController(
     String pathOfDirectoryToServe, {
-    FileControllerClosure? onFileNotFound,
-  })  : _servingDirectory = Uri.directory(pathOfDirectoryToServe),
-        _onFileNotFound = onFileNotFound;
+    this._onFileNotFound,
+  })  : _servingDirectory = Uri.directory(pathOfDirectoryToServe);
 
   static final Map<String, ContentType> _defaultExtensionMap = {
     /* Web content */
