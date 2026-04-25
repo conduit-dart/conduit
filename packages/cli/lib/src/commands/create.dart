@@ -55,7 +55,7 @@ class CLITemplateCreator extends CLICommand {
     destDirectory.createSync();
     Uri? globalPath = await findGlobalPath();
     if (globalPath != null) {
-      Directory conduitLocation = Directory(globalPath.toString());
+      Directory conduitLocation = Directory.fromUri(globalPath);
       try {
         if (!addDependencyOverridesToPackage(destDirectory.path, {
           "conduit_codable": _packageUri(conduitLocation, 'codable'),
