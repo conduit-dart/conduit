@@ -21,10 +21,26 @@ jobs:
       run: |
         dart pub global activate melos
         dart pub global activate -spath packages/cli
+    - name: Inject workspace packages into pub cache
+      shell: pwsh
+      run: |
+        Get-ChildItem packages -Directory | ForEach-Object {
+          $pkgDir = $_.FullName
+          $pubspec = Join-Path $pkgDir 'pubspec.yaml'
+          if (-not (Test-Path $pubspec)) { return }
+          $name = (Select-String -Path $pubspec -Pattern '^name:\s*(\S+)').Matches[0].Groups[1].Value
+          $verMatch = (Select-String -Path $pubspec -Pattern '^version:\s*(\S+)').Matches
+          if ($verMatch.Count -eq 0) { return }
+          $version = $verMatch[0].Groups[1].Value
+          $dest = Join-Path $env:PUB_CACHE "hosted\pub.dev\$name-$version"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          Copy-Item -Path (Join-Path $pkgDir '*') -Destination $dest -Recurse -Force
+          Write-Host "cached $name $version"
+        }
     - name: Run tests
       working-directory: ../
       run: |
-        conduit create -t db_and_auth wildfire
+        conduit create -t db_and_auth --offline wildfire
         cd wildfire/
         echo "----------- Building test project -----------"
         conduit build
