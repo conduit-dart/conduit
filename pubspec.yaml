@@ -21,6 +21,7 @@ workspace:
   - packages/password_hash
   - packages/postgresql
   - packages/runtime
+  - packages/sql
   - packages/test_harness
   - packages/fs_test_agent
 
@@ -79,5 +80,6 @@ melos:
                             -V conduit_password_hash:$v \
                             -V conduit_postgresql:$v \
                             -V conduit_runtime:$v \
+                            -V conduit_sql:$v \
                             -V conduit_test:$v \
                             -V fs_test_agent:$v
