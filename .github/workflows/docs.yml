@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: stable
+        sdk: beta
     - name: Print ref name
       run: echo ${{github.ref_name}}
     - name: Install melos

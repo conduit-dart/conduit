@@ -100,14 +100,14 @@ class ResourceControllerParameter {
     required this.name,
     required this.location,
     required this.isRequired,
-    required dynamic Function(dynamic input)? decoder,
+    required this._decoder,
     required this.type,
     required this.defaultValue,
     required this.acceptFilter,
     required this.ignoreFilter,
     required this.requireFilter,
     required this.rejectFilter,
-  }) : _decoder = decoder;
+  });
 
   static ResourceControllerParameter make<T>({
     required String symbolName,

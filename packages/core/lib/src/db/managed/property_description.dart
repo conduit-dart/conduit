@@ -22,14 +22,13 @@ abstract class ManagedPropertyDescription {
     bool nullable = false,
     bool includedInDefaultResultSet = true,
     this.autoincrement = false,
-    List<ManagedValidator> validators = const [],
+    this._validators = const [],
     this.responseModel,
     this.responseKey,
   }) : isUnique = unique,
        isIndexed = indexed,
        isNullable = nullable,
-       isIncludedInDefaultResultSet = includedInDefaultResultSet,
-       _validators = validators {
+       isIncludedInDefaultResultSet = includedInDefaultResultSet {
     for (final v in _validators) {
       v.property = this;
     }

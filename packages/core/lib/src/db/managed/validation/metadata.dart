@@ -108,21 +108,15 @@ class Validate {
     bool onUpdate = true,
     bool onInsert = true,
     ValidateType? validator,
-    dynamic value,
-    Comparable? greaterThan,
-    Comparable? greaterThanEqualTo,
-    Comparable? equalTo,
-    Comparable? lessThan,
-    Comparable? lessThanEqualTo,
+    this._value,
+    this._greaterThan,
+    this._greaterThanEqualTo,
+    this._equalTo,
+    this._lessThan,
+    this._lessThanEqualTo,
   })  : runOnUpdate = onUpdate,
         runOnInsert = onInsert,
-        type = validator,
-        _value = value,
-        _greaterThan = greaterThan,
-        _greaterThanEqualTo = greaterThanEqualTo,
-        _equalTo = equalTo,
-        _lessThan = lessThan,
-        _lessThanEqualTo = lessThanEqualTo;
+        type = validator;
 
   /// A validator for matching an input String against a regular expression.
   ///
