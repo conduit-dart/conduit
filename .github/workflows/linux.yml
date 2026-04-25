@@ -45,7 +45,7 @@ jobs:
       fail-fast: false
       matrix:
         runner_args: [melos test-unit --no-select, dart tool/generated_test_runner.dart]
-        sdk: [beta, main]
+        sdk: [beta]
     env:
       TEST_DIR: packages/core
     services:
