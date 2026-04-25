@@ -365,11 +365,11 @@ class Request implements RequestOrResponse {
     Response resp,
     _Reference<String> compressionType,
   ) {
-    Codec? codec;
+    Codec<String, List<int>>? codec;
     if (resp.encodeBody) {
-      codec = CodecRegistry.defaultInstance.codecForContentType(
-        resp.contentType,
-      );
+      codec =
+          CodecRegistry.defaultInstance.codecForContentType(resp.contentType)
+              as Codec<String, List<int>>?;
     }
 
     final canGzip =
@@ -377,6 +377,7 @@ class Request implements RequestOrResponse {
           resp.contentType,
         ) &&
         _acceptsGzipResponseBody;
+
     if (codec == null) {
       if (resp.body is! Stream<List<int>>) {
         throw StateError(
@@ -393,14 +394,13 @@ class Request implements RequestOrResponse {
       return stream;
     }
 
+    final stream = (resp.body as Stream).cast<String>();
     if (canGzip) {
       compressionType.value = "gzip";
-      codec = codec.fuse(gzip);
+      return stream.transform(codec.encoder).transform(gzip.encoder);
     }
 
-    return (codec as Codec<dynamic, List<int>>).encoder.bind(
-      resp.body as Stream,
-    );
+    return codec.encoder.bind(stream);
   }
 
   bool get _acceptsGzipResponseBody {
