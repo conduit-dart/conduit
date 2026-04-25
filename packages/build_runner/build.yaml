@@ -2,6 +2,8 @@ targets:
   $default:
     builders:
       conduit_build_runner|stamp_builder:
+        enabled: false
+      conduit_build_runner|serializable_builder:
         enabled: true
 
 builders:
@@ -9,6 +11,12 @@ builders:
     import: "package:conduit_build_runner/builder.dart"
     builder_factories: ["stampBuilder"]
     build_extensions: { ".dart": [".conduit.stamp.dart"] }
+    auto_apply: none
+    build_to: cache
+
+  serializable_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["serializableBuilder"]
+    build_extensions: { ".dart": [".serializable.conduit.dart"] }
     auto_apply: dependents
     build_to: cache
-    applies_builders: ["source_gen|combining_builder"]
