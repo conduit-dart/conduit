@@ -1,0 +1,14 @@
+targets:
+  $default:
+    builders:
+      conduit_build_runner|stamp_builder:
+        enabled: true
+
+builders:
+  stamp_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["stampBuilder"]
+    build_extensions: { ".dart": [".conduit.stamp.dart"] }
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

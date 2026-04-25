@@ -11,6 +11,7 @@ dev_dependencies:
   melos: ^7.3.0
 
 workspace:
+  - packages/build_runner
   - packages/cli
   - packages/codable
   - packages/common
@@ -70,6 +71,7 @@ melos:
       run: |
         export v=`dart pub deps -s list | grep conduit_workspace | awk '{print $2}' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'`; \
         melos version  --yes -V conduit:$v \
+                            -V conduit_build_runner:$v \
                             -V conduit_codable:$v \
                             -V conduit_common:$v \
                             -V conduit_config:$v \
