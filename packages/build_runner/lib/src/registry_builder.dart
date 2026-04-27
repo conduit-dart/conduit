@@ -38,6 +38,12 @@ class RegistryBuilder implements Builder {
       manifestExtension: '.controller.conduit.json',
       libraryExtension: '.controller.conduit.dart',
     ),
+    _ManifestKind(
+      manifestKey: 'managedObjects',
+      runtimeSuffix: 'EntityRuntime',
+      manifestExtension: '.managed.conduit.json',
+      libraryExtension: '.managed.conduit.dart',
+    ),
   ];
 
   @override

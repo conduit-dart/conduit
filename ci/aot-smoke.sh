@@ -75,8 +75,30 @@ class SmokeChannel extends ApplicationChannel {
 }
 EOF
 
+# Smoke ManagedObject — exercises ManagedObjectBuilder. No relationships,
+# no enums (the v1 surface). The binary just instantiates the runtime
+# from the registry and prints the entity's table name; we don't open a
+# DB connection.
+cat > "$SMOKE_DIR/lib/aot_smoke_model.dart" <<'EOF'
+import 'package:conduit_core/aot.dart';
+
+class _SmokeUser {
+  @primaryKey
+  int? id;
+  String? email;
+}
+
+class SmokeUser extends ManagedObject<_SmokeUser> implements _SmokeUser {
+  @override
+  int? id;
+  @override
+  String? email;
+}
+EOF
+
 cat > "$SMOKE_DIR/bin/main.dart" <<'EOF'
 import 'package:aot_smoke/aot_smoke_channel.dart';
+import 'package:aot_smoke/aot_smoke_model.dart';
 import 'package:aot_smoke/conduit.g.dart' as conduit_runtime;
 import 'package:conduit_core/aot.dart';
 import 'package:conduit_runtime/runtime.dart';
@@ -88,8 +110,12 @@ void main(List<String> args) {
   final keys = ctx.runtimes.map.keys.toList();
   print('REGISTERED:${keys.join(',')}');
 
-  final runtime = ctx[SmokeChannel];
-  print('SMOKE_CHANNEL_RUNTIME:${runtime.runtimeType}');
+  final channelRt = ctx[SmokeChannel];
+  print('SMOKE_CHANNEL_RUNTIME:${channelRt.runtimeType}');
+
+  final entityRt = ctx[SmokeUser] as ManagedEntityRuntime;
+  print('SMOKE_USER_RUNTIME:${entityRt.runtimeType}');
+  print('SMOKE_USER_TABLE:${entityRt.entity.tableName}');
 }
 EOF
 
@@ -117,7 +143,13 @@ echo "$out"
 # didn't see SmokeChannel, or the conditional-import fallback fired.
 echo "$out" | grep -q '^REGISTERED:.*SmokeChannel' \
   || { echo "FAIL: SmokeChannel not registered"; exit 1; }
+echo "$out" | grep -q 'REGISTERED:.*SmokeUser' \
+  || { echo "FAIL: SmokeUser not registered"; exit 1; }
 echo "$out" | grep -q '^SMOKE_CHANNEL_RUNTIME:\$SmokeChannelChannelRuntime' \
-  || { echo "FAIL: runtime is not the generated \$SmokeChannelChannelRuntime"; exit 1; }
+  || { echo "FAIL: channel runtime is not the generated \$SmokeChannelChannelRuntime"; exit 1; }
+echo "$out" | grep -q '^SMOKE_USER_RUNTIME:\$SmokeUserEntityRuntime' \
+  || { echo "FAIL: entity runtime is not the generated \$SmokeUserEntityRuntime"; exit 1; }
+echo "$out" | grep -q '^SMOKE_USER_TABLE:_smoke_user' \
+  || { echo "FAIL: SmokeUser table name not _smoke_user. Output: $out"; exit 1; }
 
 echo "==> AOT smoke OK"
