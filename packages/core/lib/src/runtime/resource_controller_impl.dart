@@ -11,7 +11,7 @@ import 'package:conduit_core/src/runtime/resource_controller/documenter.dart';
 import 'package:conduit_core/src/runtime/resource_controller/utility.dart';
 import 'package:conduit_core/src/runtime/resource_controller_generator.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
-import 'package:conduit_runtime/runtime.dart' hide firstMetadataOfType;
+import 'package:conduit_runtime/dev.dart' hide firstMetadataOfType;
 
 class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
   ResourceControllerRuntimeImpl(this.type) {

@@ -1,0 +1,49 @@
+# Multi-stage build that produces an AOT-compiled Conduit server binary
+# from inside a Dart-beta toolchain, with a Flutter-bearing runtime stage
+# downstream for sharing the workspace with Flutter clients.
+#
+# Stage 1 (`aot-builder`): Dart 3.12-beta builds the workspace and exposes
+#   conduit_build_runner. User apps mount onto this stage to run
+#   `dart run build_runner build && dart compile exe`.
+#
+# Stage 2 (`flutter-dev`): preserves the existing
+#   `docker/Dockerfile.flutter` dev-environment intent (Flutter SDK +
+#   conduit CLI) and copies the bootstrapped workspace from stage 1 so
+#   Flutter clients can develop alongside an AOT-buildable conduit
+#   workspace without re-bootstrapping.
+#
+# The Dart SDK floor is `>=3.12.0-0`; the Flutter master image's
+# bundled Dart is currently 3.11, so AOT compilation cannot run there.
+# Stage 1 carries the AOT toolchain; stage 2 is for source editing only.
+
+FROM dart:beta AS aot-builder
+WORKDIR /conduit
+
+COPY ci/ ./ci/
+COPY packages/ ./packages/
+COPY pubspec.yaml ./
+
+ENV PUB_CACHE=/root/.pub-cache
+ENV PATH=$PATH:$PUB_CACHE/bin
+
+RUN dart pub global activate melos \
+ && melos bootstrap \
+ && dart pub global activate -spath packages/cli \
+ && dart --disable-analytics
+
+
+FROM ghcr.io/cirruslabs/flutter:latest AS flutter-dev
+RUN chown -R 1000:1000 /sdks/flutter
+
+COPY --from=aot-builder /conduit /conduit
+COPY --from=aot-builder /root/.pub-cache /home/flutter/.pub-cache
+RUN chown -R 1000:1000 /conduit /home/flutter/.pub-cache
+
+USER 1000
+WORKDIR /conduit
+
+ENV PUB_CACHE=/home/flutter/.pub-cache
+ENV PATH=$PATH:$PUB_CACHE/bin
+RUN dart pub global activate -spath packages/cli \
+ && dart pub global activate melos \
+ && dart --disable-analytics

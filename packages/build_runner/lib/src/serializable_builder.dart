@@ -1,49 +1,74 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
-import 'package:source_gen/source_gen.dart';
 
 import 'package:conduit_build_runner/src/type_to_schema.dart';
 
 /// Generates a `SerializableRuntime` subclass per `Serializable` class in
-/// the input library, emitting `<input>.serializable.conduit.dart`
-/// alongside each source file.
+/// the input library.
 ///
-/// Phase 1 of the AOT-without-conduit-build migration. This builder is a
-/// parallel implementation; the mirror-based
-/// `SerializableRuntimeImpl` in `packages/core/lib/src/runtime/impl.dart`
-/// stays in place. The aggregator that wires generated runtimes into
-/// `RuntimeContext` lands in a later phase, so for now the output is
-/// inert source you can read but not yet load.
-class SerializableGenerator extends Generator {
+/// Emits two siblings per source library:
+///  - `<src>.serializable.conduit.dart` — runtime code with one
+///    `$<Class>SerializableRuntime` per discovered class.
+///  - `<src>.serializable.conduit.json` — manifest the registry builder
+///    reads to discover runtime classes. Schema:
+///    `{"serializables": ["UserPayload", ...]}`.
+class SerializableBuilder implements Builder {
   static const _serializableTypeName = 'Serializable';
   static const _serializablePackagePrefix = 'package:conduit_core/';
 
   @override
-  String? generate(LibraryReader library, BuildStep buildStep) {
-    final classes = library.classes
+  Map<String, List<String>> get buildExtensions => const {
+        '.dart': [
+          '.serializable.conduit.dart',
+          '.serializable.conduit.json',
+        ],
+      };
+
+  @override
+  Future<void> build(BuildStep buildStep) async {
+    final input = buildStep.inputId;
+    if (!await buildStep.resolver.isLibrary(input)) return;
+    final lib = await buildStep.inputLibrary;
+
+    final classes = lib.classes
         .where((c) => !c.isAbstract && _implementsSerializable(c))
         .toList();
-    if (classes.isEmpty) return null;
+
+    if (classes.isEmpty) return;
+
+    final manifest = {
+      'serializables': classes.map((c) => c.name).toList(),
+    };
+    await buildStep.writeAsString(
+      input.changeExtension('.serializable.conduit.json'),
+      json.encode(manifest),
+    );
 
     final buffer = StringBuffer()
       ..writeln(
-        "// GENERATED CODE - DO NOT MODIFY BY HAND. "
-        "conduit_build_runner phase 1 (Serializable).",
+        '// GENERATED CODE - DO NOT MODIFY BY HAND. '
+        'conduit_build_runner SerializableBuilder.',
       )
       ..writeln(
-        "// ignore_for_file: type=lint, "
-        "directives_ordering, no_leading_underscores_for_local_identifiers",
+        '// ignore_for_file: type=lint, directives_ordering, '
+        'no_leading_underscores_for_local_identifiers',
       )
       ..writeln()
-      ..writeln("import 'package:conduit_core/conduit_core.dart';")
+      ..writeln("import 'package:conduit_core/aot.dart';")
       ..writeln("import 'package:conduit_open_api/v3.dart';")
       ..writeln();
 
     for (final klass in classes) {
       buffer.writeln(_generateRuntimeFor(klass));
     }
-    return buffer.toString();
+
+    await buildStep.writeAsString(
+      input.changeExtension('.serializable.conduit.dart'),
+      buffer.toString(),
+    );
   }
 
   bool _implementsSerializable(ClassElement element) {
@@ -64,8 +89,7 @@ class SerializableGenerator extends Generator {
     for (final field in klass.fields) {
       if (field.isStatic) continue;
       final expression = schemaExpressionFor(field.type);
-      propertyEntries
-          .writeln("      '${field.name}': $expression,");
+      propertyEntries.writeln("      '${field.name}': $expression,");
     }
 
     return '''
@@ -83,6 +107,4 @@ $propertyEntries    })
   }
 }
 
-Builder serializableBuilder(BuilderOptions options) =>
-    LibraryBuilder(SerializableGenerator(),
-        generatedExtension: '.serializable.conduit.dart');
+Builder serializableBuilder(BuilderOptions options) => SerializableBuilder();

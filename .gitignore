@@ -1,6 +1,7 @@
 # Don’t commit the following directories created by pub.
 .buildlog
 .pub/
+.pub-cache/
 build/
 .packages
 .dart_tool/

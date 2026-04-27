@@ -9,7 +9,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_core/src/utilities/sourcify.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class ManagedEntityRuntimeImpl extends ManagedEntityRuntime
     implements SourceCompiler {
@@ -475,7 +475,7 @@ return entity.symbolMap[Symbol(symbolName)];
 
     return """
 import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import '$originalFileUri';
 ${directives.join("\n")}
 

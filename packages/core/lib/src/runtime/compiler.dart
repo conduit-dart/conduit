@@ -8,7 +8,7 @@ import 'package:conduit_core/src/http/controller.dart';
 import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/impl.dart';
 import 'package:conduit_core/src/runtime/orm/data_model_compiler.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:io/io.dart';
 import 'package:yaml/yaml.dart';
 

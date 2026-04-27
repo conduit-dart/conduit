@@ -7,7 +7,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit/src/commands/pub.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/running_process.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 /// Exceptions thrown by command line interfaces.

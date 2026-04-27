@@ -3,7 +3,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class GetChannelExecutable extends Executable<String> {
   GetChannelExecutable(super.message);
@@ -25,6 +25,6 @@ class GetChannelExecutable extends Executable<String> {
   static List<String> importsForPackage(String? packageName) => [
         "package:conduit_core/conduit_core.dart",
         "package:$packageName/$packageName.dart",
-        "package:conduit_runtime/runtime.dart"
+        "package:conduit_runtime/dev.dart"
       ];
 }

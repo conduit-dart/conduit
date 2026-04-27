@@ -12,7 +12,7 @@ import 'package:conduit_core/src/http/resource_controller_interfaces.dart';
 import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_open_api/v3.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
   ChannelRuntimeImpl(this.type);

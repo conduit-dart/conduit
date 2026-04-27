@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:io/io.dart';
 
 class CLIBuild extends CLICommand with CLIProject {

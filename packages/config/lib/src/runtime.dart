@@ -2,7 +2,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/mirror_property.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class ConfigurationRuntimeImpl extends ConfigurationRuntime
     implements SourceCompiler {
