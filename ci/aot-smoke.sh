@@ -96,8 +96,22 @@ class SmokeUser extends ManagedObject<_SmokeUser> implements _SmokeUser {
 }
 EOF
 
+# Smoke Configuration — exercises ConfigurationBuilder. Two simple
+# fields; `port` is late+non-null (effectively required), `host` is
+# optional. The binary decodes a small map and prints the result.
+cat > "$SMOKE_DIR/lib/aot_smoke_config.dart" <<'EOF'
+import 'package:conduit_core/aot.dart';
+
+class SmokeConfig extends Configuration {
+  SmokeConfig();
+  late int port;
+  String? host;
+}
+EOF
+
 cat > "$SMOKE_DIR/bin/main.dart" <<'EOF'
 import 'package:aot_smoke/aot_smoke_channel.dart';
+import 'package:aot_smoke/aot_smoke_config.dart';
 import 'package:aot_smoke/aot_smoke_model.dart';
 import 'package:aot_smoke/conduit.g.dart' as conduit_runtime;
 import 'package:conduit_core/aot.dart';
@@ -116,6 +130,12 @@ void main(List<String> args) {
   final entityRt = ctx[SmokeUser] as ManagedEntityRuntime;
   print('SMOKE_USER_RUNTIME:${entityRt.runtimeType}');
   print('SMOKE_USER_TABLE:${entityRt.entity.tableName}');
+
+  final configRt = ctx[SmokeConfig] as ConfigurationRuntime;
+  print('SMOKE_CONFIG_RUNTIME:${configRt.runtimeType}');
+  final cfg = SmokeConfig();
+  configRt.decode(cfg, {'port': 8888, 'host': 'localhost'});
+  print('SMOKE_CONFIG_DECODED:port=${cfg.port},host=${cfg.host}');
 }
 EOF
 
@@ -151,5 +171,11 @@ echo "$out" | grep -q '^SMOKE_USER_RUNTIME:\$SmokeUserEntityRuntime' \
   || { echo "FAIL: entity runtime is not the generated \$SmokeUserEntityRuntime"; exit 1; }
 echo "$out" | grep -q '^SMOKE_USER_TABLE:_smoke_user' \
   || { echo "FAIL: SmokeUser table name not _smoke_user. Output: $out"; exit 1; }
+echo "$out" | grep -q 'REGISTERED:.*SmokeConfig' \
+  || { echo "FAIL: SmokeConfig not registered. Output: $out"; exit 1; }
+echo "$out" | grep -q '^SMOKE_CONFIG_RUNTIME:\$SmokeConfigConfigurationRuntime' \
+  || { echo "FAIL: config runtime is not the generated \$SmokeConfigConfigurationRuntime"; exit 1; }
+echo "$out" | grep -q '^SMOKE_CONFIG_DECODED:port=8888,host=localhost' \
+  || { echo "FAIL: config decode output unexpected. Output: $out"; exit 1; }
 
 echo "==> AOT smoke OK"
