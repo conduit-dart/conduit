@@ -15,8 +15,9 @@
 #     ├── lint
 #     ├── build-runner-tests
 #     ├── workspace-unit-tests (non-DB packages)
-#     ├── aot-smoke      ← new build_runner path
-#     ├── legacy-smoke   ← existing `conduit build` path
+#     ├── aot-smoke           ← new build_runner path (hand-rolled app)
+#     ├── legacy-smoke        ← existing `conduit build` path
+#     ├── template-aot-smoke  ← `conduit create -t default` → AOT binary
 #     └── core-integration-tests (with postgres service)
 #
 # PUB_CACHE is exported from inside `commands:` (not from `environment:`)
@@ -96,6 +97,16 @@ steps:
       - dart pub global activate -spath packages/cli
       - melos cache-source --no-select
       - bash ci/legacy-smoke.sh
+
+  template-aot-smoke:
+    image: *dart_image
+    depends_on: [bootstrap, build-runner-tests]
+    commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
+      - export PATH="$PATH:$PUB_CACHE/bin"
+      - dart pub global activate -spath packages/cli
+      - melos cache-source --no-select
+      - bash ci/template-aot-smoke.sh
 
   core-integration-tests:
     image: *dart_image

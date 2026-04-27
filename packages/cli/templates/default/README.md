@@ -16,6 +16,21 @@ pub run test
 
 The default configuration file used when testing is `config.src.yaml`. This file should be checked into version control. It also the template for configuration files used in deployment.
 
+## Compiling an AOT Binary
+
+Run the following from this directory to produce a self-contained
+executable that boots without `dart:mirrors`:
+
+```
+dart pub get
+dart run build_runner build --delete-conflicting-outputs
+dart compile exe bin/main.dart -o build/server
+```
+
+`build_runner` generates `lib/conduit.g.dart`; `bin/main.dart` calls
+the generated `bootstrap()` before constructing `Application<T>`,
+which is what makes the AOT path possible.
+
 ## Deploying an Application
 
 See the documentation for [Deployment](https://www.theconduit.dev/docs/deploy/).
