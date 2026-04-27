@@ -47,39 +47,37 @@ block a release; treat each one as an independent contract.
 - Doc deploys (`docs.yml`) only run when a PR with a `docs/*` head
   branch is merged.
 
-## Running the pipeline locally
+## Running the pipeline locally — the dev loop
 
-The `.woodpecker.yml` is plain enough to reproduce by hand against any
-`dart:beta` Docker image. The shortest path:
+Two helper scripts close the loop between "CI failed" and "I have a
+reproducer in front of me":
 
-```sh
-# Bootstrap the workspace once
-docker run --rm \
-  -v "$PWD":/conduit -v conduit-pub-cache:/root/.pub-cache \
-  -w /conduit dart:beta bash -c '
-    dart pub global activate melos
-    export PATH="$PATH:/root/.pub-cache/bin"
-    melos bootstrap
-'
+- **`ci/run-local.sh [gate ...]`** runs any subset of the deployable
+  gates against the same `dart:beta` image Woodpecker uses. State
+  persists in two docker volumes (`conduit-pub-cache`, `conduit-pgdata`)
+  so subsequent runs are fast. With no args, runs every gate.
 
-# Then run any gate against the same volume:
-docker run --rm \
-  -v "$PWD":/conduit -v conduit-pub-cache:/root/.pub-cache \
-  -w /conduit dart:beta bash -c '
-    export PATH="$PATH:/root/.pub-cache/bin:$PWD/.pub-cache/bin"
-    melos run analyze              # lint
-    cd packages/build_runner && dart test       # build-runner-tests
-    bash ci/aot-smoke.sh                         # aot-smoke
-'
-```
+  ```sh
+  ci/run-local.sh                        # all 6 gates
+  ci/run-local.sh lint build-runner-tests
+  ci/run-local.sh aot-smoke              # iterate the AOT path
+  ci/run-local.sh core-integration-tests # spins postgres:18.0 sidecar
+  ```
 
-For the integration-tests gate, start the Postgres service first:
+- **`ci/diagnose-step.sh`** reads step logs out of Woodpecker's sqlite
+  DB on snowman without bouncing through the UI. Only works on snowman
+  (path is hard-coded).
 
-```sh
-docker compose -f ci/docker-compose.yaml up -d postgres
-```
+  ```sh
+  ci/diagnose-step.sh                       # list recent pipelines
+  ci/diagnose-step.sh 28                    # step states for pipeline 28
+  ci/diagnose-step.sh 28 lint               # tail the lint step's log
+  TAIL_LINES=500 ci/diagnose-step.sh 28 aot-smoke
+  ```
 
-then run `cd packages/core && . ../../ci/.env && dart test`.
+The expected workflow when CI fails: `diagnose-step.sh <id> <step>` to
+read the failure, `run-local.sh <step>` to reproduce locally, fix, push,
+repeat.
 
 ## Why two pipelines
 
