@@ -51,7 +51,7 @@ environment:
 
   String get _loaderShell =>
       """
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:conduit_runtime/slow_coerce.dart' as runtime_cast;
 $_directiveToken
 

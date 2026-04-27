@@ -5,6 +5,10 @@ targets:
         enabled: false
       conduit_build_runner|serializable_builder:
         enabled: true
+      conduit_build_runner|channel_builder:
+        enabled: true
+      conduit_build_runner|registry_builder:
+        enabled: true
 
 builders:
   stamp_builder:
@@ -17,6 +21,31 @@ builders:
   serializable_builder:
     import: "package:conduit_build_runner/builder.dart"
     builder_factories: ["serializableBuilder"]
-    build_extensions: { ".dart": [".serializable.conduit.dart"] }
+    build_extensions:
+      ".dart":
+        - ".serializable.conduit.dart"
+        - ".serializable.conduit.json"
     auto_apply: dependents
-    build_to: cache
+    build_to: source
+
+  channel_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["channelBuilder"]
+    build_extensions:
+      ".dart":
+        - ".channel.conduit.dart"
+        - ".channel.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
+  registry_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["registryBuilder"]
+    build_extensions:
+      "$package$":
+        - "lib/conduit.g.dart"
+    auto_apply: root_package
+    build_to: source
+    required_inputs:
+      - ".channel.conduit.json"
+      - ".serializable.conduit.json"

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:io/io.dart';
 
 class BuildExecutable extends Executable {
@@ -88,7 +88,7 @@ class BuildManager {
       BuildExecutable(context.safeMap),
       packageConfigURI: packageConfigURI,
       imports: [
-        "package:conduit_runtime/runtime.dart",
+        "package:conduit_runtime/dev.dart",
         context.targetScriptFileUri.toString(),
       ],
       logHandler: (s) => print(s), //ignore: avoid_print

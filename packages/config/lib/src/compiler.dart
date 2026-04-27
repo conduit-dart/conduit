@@ -3,7 +3,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/runtime.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class ConfigurationCompiler extends Compiler {
   @override

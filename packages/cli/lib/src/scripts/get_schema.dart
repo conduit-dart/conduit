@@ -24,7 +24,7 @@ class GetSchemaExecutable extends Executable<Map<String, dynamic>> {
   static List<String> importsForPackage(String? packageName) => [
         "package:conduit_core/conduit_core.dart",
         "package:$packageName/$packageName.dart",
-        "package:conduit_runtime/runtime.dart"
+        "package:conduit_runtime/dev.dart"
       ];
 }
 

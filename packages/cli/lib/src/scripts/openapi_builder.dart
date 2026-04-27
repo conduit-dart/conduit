@@ -6,7 +6,7 @@ import 'package:conduit/src/mixins/openapi_options.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_open_api/v3.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:yaml/yaml.dart';
 
 class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
@@ -144,7 +144,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
         "package:yaml/yaml.dart",
         "dart:convert",
         "dart:io",
-        "package:conduit_runtime/runtime.dart",
+        "package:conduit_runtime/dev.dart",
         "package:conduit_open_api/v3.dart"
       ];
 }

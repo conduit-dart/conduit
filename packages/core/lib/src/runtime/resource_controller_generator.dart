@@ -5,7 +5,7 @@ import 'package:conduit_core/src/http/resource_controller_interfaces.dart';
 import 'package:conduit_core/src/runtime/resource_controller/documenter.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_core/src/utilities/sourcify.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 String getInvokerSource(
   BuildContext context,
