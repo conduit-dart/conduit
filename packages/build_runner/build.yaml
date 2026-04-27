@@ -7,6 +7,8 @@ targets:
         enabled: true
       conduit_build_runner|channel_builder:
         enabled: true
+      conduit_build_runner|configuration_builder:
+        enabled: true
       conduit_build_runner|controller_builder:
         enabled: true
       conduit_build_runner|managed_object_builder:
@@ -42,6 +44,16 @@ builders:
     auto_apply: dependents
     build_to: source
 
+  configuration_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["configurationBuilder"]
+    build_extensions:
+      ".dart":
+        - ".config.conduit.dart"
+        - ".config.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
   controller_builder:
     import: "package:conduit_build_runner/builder.dart"
     builder_factories: ["controllerBuilder"]
@@ -72,6 +84,7 @@ builders:
     build_to: source
     required_inputs:
       - ".channel.conduit.json"
+      - ".config.conduit.json"
       - ".controller.conduit.json"
       - ".managed.conduit.json"
       - ".serializable.conduit.json"
