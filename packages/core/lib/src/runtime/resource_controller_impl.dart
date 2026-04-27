@@ -9,7 +9,6 @@ import 'package:conduit_core/src/http/response.dart';
 import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/resource_controller/documenter.dart';
 import 'package:conduit_core/src/runtime/resource_controller/utility.dart';
-import 'package:conduit_core/src/runtime/resource_controller_generator.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 import 'package:conduit_runtime/dev.dart' hide firstMetadataOfType;
 
@@ -52,35 +51,6 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
   }
 
   final ClassMirror type;
-
-  String compile(BuildContext ctx) =>
-      getResourceControllerImplSource(ctx, this);
-  static final _listType = reflectType(List);
-  List<String> get directives {
-    final directives = <String>[];
-    for (final op in operations) {
-      final imports =
-          [op.positionalParameters, op.namedParameters, ivarParameters]
-              .expand((i) => i!)
-              .map((p) {
-                final type = reflectType(p.type);
-                if (type.isSubtypeOf(_listType)) {
-                  return type.typeArguments.first.location?.sourceUri;
-                }
-                return type.location?.sourceUri;
-              })
-              .where(
-                (uri) =>
-                    uri != null &&
-                    (uri.scheme == "package" ||
-                        (uri.scheme == "file" && uri.isAbsolute)),
-              )
-              .map((uri) => "import '$uri';")
-              .toList();
-      directives.addAll(imports);
-    }
-    return directives;
-  }
 
   List<String> get unsatisfiableOperations {
     return operations
