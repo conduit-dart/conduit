@@ -19,6 +19,12 @@
 #     ├── legacy-smoke   ← existing `conduit build` path
 #     └── core-integration-tests (with postgres service)
 #
+# PUB_CACHE is exported from inside `commands:` (not from `environment:`)
+# because the pipeline-level `${CI_WORKSPACE}` interpolation expands
+# *before* CI_WORKSPACE is bound and resolves to the empty string. Doing
+# the export at shell time uses the runtime value Woodpecker injects
+# into the step container.
+#
 # Anything below this comment that fails on master is a deployable-state
 # regression — see ci/README.md for the full criteria.
 
@@ -29,31 +35,29 @@ when:
 
 variables:
   - &dart_image dart:beta
-  - &pub_env
-      PUB_CACHE: ${CI_WORKSPACE}/.pub-cache
 
 steps:
   bootstrap:
     image: *dart_image
-    environment: *pub_env
     commands:
-      - dart pub global activate melos
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
+      - dart pub global activate melos
       - melos bootstrap
 
   lint:
     image: *dart_image
     depends_on: [bootstrap]
-    environment: *pub_env
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - melos run analyze
 
   build-runner-tests:
     image: *dart_image
     depends_on: [bootstrap]
-    environment: *pub_env
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - cd packages/build_runner && dart test -r failures-only
 
@@ -61,12 +65,12 @@ steps:
     image: *dart_image
     depends_on: [bootstrap]
     environment:
-      <<: *pub_env
       # conduit_config tests assert these are set; values match ci/.env.
       TEST_VALUE: '1'
       TEST_BOOL: 'true'
       TEST_DB_ENV_VAR: 'postgres://user:password@host:5432/dbname'
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - melos exec --fail-fast
         --scope conduit_codable
@@ -78,16 +82,16 @@ steps:
   aot-smoke:
     image: *dart_image
     depends_on: [bootstrap, build-runner-tests]
-    environment: *pub_env
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - bash ci/aot-smoke.sh
 
   legacy-smoke:
     image: *dart_image
     depends_on: [bootstrap]
-    environment: *pub_env
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - dart pub global activate -spath packages/cli
       - melos cache-source --no-select
@@ -97,7 +101,6 @@ steps:
     image: *dart_image
     depends_on: [bootstrap]
     environment:
-      <<: *pub_env
       POSTGRES_HOST: postgres
       POSTGRES_PORT: '5432'
       POSTGRES_USER: conduit_test_user
@@ -108,6 +111,7 @@ steps:
       TEST_VALUE: '1'
       TEST_BOOL: 'true'
     commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - cd packages/core
       - dart test -r failures-only
