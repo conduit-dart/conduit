@@ -34,7 +34,12 @@ class SerializableBuilder implements Builder {
     final lib = await buildStep.inputLibrary;
 
     final classes = lib.classes
-        .where((c) => !c.isAbstract && _implementsSerializable(c))
+        .where(
+          (c) =>
+              !c.isAbstract &&
+              _implementsSerializable(c) &&
+              !_extendsManagedObject(c),
+        )
         .toList();
 
     if (classes.isEmpty) return;
@@ -57,6 +62,7 @@ class SerializableBuilder implements Builder {
         'no_leading_underscores_for_local_identifiers',
       )
       ..writeln()
+      ..writeln("import 'package:conduit_common/conduit_common.dart';")
       ..writeln("import 'package:conduit_core/aot.dart';")
       ..writeln("import 'package:conduit_open_api/v3.dart';")
       ..writeln();
@@ -82,6 +88,17 @@ class SerializableBuilder implements Builder {
     return element.allSupertypes.any(isSerializable);
   }
 
+  /// `ManagedObject<T>` is a `Serializable`, but it has its own runtime
+  /// (emitted by `ManagedObjectBuilder`); registering both would conflict
+  /// in the registry map. Skip it here.
+  bool _extendsManagedObject(ClassElement element) {
+    return element.allSupertypes.any((t) {
+      final el = t.element;
+      if (el.name != 'ManagedObject') return false;
+      return el.library.identifier.startsWith(_serializablePackagePrefix);
+    });
+  }
+
   String _generateRuntimeFor(ClassElement klass) {
     final className = klass.name;
     final propertyEntries = StringBuffer();
@@ -94,7 +111,7 @@ class SerializableBuilder implements Builder {
 
     return '''
 class \$${className}SerializableRuntime extends SerializableRuntime {
-  const \$${className}SerializableRuntime();
+  \$${className}SerializableRuntime();
 
   @override
   APISchemaObject documentSchema(APIDocumentContext context) {
