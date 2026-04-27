@@ -26,7 +26,7 @@ PUB_VOL="conduit-pub-cache"
 PG_VOL="conduit-pgdata"
 PG_CONTAINER="conduit-ci-postgres"
 
-ALL_GATES=(lint build-runner-tests workspace-unit-tests aot-smoke legacy-smoke template-aot-smoke core-integration-tests)
+ALL_GATES=(lint build-runner-tests workspace-unit-tests aot-smoke template-aot-smoke core-integration-tests)
 
 if [ "$#" -eq 0 ]; then
   GATES=("${ALL_GATES[@]}")
@@ -132,15 +132,6 @@ for gate in "${GATES[@]}"; do
       run_in_dart "aot-smoke" '
         export PATH="$PATH:$PUB_CACHE/bin"
         bash ci/aot-smoke.sh
-      '
-      ;;
-
-    legacy-smoke)
-      run_in_dart "legacy-smoke" '
-        export PATH="$PATH:$PUB_CACHE/bin"
-        dart pub global activate -spath packages/cli
-        melos cache-source --no-select
-        bash ci/legacy-smoke.sh
       '
       ;;
 

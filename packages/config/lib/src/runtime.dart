@@ -2,10 +2,8 @@ import 'dart:mirrors';
 
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/mirror_property.dart';
-import 'package:conduit_runtime/dev.dart';
 
-class ConfigurationRuntimeImpl extends ConfigurationRuntime
-    implements SourceCompiler {
+class ConfigurationRuntimeImpl extends ConfigurationRuntime {
   ConfigurationRuntimeImpl(this.type) {
     // Should be done in the constructor so a type check could be run.
     properties = _collectProperties();
@@ -53,43 +51,6 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     }
   }
 
-  String get decodeImpl {
-    final buf = StringBuffer();
-
-    buf.writeln("final valuesCopy = Map.from(input);");
-    properties.forEach((k, v) {
-      buf.writeln("{");
-      buf.writeln(
-        "final v = Configuration.getEnvironmentOrValue(valuesCopy.remove('$k'));",
-      );
-      buf.writeln("if (v != null) {");
-      buf.writeln(
-        "  final decodedValue = tryDecode(configuration, '$k', () { ${v.source} });",
-      );
-      buf.writeln("  if (decodedValue is! ${v.codec.expectedType}) {");
-      buf.writeln(
-        "    throw ConfigurationException(configuration, 'input is wrong type', keyPath: ['$k']);",
-      );
-      buf.writeln("  }");
-      buf.writeln(
-        "  (configuration as ${type.reflectedType}).$k = decodedValue as ${v.codec.expectedType};",
-      );
-      buf.writeln("}");
-      buf.writeln("}");
-    });
-
-    buf.writeln(
-      """
-    if (valuesCopy.isNotEmpty) {
-      throw ConfigurationException(configuration,
-          "unexpected keys found: \${valuesCopy.keys.map((s) => "'\$s'").join(", ")}.");
-    }
-    """,
-    );
-
-    return buf.toString();
-  }
-
   @override
   void validate(Configuration configuration) {
     final configMirror = reflect(configuration);
@@ -134,55 +95,4 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime
     return m;
   }
 
-  String get validateImpl {
-    final buf = StringBuffer();
-
-    const startValidation = """
-    final missingKeys = <String>[];
-""";
-    buf.writeln(startValidation);
-    properties.forEach((name, property) {
-      final propCheck = """
-    try {
-      final $name = (configuration as ${type.reflectedType}).$name;
-      if (${property.isRequired} && $name == null) {
-        missingKeys.add('$name');
-      }
-    } on Error catch (e) {
-      missingKeys.add('$name');
-    }""";
-      buf.writeln(propCheck);
-    });
-    const throwIfErrors = """
-    if (missingKeys.isNotEmpty) {
-      throw ConfigurationException.missingKeys(configuration, missingKeys);
-    }""";
-    buf.writeln(throwIfErrors);
-
-    return buf.toString();
-  }
-
-  @override
-  Future<String> compile(BuildContext ctx) async {
-    final directives = await ctx.getImportDirectives(
-      uri: type.originalDeclaration.location!.sourceUri,
-      alsoImportOriginalFile: true,
-    )
-      ..add("import 'package:conduit_config/src/intermediate_exception.dart';");
-    return """
-    ${directives.join("\n")}
-    final instance = ConfigurationRuntimeImpl();
-    class ConfigurationRuntimeImpl extends ConfigurationRuntime {
-      @override
-      void decode(Configuration configuration, Map input) {
-        $decodeImpl
-      }
-
-      @override
-      void validate(Configuration configuration) {
-        $validateImpl
-      }
-    }
-    """;
-  }
 }

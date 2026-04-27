@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/commands/auth.dart';
-import 'package:conduit/src/commands/build.dart';
 import 'package:conduit/src/commands/create.dart';
 import 'package:conduit/src/commands/db.dart';
 import 'package:conduit/src/commands/document.dart';
@@ -17,7 +16,6 @@ class Runner extends CLICommand {
     registerCommand(CLISetup());
     registerCommand(CLIAuth());
     registerCommand(CLIDocument());
-    registerCommand(CLIBuild());
   }
 
   @override
