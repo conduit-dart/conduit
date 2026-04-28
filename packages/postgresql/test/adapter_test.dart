@@ -92,7 +92,7 @@ void main() {
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
       proxy =
-          SocketProxy(15434, int.parse(Platform.environment['POSTGRES_PORT']!));
+          SocketProxy(15434, PostgresTestConfig().port);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -123,7 +123,7 @@ void main() {
       }
 
       proxy =
-          SocketProxy(15433, int.parse(Platform.environment['POSTGRES_PORT']!));
+          SocketProxy(15433, PostgresTestConfig().port);
       await proxy!.open();
 
       final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
