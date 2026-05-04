@@ -551,10 +551,11 @@ ${symbolMapEntries.toString().trimRight()}
 
   String _managedKindName(String kind) => 'ManagedPropertyType.$kind';
 
-  /// Roughly equivalent to `recase`'s `String.snakeCase` (which the mirror
-  /// impl uses): split on non-alphanumerics + camelCase boundaries, lowercase,
-  /// rejoin with `_`, but preserve a single leading `_` (the conduit
-  /// convention for table-def classes is `_User` → `_user`).
+  /// Roughly equivalent to `core`'s `String.snakeCase` extension in
+  /// `runtime/orm/string_case.dart` (which the mirror impl uses): split on
+  /// non-alphanumerics + camelCase boundaries, lowercase, rejoin with `_`,
+  /// but preserve a single leading `_` (the conduit convention for
+  /// table-def classes is `_User` → `_user`).
   static String _maybeSnake(String name, bool useSnake) {
     if (!useSnake) return name;
     if (name.isEmpty) return name;
