@@ -41,6 +41,7 @@ Future<String?> _runBuilder(String inputSource) async {
     {
       'a|lib/model.dart': inputSource,
       'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
+      'conduit_core|lib/aot.dart': _conduitCoreStub,
       'conduit_open_api|lib/v3.dart': _conduitOpenApiStub,
     },
     flattenOutput: true,

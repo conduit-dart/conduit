@@ -1,0 +1,20 @@
+# Activates the conduit_build_runner builders used by `dart run
+# build_runner build` to generate `lib/conduit.g.dart`. The generated
+# `bootstrap()` function is what populates `RuntimeContext` so an
+# AOT-compiled binary (`dart compile exe`) can resolve channels,
+# controllers, and serializables without `dart:mirrors`.
+#
+# See packages/build_runner/README.md in the conduit repo for details.
+targets:
+  $default:
+    builders:
+      conduit_build_runner|stamp_builder:
+        enabled: false
+      conduit_build_runner|serializable_builder:
+        enabled: true
+      conduit_build_runner|channel_builder:
+        enabled: true
+      conduit_build_runner|controller_builder:
+        enabled: true
+      conduit_build_runner|registry_builder:
+        enabled: true

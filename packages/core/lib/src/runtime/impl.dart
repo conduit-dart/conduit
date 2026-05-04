@@ -12,9 +12,8 @@ import 'package:conduit_core/src/http/resource_controller_interfaces.dart';
 import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_open_api/v3.dart';
-import 'package:conduit_runtime/runtime.dart';
 
-class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
+class ChannelRuntimeImpl extends ChannelRuntime {
   ChannelRuntimeImpl(this.type);
 
   final ClassMirror type;
@@ -66,65 +65,6 @@ class ChannelRuntimeImpl extends ChannelRuntime implements SourceCompiler {
     }).whereType<APIComponentDocumenter>();
   }
 
-  @override
-  Future<String> compile(BuildContext ctx) async {
-    final className = MirrorSystem.getName(type.simpleName);
-    final originalFileUri = type.location!.sourceUri.toString();
-    final globalInitBody = hasGlobalInitializationMethod
-        ? "await $className.initializeApplication(config);"
-        : "";
-
-    return """
-import 'dart:async';    
-import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_core/src/application/isolate_application_server.dart';
-import 'package:conduit_common/conduit_common.dart';
-
-import '$originalFileUri';
-
-final instance = ChannelRuntimeImpl();
-
-void entryPoint(ApplicationInitialServerMessage params) {
-  final runtime = ChannelRuntimeImpl();
-  
-  final server = ApplicationIsolateServer(runtime.channelType,
-    params.configuration, params.identifier, params.parentMessagePort,
-    logToConsole: params.logToConsole);
-
-  server.start(shareHttpServer: true);
-}
-
-class ChannelRuntimeImpl extends ChannelRuntime {
-  @override
-  String get name => '$className';
-
-  @override
-  IsolateEntryFunction get isolateEntryPoint => entryPoint;
-  
-  @override
-  Uri get libraryUri => Uri();
-
-  @override
-  Type get channelType => $className;
-  
-  @override
-  ApplicationChannel instantiateChannel() {
-    return $className();
-  }
-  
-  @override
-  Future runGlobalInitialization(ApplicationOptions config) async {
-    $globalInitBody
-  }
-  
-  @override
-  Iterable<APIComponentDocumenter> getDocumentableChannelComponents(
-      ApplicationChannel channel) { 
-    throw UnsupportedError('This method is not implemented for compiled applications.');
-  }
-}
-    """;
-  }
 }
 
 void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
@@ -146,8 +86,7 @@ void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
   server.start(shareHttpServer: true);
 }
 
-class ControllerRuntimeImpl extends ControllerRuntime
-    implements SourceCompiler {
+class ControllerRuntimeImpl extends ControllerRuntime {
   ControllerRuntimeImpl(this.type) {
     if (type.isSubclassOf(reflectClass(ResourceController))) {
       resourceController = ResourceControllerRuntimeImpl(type);
@@ -175,33 +114,6 @@ class ControllerRuntimeImpl extends ControllerRuntime
     return fieldKeys.any((key) => members[key]!.isSetter);
   }
 
-  @override
-  Future<String> compile(BuildContext ctx) async {
-    final originalFileUri = type.location!.sourceUri.toString();
-
-    return """
-import 'dart:async';    
-import 'package:conduit_core/conduit_core.dart';
-import '$originalFileUri';
-${(resourceController as ResourceControllerRuntimeImpl?)?.directives.join("\n") ?? ""}
-    
-final instance = ControllerRuntimeImpl();
-    
-class ControllerRuntimeImpl extends ControllerRuntime {
-  ControllerRuntimeImpl() {
-    ${resourceController == null ? "" : "_resourceController = ResourceControllerRuntimeImpl();"}
-  }
-  
-  @override
-  bool get isMutable => $isMutable;
-
-  ResourceControllerRuntime get resourceController => _resourceController;
-  late ResourceControllerRuntime _resourceController;
-}
-
-${(resourceController as ResourceControllerRuntimeImpl?)?.compile(ctx) ?? ""}
-    """;
-  }
 }
 
 class SerializableRuntimeImpl extends SerializableRuntime {

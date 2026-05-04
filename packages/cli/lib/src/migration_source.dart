@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 import 'package:crypto/crypto.dart';
 
 class MigrationSource {
@@ -28,12 +28,30 @@ class MigrationSource {
 
     final klass = migrationTypes.first;
     final source = klass.toSource();
-    final offset = klass.namePart.offset - klass.offset;
+    final originalName = klass.namePart.typeName.toString();
+    // Locate the class name within `klass.toSource()` directly rather than
+    // computing `namePart.offset - klass.offset`. Those two offsets do not
+    // share a frame when the class has a leading doc-comment: `klass.offset`
+    // is the file offset where the AST node begins (excluding the comment),
+    // but `klass.toSource()` echoes the same range — so the diff is right
+    // in that case. Where it goes wrong is the *opposite* direction: a
+    // doc-comment shifts `klass.namePart.offset` further into the file,
+    // and on some analyzer versions the substring math overshoots
+    // `source.length`. `indexOf` is bullet-proof against either framing.
+    // Regression: github.com/conduit-dart/conduit/issues/213.
+    final start = source.indexOf(originalName);
+    if (start < 0) {
+      throw StateError(
+        "Could not locate the migration class name '$originalName' in "
+        "the parsed source for file '$uri'. This is an internal error "
+        "in conduit's migration loader; please file an issue.",
+      );
+    }
     return MigrationSource(
       source,
       uri.toFilePath(windows: Platform.isWindows),
-      offset,
-      offset + klass.namePart.length,
+      start,
+      start + originalName.length,
     );
   }
 

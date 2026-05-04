@@ -2,7 +2,7 @@ import 'dart:mirrors';
 
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
 class DataModelCompiler {
   Map<String, Object> compile(MirrorContext context) {

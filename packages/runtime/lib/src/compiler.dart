@@ -1,31 +1,23 @@
-import 'dart:io';
+import 'package:conduit_runtime/src/mirror_context.dart';
 
-import 'package:conduit_runtime/runtime.dart';
-
+/// Provides the runtime registry entries used by the JIT/dev mirror
+/// fallback (`MirrorContext`).
+///
+/// Each `package:conduit_*` package that contributes types to
+/// `RuntimeContext` exports one concrete `Compiler` subclass; on
+/// JIT startup, `MirrorContext` discovers them via `dart:mirrors` and
+/// calls [compile] on each. Under AOT, this class is never reached —
+/// the `package:conduit_build_runner`-emitted `bootstrap()` installs
+/// the registry directly.
+///
+/// Historically this class also defined the `conduit build` deflection
+/// hooks (`deflectPackage`, `getUrisToResolve`,
+/// `didFinishPackageGeneration`). Those were removed when the
+/// `conduit build` CLI was retired in favor of `dart run build_runner
+/// build && dart compile exe`.
 abstract class Compiler {
-  /// Modifies a package on the filesystem in order to remove dart:mirrors from the package.
-  ///
-  /// A copy of this compiler's package will be written to [destinationDirectory].
-  /// This method is overridden to modify the contents of that directory
-  /// to remove all uses of dart:mirrors.
-  ///
-  /// Packages should export their [Compiler] in their main library file and only
-  /// import mirrors in files directly or transitively imported by the Compiler file.
-  /// This method should remove that export statement and therefore remove all transitive mirror imports.
-  void deflectPackage(Directory destinationDirectory);
-
-  /// Returns a map of runtime objects that can be used at runtime while running in mirrored mode.
+  /// Returns the runtime objects this compiler contributes to
+  /// `RuntimeContext.runtimes`, keyed by class name. Called once at
+  /// `MirrorContext._()` initialization.
   Map<String, Object> compile(MirrorContext context);
-
-  void didFinishPackageGeneration(BuildContext context) {}
-
-  List<Uri> getUrisToResolve(BuildContext context) => [];
-}
-
-/// Runtimes that generate source code implement this method.
-abstract class SourceCompiler {
-  /// The source code, including directives, that declare a class that is equivalent in behavior to this runtime.
-  Future<String> compile(BuildContext ctx) async {
-    throw UnimplementedError();
-  }
 }

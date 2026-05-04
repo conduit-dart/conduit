@@ -52,6 +52,6 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
         "package:conduit_core/conduit_core.dart",
         "package:conduit_postgresql/conduit_postgresql.dart",
         "package:conduit/src/migration_source.dart",
-        "package:conduit_runtime/runtime.dart"
+        "package:conduit_runtime/dev.dart"
       ];
 }

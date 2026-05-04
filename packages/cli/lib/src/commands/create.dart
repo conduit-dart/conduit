@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/commands/pub.dart';
@@ -83,11 +84,24 @@ class CLITemplateCreator extends CLICommand {
       await cachePackages(['conduit'], (await toolVersion).toString());
     }
 
-    final templateSourceDirectory = Directory.fromUri(await getTemplateLocation(
-            templateName, (await toolVersion).toString()) ??
-        Uri());
+    final resolvedTemplate = await getTemplateLocation(
+        templateName, (await toolVersion).toString());
+    if (resolvedTemplate == null) {
+      displayError(
+        "Could not locate the conduit templates directory. Tried:\n"
+        "  - 'dart pub cache list' lookup of conduit@${await toolVersion}\n"
+        "  - package URI resolution for 'package:conduit/'\n"
+        "If you activated conduit from a local path, make sure that "
+        "path still has a 'templates/' directory at its root.",
+      );
+      return 1;
+    }
+    final templateSourceDirectory = Directory.fromUri(resolvedTemplate);
     if (!templateSourceDirectory.existsSync()) {
-      displayError("No template at ${templateSourceDirectory.path}.");
+      displayError(
+        "Template '$templateName' not found at ${templateSourceDirectory.path}.\n"
+        "Run 'conduit create list-templates' to see available templates.",
+      );
       return 1;
     }
 
@@ -417,19 +431,56 @@ class CLITemplateList extends CLICommand {
   }
 }
 
+/// Resolves the directory shipped at `<conduit-package>/templates/`, used
+/// by `conduit create` and `conduit create list-templates`.
+///
+/// Tries two strategies in order:
+///   1. `dart pub cache list` — works for `dart pub global activate conduit`
+///      from pub.dev (the publish path).
+///   2. `Isolate.resolvePackageUri('package:conduit/conduit.dart')` — works
+///      for path-activated installs (`dart pub global activate -spath ...`)
+///      and for running directly out of a checkout, neither of which appear
+///      in `dart pub cache list`.
+///
+/// Returns null only when both strategies fail; callers should produce a
+/// diagnostic that names the strategies tried so the user can self-serve.
+///
+/// Regression: github.com/conduit-dart/conduit/issues/194 — path-activated
+/// installs returned null and `conduit create` printed "No template at .".
 Future<Directory?> templateDirectory(String toolVersion) async {
-  const String cmd = "dart";
+  final fromCache = await _templateDirectoryFromPubCache(toolVersion);
+  if (fromCache != null) return fromCache;
+  return _templateDirectoryFromIsolate();
+}
 
+Future<Directory?> _templateDirectoryFromPubCache(String toolVersion) async {
   try {
     final res = await Process.run(
-      cmd,
+      "dart",
       ["pub", "cache", "list"],
       runInShell: true,
     );
-    final packageDir = Uri.directory(
-        jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location'],
-        windows: Platform.isWindows);
-    return Directory.fromUri(packageDir.resolve('templates'));
+    final pkgPath =
+        jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location']
+            as String?;
+    if (pkgPath == null) return null;
+    final packageDir = Uri.directory(pkgPath, windows: Platform.isWindows);
+    final templates =
+        Directory.fromUri(packageDir.resolve('templates'));
+    return templates.existsSync() ? templates : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<Directory?> _templateDirectoryFromIsolate() async {
+  try {
+    final libUri =
+        await Isolate.resolvePackageUri(Uri.parse('package:conduit/'));
+    if (libUri == null) return null;
+    // libUri points at `<package>/lib/`; the templates dir is its sibling.
+    final templates = Directory.fromUri(libUri.resolve('../templates/'));
+    return templates.existsSync() ? templates : null;
   } catch (_) {
     return null;
   }

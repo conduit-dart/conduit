@@ -1,10 +1,12 @@
-import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/runtime.dart';
-import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/dev.dart';
 
+/// Registers `Configuration` subclasses with the JIT/dev mirror fallback.
+/// Under AOT, the build_runner-generated `bootstrap()` installs the
+/// registry directly and this class is unreachable.
 class ConfigurationCompiler extends Compiler {
   @override
   Map<String, Object> compile(MirrorContext context) {
@@ -15,18 +17,6 @@ class ConfigurationCompiler extends Compiler {
           ConfigurationRuntimeImpl(c),
         );
       }),
-    );
-  }
-
-  @override
-  void deflectPackage(Directory destinationDirectory) {
-    final libFile = File.fromUri(
-      destinationDirectory.uri.resolve("lib/").resolve("conduit_config.dart"),
-    );
-    final contents = libFile.readAsStringSync();
-    libFile.writeAsStringSync(
-      contents.replaceFirst(
-          "export 'package:conduit_config/src/compiler.dart';", ""),
     );
   }
 }

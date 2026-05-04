@@ -5,6 +5,16 @@ targets:
         enabled: false
       conduit_build_runner|serializable_builder:
         enabled: true
+      conduit_build_runner|channel_builder:
+        enabled: true
+      conduit_build_runner|configuration_builder:
+        enabled: true
+      conduit_build_runner|controller_builder:
+        enabled: true
+      conduit_build_runner|managed_object_builder:
+        enabled: true
+      conduit_build_runner|registry_builder:
+        enabled: true
 
 builders:
   stamp_builder:
@@ -17,6 +27,64 @@ builders:
   serializable_builder:
     import: "package:conduit_build_runner/builder.dart"
     builder_factories: ["serializableBuilder"]
-    build_extensions: { ".dart": [".serializable.conduit.dart"] }
+    build_extensions:
+      ".dart":
+        - ".serializable.conduit.dart"
+        - ".serializable.conduit.json"
     auto_apply: dependents
-    build_to: cache
+    build_to: source
+
+  channel_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["channelBuilder"]
+    build_extensions:
+      ".dart":
+        - ".channel.conduit.dart"
+        - ".channel.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
+  configuration_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["configurationBuilder"]
+    build_extensions:
+      ".dart":
+        - ".config.conduit.dart"
+        - ".config.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
+  controller_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["controllerBuilder"]
+    build_extensions:
+      ".dart":
+        - ".controller.conduit.dart"
+        - ".controller.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
+  managed_object_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["managedObjectBuilder"]
+    build_extensions:
+      ".dart":
+        - ".managed.conduit.dart"
+        - ".managed.conduit.json"
+    auto_apply: dependents
+    build_to: source
+
+  registry_builder:
+    import: "package:conduit_build_runner/builder.dart"
+    builder_factories: ["registryBuilder"]
+    build_extensions:
+      "$package$":
+        - "lib/conduit.g.dart"
+    auto_apply: root_package
+    build_to: source
+    required_inputs:
+      - ".channel.conduit.json"
+      - ".config.conduit.json"
+      - ".controller.conduit.json"
+      - ".managed.conduit.json"
+      - ".serializable.conduit.json"
