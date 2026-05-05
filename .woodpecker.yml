@@ -118,7 +118,7 @@ steps:
 
 services:
   postgres:
-    image: postgres:18.0
+    image: postgres:18
     environment:
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: 'conduit!'

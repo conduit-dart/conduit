@@ -48,7 +48,12 @@ jobs:
       TEST_DIR: packages/core
     services:
       postgres:
-        image: postgres:18.0
+        # Track the PG 18 major. The macOS workflow uses
+        # ikalnytskyi/action-setup-postgres@v8 which also defaults to PG 18
+        # major (latest patch). Pinning to 18.0 here held Linux at the
+        # initial release while macOS got patch fixes — version skew
+        # caused Linux-only test failures during the AOT-migration window.
+        image: postgres:18
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
