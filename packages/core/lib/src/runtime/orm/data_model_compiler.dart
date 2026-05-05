@@ -1,6 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:conduit_core/src/db/managed/managed.dart';
+import 'package:conduit_core/src/runtime/orm/data_model_compile_errors.dart';
 import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_runtime/dev.dart';
 
@@ -37,11 +38,17 @@ class DataModelCompiler {
   /// the constructor re-throws the original specific error rather than
   /// the generic "type not found" message — preserving the diagnostic
   /// quality the compilation_errors test suite asserts on.
-  static final Map<Type, Object> compileErrors = {};
+  ///
+  /// The actual storage lives in `data_model_compile_errors.dart` —
+  /// a tiny mirror-free file — so the AOT path that imports
+  /// `data_model.dart` can read this cache without transitively
+  /// pulling in `dart:mirrors`. This static is just an alias for
+  /// callers already inside the JIT path.
+  static Map<Type, Object> get compileErrors => dataModelCompileErrors;
 
   Map<String, Object> compile(MirrorContext context) {
     final m = <String, Object>{};
-    compileErrors.clear();
+    dataModelCompileErrors.clear();
 
     final instanceTypes = context.types
         .where(_isTypeManagedObjectSubclass)

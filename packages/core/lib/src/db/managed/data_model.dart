@@ -2,7 +2,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/query/query.dart';
-import 'package:conduit_core/src/runtime/orm/data_model_compiler.dart';
+import 'package:conduit_core/src/runtime/orm/data_model_compile_errors.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 /// Instances of this class contain descriptions and metadata for mapping [ManagedObject]s to database rows.
@@ -51,13 +51,13 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
       // raised inside link()'s firstWhere.
       for (var i = instanceTypes.length - 1; i >= 0; i--) {
         if (expectedRuntimes[i] == null) {
-          final cached = DataModelCompiler.compileErrors[instanceTypes[i]];
+          final cached = dataModelCompileErrors[instanceTypes[i]];
           if (cached is ManagedDataModelError) throw cached;
         }
       }
       for (var i = instanceTypes.length - 1; i >= 0; i--) {
         if (expectedRuntimes[i] == null) {
-          final cached = DataModelCompiler.compileErrors[instanceTypes[i]];
+          final cached = dataModelCompileErrors[instanceTypes[i]];
           if (cached != null) {
             throw ManagedDataModelError(cached.toString());
           }
