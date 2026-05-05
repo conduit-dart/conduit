@@ -126,7 +126,7 @@ class ManagedObjectBuilder implements Builder {
     final properties = <_PropertyAnalysis>[];
     for (final field in tableDefElement.fields) {
       if (field.isStatic) continue;
-      if (field.isSynthetic) continue;
+      if (!field.isOriginDeclaration) continue;
       final propName = field.name;
       if (propName == null) continue;
       final analysis = _analyzePersistentField(

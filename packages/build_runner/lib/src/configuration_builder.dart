@@ -108,7 +108,7 @@ class ConfigurationBuilder implements Builder {
       }
       for (final field in ptr.fields) {
         if (field.isStatic) continue;
-        if (field.isSynthetic) continue;
+        if (!field.isOriginDeclaration) continue;
         final name = field.name;
         if (name == null) continue;
         if (name.startsWith('_')) continue;
