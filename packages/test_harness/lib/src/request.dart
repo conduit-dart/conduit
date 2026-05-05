@@ -181,7 +181,7 @@ class TestRequest {
 
     if (body != null) {
       final bytes = _bodyBytes!;
-      request.headers.contentType = contentType;
+      request.headers.contentType = _outgoingContentType;
       request.headers.contentLength = bytes.length;
       request.add(bytes);
     }
@@ -195,6 +195,28 @@ class TestRequest {
     return response;
   }
 
+  /// Cached when [body] is encoded as `multipart/form-data` so that the
+  /// boundary parameter on the outgoing `Content-Type` header matches the
+  /// boundary embedded in the encoded body.
+  String? _multipartBoundary;
+
+  /// The content-type that will actually be sent on the wire, including any
+  /// `boundary` parameter required by `multipart/form-data` requests.
+  ContentType get _outgoingContentType {
+    if (_multipartBoundary == null) {
+      return contentType;
+    }
+
+    final params = Map<String, String?>.from(contentType.parameters)
+      ..["boundary"] = _multipartBoundary;
+    return ContentType(
+      contentType.primaryType,
+      contentType.subType,
+      charset: contentType.charset,
+      parameters: params,
+    );
+  }
+
   List<int>? get _bodyBytes {
     if (body == null) {
       return null;
@@ -202,6 +224,19 @@ class TestRequest {
 
     if (!encodeBody) {
       return body as List<int>?;
+    }
+
+    if (_isMultipartFormData(contentType)) {
+      if (body is! Map<String, dynamic>) {
+        throw StateError(
+          "multipart/form-data body must be a Map<String, dynamic>; "
+          "got ${body.runtimeType}.",
+        );
+      }
+      final boundary =
+          contentType.parameters["boundary"] ?? _generateMultipartBoundary();
+      _multipartBoundary = boundary;
+      return _encodeMultipartFormData(body as Map<String, dynamic>, boundary);
     }
 
     final codec =
@@ -219,4 +254,8 @@ class TestRequest {
 
     return codec.encode(body);
   }
+}
+
+bool _isMultipartFormData(ContentType type) {
+  return type.primaryType == "multipart" && type.subType == "form-data";
 }

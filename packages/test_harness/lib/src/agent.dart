@@ -3,12 +3,15 @@ library;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:typed_data' show BytesBuilder;
 
 import 'package:conduit_core/conduit_core.dart';
 
 import 'harness.dart';
 import 'matchers.dart';
 
+part 'multipart.dart';
 part 'request.dart';
 part 'response.dart';
 
