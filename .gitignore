@@ -28,6 +28,9 @@ conduit/migrations
 **/*.dart.vm.json
 stackoverflow
 **/.failed_tracker
+
+# Claude Code agent state (worktrees, session metadata).
+.claude/
 migration_tmp
 coverage
 application_test/
