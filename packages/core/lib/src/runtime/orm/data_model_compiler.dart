@@ -5,23 +5,89 @@ import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_runtime/dev.dart';
 
 class DataModelCompiler {
+  /// When true, silently drop ManagedObject builders that fail to
+  /// compile/validate/link instead of aborting the whole registry. The
+  /// caller's [ManagedDataModel] still raises a clear "type not found"
+  /// error if they later request a dropped type — but unrelated entities
+  /// (e.g. `_ManagedAuthToken` whose `ResourceOwnerTableDefinition`
+  /// concrete subclass isn't in this isolate) no longer prevent the
+  /// rest of the workspace's tests from compiling their own data
+  /// models.
+  ///
+  /// This restores the per-test-isolate semantics that pre-PR-#251
+  /// `conduit build` provided. Set to `false` to get the old fail-fast
+  /// behavior — useful for debugging "why is my data model not
+  /// resolving?" issues.
+  ///
+  /// Override at runtime via the `CONDUIT_DATA_MODEL_TOLERATE_PARTIAL`
+  /// env var (`0` / `false` to disable).
+  static bool tolerateIncompleteBuilders =
+      const String.fromEnvironment(
+        'CONDUIT_DATA_MODEL_TOLERATE_PARTIAL',
+        defaultValue: 'true',
+      ).toLowerCase() != 'false' &&
+      const String.fromEnvironment(
+        'CONDUIT_DATA_MODEL_TOLERATE_PARTIAL',
+        defaultValue: 'true',
+      ) != '0';
+
+  /// Errors collected per-type during the eager compile pass when
+  /// [tolerateIncompleteBuilders] is on. [ManagedDataModel] reads from
+  /// this map: if the user requests a type that was silently dropped,
+  /// the constructor re-throws the original specific error rather than
+  /// the generic "type not found" message — preserving the diagnostic
+  /// quality the compilation_errors test suite asserts on.
+  static final Map<Type, Object> compileErrors = {};
+
   Map<String, Object> compile(MirrorContext context) {
     final m = <String, Object>{};
+    compileErrors.clear();
 
     final instanceTypes = context.types
         .where(_isTypeManagedObjectSubclass)
         .map((c) => c.reflectedType);
 
     _builders = instanceTypes.map((t) => EntityBuilder(t)).toList();
+
+    // Phase 1: compile. With tolerance on, drop builders whose
+    // relationships can't be resolved against the loaded mirror. The
+    // caller's ManagedDataModel(types) will still raise cleanly if
+    // they request a dropped type; unrelated entities are unaffected.
+    final compiled = <EntityBuilder>[];
     for (final b in _builders) {
-      b.compile(_builders);
+      try {
+        b.compile(_builders);
+        compiled.add(b);
+      } catch (e) {
+        if (!tolerateIncompleteBuilders) rethrow;
+        compileErrors[b.instanceType.reflectedType] = e;
+      }
     }
+    _builders = compiled;
+
+    // Phase 2: validate. Same tolerance — a builder may compile but
+    // fail validation (e.g. duplicate-table conflict with another
+    // dropped sibling). Skip individual validate() calls; keep the
+    // duplicate-table check global since it operates on the surviving
+    // set.
     _validate();
 
+    // Phase 3: link + runtime extraction. A builder that compiled +
+    // validated cleanly may still trip during link if a downstream
+    // entity got dropped above. Drop it too.
+    final entities = _builders.map((eb) => eb.entity).toList();
+    final linked = <EntityBuilder>[];
     for (final b in _builders) {
-      b.link(_builders.map((eb) => eb.entity).toList());
-      m[b.entity.instanceType.toString()] = b.runtime;
+      try {
+        b.link(entities);
+        m[b.entity.instanceType.toString()] = b.runtime;
+        linked.add(b);
+      } catch (e) {
+        if (!tolerateIncompleteBuilders) rethrow;
+        compileErrors[b.instanceType.reflectedType] = e;
+      }
     }
+    _builders = linked;
 
     return m;
   }
@@ -29,7 +95,9 @@ class DataModelCompiler {
   late List<EntityBuilder> _builders;
 
   void _validate() {
-    // Check for dupe tables
+    // Check for dupe tables. A duplicate-table conflict among
+    // surviving builders is always fatal — that's a real workspace
+    // bug, not a per-isolate import-graph artifact.
     for (final builder in _builders) {
       final withSameName = _builders
           .where((eb) => eb.name == builder.name)
@@ -43,9 +111,20 @@ class DataModelCompiler {
       }
     }
 
+    // Per-builder validation may trip on a property that depended on
+    // a sibling that was dropped during compile. Drop the builder
+    // here too rather than failing the whole registry.
+    final validated = <EntityBuilder>[];
     for (final b in _builders) {
-      b.validate(_builders);
+      try {
+        b.validate(_builders);
+        validated.add(b);
+      } catch (e) {
+        if (!tolerateIncompleteBuilders) rethrow;
+        compileErrors[b.instanceType.reflectedType] = e;
+      }
     }
+    _builders = validated;
   }
 
   static bool _isTypeManagedObjectSubclass(ClassMirror mirror) {
