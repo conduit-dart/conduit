@@ -242,7 +242,7 @@ abstract class Controller
           ? {
               "controller": "$runtimeType",
               "error": "$caughtValue.",
-              "stacktrace": trace.toString()
+              "stacktrace": trace.toString(),
             }
           : null;
 
@@ -431,8 +431,7 @@ class _ControllerRecycler<T> extends Controller {
     APIDocumentContext components,
     String route,
     APIPath path,
-  ) =>
-      nextInstanceToReceive?.documentOperations(components, route, path) ?? {};
+  ) => nextInstanceToReceive?.documentOperations(components, route, path) ?? {};
 }
 
 @PreventCompilation()
