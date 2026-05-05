@@ -6,6 +6,7 @@ import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart' show getUnusedPort;
 
 void main() {
   group("Linking", () {
@@ -143,9 +144,11 @@ void main() {
 
   group("Outlier isolate behavior error cases", () {
     late Application app;
+    late int port;
 
     setUp(() async {
-      app = Application<OutlierChannel>()..options.port = 8000;
+      port = await getUnusedPort((p) => p);
+      app = Application<OutlierChannel>()..options.port = port;
       await app.start();
     });
 
@@ -157,7 +160,7 @@ void main() {
     test(
         "Logging after socket is closed throws uncaught exception, still works correctly after",
         () async {
-      final request = await HttpClient().get("localhost", 8000, "/detach");
+      final request = await HttpClient().get("localhost", port, "/detach");
       final response = await request.close();
       try {
         await response.toList();
@@ -166,7 +169,7 @@ void main() {
       } on HttpException {}
 
       expect(
-        (await http.get(Uri.parse("http://localhost:8000/detach"))).statusCode,
+        (await http.get(Uri.parse("http://localhost:$port/detach"))).statusCode,
         200,
       );
     });
@@ -174,11 +177,11 @@ void main() {
     test("Request on bad state: header already sent is captured in Controller",
         () async {
       expect(
-        (await http.get(Uri.parse("http://localhost:8000/closed"))).statusCode,
+        (await http.get(Uri.parse("http://localhost:$port/closed"))).statusCode,
         200,
       );
       expect(
-        (await http.get(Uri.parse("http://localhost:8000/closed"))).statusCode,
+        (await http.get(Uri.parse("http://localhost:$port/closed"))).statusCode,
         200,
       );
     });
@@ -187,12 +190,12 @@ void main() {
         "Request controller throwing HttpResponseException that dies on bad state: header already sent is captured in Controller",
         () async {
       expect(
-        (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+        (await http.get(Uri.parse("http://localhost:$port/closed_exception")))
             .statusCode,
         200,
       );
       expect(
-        (await http.get(Uri.parse("http://localhost:8000/closed_exception")))
+        (await http.get(Uri.parse("http://localhost:$port/closed_exception")))
             .statusCode,
         200,
       );
