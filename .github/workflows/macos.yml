@@ -22,17 +22,16 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Setup Conduit
       run: |
+        export PUB_CACHE="$HOME/.pub-cache"
+        export PATH="$PATH:$PUB_CACHE/bin"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
         dart pub global activate melos
         dart pub global activate -spath packages/cli
-        melos cache-source
-    - name: Run tests
-      working-directory: ../
-      run: |
-        conduit create -t db_and_auth --offline wildfire
-        cd wildfire/
-        echo "----------- Building test project -----------"
-        conduit build
-        conduit db generate
+        melos bootstrap
+        melos cache-source --no-select
+    - name: Template AOT smoke
+      run: bash ci/template-aot-smoke.sh
   unit:
     needs: smoke
     if: |
@@ -44,7 +43,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner_args: [dart tool/generated_test_runner.dart]
         sdk: [beta]
     env:
       TEST_DIR: packages/core
@@ -70,13 +68,15 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Get Dependencies
       run: |
+        export PUB_CACHE="$HOME/.pub-cache"
+        export PATH="$PATH:$PUB_CACHE/bin"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
         dart pub global activate -spath packages/cli
         dart pub global activate melos
         melos bootstrap
         melos cache-source --no-select
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
-        dart pub get --directory=packages/runtime_test_packages/application --offline
-        dart pub get --directory=packages/runtime_test_packages/dependency --offline
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
-      run: ${{ matrix.runner_args }}
+      run: dart test -r failures-only

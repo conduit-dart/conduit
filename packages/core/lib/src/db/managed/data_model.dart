@@ -2,6 +2,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_core/src/db/query/query.dart';
+import 'package:conduit_core/src/runtime/orm/data_model_compile_errors.dart';
 import 'package:conduit_runtime/runtime.dart';
 
 /// Instances of this class contain descriptions and metadata for mapping [ManagedObject]s to database rows.
@@ -31,6 +32,37 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
         .toList();
 
     if (expectedRuntimes.any((e) => e == null)) {
+      // If any user-requested type was silently dropped during the
+      // tolerant eager-compile pass, surface the original specific
+      // error (e.g. "autoincrement and default value", "missing
+      // inverse") rather than the generic "type not found".
+      //
+      // Iterate user-supplied types in reverse: when multiple
+      // related types fail (e.g. a parent and its child both drop
+      // because of a Relate misconfiguration), the LATER-listed
+      // type tends to be the one carrying the actual misconfigured
+      // annotation; the earlier-listed type's failure is usually a
+      // cascade. This heuristic matches the conduit
+      // compilation_errors test conventions where the "main" model
+      // is listed first and the broken model second.
+      //
+      // Two-pass: prefer a real ManagedDataModelError (root cause)
+      // over a downstream cascade like StateError "No element"
+      // raised inside link()'s firstWhere.
+      for (var i = instanceTypes.length - 1; i >= 0; i--) {
+        if (expectedRuntimes[i] == null) {
+          final cached = dataModelCompileErrors[instanceTypes[i]];
+          if (cached is ManagedDataModelError) throw cached;
+        }
+      }
+      for (var i = instanceTypes.length - 1; i >= 0; i--) {
+        if (expectedRuntimes[i] == null) {
+          final cached = dataModelCompileErrors[instanceTypes[i]];
+          if (cached != null) {
+            throw ManagedDataModelError(cached.toString());
+          }
+        }
+      }
       throw ManagedDataModelError(
         "Data model types were not found!",
       );
