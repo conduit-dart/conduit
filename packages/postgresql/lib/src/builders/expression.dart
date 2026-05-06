@@ -42,6 +42,9 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     );
   }
 
+  /// Convenience access to the dialect threaded through the table builder.
+  SqlDialect get _dialect => table!.dialect;
+
   QueryPredicate comparisonPredicate(
     PredicateOperator? operator,
     dynamic value,
@@ -50,7 +53,8 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
     return QueryPredicate(
-      "$name ${ColumnBuilder.symbolTable[operator!]} @$variableName",
+      "$name ${ColumnBuilder.symbolTable[operator!]} "
+      "${_dialect.parameterPlaceholder(variableName)}",
       {
         variableName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
             convertValueForStorage(value)),
@@ -70,7 +74,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
       final prefix = "$defaultPrefix${counter}_";
 
       final variableName = sqlColumnName(withPrefix: prefix);
-      tokenList.add("@$variableName");
+      tokenList.add(_dialect.parameterPlaceholder(variableName));
       pairedMap[variableName] = TypedValue(
           ColumnBuilder.typeMap[property!.type!.kind]!,
           convertValueForStorage(value));
@@ -85,7 +89,8 @@ class ColumnExpressionBuilder extends ColumnBuilder {
 
   QueryPredicate nullPredicate({bool isNull = true}) {
     final name = sqlColumnName(withTableNamespace: true);
-    return QueryPredicate("$name ${isNull ? "ISNULL" : "NOTNULL"}", {});
+    final op = isNull ? _dialect.isNullOperator : _dialect.isNotNullOperator;
+    return QueryPredicate("$name $op", {});
   }
 
   QueryPredicate rangePredicate(
@@ -98,12 +103,16 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final rhsName = sqlColumnName(withPrefix: "${defaultPrefix}rhs_");
     final operation = insideRange ? "BETWEEN" : "NOT BETWEEN";
 
-    return QueryPredicate("$name $operation @$lhsName AND @$rhsName", {
-      lhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-          convertValueForStorage(lhsValue)),
-      rhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-          convertValueForStorage(rhsValue)),
-    });
+    return QueryPredicate(
+      "$name $operation ${_dialect.parameterPlaceholder(lhsName)} "
+      "AND ${_dialect.parameterPlaceholder(rhsName)}",
+      {
+        lhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+            convertValueForStorage(lhsValue)),
+        rhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+            convertValueForStorage(rhsValue)),
+      },
+    );
   }
 
   QueryPredicate stringPredicate(
@@ -116,9 +125,12 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final n = sqlColumnName(withTableNamespace: true);
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
-    var matchValue = allowSpecialCharacters ? value : escapeLikeString(value);
+    var matchValue =
+        allowSpecialCharacters ? value : _dialect.escapeLikePattern(value);
 
-    var operation = caseSensitive ? "LIKE" : "ILIKE";
+    var operation = caseSensitive
+        ? _dialect.caseSensitiveLikeOperator
+        : _dialect.caseInsensitiveLikeOperator;
     if (invertOperator) {
       operation = "NOT $operation";
     }
@@ -137,15 +149,8 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     }
 
     return QueryPredicate(
-      "$n $operation @$variableName",
+      "$n $operation ${_dialect.parameterPlaceholder(variableName)}",
       {variableName: TypedValue(Type.text, matchValue)},
-    );
-  }
-
-  String escapeLikeString(String input) {
-    return input.replaceAllMapped(
-      RegExp(r"(\\|%|_)"),
-      (Match m) => "\\${m[0]}",
     );
   }
 }

@@ -414,7 +414,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     final table = versionTable;
     final commands = createTable(table, isTemporary: temporary);
     final exists = await context.execute(
-      Sql.named("SELECT to_regclass(@tableName:text)"),
+      Sql.named(dialect.tableExistsQuery()),
       parameters: {"tableName": table.name},
       queryMode: QueryMode.extended,
     );
