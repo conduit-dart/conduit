@@ -1,0 +1,18 @@
+name: conduit_sqlite
+description: SQLite ORM backend for conduit. Embedded / in-process; closes the test-harness gap by enabling no-Docker test fixtures.
+version: 6.0.0
+home: https://www.theconduit.dev
+repository: https://github.com/conduit-dart/conduit
+issue_tracker: https://github.com/conduit-dart/conduit/issues
+
+environment:
+  sdk: ">=3.12.0-0 <4.0.0"
+resolution: workspace
+
+dependencies:
+  conduit_core: ^6.0.0
+  sqlite3: ^2.4.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.2
