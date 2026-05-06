@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:conduit/src/command.dart';
+import 'package:conduit/src/connection_string.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit_core/conduit_core.dart';
@@ -9,6 +10,8 @@ import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   static const String flavorPostgreSQL = "postgres";
+  static const String flavorSQLite = "sqlite";
+  static const String flavorMySQL = "mysql";
 
   late DatabaseConfiguration connectedDatabase;
 
@@ -34,12 +37,25 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   )
   String? get databaseConnectionString => decodeOptional("connect");
 
+  /// Multi-backend alias of `--connect`. Accepts URIs whose scheme
+  /// names the backend: `postgres://`, `postgresql://`, `sqlite://`,
+  /// `sqlite::memory:`, `mysql://`. When both are set, `--connection`
+  /// wins — its richer scheme dispatch is the migration path.
+  @Option(
+    "connection",
+    help:
+        "Multi-backend connection URI. Scheme dispatches the backend "
+        "(postgres://, postgresql://, sqlite://, sqlite::memory:, mysql://).",
+    valueHelp: "scheme://[user:pass@]host[:port]/db",
+  )
+  String? get multiBackendConnectionString => decodeOptional("connection");
+
   @Option(
     "flavor",
     abbr: "f",
     help: "The database driver flavor to use.",
     defaultsTo: "postgres",
-    allowed: ["postgres"],
+    allowed: ["postgres", "sqlite", "mysql"],
   )
   String get databaseFlavor => decode("flavor");
 
@@ -58,6 +74,15 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
 
   PersistentStore get persistentStore {
     if (_persistentStore != null) {
+      return _persistentStore!;
+    }
+
+    // The new `--connection` flag is the multi-backend entrypoint.
+    // It takes precedence over the legacy `--connect` + `--flavor`
+    // combination because its scheme is unambiguous about the
+    // backend.
+    if (multiBackendConnectionString != null) {
+      _persistentStore = _buildFromMultiBackend(multiBackendConnectionString!);
       return _persistentStore!;
     }
 
@@ -112,7 +137,89 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
       );
     }
 
-    throw CLIException("Invalid flavor $databaseFlavor");
+    throw CLIException(
+      "Invalid flavor $databaseFlavor",
+      instructions: const [
+        "Use --connection scheme://… instead of --flavor when targetting "
+            "non-postgres backends; the scheme picks the dialect.",
+      ],
+    );
+  }
+
+  /// Build a [PersistentStore] (and populate [connectedDatabase] for
+  /// the wire-protocol cases) from the new `--connection` flag.
+  PersistentStore _buildFromMultiBackend(String raw) {
+    ParsedConnection conn;
+    try {
+      conn = parseConnectionString(raw);
+    } on ConnectionStringFormatException catch (e) {
+      throw CLIException(
+        "Invalid --connection URI.",
+        instructions: [
+          e.message,
+          'Examples:',
+          '  postgres://user:pass@host:5432/db',
+          '  sqlite::memory:',
+          '  sqlite:///tmp/conduit.db',
+          '  mysql://user:pass@host:3306/db',
+        ],
+      );
+    }
+
+    switch (conn.flavor) {
+      case DbFlavor.postgres:
+        connectedDatabase = DatabaseConfiguration.withConnectionInfo(
+          conn.username,
+          conn.password,
+          conn.host!,
+          conn.port!,
+          conn.databaseName!,
+        );
+        return PostgreSQLPersistentStore(
+          conn.username,
+          conn.password,
+          conn.host,
+          conn.port,
+          conn.databaseName,
+          sslMode: sslMode,
+        );
+      case DbFlavor.sqlite:
+        // SQLite is opt-in: the consumer must add `conduit_sqlite` to
+        // their dev_dependencies and use `--connection` from a project
+        // that imports it. We can't import `conduit_sqlite` here
+        // without making the CLI itself depend on it, so we surface a
+        // clear error path.
+        throw CLIException(
+          'SQLite is not yet wired into the bundled `conduit` CLI binary.',
+          instructions: const [
+            'The `--connection sqlite://...` URI is *parsed* and dispatched '
+                'correctly, but constructing a SqlitePersistentStore from '
+                'inside the CLI requires the CLI to depend on '
+                '`conduit_sqlite` — which we have deferred to keep the CLI '
+                'install footprint small.',
+            'For now: add `conduit_sqlite` to your project\'s '
+                'dev_dependencies and use `dart run conduit:db_upgrade` from '
+                'inside the project, where the runtime can resolve sqlite '
+                'against the project\'s package config.',
+            'Tracking: this is the same wiring deferred for ORM newQuery<T> '
+                'support; both ride on the SqlExpression AST migration.',
+          ],
+        );
+      case DbFlavor.mysql:
+        // Same wiring story as SQLite: emit a warning + clear path.
+        throw CLIException(
+          'MySQL is not yet wired into the bundled `conduit` CLI binary.',
+          instructions: const [
+            'The `--connection mysql://...` URI is *parsed* and dispatched '
+                'correctly, but the ORM path for MySQL is not yet '
+                'implemented (raw execute + schema-only). Use raw SQL or '
+                'the schema-builder API directly until newQuery<T> lands.',
+            'For now: add `conduit_mysql` to your project\'s '
+                'dev_dependencies and use the harness in your test code '
+                'directly.',
+          ],
+        );
+    }
   }
 
   @override
