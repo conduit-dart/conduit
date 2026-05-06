@@ -6,18 +6,20 @@ derived from your `ManagedDataModel` — and implements the
 [GraphQL-over-HTTP spec](https://graphql.github.io/graphql-over-http/draft/)
 for `POST` (queries + mutations) and `GET` (queries only).
 
-## Status — G2 of the GraphQL evaluation plan
+## Status — G4 of the GraphQL evaluation plan
 
-This is the **second phase** of a five-phase delivery. G1 shipped the
-HTTP transport; G2 adds schema derivation. Resolver wiring is still
-deferred.
+This package now covers four of the five evaluation phases. G1 shipped
+the HTTP transport, G2 added relational schema derivation, G3 wired
+SQL resolvers, and G4 (this phase) adds graph schema derivation +
+graph resolvers. Cross-source dispatch and field-level auth land in
+G5.
 
 | Phase  | Scope | Ships in this package? |
 |--------|-------|------------------------|
 | G1     | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | Yes |
-| **G2** | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | **Yes** |
-| G3     | SQL resolvers + dataloader against `Query<T>`     | No |
-| G4     | Graph resolvers against `GraphQuery<N>` (Neo4j)   | No |
+| G2     | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | Yes |
+| G3     | SQL resolvers + dataloader against `Query<T>`     | Tracking on a sibling branch |
+| **G4** | Graph schema derivation from `GraphDataModel`; resolvers against `GraphQuery<N>` (Neo4j) | **Yes** |
 | G5     | Cross-source dispatch + `@FieldAuthorize`         | No |
 
 GraphQL **subscriptions are out of scope for the entire plan**; Conduit
@@ -242,6 +244,148 @@ one you don't need at the call site.
   with empty stubs for any related entities outside the call. Use
   `fromManagedDataModel` for full schemas where relationship
   destinations need their fields populated.
+
+## Graph schema derivation (G4)
+
+`SchemaBuilder.fromGraphDataModel(model, config: ...)` walks every
+`GraphNodeEntity` and `GraphEdgeEntity` in your `GraphDataModel` and
+emits a parallel-but-separate read-only schema. Wire it up alongside
+`fromManagedDataModel` if you have both stores; pick one and pass its
+output to `GraphQLController`.
+
+```dart
+import 'package:conduit_graph/conduit_graph.dart';
+import 'package:conduit_graph_neo4j/conduit_graph_neo4j.dart';
+import 'package:conduit_graphql/conduit_graphql.dart';
+
+class MyChannel extends ApplicationChannel {
+  late GraphContext graphContext;
+
+  @override
+  Future<void> prepare() async {
+    final store = Neo4jPersistentStore(
+      Uri.parse('bolt://localhost:7687'),
+      username: 'neo4j',
+      password: 'testpass',
+    )
+      ..registerNodeFactory<User>(User.new)
+      ..registerNodeFactory<Post>(Post.new);
+
+    final dataModel = GraphDataModel()
+      ..registerNode<User>()
+      ..registerNode<Post>()
+      ..registerEdge<Friend, User, User>()
+      ..registerEdge<Authored, User, Post>();
+
+    graphContext = GraphContext(dataModel, store);
+    store.bindDataModel(dataModel);
+  }
+
+  @override
+  Controller get entryPoint {
+    final factory = GraphResolverFactory(graphContext)
+      ..registerNodeType<User>()
+      ..registerNodeType<Post>();
+
+    final config = GraphSchemaConfig(
+      nodes: {
+        User: const GraphNodeSchemaConfig(
+          properties: [
+            GraphPropertyDescriptor(name: 'name', type: GraphPropertyType.string),
+            GraphPropertyDescriptor(name: 'age', type: GraphPropertyType.integer, isNullable: true),
+          ],
+        ),
+        Post: const GraphNodeSchemaConfig(
+          hasSchemalessProperties: true,
+          properties: [
+            GraphPropertyDescriptor(name: 'title', type: GraphPropertyType.string),
+          ],
+        ),
+      },
+      edges: {
+        Friend: const GraphEdgeSchemaConfig(properties: [
+          GraphPropertyDescriptor(
+            name: 'since',
+            type: GraphPropertyType.datetime,
+            isNullable: true,
+          ),
+        ]),
+      },
+    );
+
+    final schema = SchemaBuilder().fromGraphDataModel(
+      graphContext.dataModel,
+      config: config,
+      resolverFactory: factory,
+    );
+
+    return Router()
+      ..route('/graphql').link(() => GraphQLController(schema));
+  }
+}
+```
+
+### What the graph walker emits
+
+* One `GraphQLObjectType` per `GraphNodeEntity`, with `id: String!`
+  and `labels: [String!]!` baked in plus the typed properties
+  declared in the per-node `GraphSchemaConfig`.
+* One `GraphQLObjectType` per `GraphEdgeEntity`, carrying `id`, the
+  declared edge properties, and `from: <FromType>!` / `to: <ToType>!`
+  endpoints — these are the **edge-property connection types**.
+* For every outgoing edge from a node, a destination-list traversal
+  field on that node (`User.posts: [Post!]!` for a
+  `User -[Authored]-> Post` edge). When two outgoing edges land on
+  the same destination type, the second is disambiguated as
+  `posts2`, `posts3`, ...
+* When `GraphSchemaConfig.exposeGraphEdgesAsConnections == true`, an
+  additional edge-record list field per outgoing edge
+  (`User.authoreds: [Authored!]!`) so clients can read edge
+  properties in the same selection set.
+* When a `GraphNodeSchemaConfig` declares extra `unionLabels`, the
+  node type is wrapped in a `GraphQLUnionType` whose member object
+  types share the same shape — multi-label nodes surface as
+  `User | Account` for clients to discriminate via
+  `... on User { ... }` inline fragments.
+* When a node opts into `hasSchemalessProperties`, a
+  `properties: JSON!` field appears alongside the typed ones,
+  carrying the JSON-encoded property bag.
+* A `Query` root with `<plural>: [<NodeType>!]!`,
+  `<singular>(id: String!): <NodeType>` per node, plus
+  `<edgePlural>: [<EdgeType>!]!` per edge.
+* Field resolvers are populated automatically when you pass
+  `resolverFactory:` to the builder; otherwise resolvers stay null
+  (introspection works, execution is the caller's job).
+
+### Schemaless property handling — explicit opt-in
+
+Per the G4 plan: schemaless property handling is **opt-in per
+`GraphNode` subclass**. Set `hasSchemalessProperties: true` on the
+node's `GraphNodeSchemaConfig` to surface the entire dynamic property
+bag as a `properties: JSON!` field. The `JSON` scalar is a single
+string carrying the JSON-encoded bag; clients decode with their JSON
+parser. Typed-only mode is the default — the derived schema is
+inspectable and precise.
+
+### Cross-walker name conflicts
+
+Wiring `fromManagedDataModel` and `fromGraphDataModel` into the same
+schema is **not** the G4 surface — it's G5's cross-source dispatch
+problem. If both walkers emit the same Query-root field name, the
+graph walker raises a `StateError` at schema build time. Rename one
+side (or wait for G5) before mixing.
+
+### Graph-side scalar mapping
+
+| `GraphPropertyType` | GraphQL                                            |
+|---------------------|----------------------------------------------------|
+| `string`            | `String`                                           |
+| `integer`           | `String` (default; `Int` if `bigIntegerAsString: false`) |
+| `double`            | `Float`                                            |
+| `bool`              | `Boolean`                                          |
+| `datetime`          | `DateTime` (custom scalar)                         |
+| `list`              | `[String!]` (element type unknown at this layer)   |
+| `map`               | `JSON` (custom scalar)                             |
 
 ### Rendering SDL
 
