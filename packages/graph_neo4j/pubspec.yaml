@@ -1,0 +1,17 @@
+name: conduit_graph_neo4j
+description: Neo4j (Bolt protocol) backend for the conduit_graph type system. Implements Neo4jPersistentStore against a self-contained Bolt v4.x client.
+version: 6.0.0
+home: https://www.theconduit.dev
+repository: https://github.com/conduit-dart/conduit
+issue_tracker: https://github.com/conduit-dart/conduit/issues
+
+environment:
+  sdk: ">=3.12.0-0 <4.0.0"
+resolution: workspace
+
+dependencies:
+  conduit_graph: ^6.0.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.2
