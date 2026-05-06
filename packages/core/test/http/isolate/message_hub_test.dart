@@ -7,7 +7,8 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
-import 'package:test_core/src/util/io.dart' show getUnusedPort;
+
+import '../../_helpers/free_port.dart';
 
 void main() {
   group("Happy path", () {
@@ -21,9 +22,12 @@ void main() {
     test(
         "A message sent to the hub is received by other channels, but not by sender",
         () async {
-      port = await getUnusedPort((p) => p);
-      app = Application<HubChannel>()..options.port = port;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>(),
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
       final resp = await postMessage(port, "msg1");
       final postingIsolateID = isolateIdentifierFromResponse(resp);
@@ -54,11 +58,13 @@ void main() {
 
     test("A message sent in prepare is received by all channels eventually",
         () async {
-      port = await getUnusedPort((p) => p);
-      app = Application<HubChannel>()
-        ..options.port = port
-        ..options.context["sendIn"] = "prepare";
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>()
+          ..options.context["sendIn"] = "prepare",
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
       expect(
         waitForMessages(port, {
@@ -89,11 +95,13 @@ void main() {
     });
 
     test("Message hub stream can have multiple listeners", () async {
-      port = await getUnusedPort((p) => p);
-      app = Application<HubChannel>()
-        ..options.port = port
-        ..options.context["multipleListeners"] = true;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>()
+          ..options.context["multipleListeners"] = true,
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
       final resp = await postMessage(port, "msg1");
       final postingIsolateID = isolateIdentifierFromResponse(resp);
@@ -135,9 +143,12 @@ void main() {
     });
 
     test("Send invalid x-isolate data returns error in error stream", () async {
-      port = await getUnusedPort((p) => p);
-      app = Application<HubChannel>()..options.port = port;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>(),
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
       var resp = await postMessage(port, "garbage");
       final errors = await getErrorsFromIsolates(port);

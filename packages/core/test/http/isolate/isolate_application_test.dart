@@ -8,13 +8,20 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import '../../_helpers/free_port.dart';
+
 void main() {
   group("Lifecycle", () {
     late Application<TestChannel> app;
+    late int port;
 
     setUp(() async {
-      app = Application<TestChannel>();
-      await app.start(numberOfInstances: 2, consoleLogging: true);
+      final started = await startWithFreePort(
+        () => Application<TestChannel>(),
+        numberOfInstances: 2,
+      );
+      app = started.app;
+      port = started.port;
       print("started");
     });
 
@@ -29,13 +36,13 @@ void main() {
     });
 
     test("Application responds to request", () async {
-      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(Uri.parse("http://localhost:$port/t"));
       expect(response.statusCode, 200);
     });
 
     test("Application properly routes request", () async {
-      final tRequest = http.get(Uri.parse("http://localhost:8888/t"));
-      final rRequest = http.get(Uri.parse("http://localhost:8888/r"));
+      final tRequest = http.get(Uri.parse("http://localhost:$port/t"));
+      final rRequest = http.get(Uri.parse("http://localhost:$port/r"));
 
       final tResponse = await tRequest;
       final rResponse = await rRequest;
@@ -48,7 +55,7 @@ void main() {
       final reqs = <Future>[];
       final responses = <http.Response>[];
       for (int i = 0; i < 500; i++) {
-        final req = http.get(Uri.parse("http://localhost:8888/t"));
+        final req = http.get(Uri.parse("http://localhost:$port/t"));
         req.then(responses.add);
         reqs.add(req);
       }
@@ -73,13 +80,13 @@ void main() {
       await app.stop();
 
       try {
-        await http.get(Uri.parse("http://localhost:8888/t"));
+        await http.get(Uri.parse("http://localhost:$port/t"));
         // ignore: empty_catches
       } on SocketException {}
 
       await app.start(numberOfInstances: 2, consoleLogging: true);
 
-      final resp = await http.get(Uri.parse("http://localhost:8888/t"));
+      final resp = await http.get(Uri.parse("http://localhost:$port/t"));
       expect(resp.statusCode, 200);
     });
 
@@ -89,7 +96,7 @@ void main() {
       var sum = 0;
       for (var i = 0; i < 10; i++) {
         final result =
-            await http.get(Uri.parse("http://localhost:8888/startup"));
+            await http.get(Uri.parse("http://localhost:$port/startup"));
         sum += int.parse(json.decode(result.body) as String);
       }
       expect(sum, 10);
