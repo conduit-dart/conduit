@@ -1,0 +1,8 @@
+# Test runner configuration for conduit_graphql.
+#
+# `integration` tags gate suites that need an external service (Neo4j
+# at the moment). CI excludes the tag by default; opt in with
+# `dart test -t integration`. See test/graph_resolver_neo4j_test.dart
+# for the supported `CONDUIT_NEO4J_AVAILABLE` env var.
+tags:
+  integration:

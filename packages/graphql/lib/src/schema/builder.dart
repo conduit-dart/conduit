@@ -1,6 +1,9 @@
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_graph/conduit_graph.dart';
 import 'package:graphql_schema2/graphql_schema2.dart';
 
+import '../resolvers/graph_resolver_factory.dart';
+import 'graph_schema_config.dart';
 import 'scalars.dart';
 
 /// Derives a [GraphQLSchema] from a Conduit [ManagedDataModel].
@@ -526,6 +529,7 @@ class SchemaBuilder {
     return '${singular}s';
   }
 
+
   // -- G3: filter / sort / pagination args ------------------------------------
 
   /// Cache of scalar-keyed predicate input types. Each base scalar
@@ -788,5 +792,625 @@ class SchemaBuilder {
     );
     _sortDirectionEnum = e;
     return e;
+  }
+
+  // ===========================================================================
+  // G4 — graph schema derivation (parallel hierarchy to fromManagedDataModel).
+  //
+  // The methods below are strictly additive on top of the G2 surface. Nothing
+  // in the relational walker calls into them, and they do not touch any of
+  // the G2 helpers above except via the deliberately-shared scalars. G3's
+  // arg-generation work (filter/sort/pagination input types) lives in its
+  // own helper file once it lands; the graph-side mirror of that arg
+  // generation lives here under the `_graphArgsFor*` helpers below.
+  // ===========================================================================
+
+  /// Custom `JSON` scalar used for schemaless property bags. Defaults
+  /// to [graphQLJSON]; overridable for tests that want to swap in a
+  /// validated variant. Independent of [dateTimeScalar] / [uuidScalar]
+  /// because the JSON scalar is graph-only.
+  ///
+  /// Even though the slot exists on every builder, it is only ever
+  /// referenced when [GraphSchemaConfig.nodes] declares
+  /// `hasSchemalessProperties: true` for some node — purely-typed
+  /// graph schemas do not surface this scalar.
+  GraphQLScalarType<String, String> get jsonScalar => graphQLJSON;
+
+  /// Derives a [GraphQLSchema] from a [GraphDataModel].
+  ///
+  /// Mirrors [fromManagedDataModel] but for the graph parallel hierarchy.
+  /// The walker performs the same two-pass deferred-ref dance:
+  ///
+  /// 1. Register a deferred [GraphQLObjectType] per node entity, plus a
+  ///    deferred type per declared union member label, plus a deferred
+  ///    type per edge entity. Multi-label nodes additionally register a
+  ///    [GraphQLUnionType] keyed on the primary label.
+  /// 2. Populate fields on every registered type. Node fields come from
+  ///    [GraphSchemaConfig.nodes] (the property bag is schemaless at
+  ///    runtime, so we can't introspect it). Edge fields combine
+  ///    declared edge properties with `from:` and `to:` endpoints.
+  /// 3. Construct the Query root: per node type, list-all + by-id; per
+  ///    edge type, list-all of the connection. Names collide with any
+  ///    relational walker output if both are called on the same builder
+  ///    (G5 unifies them); that case is detected and rejected here with
+  ///    a [StateError].
+  ///
+  /// [config] is the per-node and per-edge declaration surface — see
+  /// [GraphSchemaConfig]. Empty config is valid: every node still gets
+  /// an `id: ID!` and `labels: [String!]!` field plus a Query-root
+  /// list-all; every edge gets `from`, `to`, and an `id`.
+  ///
+  /// [resolverFactory] is the optional resolver-attachment hook
+  /// (parallel to G3's planned hook for the SQL side). When supplied,
+  /// every field this method emits has its `resolve` closure populated
+  /// from the factory; otherwise resolvers stay `null` (introspection
+  /// works, execution surfaces field errors per the GraphQL spec).
+  GraphQLSchema fromGraphDataModel(
+    GraphDataModel model, {
+    GraphSchemaConfig? config,
+    GraphResolverFactory? resolverFactory,
+  }) {
+    final cfg = config ?? GraphSchemaConfig();
+    final nodeEntities = model.nodeEntities.values.toList();
+    final edgeEntities = model.edgeEntities.values.toList();
+    if (nodeEntities.isEmpty) {
+      throw ArgumentError(
+        'SchemaBuilder.fromGraphDataModel requires at least one '
+        'GraphNodeEntity in the data model, but the model is empty.',
+      );
+    }
+
+    // First pass: register type tokens. Each node entity contributes
+    // its primary type + any extra union-member types declared by the
+    // config. Edge entities contribute one object type each.
+    final nodeRegistry = <GraphNodeEntity, GraphQLObjectType>{};
+    final unionMemberRegistry = <String, GraphQLObjectType>{};
+    final edgeRegistry = <GraphEdgeEntity, GraphQLObjectType>{};
+    final unionRegistry = <GraphNodeEntity, GraphQLUnionType>{};
+
+    for (final entity in nodeEntities) {
+      final primary = GraphQLObjectType(
+        entity.label.name,
+        _nodeDescription(entity),
+      );
+      nodeRegistry[entity] = primary;
+      unionMemberRegistry[entity.label.name] = primary;
+      final extra = cfg.nodeConfig(entity.type).unionLabels;
+      for (final extraName in extra) {
+        if (extraName == entity.label.name) continue;
+        unionMemberRegistry.putIfAbsent(
+          extraName,
+          () => GraphQLObjectType(
+            extraName,
+            'Multi-label projection of ${entity.label.name} '
+                'under the additional label $extraName.',
+          ),
+        );
+      }
+    }
+    for (final entity in edgeEntities) {
+      edgeRegistry[entity] = GraphQLObjectType(
+        entity.label.name,
+        _edgeDescription(entity),
+      );
+    }
+
+    // Second pass: populate node + edge fields, then build unions.
+    for (final entity in nodeEntities) {
+      _populateNodeFields(
+        entity,
+        cfg,
+        nodeRegistry,
+        unionMemberRegistry,
+        edgeEntities,
+        edgeRegistry,
+        resolverFactory,
+      );
+    }
+    for (final entity in edgeEntities) {
+      _populateEdgeFields(
+        entity,
+        cfg,
+        nodeRegistry,
+        edgeRegistry,
+        resolverFactory,
+      );
+    }
+
+    // Build any union types whose entity declares extra labels. We
+    // do this *after* fields are populated so members carry their
+    // shape — a union over empty-stub types is allowed by the spec
+    // but is useless for clients.
+    for (final entity in nodeEntities) {
+      final extra = cfg.nodeConfig(entity.type).unionLabels;
+      if (extra.isEmpty) continue;
+      final members = <GraphQLObjectType>[
+        nodeRegistry[entity]!,
+        for (final extraName in extra)
+          if (extraName != entity.label.name)
+            unionMemberRegistry[extraName]!,
+      ];
+      // Union name follows the convention `<Primary>Or<Other>...`,
+      // which is verbose but stable and conflict-free. Most users will
+      // alias this in their query layer.
+      final unionName = _unionTypeName(entity.label.name, extra);
+      unionRegistry[entity] = GraphQLUnionType(unionName, members);
+    }
+
+    // Construct the Query root.
+    final queryRoot = _buildGraphQueryRoot(
+      nodeEntities,
+      edgeEntities,
+      nodeRegistry,
+      edgeRegistry,
+      unionRegistry,
+      cfg,
+      resolverFactory,
+    );
+
+    return GraphQLSchema(queryType: queryRoot);
+  }
+
+  /// Single-entity convenience: returns the node [GraphQLObjectType]
+  /// for [entity] independent of any data-model walk. Behaves like
+  /// [objectTypeFor] for the SQL side — outgoing edges resolve to
+  /// fresh empty stubs of their destination types if those entities
+  /// are not part of the registry passed in.
+  GraphQLObjectType nodeObjectTypeFor(
+    GraphNodeEntity entity, {
+    GraphSchemaConfig? config,
+  }) {
+    final cfg = config ?? GraphSchemaConfig();
+    final nodeRegistry = <GraphNodeEntity, GraphQLObjectType>{
+      entity: GraphQLObjectType(entity.label.name, _nodeDescription(entity)),
+    };
+    final unionMembers = <String, GraphQLObjectType>{
+      entity.label.name: nodeRegistry[entity]!,
+    };
+    _populateNodeFields(
+      entity,
+      cfg,
+      nodeRegistry,
+      unionMembers,
+      const [],
+      const {},
+      null,
+    );
+    return nodeRegistry[entity]!;
+  }
+
+  /// Single-entity convenience for edges. Endpoint object types are
+  /// fabricated as empty stubs because we have no node entities to
+  /// borrow from in this code path; use [fromGraphDataModel] when full
+  /// shape is required.
+  GraphQLObjectType edgeObjectTypeFor(
+    GraphEdgeEntity entity, {
+    GraphSchemaConfig? config,
+    GraphQLObjectType? fromType,
+    GraphQLObjectType? toType,
+  }) {
+    final cfg = config ?? GraphSchemaConfig();
+    final edgeRegistry = <GraphEdgeEntity, GraphQLObjectType>{
+      entity: GraphQLObjectType(entity.label.name, _edgeDescription(entity)),
+    };
+    final nodeRegistry = <GraphNodeEntity, GraphQLObjectType>{};
+    if (fromType != null && entity.fromType != null) {
+      nodeRegistry[GraphNodeEntity(
+        type: entity.fromType!,
+        label: GraphLabel(fromType.name),
+      )] = fromType;
+    }
+    if (toType != null && entity.toType != null) {
+      nodeRegistry[GraphNodeEntity(
+        type: entity.toType!,
+        label: GraphLabel(toType.name),
+      )] = toType;
+    }
+    _populateEdgeFields(
+      entity,
+      cfg,
+      nodeRegistry,
+      edgeRegistry,
+      null,
+    );
+    return edgeRegistry[entity]!;
+  }
+
+  // -- Internals (graph) ----------------------------------------------------
+
+  String _nodeDescription(GraphNodeEntity entity) =>
+      'GraphQL projection of graph node ${entity.label.name} '
+      '(Dart type ${entity.type}).';
+
+  String _edgeDescription(GraphEdgeEntity entity) {
+    final from = entity.fromType?.toString() ?? '?';
+    final to = entity.toType?.toString() ?? '?';
+    return 'GraphQL projection of graph edge ${entity.label.name} '
+        '($from -[:${entity.label.name}]-> $to).';
+  }
+
+  /// Convention for naming a multi-label union: primary then sorted
+  /// extras joined by `Or`. Matches `User + Account -> UserOrAccount`
+  /// in the social-graph fixture.
+  String _unionTypeName(String primary, List<String> extras) {
+    final sorted = [
+      for (final e in extras)
+        if (e != primary) e,
+    ]..sort();
+    return [primary, ...sorted].join('Or');
+  }
+
+  void _populateNodeFields(
+    GraphNodeEntity entity,
+    GraphSchemaConfig cfg,
+    Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    Map<String, GraphQLObjectType> unionMembers,
+    List<GraphEdgeEntity> edges,
+    Map<GraphEdgeEntity, GraphQLObjectType> edgeRegistry,
+    GraphResolverFactory? resolverFactory,
+  ) {
+    final nodeType = nodeRegistry[entity]!;
+    final nodeCfg = cfg.nodeConfig(entity.type);
+
+    final fields = _builtinNodeFields(entity);
+    for (final descriptor in nodeCfg.properties) {
+      fields.add(_fieldForGraphProperty(descriptor));
+    }
+    if (nodeCfg.hasSchemalessProperties) {
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          'properties',
+          jsonScalar.nonNullable(),
+          resolve: null,
+          description:
+              'Schemaless property bag, JSON-encoded. Opt-in: this '
+              'field only appears for nodes whose GraphSchemaConfig sets '
+              'hasSchemalessProperties = true.',
+        ),
+      );
+    }
+
+    // Traversal fields — for every edge that originates at this node
+    // type, surface the destination as a list, and (gated by the
+    // config flag) the edge connection itself as a parallel list.
+    for (final edge in edges) {
+      if (edge.fromType != entity.type) continue;
+      final destEntity = _findNodeEntityByType(nodeRegistry, edge.toType);
+      if (destEntity == null) continue;
+      final destObject = nodeRegistry[destEntity]!;
+      final pluralDest = _pluralFieldName(_lowerFirst(destObject.name));
+      final destinationFieldName =
+          _disambiguateTraversalField(pluralDest, fields);
+      final destinationField = GraphQLObjectField<dynamic, dynamic>(
+        destinationFieldName,
+        GraphQLListType(destObject.nonNullable()).nonNullable(),
+        resolve: resolverFactory == null
+            ? null
+            : (parent, _) {
+                if (parent is GraphNode) {
+                  return resolverFactory.traverse(
+                    from: parent,
+                    edgeType: edge.type,
+                  );
+                }
+                return null;
+              },
+        description:
+            'Traverses ${edge.label.name} edges from this '
+            '${entity.label.name} and returns the destination '
+            '${destObject.name}s.',
+      );
+      fields.add(destinationField);
+
+      if (cfg.exposeGraphEdgesAsConnections) {
+        final edgeObject = edgeRegistry[edge]!;
+        final edgeFieldName = _pluralFieldName(_lowerFirst(edgeObject.name));
+        final edgeListField = GraphQLObjectField<dynamic, dynamic>(
+          edgeFieldName,
+          GraphQLListType(edgeObject.nonNullable()).nonNullable(),
+          resolve: null, // edge-list traversal lands in G5
+          description:
+              'Walks ${edge.label.name} edges from this '
+              '${entity.label.name}, returning the edge records '
+              '(with edge properties) rather than the destination '
+              'nodes. Opt-in via '
+              'GraphSchemaConfig.exposeGraphEdgesAsConnections.',
+        );
+        fields.add(edgeListField);
+      }
+    }
+
+    nodeType.fields.addAll(fields);
+
+    // Mirror the populated fields onto every union-member stub so the
+    // union's possible types all have a usable shape.
+    for (final extraName in cfg.nodeConfig(entity.type).unionLabels) {
+      if (extraName == entity.label.name) continue;
+      final memberType = unionMembers[extraName];
+      if (memberType == null) continue;
+      memberType.fields.addAll(_cloneFields(fields));
+    }
+  }
+
+  void _populateEdgeFields(
+    GraphEdgeEntity entity,
+    GraphSchemaConfig cfg,
+    Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    Map<GraphEdgeEntity, GraphQLObjectType> edgeRegistry,
+    GraphResolverFactory? resolverFactory,
+  ) {
+    final edgeType = edgeRegistry[entity]!;
+    final edgeCfg = cfg.edgeConfig(entity.type);
+
+    edgeType.fields.add(
+      GraphQLObjectField<dynamic, dynamic>(
+        'id',
+        graphQLString.nonNullable(),
+        resolve: null,
+        description: 'Store-assigned id of the edge record.',
+      ),
+    );
+
+    for (final descriptor in edgeCfg.properties) {
+      edgeType.fields.add(_fieldForGraphProperty(descriptor));
+    }
+
+    final fromObject = entity.fromType == null
+        ? null
+        : _findNodeEntityByType(nodeRegistry, entity.fromType);
+    final toObject = entity.toType == null
+        ? null
+        : _findNodeEntityByType(nodeRegistry, entity.toType);
+
+    if (fromObject != null) {
+      edgeType.fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          'from',
+          nodeRegistry[fromObject]!.nonNullable(),
+          resolve: null,
+          description: 'Source endpoint of the ${entity.label.name} edge.',
+        ),
+      );
+    }
+    if (toObject != null) {
+      edgeType.fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          'to',
+          nodeRegistry[toObject]!.nonNullable(),
+          resolve: null,
+          description: 'Target endpoint of the ${entity.label.name} edge.',
+        ),
+      );
+    }
+  }
+
+  /// The two universally-present node fields: `id: ID!` and
+  /// `labels: [String!]!`. Keeping these separate from the
+  /// configuration-declared properties keeps the minimum-viable shape
+  /// useful even when no `GraphSchemaConfig` entries exist.
+  List<GraphQLObjectField<dynamic, dynamic>> _builtinNodeFields(
+    GraphNodeEntity entity,
+  ) {
+    return [
+      GraphQLObjectField<dynamic, dynamic>(
+        'id',
+        graphQLString.nonNullable(),
+        resolve: null,
+        description: 'Store-assigned id of the node.',
+      ),
+      GraphQLObjectField<dynamic, dynamic>(
+        'labels',
+        GraphQLListType(graphQLString.nonNullable()).nonNullable(),
+        resolve: null,
+        description: 'Labels carried by this node in the graph store.',
+      ),
+    ];
+  }
+
+  GraphQLObjectField<dynamic, dynamic> _fieldForGraphProperty(
+    GraphPropertyDescriptor descriptor,
+  ) {
+    final scalar = _scalarForGraphPropertyType(descriptor.type);
+    final wrapped =
+        descriptor.isNullable ? scalar : scalar.nonNullable();
+    return GraphQLObjectField<dynamic, dynamic>(
+      descriptor.name,
+      wrapped,
+      resolve: null,
+      description: descriptor.description,
+    );
+  }
+
+  GraphQLType<dynamic, dynamic> _scalarForGraphPropertyType(
+    GraphPropertyType type,
+  ) {
+    switch (type) {
+      case GraphPropertyType.string:
+        return graphQLString;
+      case GraphPropertyType.integer:
+        // GraphPropertyType.integer is documented as 64-bit on the
+        // graph side. Mirror the bigInteger guardrail from the SQL
+        // mapping so callers don't silently overflow Int.
+        return bigIntegerAsString ? graphQLString : graphQLInt;
+      case GraphPropertyType.double:
+        return graphQLFloat;
+      case GraphPropertyType.bool:
+        return graphQLBoolean;
+      case GraphPropertyType.datetime:
+        return dateTimeScalar;
+      case GraphPropertyType.list:
+        // Element type is unknown at this layer (graph properties
+        // don't carry generic information). String is a defensible
+        // default mirroring the SQL walker's handling of
+        // ManagedPropertyType.list with no element info.
+        return GraphQLListType(graphQLString.nonNullable());
+      case GraphPropertyType.map:
+        // Same convention as the SQL walker: lower to a JSON-encoded
+        // string. Apps that need typed access can declare a
+        // hand-written type and surface it via the resolver factory.
+        return jsonScalar;
+    }
+  }
+
+  GraphNodeEntity? _findNodeEntityByType(
+    Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    Type? type,
+  ) {
+    if (type == null) return null;
+    for (final entity in nodeRegistry.keys) {
+      if (entity.type == type) return entity;
+    }
+    return null;
+  }
+
+  GraphQLObjectType _buildGraphQueryRoot(
+    List<GraphNodeEntity> nodeEntities,
+    List<GraphEdgeEntity> edgeEntities,
+    Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    Map<GraphEdgeEntity, GraphQLObjectType> edgeRegistry,
+    Map<GraphNodeEntity, GraphQLUnionType> unionRegistry,
+    GraphSchemaConfig cfg,
+    GraphResolverFactory? resolverFactory,
+  ) {
+    final fields = <GraphQLObjectField<dynamic, dynamic>>[];
+    final seen = <String>{};
+
+    for (final entity in nodeEntities) {
+      final type = nodeRegistry[entity]!;
+      final union = unionRegistry[entity];
+      // List-and-by-id traverse the underlying node type even when
+      // the entity exposes a union; clients pick a discriminator via
+      // GraphQL's standard `... on <Type>` inline-fragment. The union
+      // type itself is reachable by querying the connection edge.
+      final singularName = _lowerFirst(type.name);
+      final pluralName = _pluralFieldName(singularName);
+
+      _ensureUnique(seen, pluralName, type.name);
+      _ensureUnique(seen, singularName, type.name);
+
+      // List-all
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          pluralName,
+          GraphQLListType((union ?? type).nonNullable()).nonNullable(),
+          resolve: resolverFactory == null
+              ? null
+              : (_, args) =>
+                  resolverFactory.list(entity: entity, args: args),
+          description:
+              'Returns every ${type.name}. Read-only in G4; G5 adds '
+              'where/order/pagination arguments and cross-source '
+              'dispatch.',
+        ),
+      );
+
+      // By-pk (using the store-assigned `id` since GraphNode has no
+      // user-declared primary key).
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          singularName,
+          (union ?? type),
+          resolve: resolverFactory == null
+              ? null
+              : (_, args) => resolverFactory.byId(entity: entity, args: args),
+          arguments: [
+            GraphQLFieldInput(
+              'id',
+              graphQLString.nonNullable(),
+              description: 'Store-assigned id of the ${type.name} to fetch.',
+            ),
+          ],
+          description:
+              'Returns the ${type.name} with the given id, or null '
+              'if none exists.',
+        ),
+      );
+    }
+
+    for (final entity in edgeEntities) {
+      final type = edgeRegistry[entity]!;
+      final singularName = _lowerFirst(type.name);
+      final pluralName = _pluralFieldName(singularName);
+      _ensureUnique(seen, pluralName, type.name);
+
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          pluralName,
+          GraphQLListType(type.nonNullable()).nonNullable(),
+          resolve: resolverFactory == null
+              ? null
+              : (_, args) =>
+                  resolverFactory.edgeList(entity: entity, args: args),
+          description:
+              'Returns every ${type.name} edge record. The edge '
+              'object carries its declared edge properties plus '
+              'from/to endpoints.',
+        ),
+      );
+    }
+
+    return GraphQLObjectType(
+      'Query',
+      'Read-only Conduit GraphQL query root, derived from a '
+          'GraphDataModel.',
+    )..fields.addAll(fields);
+  }
+
+  /// Throws [StateError] when a query-root field name collides with a
+  /// previously-emitted name. The resolution rule documented in the
+  /// G4 plan: graph + relational walkers in the same builder must not
+  /// collide; cross-source unification is G5's responsibility.
+  void _ensureUnique(Set<String> seen, String name, String typeName) {
+    if (!seen.add(name)) {
+      throw StateError(
+        'Query-root field name "$name" emitted more than once while '
+        'deriving GraphDataModel schema (offending type: $typeName). '
+        'Two graph types map to the same field; rename one or wait '
+        'for G5\'s cross-source unification before mixing two models '
+        'in the same SchemaBuilder.',
+      );
+    }
+  }
+
+  String _lowerFirst(String s) {
+    if (s.isEmpty) return s;
+    return s.substring(0, 1).toLowerCase() + s.substring(1);
+  }
+
+  /// If [name] collides with an already-added field, append `Via<EdgeName>`.
+  /// We only see this when two outgoing edges from the same source node
+  /// land on the same destination type (e.g. `User -[Authored]-> Post`
+  /// and `User -[Liked]-> Post` both want to surface as `posts`).
+  String _disambiguateTraversalField(
+    String name,
+    List<GraphQLObjectField<dynamic, dynamic>> fields,
+  ) {
+    if (fields.every((f) => f.name != name)) return name;
+    var i = 2;
+    while (fields.any((f) => f.name == '$name$i')) {
+      i++;
+    }
+    return '$name$i';
+  }
+
+  /// Shallow copy of [fields] for installation onto an additional
+  /// union-member type. Sharing the same `GraphQLObjectField`
+  /// instances would work in principle (they're immutable from the
+  /// outside) but copying makes the SDL printer's per-type field
+  /// iteration deterministic.
+  List<GraphQLObjectField<dynamic, dynamic>> _cloneFields(
+    List<GraphQLObjectField<dynamic, dynamic>> fields,
+  ) {
+    return [
+      for (final f in fields)
+        GraphQLObjectField<dynamic, dynamic>(
+          f.name,
+          f.type,
+          arguments: f.inputs,
+          resolve: f.resolve,
+          description: f.description,
+          deprecationReason: f.deprecationReason,
+        ),
+    ];
   }
 }
