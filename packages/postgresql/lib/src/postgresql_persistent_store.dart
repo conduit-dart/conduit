@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
+import 'postgres_sql_dialect.dart';
 import 'postgresql_query.dart';
 import 'postgresql_schema_generator.dart';
 import 'package:postgres/postgres.dart';
@@ -26,6 +27,13 @@ extension ToSslMode on String? {
 class PostgreSQLPersistentStore extends PersistentStore
     with PostgreSQLSchemaGenerator {
   /// Creates an instance of this type from connection info.
+  ///
+  /// The optional [dialect] selects the SQL flavor for type mapping,
+  /// parameter syntax, and DDL emission. Defaults to
+  /// [PostgresSqlDialect]. Pass [CockroachSqlDialect] when targeting a
+  /// CockroachDB endpoint — Cockroach is Postgres-wire-compatible at
+  /// the protocol layer, but its DDL has small divergences (e.g.
+  /// no `ISNULL` shorthand) that this dialect smooths over.
   PostgreSQLPersistentStore(
     this.username,
     this.password,
@@ -34,7 +42,13 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
-  }) : isSSLConnection = sslMode.toSslMode() != SslMode.disable;
+    SqlDialect dialect = const PostgresSqlDialect(),
+    // The lint wants `this._dialect`, but private-named optional params
+    // aren't allowed in Dart; the assignment form is the idiomatic
+    // alternative.
+    // ignore: prefer_initializing_formals
+  })  : _dialect = dialect,
+        isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   /// Same constructor as default constructor.
   ///
@@ -47,10 +61,17 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
-  }) : isSSLConnection = sslMode.toSslMode() != SslMode.disable;
+    SqlDialect dialect = const PostgresSqlDialect(),
+    // The lint wants `this._dialect`, but private-named optional params
+    // aren't allowed in Dart; the assignment form is the idiomatic
+    // alternative.
+    // ignore: prefer_initializing_formals
+  })  : _dialect = dialect,
+        isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
-    : isSSLConnection =
+    : _dialect = from._dialect,
+      isSSLConnection =
           from.isSSLConnection || from.sslMode.toSslMode() != SslMode.disable,
       username = from.username,
       password = from.password,
@@ -93,6 +114,14 @@ class PostgreSQLPersistentStore extends PersistentStore
 
   /// The SSL mode of the connection to the database.
   final String? sslMode;
+
+  final SqlDialect _dialect;
+
+  /// The SQL dialect this store was constructed with — controls type
+  /// mapping, parameter syntax, and DDL emission. Override on the mixin
+  /// so the schema generator + builders consult the injected value.
+  @override
+  SqlDialect get dialect => _dialect;
 
   /// Whether or not the underlying database connection is open.
   ///
