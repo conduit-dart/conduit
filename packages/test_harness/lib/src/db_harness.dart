@@ -26,12 +26,58 @@ import 'package:test/test.dart';
 ///               await Query.insertObject(...);
 ///             }
 ///         }
+///
+/// ## Multi-backend persistence
+///
+/// By default the harness uses whatever [PersistentStore] the channel
+/// wired into its [ManagedContext] — historically a
+/// `PostgreSQLPersistentStore`. To run the same harness against a
+/// different backend (in-memory SQLite, MySQL, …) without modifying
+/// the channel, register a factory:
+///
+/// ```dart
+/// class Harness extends TestHarness<MyChannel> with TestHarnessORMMixin {
+///   Harness() {
+///     persistence = () => SqlitePersistentStore.memory();
+///   }
+///   @override
+///   ManagedContext? get context => channel?.context;
+/// }
+/// ```
+///
+/// The factory is invoked on each [resetData], the channel's
+/// `context.persistentStore` is swapped to the freshly-minted store,
+/// and the schema is rebuilt against it. This keeps the existing
+/// channel code dialect-agnostic — the channel wires up its
+/// `ManagedDataModel` and the harness owns the store.
+///
+/// **Backwards compatibility.** If [persistence] is left null, the
+/// harness behaves exactly as before: it uses
+/// `context!.persistentStore` and re-applies the schema against it.
 mixin TestHarnessORMMixin {
   /// Must override to return [ManagedContext] of application under test.
   ///
   /// An [ApplicationChannel] should expose its [ManagedContext] service as a property.
   /// Return the context from this method.
   ManagedContext? get context;
+
+  /// Optional persistence factory. When set, every [resetData] call
+  /// will close the currently-active store, invoke this factory to
+  /// produce a fresh store, swap it onto the channel's
+  /// [ManagedContext], and re-apply the schema against it.
+  ///
+  /// When null (the default), the harness uses the store the channel
+  /// constructed and re-applies the schema against it — preserving
+  /// the legacy Postgres-only behaviour.
+  ///
+  /// Callers can set this in their harness subclass constructor, or
+  /// at install time:
+  ///
+  /// ```dart
+  /// final harness = MyHarness()
+  ///   ..persistence = () => SqlitePersistentStore.memory();
+  /// ```
+  PersistentStore Function()? persistence;
 
   /// Override this method to insert static data for each test run.
   ///
@@ -54,7 +100,21 @@ mixin TestHarnessORMMixin {
   /// This method should be invoked in [TestHarness.afterStart] and typically is invoked
   /// in [tearDown] for your test suite.
   Future resetData({Logger? logger}) async {
-    await context?.persistentStore.close();
+    final ctx = context;
+    if (ctx == null) {
+      throw StateError(
+          'TestHarnessORMMixin.resetData called before context is available; '
+          'override `context` to return the application channel\'s '
+          'ManagedContext.');
+    }
+    await ctx.persistentStore.close();
+
+    if (persistence != null) {
+      // Swap the store on the channel's context so subsequent Query<T>
+      // calls and the channel's own code go through the new backend.
+      ctx.persistentStore = persistence!();
+    }
+
     await addSchema(logger: logger);
     await seed();
   }
