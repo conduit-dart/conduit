@@ -68,6 +68,33 @@ final GraphQLScalarType<String, String> graphQLUUID =
       '(e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479").',
 );
 
+/// A `JSON` scalar — opaque, JSON-encoded string payload.
+///
+/// Used by the G4 graph schema-derivation path for **schemaless
+/// property bags** on `GraphNode`s that opt in. Graph databases like
+/// Neo4j allow ad-hoc properties on nodes and edges without a
+/// pre-declared schema; rather than dropping that data on the floor or
+/// inventing a non-portable structured GraphQL type, we surface the
+/// whole bag as a single `JSON` field whose payload is the
+/// JSON-encoded property map.
+///
+/// Wire representation: a single string. Clients are expected to
+/// decode the string with their JSON parser of choice. This is the
+/// same convention used by the `graphql-scalars` JS ecosystem when
+/// surfacing schemaless data; rendering the bag as a structured object
+/// type would require either making a separate `Properties` object
+/// type per schemaless node (defeating the point of opt-in schemaless
+/// handling) or returning a `__typename`-less map (which graphql_schema2
+/// has no notion of).
+final GraphQLScalarType<String, String> graphQLJSON =
+    _RenamedScalarType<String, String>(
+  graphQLString,
+  name: 'JSON',
+  description: 'A JSON-encoded string payload. Used to surface '
+      'schemaless property bags from graph nodes; clients decode the '
+      'string with their JSON parser of choice.',
+);
+
 /// Decorator that delegates every operation to [_inner] but reports a
 /// caller-supplied [name] and [description] to GraphQL introspection.
 ///
