@@ -1,4 +1,5 @@
 export 'managed/managed.dart';
+export 'persistence.dart';
 export 'persistent_store/persistent_store.dart';
 export 'persistent_store/sql_dialect.dart';
 export 'persistent_store/sql_expression_visitor.dart';
