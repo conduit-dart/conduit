@@ -1,5 +1,11 @@
 ## 6.0.0
 
+ - **REFACTOR**(db): extract SqlDialect abstraction from postgresql package ([#263](https://github.com/conduit-dart/conduit/issues/263)). ([37614c0c](https://github.com/conduit-dart/conduit/commit/37614c0cfa1e8151afca13a674c43f87c044c1f6))
+ - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
+ - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
+
+## 6.0.0
+
 > Note: This release has breaking changes.
 
  - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
