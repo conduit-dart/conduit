@@ -1,6 +1,12 @@
 ## 6.0.0
 
  - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
+ - **FEAT**(cli): conduit serve --watch reloads on dart file changes ([#256](https://github.com/conduit-dart/conduit/issues/256)). ([cb502821](https://github.com/conduit-dart/conduit/commit/cb5028211b3e866b10680926a3e5dd060d28176b))
+ - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
+
+## 6.0.0
+
+ - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
  - **FEAT**(cli): conduit db rebuild — drop+regenerate+upgrade in one shot ([#257](https://github.com/conduit-dart/conduit/issues/257)). ([badfd9c8](https://github.com/conduit-dart/conduit/commit/badfd9c85ba96607fe1233e5e217bd996e2ab810))
  - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
 
