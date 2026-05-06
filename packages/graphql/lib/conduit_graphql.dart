@@ -24,3 +24,5 @@ export 'package:graphql_server2/graphql_server2.dart';
 
 export 'src/controller/graphql_controller.dart';
 export 'src/schema/builder.dart';
+export 'src/schema/scalars.dart';
+export 'src/schema/sdl_printer.dart';
