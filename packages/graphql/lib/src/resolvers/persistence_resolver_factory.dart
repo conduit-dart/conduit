@@ -195,28 +195,52 @@ GraphQLFieldResolver<Object?, Object?> wrapResolverWithAuth(
 ) =>
     _wrapWithAuth(inner, auth);
 
+/// Key for the per-resolver-call [Authorization] override. Tests (and
+/// non-Conduit hosts) can write an [Authorization] under this key in
+/// the executor's globalVariables / argumentValues map; the wrapper
+/// reads it directly and skips the [Request] lookup.
+///
+/// In production the [GraphQLController] only writes
+/// [authorizationArgKey] (`'conduitRequest'`); the wrapper falls back
+/// to that and pulls `request.authorization` off it. Either channel
+/// works.
+const String fieldAuthorizationArgKey = 'conduitAuthorization';
+
 GraphQLFieldResolver<Object?, Object?> _wrapWithAuth(
   GraphQLFieldResolver<Object?, Object?> inner,
   FieldAuthorize auth,
 ) {
   return (Object? parent, Map<String, dynamic> args) async {
+    Authorization? authorization;
+    Request? request;
+
+    final directAuth = args[fieldAuthorizationArgKey];
+    if (directAuth is Authorization) {
+      authorization = directAuth;
+    }
     final raw = args[authorizationArgKey];
-    if (raw is! Request) {
+    if (raw is Request) {
+      request = raw;
+      authorization ??= raw.authorization;
+    }
+
+    if (authorization == null && request == null) {
       throw GraphQLException.fromMessage(
         'Field requires authorization but the GraphQL execution context '
-        'has no conduit Request attached. Make sure the field is reached '
-        'through GraphQLController, which threads the Request into '
+        'has neither a conduit Request nor an Authorization attached. '
+        'Make sure the field is reached through GraphQLController '
+        '(production) or that tests write conduitAuthorization into '
         'argumentValues.',
       );
     }
-    final request = raw;
-    final authorization = request.authorization;
+
     final hasScope = authorization != null &&
         auth.scopes.any(authorization.isAuthorizedForScope);
     if (!hasScope) {
       final allowOwner = auth.allowOwner;
       final ownerOk = allowOwner != null &&
           parent != null &&
+          request != null &&
           allowOwner(parent, request);
       if (!ownerOk) {
         throw GraphQLException.fromMessage(
@@ -227,6 +251,7 @@ GraphQLFieldResolver<Object?, Object?> _wrapWithAuth(
         );
       }
     }
+
     final result = inner(parent, args);
     if (result is Future) {
       return await result;
