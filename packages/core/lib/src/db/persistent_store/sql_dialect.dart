@@ -19,6 +19,7 @@
 /// hold connection state — that lives on the `PersistentStore`.
 library;
 
+import 'package:conduit_core/src/db/managed/type.dart';
 import 'package:conduit_core/src/db/persistent_store/sql_expression_visitor.dart';
 import 'package:conduit_core/src/db/query/expression_ast.dart';
 
@@ -44,6 +45,26 @@ abstract class SqlDialect {
   /// Returning `null` signals "not a supported type for this dialect" —
   /// callers handle by raising a clear schema error.
   String? columnDefinitionType(String typeString, {required bool autoincrement});
+
+  // -- Value encoding ---------------------------------------------------------
+
+  /// Coerce a Dart value into the dialect's wire-protocol parameter
+  /// form. Used by the dialect-agnostic query builders to wrap values
+  /// before they are placed into `executeQuery`'s `substitutionValues`
+  /// map.
+  ///
+  /// Postgres returns a `TypedValue` (from `package:postgres`) so the
+  /// driver knows the column's SQL type; SQLite and MySQL just pass
+  /// the value through (their drivers infer the type from the bound
+  /// Dart value). Returning `Object?` keeps the contract
+  /// driver-agnostic — the persistent store's `executeQuery`
+  /// implementation knows how to consume the dialect's specific wire
+  /// form.
+  ///
+  /// Default is pass-through, which is the right behavior for
+  /// drivers that take Dart values directly. The Postgres dialect
+  /// overrides to wrap with `TypedValue`.
+  Object? encodeValue(Object? value, ManagedPropertyType? type) => value;
 
   // -- Parameter placeholder syntax -------------------------------------------
 

@@ -1,8 +1,19 @@
-import 'package:postgres/postgres.dart';
+/// Dialect-agnostic predicate-expression builders.
+///
+/// Lifted from `packages/postgresql/lib/src/builders/expression.dart`
+/// in PR #267's deferred-builder-lift work. The only Postgres-specific
+/// dependency this code carried was `TypedValue` (from
+/// `package:postgres`) for parameter-value coercion; that is now
+/// captured by `SqlDialect.encodeValue`, which Postgres overrides to
+/// produce a `TypedValue` and SQLite/MySQL leave as a pass-through.
+library;
 
-import 'column.dart';
-import 'table.dart';
-import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/src/db/managed/type.dart';
+import 'package:conduit_core/src/db/persistent_store/sql_dialect.dart';
+import 'package:conduit_core/src/db/query/builders/column.dart';
+import 'package:conduit_core/src/db/query/builders/table.dart';
+import 'package:conduit_core/src/db/query/expression_ast.dart';
+import 'package:conduit_core/src/db/query/predicate.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
   ColumnExpressionBuilder(
@@ -38,23 +49,22 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     }
 
     throw UnsupportedError(
-      "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by 'PostgreSQL'.",
+      "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by this dialect.",
     );
   }
 
   /// Convenience access to the dialect threaded through the table builder.
   SqlDialect get _dialect => table!.dialect;
 
-  /// Build a postgres-typed value wrapper for [v]; centralized so the
-  /// AST nodes carry the same `TypedValue` the legacy path put in the
-  /// parameter map. Keeps PG behavior identical pre- and post-AST.
-  TypedValue _typed(Object? v) =>
-      TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-          convertValueForStorage(v));
+  /// Encode [v] for the dialect's wire form. Postgres wraps with
+  /// `TypedValue` so the driver knows the column's SQL type; SQLite
+  /// and MySQL pass the value through.
+  Object? _typed(Object? v) =>
+      _dialect.encodeValue(convertValueForStorage(v), property!.type!.kind);
 
-  /// `column` AST node for the predicate's left-hand side. The PG
-  /// renderer always namespaces with the table reference (matches
-  /// the historical `withTableNamespace: true` call site).
+  /// `column` AST node for the predicate's left-hand side. Always
+  /// namespaced with the table reference (matches the historical
+  /// `withTableNamespace: true` call site).
   ColumnExpression _columnNode() {
     final raw = sqlColumnName();
     return ColumnExpression(
@@ -90,7 +100,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     bool within = true,
   }) {
     final tokenList = [];
-    final pairedMap = <String, TypedValue>{};
+    final pairedMap = <String, Object?>{};
     final astValues = <SqlExpression>[];
 
     var counter = 0;
@@ -183,7 +193,10 @@ class ColumnExpressionBuilder extends ColumnBuilder {
         break;
     }
 
-    final typed = TypedValue(Type.text, matchValue);
+    // Patterns are always strings, regardless of column type — encode
+    // through the dialect with the canonical string type so Postgres
+    // wraps as TEXT and other dialects pass through.
+    final typed = _dialect.encodeValue(matchValue, ManagedPropertyType.string);
     final ast = LikeExpression(
       _columnNode(),
       ParameterExpression(variableName, typed),
