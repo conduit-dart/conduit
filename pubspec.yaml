@@ -18,6 +18,7 @@ workspace:
   - packages/config
   - packages/core
   - packages/graph
+  - packages/graph_neo4j
   - packages/isolate_exec
   - packages/open_api
   - packages/password_hash
@@ -83,6 +84,7 @@ melos:
                             -V conduit_config:$v \
                             -V conduit_core:$v \
                             -V conduit_graph:$v \
+                            -V conduit_graph_neo4j:$v \
                             -V conduit_isolate_exec:$v \
                             -V conduit_mysql:$v \
                             -V conduit_open_api:$v \
