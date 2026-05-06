@@ -35,7 +35,7 @@ jobs:
   unit:
     needs: smoke
     if: |
-      startsWith(github.head_ref, 'feature/')
+      startsWith(github.head_ref, 'feat/')
       || startsWith(github.head_ref, 'fix/')
       || startsWith(github.head_ref, 'refactor/')
       || startsWith(github.head_ref, 'claude/')
