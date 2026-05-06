@@ -165,7 +165,55 @@ void main() {
       final _FakeGraphStore typed = p.graph;
       expect(identical(typed, store), isTrue);
     });
+
+    test('Persistence<Specific> is assignable to Persistence<Object>?', () {
+      // ApplicationChannel.persistence is typed as Persistence<Object>?;
+      // a Persistence<_FakeGraphStore> must be assignable into it via
+      // Dart's covariant generics. This is a compile-time check.
+      final concrete = Persistence<_FakeGraphStore>(
+        graph: _FakeGraphStore(),
+      );
+      final Persistence<Object> widened = concrete;
+      expect(widened.hasGraph, isTrue);
+    });
   });
+
+  group('ApplicationChannel.attachPersistence', () {
+    test('builds sqlContext when sqlModel + sql store provided', () {
+      final channel = _TestChannel();
+      final p = Persistence<_FakeGraphStore>(sql: _FakeSqlStore());
+      channel.attachPersistence(p, sqlModel: ManagedDataModel([]));
+      expect(p.sqlContext, isNotNull);
+    });
+
+    test('leaves sqlContext null when sqlModel omitted', () {
+      final channel = _TestChannel();
+      final p = Persistence<_FakeGraphStore>(sql: _FakeSqlStore());
+      channel.attachPersistence(p);
+      expect(p.sqlContext, isNull);
+    });
+
+    test('does not throw when persistence has no SQL store', () {
+      final channel = _TestChannel();
+      final p = Persistence<_FakeGraphStore>(graph: _FakeGraphStore());
+      channel.attachPersistence(p, sqlModel: ManagedDataModel([]));
+      expect(p.sqlContext, isNull);
+    });
+
+    test('returns the same Persistence for fluent use', () {
+      final channel = _TestChannel();
+      final p = Persistence<_FakeGraphStore>(sql: _FakeSqlStore());
+      final returned = channel.attachPersistence(p);
+      expect(identical(returned, p), isTrue);
+    });
+  });
+}
+
+/// Minimal channel subclass for testing helper methods that don't depend
+/// on the runtime wiring.
+class _TestChannel extends ApplicationChannel {
+  @override
+  Controller get entryPoint => Router();
 }
 
 // -- Test doubles -----------------------------------------------------------
