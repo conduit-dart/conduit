@@ -17,5 +17,7 @@ dependencies:
 dev_dependencies:
   conduit_postgresql:
     path: ../postgresql
+  conduit_sqlite:
+    path: ../sqlite
   lints: ^6.0.0
   test_core: ^0.6.15
