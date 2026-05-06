@@ -1,5 +1,13 @@
 ## 6.0.0
 
+> Note: This release has breaking changes.
+
+ - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
+ - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
+ - **BREAKING** **FIX**(http): safer CORS default + runtime guard against credentialed wildcard ([#262](https://github.com/conduit-dart/conduit/issues/262)). ([8bd93781](https://github.com/conduit-dart/conduit/commit/8bd937813ffffbcc122802e9a9915458950db129))
+
+## 6.0.0
+
  - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
  - **FEAT**(security): constant-time secret compare + basic-auth parse fix + unbiased token RNG ([#260](https://github.com/conduit-dart/conduit/issues/260)). ([0de1bef7](https://github.com/conduit-dart/conduit/commit/0de1bef7e3e5f6eafa579118f2902cc5cb165d23))
  - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
