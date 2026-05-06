@@ -3,23 +3,23 @@ scalar DateTime
 
 """Read-only Conduit GraphQL query root, derived from a ManagedDataModel."""
 type Query {
-  """Returns every User. Read-only in G2; G3 adds where/order/pagination arguments."""
+  """Returns every User. Filtering, sorting, and pagination args are emitted when the SchemaBuilder is constructed with the matching generate*Args flag."""
   users: [User!]!
   """Returns the User with the given id, or null if none exists."""
   user(id: String!): User
-  """Returns every Post. Read-only in G2; G3 adds where/order/pagination arguments."""
+  """Returns every Post. Filtering, sorting, and pagination args are emitted when the SchemaBuilder is constructed with the matching generate*Args flag."""
   posts: [Post!]!
   """Returns the Post with the given id, or null if none exists."""
   post(id: String!): Post
-  """Returns every Comment. Read-only in G2; G3 adds where/order/pagination arguments."""
+  """Returns every Comment. Filtering, sorting, and pagination args are emitted when the SchemaBuilder is constructed with the matching generate*Args flag."""
   comments: [Comment!]!
   """Returns the Comment with the given id, or null if none exists."""
   comment(id: String!): Comment
-  """Returns every Tag. Read-only in G2; G3 adds where/order/pagination arguments."""
+  """Returns every Tag. Filtering, sorting, and pagination args are emitted when the SchemaBuilder is constructed with the matching generate*Args flag."""
   tags: [Tag!]!
   """Returns the Tag with the given name, or null if none exists."""
   tag(name: String!): Tag
-  """Returns every PostTag. Read-only in G2; G3 adds where/order/pagination arguments."""
+  """Returns every PostTag. Filtering, sorting, and pagination args are emitted when the SchemaBuilder is constructed with the matching generate*Args flag."""
   postTags: [PostTag!]!
   """Returns the PostTag with the given id, or null if none exists."""
   postTag(id: String!): PostTag
