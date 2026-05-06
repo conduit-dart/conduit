@@ -242,4 +242,86 @@ class Plain {}
     expect(out.dart, isNull);
     expect(out.json, isNull);
   });
+
+  test(
+      'emits specialized body cast for List<int> instead of generic '
+      '.as<T>()', () async {
+    final out = await _runBuilder('''
+import 'package:conduit_core/conduit_core.dart';
+
+class IntListController extends ResourceController {
+  @Operation.post()
+  Future<dynamic> create(@Bind.body() List<int> ids) async => null;
+}
+''');
+    final dart = out.dart!;
+    // Specialized path: `.decoded` accessor + `List<int>.from(...)` ctor.
+    expect(dart, contains('(v as RequestBody).decoded'));
+    expect(dart, contains('List<int>.from(decoded)'));
+    // No fall-back to the generic dispatch.
+    expect(dart, isNot(contains('as RequestBody).as<List<int>>()')));
+  });
+
+  test('emits specialized body cast for Map<String, dynamic>', () async {
+    final out = await _runBuilder('''
+import 'package:conduit_core/conduit_core.dart';
+
+class MapController extends ResourceController {
+  @Operation.post()
+  Future<dynamic> create(@Bind.body() Map<String, dynamic> body) async =>
+      null;
+}
+''');
+    final dart = out.dart!;
+    expect(
+      dart,
+      contains('(v as RequestBody).decoded as Map<String, dynamic>'),
+    );
+    expect(
+      dart,
+      isNot(contains('as RequestBody).as<Map<String, dynamic>>()')),
+    );
+  });
+
+  test('falls back to .as<T>() for unrecognized custom types', () async {
+    final out = await _runBuilder('''
+import 'package:conduit_core/conduit_core.dart';
+
+class CustomBody {}
+
+class CustomController extends ResourceController {
+  @Operation.post()
+  Future<dynamic> create(@Bind.body() CustomBody body) async => null;
+}
+''');
+    final dart = out.dart!;
+    // Custom non-Serializable type: keep the generic dispatch path
+    // so RuntimeContext.coerce semantics + error responses are
+    // unchanged for app-defined types.
+    expect(dart, contains('(v as RequestBody).as<CustomBody>()'));
+    expect(dart, isNot(contains('.decoded')));
+  });
+
+  test(
+      'specialized path still routes Serializable through the .read() '
+      'pattern (unchanged)', () async {
+    final out = await _runBuilder('''
+import 'package:conduit_core/conduit_core.dart';
+
+class Payload extends Serializable {
+  @override
+  void read(Map<String, dynamic> obj) {}
+}
+
+class SerCtrl extends ResourceController {
+  @Operation.post()
+  Future<dynamic> create(@Bind.body() Payload body) async => null;
+}
+''');
+    final dart = out.dart!;
+    expect(dart, contains('Payload()..read'));
+    // Should NOT use .decoded — Serializable.read takes the full
+    // request body via .as() as before.
+    expect(dart, isNot(contains('.decoded')));
+  });
 }
