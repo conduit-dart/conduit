@@ -87,16 +87,19 @@ class AuthorizationBasicParser
       );
     }
 
-    final splitCredentials = decodedCredentials.split(":");
-    if (splitCredentials.length != 2) {
+    // RFC 7617 §2: the user-id may not contain a colon, but the password
+    // may. Split on the first colon only, otherwise valid passwords
+    // containing `:` are rejected as malformed.
+    final colonIdx = decodedCredentials.indexOf(":");
+    if (colonIdx == -1) {
       throw AuthorizationParserException(
         AuthorizationParserExceptionReason.malformed,
       );
     }
 
     return AuthBasicCredentials()
-      ..username = splitCredentials.first
-      ..password = splitCredentials.last;
+      ..username = decodedCredentials.substring(0, colonIdx)
+      ..password = decodedCredentials.substring(colonIdx + 1);
   }
 }
 

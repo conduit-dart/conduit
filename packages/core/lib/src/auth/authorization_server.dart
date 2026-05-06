@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:conduit_common/conduit_common.dart';
+import 'package:conduit_core/src/auth/_secret_compare.dart';
 import 'package:conduit_core/src/auth/auth.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:crypto/crypto.dart';
@@ -199,7 +200,10 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
         throw AuthServerException(AuthRequestError.invalidClient, client);
       }
 
-      if (client.hashedSecret != hashPassword(clientSecret, client.salt!)) {
+      if (!secretsEqual(
+        client.hashedSecret,
+        hashPassword(clientSecret, client.salt!),
+      )) {
         throw AuthServerException(AuthRequestError.invalidClient, client);
       }
     }
@@ -212,7 +216,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
     final dbSalt = authenticatable.salt!;
     final dbPassword = authenticatable.hashedPassword;
     final hash = hashPassword(password, dbSalt);
-    if (hash != dbPassword) {
+    if (!secretsEqual(hash, dbPassword)) {
       throw AuthServerException(AuthRequestError.invalidGrant, client);
     }
 
@@ -300,7 +304,10 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
-    if (client.hashedSecret != hashPassword(clientSecret, client.salt!)) {
+    if (!secretsEqual(
+      client.hashedSecret,
+      hashPassword(clientSecret, client.salt!),
+    )) {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
@@ -390,7 +397,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
 
     final dbSalt = authenticatable.salt;
     final dbPassword = authenticatable.hashedPassword;
-    if (hashPassword(password, dbSalt!) != dbPassword) {
+    if (!secretsEqual(hashPassword(password, dbSalt!), dbPassword)) {
       throw AuthServerException(AuthRequestError.accessDenied, client);
     }
 
@@ -434,7 +441,10 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
-    if (client.hashedSecret != hashPassword(clientSecret, client.salt!)) {
+    if (!secretsEqual(
+      client.hashedSecret,
+      hashPassword(clientSecret, client.salt!),
+    )) {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
@@ -567,7 +577,10 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
-    if (client.hashedSecret != hashPassword(password, client.salt!)) {
+    if (!secretsEqual(
+      client.hashedSecret,
+      hashPassword(password, client.salt!),
+    )) {
       throw AuthServerException(AuthRequestError.invalidClient, client);
     }
 
@@ -659,8 +672,12 @@ String randomStringOfLength(int length) {
 
   final r = Random.secure();
   for (int i = 0; i < length; i++) {
+    // Sample uniformly from the alphabet. The previous form
+    // `r.nextInt(1000) % 62` biased the first 12 characters (1000 mod
+    // 62 = 12), reducing token entropy slightly. `nextInt(n)` is
+    // already uniform over [0, n).
     buff.write(
-      possibleCharacters[r.nextInt(1000) % possibleCharacters.length],
+      possibleCharacters[r.nextInt(possibleCharacters.length)],
     );
   }
 
