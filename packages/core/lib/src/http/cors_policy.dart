@@ -28,7 +28,13 @@ class CORSPolicy {
 
   CORSPolicy._defaults() {
     allowedOrigins = ["*"];
-    allowCredentials = true;
+    // The default is `false` because the dangerous combination
+    // `allowCredentials = true` + `allowedOrigins = ["*"]` effectively
+    // grants credentialed cross-origin access to every requesting site
+    // (CSRF surface). Apps that need credentialed CORS must opt in *and*
+    // specify concrete origins; the runtime guard in [headersForRequest]
+    // enforces that.
+    allowCredentials = false;
     exposedResponseHeaders = [];
     allowedMethods = ["POST", "PUT", "DELETE", "GET"];
     allowedRequestHeaders = [
@@ -111,6 +117,7 @@ class CORSPolicy {
   /// This will add Access-Control-Allow-Origin, Access-Control-Expose-Headers and Access-Control-Allow-Credentials
   /// depending on the this policy.
   Map<String, dynamic> headersForRequest(Request request) {
+    validateConfiguration();
     final origin = request.raw.headers.value("origin");
 
     final headers = <String, dynamic>{};
@@ -126,6 +133,28 @@ class CORSPolicy {
     }
 
     return headers;
+  }
+
+  /// Refuses to emit a credentialed-CORS response if [allowedOrigins] is
+  /// `["*"]` or empty. Such a configuration grants credentialed access
+  /// to every requesting origin (CSRF surface) — a misconfiguration the
+  /// CORS spec (RFC 6454 §7.3) explicitly forbids.
+  ///
+  /// Called from [headersForRequest] and [preflightResponse], so the
+  /// dangerous combination is caught at first use, not at construction
+  /// (the policy is mutable post-construction; ctor-time validation
+  /// would miss runtime mutations). Exposed publicly so callers can
+  /// validate eagerly during ApplicationChannel setup.
+  void validateConfiguration() {
+    if (!allowCredentials) return;
+    if (allowedOrigins.isEmpty || allowedOrigins.contains("*")) {
+      throw StateError(
+        "CORSPolicy: allowCredentials=true with a wildcard or empty "
+        "allowedOrigins effectively grants credentialed cross-origin "
+        "access to every site (CSRF surface). Specify exact origins, or "
+        "set allowCredentials=false.",
+      );
+    }
   }
 
   /// Whether or not this policy allows the Origin of the [request].
@@ -182,6 +211,7 @@ class CORSPolicy {
   /// to this policy.
   /// This method is invoked internally by [Controller]s that have a [Controller.policy].
   Response preflightResponse(Request req) {
+    validateConfiguration();
     final headers = {
       "Access-Control-Allow-Origin": req.raw.headers.value("origin"),
       "Access-Control-Allow-Methods": allowedMethods.join(", "),
