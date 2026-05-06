@@ -18,6 +18,8 @@ library;
 
 import 'package:conduit_graph/conduit_graph.dart';
 
+import '../auth/field_authorize.dart';
+
 /// Declared shape of a single typed property on a [GraphNode] or
 /// [GraphEdge].
 ///
@@ -39,6 +41,7 @@ class GraphPropertyDescriptor {
     required this.type,
     this.isNullable = false,
     this.description,
+    this.auth,
   });
 
   /// Property name as it appears in the graph store and in the
@@ -55,6 +58,19 @@ class GraphPropertyDescriptor {
 
   /// Optional human-readable description surfaced in the SDL.
   final String? description;
+
+  /// Optional G5 field-auth declaration. When non-null, the resolver
+  /// emitted for this property is wrapped in a scope-checking closure
+  /// keyed on a [GraphPropertyAuthKey] derived from the declaring
+  /// node/edge type and [name]. See
+  /// `lib/src/auth/field_authorize.dart` and
+  /// `docs/persistence/graphql-cross-source.md` for the full pattern.
+  ///
+  /// Asymmetry note: on the SQL side `@FieldAuthorize` is attached to
+  /// the `ManagedObject` source; on the graph side it lives here
+  /// because `GraphNode` does not currently support per-property
+  /// annotations.
+  final FieldAuthorize? auth;
 }
 
 /// Per-node-type schema configuration.
