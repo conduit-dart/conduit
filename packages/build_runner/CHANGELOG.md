@@ -1,6 +1,12 @@
 ## 6.0.0
 
  - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
+ - **FEAT**(security): constant-time secret compare + basic-auth parse fix + unbiased token RNG ([#260](https://github.com/conduit-dart/conduit/issues/260)). ([0de1bef7](https://github.com/conduit-dart/conduit/commit/0de1bef7e3e5f6eafa579118f2902cc5cb165d23))
+ - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
+
+## 6.0.0
+
+ - **FIX**(core): tolerate per-builder failures in mirror DataModelCompiler ([#253](https://github.com/conduit-dart/conduit/issues/253)). ([ca31856a](https://github.com/conduit-dart/conduit/commit/ca31856a7609133ce3f5322cd220c7cf76dd1973))
  - **FEAT**(build_runner): specialize body cast for known container types ([#259](https://github.com/conduit-dart/conduit/issues/259)). ([d226d9ab](https://github.com/conduit-dart/conduit/commit/d226d9ab72700ac56d93cc1b545361e055a48686))
  - **DOCS**: add REFACTOR_CONTEXT.md architecture snapshot ([#247](https://github.com/conduit-dart/conduit/issues/247)). ([e6248ca2](https://github.com/conduit-dart/conduit/commit/e6248ca2177c25ec93bbca9bf7dc3d94868f3c8f))
 
