@@ -1,4 +1,5 @@
 import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
+import 'package:conduit_core/src/db/query/expression_ast.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
 /// A predicate contains instructions for filtering rows when performing a [Query].
@@ -12,18 +13,41 @@ import 'package:conduit_core/src/db/query/query.dart';
 /// the format string's parameter syntax is defined by the [PersistentStore] it is used on. An example of that format:
 ///
 ///     var predicate = new QueryPredicate("x = @xValue", {"xValue" : 5});
+///
+/// In addition to the legacy raw-string surface, predicates may now also
+/// carry a dialect-neutral [expression] AST (see `expression_ast.dart`).
+/// When a backend recognizes the AST it renders dialect-correct SQL +
+/// bindings from it; otherwise the [format] / [parameters] surface is
+/// used verbatim. Predicates produced by Conduit's internal builders
+/// populate both forms — the [format] field stays a Postgres-flavored
+/// string for back-compat with code that consumes it directly.
 class QueryPredicate {
   /// Default constructor
   ///
   /// The [format] and [parameters] of this predicate. [parameters] may be null.
-  QueryPredicate(this.format, [this.parameters = const {}]);
+  /// An [expression] AST may also be supplied; backends that understand
+  /// the AST render from it instead of the raw format string.
+  QueryPredicate(this.format, [this.parameters = const {}, this.expression]);
 
   /// Creates an empty predicate.
   ///
   /// The format string is the empty string and parameters is the empty map.
   QueryPredicate.empty()
       : format = "",
-        parameters = {};
+        parameters = {},
+        expression = null;
+
+  /// Creates a predicate with an attached [expression] AST and a
+  /// pre-rendered [format] / [parameters] pair (the named-parameter
+  /// rendering of that AST). Both halves are kept so legacy consumers
+  /// of `predicate.format` keep working byte-for-byte while AST-aware
+  /// dialects can render the predicate in their preferred placeholder
+  /// style.
+  QueryPredicate.withExpression(
+    this.expression,
+    this.format,
+    this.parameters,
+  );
 
   /// Combines [predicates] with 'AND' keyword.
   ///
@@ -47,8 +71,33 @@ class QueryPredicate {
       return predicateList.first;
     }
 
+    // Collect AST nodes from constituent predicates so AST-aware
+    // dialects can render the combined predicate from a fresh
+    // `LogicalExpression(AND, ...)` rather than re-parsing the
+    // string.
+    //
+    // Two correctness conditions before we propagate the AST:
+    //   (1) every constituent has an `expression` AST — partial AST
+    //       coverage would silently corrupt positional-parameter
+    //       renders by missing some values.
+    //   (2) no parameter-name collision occurred (the dupe-renaming
+    //       below only rewrites the format string + map, not the
+    //       AST). If either condition fails we drop the AST and the
+    //       backend falls back to rendering from the format string.
+    final childExpressions = <SqlExpression>[];
+    bool allHaveExpressions = true;
+    for (final p in predicateList) {
+      final expr = p.expression;
+      if (expr == null) {
+        allHaveExpressions = false;
+        break;
+      }
+      childExpressions.add(expr);
+    }
+
     // If we have duplicate keys anywhere, we need to disambiguate them.
     int dupeCounter = 0;
+    bool dupeOccurred = false;
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {
@@ -57,6 +106,7 @@ class QueryPredicate {
           .toList();
 
       if (duplicateKeys.isNotEmpty) {
+        dupeOccurred = true;
         var fmt = predicate.format;
         final Map<String, String> dupeMap = {};
         for (final key in duplicateKeys) {
@@ -77,7 +127,10 @@ class QueryPredicate {
     }
 
     final predicateFormat = "(${allFormatStrings.join(" AND ")})";
-    return QueryPredicate(predicateFormat, valueMap);
+    final combinedExpression = (allHaveExpressions && !dupeOccurred)
+        ? LogicalExpression('AND', childExpressions)
+        : null;
+    return QueryPredicate(predicateFormat, valueMap, combinedExpression);
   }
 
   /// The string format of the this predicate.
@@ -91,6 +144,16 @@ class QueryPredicate {
   /// Input values should not be in the format string, but instead provided in this map.
   /// Keys of this map will be searched for in the format string and be replaced by the value in this map.
   Map<String, dynamic> parameters;
+
+  /// Optional dialect-neutral predicate AST. When non-null, AST-aware
+  /// backends render this in preference to [format] — the same logical
+  /// expression, but with placeholders, identifier quoting, and
+  /// operator spelling chosen by the backend's `SqlDialect`.
+  ///
+  /// `null` for predicates constructed via the legacy string
+  /// constructor (e.g., user-written `QueryPredicate("x = @xValue",
+  /// {...})`); those still flow through the `format`-string path.
+  SqlExpression? expression;
 }
 
 /// The operator in a comparison matcher.

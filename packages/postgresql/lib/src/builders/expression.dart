@@ -45,20 +45,43 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   /// Convenience access to the dialect threaded through the table builder.
   SqlDialect get _dialect => table!.dialect;
 
+  /// Build a postgres-typed value wrapper for [v]; centralized so the
+  /// AST nodes carry the same `TypedValue` the legacy path put in the
+  /// parameter map. Keeps PG behavior identical pre- and post-AST.
+  TypedValue _typed(Object? v) =>
+      TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
+          convertValueForStorage(v));
+
+  /// `column` AST node for the predicate's left-hand side. The PG
+  /// renderer always namespaces with the table reference (matches
+  /// the historical `withTableNamespace: true` call site).
+  ColumnExpression _columnNode() {
+    final raw = sqlColumnName();
+    return ColumnExpression(
+      raw,
+      tableNamespace: table!.sqlTableReference,
+    );
+  }
+
   QueryPredicate comparisonPredicate(
     PredicateOperator? operator,
     dynamic value,
   ) {
     final name = sqlColumnName(withTableNamespace: true);
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
+    final op = ColumnBuilder.symbolTable[operator!]!;
+    final typed = _typed(value);
 
-    return QueryPredicate(
-      "$name ${ColumnBuilder.symbolTable[operator!]} "
-      "${_dialect.parameterPlaceholder(variableName)}",
-      {
-        variableName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-            convertValueForStorage(value)),
-      },
+    final ast = BinaryOpExpression(
+      op,
+      _columnNode(),
+      ParameterExpression(variableName, typed),
+    );
+
+    return QueryPredicate.withExpression(
+      ast,
+      "$name $op ${_dialect.parameterPlaceholder(variableName)}",
+      {variableName: typed},
     );
   }
 
@@ -68,6 +91,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   }) {
     final tokenList = [];
     final pairedMap = <String, TypedValue>{};
+    final astValues = <SqlExpression>[];
 
     var counter = 0;
     for (final value in values) {
@@ -75,22 +99,28 @@ class ColumnExpressionBuilder extends ColumnBuilder {
 
       final variableName = sqlColumnName(withPrefix: prefix);
       tokenList.add(_dialect.parameterPlaceholder(variableName));
-      pairedMap[variableName] = TypedValue(
-          ColumnBuilder.typeMap[property!.type!.kind]!,
-          convertValueForStorage(value));
+      final typed = _typed(value);
+      pairedMap[variableName] = typed;
+      astValues.add(ParameterExpression(variableName, typed));
 
       counter++;
     }
 
     final name = sqlColumnName(withTableNamespace: true);
     final keyword = within ? "IN" : "NOT IN";
-    return QueryPredicate("$name $keyword (${tokenList.join(",")})", pairedMap);
+    final ast = InExpression(_columnNode(), astValues, negated: !within);
+    return QueryPredicate.withExpression(
+      ast,
+      "$name $keyword (${tokenList.join(",")})",
+      pairedMap,
+    );
   }
 
   QueryPredicate nullPredicate({bool isNull = true}) {
     final name = sqlColumnName(withTableNamespace: true);
     final op = isNull ? _dialect.isNullOperator : _dialect.isNotNullOperator;
-    return QueryPredicate("$name $op", {});
+    final ast = IsNullExpression(_columnNode(), negated: !isNull);
+    return QueryPredicate.withExpression(ast, "$name $op", {});
   }
 
   QueryPredicate rangePredicate(
@@ -102,16 +132,21 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final lhsName = sqlColumnName(withPrefix: "${defaultPrefix}lhs_");
     final rhsName = sqlColumnName(withPrefix: "${defaultPrefix}rhs_");
     final operation = insideRange ? "BETWEEN" : "NOT BETWEEN";
+    final lhsTyped = _typed(lhsValue);
+    final rhsTyped = _typed(rhsValue);
 
-    return QueryPredicate(
+    final ast = BetweenExpression(
+      _columnNode(),
+      ParameterExpression(lhsName, lhsTyped),
+      ParameterExpression(rhsName, rhsTyped),
+      negated: !insideRange,
+    );
+
+    return QueryPredicate.withExpression(
+      ast,
       "$name $operation ${_dialect.parameterPlaceholder(lhsName)} "
       "AND ${_dialect.parameterPlaceholder(rhsName)}",
-      {
-        lhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-            convertValueForStorage(lhsValue)),
-        rhsName: TypedValue(ColumnBuilder.typeMap[property!.type!.kind]!,
-            convertValueForStorage(rhsValue)),
-      },
+      {lhsName: lhsTyped, rhsName: rhsTyped},
     );
   }
 
@@ -148,9 +183,18 @@ class ColumnExpressionBuilder extends ColumnBuilder {
         break;
     }
 
-    return QueryPredicate(
+    final typed = TypedValue(Type.text, matchValue);
+    final ast = LikeExpression(
+      _columnNode(),
+      ParameterExpression(variableName, typed),
+      caseSensitive: caseSensitive,
+      negated: invertOperator,
+    );
+
+    return QueryPredicate.withExpression(
+      ast,
       "$n $operation ${_dialect.parameterPlaceholder(variableName)}",
-      {variableName: TypedValue(Type.text, matchValue)},
+      {variableName: typed},
     );
   }
 }
