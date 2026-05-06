@@ -1,7 +1,15 @@
 import 'package:conduit_core/conduit_core.dart';
 
+import 'postgres_sql_dialect.dart';
+
 mixin PostgreSQLSchemaGenerator {
-  String get versionTableName => "_conduit_version_pgsql";
+  /// Dialect used to render dialect-specific bits (column types, naming
+  /// conventions, `ALTER TABLE [ONLY]` form, etc.). Subclasses (or the
+  /// concrete persistent store this mixin is applied to) may override to
+  /// substitute a different dialect — e.g. a Cockroach variant.
+  SqlDialect get dialect => const PostgresSqlDialect();
+
+  String get versionTableName => dialect.versionTableName;
 
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) {
     final commands = <String>[];
@@ -149,7 +157,8 @@ mixin PostgreSQLSchemaGenerator {
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) {
     final allCommands = <String>[];
     allCommands.add(
-      "ALTER TABLE ONLY ${table.name} DROP CONSTRAINT ${_foreignKeyName(table.name, column)}",
+      "${dialect.alterTableForConstraintModification} ${table.name} "
+      "DROP CONSTRAINT ${_foreignKeyName(table.name, column)}",
     );
     allCommands.addAll(_addConstraintsForColumn(table.name, column));
     return allCommands;
@@ -177,11 +186,11 @@ mixin PostgreSQLSchemaGenerator {
   ////
 
   String _uniqueKeyName(String? tableName, SchemaColumn column) {
-    return "${tableName}_${_columnNameForColumn(column)}_key";
+    return dialect.uniqueKeyName(tableName ?? '', _columnNameForColumn(column));
   }
 
   String _foreignKeyName(String? tableName, SchemaColumn column) {
-    return "${tableName}_${_columnNameForColumn(column)}_fkey";
+    return dialect.foreignKeyName(tableName ?? '', _columnNameForColumn(column));
   }
 
   List<String> _addConstraintsForColumn(
@@ -189,7 +198,8 @@ mixin PostgreSQLSchemaGenerator {
     SchemaColumn column,
   ) {
     var constraints =
-        "ALTER TABLE ONLY $tableName ADD FOREIGN KEY (${_columnNameForColumn(column)}) "
+        "${dialect.alterTableForConstraintModification} $tableName "
+        "ADD FOREIGN KEY (${_columnNameForColumn(column)}) "
         "REFERENCES ${column.relatedTableName} (${column.relatedColumnName}) ";
 
     if (column.deleteRule != null) {
@@ -201,11 +211,11 @@ mixin PostgreSQLSchemaGenerator {
   }
 
   String _indexNameForColumn(String? tableName, SchemaColumn column) {
-    return "${tableName}_${_columnNameForColumn(column)}_idx";
+    return dialect.indexName(tableName ?? '', _columnNameForColumn(column));
   }
 
   String _columnStringForColumn(SchemaColumn col) {
-    final elements = [_columnNameForColumn(col), _postgreSQLTypeForColumn(col)];
+    final elements = [_columnNameForColumn(col), _columnTypeForColumn(col)];
     if (col.isPrimaryKey!) {
       elements.add("PRIMARY KEY");
     } else {
@@ -244,35 +254,13 @@ mixin PostgreSQLSchemaGenerator {
     return null;
   }
 
-  String? _postgreSQLTypeForColumn(SchemaColumn t) {
-    switch (t.typeString) {
-      case "integer":
-        {
-          if (t.autoincrement!) {
-            return "SERIAL";
-          }
-          return "INT";
-        }
-      case "bigInteger":
-        {
-          if (t.autoincrement!) {
-            return "BIGSERIAL";
-          }
-          return "BIGINT";
-        }
-      case "string":
-        return "TEXT";
-      case "datetime":
-        return "TIMESTAMP";
-      case "boolean":
-        return "BOOLEAN";
-      case "double":
-        return "DOUBLE PRECISION";
-      case "document":
-        return "JSONB";
-    }
-
-    return null;
+  String? _columnTypeForColumn(SchemaColumn t) {
+    final ts = t.typeString;
+    if (ts == null) return null;
+    return dialect.columnDefinitionType(
+      ts,
+      autoincrement: t.autoincrement ?? false,
+    );
   }
 
   SchemaTable get versionTable {

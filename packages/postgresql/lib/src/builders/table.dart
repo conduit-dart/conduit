@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/conduit_core.dart';
 
+import '../postgres_sql_dialect.dart';
+import '../postgresql_persistent_store.dart';
 import '../postgresql_query.dart';
 import 'column.dart';
 import 'expression.dart';
@@ -9,6 +11,11 @@ import 'sort.dart';
 class TableBuilder implements Returnable {
   TableBuilder(PostgresQuery query, {this.parent, this.joinedBy})
     : entity = query.entity,
+      dialect = parent?.dialect ??
+          (query.context.persistentStore is PostgreSQLPersistentStore
+              ? (query.context.persistentStore as PostgreSQLPersistentStore)
+                  .dialect
+              : const PostgresSqlDialect()),
       _manualPredicate = query.predicate {
     if (parent != null) {
       tableAlias = createTableAlias();
@@ -68,6 +75,7 @@ class TableBuilder implements Returnable {
     this.parent,
     ManagedRelationshipDescription this.joinedBy,
   ) : entity = joinedBy.inverse!.entity,
+      dialect = parent!.dialect,
       _manualPredicate = QueryPredicate.empty() {
     tableAlias = createTableAlias();
     returning = <Returnable>[];
@@ -77,6 +85,7 @@ class TableBuilder implements Returnable {
   final ManagedEntity entity;
   final TableBuilder? parent;
   final ManagedRelationshipDescription? joinedBy;
+  final SqlDialect dialect;
   final List<ColumnExpressionBuilder> expressionBuilders = [];
   String? tableAlias;
   QueryPredicate? predicate;
