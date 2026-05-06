@@ -738,6 +738,20 @@ class NoPolicyController extends ResourceController {
 }
 
 class DefaultPolicyController extends ResourceController {
+  DefaultPolicyController() {
+    // The framework default is now `allowCredentials = false` (the dangerous
+    // wildcard+credentials combo no longer ships out of the box). These
+    // tests exercise the credentialed-CORS path, so opt in with a concrete
+    // allow-list covering every origin the suite uses.
+    policy!.allowCredentials = true;
+    policy!.allowedOrigins = const [
+      "http://abc.com",
+      "http://exclusive.com",
+      "http://foobar.com",
+      "http://www.a.com",
+    ];
+  }
+
   @Operation.get()
   Future<Response> getAll() async {
     return Response.ok("getAll");
@@ -770,6 +784,8 @@ class RestrictiveNoCredsOriginController extends ResourceController {
 class RestrictiveOriginController extends ResourceController {
   RestrictiveOriginController() {
     policy!.allowedOrigins = ["http://exclusive.com"];
+    // Concrete origin list, so credentialed CORS is safe to opt into.
+    policy!.allowCredentials = true;
     policy!.exposedResponseHeaders = ["foobar", "x-foo"];
   }
 
@@ -798,6 +814,16 @@ class OptionsController extends ResourceController {
 class SingleMethodController extends ResourceController {
   SingleMethodController() {
     policy!.allowedMethods = ["GET"];
+    // The preflight assertions below expect credentialed CORS. Match the
+    // suite's pattern: opt into credentials explicitly with a concrete
+    // allow-list. (Identical set to DefaultPolicyController's.)
+    policy!.allowCredentials = true;
+    policy!.allowedOrigins = const [
+      "http://abc.com",
+      "http://exclusive.com",
+      "http://foobar.com",
+      "http://www.a.com",
+    ];
   }
 }
 
