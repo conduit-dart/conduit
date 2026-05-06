@@ -19,6 +19,14 @@
 /// hold connection state — that lives on the `PersistentStore`.
 library;
 
+import 'package:conduit_core/src/db/persistent_store/sql_expression_visitor.dart';
+import 'package:conduit_core/src/db/query/expression_ast.dart';
+
+/// Whether a dialect uses named parameters (`@name` / `:name`) or
+/// positional ones (`?`). Drives which visitor implementation
+/// [SqlDialect.renderExpression] constructs.
+enum SqlParameterStyle { named, positional }
+
 abstract class SqlDialect {
   const SqlDialect();
 
@@ -40,10 +48,36 @@ abstract class SqlDialect {
   // -- Parameter placeholder syntax -------------------------------------------
 
   /// How to refer to a named parameter inside a SQL string. Default is
-  /// `@name` (Postgres named-parameter convention). MySQL/SQLite
-  /// implementations typically override to `?` (positional) or `:name`
-  /// (named).
+  /// `@name` (Postgres named-parameter convention). SQLite uses
+  /// `:name`; MySQL uses positional `?` (and ignores the supplied
+  /// name — see [parameterStyle]).
   String parameterPlaceholder(String name) => '@$name';
+
+  /// Whether this dialect binds parameters by name (a `Map<String,
+  /// Object?>` carries the bindings) or by position (a
+  /// `List<Object?>` ordered to match `?` placeholders in the SQL).
+  /// Defaults to named since that's the historical Conduit
+  /// convention.
+  SqlParameterStyle get parameterStyle => SqlParameterStyle.named;
+
+  /// Render a [SqlExpression] AST into a [RenderedExpression] using
+  /// the dialect's preferred parameter style. The result carries
+  /// either a named-parameter map (for [SqlParameterStyle.named]) or
+  /// a positional-parameter list (for [SqlParameterStyle.positional]).
+  ///
+  /// Backends call this when they recognize that a [QueryPredicate]
+  /// has an attached `expression` AST and want dialect-correct
+  /// placeholders. The base implementation creates the appropriate
+  /// visitor and walks the AST; dialects with truly custom rendering
+  /// needs may override.
+  RenderedExpression renderExpression(SqlExpression expression) {
+    switch (parameterStyle) {
+      case SqlParameterStyle.named:
+        return NamedSqlExpressionVisitor(this).render(expression);
+      case SqlParameterStyle.positional:
+        return PositionalSqlExpressionVisitor(this).render(expression);
+    }
+  }
 
   // -- Comparison + matching operators ----------------------------------------
 
