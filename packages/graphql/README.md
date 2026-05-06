@@ -1,20 +1,21 @@
 # conduit_graphql
 
 GraphQL HTTP transport for [Conduit](https://www.theconduit.dev). Mounts a
-`GraphQLController` over a hand-written `GraphQLSchema`, implementing the
+`GraphQLController` over a `GraphQLSchema` — either hand-written or
+derived from your `ManagedDataModel` — and implements the
 [GraphQL-over-HTTP spec](https://graphql.github.io/graphql-over-http/draft/)
 for `POST` (queries + mutations) and `GET` (queries only).
 
-## Status — G1 of the GraphQL evaluation plan
+## Status — G2 of the GraphQL evaluation plan
 
-This is the **first phase** of a five-phase delivery. G1 ships the HTTP
-transport only; everything that talks to a Conduit data model is deferred
-to a later phase.
+This is the **second phase** of a five-phase delivery. G1 shipped the
+HTTP transport; G2 adds schema derivation. Resolver wiring is still
+deferred.
 
 | Phase  | Scope | Ships in this package? |
 |--------|-------|------------------------|
-| **G1** | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | **Yes** |
-| G2     | Derive a `GraphQLSchema` from `ManagedDataModel` | Stub only (`SchemaBuilder` throws `UnimplementedError`) |
+| G1     | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | Yes |
+| **G2** | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | **Yes** |
 | G3     | SQL resolvers + dataloader against `Query<T>`     | No |
 | G4     | Graph resolvers against `GraphQuery<N>` (Neo4j)   | No |
 | G5     | Cross-source dispatch + `@FieldAuthorize`         | No |
@@ -138,10 +139,131 @@ Field-existence validation is performed locally before execution to
 work around an upstream gap in `graphql_server2` v6.5.0 — see "Known
 limitations" below.
 
+## Schema derivation (G2)
+
+`SchemaBuilder.fromManagedDataModel(model)` walks every `ManagedEntity`
+in your data model and emits a read-only GraphQL schema:
+
+```dart
+import 'package:conduit_core/conduit_core.dart' hide SchemaBuilder;
+import 'package:conduit_graphql/conduit_graphql.dart';
+
+final dataModel = ManagedDataModel([User, Post, Comment]);
+final schema = SchemaBuilder().fromManagedDataModel(dataModel);
+
+// Mount as you would any hand-written schema.
+router.route('/graphql').link(() => GraphQLController(schema));
+```
+
+Note the `hide SchemaBuilder` on `conduit_core`'s import: Conduit has
+two unrelated `SchemaBuilder` classes — the migration helper from
+`conduit_core` and the GraphQL builder from this package. Hide whichever
+one you don't need at the call site.
+
+### What the walker emits
+
+* One `GraphQLObjectType` per `ManagedEntity`.
+* Scalar columns lower per the table below.
+* Relationships surface in both directions: `User.posts: [Post!]!` and
+  `Post.author: User!` are both present.
+* A `Query` root with two fields per entity:
+  * `<plural>: [<Entity>!]!` (list-all),
+  * `<singular>(<pk>: <pkType>!): <Entity>` (find-by-pk).
+* All field resolvers are `null` — execution lands in G3. Schema
+  introspection, validation, and SDL printing all work today.
+
+### Scalar mapping
+
+| Conduit `ManagedPropertyType` | GraphQL                         |
+|-------------------------------|---------------------------------|
+| `integer`                     | `Int`                           |
+| `bigInteger`                  | `String` (default; `Int` if `bigIntegerAsString: false`) |
+| `string`                      | `String`                        |
+| `datetime`                    | `DateTime` (custom scalar)      |
+| `boolean`                     | `Boolean`                       |
+| `doublePrecision`             | `Float`                         |
+| `document`                    | `String` (JSON-encoded)         |
+| `list`                        | `[T!]` (T mapped per this row)  |
+| `map`                         | `String` (JSON-encoded)         |
+| enum-typed `string`           | `String` (raw enum name)        |
+
+### Nullability rules
+
+| Source                                              | GraphQL nullability     |
+|-----------------------------------------------------|-------------------------|
+| Primary key                                         | non-null                |
+| Attribute, `isNullable: false`, no `defaultValue`   | non-null                |
+| Attribute, `isNullable: true` or has `defaultValue` | nullable                |
+| Output-side `@Serialize` transient                  | nullable                |
+| Input-only `@Serialize` transient                   | excluded from schema    |
+| `belongsTo` with `Relate(isRequired: true)`         | non-null                |
+| `belongsTo` without `isRequired`                    | nullable                |
+| `hasOne`                                            | nullable                |
+| `hasMany`                                           | `[Type!]!` (always)     |
+
+### G2 schema-derivation limitations
+
+* **Naive pluralization.** Singular is `entity.name` lowercased
+  (`User -> user`); plural appends `s`/`es`/`ies` per simple rules.
+  Words like `Mouse -> mouses`, `Octopus -> octopuses` will be wrong.
+  A future `@SchemaName('users')`-style annotation will allow per-
+  entity overrides; for now, work around the case by hand-authoring
+  the affected types or contributing the override hook.
+* **`Document` columns serialize as JSON strings**, not nested object
+  types. Apps that need typed access to subdocuments must define a
+  parallel projection by hand.
+* **No filter / sort / pagination arguments.** List-all fields take
+  zero arguments today. G3 adds a `where:` / `orderBy:` / `limit:` /
+  `offset:` argument set lowering to `Query<T>` predicates.
+* **No mutations.** The derived schema is read-only — there are no
+  generated input object types, and the controller will reject GET
+  but not POST mutations against the derived schema (because there is
+  no `mutationType` to match against).
+* **Many-to-many join tables surface as their own `ObjectType` plus
+  two lists** (`Post.tags: [PostTag!]!`, `Tag.posts: [PostTag!]!`).
+  We do not auto-flatten the join. Build a hand-written field for the
+  flattened view if you need one in v1.
+* **Enum columns surface as `String`**, not `enum`. Surfacing them as
+  GraphQL `enum` types is straightforward but requires either a
+  registry walk or a stable name for the Dart enum at runtime; tracked
+  for a future minor.
+* **bigInteger scalars default to `String`** to dodge GraphQL `Int`'s
+  signed-32-bit overflow risk. Pass `SchemaBuilder(bigIntegerAsString:
+  false)` to opt back into `Int` if you know your big-int columns are
+  32-bit safe.
+* **Custom scalars are reachable via field-level introspection but
+  not the global `__schema { types }` list.** This is a
+  `graphql_server2` v6.5.0 limitation: its type-collection walker
+  doesn't add bare scalars to the traversed set. Tools that introspect
+  through field types (e.g. GraphiQL hovering over a `DateTime` field)
+  will see the scalar correctly; a `__schema { types { name } }` query
+  will not list it.
+* **Single-entity types (`objectTypeFor`) build a one-off registry**
+  with empty stubs for any related entities outside the call. Use
+  `fromManagedDataModel` for full schemas where relationship
+  destinations need their fields populated.
+
+### Rendering SDL
+
+The package ships a minimal `printSchema()` for use in golden tests
+and documentation pipelines:
+
+```dart
+import 'package:conduit_graphql/conduit_graphql.dart';
+
+final sdl = printSchema(schema);
+print(sdl);
+```
+
+The printer covers the surface `SchemaBuilder` emits today (object
+types, scalars, lists, non-null wrappers, field arguments, descriptions).
+Anything outside that surface (interfaces, unions, enums, directives,
+mutations, input objects) is not yet supported and will throw — by
+design, so adding e.g. mutation support can't accidentally rely on a
+stale printer.
+
 ## What this package does NOT do (yet)
 
-* **No schema derivation** — `SchemaBuilder` is a `UnimplementedError`
-  stub. Caller hand-assembles the `GraphQLSchema`. (G2.)
 * **No resolver framework** — there is no `Query<T>`/`GraphQuery<N>`
   integration. Resolvers are caller-provided closures. (G3 / G4.)
 * **No dataloader** — N+1 mitigation is on the caller until G3.
