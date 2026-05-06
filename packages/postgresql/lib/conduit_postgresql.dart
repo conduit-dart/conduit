@@ -3,5 +3,6 @@
 /// More dartdocs go here.
 library;
 
+export 'package:conduit_postgresql/src/cockroach_sql_dialect.dart';
 export 'package:conduit_postgresql/src/postgres_sql_dialect.dart';
 export 'package:conduit_postgresql/src/postgresql_persistent_store.dart';
