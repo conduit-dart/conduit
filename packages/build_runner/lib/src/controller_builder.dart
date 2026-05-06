@@ -391,10 +391,78 @@ ${applySrc.toString().trimRight()}
             return $typeSrc()..read((v as RequestBody).as());
           }''';
         }
+        // Specialize known container types to skip the
+        // RuntimeContext.coerce → slow_coerce.cast<T> dispatch (which
+        // does a per-call T.toString() switch). Falls back to the
+        // generic .as<T>() path for types we don't recognize, so
+        // existing apps see no behavior change.
+        final fast = _emitFastBodyCast(b.type);
+        if (fast != null) return fast;
         return '(v) { return (v as RequestBody).as<$typeSrc>(); }';
       default:
         return '(v) { return v; }';
     }
+  }
+
+  /// Emits a specialized body-cast closure for known primitive
+  /// container types, bypassing the generic `RequestBody.as<T>()` →
+  /// `RuntimeContext.coerce<T>()` → `slow_coerce.cast<T>()` chain.
+  ///
+  /// Returns `null` for types we don't specialize (e.g. complex
+  /// generics, user-defined types) so the caller falls back to the
+  /// generic path — existing apps preserve their current behavior.
+  String? _emitFastBodyCast(DartType t) {
+    final raw = _typeSource(t);
+    // Direct dynamic / Object / Object? — no coercion needed.
+    if (raw == 'dynamic' || raw == 'Object' || raw == 'Object?') {
+      return '(v) { return (v as RequestBody).decoded as $raw; }';
+    }
+    // Map<String, dynamic> — already the natural decoded shape for
+    // application/json object payloads.
+    if (raw == 'Map<String, dynamic>' || raw == 'Map<String, dynamic>?') {
+      return '(v) { return (v as RequestBody).decoded as $raw; }';
+    }
+    // List<X> for primitive X — codec yields List<dynamic>, copy
+    // through the typed `.from` constructor.
+    if (raw.startsWith('List<') && raw.endsWith('>')) {
+      final inner = raw.substring(5, raw.length - 1);
+      const primitives = {
+        'int', 'num', 'double', 'String', 'bool',
+        'int?', 'num?', 'double?', 'String?', 'bool?',
+        'Map<String, dynamic>',
+      };
+      if (primitives.contains(inner)) {
+        return '''(v) {
+          final decoded = (v as RequestBody).decoded;
+          if (decoded is! List) {
+            throw Response.badRequest(
+              body: {"error": "request entity was unexpected type"},
+            );
+          }
+          return $raw.from(decoded);
+        }''';
+      }
+    }
+    // Map<String, X> for primitive X.
+    if (raw.startsWith('Map<String, ') && raw.endsWith('>')) {
+      final inner = raw.substring(12, raw.length - 1);
+      const primitives = {
+        'int', 'num', 'double', 'String', 'bool',
+        'int?', 'num?', 'double?', 'String?', 'bool?',
+      };
+      if (primitives.contains(inner)) {
+        return '''(v) {
+          final decoded = (v as RequestBody).decoded;
+          if (decoded is! Map<String, dynamic>) {
+            throw Response.badRequest(
+              body: {"error": "request entity was unexpected type"},
+            );
+          }
+          return $raw.from(decoded);
+        }''';
+      }
+    }
+    return null;
   }
 
   String _emitElementDecoder(DartType t) {
