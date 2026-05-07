@@ -1,0 +1,22 @@
+name: graphql_cross_source_example
+description: >-
+  Sample app demonstrating Conduit's GraphQL transport serving a unified
+  schema over a Persistence umbrella with both SQL and graph stores.
+  Walks the cross-source stitching pattern in
+  docs/persistence/graphql-cross-source.md end to end with fake stores
+  so it boots without infrastructure.
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ">=3.12.0-0 <4.0.0"
+resolution: workspace
+
+dependencies:
+  conduit_core: ^6.0.0
+  conduit_graph: ^6.0.0
+  conduit_graphql: ^6.0.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^6.0.0
