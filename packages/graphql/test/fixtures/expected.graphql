@@ -1,0 +1,75 @@
+"""A point in time, serialized as an ISO-8601 string (e.g. "2026-05-06T12:34:56.789Z")."""
+scalar DateTime
+
+"""Read-only Conduit GraphQL query root, derived from a ManagedDataModel."""
+type Query {
+  """Returns every User. Read-only in G2; G3 adds where/order/pagination arguments."""
+  users: [User!]!
+  """Returns the User with the given id, or null if none exists."""
+  user(id: String!): User
+  """Returns every Post. Read-only in G2; G3 adds where/order/pagination arguments."""
+  posts: [Post!]!
+  """Returns the Post with the given id, or null if none exists."""
+  post(id: String!): Post
+  """Returns every Comment. Read-only in G2; G3 adds where/order/pagination arguments."""
+  comments: [Comment!]!
+  """Returns the Comment with the given id, or null if none exists."""
+  comment(id: String!): Comment
+  """Returns every Tag. Read-only in G2; G3 adds where/order/pagination arguments."""
+  tags: [Tag!]!
+  """Returns the Tag with the given name, or null if none exists."""
+  tag(name: String!): Tag
+  """Returns every PostTag. Read-only in G2; G3 adds where/order/pagination arguments."""
+  postTags: [PostTag!]!
+  """Returns the PostTag with the given id, or null if none exists."""
+  postTag(id: String!): PostTag
+}
+
+"""GraphQL projection of Conduit entity Comment (table _Comment)."""
+type Comment {
+  id: String!
+  body: String!
+  post: Post!
+  author: User
+  parent: Comment
+  replies: [Comment!]!
+}
+
+"""GraphQL projection of Conduit entity Post (table _Post)."""
+type Post {
+  id: String!
+  title: String!
+  body: String!
+  viewCount: String!
+  rating: Float!
+  author: User!
+  comments: [Comment!]!
+  tags: [PostTag!]!
+}
+
+"""GraphQL projection of Conduit entity PostTag (table _PostTag)."""
+type PostTag {
+  id: String!
+  post: Post!
+  tag: Tag!
+}
+
+"""GraphQL projection of Conduit entity Tag (table _Tag)."""
+type Tag {
+  name: String!
+  description: String
+  posts: [PostTag!]!
+}
+
+"""GraphQL projection of Conduit entity User (table _User)."""
+type User {
+  displayName: String
+  id: String!
+  email: String!
+  firstName: String
+  lastName: String
+  isActive: Boolean
+  createdAt: DateTime
+  posts: [Post!]!
+  comments: [Comment!]!
+}
