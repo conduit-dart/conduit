@@ -28,7 +28,8 @@ String printSchema(GraphQLSchema schema) {
 
   final objectTypes = <GraphQLObjectType>{};
   final scalarTypes = <GraphQLType<dynamic, dynamic>>{};
-  _collectTypes(query, objectTypes, scalarTypes);
+  final unionTypes = <GraphQLUnionType>{};
+  _collectTypes(query, objectTypes, scalarTypes, unionTypes);
 
   final buf = StringBuffer();
 
@@ -46,7 +47,7 @@ String printSchema(GraphQLSchema schema) {
     buf.writeln();
   }
 
-  // Query first, then alphabetical.
+  // Query first, then alphabetical objects.
   final orderedObjects = <GraphQLObjectType>[
     query,
     ...objectTypes.where((t) => t != query).toList()
@@ -69,6 +70,15 @@ String printSchema(GraphQLSchema schema) {
     buf.writeln();
   }
 
+  // Union types last, alphabetical.
+  final orderedUnions = unionTypes.toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
+  for (final u in orderedUnions) {
+    final members = u.possibleTypes.map((t) => t.name).join(' | ');
+    buf.writeln('union ${u.name} = $members');
+    buf.writeln();
+  }
+
   return '${buf.toString().trimRight()}\n';
 }
 
@@ -76,12 +86,13 @@ void _collectTypes(
   GraphQLObjectType root,
   Set<GraphQLObjectType> objects,
   Set<GraphQLType<dynamic, dynamic>> scalars,
+  Set<GraphQLUnionType> unions,
 ) {
   if (!objects.add(root)) return;
   for (final f in root.fields) {
-    _walkType(f.type, objects, scalars);
+    _walkType(f.type, objects, scalars, unions);
     for (final input in f.inputs) {
-      _walkType(input.type, objects, scalars);
+      _walkType(input.type, objects, scalars, unions);
     }
   }
 }
@@ -90,6 +101,7 @@ void _walkType(
   GraphQLType<dynamic, dynamic> type,
   Set<GraphQLObjectType> objects,
   Set<GraphQLType<dynamic, dynamic>> scalars,
+  Set<GraphQLUnionType> unions,
 ) {
   GraphQLType current = type;
   while (true) {
@@ -102,7 +114,15 @@ void _walkType(
       continue;
     }
     if (current is GraphQLObjectType) {
-      _collectTypes(current, objects, scalars);
+      _collectTypes(current, objects, scalars, unions);
+      return;
+    }
+    if (current is GraphQLUnionType) {
+      if (unions.add(current)) {
+        for (final possible in current.possibleTypes) {
+          _collectTypes(possible, objects, scalars, unions);
+        }
+      }
       return;
     }
     if (current is GraphQLScalarType) {
@@ -112,7 +132,7 @@ void _walkType(
     throw UnsupportedError(
       'SDL printer does not yet handle type ${current.runtimeType} '
       '(named ${current.name}). Add support before extending the schema '
-      'beyond object types + scalars.',
+      'beyond object types + scalars + unions.',
     );
   }
 }
@@ -125,6 +145,7 @@ String _renderType(GraphQLType<dynamic, dynamic> type) {
     return '[${_renderType(type.ofType)}]';
   }
   if (type is GraphQLObjectType) return type.name;
+  if (type is GraphQLUnionType) return type.name;
   if (type is GraphQLScalarType) return type.name!;
   throw UnsupportedError(
     'SDL printer does not yet handle type ${type.runtimeType}',
