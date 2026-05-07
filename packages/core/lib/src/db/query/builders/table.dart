@@ -1,22 +1,31 @@
-import 'package:collection/collection.dart' show IterableExtension;
-import 'package:conduit_core/conduit_core.dart';
+/// Dialect-agnostic table builder.
+///
+/// Lifted from `packages/postgresql/lib/src/builders/table.dart` —
+/// the only postgres-specific dependency was the `PostgresQuery` type
+/// in the constructor signature, which was only used for its
+/// `QueryMixin` surface (`entity`, `predicate`, `propertiesToFetch`,
+/// `sortDescriptors`, `sortPredicate`, `pageDescriptor`,
+/// `subQueries`, `expressions`, `context.persistentStore`). The
+/// constructor now takes any `QueryMixin`, and the dialect is read
+/// from `query.context.persistentStore.dialect`.
+library;
 
-import '../postgres_sql_dialect.dart';
-import '../postgresql_persistent_store.dart';
-import '../postgresql_query.dart';
-import 'column.dart';
-import 'expression.dart';
-import 'sort.dart';
+import 'package:collection/collection.dart' show IterableExtension;
+import 'package:conduit_core/src/db/managed/entity.dart';
+import 'package:conduit_core/src/db/managed/key_path.dart';
+import 'package:conduit_core/src/db/managed/property_description.dart';
+import 'package:conduit_core/src/db/managed/relationship_type.dart';
+import 'package:conduit_core/src/db/persistent_store/sql_dialect.dart';
+import 'package:conduit_core/src/db/query/builders/column.dart';
+import 'package:conduit_core/src/db/query/builders/expression.dart';
+import 'package:conduit_core/src/db/query/builders/sort.dart';
+import 'package:conduit_core/src/db/query/query.dart';
 
 class TableBuilder implements Returnable {
-  TableBuilder(PostgresQuery query, {this.parent, this.joinedBy})
-    : entity = query.entity,
-      dialect = parent?.dialect ??
-          (query.context.persistentStore is PostgreSQLPersistentStore
-              ? (query.context.persistentStore as PostgreSQLPersistentStore)
-                  .dialect
-              : const PostgresSqlDialect()),
-      _manualPredicate = query.predicate {
+  TableBuilder(QueryMixin query, {this.parent, this.joinedBy})
+      : entity = query.entity,
+        dialect = parent?.dialect ?? query.context.persistentStore.dialect,
+        _manualPredicate = query.predicate {
     if (parent != null) {
       tableAlias = createTableAlias();
     }
@@ -61,7 +70,7 @@ class TableBuilder implements Returnable {
     query.subQueries.forEach((relationshipDesc, subQuery) {
       addJoinTableBuilder(
         TableBuilder(
-          subQuery as PostgresQuery,
+          subQuery as QueryMixin,
           parent: this,
           joinedBy: relationshipDesc,
         ),
@@ -74,9 +83,9 @@ class TableBuilder implements Returnable {
   TableBuilder.implicit(
     this.parent,
     ManagedRelationshipDescription this.joinedBy,
-  ) : entity = joinedBy.inverse!.entity,
-      dialect = parent!.dialect,
-      _manualPredicate = QueryPredicate.empty() {
+  )   : entity = joinedBy.inverse!.entity,
+        dialect = parent!.dialect,
+        _manualPredicate = QueryPredicate.empty() {
     tableAlias = createTableAlias();
     returning = <Returnable>[];
     columnSortBuilders = [];
@@ -97,17 +106,18 @@ class TableBuilder implements Returnable {
 
   bool get containsJoins => returning.any((p) => p is TableBuilder);
 
-  bool get containsSetJoins => returning.whereType<TableBuilder>().any(
-    (tb) => tb.isSetJoin || tb.containsSetJoins,
-  );
+  bool get containsSetJoins =>
+      returning.whereType<TableBuilder>().any(
+            (tb) => tb.isSetJoin || tb.containsSetJoins,
+          );
 
   bool get isSetJoin =>
       joinedBy?.relationshipType == ManagedRelationshipType.hasMany;
 
   ManagedRelationshipDescription? get foreignKeyProperty =>
       joinedBy!.relationshipType == ManagedRelationshipType.belongsTo
-      ? joinedBy
-      : joinedBy!.inverse;
+          ? joinedBy
+          : joinedBy!.inverse;
 
   bool isJoinOnProperty(ManagedRelationshipDescription relationship) {
     return joinedBy!.destinationEntity == relationship.destinationEntity &&
@@ -172,16 +182,14 @@ class TableBuilder implements Returnable {
       final lastElement = expression.keyPath.path.last;
 
       final bool isPropertyOnThisEntity = expression.keyPath.length == 1;
-      final bool isForeignKey =
-          expression.keyPath.length == 2 &&
+      final bool isForeignKey = expression.keyPath.length == 2 &&
           lastElement is ManagedAttributeDescription &&
           lastElement.isPrimaryKey &&
           firstElement is ManagedRelationshipDescription &&
           firstElement.isBelongsTo;
 
       if (isPropertyOnThisEntity) {
-        final bool isBelongsTo =
-            lastElement is ManagedRelationshipDescription &&
+        final bool isBelongsTo = lastElement is ManagedRelationshipDescription &&
             lastElement.isBelongsTo;
         final bool isColumn =
             lastElement is ManagedAttributeDescription || isBelongsTo;
@@ -247,9 +255,10 @@ class TableBuilder implements Returnable {
       return this;
     } else {
       final head = keyPath[0] as ManagedRelationshipDescription?;
-      TableBuilder? join = returning.whereType<TableBuilder>().firstWhereOrNull(
-        (m) => m.isJoinOnProperty(head!),
-      );
+      TableBuilder? join =
+          returning.whereType<TableBuilder>().firstWhereOrNull(
+                (m) => m.isJoinOnProperty(head!),
+              );
       if (join == null) {
         join = TableBuilder.implicit(this, head!);
         addJoinTableBuilder(join);
