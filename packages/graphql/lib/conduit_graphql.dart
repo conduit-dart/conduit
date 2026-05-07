@@ -23,7 +23,9 @@ export 'package:graphql_schema2/graphql_schema2.dart';
 export 'package:graphql_server2/graphql_server2.dart';
 
 export 'src/controller/graphql_controller.dart';
+export 'src/resolvers/data_loader.dart';
 export 'src/resolvers/graph_resolver_factory.dart';
+export 'src/resolvers/sql_resolver_factory.dart';
 export 'src/schema/builder.dart';
 export 'src/schema/graph_schema_config.dart';
 export 'src/schema/scalars.dart';
