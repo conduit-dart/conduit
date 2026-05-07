@@ -14,9 +14,10 @@ void main() {
       expect(d.parameterStyle, SqlParameterStyle.positional);
     });
 
-    test('parameter placeholder is always ? regardless of name', () {
-      expect(d.parameterPlaceholder('foo'), '?');
-      expect(d.parameterPlaceholder('whatever'), '?');
+    test('parameter placeholder uses :name (driver rewrites to ? internally)',
+        () {
+      expect(d.parameterPlaceholder('foo'), ':foo');
+      expect(d.parameterPlaceholder('whatever'), ':whatever');
     });
 
     test('column types map to MySQL-flavored DDL', () {
@@ -64,7 +65,7 @@ void main() {
       final q = d.tableExistsQuery();
       expect(q, contains('information_schema.tables'));
       expect(q, contains('table_schema = DATABASE()'));
-      expect(q, contains('?'));
+      expect(q, contains(':tableName'));
     });
 
     test('LIKE pattern escaping protects %, _, and \\', () {

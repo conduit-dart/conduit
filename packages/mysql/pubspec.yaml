@@ -1,5 +1,5 @@
 name: conduit_mysql
-description: MySQL / MariaDB ORM backend for conduit. Schema management + raw execute path; ORM `newQuery<T>` deferred until the query builders move out of the postgresql package.
+description: MySQL / MariaDB ORM backend for conduit. Schema management, raw execute path, and dialect-agnostic ORM `newQuery<T>` (lifted from the postgresql package).
 version: 6.0.0
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit

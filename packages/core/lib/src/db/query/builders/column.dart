@@ -1,6 +1,23 @@
-import 'package:conduit_core/conduit_core.dart';
-import 'table.dart';
-import 'package:postgres/postgres.dart';
+/// Dialect-agnostic column builders.
+///
+/// These types compose SQL fragments (column references, type-aware
+/// value coercion, predicate operator spellings) without baking in
+/// any particular driver's value-wrapping convention. The Postgres
+/// backend used to wrap every value with a `TypedValue` from
+/// `package:postgres`; that wrapping now lives behind
+/// `SqlDialect.encodeValue` so the builders themselves are reusable
+/// across SQLite, MySQL, and Cockroach.
+library;
+
+import 'package:conduit_core/src/db/managed/document.dart';
+import 'package:conduit_core/src/db/managed/entity.dart';
+import 'package:conduit_core/src/db/managed/exception.dart';
+import 'package:conduit_core/src/db/managed/key_path.dart';
+import 'package:conduit_core/src/db/managed/property_description.dart';
+import 'package:conduit_core/src/db/managed/relationship_type.dart';
+import 'package:conduit_core/src/db/managed/type.dart';
+import 'package:conduit_core/src/db/query/builders/table.dart';
+import 'package:conduit_core/src/db/query/predicate.dart';
 
 /// Common interface for values that can be mapped to/from a database.
 abstract class Returnable {}
@@ -62,16 +79,10 @@ class ColumnBuilder extends Returnable {
     return property;
   }
 
-  static Map<ManagedPropertyType, Type> typeMap = {
-    ManagedPropertyType.integer: Type.integer,
-    ManagedPropertyType.bigInteger: Type.bigInteger,
-    ManagedPropertyType.string: Type.text,
-    ManagedPropertyType.datetime: Type.timestampWithoutTimezone,
-    ManagedPropertyType.boolean: Type.boolean,
-    ManagedPropertyType.doublePrecision: Type.double,
-    ManagedPropertyType.document: Type.jsonb
-  };
-
+  /// Comparison-operator spelling. The LIKE / ILIKE operators are
+  /// dialect-driven (see `SqlDialect.caseSensitiveLikeOperator` /
+  /// `caseInsensitiveLikeOperator`); the comparison operators here
+  /// are universal across dialects we currently target.
   static Map<PredicateOperator, String> symbolTable = {
     PredicateOperator.lessThan: "<",
     PredicateOperator.greaterThan: ">",

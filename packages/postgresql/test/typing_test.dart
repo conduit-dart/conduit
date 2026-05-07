@@ -3,7 +3,7 @@ library;
 
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/src/postgresql_query.dart';
-import 'package:conduit_postgresql/src/query_builder.dart';
+
 import 'package:test/test.dart';
 
 import 'not_tests/postgres_test_config.dart';
@@ -49,7 +49,7 @@ void main() {
       ..values.d = 1.0
       ..values.doc = Document({"k": "v"});
 
-    final builder = PostgresQueryBuilder(q as PostgresQuery);
+    final builder = QueryBuilder(q as PostgresQuery);
     final insertString = builder.sqlValuesToInsert;
     expect(insertString, contains("id:int8"));
     expect(insertString, contains("n:text"));
