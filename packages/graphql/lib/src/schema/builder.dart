@@ -796,7 +796,7 @@ class SchemaBuilder {
     _sortDirectionEnum = e;
     return e;
   }
-
+  
   // ===========================================================================
   // G4 — graph schema derivation (parallel hierarchy to fromManagedDataModel).
   //
