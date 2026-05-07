@@ -1,22 +1,35 @@
-import 'package:conduit_core/conduit_core.dart';
-import 'builders/sort.dart';
-import 'builders/table.dart';
-import 'builders/value.dart';
-import 'postgresql_query.dart';
-import 'row_instantiator.dart';
+/// Dialect-agnostic query-builder facade.
+///
+/// Lifted from `packages/postgresql/lib/src/query_builder.dart`. The
+/// only Postgres-specific dependency was the `PostgresQuery` type in
+/// the constructor; that is now any `QueryMixin`. Backends compose
+/// SQL strings off this builder's `sqlTableName`, `sqlWhereClause`,
+/// `sqlColumnsToInsert`, etc. — the shape of each fragment is
+/// identical across dialects, only the placeholder syntax (which the
+/// dialect controls) varies.
+library;
 
-class PostgresQueryBuilder extends TableBuilder {
-  PostgresQueryBuilder(PostgresQuery query, [String prefixIndex = ""])
+import 'package:conduit_core/src/db/managed/managed.dart';
+import 'package:conduit_core/src/db/managed/relationship_type.dart';
+import 'package:conduit_core/src/db/query/builders/row_instantiator.dart';
+import 'package:conduit_core/src/db/query/builders/sort.dart';
+import 'package:conduit_core/src/db/query/builders/table.dart';
+import 'package:conduit_core/src/db/query/builders/value.dart';
+import 'package:conduit_core/src/db/query/mixin.dart';
+
+class QueryBuilder extends TableBuilder {
+  QueryBuilder(QueryMixin query, [String prefixIndex = ""])
       : valueKeyPrefix = "v${prefixIndex}_",
-        placeholderKeyPrefix = "@v${prefixIndex}_",
         super(query) {
     (query.valueMap ?? query.values.backing.contents)
         .forEach(addColumnValueBuilder);
     finalize(variables);
   }
 
+  /// Prefix used when generating parameter binding keys (the keys
+  /// that appear in the parameter map). Stays the same across
+  /// dialects — the dialect's `parameterPlaceholder` is what varies.
   final String valueKeyPrefix;
-  final String placeholderKeyPrefix;
 
   final Map<String, dynamic> variables = {};
 
@@ -87,10 +100,10 @@ class PostgresQueryBuilder extends TableBuilder {
   String get sqlColumnsAndValuesToUpdate {
     return columnValueBuilders.map((m) {
       final columnName = m.sqlColumnName();
-      final variableName = m.sqlColumnName(
-        withPrefix: placeholderKeyPrefix,
+      final placeholder = dialect.parameterPlaceholder(
+        m.sqlColumnName(withPrefix: valueKeyPrefix),
       );
-      return "$columnName=$variableName";
+      return "$columnName=$placeholder";
     }).join(",");
   }
 
@@ -111,8 +124,8 @@ class PostgresQueryBuilder extends TableBuilder {
       return "DEFAULT";
     }
 
-    return builder.sqlColumnName(
-      withPrefix: placeholderKeyPrefix,
+    return dialect.parameterPlaceholder(
+      builder.sqlColumnName(withPrefix: valueKeyPrefix),
     );
   }
 

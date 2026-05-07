@@ -4,24 +4,22 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:mysql_dart/exception.dart' as mx;
 import 'package:mysql_dart/mysql_dart.dart' as md;
 
+import 'mysql_query.dart';
 import 'mysql_schema_generator.dart';
 
 /// MySQL / MariaDB-backed `PersistentStore`.
 ///
-/// **v0 scope** mirrors `SqlitePersistentStore`: schema management +
-/// migrations + raw `execute` / `executeQuery` / `transaction`. The
-/// full ORM `newQuery<T>` path remains `UnimplementedError` — the
-/// `SqlExpression` AST migration in `conduit_core` is the architectural
-/// half of that work; the second half (extracting the query builders
-/// out of `conduit_postgresql` so they can be parameterized by a
-/// `SqlDialect`) is tracked in a follow-up PR. Until then, callers
-/// can run raw SQL against MySQL through `execute`.
+/// Schema management, raw `execute`/`executeQuery`/`transaction`, and
+/// the full ORM `newQuery<T>` path are all wired up — the latter
+/// piggybacks on the dialect-agnostic `QueryBuilder` family lifted
+/// out of `conduit_postgresql`.
 ///
 /// Driver: `mysql_dart` 1.2.1 (native Dart, MySQL 5.7/8 + MariaDB
 /// 10/11 tested). The driver accepts both `:name` and positional `?`
-/// placeholders. We use positional `?` to match
-/// `MysqlSqlDialect.parameterPlaceholder` and the predicate AST's
-/// positional render path.
+/// placeholders. The QueryBuilder path emits `:name` (driver
+/// internally rewrites to positional); the predicate AST visitor
+/// emits positional `?` directly when called via
+/// `SqlDialect.renderExpression`.
 class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
   MysqlPersistentStore(
     this.username,
@@ -126,13 +124,7 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     ManagedEntity entity, {
     T? values,
   }) {
-    throw UnimplementedError(
-      'MysqlPersistentStore.newQuery is not yet implemented. The ORM '
-      'query path requires the postgresql package\'s query builders '
-      'to be made dialect-agnostic; that refactor is tracked separately. '
-      'For now, use execute()/executeQuery() with raw SQL for arbitrary '
-      'queries against MySQL/MariaDB.',
-    );
+    return mysqlNewQuery<T>(context, entity, values: values);
   }
 
   /// Coerce a Conduit-style parameter map into the form mysql_dart
@@ -253,16 +245,69 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     return conn.execute(sql, params);
   }
 
+  /// Materialize a mysql_dart result into the
+  /// `List<List<Object?>>` shape Conduit's row instantiator expects.
+  ///
+  /// MySQL's text-protocol result set returns every value as a String
+  /// (even integers and timestamps); the row instantiator's
+  /// validators will reject e.g. `'42'` as the value of an `int`
+  /// column. We convert per-column based on the column-type metadata
+  /// the driver exposes via `cols`. The mapping mirrors mysql_dart's
+  /// own `typedAssoc()` helper (private to a row, not the result
+  /// set), but works at result-set scope so it costs only one column
+  /// metadata walk per result.
   List<List<Object?>> _materializeRows(md.IResultSet result) {
+    final cols = result.cols.toList();
+    final converters = cols.map(_converterForColumn).toList();
     final out = <List<Object?>>[];
     for (final row in result.rows) {
       final values = <Object?>[];
       for (var i = 0; i < row.numOfColumns; i++) {
-        values.add(row.colAt(i));
+        values.add(converters[i](row.colAt(i)));
       }
       out.add(values);
     }
     return out;
+  }
+
+  /// Returns a function that coerces a mysql_dart raw column value
+  /// (always a String for the text protocol) into the Dart type
+  /// Conduit's row instantiator expects for that column. Falls back
+  /// to identity for column types without a typed mapping.
+  ///
+  /// `MySQLColumnType` does not override `operator ==`, so we
+  /// compare on `.intVal` rather than the const instance. The
+  /// numeric codes are the wire-protocol field-type bytes — they're
+  /// fixed by the MySQL spec, so comparing raw codes is just as
+  /// stable as the named constants.
+  Object? Function(Object?) _converterForColumn(md.ResultSetColumn col) {
+    final code = col.type.intVal;
+    // Integer column codes: TINY (1), SHORT (2), LONG (3), LONGLONG (8),
+    // INT24 (9), YEAR (13). BOOLEAN is TINYINT(1) — encoded as TINY here;
+    // Conduit binds bool ↔ INTEGER 0/1 anyway.
+    if (code == 1 || code == 2 || code == 3 || code == 8 ||
+        code == 9 || code == 13) {
+      return (v) => v == null ? null : int.parse(v.toString());
+    }
+    // FLOAT (4), DOUBLE (5).
+    if (code == 4 || code == 5) {
+      return (v) => v == null ? null : double.parse(v.toString());
+    }
+    // DECIMAL (0), NEW_DECIMAL (0xf6).
+    if (code == 0 || code == 0xf6) {
+      return (v) => v == null ? null : num.parse(v.toString());
+    }
+    // DATETIME (0x0c), DATETIME2 (0x12), TIMESTAMP (0x07),
+    // TIMESTAMP2 (0x11), DATE (0x0a), NEW_DATE (0x0e).
+    if (code == 0x0c || code == 0x12 || code == 0x07 ||
+        code == 0x11 || code == 0x0a || code == 0x0e) {
+      return (v) {
+        if (v == null) return null;
+        final s = v.toString().replaceFirst(' ', 'T');
+        return DateTime.parse(s);
+      };
+    }
+    return (v) => v;
   }
 
   @override
@@ -424,7 +469,7 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     final commands = createTable(tbl, isTemporary: temporary);
     final exists = await conn.execute(
       dialect.tableExistsQuery(),
-      [tbl.name],
+      {'tableName': tbl.name},
     );
     if (exists.rows.isNotEmpty) return;
 
