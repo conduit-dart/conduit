@@ -1,7 +1,11 @@
-import 'package:conduit_core/conduit_core.dart';
+/// Dialect-agnostic sort builders. Lifted from
+/// `packages/postgresql/lib/src/builders/sort.dart` so SQLite and
+/// MySQL can reuse them without depending on the postgresql package.
+library;
 
-import 'column.dart';
-import 'table.dart';
+import 'package:conduit_core/src/db/query/builders/column.dart';
+import 'package:conduit_core/src/db/query/builders/table.dart';
+import 'package:conduit_core/src/db/query/query.dart';
 
 class ColumnSortBuilder extends ColumnBuilder {
   ColumnSortBuilder(TableBuilder table, String key, QuerySortOrder order)

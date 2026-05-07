@@ -29,6 +29,7 @@ dependencies:
   yaml: ^3.1.2
 
 dev_dependencies:
+  benchmark_harness: ^2.3.0
   conduit_postgresql:
     path: ../postgresql
   conduit_test:

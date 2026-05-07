@@ -93,13 +93,21 @@ class MysqlSqlDialect extends SqlDialect {
 
   // -- Parameter syntax -----------------------------------------------------
 
+  /// The dialect parameter style governs which AST visitor renders a
+  /// `SqlExpression` — for MySQL we keep that as positional since the
+  /// wire form is positional `?`. The [QueryBuilder] lift, however,
+  /// composes SQL out of per-column named placeholders + a name-keyed
+  /// variables map; for that path the `mysql_dart` driver accepts
+  /// `:name` placeholders directly (it rewrites them to positional
+  /// internally). Both paths therefore work side by side.
   @override
   SqlParameterStyle get parameterStyle => SqlParameterStyle.positional;
 
-  /// Always `?` regardless of the supplied name. The name is kept in
-  /// the AST for diagnostics, but is not rendered.
+  /// `:name` for the QueryBuilder path (driver auto-rewrites to
+  /// positional). The AST-visitor path renders `?` independently via
+  /// [PositionalSqlExpressionVisitor].
   @override
-  String parameterPlaceholder(String name) => '?';
+  String parameterPlaceholder(String name) => ':$name';
 
   // -- Operators where MySQL differs from standard SQL ----------------------
 

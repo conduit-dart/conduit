@@ -81,3 +81,27 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r failures-only
+  bench:
+    needs: smoke
+    runs-on: ubuntu-latest
+    # Non-gating: surfaces bench numbers in the run summary so reviewers
+    # can eyeball regressions without blocking the PR. Pair with the
+    # methodology + verdict captured in packages/core/bench/RESULTS.md.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
+      - name: Bootstrap
+        run: |
+          export PUB_CACHE="$HOME/.pub-cache"
+          export PATH="$PATH:$PUB_CACHE/bin"
+          echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+          echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+          dart pub global activate melos
+          melos bootstrap
+      - name: Run benches
+        working-directory: packages/core
+        run: bash ../../ci/run-benches.sh
+        continue-on-error: true

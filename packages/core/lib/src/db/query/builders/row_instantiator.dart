@@ -1,6 +1,19 @@
-import 'package:conduit_core/conduit_core.dart';
-import 'builders/column.dart';
-import 'builders/table.dart';
+/// Dialect-agnostic row instantiator. Lifted from
+/// `packages/postgresql/lib/src/row_instantiator.dart`. The
+/// instantiation logic depends only on the column-builder return
+/// metadata (which property each row column maps to), not on any
+/// driver-specific value form — values come in as raw Dart objects
+/// and the instantiator hands them to property descriptors via
+/// `column.convertValueFromStorage(...)`.
+library;
+
+import 'package:conduit_core/src/db/managed/exception.dart';
+import 'package:conduit_core/src/db/managed/object.dart';
+import 'package:conduit_core/src/db/managed/property_description.dart';
+import 'package:conduit_core/src/db/managed/relationship_type.dart';
+import 'package:conduit_core/src/db/managed/set.dart';
+import 'package:conduit_core/src/db/query/builders/column.dart';
+import 'package:conduit_core/src/db/query/builders/table.dart';
 
 class RowInstantiator {
   RowInstantiator(this.rootTableBuilder, this.returningValues);
