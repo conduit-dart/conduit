@@ -49,7 +49,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     }
 
     throw UnsupportedError(
-      "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by this dialect.",
+      "Unknown expression applied to 'Query'. '${expr.runtimeType}' is not supported by $dialect.",
     );
   }
 
