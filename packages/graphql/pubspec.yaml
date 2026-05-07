@@ -26,9 +26,6 @@ dev_dependencies:
   # supply whatever PersistentStore they want.
   conduit_postgresql: ^6.0.0
   conduit_test: ^6.0.0
-  # Neo4j backend is exercised only by the gated G4 integration test;
-  # production callers do not pull this in transitively.
-  conduit_graph_neo4j: ^6.0.0
   http: ^1.2.0
   lints: ^6.0.0
   test: ^1.25.2
