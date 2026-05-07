@@ -6,17 +6,17 @@ derived from your `ManagedDataModel` — and implements the
 [GraphQL-over-HTTP spec](https://graphql.github.io/graphql-over-http/draft/)
 for `POST` (queries + mutations) and `GET` (queries only).
 
-## Status — G2 of the GraphQL evaluation plan
+## Status — G3 of the GraphQL evaluation plan
 
-This is the **second phase** of a five-phase delivery. G1 shipped the
-HTTP transport; G2 adds schema derivation. Resolver wiring is still
-deferred.
+This is the **third phase** of a five-phase delivery. G1 shipped the
+HTTP transport, G2 added schema derivation, and G3 adds SQL resolvers
++ a per-request dataloader.
 
 | Phase  | Scope | Ships in this package? |
 |--------|-------|------------------------|
 | G1     | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | Yes |
-| **G2** | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | **Yes** |
-| G3     | SQL resolvers + dataloader against `Query<T>`     | No |
+| G2     | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | Yes |
+| **G3** | SQL resolvers + dataloader against `Query<T>` | **Yes** |
 | G4     | Graph resolvers against `GraphQuery<N>` (Neo4j)   | No |
 | G5     | Cross-source dispatch + `@FieldAuthorize`         | No |
 
@@ -201,6 +201,112 @@ one you don't need at the call site.
 | `hasOne`                                            | nullable                |
 | `hasMany`                                           | `[Type!]!` (always)     |
 
+## SQL resolvers + dataloader (G3)
+
+`SqlResolverFactory` lowers GraphQL queries against a derived schema
+into Conduit `Query<T>` calls. Wire it through `SchemaBuilder`'s
+resolver-hook parameters and through `GraphQLController`'s
+`dataLoaderRegistry` ctor argument:
+
+```dart
+import 'package:conduit_core/conduit_core.dart' hide SchemaBuilder;
+import 'package:conduit_graphql/conduit_graphql.dart';
+
+final dataModel = ManagedDataModel([User, Post, Comment]);
+final context = ManagedContext(dataModel, store);
+
+final factory = SqlResolverFactory(context);
+final schema = SchemaBuilder(
+  generateFilterArgs: true,
+  generateSortArgs: true,
+  generatePaginationArgs: true,
+  attributeResolver: factory.attributeResolverFor,
+  relationshipResolver: factory.relationshipResolverFor,
+  queryListResolver: factory.listResolverFor,
+  queryByPkResolver: factory.byPkResolverFor,
+).fromManagedDataModel(dataModel);
+
+router.route('/graphql').link(
+  () => GraphQLController(
+    schema,
+    dataLoaderRegistry: factory.newRegistry,
+  ),
+);
+```
+
+The result: nested queries fan out to a small number of batched SQL
+round-trips. `{ users { posts { title } } }` over 50 users with 5
+posts each is exactly **2 SQL queries** — one for the users, one
+batched `WHERE author_id IN (...)` for the posts.
+
+### Generated arguments
+
+When the matching `generate*Args` flag is on, list-all Query-root
+fields gain these arguments:
+
+* **`where: <Entity>Filter`** — one input field per attribute. Each
+  field accepts a `<Scalar>Predicate` input with these operators:
+
+  | GraphQL key | Conduit matcher                                          |
+  |-------------|----------------------------------------------------------|
+  | `eq:`       | `whereEqualTo(value)`                                    |
+  | `ne:`       | `whereNotEqualTo(value)`                                 |
+  | `gt:`       | `whereGreaterThan(value)`                                |
+  | `gte:`      | `whereGreaterThanEqualTo(value)`                         |
+  | `lt:`       | `whereLessThan(value)`                                   |
+  | `lte:`      | `whereLessThanEqualTo(value)`                            |
+  | `in:`       | `oneOf([values])`                                        |
+  | `notIn:`    | `not.oneOf([values])`                                    |
+  | `like:`     | `contains(value)` (substring match; string scalars only) |
+  | `isNull:`   | `isNull() / isNotNull()`                                 |
+
+  Predicates within one field AND together. Predicates across multiple
+  fields also AND. Cross-field OR is intentionally not exposed in v1.
+
+* **`orderBy: [<Entity>SortInput!]`** — sort precedence list. Each
+  `<Entity>SortInput` carries `field: <Entity>SortField!` (an enum
+  with one value per non-transient attribute) and
+  `direction: SortDirection!` (`ASC | DESC`). First entry is the
+  primary sort, subsequent entries are tiebreakers.
+
+* **`limit: Int`** — caps the result set. Lowers to
+  `Query.fetchLimit`. `0` / unset means no limit.
+
+* **`offset: Int`** — skips the first N rows of the (sorted) result
+  set. Lowers to `Query.offset`.
+
+### N+1 mitigation
+
+The factory uses a per-request `DataLoaderRegistry` to batch
+relationship fan-out into a single round-trip per relationship. Within
+a single request:
+
+* All `belongsTo` resolutions for a given relationship fold into one
+  `WHERE id IN (...)` against the destination table.
+* All `hasMany` / `hasOne` resolutions for a given relationship fold
+  into one `WHERE <fk> IN (...)` against the inverse-side table.
+
+The registry's lifetime is the request — the controller drops it in a
+`finally` block at request end so no caches leak. Resolvers that need
+to invalidate a key mid-request can call `loader.clear(key)`.
+
+### Resolver shape note
+
+graphql_server2 v6.5.0 short-circuits `resolveFieldValue` when the
+parent object is a `Map`: it does `parent[fieldName]` and skips the
+resolver entirely. To keep our relationship resolvers reachable, the
+list / by-pk resolvers return `ManagedObject` instances rather than
+`asMap()` projections — `ManagedObject` is not a Map, so the executor
+falls through to the resolver path. Each attribute therefore needs
+its own resolver (`attributeResolverFor` provides one); the factory
+handles this for you when you wire it through the SchemaBuilder
+hooks.
+
+If you pass `bigIntegerAsString: false` to `SchemaBuilder` (so big-int
+columns surface as `Int!`), also set `factory.stringifyBigInts =
+false` so the attribute resolver doesn't return `String` values for
+`Int!` fields.
+
 ### G2 schema-derivation limitations
 
 * **Naive pluralization.** Singular is `entity.name` lowercased
@@ -264,9 +370,15 @@ stale printer.
 
 ## What this package does NOT do (yet)
 
-* **No resolver framework** — there is no `Query<T>`/`GraphQuery<N>`
-  integration. Resolvers are caller-provided closures. (G3 / G4.)
-* **No dataloader** — N+1 mitigation is on the caller until G3.
+* **No graph resolvers** — `GraphQuery<N>` (Neo4j) integration ships
+  in G4. Resolver factories for graph data sources will sit alongside
+  `SqlResolverFactory`.
+* **No cross-source dispatch** — fields that span multiple data
+  sources (a SQL `User` linked to a graph `Friend`) require G5's
+  resolver-composition layer.
+* **No mutations** — the derived schema is read-only. Insert / update
+  / delete mutations need their own input-type emission and resolver
+  surface; not in this PR.
 * **No field-level authorization** — `@FieldAuthorize` is a G5 surface.
   Per-resolver auth checks against `request.authorization` are the
   current pattern; the conduit `Request` is exposed to resolvers via
