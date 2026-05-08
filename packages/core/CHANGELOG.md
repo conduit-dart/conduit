@@ -1,3 +1,12 @@
+## 7.0.0
+
+> Note: Breaking constraint change — minimum Dart SDK is now `>=3.12.0`. Major version bump because raising the minimum SDK is breaking per pub semver convention.
+
+ - **REFACTOR**: bump minimum Dart SDK to `>=3.12.0` ([#250](https://github.com/conduit-dart/conduit/pull/250)).
+ - **FEAT**(core): unified Persistence umbrella for relational + graph contexts ([#271](https://github.com/conduit-dart/conduit/pull/271)).
+ - **REFACTOR**(core): lift query builders to dialect-agnostic core; wire SQLite + MySQL newQuery ([#275](https://github.com/conduit-dart/conduit/pull/275)).
+ - **CHORE**(bench): predicate / AST-rendering benchmarks + post-#267 regression analysis ([#270](https://github.com/conduit-dart/conduit/pull/270)).
+
 ## 6.0.0
 
  - **REFACTOR**(db): extract SqlDialect abstraction from postgresql package ([#263](https://github.com/conduit-dart/conduit/issues/263)). ([37614c0c](https://github.com/conduit-dart/conduit/commit/37614c0cfa1e8151afca13a674c43f87c044c1f6))

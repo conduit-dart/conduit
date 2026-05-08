@@ -1,6 +1,6 @@
 name: conduit_graph
 description: Type-system foundation for an Object-Graph Mapper (OGM) on top of conduit. Parallel to the SQL ORM — nodes, typed edges with edge-properties, and pattern queries — backend-agnostic.
-version: 6.0.0
+version: 7.0.0
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
