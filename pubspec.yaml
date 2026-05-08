@@ -8,7 +8,10 @@ environment:
   sdk: ">=3.12.0-0 <4.0.0"
 
 dev_dependencies:
-  melos: ^7.4.0
+  # 7.4.0 introduced layered topological sort for `melos exec
+  # --order-dependents`, which is what the publish workflow relies on.
+  # 7.7.0 fixes pubspec_overrides handling under workspace resolution.
+  melos: ^7.7.0
 
 workspace:
   - packages/build_runner

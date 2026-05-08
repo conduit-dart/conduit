@@ -105,17 +105,36 @@ jobs:
         run: melos exec --no-private -- "dart pub publish --dry-run"
 
   # ---------------------------------------------------------------------------
-  # publish: walk the topological tier list and publish each package via
-  # OIDC trusted publishing. This requires a one-time per-package
-  # configuration in pub.dev's admin UI (Trusted Publishers section)
-  # pointing at this repo + workflow. Without that, `dart pub publish`
-  # falls back to credential-based auth and fails because no
-  # `pub-credentials.json` is written.
+  # publish: walk the workspace in topological order via `melos exec
+  # --order-dependents` (layered topological sort, available since melos
+  # 7.4.0; uses `dart pub publish` per package directly so OIDC trusted
+  # publishing kicks in).
   #
-  # Order matters: `conduit_graphql` depends on `conduit_graph`, which
-  # must be visible on pub.dev's resolver before graphql tries to
-  # publish. We poll the pub.dev API after each package and only proceed
-  # to the next tier once the version is indexed.
+  # OIDC trusted publishing requires a one-time per-package configuration
+  # in pub.dev's admin UI (Trusted Publishers section) pointing at this
+  # repo + workflow. Without that, `dart pub publish` errors because no
+  # `pub-credentials.json` is written. The 5 packages that were never on
+  # pub.dev (`conduit_sqlite`, `_mysql`, `_graph`, `_graph_neo4j`,
+  # `_graphql`) need an initial credential-based publish before trusted
+  # publishing can be configured for them — see Phase A of the plan in
+  # ~/.claude/plans/analyze-release-pipeline-and-dreamy-puppy.md.
+  #
+  # The implicit dependency order produced by `--order-dependents`
+  # matches the documented Phase A4 tier list:
+  #   Tier 0: codable, fs_test_agent, runtime, password_hash,
+  #           isolate_exec, graph
+  #   Tier 1: open_api, config, graph_neo4j
+  #   Tier 2: common
+  #   Tier 3: core
+  #   Tier 4: postgresql, sqlite, mysql, test_harness, build_runner,
+  #           graphql
+  #   Tier 5: cli
+  #
+  # `--concurrency 1` forces sequential execution so the inter-package
+  # poll has a stable point to reach. The poll handles pub.dev's index
+  # propagation lag — `dart pub publish` returns when the upload is
+  # accepted, but dependent resolvers may not see the new version for a
+  # few seconds afterward.
   # ---------------------------------------------------------------------------
   publish:
     needs: [prepare, dry-run]
@@ -135,85 +154,31 @@ jobs:
         run: dart pub global activate melos
       - name: Bootstrap workspace
         run: melos bootstrap
-      - name: Publish in topological tier order
+      - name: Publish in topological order
         env:
           RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           set -euo pipefail
-
-          # tier:path:name — `name` is the published package name (often
-          # differs from the directory). Tiers separated by blank lines
-          # are published in parallel-safe groups; we poll between tiers.
-          declare -a TIERS=(
-            # Tier 0 — leaves with no intra-monorepo runtime deps
-            "0:packages/codable:conduit_codable"
-            "0:packages/fs_test_agent:fs_test_agent"
-            "0:packages/runtime:conduit_runtime"
-            "0:packages/password_hash:conduit_password_hash"
-            "0:packages/isolate_exec:conduit_isolate_exec"
-            "0:packages/graph:conduit_graph"
-
-            # Tier 1
-            "1:packages/open_api:conduit_open_api"
-            "1:packages/config:conduit_config"
-            "1:packages/graph_neo4j:conduit_graph_neo4j"
-
-            # Tier 2
-            "2:packages/common:conduit_common"
-
-            # Tier 3 — the hub
-            "3:packages/core:conduit_core"
-
-            # Tier 4 — depend on core (graphql also on graph)
-            "4:packages/postgresql:conduit_postgresql"
-            "4:packages/sqlite:conduit_sqlite"
-            "4:packages/mysql:conduit_mysql"
-            "4:packages/test_harness:conduit_test"
-            "4:packages/build_runner:conduit_build_runner"
-            "4:packages/graphql:conduit_graphql"
-
-            # Tier 5 — CLI
-            "5:packages/cli:conduit"
-          )
-
-          publish_one() {
-            local path="$1" name="$2"
-            echo "::group::Publishing $name from $path"
-            (cd "$path" && dart pub publish --force)
+          melos exec --order-dependents --concurrency 1 --no-private -- '
+            set -e
+            echo "::group::Publishing $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION"
+            dart pub publish --force
             echo "::endgroup::"
-          }
-
-          await_pub_dev() {
-            local name="$1"
             for i in $(seq 1 30); do
-              local v
-              v=$(curl -sf "https://pub.dev/api/packages/$name" | jq -r '.latest.version' 2>/dev/null || echo "")
-              if [ "$v" = "$RELEASE_VERSION" ]; then
-                echo "$name@$RELEASE_VERSION visible on pub.dev"
-                return 0
+              v=$(curl -sf "https://pub.dev/api/packages/$MELOS_PACKAGE_NAME" \
+                  | jq -r ".latest.version" 2>/dev/null || echo "")
+              if [ "$v" = "$MELOS_PACKAGE_VERSION" ]; then
+                echo "$MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION visible on pub.dev"
+                break
               fi
-              echo "Waiting for $name@$RELEASE_VERSION on pub.dev (currently: ${v:-unknown})…"
+              [ "$i" -eq 30 ] && {
+                echo "::error::pub.dev never reported $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION after 5 minutes."
+                exit 1
+              }
+              echo "Waiting for $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION on pub.dev (currently: ${v:-unknown})…"
               sleep 10
             done
-            echo "::error::pub.dev never reported $name@$RELEASE_VERSION after 5 minutes."
-            return 1
-          }
-
-          last_tier=""
-          for entry in "${TIERS[@]}"; do
-            tier="${entry%%:*}"
-            rest="${entry#*:}"
-            path="${rest%%:*}"
-            name="${rest##*:}"
-            if [ -n "$last_tier" ] && [ "$tier" != "$last_tier" ]; then
-              # entered a new tier; stall briefly so pub.dev's index settles
-              echo "Tier $last_tier complete — settling 30s before tier $tier"
-              sleep 30
-            fi
-            publish_one "$path" "$name"
-            await_pub_dev "$name"
-            last_tier="$tier"
-          done
+          '
 
   # ---------------------------------------------------------------------------
   # tag-and-release: only if this was a workflow_dispatch (real, not dry).
