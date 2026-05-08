@@ -171,6 +171,18 @@ final rows = await (persistence!.graphContext! as GraphContext).cypher(
 
 `PersistentStore.execute(...)` accepts arbitrary SQL with substitution values. Same discipline applies — escape hatch, not the default path.
 
+## GraphQL serving
+
+The `conduit_graphql` package's `SchemaBuilder.fromPersistence` derives a single `GraphQLSchema` over a `Persistence<G>` umbrella with both halves wired in. Cross-source dispatch is **not** automatic — the umbrella routes per-field, never per-query — but the resulting schema lets one HTTP endpoint serve queries that span SQL and graph stores via hand-written stitching resolvers.
+
+The G5 phase delivers:
+
+- `SchemaBuilder.fromPersistence` — unified schema-build path with source tagging on every emitted `GraphQLObjectType`.
+- `PersistenceResolverFactory` — the optional umbrella that bundles `SqlResolverFactory` + `GraphResolverFactory` and threads field-level auth through both halves.
+- `@FieldAuthorize` + `FieldAuthPolicy` — scope-checked field resolution. Failed checks raise GraphQL execution errors keyed at the field path.
+
+For the worked end-to-end example — `User` in SQL, `Friendship` edges in Neo4j, served via one `{ user(id) { friends { ... } } }` query — see [`graphql-cross-source.md`](graphql-cross-source.md).
+
 ## What `Persistence` does not do
 
 - Cross-backend transactionality (out of scope; see above).

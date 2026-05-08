@@ -1,0 +1,45 @@
+"""A point in time, serialized as an ISO-8601 string (e.g. "2026-05-06T12:34:56.789Z")."""
+scalar DateTime
+
+"""Unified Conduit GraphQL query root, derived from a Persistence umbrella. SQL fields and graph fields share this root; source tags on each ObjectType identify which half emitted it."""
+type Query {
+  """Returns every User (relational source)."""
+  users: [User!]!
+  """Returns the User with the given id, or null if none exists."""
+  user(id: String!): User
+  """Returns every Profile (graph source)."""
+  profiles: [Profile!]!
+  """Returns the Profile with the given id (graph source), or null if none exists."""
+  profile(id: String!): Profile
+  """Returns every Friendship edge record (graph source)."""
+  friendships: [Friendship!]!
+}
+
+"""GraphQL projection of graph edge Friendship (Profile -[:Friendship]-> Profile)."""
+type Friendship {
+  """Store-assigned id of the edge record."""
+  id: String!
+  since: DateTime
+  """Source endpoint of the Friendship edge."""
+  from: Profile!
+  """Target endpoint of the Friendship edge."""
+  to: Profile!
+}
+
+"""GraphQL projection of graph node Profile (Dart type Profile)."""
+type Profile {
+  """Store-assigned id of the node."""
+  id: String!
+  """Labels carried by this node in the graph store."""
+  labels: [String!]!
+  displayName: String!
+  """Traverses Friendship edges from this Profile and returns the destination Profiles."""
+  profiles: [Profile!]!
+}
+
+"""GraphQL projection of Conduit entity User (table _User)."""
+type User {
+  id: String!
+  email: String!
+  displayName: String
+}

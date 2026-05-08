@@ -6,24 +6,21 @@ derived from your `ManagedDataModel` — and implements the
 [GraphQL-over-HTTP spec](https://graphql.github.io/graphql-over-http/draft/)
 for `POST` (queries + mutations) and `GET` (queries only).
 
-## Status — G4 of the GraphQL evaluation plan
+## Status — G1–G5 evaluation plan complete
 
-This package now covers four of the five evaluation phases. G1 shipped
-the HTTP transport, G2 added relational schema derivation, G3 wired
-SQL resolvers + a per-request dataloader, and G4 (this phase) adds
-graph schema derivation + graph resolvers. Cross-source dispatch and
-field-level auth land in G5.
+All five phases of the GraphQL evaluation plan ship in this package:
 
 | Phase  | Scope | Ships in this package? |
 |--------|-------|------------------------|
-| G1     | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | Yes |
-| G2     | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only, no resolvers) | Yes |
-| G3     | SQL resolvers + dataloader against `Query<T>` | Yes |
+| **G1** | Controller, parse + validate + execute, JSON envelope, GET-of-mutation rejection, introspection | **Yes** |
+| **G2** | Derive a `GraphQLSchema` from `ManagedDataModel` (read-only) | **Yes** |
+| **G3** | SQL resolvers + dataloader against `Query<T>` | **Yes** |
 | **G4** | Graph schema derivation from `GraphDataModel`; resolvers against `GraphQuery<N>` (Neo4j) | **Yes** |
-| G5     | Cross-source dispatch + `@FieldAuthorize`         | No |
+| **G5** | Cross-source dispatch (`SchemaBuilder.fromPersistence`) + field-level auth (`@FieldAuthorize`) | **Yes** |
 
 GraphQL **subscriptions are out of scope for the entire plan**; Conduit
-has no WebSocket transport in core.
+has no WebSocket transport in core. See `docs/persistence/graphql-cross-source.md`
+for the v0.6+ deferred-work list.
 
 ## Install
 
@@ -512,23 +509,84 @@ mutations, input objects) is not yet supported and will throw — by
 design, so adding e.g. mutation support can't accidentally rely on a
 stale printer.
 
+## Cross-source dispatch + field auth (G5)
+
+G5 unifies the SQL and graph halves under one schema and adds field-level
+authorization. Build a `Persistence<G>` umbrella, derive a unified schema
+via `SchemaBuilder.fromPersistence`, and let `@FieldAuthorize` (paired
+with a `FieldAuthPolicy`) enforce scope checks at field-resolution time.
+
+```dart
+final persistence = Persistence<GraphPersistentStore>(
+  sql: PostgreSQLPersistentStore.fromConnectionInfo(...),
+  graph: Neo4jPersistentStore(Uri.parse('bolt://localhost:7687')),
+);
+persistence.sqlContext = ManagedContext(sqlModel, persistence.sql);
+persistence.graphContext = GraphContext(graphModel, persistence.graph);
+
+final factory = PersistenceResolverFactory<GraphPersistentStore>(
+  sql: SqlResolverFactory(persistence.sqlContext!),
+  graph: GraphResolverFactory(persistence.graphContext! as GraphContext)
+    ..registerNodeType<Profile>(),
+);
+
+final result = SchemaBuilder().fromPersistence(
+  persistence,
+  resolverFactory: factory,
+  graphConfig: graphSchemaConfig,
+  collisionPolicy: QueryRootCollisionPolicy.error,
+  authPolicy: MapFieldAuthPolicy({
+    sqlModel.entityForType(User).attributes['ssn']!:
+        const FieldAuthorize(scopes: ['pii:read']),
+  }),
+);
+
+router.route('/graphql').link(() => GraphQLController(result.schema));
+```
+
+`PersistenceSchema` (the return value) carries `sqlObjectTypes`,
+`graphObjectTypes`, and `sourceFor(type)` so callers can introspect
+which half emitted what.
+
+### Worked example
+
+`docs/persistence/graphql-cross-source.md` walks the cross-source
+stitching pattern end to end with a runnable app under
+`examples/graphql_cross_source/`. The app uses fake stores so it boots
+without infrastructure; replace the fakes with `PostgreSQLPersistentStore`
+and `Neo4jPersistentStore` to ship.
+
+### Asymmetry note: `@FieldAuthorize` on the graph side
+
+Because `GraphNode` does not preserve per-property annotations through
+the data-model build, graph-side auth declarations live on the
+`GraphPropertyDescriptor` directly:
+
+```dart
+GraphPropertyDescriptor(
+  name: 'phoneNumber',
+  type: GraphPropertyType.string,
+  isNullable: true,
+  auth: FieldAuthorize(scopes: ['pii:read']),
+);
+```
+
+The runtime wrapping behavior is otherwise identical between sides.
+
 ## What this package does NOT do (yet)
 
-* **No graph resolvers** — `GraphQuery<N>` (Neo4j) integration ships
-  in G4. Resolver factories for graph data sources will sit alongside
-  `SqlResolverFactory`.
-* **No cross-source dispatch** — fields that span multiple data
-  sources (a SQL `User` linked to a graph `Friend`) require G5's
-  resolver-composition layer.
 * **No mutations** — the derived schema is read-only. Insert / update
   / delete mutations need their own input-type emission and resolver
-  surface; not in this PR.
-* **No field-level authorization** — `@FieldAuthorize` is a G5 surface.
-  Per-resolver auth checks against `request.authorization` are the
-  current pattern; the conduit `Request` is exposed to resolvers via
-  `globalVariables['conduitRequest']`.
-* **No subscriptions** — out of scope for the entire plan; Conduit core
-  has no WebSocket transport.
+  surface; deferred to v0.6+.
+* **No automatic cross-source joins** — `fromPersistence` routes
+  per-field, never per-query. SQL ↔ graph joins are hand-written
+  stitching resolvers (see `docs/persistence/graphql-cross-source.md`).
+* **No subscriptions** — out of scope for the entire G1–G5 plan.
+  Conduit core has no WebSocket transport.
+* **No `@FieldAuthorize` annotation scraping** — `dart:mirrors` is
+  being deprecated, so G5 ships the annotation as documentation
+  alongside an explicit `FieldAuthPolicy` lookup. A future
+  `build_runner` transformer can emit the policy from the source.
 
 ## Known limitations (G1)
 

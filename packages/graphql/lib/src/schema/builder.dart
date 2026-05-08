@@ -2,8 +2,11 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_graph/conduit_graph.dart';
 import 'package:graphql_schema2/graphql_schema2.dart';
 
+import '../auth/field_authorize.dart';
 import '../resolvers/graph_resolver_factory.dart';
+import '../resolvers/persistence_resolver_factory.dart';
 import 'graph_schema_config.dart';
+import 'query_root_collision_policy.dart';
 import 'scalars.dart';
 
 /// Derives a [GraphQLSchema] from a Conduit [ManagedDataModel].
@@ -529,6 +532,7 @@ class SchemaBuilder {
     return '${singular}s';
   }
 
+
   // -- G3: filter / sort / pagination args ------------------------------------
 
   /// Cache of scalar-keyed predicate input types. Each base scalar
@@ -792,6 +796,7 @@ class SchemaBuilder {
     _sortDirectionEnum = e;
     return e;
   }
+  
   // ===========================================================================
   // G4 — graph schema derivation (parallel hierarchy to fromManagedDataModel).
   //
@@ -1411,4 +1416,623 @@ class SchemaBuilder {
         ),
     ];
   }
+
+  // ===========================================================================
+  // G5 — cross-source dispatch + field-level auth.
+  //
+  // [fromPersistence] unifies the relational walker (G2 + G3) and the graph
+  // walker (G4) into a single emitted [GraphQLSchema]. The two halves remain
+  // strictly additive — every emitted ObjectType is reachable via the
+  // returned [PersistenceSchema]'s side-channel `sourceFor` map, which tags
+  // each type with `'sql'` or `'graph'`.
+  //
+  // Cross-source dispatch is **not** automatic: the umbrella routes per
+  // field, never joins per query. Joining a SQL row to a graph node is a
+  // hand-written stitching resolver — see
+  // `docs/persistence/graphql-cross-source.md` for the worked pattern.
+  // ===========================================================================
+
+  /// Side-channel populated by [fromPersistence]: maps every emitted
+  /// ObjectType (relational + graph) to the literal source tag
+  /// `'sql'` or `'graph'`. Read via [PersistenceSchema.sourceFor].
+  ///
+  /// Built fresh on every [fromPersistence] invocation; previous tags
+  /// are dropped. Other emit paths
+  /// ([fromManagedDataModel] / [fromGraphDataModel]) leave this empty.
+  final Map<GraphQLObjectType, String> _sourceTags = {};
+
+  /// Returns `'sql'`, `'graph'`, or `null` for an [GraphQLObjectType]
+  /// emitted by the most recent [fromPersistence] call.
+  String? sourceTagFor(GraphQLObjectType type) => _sourceTags[type];
+
+  /// Derives a unified [PersistenceSchema] from a [Persistence] umbrella.
+  ///
+  /// Walks both halves of the umbrella (whichever are configured) and
+  /// emits one [GraphQLSchema] with both sides' object types reachable
+  /// from a single Query root. Source-tags every emitted ObjectType so
+  /// callers can introspect which half emitted what.
+  ///
+  /// [resolverFactory] is the cross-source umbrella that wires SQL and
+  /// graph resolvers to their respective emission sites. When non-null
+  /// it is the **single** point of attachment — do not also pass
+  /// resolver hooks via the [SchemaBuilder] constructor; the umbrella's
+  /// hook set replaces them.
+  ///
+  /// [graphConfig] mirrors the parameter on [fromGraphDataModel].
+  ///
+  /// [collisionPolicy] picks how query-root field name collisions
+  /// between the two halves are resolved. Defaults to
+  /// [QueryRootCollisionPolicy.error] for back-compat with G4.
+  ///
+  /// [authPolicy] enables field-level authorization. When non-null it
+  /// is consulted at every emission site (attribute, relationship,
+  /// graph property, query-root) and any descriptor with a registered
+  /// [FieldAuthorize] receives an auth-wrapping resolver that runs
+  /// before the underlying resolver. Failed checks raise a
+  /// `GraphQLException` per the GraphQL execution spec.
+  PersistenceSchema fromPersistence<G extends Object>(
+    Persistence<G> persistence, {
+    PersistenceResolverFactory<G>? resolverFactory,
+    GraphSchemaConfig? graphConfig,
+    QueryRootCollisionPolicy collisionPolicy =
+        QueryRootCollisionPolicy.error,
+    FieldAuthPolicy? authPolicy,
+  }) {
+    if (!persistence.hasSql && !persistence.hasGraph) {
+      throw ArgumentError(
+        'SchemaBuilder.fromPersistence requires at least one of `sql:` or '
+        '`graph:` to be configured on the Persistence umbrella, but the '
+        'umbrella has neither.',
+      );
+    }
+
+    _sourceTags.clear();
+
+    // Build the relational half, if any.
+    final sqlRegistry = <ManagedEntity, GraphQLObjectType>{};
+    final sqlEntities = <ManagedEntity>[];
+    if (persistence.hasSql) {
+      final sqlContext = persistence.sqlContext;
+      if (sqlContext == null) {
+        throw StateError(
+          'SchemaBuilder.fromPersistence: persistence.hasSql is true but '
+          'persistence.sqlContext is null. The umbrella holds the store '
+          'but the application has not yet wired its ManagedContext; '
+          'call this from `prepare()` after attaching the context.',
+        );
+      }
+      final model = sqlContext.dataModel;
+      if (model == null) {
+        throw StateError(
+          'SchemaBuilder.fromPersistence: ManagedContext has no '
+          'dataModel attached.',
+        );
+      }
+      sqlEntities.addAll(model.entities);
+      for (final entity in sqlEntities) {
+        final type = GraphQLObjectType(
+          entity.name,
+          _entityDescription(entity),
+        );
+        sqlRegistry[entity] = type;
+        _sourceTags[type] = 'sql';
+      }
+      for (final entity in sqlEntities) {
+        _populateFields(entity, sqlRegistry);
+      }
+    }
+
+    // Build the graph half, if any.
+    final cfg = graphConfig ?? GraphSchemaConfig();
+    final nodeRegistry = <GraphNodeEntity, GraphQLObjectType>{};
+    final unionMemberRegistry = <String, GraphQLObjectType>{};
+    final edgeRegistry = <GraphEdgeEntity, GraphQLObjectType>{};
+    final unionRegistry = <GraphNodeEntity, GraphQLUnionType>{};
+    final nodeEntities = <GraphNodeEntity>[];
+    final edgeEntities = <GraphEdgeEntity>[];
+    final graphFactory = resolverFactory?.graph;
+    if (persistence.hasGraph) {
+      final graphContextRaw = persistence.graphContext;
+      if (graphContextRaw == null) {
+        throw StateError(
+          'SchemaBuilder.fromPersistence: persistence.hasGraph is true but '
+          'persistence.graphContext is null. Wire the GraphContext in '
+          '`prepare()` before calling fromPersistence.',
+        );
+      }
+      if (graphContextRaw is! GraphContext) {
+        throw StateError(
+          'SchemaBuilder.fromPersistence: persistence.graphContext must be '
+          'a GraphContext instance, got ${graphContextRaw.runtimeType}.',
+        );
+      }
+      final graphModel = graphContextRaw.dataModel;
+      nodeEntities.addAll(graphModel.nodeEntities.values);
+      edgeEntities.addAll(graphModel.edgeEntities.values);
+
+      for (final entity in nodeEntities) {
+        final primary = GraphQLObjectType(
+          entity.label.name,
+          _nodeDescription(entity),
+        );
+        nodeRegistry[entity] = primary;
+        unionMemberRegistry[entity.label.name] = primary;
+        _sourceTags[primary] = 'graph';
+        final extra = cfg.nodeConfig(entity.type).unionLabels;
+        for (final extraName in extra) {
+          if (extraName == entity.label.name) continue;
+          final memberType = unionMemberRegistry.putIfAbsent(
+            extraName,
+            () => GraphQLObjectType(
+              extraName,
+              'Multi-label projection of ${entity.label.name} '
+                  'under the additional label $extraName.',
+            ),
+          );
+          _sourceTags[memberType] = 'graph';
+        }
+      }
+      for (final entity in edgeEntities) {
+        final type = GraphQLObjectType(
+          entity.label.name,
+          _edgeDescription(entity),
+        );
+        edgeRegistry[entity] = type;
+        _sourceTags[type] = 'graph';
+      }
+      for (final entity in nodeEntities) {
+        _populateNodeFields(
+          entity,
+          cfg,
+          nodeRegistry,
+          unionMemberRegistry,
+          edgeEntities,
+          edgeRegistry,
+          graphFactory,
+        );
+      }
+      for (final entity in edgeEntities) {
+        _populateEdgeFields(
+          entity,
+          cfg,
+          nodeRegistry,
+          edgeRegistry,
+          graphFactory,
+        );
+      }
+      for (final entity in nodeEntities) {
+        final extra = cfg.nodeConfig(entity.type).unionLabels;
+        if (extra.isEmpty) continue;
+        final members = <GraphQLObjectType>[
+          nodeRegistry[entity]!,
+          for (final extraName in extra)
+            if (extraName != entity.label.name)
+              unionMemberRegistry[extraName]!,
+        ];
+        final unionName = _unionTypeName(entity.label.name, extra);
+        unionRegistry[entity] = GraphQLUnionType(unionName, members);
+      }
+    }
+
+    // Apply field-level auth wrappers AFTER population so we don't have
+    // to thread the policy through every populator.
+    if (authPolicy != null) {
+      _applyFieldAuthToSqlTypes(sqlRegistry, authPolicy);
+      _applyFieldAuthToGraphProperties(
+        cfg,
+        nodeRegistry,
+        edgeRegistry,
+        unionMemberRegistry,
+        authPolicy,
+      );
+    }
+
+    final hookSet = resolverFactory?.hooks(authPolicy: authPolicy);
+
+    // Build the unified Query root with collision resolution.
+    final queryRoot = _buildUnifiedQueryRoot(
+      sqlEntities: sqlEntities,
+      sqlRegistry: sqlRegistry,
+      nodeEntities: nodeEntities,
+      edgeEntities: edgeEntities,
+      nodeRegistry: nodeRegistry,
+      edgeRegistry: edgeRegistry,
+      unionRegistry: unionRegistry,
+      cfg: cfg,
+      hookSet: hookSet,
+      graphFactory: graphFactory,
+      authPolicy: authPolicy,
+      collisionPolicy: collisionPolicy,
+    );
+
+    return PersistenceSchema._(
+      schema: GraphQLSchema(queryType: queryRoot),
+      sqlObjectTypes: Map.unmodifiable({
+        for (final e in sqlRegistry.entries) e.key.name: e.value,
+      }),
+      graphObjectTypes: Map.unmodifiable({
+        for (final e in nodeRegistry.entries) e.key.label.name: e.value,
+        for (final e in edgeRegistry.entries) e.key.label.name: e.value,
+      }),
+      sourceTags: Map.unmodifiable(_sourceTags),
+    );
+  }
+
+  /// Wraps each pre-populated SQL object type's resolvers with auth
+  /// closures derived from [policy]. Reads the descriptor off the
+  /// builder's data-model walk and replaces the field-resolver slot in
+  /// place — graphql_schema2 v6.5.0 doesn't expose a setter for
+  /// `resolve:`, so we replace the field instance.
+  void _applyFieldAuthToSqlTypes(
+    Map<ManagedEntity, GraphQLObjectType> registry,
+    FieldAuthPolicy policy,
+  ) {
+    for (final entry in registry.entries) {
+      final entity = entry.key;
+      final type = entry.value;
+      final replacements = <GraphQLObjectField, GraphQLObjectField>{};
+      for (final attr in entity.attributes.values
+          .whereType<ManagedAttributeDescription>()) {
+        final auth = policy.authFor(attr);
+        if (auth == null) continue;
+        final field = _findFieldByName(type, attr.name);
+        if (field == null) continue;
+        final inner = field.resolve;
+        if (inner == null) continue;
+        final wrapped = wrapResolverWithAuth(inner, auth);
+        replacements[field] = GraphQLObjectField(
+          field.name,
+          field.type,
+          arguments: field.inputs,
+          resolve: wrapped,
+          description: field.description,
+          deprecationReason: field.deprecationReason,
+        );
+      }
+      for (final rel in entity.relationships.values
+          .whereType<ManagedRelationshipDescription>()) {
+        final auth = policy.authFor(rel);
+        if (auth == null) continue;
+        final field = _findFieldByName(type, rel.name);
+        if (field == null) continue;
+        final inner = field.resolve;
+        if (inner == null) continue;
+        final wrapped = wrapResolverWithAuth(inner, auth);
+        replacements[field] = GraphQLObjectField(
+          field.name,
+          field.type,
+          arguments: field.inputs,
+          resolve: wrapped,
+          description: field.description,
+          deprecationReason: field.deprecationReason,
+        );
+      }
+      for (final old in replacements.keys) {
+        final i = type.fields.indexOf(old);
+        if (i >= 0) type.fields[i] = replacements[old]!;
+      }
+    }
+  }
+
+  /// Wraps every field on every graph-side object type whose
+  /// corresponding [GraphPropertyDescriptor] declared an `auth:` entry,
+  /// or whose lookup against [policy] (using a [GraphPropertyAuthKey])
+  /// returns non-null. Touches both nodes and edges, plus union
+  /// member stubs.
+  void _applyFieldAuthToGraphProperties(
+    GraphSchemaConfig cfg,
+    Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    Map<GraphEdgeEntity, GraphQLObjectType> edgeRegistry,
+    Map<String, GraphQLObjectType> unionMemberRegistry,
+    FieldAuthPolicy policy,
+  ) {
+    for (final entry in nodeRegistry.entries) {
+      final entity = entry.key;
+      final type = entry.value;
+      final nodeCfg = cfg.nodeConfig(entity.type);
+      _wrapDeclaredGraphProperties(
+        owningType: entity.type,
+        objectType: type,
+        descriptors: nodeCfg.properties,
+        policy: policy,
+      );
+      // Mirror onto union-member stubs.
+      for (final extraName in nodeCfg.unionLabels) {
+        if (extraName == entity.label.name) continue;
+        final member = unionMemberRegistry[extraName];
+        if (member == null) continue;
+        _wrapDeclaredGraphProperties(
+          owningType: entity.type,
+          objectType: member,
+          descriptors: nodeCfg.properties,
+          policy: policy,
+        );
+      }
+    }
+    for (final entry in edgeRegistry.entries) {
+      final entity = entry.key;
+      final type = entry.value;
+      final edgeCfg = cfg.edgeConfig(entity.type);
+      _wrapDeclaredGraphProperties(
+        owningType: entity.type,
+        objectType: type,
+        descriptors: edgeCfg.properties,
+        policy: policy,
+      );
+    }
+  }
+
+  void _wrapDeclaredGraphProperties({
+    required Type owningType,
+    required GraphQLObjectType objectType,
+    required List<GraphPropertyDescriptor> descriptors,
+    required FieldAuthPolicy policy,
+  }) {
+    for (final descriptor in descriptors) {
+      final declared = descriptor.auth;
+      final lookedUp =
+          policy.authFor(GraphPropertyAuthKey(owningType, descriptor.name));
+      final auth = declared ?? lookedUp;
+      if (auth == null) continue;
+      final field = _findFieldByName(objectType, descriptor.name);
+      if (field == null) continue;
+      final inner = field.resolve ?? _graphPropertyMapResolver(descriptor.name);
+      final wrapped = wrapResolverWithAuth(inner, auth);
+      final replacement = GraphQLObjectField(
+        field.name,
+        field.type,
+        arguments: field.inputs,
+        resolve: wrapped,
+        description: field.description,
+        deprecationReason: field.deprecationReason,
+      );
+      final i = objectType.fields.indexOf(field);
+      if (i >= 0) objectType.fields[i] = replacement;
+    }
+  }
+
+  /// Default resolver used when a graph-side property field has no
+  /// `resolve:` attached but needs auth wrapping. Reads the property
+  /// off the parent (a `GraphNode` / `GraphEdge` instance) by name.
+  GraphQLFieldResolver<Object?, Object?> _graphPropertyMapResolver(
+    String propertyName,
+  ) {
+    return (parent, _) {
+      if (parent is GraphNode) {
+        return parent[propertyName];
+      }
+      if (parent is GraphEdge) {
+        return parent[propertyName];
+      }
+      if (parent is Map) {
+        return parent[propertyName];
+      }
+      return null;
+    };
+  }
+
+  GraphQLObjectField? _findFieldByName(
+    GraphQLObjectType type,
+    String name,
+  ) {
+    for (final f in type.fields) {
+      if (f.name == name) return f;
+    }
+    return null;
+  }
+
+  /// Builds the unified Query root, applying [collisionPolicy] when a
+  /// SQL field name and a graph field name would otherwise collide.
+  GraphQLObjectType _buildUnifiedQueryRoot({
+    required List<ManagedEntity> sqlEntities,
+    required Map<ManagedEntity, GraphQLObjectType> sqlRegistry,
+    required List<GraphNodeEntity> nodeEntities,
+    required List<GraphEdgeEntity> edgeEntities,
+    required Map<GraphNodeEntity, GraphQLObjectType> nodeRegistry,
+    required Map<GraphEdgeEntity, GraphQLObjectType> edgeRegistry,
+    required Map<GraphNodeEntity, GraphQLUnionType> unionRegistry,
+    required GraphSchemaConfig cfg,
+    required ResolverHookSet? hookSet,
+    required GraphResolverFactory? graphFactory,
+    required FieldAuthPolicy? authPolicy,
+    required QueryRootCollisionPolicy collisionPolicy,
+  }) {
+    // Compute SQL-side field names and graph-side field names in a
+    // dry-run pass so collisions can be detected before fields are
+    // committed to the type.
+    final sqlNames = <String>{};
+    for (final entity in sqlEntities) {
+      final singular = _singularFieldName(entity);
+      final plural = _pluralFieldName(singular);
+      sqlNames.add(singular);
+      sqlNames.add(plural);
+    }
+    final graphNames = <String>{};
+    for (final entity in nodeEntities) {
+      final type = nodeRegistry[entity]!;
+      final singular = _lowerFirst(type.name);
+      final plural = _pluralFieldName(singular);
+      graphNames.add(singular);
+      graphNames.add(plural);
+    }
+    for (final entity in edgeEntities) {
+      final type = edgeRegistry[entity]!;
+      final plural = _pluralFieldName(_lowerFirst(type.name));
+      graphNames.add(plural);
+    }
+
+    final colliding = sqlNames.intersection(graphNames);
+    if (colliding.isNotEmpty &&
+        collisionPolicy == QueryRootCollisionPolicy.error) {
+      throw StateError(
+        'SchemaBuilder.fromPersistence: query-root field names collide '
+        'between the SQL and graph halves: ${colliding.toList()..sort()}. '
+        'Pick a non-error QueryRootCollisionPolicy or rename one of the '
+        'colliding entities.',
+      );
+    }
+
+    String renameSql(String name) =>
+        colliding.contains(name) &&
+                collisionPolicy == QueryRootCollisionPolicy.prefixRelational
+            ? 'r_$name'
+            : name;
+    String renameGraph(String name) =>
+        colliding.contains(name) &&
+                collisionPolicy == QueryRootCollisionPolicy.prefixGraph
+            ? 'g_$name'
+            : name;
+
+    final fields = <GraphQLObjectField<dynamic, dynamic>>[];
+
+    // SQL Query-root fields ---------------------------------------------
+    for (final entity in sqlEntities) {
+      final type = sqlRegistry[entity]!;
+      final singular = renameSql(_singularFieldName(entity));
+      final plural = renameSql(_pluralFieldName(_singularFieldName(entity)));
+
+      final listResolver = hookSet?.queryListResolver(entity);
+      final byPkResolver = hookSet?.queryByPkResolver(entity);
+      final listArgs = _buildListArgsFor(entity);
+      fields.add(
+        GraphQLObjectField(
+          plural,
+          GraphQLListType(type.nonNullable()).nonNullable(),
+          resolve: listResolver,
+          arguments: listArgs,
+          description:
+              'Returns every ${entity.name} (relational source).',
+        ),
+      );
+      final pkAttr = entity.primaryKeyAttribute;
+      if (pkAttr != null) {
+        final pkScalar = _scalarFor(pkAttr);
+        fields.add(
+          GraphQLObjectField(
+            singular,
+            type,
+            resolve: byPkResolver,
+            arguments: [
+              GraphQLFieldInput(
+                pkAttr.name,
+                pkScalar.nonNullable(),
+                description: 'Primary key of the ${entity.name} to fetch.',
+              ),
+            ],
+            description: 'Returns the ${entity.name} with the given '
+                '${pkAttr.name}, or null if none exists.',
+          ),
+        );
+      }
+    }
+
+    // Graph Query-root fields -------------------------------------------
+    for (final entity in nodeEntities) {
+      final type = nodeRegistry[entity]!;
+      final union = unionRegistry[entity];
+      final singular = renameGraph(_lowerFirst(type.name));
+      final plural = renameGraph(_pluralFieldName(_lowerFirst(type.name)));
+
+      // List-all
+      GraphQLFieldResolver<Object?, Object?>? listResolver =
+          graphFactory == null
+              ? null
+              : (_, args) => graphFactory.list(entity: entity, args: args);
+      if (authPolicy != null && listResolver != null) {
+        final auth = authPolicy.authFor(entity);
+        if (auth != null) {
+          listResolver = wrapResolverWithAuth(listResolver, auth);
+        }
+      }
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          plural,
+          GraphQLListType((union ?? type).nonNullable()).nonNullable(),
+          resolve: listResolver,
+          description: 'Returns every ${type.name} (graph source).',
+        ),
+      );
+
+      // By-id
+      GraphQLFieldResolver<Object?, Object?>? byIdResolver =
+          graphFactory == null
+              ? null
+              : (_, args) => graphFactory.byId(entity: entity, args: args);
+      if (authPolicy != null && byIdResolver != null) {
+        final auth = authPolicy.authFor(entity);
+        if (auth != null) {
+          byIdResolver = wrapResolverWithAuth(byIdResolver, auth);
+        }
+      }
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          singular,
+          (union ?? type),
+          resolve: byIdResolver,
+          arguments: [
+            GraphQLFieldInput(
+              'id',
+              graphQLString.nonNullable(),
+              description:
+                  'Store-assigned id of the ${type.name} to fetch.',
+            ),
+          ],
+          description: 'Returns the ${type.name} with the given id '
+              '(graph source), or null if none exists.',
+        ),
+      );
+    }
+    for (final entity in edgeEntities) {
+      final type = edgeRegistry[entity]!;
+      final plural = renameGraph(_pluralFieldName(_lowerFirst(type.name)));
+      fields.add(
+        GraphQLObjectField<dynamic, dynamic>(
+          plural,
+          GraphQLListType(type.nonNullable()).nonNullable(),
+          resolve: graphFactory == null
+              ? null
+              : (_, args) => graphFactory.edgeList(entity: entity, args: args),
+          description: 'Returns every ${type.name} edge record (graph '
+              'source).',
+        ),
+      );
+    }
+
+    return GraphQLObjectType(
+      'Query',
+      'Unified Conduit GraphQL query root, derived from a Persistence '
+          'umbrella. SQL fields and graph fields share this root; '
+          'source tags on each ObjectType identify which half emitted '
+          'it.',
+    )..fields.addAll(fields);
+  }
+}
+
+/// Result type for [SchemaBuilder.fromPersistence]: pairs the emitted
+/// [GraphQLSchema] with the side-channel maps callers need to introspect
+/// which half of the umbrella produced which type.
+class PersistenceSchema {
+  PersistenceSchema._({
+    required this.schema,
+    required this.sqlObjectTypes,
+    required this.graphObjectTypes,
+    required this.sourceTags,
+  });
+
+  /// The unified [GraphQLSchema] ready to hand to [GraphQLController].
+  final GraphQLSchema schema;
+
+  /// Map of relational entity name → emitted [GraphQLObjectType].
+  /// Empty when the umbrella has no SQL store.
+  final Map<String, GraphQLObjectType> sqlObjectTypes;
+
+  /// Map of graph entity (label) name → emitted [GraphQLObjectType].
+  /// Empty when the umbrella has no graph store.
+  final Map<String, GraphQLObjectType> graphObjectTypes;
+
+  /// Source tag (`'sql'` / `'graph'`) keyed by [GraphQLObjectType].
+  final Map<GraphQLObjectType, String> sourceTags;
+
+  /// Returns `'sql'`, `'graph'`, or `null` for [type].
+  String? sourceFor(GraphQLObjectType type) => sourceTags[type];
 }
