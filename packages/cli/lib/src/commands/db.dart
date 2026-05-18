@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/commands/db_generate.dart';
+import 'package:conduit/src/commands/db_rebuild.dart';
 import 'package:conduit/src/commands/db_schema.dart';
 import 'package:conduit/src/commands/db_show_migrations.dart';
 import 'package:conduit/src/commands/db_upgrade.dart';
@@ -16,6 +17,7 @@ class CLIDatabase extends CLICommand {
     registerCommand(CLIDatabaseValidate());
     registerCommand(CLIDatabaseVersion());
     registerCommand(CLIDatabaseSchema());
+    registerCommand(CLIDatabaseRebuild());
   }
 
   @override
