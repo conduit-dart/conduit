@@ -1,0 +1,37 @@
+name: conduit_graphql
+description: GraphQL HTTP transport for conduit. Mounts a GraphQLController over a hand-written GraphQLSchema; schema derivation, resolver framework, and cross-source dispatch are deferred to later phases.
+version: 6.0.0
+home: https://www.theconduit.dev
+repository: https://github.com/conduit-dart/conduit
+issue_tracker: https://github.com/conduit-dart/conduit/issues
+
+environment:
+  sdk: ">=3.12.0-0 <4.0.0"
+resolution: workspace
+
+dependencies:
+  conduit_core: ^6.0.0
+  conduit_graph: ^6.0.0
+  graphql_parser2: ^6.5.0
+  graphql_schema2: ^6.5.0
+  graphql_server2: ^6.5.0
+
+dev_dependencies:
+  # Neo4j backend is exercised only by the gated G4 integration test;
+  # production callers do not pull this in transitively.
+  conduit_graph_neo4j: ^6.0.0
+  # Used by G3 unit + integration tests for SqlResolverFactory. The
+  # graphql package itself does not depend on postgres at runtime;
+  # the resolver factory only assumes a `ManagedContext`, and apps
+  # supply whatever PersistentStore they want.
+  conduit_postgresql: ^6.0.0
+  conduit_test: ^6.0.0
+  http: ^1.2.0
+  lints: ^6.0.0
+  test: ^1.25.2
+  # `test_core` exposes `getUnsafeUnusedPort`, used by the e2e helper
+  # copied from `packages/core/test/_helpers/free_port.dart`. It comes
+  # in transitively via `test`, but the analyzer's
+  # `depend_on_referenced_packages` lint requires we depend on it
+  # directly when we import its `src/util/io.dart`.
+  test_core: any

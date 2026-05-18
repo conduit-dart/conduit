@@ -19,6 +19,7 @@ workspace:
   - packages/core
   - packages/graph
   - packages/graph_neo4j
+  - packages/graphql
   - packages/isolate_exec
   - packages/open_api
   - packages/password_hash
@@ -28,6 +29,7 @@ workspace:
   - packages/sqlite
   - packages/test_harness
   - packages/fs_test_agent
+  - examples/graphql_cross_source
 
 melos:
   command:
@@ -85,6 +87,7 @@ melos:
                             -V conduit_core:$v \
                             -V conduit_graph:$v \
                             -V conduit_graph_neo4j:$v \
+                            -V conduit_graphql:$v \
                             -V conduit_isolate_exec:$v \
                             -V conduit_mysql:$v \
                             -V conduit_open_api:$v \
