@@ -281,4 +281,44 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     final result = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(result.body, contains("key: value"));
   });
+
+  test("--watch reloads the application when a Dart file changes", () async {
+    task = projectUnderTestCli.start("serve", ["--watch", "-n", "1"]);
+    await task.hasStarted;
+
+    // The first request must succeed before we touch any source.
+    final initial =
+        await http.get(Uri.parse("http://localhost:8888/example"));
+    expect(initial.statusCode, 200);
+
+    // Watch the running CLI's output buffer for the restart marker. Polling
+    // here is on a Completer guarded by a hard timeout — no race-condition
+    // sleeps in the assertion path.
+    final restartLogged = Completer<void>();
+    final outputWatcher = Stream.periodic(const Duration(milliseconds: 100))
+        .listen((_) {
+      if (projectUnderTestCli.output.contains("Restart complete")) {
+        if (!restartLogged.isCompleted) {
+          restartLogged.complete();
+        }
+      }
+    });
+
+    // Touch the channel to trigger the watcher. The exact contents don't
+    // matter — any .dart change under lib/ qualifies.
+    projectUnderTestCli.agent.modifyFile("lib/channel.dart", (c) {
+      return "// touched by watch test\n$c";
+    });
+
+    try {
+      await restartLogged.future
+          .timeout(const Duration(seconds: 30));
+    } finally {
+      await outputWatcher.cancel();
+    }
+
+    expect(projectUnderTestCli.output, contains("Change detected"));
+    expect(projectUnderTestCli.output, contains("Restarting application"));
+    expect(projectUnderTestCli.output, contains("channel.dart"));
+  }, timeout: const Timeout(Duration(minutes: 2)));
 }

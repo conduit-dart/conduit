@@ -3,29 +3,26 @@ import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
 
-/// This class is used to define the default configuration used
-/// by Unit Tests to connect to the postgres db.
+/// Default configuration used by unit tests to connect to the test
+/// Postgres instance.
 ///
-/// This class provide three levels of configuration:
-///
-/// environment variables:
-/// If an environment variable is found for one of the settings
-/// then it overrides any of the following source.
-///
-/// .settings.yaml file
-/// If an .settings.yaml file is found then and no environment variable exists
-/// then the setting is taking from .settings.yaml
-///
-/// default values
-/// If no environment variable exists and the .settings.yaml file doesn't
-/// exist then the default value is used.
-///
+/// Resolution order per setting:
+///   1. Environment variable (`POSTGRES_HOST`, `POSTGRES_PORT`,
+///      `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`).
+///   2. Default matching `ci/docker-compose.yaml` — bring it up with
+///      `docker compose -f ci/docker-compose.yaml up -d`.
 class PostgresTestConfig {
   factory PostgresTestConfig() => _self;
 
   PostgresTestConfig._internal();
 
   static final PostgresTestConfig _self = PostgresTestConfig._internal();
+
+  static const String _defaultHost = 'localhost';
+  static const int _defaultPort = 15432;
+  static const String _defaultUsername = 'conduit_test_user';
+  static const String _defaultPassword = 'conduit!';
+  static const String _defaultDbName = 'conduit_test_db';
 
   String get connectionUrl =>
       "postgres://$username:$password@$host:$port/$dbName";
@@ -97,49 +94,34 @@ class PostgresTestConfig {
 
   int? _port;
   int get port {
-    if (_port == null) {
-      /// Check for an environment variable.
-      const key = 'POSTGRES_PORT';
-      if (Platform.environment.containsKey(key)) {
-        final value = Platform.environment[key];
-        if (value != null) {
-          _port = int.tryParse(value);
-        }
-        if (_port == null) {
-          throw ArgumentError(
-              "The Environment Variable $key does not contain a valid integer. Found: $value");
-        }
-      }
+    if (_port != null) return _port!;
+    final raw = Platform.environment['POSTGRES_PORT']?.trim();
+    if (raw == null || raw.isEmpty) return _port = _defaultPort;
+    final parsed = int.tryParse(raw);
+    if (parsed == null) {
+      throw ArgumentError(
+          'POSTGRES_PORT must be an integer; got "$raw"');
     }
-    return _port!;
+    return _port = parsed;
   }
 
   String? _host;
-  String get host => _host ??= _fromEnv('POSTGRES_HOST')!;
+  String get host => _host ??= _envOr('POSTGRES_HOST', _defaultHost);
 
   String? _username;
-  String get username => _username ??= _fromEnv('POSTGRES_USER')!;
+  String get username =>
+      _username ??= _envOr('POSTGRES_USER', _defaultUsername);
 
   String? _password;
-  String get password => _password ??= _fromEnv('POSTGRES_PASSWORD')!;
+  String get password =>
+      _password ??= _envOr('POSTGRES_PASSWORD', _defaultPassword);
 
   String? _dbName;
-  String get dbName => _dbName ??= _fromEnv('POSTGRES_DB')!;
+  String get dbName => _dbName ??= _envOr('POSTGRES_DB', _defaultDbName);
 
-  String? _fromEnv(String key) {
-    String? value;
-
-    /// Check for an environment variable.
-    if (Platform.environment.containsKey(key)) {
-      value = Platform.environment[key];
-      if (value != null) {
-        value = value.trim();
-      }
-      if (value == null || value.isEmpty) {
-        throw ArgumentError(
-            "The Environment Variable $key does not contain a valid String. Found null or an empty string.");
-      }
-    }
+  static String _envOr(String key, String fallback) {
+    final value = Platform.environment[key]?.trim();
+    if (value == null || value.isEmpty) return fallback;
     return value;
   }
 }

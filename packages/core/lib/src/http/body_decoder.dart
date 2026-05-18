@@ -128,6 +128,23 @@ abstract class BodyDecoder {
     return _cast<T>(_decodedData);
   }
 
+  /// The post-decode payload, as a `dynamic` view of the codec's output.
+  ///
+  /// This is the unchecked / un-coerced sibling of [as] — same `hasBeenDecoded`
+  /// guard, no [RuntimeContext.coerce] dispatch. Intended for AOT-emitted
+  /// resource controllers that already know the bound type at codegen time
+  /// and can do their own specialized cast (e.g.
+  /// `List<int>.from(body.decoded as List)`), avoiding the per-request
+  /// `T.toString()` switch in `slow_coerce.cast`. The
+  /// `controller_builder` emits this path for known primitive container
+  /// types; the [as] path remains for `Serializable` and unknown types.
+  dynamic get decoded {
+    if (!hasBeenDecoded) {
+      throw StateError("Attempted to access request body without decoding it.");
+    }
+    return _decodedData;
+  }
+
   T _cast<T>(dynamic body) {
     try {
       return RuntimeContext.current.coerce<T>(body);

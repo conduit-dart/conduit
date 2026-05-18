@@ -1,0 +1,6 @@
+# Tags declared:
+#  - `integration`: requires a live MySQL on `MYSQL_HOST` /
+#    `MYSQL_PORT` (defaults `localhost:13306` user/db `conduit_test_*`).
+#    See `test/orm_integration_test.dart` for the docker-run snippet.
+tags:
+  integration:

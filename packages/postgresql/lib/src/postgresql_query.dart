@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
 import 'postgresql_query_reduce.dart';
-import 'query_builder.dart';
 
 class PostgresQuery<InstanceType extends ManagedObject> extends Object
     with QueryMixin<InstanceType>
@@ -28,7 +27,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   Future<InstanceType> insert() async {
     validateInput(Validating.insert);
 
-    final builder = PostgresQueryBuilder(this);
+    final builder = QueryBuilder(this);
 
     final buffer = StringBuffer();
     buffer.write("INSERT INTO ${builder.sqlTableName} ");
@@ -60,13 +59,13 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     final buffer = StringBuffer();
 
     final allColumns = <String>{};
-    final builders = <PostgresQueryBuilder>[];
+    final builders = <QueryBuilder>[];
 
     for (int i = 0; i < objects.length; i++) {
       values = objects[i];
       validateInput(Validating.insert);
 
-      builders.add(PostgresQueryBuilder(this, "$i"));
+      builders.add(QueryBuilder(this, "$i"));
       allColumns.addAll(builders.last.columnValueKeys);
     }
 
@@ -104,7 +103,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
   Future<List<InstanceType>> update() async {
     validateInput(Validating.update);
 
-    final builder = PostgresQueryBuilder(this);
+    final builder = QueryBuilder(this);
 
     final buffer = StringBuffer();
     buffer.write("UPDATE ${builder.sqlTableName} ");
@@ -143,7 +142,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
   @override
   Future<int> delete() async {
-    final builder = PostgresQueryBuilder(this);
+    final builder = QueryBuilder(this);
 
     final buffer = StringBuffer();
     buffer.write("DELETE FROM ${builder.sqlTableName} ");
@@ -190,8 +189,8 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
 
   //////
 
-  PostgresQueryBuilder createFetchBuilder() {
-    final builder = PostgresQueryBuilder(this);
+  QueryBuilder createFetchBuilder() {
+    final builder = QueryBuilder(this);
 
     if (pageDescriptor != null) {
       validatePageDescriptor();
@@ -205,7 +204,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     return builder;
   }
 
-  Future<List<InstanceType>> _fetch(PostgresQueryBuilder builder) async {
+  Future<List<InstanceType>> _fetch(QueryBuilder builder) async {
     final buffer = StringBuffer();
     buffer.write("SELECT ${builder.sqlColumnsToReturn} ");
     buffer.write("FROM ${builder.sqlTableName} ");

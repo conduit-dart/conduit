@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:postgres/postgres.dart';
-import 'builders/column.dart';
 import 'postgresql_persistent_store.dart';
 import 'postgresql_query.dart';
-import 'query_builder.dart';
 
 enum _Reducer {
   avg,
@@ -16,10 +14,10 @@ enum _Reducer {
 
 class PostgresQueryReduce<T extends ManagedObject>
     extends QueryReduceOperation<T> {
-  PostgresQueryReduce(this.query) : builder = PostgresQueryBuilder(query);
+  PostgresQueryReduce(this.query) : builder = QueryBuilder(query);
 
   final PostgresQuery<T> query;
-  final PostgresQueryBuilder builder;
+  final QueryBuilder builder;
 
   @override
   Future<double?> average(num? Function(T object) selector) {

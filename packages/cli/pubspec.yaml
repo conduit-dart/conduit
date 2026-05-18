@@ -28,6 +28,7 @@ dependencies:
   path: ^1.9.0
   postgres: ^3.1.1
   pub_semver: ^2.1.4
+  watcher: ^1.2.0
   yaml: ^3.1.2
 
 dev_dependencies:

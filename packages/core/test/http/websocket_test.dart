@@ -104,6 +104,26 @@ void main() {
       final rxUser1 = user1.stream.asBroadcastStream();
       final rxUser2 = user2.stream.asBroadcastStream();
 
+      // Wait for both client-side handshakes to complete. This also
+      // forces the server's `WebSocketTransformer.upgrade` futures to
+      // resolve, so `_socket["user1"]` and `_socket["user2"]` are
+      // populated before the first cross-user send below.
+      await user1.ready;
+      await user2.ready;
+
+      // Server-side, `newChat` sets `_socket[user]` and then attaches
+      // the listener in two synchronous statements. Run a self-ping
+      // through each client so the test only proceeds once both
+      // sockets are end-to-end wired (registration + listener +
+      // round-trip). Without this, sending user1→user2 immediately
+      // after `await user2.ready` could land at the server before
+      // user2's listener is attached, dropping the message and
+      // hanging the test until the 2-minute file-level timeout.
+      user1.sink.add('{"to": "user1", "msg": "ready1"}');
+      expect(await rxUser1.first, 'ready1');
+      user2.sink.add('{"to": "user2", "msg": "ready2"}');
+      expect(await rxUser2.first, 'ready2');
+
       const sentMsg1 = "hello user 2";
       const send1 = '{"to": "user2", "msg": "$sentMsg1"}';
 

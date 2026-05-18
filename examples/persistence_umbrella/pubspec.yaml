@@ -1,0 +1,37 @@
+name: persistence_umbrella_example
+description: >-
+  Sample application demonstrating Conduit's `Persistence` umbrella holding
+  both a relational and a graph store side-by-side. Uses fake stores so it
+  boots without infrastructure.
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ">=3.12.0-0 <4.0.0"
+
+dependencies:
+  conduit_core:
+    path: ../../packages/core
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^6.0.0
+
+# The path-based core dep transitively pulls every other conduit_* package;
+# overrides redirect those to their in-tree workspace siblings so the
+# example resolves against the local source under all conditions.
+dependency_overrides:
+  conduit_common:
+    path: ../../packages/common
+  conduit_config:
+    path: ../../packages/config
+  conduit_codable:
+    path: ../../packages/codable
+  conduit_isolate_exec:
+    path: ../../packages/isolate_exec
+  conduit_open_api:
+    path: ../../packages/open_api
+  conduit_password_hash:
+    path: ../../packages/password_hash
+  conduit_runtime:
+    path: ../../packages/runtime

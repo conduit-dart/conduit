@@ -8,9 +8,12 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import '../../_helpers/free_port.dart';
+
 void main() {
   group("Happy path", () {
     late Application app;
+    late int port;
 
     tearDown(() async {
       await app.stop();
@@ -19,10 +22,14 @@ void main() {
     test(
         "A message sent to the hub is received by other channels, but not by sender",
         () async {
-      app = Application<HubChannel>()..options.port = 8000;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>(),
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
-      final resp = await postMessage("msg1");
+      final resp = await postMessage(port, "msg1");
       final postingIsolateID = isolateIdentifierFromResponse(resp);
       var id1 = 1;
       var id2 = 2;
@@ -34,6 +41,7 @@ void main() {
 
       expect(
         waitForMessages(
+          port,
           {
             id1: [
               {"isolateID": postingIsolateID, "message": "msg1"}
@@ -50,13 +58,16 @@ void main() {
 
     test("A message sent in prepare is received by all channels eventually",
         () async {
-      app = Application<HubChannel>()
-        ..options.port = 8000
-        ..options.context["sendIn"] = "prepare";
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>()
+          ..options.context["sendIn"] = "prepare",
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
       expect(
-        waitForMessages({
+        waitForMessages(port, {
           1: [
             {"isolateID": 2, "message": "init"},
             {"isolateID": 3, "message": "init"}
@@ -77,18 +88,22 @@ void main() {
 
   group("Multiple listeners", () {
     late Application app;
+    late int port;
 
     tearDown(() async {
       await app.stop();
     });
 
     test("Message hub stream can have multiple listeners", () async {
-      app = Application<HubChannel>()
-        ..options.port = 8000
-        ..options.context["multipleListeners"] = true;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>()
+          ..options.context["multipleListeners"] = true,
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
-      final resp = await postMessage("msg1");
+      final resp = await postMessage(port, "msg1");
       final postingIsolateID = isolateIdentifierFromResponse(resp);
 
       var id1 = 1;
@@ -101,6 +116,7 @@ void main() {
 
       expect(
         waitForMessages(
+          port,
           {
             id1: [
               {"isolateID": postingIsolateID, "message": "msg1"},
@@ -120,17 +136,22 @@ void main() {
 
   group("Failure cases", () {
     late Application app;
+    late int port;
 
     tearDown(() async {
       await app.stop();
     });
 
     test("Send invalid x-isolate data returns error in error stream", () async {
-      app = Application<HubChannel>()..options.port = 8000;
-      await app.start(numberOfInstances: 3);
+      final started = await startWithFreePort(
+        () => Application<HubChannel>(),
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
-      var resp = await postMessage("garbage");
-      final errors = await getErrorsFromIsolates();
+      var resp = await postMessage(port, "garbage");
+      final errors = await getErrorsFromIsolates(port);
       final serverID = isolateIdentifierFromResponse(resp);
       expect(errors[serverID]!.length, 1);
       expect(
@@ -141,13 +162,13 @@ void main() {
       // Make sure that we can still send messages from the isolate that encountered the error
       dynamic resendID;
       while (resendID != serverID) {
-        resp = await postMessage("ok");
+        resp = await postMessage(port, "ok");
         resendID = isolateIdentifierFromResponse(resp);
       }
 
       final int expectedReceiverID = resendID == 1 ? 2 : 1;
       expect(
-        waitForMessages({
+        waitForMessages(port, {
           expectedReceiverID: [
             {"isolateID": serverID, "message": "ok"}
           ]
@@ -158,19 +179,20 @@ void main() {
   });
 }
 
-Future<http.Response> postMessage(String message) async {
+Future<http.Response> postMessage(int port, String message) async {
   return http.post(
-    Uri.parse("http://localhost:8000/send"),
+    Uri.parse("http://localhost:$port/send"),
     headers: {HttpHeaders.contentTypeHeader: ContentType.text.toString()},
     body: message,
   );
 }
 
 Future waitForMessages(
+  int port,
   Map<int, List<Map<String, dynamic>>> expectedMessages, {
   int? butNeverReceiveIn,
 }) async {
-  final response = await http.get(Uri.parse("http://localhost:8000/messages"));
+  final response = await http.get(Uri.parse("http://localhost:$port/messages"));
   final respondingIsolateID = isolateIdentifierFromResponse(response);
   final messages = json.decode(response.body) as List<dynamic>?;
 
@@ -201,6 +223,7 @@ Future waitForMessages(
 
   if (expectedMessages.isNotEmpty) {
     return waitForMessages(
+      port,
       expectedMessages,
       butNeverReceiveIn: butNeverReceiveIn,
     );
@@ -209,11 +232,13 @@ Future waitForMessages(
   return null;
 }
 
-Future<Map<int, List<Map<String, dynamic>>>> getMessagesFromIsolates() async {
+Future<Map<int, List<Map<String, dynamic>>>> getMessagesFromIsolates(
+  int port,
+) async {
   final msgs = <int, List<Map<String, dynamic>>>{};
 
   while (msgs.length != 3) {
-    final resp = await http.get(Uri.parse("http://localhost:8000/messages"));
+    final resp = await http.get(Uri.parse("http://localhost:$port/messages"));
     final serverID = isolateIdentifierFromResponse(resp);
 
     if (!msgs.containsKey(serverID)) {
@@ -224,11 +249,11 @@ Future<Map<int, List<Map<String, dynamic>>>> getMessagesFromIsolates() async {
   return msgs;
 }
 
-Future<Map<int, List<String>>> getErrorsFromIsolates() async {
+Future<Map<int, List<String>>> getErrorsFromIsolates(int port) async {
   final msgs = <int, List<String>>{};
 
   while (msgs.length != 3) {
-    final resp = await http.get(Uri.parse("http://localhost:8000/errors"));
+    final resp = await http.get(Uri.parse("http://localhost:$port/errors"));
     final serverID = isolateIdentifierFromResponse(resp);
 
     if (!msgs.containsKey(serverID)) {

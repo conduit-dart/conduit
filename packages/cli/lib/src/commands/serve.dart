@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:conduit/src/command.dart';
+import 'package:conduit/src/commands/serve_watch.dart';
 import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit/src/running_process.dart';
@@ -89,6 +90,36 @@ class CLIServer extends CLICommand with CLIProject {
   )
   File get configurationFile => File(decode("config-path")).absolute;
 
+  @Flag(
+    "watch",
+    help:
+        "Watches Dart source files (and pubspec.yaml/analysis_options.yaml) "
+        "and restarts the application when they change. Useful for development.",
+    negatable: false,
+    defaultsTo: false,
+  )
+  bool get watchMode => decode<bool>("watch");
+
+  @Option(
+    "watch-paths",
+    help:
+        "Comma-separated list of paths (relative to the project) that 'serve "
+        "--watch' should monitor. Defaults to lib,bin. pubspec.yaml and "
+        "analysis_options.yaml are always watched implicitly.",
+    defaultsTo: "lib,bin",
+  )
+  String get watchPathsRaw => decode<String>("watch-paths");
+
+  List<String> get watchPaths {
+    final extras = <String>['pubspec.yaml', 'analysis_options.yaml'];
+    final user = watchPathsRaw
+        .split(',')
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
+    return [...user, ...extras];
+  }
+
   ReceivePort? messagePort;
   ReceivePort? errorPort;
   Completer<int> exitCode = Completer<int>();
@@ -96,9 +127,21 @@ class CLIServer extends CLICommand with CLIProject {
   @override
   StoppableProcess? runningProcess;
 
+  WatchedServer? _watchedServer;
+
   @override
   Future<int> handle() async {
     await _prepare();
+
+    if (watchMode) {
+      try {
+        runningProcess = await _startWatchMode();
+      } catch (e, st) {
+        displayError("Application failed to start in watch mode.");
+        exitCode.completeError(e, st);
+      }
+      return exitCode.future;
+    }
 
     try {
       runningProcess = await _start();
@@ -114,11 +157,41 @@ class CLIServer extends CLICommand with CLIProject {
   Future cleanup() async {
     messagePort?.close();
     errorPort?.close();
+    final ws = _watchedServer;
+    _watchedServer = null;
+    if (ws != null && !ws.isShuttingDown) {
+      await ws.stop();
+    }
+  }
+
+  /// Wraps [_start] in a [WatchedServer]. The returned [StoppableProcess]
+  /// owns SIGINT/SIGTERM handling for the parent CLI: stopping it tears down
+  /// both the watcher and the current child app, then completes [exitCode].
+  Future<StoppableProcess> _startWatchMode() async {
+    displayInfo("Starting application in watch mode");
+    final ws = WatchedServer(
+      starter: () => _start(asWatchChild: true),
+      projectDirectory: projectDirectory!,
+      watchPaths: watchPaths,
+      onLog: displayProgress,
+    );
+    _watchedServer = ws;
+    await ws.start();
+
+    final outer = StoppableProcess((reason) async {
+      displayInfo("Stopping watch mode.");
+      displayProgress("Reason: $reason");
+      await ws.stop();
+      if (!exitCode.isCompleted) {
+        exitCode.complete(0);
+      }
+    });
+    return outer;
   }
 
   /////
 
-  Future<StoppableProcess> _start() async {
+  Future<StoppableProcess> _start({bool asWatchChild = false}) async {
     final replacements = {
       "PACKAGE_NAME": packageName,
       "LIBRARY_NAME": libraryName,
@@ -137,46 +210,63 @@ class CLIServer extends CLICommand with CLIProject {
     displayProgress("Config: ${configurationFile.path}");
     displayProgress("Port: $port");
 
-    errorPort = ReceivePort();
-    messagePort = ReceivePort();
+    final localErrorPort = ReceivePort();
+    final localMessagePort = ReceivePort();
+    if (!asWatchChild) {
+      // Non-watch path keeps the legacy single-server semantics: the field
+      // copies are tracked so cleanup() can close them. In watch mode we
+      // close the per-child ports inside the StoppableProcess returned below.
+      errorPort = localErrorPort;
+      messagePort = localMessagePort;
+    }
 
     final generatedStartScript = createScriptSource(replacements);
     final dataUri = Uri.parse(
       "data:application/dart;charset=utf-8,${Uri.encodeComponent(generatedStartScript)}",
     );
     final startupCompleter = Completer<SendPort>();
+    final stoppedCompleter = Completer<void>();
 
     final isolate = await Isolate.spawnUri(
       dataUri,
       [],
-      messagePort!.sendPort,
-      onError: errorPort!.sendPort,
+      localMessagePort.sendPort,
+      onError: localErrorPort.sendPort,
       packageConfig: fileInProjectDirectory(
         ".dart_tool/package_config.json",
       ).uri,
       paused: true,
     );
 
-    errorPort!.listen((msg) {
+    localErrorPort.listen((msg) {
       if (msg is List) {
-        startupCompleter.completeError(
-          msg.first as Object,
-          StackTrace.fromString(msg.last as String),
-        );
+        if (!startupCompleter.isCompleted) {
+          startupCompleter.completeError(
+            msg.first as Object,
+            StackTrace.fromString(msg.last as String),
+          );
+        }
       }
     });
 
-    messagePort!.listen((msg) {
+    localMessagePort.listen((msg) {
       final message = msg as Map<dynamic, dynamic>;
       switch (message["status"] as String?) {
         case "ok":
           {
-            startupCompleter.complete(message["port"] as SendPort?);
+            if (!startupCompleter.isCompleted) {
+              startupCompleter.complete(message["port"] as SendPort?);
+            }
           }
           break;
         case "stopped":
           {
-            exitCode.complete(0);
+            if (!stoppedCompleter.isCompleted) {
+              stoppedCompleter.complete();
+            }
+            if (!asWatchChild && !exitCode.isCompleted) {
+              exitCode.complete(0);
+            }
           }
       }
     });
@@ -197,6 +287,18 @@ class CLIServer extends CLICommand with CLIProject {
       displayInfo("Stopping application.");
       displayProgress("Reason: $reason");
       sendPort.send({"command": "stop"});
+      if (asWatchChild) {
+        // Wait briefly for the child to acknowledge the stop, then close the
+        // per-child receive ports so they don't leak across restarts.
+        try {
+          await stoppedCompleter.future
+              .timeout(const Duration(seconds: 5));
+        } catch (_) {
+          // Best-effort: even if the isolate didn't acknowledge, drop ports.
+        }
+        localMessagePort.close();
+        localErrorPort.close();
+      }
     });
 
     return process;

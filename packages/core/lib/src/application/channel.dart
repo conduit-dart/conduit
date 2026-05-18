@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:conduit_common/conduit_common.dart';
 import 'package:conduit_core/src/application/application.dart';
 import 'package:conduit_core/src/application/isolate_application_server.dart';
+import 'package:conduit_core/src/db/managed/context.dart';
+import 'package:conduit_core/src/db/managed/data_model.dart';
+import 'package:conduit_core/src/db/persistence.dart';
 import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/runtime.dart';
@@ -96,6 +99,38 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
   /// on other isolates.
   ApplicationOptions? options;
 
+  /// The unified persistence umbrella for this channel.
+  ///
+  /// Holds the relational [PersistentStore] and an optional graph store
+  /// behind a single object so controllers can be handed one dependency
+  /// instead of two, and shutdown can [Persistence.close] both at once.
+  ///
+  /// Construct in [prepare] and assign to this field:
+  ///
+  /// ```dart
+  /// @override
+  /// Future<void> prepare() async {
+  ///   persistence = Persistence(
+  ///     sql: PostgreSQLPersistentStore.fromConnectionInfo(...),
+  ///     graph: Neo4jPersistentStore(Uri.parse('bolt://localhost:7687')),
+  ///   );
+  ///   attachPersistence(
+  ///     persistence!,
+  ///     sqlModel: ManagedDataModel.fromCurrentMirrorSystem(),
+  ///   );
+  /// }
+  /// ```
+  ///
+  /// Typed as `Persistence<Object>?` rather than a specific graph-store
+  /// type so this base class stays graph-agnostic — applications may
+  /// assign any `Persistence<G>` here (Dart's covariant generics make
+  /// the assignment legal). Cast `persistence!.graph` to your concrete
+  /// graph-store type at the use site if you need the precise type.
+  ///
+  /// This field is additive; existing channels that wire `ManagedContext`
+  /// directly continue to work unchanged.
+  Persistence<Object>? persistence;
+
   /// You implement this accessor to define how HTTP requests are handled by your application.
   ///
   /// You must implement this method to return the first controller that will handle an HTTP request. Additional controllers
@@ -128,6 +163,32 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
   ///
   /// Override this method to take action just before [entryPoint] starts receiving requests. By default, does nothing.
   void willStartReceivingRequests() {}
+
+  /// Builds a [ManagedContext] from a [Persistence] and assigns it to
+  /// `persistence.sqlContext`.
+  ///
+  /// This is a thin convenience for the common SQL wiring path. It only
+  /// touches the relational side — graph contexts depend on
+  /// `package:conduit_graph` types this base class deliberately does not
+  /// import, so consumers that use the graph backend should construct
+  /// their `GraphContext` directly and assign it to
+  /// `persistence.graphContext`:
+  ///
+  /// ```dart
+  /// persistence!.graphContext = GraphContext(graphModel, persistence!.graph as Neo4jPersistentStore);
+  /// ```
+  ///
+  /// Returns the same [Persistence] for fluent use; if [p] does not have
+  /// a SQL store configured, this method is a no-op for the SQL side.
+  Persistence<G> attachPersistence<G extends Object>(
+    Persistence<G> p, {
+    ManagedDataModel? sqlModel,
+  }) {
+    if (p.hasSql && sqlModel != null) {
+      p.sqlContext = ManagedContext(sqlModel, p.sql);
+    }
+    return p;
+  }
 
   /// You override this method to release any resources created in [prepare].
   ///

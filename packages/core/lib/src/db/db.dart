@@ -1,4 +1,15 @@
 export 'managed/managed.dart';
+export 'persistence.dart';
 export 'persistent_store/persistent_store.dart';
+export 'persistent_store/sql_dialect.dart';
+export 'persistent_store/sql_expression_visitor.dart';
+export 'query/builders/column.dart';
+export 'query/builders/expression.dart';
+export 'query/builders/query_builder.dart';
+export 'query/builders/row_instantiator.dart';
+export 'query/builders/sort.dart';
+export 'query/builders/table.dart';
+export 'query/builders/value.dart';
+export 'query/expression_ast.dart';
 export 'query/query.dart';
 export 'schema/schema.dart';
