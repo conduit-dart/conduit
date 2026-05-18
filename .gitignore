@@ -37,3 +37,7 @@ site/
 _build/
 
 *.reflectable.dart
+
+# Claude Code agent worktrees and pub-cache used by Docker-based CI runs.
+.claude/worktrees/
+.pub-cache-docker/
