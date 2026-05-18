@@ -19,7 +19,7 @@ dependencies:
 dev_dependencies:
   # Neo4j backend is exercised only by the gated G4 integration test;
   # production callers do not pull this in transitively.
-  conduit_graph_neo4j: ^6.0.0
+  conduit_graph_neo4j: ^7.0.0
   # Used by G3 unit + integration tests for SqlResolverFactory. The
   # graphql package itself does not depend on postgres at runtime;
   # the resolver factory only assumes a `ManagedContext`, and apps
