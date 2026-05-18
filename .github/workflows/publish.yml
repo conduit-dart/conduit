@@ -1,122 +1,314 @@
 name: Release
 
+# Two trigger modes:
+#
+#   1. workflow_dispatch — operator-driven dry runs (validate the release
+#      candidate without touching pub.dev) and explicit dispatched real
+#      releases when the operator does not want to push a tag yet.
+#
+#   2. tag push (v*.*.*) — the canonical release trigger. The operator
+#      pushes `vX.Y.Z` after the workspace pubspec.yaml is on `version: X.Y.Z`
+#      and CHANGELOG sections are in place. CI gates publish on green.
+#
+# This is the deliberate replacement for the previous head-commit-prefix
+# trigger ("publish on every feat|fix|... master commit"), which silently
+# republished the same workspace version on every feature merge and
+# masked publish-time failures (exactly how `conduit_sqlite`, `_mysql`,
+# `_graph`, `_graph_neo4j`, and `_graphql` were never published despite
+# being versioned at 6.0.0 since Oct 2025).
+
 on:
   push:
-    branches:
-    - master
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (x.y.z, no leading v)'
+        required: true
+      dry_run:
+        description: 'Run dry-run only (no actual publish, no tag, no GH release)'
+        type: boolean
+        default: true
 
 concurrency:
-  group: "publish"
-    
+  group: publish
+  cancel-in-progress: false
+
 jobs:
-  pub:
-    if: |
-      startsWith(github.event.head_commit.message, 'feat')
-      || startsWith(github.event.head_commit.message, 'fix')
-      || startsWith(github.event.head_commit.message, 'bug')
-      || startsWith(github.event.head_commit.message, 'perf')
-      || startsWith(github.event.head_commit.message, 'refactor')
-      || startsWith(github.event.head_commit.message, 'revert')
+  # ---------------------------------------------------------------------------
+  # prepare: derive the release version from the trigger and assert that
+  # pubspec.yaml's `version:` matches. Fails fast if the operator pushed
+  # `v7.0.1` but forgot to bump pubspec.yaml.
+  # ---------------------------------------------------------------------------
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.derive.outputs.version }}
+      dry_run: ${{ steps.derive.outputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: derive
+        name: Derive release version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            v="${GITHUB_REF_NAME#v}"
+            dry=false
+          else
+            v="${{ inputs.version }}"
+            dry="${{ inputs.dry_run }}"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "dry_run=$dry" >> "$GITHUB_OUTPUT"
+          echo "Release version: $v (dry_run=$dry)"
+      - name: Assert pubspec.yaml version matches
+        run: |
+          ws_v=$(sed -nE 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*$/\1/p' pubspec.yaml | head -1)
+          if [ "$ws_v" != "${{ steps.derive.outputs.version }}" ]; then
+            echo "::error::Workspace pubspec.yaml is at $ws_v but trigger wants ${{ steps.derive.outputs.version }}."
+            echo "::error::Bump pubspec.yaml first, run `melos sync-version`, commit, then retry."
+            exit 1
+          fi
+
+  # ---------------------------------------------------------------------------
+  # dry-run: `dart pub publish --dry-run` across all 18 packages. Fails the
+  # whole pipeline on any single-package error. This is the gate that would
+  # have caught the missing-CHANGELOG.md silent failures in the 6.0.0
+  # release window.
+  #
+  # Note: there is no separate `require-green-ci` job in this workflow.
+  # `linux.yml` and `macos.yml` only trigger on `pull_request`, not on tag
+  # push, so a tag-SHA CI run does not exist to wait for. Operators must
+  # rely on branch protection to ensure master is green before tagging,
+  # and the dry-run step here is the last-mile validation.
+  # ---------------------------------------------------------------------------
+  dry-run:
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: dart-lang/setup-dart@v1
-      with:
-        sdk: main
-    - name: Prepare pub credentials
-      run: |
-        mkdir "$XDG_CONFIG_HOME/dart"
-        echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-    - name: Git config
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-    - name: Install melos
-      run: |
-        cat pubspec.yaml
-        dart pub global activate melos
-    - name: Uptick versions
-      run: melos sync-version
-    - name: Changelog
-      run: git diff --unified=0 $GITHUB_SHA packages/cli/CHANGELOG.md | tail +6 | sed -e 's/^\+//' > CHANGES.txt
-    - name: Cache Source
-      run: melos cache-source
-    - name: Publish package
-      run: melos publish --no-dry-run --git-tag-version --yes
-    - name: Push tags
-      uses: CasperWA/push-protected@v2
-      with:
-        token: ${{ secrets.CONDUIT_PAT }}
-        tags: true
-        branch: master
-    - name: Compute the release tag
-      run: |
-        echo "release_tag=v`cat pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ env.release_tag }}
-        body_path: CHANGES.txt
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
+      - name: Activate melos
+        run: dart pub global activate melos
+      - name: Bootstrap workspace
+        run: melos bootstrap
+      - name: Seed pub cache with workspace packages
+        run: melos cache-source
+      - name: Dry-run publish for every workspace package
+        # Fail-fast: any single dry-run failure aborts the release.
+        run: melos exec --no-private -- "dart pub publish --dry-run"
+
+  # ---------------------------------------------------------------------------
+  # publish: walk the workspace in topological order via `melos exec
+  # --order-dependents` (layered topological sort, available since melos
+  # 7.4.0; uses `dart pub publish` per package directly so OIDC trusted
+  # publishing kicks in).
+  #
+  # OIDC trusted publishing requires a one-time per-package configuration
+  # in pub.dev's admin UI (Trusted Publishers section) pointing at this
+  # repo + workflow. Without that, `dart pub publish` errors because no
+  # `pub-credentials.json` is written. The 5 packages that were never on
+  # pub.dev (`conduit_sqlite`, `_mysql`, `_graph`, `_graph_neo4j`,
+  # `_graphql`) need an initial credential-based publish before trusted
+  # publishing can be configured for them — see Phase A of the plan in
+  # ~/.claude/plans/analyze-release-pipeline-and-dreamy-puppy.md.
+  #
+  # The implicit dependency order produced by `--order-dependents`
+  # matches the documented Phase A4 tier list:
+  #   Tier 0: codable, fs_test_agent, runtime, password_hash,
+  #           isolate_exec, graph
+  #   Tier 1: open_api, config, graph_neo4j
+  #   Tier 2: common
+  #   Tier 3: core
+  #   Tier 4: postgresql, sqlite, mysql, test_harness, build_runner,
+  #           graphql
+  #   Tier 5: cli
+  #
+  # `--concurrency 1` forces sequential execution so the inter-package
+  # poll has a stable point to reach. The poll handles pub.dev's index
+  # propagation lag — `dart pub publish` returns when the upload is
+  # accepted, but dependent resolvers may not see the new version for a
+  # few seconds afterward.
+  # ---------------------------------------------------------------------------
+  publish:
+    needs: [prepare, dry-run]
+    if: needs.prepare.outputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write    # required for OIDC trusted publishing
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: beta
+      - name: Activate melos
+        run: dart pub global activate melos
+      - name: Bootstrap workspace
+        run: melos bootstrap
+      - name: Publish in topological order
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          melos exec --order-dependents --concurrency 1 --no-private -- '
+            set -e
+            echo "::group::Publishing $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION"
+            dart pub publish --force
+            echo "::endgroup::"
+            for i in $(seq 1 30); do
+              v=$(curl -sf "https://pub.dev/api/packages/$MELOS_PACKAGE_NAME" \
+                  | jq -r ".latest.version" 2>/dev/null || echo "")
+              if [ "$v" = "$MELOS_PACKAGE_VERSION" ]; then
+                echo "$MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION visible on pub.dev"
+                break
+              fi
+              [ "$i" -eq 30 ] && {
+                echo "::error::pub.dev never reported $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION after 5 minutes."
+                exit 1
+              }
+              echo "Waiting for $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION on pub.dev (currently: ${v:-unknown})…"
+              sleep 10
+            done
+          '
+
+  # ---------------------------------------------------------------------------
+  # tag-and-release: only if this was a workflow_dispatch (real, not dry).
+  # Tag-push triggers already have the tag; just create the GH release.
+  # ---------------------------------------------------------------------------
+  tag-and-release:
+    needs: [prepare, publish]
+    if: needs.prepare.outputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Push tag (workflow_dispatch only — tag-push trigger already has it)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          V: ${{ needs.prepare.outputs.version }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git tag -a "v$V" -m "Conduit $V"
+          git push origin "v$V"
+      - name: Aggregate per-package release notes
+        env:
+          V: ${{ needs.prepare.outputs.version }}
+        run: |
+          {
+            echo "## Conduit $V"
+            echo
+            echo "Per-package highlights (from each \`packages/*/CHANGELOG.md\`'s \`## $V\` section):"
+            echo
+            for f in packages/*/CHANGELOG.md; do
+              pkg_name=$(grep -m1 '^name:' "$(dirname "$f")/pubspec.yaml" | awk '{print $2}')
+              section=$(awk -v v="## $V" '
+                $0 == v {flag=1; next}
+                /^## / && flag {exit}
+                flag {print}
+              ' "$f")
+              if [ -n "$section" ]; then
+                echo "### $pkg_name"
+                echo
+                echo "$section"
+                echo
+              fi
+            done
+          } > CHANGES.md
+          echo "Generated CHANGES.md ($(wc -l < CHANGES.md) lines)."
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          name: Conduit ${{ needs.prepare.outputs.version }}
+          body_path: CHANGES.md
+          generate_release_notes: true   # auto-append PRs since previous tag
+
+  # ---------------------------------------------------------------------------
+  # docker / docker-flutter: build and push images on the same tag-push or
+  # dispatch event. Trigger is no longer the brittle `chore`-commit gate.
+  # ---------------------------------------------------------------------------
   docker:
-    if: |
-      startsWith(github.event.head_commit.message, 'chore')
+    needs: [prepare, publish]
+    if: needs.prepare.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     strategy:
-        # PR #250 raised the workspace SDK floor to >=3.12.0-0. Until
-        # Dart 3.12 ships in the `stable` channel, the `dart:stable` /
-        # `dart:latest` Docker images carry Dart 3.11.x and `dart pub
-        # global activate -spath packages/cli` fails on the SDK
-        # constraint. Build only against `beta` for now; restore the
-        # `main` / `stable` matrix entries once Dart 3.12 is GA.
-        matrix:
-          dart_channel:
-            - beta
+      # PR #250 raised the workspace SDK floor to >=3.12.0-0. Until Dart
+      # 3.12 ships in `stable`, the `dart:stable` / `dart:latest` images
+      # carry Dart 3.11.x and `dart pub global activate -spath
+      # packages/cli` fails on the SDK constraint. Build only against
+      # `beta` for now; restore the `main` / `stable` matrix entries once
+      # Dart 3.12 is GA.
+      matrix:
+        dart_channel:
+          - beta
     steps:
-    - uses: actions/checkout@v4
-    - name: Compute the release tag
-      run: |
-        echo "release_tag=v`cat pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PAT }}
-    - name: Build and Push
-      run: docker buildx build --platform linux/amd64,linux/arm64/v8,linux/arm/v7 --file docker/Dockerfile.${{ matrix.dart_channel }} --tag conduitdart/conduit:${{ env.release_tag }}-${{ matrix.dart_channel }} --push .
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PAT }}
+      - name: Build and push
+        env:
+          V: ${{ needs.prepare.outputs.version }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64/v8,linux/arm/v7 \
+            --file docker/Dockerfile.${{ matrix.dart_channel }} \
+            --tag conduitdart/conduit:v$V-${{ matrix.dart_channel }} \
+            --push .
+
   docker-flutter:
-    if: |
-      startsWith(github.event.head_commit.message, 'chore')
+    needs: [prepare, publish]
+    if: needs.prepare.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Compute the release tag
-      run: |
-        echo "release_tag=v`cat pubspec.yaml | sed -nre 's/^version: [^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'`" >> $GITHUB_ENV
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-    - name: Login to GHCR
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.CONDUIT_PAT }}
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PAT }}
-    # The cirruslabs/flutter:latest image bundles Dart 3.11.x; the
-    # workspace SDK floor is >=3.12.0-0 (PR #250). Build only the
-    # `aot-builder` stage of Dockerfile.flutter-aot, which uses
-    # `dart:beta` and does the workspace bootstrap. The Flutter
-    # downstream stage stays defined for local-dev use but is
-    # excluded from the published image until the Flutter image
-    # ships Dart 3.12.
-    - name: Build
-      run: docker buildx build --platform linux/amd64,linux/arm64/v8 --target aot-builder --file docker/Dockerfile.flutter-aot --tag conduitdart/conduit:${{ env.release_tag }}-flutter --push .
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.CONDUIT_PAT }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PAT }}
+      # cirruslabs/flutter:latest still bundles Dart 3.11.x; the
+      # workspace SDK floor is >=3.12.0-0 (PR #250). Build only the
+      # `aot-builder` stage of Dockerfile.flutter-aot, which uses
+      # `dart:beta`. The Flutter downstream stage stays defined for
+      # local-dev use but is excluded from the published image until
+      # the Flutter image ships Dart 3.12.
+      - name: Build and push aot-builder
+        env:
+          V: ${{ needs.prepare.outputs.version }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64/v8 \
+            --target aot-builder \
+            --file docker/Dockerfile.flutter-aot \
+            --tag conduitdart/conduit:v$V-flutter \
+            --push .
