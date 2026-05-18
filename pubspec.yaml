@@ -29,6 +29,7 @@ workspace:
   - packages/sqlite
   - packages/test_harness
   - packages/fs_test_agent
+  - examples/graphql_cross_source
 
 melos:
   command:

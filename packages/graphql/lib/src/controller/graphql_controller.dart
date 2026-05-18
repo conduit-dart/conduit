@@ -7,6 +7,9 @@ import 'package:graphql_parser2/graphql_parser2.dart';
 import 'package:graphql_schema2/graphql_schema2.dart';
 import 'package:graphql_server2/graphql_server2.dart';
 
+import '../resolvers/data_loader.dart';
+import '../resolvers/sql_resolver_factory.dart' show dataLoaderRegistryArgKey;
+
 /// GraphQL request / response key constants per the
 /// [GraphQL-over-HTTP spec](https://graphql.github.io/graphql-over-http/draft/).
 const _kQuery = 'query';
@@ -94,7 +97,16 @@ void _ensureCodecRegistered() {
 ///   * Malformed JSON body or malformed `?variables=` is HTTP 400.
 class GraphQLController extends ResourceController {
   /// Builds a controller that serves [schema] over GraphQL-over-HTTP.
-  GraphQLController(this.schema)
+  ///
+  /// [dataLoaderRegistry] is an optional zero-arg factory invoked once
+  /// per request. When non-null, every resolver invocation receives the
+  /// minted registry through the `argumentValues['conduitDataLoaderRegistry']`
+  /// channel (the same channel the conduit Request rides). The
+  /// registry is dropped at request end via [DataLoaderRegistry.clear]
+  /// so its loader caches don't leak across requests. When null,
+  /// resolvers fall back to per-call SQL fetches with no batching —
+  /// safe but quadratic for nested queries.
+  GraphQLController(this.schema, {this.dataLoaderRegistry})
       : _graphql = GraphQL(schema) {
     _ensureCodecRegistered();
     acceptedContentTypes = [_applicationJson, _applicationGraphQL];
@@ -106,6 +118,9 @@ class GraphQLController extends ResourceController {
   /// derivation path that walks `ManagedDataModel` and emits a schema
   /// directly.
   final GraphQLSchema schema;
+
+  /// Per-request DataLoaderRegistry factory. See ctor docs.
+  final DataLoaderRegistry Function()? dataLoaderRegistry;
 
   /// The execution engine. Constructed once per controller-runtime so
   /// schema introspection caches survive across requests.
@@ -334,7 +349,37 @@ class GraphQLController extends ResourceController {
       );
     }
 
-    // Step 3: execute.
+    // Step 3: execute. Mint a per-request DataLoaderRegistry if the
+    // caller wired one — the registry rides on the same globals
+    // channel as the conduit Request, since graphql_server2 6.5.0
+    // merges globals into argumentValues at every resolver invocation.
+    final registry = dataLoaderRegistry?.call();
+    try {
+      return await _runExecute(
+        query: query,
+        operationName: operationName,
+        variables: variables,
+        request: request,
+        registry: registry,
+      );
+    } finally {
+      // Drop loader caches at request end so they can't outlive the
+      // request scope. (Cache lifetime is the whole point — but it's
+      // bounded by the request, never longer.)
+      registry?.clear();
+    }
+  }
+
+  /// Inner executor split out from [_executeAndRespond] so the
+  /// surrounding try/finally can drain the [DataLoaderRegistry] no
+  /// matter which return path the executor takes.
+  Future<Response> _runExecute({
+    required String query,
+    required String? operationName,
+    required Map<String, dynamic> variables,
+    required Request request,
+    required DataLoaderRegistry? registry,
+  }) async {
     try {
       final dynamic data = await _graphql.parseAndExecute(
         query,
@@ -344,6 +389,9 @@ class GraphQLController extends ResourceController {
         // need this for auth + dependency injection).
         globalVariables: <String, dynamic>{
           'conduitRequest': request,
+          // Null-aware element entry: omits the key entirely when no
+          // registry is wired (G2 / G1 callers).
+          dataLoaderRegistryArgKey: ?registry,
         },
       );
 

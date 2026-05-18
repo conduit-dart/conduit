@@ -1,0 +1,100 @@
+"""A point in time, serialized as an ISO-8601 string (e.g. "2026-05-06T12:34:56.789Z")."""
+scalar DateTime
+
+"""A JSON-encoded string payload. Used to surface schemaless property bags from graph nodes; clients decode the string with their JSON parser of choice."""
+scalar JSON
+
+"""Read-only Conduit GraphQL query root, derived from a GraphDataModel."""
+type Query {
+  """Returns every User. Read-only in G4; G5 adds where/order/pagination arguments and cross-source dispatch."""
+  users: [UserOrAccount!]!
+  """Returns the User with the given id, or null if none exists."""
+  user(id: String!): UserOrAccount
+  """Returns every Post. Read-only in G4; G5 adds where/order/pagination arguments and cross-source dispatch."""
+  posts: [Post!]!
+  """Returns the Post with the given id, or null if none exists."""
+  post(id: String!): Post
+  """Returns every Friend edge record. The edge object carries its declared edge properties plus from/to endpoints."""
+  friends: [Friend!]!
+  """Returns every Authored edge record. The edge object carries its declared edge properties plus from/to endpoints."""
+  authoreds: [Authored!]!
+  """Returns every Liked edge record. The edge object carries its declared edge properties plus from/to endpoints."""
+  likeds: [Liked!]!
+}
+
+"""Multi-label projection of User under the additional label Account."""
+type Account {
+  """Store-assigned id of the node."""
+  id: String!
+  """Labels carried by this node in the graph store."""
+  labels: [String!]!
+  name: String!
+  age: String
+  """Traverses Friend edges from this User and returns the destination Users."""
+  users: [User!]!
+  """Traverses Authored edges from this User and returns the destination Posts."""
+  posts: [Post!]!
+  """Traverses Liked edges from this User and returns the destination Posts."""
+  posts2: [Post!]!
+}
+
+"""GraphQL projection of graph edge Authored (User -[:Authored]-> Post)."""
+type Authored {
+  """Store-assigned id of the edge record."""
+  id: String!
+  """Source endpoint of the Authored edge."""
+  from: User!
+  """Target endpoint of the Authored edge."""
+  to: Post!
+}
+
+"""GraphQL projection of graph edge Friend (User -[:Friend]-> User)."""
+type Friend {
+  """Store-assigned id of the edge record."""
+  id: String!
+  since: DateTime
+  """Source endpoint of the Friend edge."""
+  from: User!
+  """Target endpoint of the Friend edge."""
+  to: User!
+}
+
+"""GraphQL projection of graph edge Liked (User -[:Liked]-> Post)."""
+type Liked {
+  """Store-assigned id of the edge record."""
+  id: String!
+  score: String
+  """Source endpoint of the Liked edge."""
+  from: User!
+  """Target endpoint of the Liked edge."""
+  to: Post!
+}
+
+"""GraphQL projection of graph node Post (Dart type Post)."""
+type Post {
+  """Store-assigned id of the node."""
+  id: String!
+  """Labels carried by this node in the graph store."""
+  labels: [String!]!
+  title: String!
+  """Schemaless property bag, JSON-encoded. Opt-in: this field only appears for nodes whose GraphSchemaConfig sets hasSchemalessProperties = true."""
+  properties: JSON!
+}
+
+"""GraphQL projection of graph node User (Dart type User)."""
+type User {
+  """Store-assigned id of the node."""
+  id: String!
+  """Labels carried by this node in the graph store."""
+  labels: [String!]!
+  name: String!
+  age: String
+  """Traverses Friend edges from this User and returns the destination Users."""
+  users: [User!]!
+  """Traverses Authored edges from this User and returns the destination Posts."""
+  posts: [Post!]!
+  """Traverses Liked edges from this User and returns the destination Posts."""
+  posts2: [Post!]!
+}
+
+union UserOrAccount = User | Account

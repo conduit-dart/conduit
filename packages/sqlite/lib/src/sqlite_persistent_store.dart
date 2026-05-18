@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:sqlite3/sqlite3.dart' as s3;
 
+import 'sqlite_query.dart';
 import 'sqlite_schema_generator.dart';
 
 /// SQLite-backed `PersistentStore`. **v0 scope: schema management +
@@ -54,14 +55,7 @@ class SqlitePersistentStore extends PersistentStore with SqliteSchemaGenerator {
     ManagedEntity entity, {
     T? values,
   }) {
-    throw UnimplementedError(
-      'SqlitePersistentStore.newQuery is not yet implemented. The ORM '
-      'query path (predicate construction, joins, returning rows as '
-      'ManagedObjects) requires the postgresql package\'s query builders '
-      'to be extracted into core; that refactor is tracked separately. '
-      'For now, use execute()/executeQuery() with raw SQL for arbitrary '
-      'queries against SQLite.',
-    );
+    return sqliteNewQuery<T>(context, entity, values: values);
   }
 
   @override
