@@ -1,0 +1,93 @@
+name: Windows
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: "windows-test"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    # windows-latest runs `run:` steps in PowerShell by default, but the
+    # setup blocks below are bash and shared verbatim with linux.yml /
+    # macos.yml. Git Bash ships on the runner image, so pin every step
+    # to bash and keep the three platform workflows in lockstep.
+    shell: bash
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        sdk: [beta, main]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: ${{ matrix.sdk }}
+    - name: Setup Conduit
+      run: |
+        export PUB_CACHE="$HOME/.pub-cache"
+        export PATH="$PATH:$PUB_CACHE/bin"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+        dart pub global activate melos
+        dart pub global activate -spath packages/cli
+        melos bootstrap
+        melos cache-source --no-select
+    - name: Template AOT smoke
+      run: bash ci/template-aot-smoke.sh
+  unit:
+    needs: smoke
+    if: |
+      startsWith(github.head_ref, 'feat/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+      || startsWith(github.head_ref, 'claude/')
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sdk: [beta]
+    env:
+      TEST_DIR: packages/core
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 15432
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
+      TEST_VALUE: 1
+      TEST_BOOL: true
+    steps:
+    # Windows runners cannot host Linux `services:` containers (the model
+    # linux.yml uses), so set up Postgres natively via the same action
+    # macos.yml relies on — it supports Linux/macOS/Windows.
+    - name: Setup PostgreSQL for Linux/macOS/Windows
+      uses: ikalnytskyi/action-setup-postgres@v8
+      with:
+        username: conduit_test_user
+        password: conduit!
+        database: conduit_test_db
+        port: 15432
+    - uses: actions/checkout@v4
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: ${{ matrix.sdk }}
+    - name: Get Dependencies
+      run: |
+        export PUB_CACHE="$HOME/.pub-cache"
+        export PATH="$PATH:$PUB_CACHE/bin"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+        dart pub global activate -spath packages/cli
+        dart pub global activate melos
+        melos bootstrap
+        melos cache-source --no-select
+        dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+    - name: Run tests
+      working-directory: ${{ env.TEST_DIR }}
+      run: dart test -r failures-only
