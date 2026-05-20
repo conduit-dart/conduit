@@ -36,10 +36,19 @@ cd tmpl/
 # Repoint conduit_* deps at the workspace so we exercise the source
 # under test, not whatever conduit_build_runner / conduit_core happens
 # to be on pub.dev.
+#
+# This list MUST mirror the full set of conduit_* packages under
+# packages/* — a missing entry resolves against pub.dev instead, which
+# breaks during release prep when every package is bumped together but
+# the new version is not published yet (the omitted conduit_postgresql
+# entry is what broke #280's smoke). Overrides for packages outside the
+# template's dependency graph are inert, so listing them all is safe.
 cat > pubspec_overrides.yaml <<EOF
 dependency_overrides:
   conduit:
     path: $WORKSPACE/packages/cli
+  conduit_build_runner:
+    path: $WORKSPACE/packages/build_runner
   conduit_codable:
     path: $WORKSPACE/packages/codable
   conduit_common:
@@ -48,18 +57,28 @@ dependency_overrides:
     path: $WORKSPACE/packages/config
   conduit_core:
     path: $WORKSPACE/packages/core
+  conduit_graph:
+    path: $WORKSPACE/packages/graph
+  conduit_graph_neo4j:
+    path: $WORKSPACE/packages/graph_neo4j
+  conduit_graphql:
+    path: $WORKSPACE/packages/graphql
   conduit_isolate_exec:
     path: $WORKSPACE/packages/isolate_exec
+  conduit_mysql:
+    path: $WORKSPACE/packages/mysql
   conduit_open_api:
     path: $WORKSPACE/packages/open_api
   conduit_password_hash:
     path: $WORKSPACE/packages/password_hash
+  conduit_postgresql:
+    path: $WORKSPACE/packages/postgresql
   conduit_runtime:
     path: $WORKSPACE/packages/runtime
+  conduit_sqlite:
+    path: $WORKSPACE/packages/sqlite
   conduit_test:
     path: $WORKSPACE/packages/test_harness
-  conduit_build_runner:
-    path: $WORKSPACE/packages/build_runner
 EOF
 
 # pub workspaces (in the conduit monorepo) ignore overrides files in

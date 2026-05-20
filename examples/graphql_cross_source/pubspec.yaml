@@ -13,9 +13,9 @@ environment:
 resolution: workspace
 
 dependencies:
-  conduit_core: ^6.0.0
-  conduit_graph: ^6.0.0
-  conduit_graphql: ^6.0.0
+  conduit_core: ^7.0.0
+  conduit_graph: ^7.0.0
+  conduit_graphql: ^7.0.0
 
 dev_dependencies:
   test: ^1.25.0

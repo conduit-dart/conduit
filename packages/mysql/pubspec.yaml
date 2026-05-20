@@ -1,6 +1,6 @@
 name: conduit_mysql
 description: MySQL / MariaDB ORM backend for conduit. Schema management, raw execute path, and dialect-agnostic ORM `newQuery<T>` (lifted from the postgresql package).
-version: 6.0.0
+version: 7.0.0
 home: https://www.theconduit.dev
 repository: https://github.com/conduit-dart/conduit
 issue_tracker: https://github.com/conduit-dart/conduit/issues
@@ -10,7 +10,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  conduit_core: ^6.0.0
+  conduit_core: ^7.0.0
   # mysql_dart 1.2.1 (2025-11-20) is the actively maintained native-Dart
   # MySQL client. It supports MySQL 5.7/8 and MariaDB 10, offers TLS, and
   # binds parameters positionally with `?` — the placeholder

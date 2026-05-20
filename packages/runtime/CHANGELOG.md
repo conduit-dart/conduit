@@ -1,3 +1,9 @@
+## 7.0.0
+
+> Note: Breaking constraint change — minimum Dart SDK is now `>=3.12.0`. Major version bump because raising the minimum SDK is breaking per pub semver convention.
+
+ - **REFACTOR**: bump minimum Dart SDK to `>=3.12.0` ([#250](https://github.com/conduit-dart/conduit/pull/250)).
+
 ## 6.0.0
 
 > Note: This release has breaking changes.

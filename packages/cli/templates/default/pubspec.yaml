@@ -7,11 +7,11 @@ environment:
   sdk: ">=3.12.0-0 <4.0.0"
 
 dependencies:
-  conduit: ^6.0.0
-  conduit_core: ^6.0.0
+  conduit: ^7.0.0
+  conduit_core: ^7.0.0
 
 dev_dependencies:
   test: ^1.25.2
-  conduit_test: ^6.0.0
+  conduit_test: ^7.0.0
   build_runner: ^2.14.1
-  conduit_build_runner: ^6.0.0
+  conduit_build_runner: ^7.0.0
