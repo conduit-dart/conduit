@@ -245,14 +245,13 @@ jobs:
     if: needs.prepare.outputs.dry_run != 'true'
     runs-on: ubuntu-latest
     strategy:
-      # PR #250 raised the workspace SDK floor to >=3.12.0-0. Until Dart
-      # 3.12 ships in `stable`, the `dart:stable` / `dart:latest` images
-      # carry Dart 3.11.x and `dart pub global activate -spath
-      # packages/cli` fails on the SDK constraint. Build only against
-      # `beta` for now; restore the `main` / `stable` matrix entries once
-      # Dart 3.12 is GA.
+      # Dart 3.12 is GA in `stable` and the workspace SDK floor is
+      # `>=3.12.0`, so the `dart:stable` image resolves the constraint.
+      # `main` (== `dart:latest`) is omitted: it tracks `stable` and
+      # would publish a byte-identical image under a redundant tag.
       matrix:
         dart_channel:
+          - stable
           - beta
     steps:
       - uses: actions/checkout@v4
