@@ -44,7 +44,7 @@ jobs:
         dart pub global activate melos
         dart pub global activate -spath packages/cli
         dart pub global run melos bootstrap
-        dart pub global run melos cache-source --no-select
+        dart pub global run melos cache-source-win --no-select
     - name: Template AOT smoke
       run: bash ci/template-aot-smoke.sh
   unit:
@@ -95,7 +95,7 @@ jobs:
         dart pub global activate -spath packages/cli
         dart pub global activate melos
         dart pub global run melos bootstrap
-        dart pub global run melos cache-source --no-select
+        dart pub global run melos cache-source-win --no-select
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
