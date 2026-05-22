@@ -66,7 +66,7 @@ Invoke melos through Dart's package runner instead of the PATH launcher:
 
 ```bash
 dart pub global run melos bootstrap
-dart pub global run melos cache-source --no-select
+dart pub global run melos cache-source-win --no-select
 ```
 
 `dart pub global run melos` is launcher-name agnostic and behaves
@@ -121,23 +121,18 @@ cache-source-win:
 but `windows.yml` was never switched over to it — both the `Setup Conduit`
 and `Get Dependencies` steps still call the POSIX `cache-source`.
 
-### Recommended fix (not yet applied — see note below)
+### Fix applied
 
-In `.github/workflows/windows.yml`, change both
-`... melos cache-source --no-select` invocations to
-`... melos cache-source-win --no-select`.
+In `.github/workflows/windows.yml`, both
+`... melos cache-source --no-select` invocations were changed to
+`... melos cache-source-win --no-select` (commit `dc8ef5a3`).
 
-Before merging, confirm `cache-source-win` still works with current melos
-(7.7.0): it was added in PR #244 and has had no Windows CI exercising it,
-so the `%PUB_CACHE%` expansion and the `MELOS_PACKAGE_*` token substitution
-inside a `cmd.exe` `xcopy` line should be verified on a real Windows run.
-`%PUB_CACHE%` is correct for `cmd.exe`; if `melos exec` ever routes through
-bash on the runner, that variable would need to be `$PUB_CACHE` instead.
-
-> Note: this diagnosis was reached after the bounded CI-fix budget for PR
-> #290 (one push + one re-run) had already been spent on the two fixes
-> above. The `cache-source-win` switch is left as the documented next step
-> rather than pushed as a third CI iteration.
+`cache-source-win` was added in PR #244 and had no Windows CI exercising
+it until now — PR #290's Windows run is its first real test. If it
+regresses, check the `%PUB_CACHE%` expansion and the `MELOS_PACKAGE_*`
+token substitution inside the `cmd.exe` `xcopy` line. `%PUB_CACHE%` is
+correct for `cmd.exe`; if `melos exec` ever routes through bash on the
+runner, that variable would need to be `$PUB_CACHE` instead.
 
 ## Why the `unit` job showed up as skipped
 
