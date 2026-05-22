@@ -86,7 +86,7 @@ Notes:
   explicitly, but that would diverge from the Linux/macOS workflows. The
   `dart pub global run` form keeps all three in lockstep.
 
-## Remaining failure — `cache-source` is POSIX-only (use `cache-source-win`)
+## `cache-source` step — POSIX-only, and `cache-source-win` is also broken
 
 After the two fixes above, the Windows `smoke` jobs get past `melos
 bootstrap` (which now succeeds) but still fail — at the **next** command,
@@ -121,18 +121,44 @@ cache-source-win:
 but `windows.yml` was never switched over to it — both the `Setup Conduit`
 and `Get Dependencies` steps still call the POSIX `cache-source`.
 
-### Fix applied
+### Switched to `cache-source-win` — which exposed a deeper bug
 
-In `.github/workflows/windows.yml`, both
-`... melos cache-source --no-select` invocations were changed to
-`... melos cache-source-win --no-select` (commit `dc8ef5a3`).
+In `.github/workflows/windows.yml`, both `... melos cache-source --no-select`
+invocations were changed to `... melos cache-source-win --no-select`
+(commit `dc8ef5a3`). That is the right *direction* — `cache-source-win` is
+the Windows-intended variant — but PR #290's run `26279021133` is the
+**first time `cache-source-win` has ever executed in CI** (added in PR #244,
+never exercised), and it surfaced that the script itself is broken.
 
-`cache-source-win` was added in PR #244 and had no Windows CI exercising
-it until now — PR #290's Windows run is its first real test. If it
-regresses, check the `%PUB_CACHE%` expansion and the `MELOS_PACKAGE_*`
-token substitution inside the `cmd.exe` `xcopy` line. `%PUB_CACHE%` is
-correct for `cmd.exe`; if `melos exec` ever routes through bash on the
-runner, that variable would need to be `$PUB_CACHE` instead.
+`cache-source-win` (root `pubspec.yaml` → `melos.scripts`) runs as:
+
+```
+melos exec -- mkdir %PUB_CACHE%\hosted\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION && melos exec -- xcopy MELOS_PACKAGE_PATH %PUB_CACHE%\... /Y /s /e
+```
+
+Two bugs, both visible in the run log:
+
+1. **`MELOS_PACKAGE_*` tokens are not substituted.** `melos exec` exposes
+   `MELOS_PACKAGE_NAME` / `MELOS_PACKAGE_VERSION` / `MELOS_PACKAGE_PATH` as
+   **environment variables**, not literal string templates. In a `cmd.exe`
+   command they must be written `%MELOS_PACKAGE_NAME%`. The script uses the
+   bare tokens, so the executed command literally contained
+   `...\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION`. (`%PUB_CACHE%`
+   *did* expand — env vars work; the bare `MELOS_*` tokens did not.)
+
+2. **`PUB_CACHE` carries a forward slash.** `setup-dart` sets
+   `PUB_CACHE=C:\Users\runneradmin/.pub-cache` (mixed separators). cmd.exe's
+   `mkdir` treats `/` as a switch introducer, so `/.pub-cache\...` parses as
+   an invalid option → `The syntax of the command is incorrect.`
+
+### Remaining work (not done — needs a real fix + CI iteration)
+
+`cache-source-win` must be rewritten to (a) use `%MELOS_PACKAGE_NAME%` /
+`%MELOS_PACKAGE_VERSION%` / `%MELOS_PACKAGE_PATH%`, and (b) hand cmd.exe an
+all-backslash `PUB_CACHE`. This is no longer a one-line change, and each
+attempt costs a multi-minute Windows CI run to verify, so it was
+deliberately not ground out here. Until `cache-source-win` is fixed, the
+Windows workflow cannot get past the source-caching step.
 
 ## Why the `unit` job showed up as skipped
 
