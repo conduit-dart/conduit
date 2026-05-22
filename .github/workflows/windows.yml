@@ -30,19 +30,21 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Setup Conduit
       run: |
-        # setup-dart pre-sets PUB_CACHE to a Windows-style path
-        # (e.g. C:\Users\runneradmin/.pub-cache). Appending that verbatim
-        # to Git Bash's PATH yields an entry bash cannot resolve, so the
-        # `melos` wrapper installed under .pub-cache/bin is invisible and
-        # `melos bootstrap` fails with exit 127. Convert to a POSIX path
-        # with cygpath before touching PATH. See docs/ci/windows.md.
+        # On Windows, `dart pub global activate` installs the melos
+        # launcher as `melos.bat`. Git Bash does not honour PATHEXT, so a
+        # bare `melos` is unresolvable even with .pub-cache/bin on PATH —
+        # `melos bootstrap` then fails with exit 127. Invoke melos via
+        # `dart pub global run melos`, which is launcher-name agnostic and
+        # behaves identically on all three platforms. The cygpath line
+        # keeps .pub-cache/bin valid on PATH for later steps that may
+        # expect the `conduit` executable there. See docs/ci-windows.md.
         PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
         export PATH="$PATH:$PUB_CACHE_POSIX/bin"
         echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
         dart pub global activate melos
         dart pub global activate -spath packages/cli
-        melos bootstrap
-        melos cache-source --no-select
+        dart pub global run melos bootstrap
+        dart pub global run melos cache-source --no-select
     - name: Template AOT smoke
       run: bash ci/template-aot-smoke.sh
   unit:
@@ -84,16 +86,16 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Get Dependencies
       run: |
-        # See the Setup Conduit step above and docs/ci/windows.md: the
-        # Windows-style PUB_CACHE from setup-dart must be converted to a
-        # POSIX path before it goes onto Git Bash's PATH.
+        # See the Setup Conduit step above and docs/ci-windows.md: melos is
+        # invoked via `dart pub global run melos` because Git Bash cannot
+        # resolve the bare `melos.bat` launcher on PATH.
         PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
         export PATH="$PATH:$PUB_CACHE_POSIX/bin"
         echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
         dart pub global activate -spath packages/cli
         dart pub global activate melos
-        melos bootstrap
-        melos cache-source --no-select
+        dart pub global run melos bootstrap
+        dart pub global run melos cache-source --no-select
         dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
     - name: Run tests
       working-directory: ${{ env.TEST_DIR }}
