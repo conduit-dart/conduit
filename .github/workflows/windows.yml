@@ -30,10 +30,15 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Setup Conduit
       run: |
-        export PUB_CACHE="$HOME/.pub-cache"
-        export PATH="$PATH:$PUB_CACHE/bin"
-        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
-        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+        # setup-dart pre-sets PUB_CACHE to a Windows-style path
+        # (e.g. C:\Users\runneradmin/.pub-cache). Appending that verbatim
+        # to Git Bash's PATH yields an entry bash cannot resolve, so the
+        # `melos` wrapper installed under .pub-cache/bin is invisible and
+        # `melos bootstrap` fails with exit 127. Convert to a POSIX path
+        # with cygpath before touching PATH. See docs/ci/windows.md.
+        PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
+        export PATH="$PATH:$PUB_CACHE_POSIX/bin"
+        echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
         dart pub global activate melos
         dart pub global activate -spath packages/cli
         melos bootstrap
@@ -79,10 +84,12 @@ jobs:
         sdk: ${{ matrix.sdk }}
     - name: Get Dependencies
       run: |
-        export PUB_CACHE="$HOME/.pub-cache"
-        export PATH="$PATH:$PUB_CACHE/bin"
-        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
-        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+        # See the Setup Conduit step above and docs/ci/windows.md: the
+        # Windows-style PUB_CACHE from setup-dart must be converted to a
+        # POSIX path before it goes onto Git Bash's PATH.
+        PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
+        export PATH="$PATH:$PUB_CACHE_POSIX/bin"
+        echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
         dart pub global activate -spath packages/cli
         dart pub global activate melos
         melos bootstrap
