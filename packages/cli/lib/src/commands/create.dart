@@ -385,8 +385,14 @@ class CLITemplateCreator extends CLICommand {
     return true;
   }
 
-  String _truepath(String path) =>
-      Uri.parse(path).toFilePath(windows: Platform.isWindows);
+  /// Absolute, normalized form of [path].
+  ///
+  /// Must not route through `Uri.parse`: a Windows path such as
+  /// `D:\a\conduit` parses as a URI whose scheme is the drive letter, and
+  /// `toFilePath()` then throws "Cannot extract a file path from a d URI".
+  /// `path` already arrives as a filesystem path here, so canonicalize it
+  /// directly.
+  String _truepath(String path) => path_lib.canonicalize(path);
 }
 
 class CLITemplateList extends CLICommand {
