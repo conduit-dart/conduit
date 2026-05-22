@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        sdk: [beta, main]
+        sdk: [stable, beta, main]
     steps:
     - uses: actions/checkout@v4
     - uses: dart-lang/setup-dart@v1
@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [beta]
+        sdk: [stable, beta]
     env:
       TEST_DIR: packages/core
       POSTGRES_HOST: localhost
