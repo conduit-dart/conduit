@@ -86,6 +86,59 @@ Notes:
   explicitly, but that would diverge from the Linux/macOS workflows. The
   `dart pub global run` form keeps all three in lockstep.
 
+## Remaining failure — `cache-source` is POSIX-only (use `cache-source-win`)
+
+After the two fixes above, the Windows `smoke` jobs get past `melos
+bootstrap` (which now succeeds) but still fail — at the **next** command,
+`melos cache-source`:
+
+```
+$ melos exec
+  └> mkdir -p '$PUB_CACHE/hosted/pub.dev/MELOS_PACKAGE_NAME-...' && cp -rf ...
+ERROR: [conduit_core]: The syntax of the command is incorrect.
+ScriptException: The script cache-source failed to execute.
+```
+
+`"The syntax of the command is incorrect"` is a **`cmd.exe`** error string.
+The `cache-source` melos script (defined in the root `pubspec.yaml` under
+`melos.scripts`) uses POSIX shell syntax:
+
+```yaml
+cache-source:
+  run: melos exec -- "mkdir -p '...' && cp -rf '...'"
+```
+
+`melos exec` runs the inner command through the platform's default shell —
+`cmd.exe` on Windows — which understands neither `mkdir -p`, `&&` in that
+form, nor `cp`. The repo **already ships a Windows variant**,
+`cache-source-win`, which uses `mkdir` + `xcopy`:
+
+```yaml
+cache-source-win:
+  run: melos exec -- mkdir %PUB_CACHE%\hosted\... && melos exec -- xcopy ...
+```
+
+but `windows.yml` was never switched over to it — both the `Setup Conduit`
+and `Get Dependencies` steps still call the POSIX `cache-source`.
+
+### Recommended fix (not yet applied — see note below)
+
+In `.github/workflows/windows.yml`, change both
+`... melos cache-source --no-select` invocations to
+`... melos cache-source-win --no-select`.
+
+Before merging, confirm `cache-source-win` still works with current melos
+(7.7.0): it was added in PR #244 and has had no Windows CI exercising it,
+so the `%PUB_CACHE%` expansion and the `MELOS_PACKAGE_*` token substitution
+inside a `cmd.exe` `xcopy` line should be verified on a real Windows run.
+`%PUB_CACHE%` is correct for `cmd.exe`; if `melos exec` ever routes through
+bash on the runner, that variable would need to be `$PUB_CACHE` instead.
+
+> Note: this diagnosis was reached after the bounded CI-fix budget for PR
+> #290 (one push + one re-run) had already been spent on the two fixes
+> above. The `cache-source-win` switch is left as the documented next step
+> rather than pushed as a third CI iteration.
+
 ## Why the `unit` job showed up as skipped
 
 `unit` has `needs: smoke`. When `smoke` fails, GitHub Actions skips `unit`
