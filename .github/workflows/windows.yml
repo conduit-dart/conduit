@@ -41,6 +41,14 @@ jobs:
         # behaves identically on all three platforms. The cygpath line
         # keeps .pub-cache/bin valid on PATH for later steps that may
         # expect the `conduit` executable there. See docs/ci-windows.md.
+        #
+        # PUB_CACHE from setup-dart is a mixed-separator path
+        # (C:\Users\runneradmin/.pub-cache). cmd.exe's mkdir rejects the
+        # forward slash ("The syntax of the command is incorrect"), which
+        # breaks `melos cache-source-win`. Normalize to all-backslashes and
+        # persist it for later steps and the cmd.exe children melos spawns.
+        export PUB_CACHE="${PUB_CACHE//\//\\}"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
         PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
         export PATH="$PATH:$PUB_CACHE_POSIX/bin"
         echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
@@ -91,7 +99,11 @@ jobs:
       run: |
         # See the Setup Conduit step above and docs/ci-windows.md: melos is
         # invoked via `dart pub global run melos` because Git Bash cannot
-        # resolve the bare `melos.bat` launcher on PATH.
+        # resolve the bare `melos.bat` launcher on PATH. PUB_CACHE is
+        # normalized to all-backslashes so cmd.exe's mkdir accepts it in
+        # `melos cache-source-win` — see docs/ci-windows.md.
+        export PUB_CACHE="${PUB_CACHE//\//\\}"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
         PUB_CACHE_POSIX="$(cygpath -u "$PUB_CACHE")"
         export PATH="$PATH:$PUB_CACHE_POSIX/bin"
         echo "$PUB_CACHE_POSIX/bin" >> "$GITHUB_PATH"
