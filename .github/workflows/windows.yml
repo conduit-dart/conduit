@@ -57,7 +57,14 @@ jobs:
         dart pub global run melos bootstrap
         dart pub global run melos cache-source-win --no-select
     - name: Template AOT smoke
-      run: bash ci/template-aot-smoke.sh
+      run: |
+        # The conduit CLI installs as conduit.bat on Windows; Git Bash
+        # won't resolve the bare `conduit` that ci/template-aot-smoke.sh
+        # expects on PATH. Provide it as an exported function routed
+        # through `dart pub global run`. See docs/ci-windows.md.
+        conduit() { dart pub global run conduit "$@"; }
+        export -f conduit
+        bash ci/template-aot-smoke.sh
   unit:
     needs: smoke
     if: |
