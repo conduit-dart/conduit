@@ -64,6 +64,10 @@ jobs:
         # through `dart pub global run`. See docs/ci-windows.md.
         conduit() { dart pub global run conduit "$@"; }
         export -f conduit
+        # The smoke script writes $WORKSPACE into pubspec_overrides.yaml as
+        # `path:` deps; dart pub on Windows cannot resolve a Git Bash
+        # /d/a/... path, so hand it the Windows-form workspace path.
+        export CI_WORKSPACE="$(pwd -W)"
         bash ci/template-aot-smoke.sh
   unit:
     needs: smoke
