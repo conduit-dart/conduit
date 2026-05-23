@@ -32,7 +32,7 @@ migration_tmp
 coverage
 application_test/
 
-doc/
+/doc/
 site/
 _build/
 
