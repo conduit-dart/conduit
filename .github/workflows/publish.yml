@@ -105,10 +105,14 @@ jobs:
         run: melos exec --no-private -- "dart pub publish --dry-run"
 
   # ---------------------------------------------------------------------------
-  # publish: walk the workspace in topological order via `melos exec
-  # --order-dependents` (layered topological sort, available since melos
-  # 7.4.0; uses `dart pub publish` per package directly so OIDC trusted
-  # publishing kicks in).
+  # publish: walk the workspace in runtime-dependency topological order
+  # using `tool/publish-order.py`, calling `dart pub publish` per package
+  # directly so OIDC trusted publishing kicks in. We don't use
+  # `melos exec --order-dependents` because melos's DAG includes
+  # `dev_dependencies:`, which makes `conduit_core ↔ conduit_test` a cycle
+  # (core dev-deps test, test runtime-deps core) and melos refuses to run.
+  # pub.dev only validates runtime deps server-side, so sorting on
+  # `dependencies:` only is the correct semantic anyway.
   #
   # OIDC trusted publishing requires a one-time per-package configuration
   # in pub.dev's admin UI (Trusted Publishers section) pointing at this
@@ -119,8 +123,7 @@ jobs:
   # publishing can be configured for them — see Phase A of the plan in
   # ~/.claude/plans/analyze-release-pipeline-and-dreamy-puppy.md.
   #
-  # The implicit dependency order produced by `--order-dependents`
-  # matches the documented Phase A4 tier list:
+  # The publish-order.py output matches the documented Phase A4 tier list:
   #   Tier 0: codable, fs_test_agent, runtime, password_hash,
   #           isolate_exec, graph
   #   Tier 1: open_api, config, graph_neo4j
@@ -130,11 +133,10 @@ jobs:
   #           graphql
   #   Tier 5: cli
   #
-  # `--concurrency 1` forces sequential execution so the inter-package
-  # poll has a stable point to reach. The poll handles pub.dev's index
-  # propagation lag — `dart pub publish` returns when the upload is
-  # accepted, but dependent resolvers may not see the new version for a
-  # few seconds afterward.
+  # Sequential execution gives the inter-package poll a stable point to
+  # reach. The poll handles pub.dev's index propagation lag — `dart pub
+  # publish` returns when the upload is accepted, but dependent resolvers
+  # may not see the new version for a few seconds afterward.
   # ---------------------------------------------------------------------------
   publish:
     needs: [prepare, dry-run]
@@ -159,26 +161,30 @@ jobs:
           RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           set -euo pipefail
-          melos exec --order-dependents --concurrency 1 --no-private -- '
-            set -e
-            echo "::group::Publishing $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION"
-            dart pub publish --force
+          # `melos exec --order-dependents` topo-sorts over `dependencies:`
+          # *and* `dev_dependencies:`, which makes conduit_core ↔ conduit_test
+          # a cycle (core dev-deps test, test runtime-deps core) and melos
+          # refuses to run. pub.dev only validates runtime deps server-side,
+          # so we order by `dependencies:` only via tool/publish-order.py.
+          while IFS=$'\t' read -r pkg_name pkg_path; do
+            echo "::group::Publishing ${pkg_name}@${RELEASE_VERSION}"
+            ( cd "$pkg_path" && dart pub publish --force )
             echo "::endgroup::"
             for i in $(seq 1 30); do
-              v=$(curl -sf "https://pub.dev/api/packages/$MELOS_PACKAGE_NAME" \
+              v=$(curl -sf "https://pub.dev/api/packages/${pkg_name}" \
                   | jq -r ".latest.version" 2>/dev/null || echo "")
-              if [ "$v" = "$MELOS_PACKAGE_VERSION" ]; then
-                echo "$MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION visible on pub.dev"
+              if [ "$v" = "$RELEASE_VERSION" ]; then
+                echo "${pkg_name}@${RELEASE_VERSION} visible on pub.dev"
                 break
               fi
               [ "$i" -eq 30 ] && {
-                echo "::error::pub.dev never reported $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION after 5 minutes."
+                echo "::error::pub.dev never reported ${pkg_name}@${RELEASE_VERSION} after 5 minutes."
                 exit 1
               }
-              echo "Waiting for $MELOS_PACKAGE_NAME@$MELOS_PACKAGE_VERSION on pub.dev (currently: ${v:-unknown})…"
+              echo "Waiting for ${pkg_name}@${RELEASE_VERSION} on pub.dev (currently: ${v:-unknown})…"
               sleep 10
             done
-          '
+          done < <(python3 tool/publish-order.py)
 
   # ---------------------------------------------------------------------------
   # tag-and-release: only if this was a workflow_dispatch (real, not dry).
