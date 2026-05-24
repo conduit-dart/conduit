@@ -41,4 +41,8 @@ dev_dependencies:
   matcher: ^0.12.16+1
   # mockito: ^5.6.1
   test: ^1.25.2
+  # `getUnusedPort` is imported from `package:test_core/src/util/io.dart`
+  # by three test files; declare it explicitly so pub publish doesn't
+  # flag the cross-package import.
+  test_core: ^0.6.18
   web_socket_channel: ^3.0.0
