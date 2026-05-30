@@ -140,8 +140,7 @@ class MockHTTPServer extends MockServer<Request> {
   /// Begins listening for HTTP requests on [port].
   @override
   Future open() async {
-    server = await HttpServer.bind(InternetAddress.loopbackIPv4, port,
-        shared: false);
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
     server.map(Request.new).listen((req) async {
       add(req);
 

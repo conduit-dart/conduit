@@ -79,8 +79,8 @@ class APIResponse extends APIObject {
     super.decode(object);
 
     description = object.decode("description");
-    content = object.decodeObjectMap("content", () => APIMediaType());
-    headers = object.decodeObjectMap("headers", () => APIHeader());
+    content = object.decodeObjectMap("content", APIMediaType.new);
+    headers = object.decodeObjectMap("headers", APIHeader.new);
   }
 
   @override

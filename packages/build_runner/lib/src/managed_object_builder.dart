@@ -189,7 +189,7 @@ class ManagedObjectBuilder implements Builder {
       shouldOmitByDefault: columnMeta?.shouldOmitByDefault ?? false,
       defaultValueLiteral: isPrimaryKey
           ? null
-          : (columnMeta?.defaultValueLiteral),
+          : columnMeta?.defaultValueLiteral,
       databaseType: columnMeta?.databaseType,
       useSnakeCaseName: columnMeta?.useSnakeCaseName ?? useSnakeCase,
       explicitName: columnMeta?.explicitName,
@@ -265,7 +265,9 @@ class ManagedObjectBuilder implements Builder {
     final t = value.type;
     if (t is! InterfaceType) return false;
     if (!t.element.library.identifier
-        .startsWith(_conduitCorePackagePrefix)) return false;
+        .startsWith(_conduitCorePackagePrefix)) {
+      return false;
+    }
     if (t.element.name != 'Column') return false;
     return value.getField('isPrimaryKey')?.toBoolValue() == true;
   }
@@ -277,7 +279,9 @@ class ManagedObjectBuilder implements Builder {
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
       if (t.element.name != 'Column') continue;
 
       final defaultValueRaw = value.getField('defaultValue')?.toStringValue();
@@ -323,7 +327,9 @@ class ManagedObjectBuilder implements Builder {
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
       if (t.element.name != 'Table') continue;
       return _TableAnnotation(
         name: value.getField('name')?.toStringValue(),
@@ -362,7 +368,9 @@ class ManagedObjectBuilder implements Builder {
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
       if (t.element.name != 'ResponseModel') continue;
       final include =
           value.getField('includeIfNullField')?.toBoolValue() ?? true;
@@ -378,7 +386,9 @@ class ManagedObjectBuilder implements Builder {
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
       if (t.element.name != 'ResponseKey') continue;
       final name = value.getField('name')?.toStringValue();
       final includeIfNull =

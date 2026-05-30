@@ -63,16 +63,16 @@ class APIDocument extends APIObject {
     produces = removeNullsFromList(object["produces"] as List<String?>?);
     security = object["security"] as List<Map<String, List<String?>>?>;
 
-    info = object.decodeObject("info", () => APIInfo());
-    tags = object.decodeObjects("tags", () => APITag());
-    paths = object.decodeObjectMap("paths", () => APIPath());
-    responses = object.decodeObjectMap("responses", () => APIResponse());
-    parameters = object.decodeObjectMap("parameters", () => APIParameter());
+    info = object.decodeObject("info", APIInfo.new);
+    tags = object.decodeObjects("tags", APITag.new);
+    paths = object.decodeObjectMap("paths", APIPath.new);
+    responses = object.decodeObjectMap("responses", APIResponse.new);
+    parameters = object.decodeObjectMap("parameters", APIParameter.new);
     definitions =
-        object.decodeObjectMap("definitions", () => APISchemaObject());
+        object.decodeObjectMap("definitions", APISchemaObject.new);
     securityDefinitions = object.decodeObjectMap(
       "securityDefinitions",
-      () => APISecurityScheme(),
+      APISecurityScheme.new,
     );
   }
 

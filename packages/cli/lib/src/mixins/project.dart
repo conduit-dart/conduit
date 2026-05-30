@@ -97,7 +97,7 @@ mixin CLIProject implements CLICommand {
       throw CLIException(
         "CLI version is incompatible with project conduit version.",
         instructions: [
-          "Install conduit@$projectVersion or upgrade your project to conduit${(await toolVersion)}.",
+          "Install conduit@$projectVersion or upgrade your project to conduit${await toolVersion}.",
         ],
       );
     }

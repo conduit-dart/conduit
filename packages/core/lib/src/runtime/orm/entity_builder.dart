@@ -6,10 +6,10 @@ import 'package:conduit_core/src/db/managed/relationship_type.dart';
 import 'package:conduit_core/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit_core/src/runtime/orm/entity_mirrors.dart';
 import 'package:conduit_core/src/runtime/orm/property_builder.dart';
+import 'package:conduit_core/src/runtime/orm/string_case.dart';
 import 'package:conduit_core/src/runtime/orm_impl.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';
-import 'package:conduit_core/src/runtime/orm/string_case.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)

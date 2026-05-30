@@ -85,7 +85,7 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
       ..expirationDate = expirationDate
       ..type = type
       ..resourceOwnerIdentifier = resourceOwner.id
-      ..scopes = scope?.split(" ").map((s) => AuthScope(s)).toList()
+      ..scopes = scope?.split(" ").map(AuthScope.new).toList()
       ..clientID = client.id!;
   }
 
@@ -96,7 +96,7 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
       ..code = code
       ..resourceOwnerIdentifier = resourceOwner.id
       ..issueDate = issueDate
-      ..requestedScopes = scope?.split(" ").map((s) => AuthScope(s)).toList()
+      ..requestedScopes = scope?.split(" ").map(AuthScope.new).toList()
       ..expirationDate = expirationDate
       ..clientID = client.id!;
   }
@@ -183,7 +183,7 @@ class ManagedAuthClient extends ManagedObject<_ManagedAuthClient>
 
   /// As an [AuthClient].
   AuthClient asClient() {
-    final scopes = allowedScope?.split(" ").map((s) => AuthScope(s)).toList();
+    final scopes = allowedScope?.split(" ").map(AuthScope.new).toList();
 
     return AuthClient.withRedirectURI(
       id!,

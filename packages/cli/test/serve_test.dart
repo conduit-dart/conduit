@@ -60,9 +60,9 @@ void main() {
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));
 
     final coreVersion = Version.parse(
-        (((thisPubspec["dependencies"] as yaml.YamlMap)
+        ((thisPubspec["dependencies"] as yaml.YamlMap)
                 .entries
-                .firstWhere((p) => p.key == "conduit_core")).value as String)
+                .firstWhere((p) => p.key == "conduit_core").value as String)
             .replaceAll('^', ''));
     expect(
       projectUnderTestCli.output,

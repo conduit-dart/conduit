@@ -48,7 +48,7 @@ void main() {
         RefModel,
       ]);
 
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final m = TestModel()
           ..email = "$i@a.com"
           ..name = "joe";
@@ -81,7 +81,7 @@ void main() {
         RefModel,
       ]);
 
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final m = TestModel()
           ..email = "$i@a.com"
           ..name = "joe";
@@ -113,7 +113,7 @@ void main() {
         RefModel,
       ]);
 
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final m = TestModel()
           ..email = "$i@a.com"
           ..name = "joe";
@@ -243,7 +243,7 @@ class _RefModel {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('ref'), isRequired: false, onDelete: DeleteRule.nullify)
+  @Relate(Symbol('ref'))
   TestModel? test;
 }
 
@@ -265,7 +265,7 @@ class _GRestrict {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.restrict)
+  @Relate(Symbol('test'), onDelete: DeleteRule.restrict)
   GRestrictInverse? test;
 }
 
@@ -287,6 +287,6 @@ class _GCascade {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('test'), isRequired: false, onDelete: DeleteRule.cascade)
+  @Relate(Symbol('test'), onDelete: DeleteRule.cascade)
   GCascadeInverse? test;
 }

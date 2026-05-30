@@ -274,13 +274,13 @@ class APISchemaObject extends APIObject {
     //
 
     type = APITypeCodec.decode(object.decode("type"));
-    allOf = object.decodeObjects("allOf", () => APISchemaObject());
-    anyOf = object.decodeObjects("anyOf", () => APISchemaObject());
-    oneOf = object.decodeObjects("oneOf", () => APISchemaObject());
-    not = object.decodeObject("not", () => APISchemaObject());
+    allOf = object.decodeObjects("allOf", APISchemaObject.new);
+    anyOf = object.decodeObjects("anyOf", APISchemaObject.new);
+    oneOf = object.decodeObjects("oneOf", APISchemaObject.new);
+    not = object.decodeObject("not", APISchemaObject.new);
 
-    items = object.decodeObject("items", () => APISchemaObject());
-    properties = object.decodeObjectMap("properties", () => APISchemaObject());
+    items = object.decodeObject("items", APISchemaObject.new);
+    properties = object.decodeObjectMap("properties", APISchemaObject.new);
 
     final addlProps = object["additionalProperties"];
     if (addlProps is bool) {
@@ -295,7 +295,7 @@ class APISchemaObject extends APIObject {
       additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.restricted;
       additionalPropertySchema = object.decodeObject(
         "additionalProperties",
-        () => APISchemaObject(),
+        APISchemaObject.new,
       );
     }
 

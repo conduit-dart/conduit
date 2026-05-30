@@ -33,14 +33,13 @@ class CLIServer extends CLICommand with CLIProject {
   )
   String? get certificatePath => decodeOptional("ssl-certificate-path");
 
-  @Flag("observe", help: "Enables Dart Observatory", defaultsTo: false)
+  @Flag("observe", help: "Enables Dart Observatory")
   bool get shouldRunObservatory => decode("observe");
 
   @Flag(
     "ipv6-only",
     help: "Limits listening to IPv6 connections only.",
     negatable: false,
-    defaultsTo: false,
   )
   bool get ipv6Only => decode("ipv6-only");
 
@@ -96,7 +95,6 @@ class CLIServer extends CLICommand with CLIProject {
         "Watches Dart source files (and pubspec.yaml/analysis_options.yaml) "
         "and restarts the application when they change. Useful for development.",
     negatable: false,
-    defaultsTo: false,
   )
   bool get watchMode => decode<bool>("watch");
 
@@ -380,7 +378,7 @@ Future main(List<String> args, dynamic sendPort) async {
 }
 
 Future<bool> supportsLaunchObservatory() async {
-  final String locator = Platform.isWindows ? "where" : "which";
+  final locator = Platform.isWindows ? "where" : "which";
   final result = await Process.run(locator, ["open"]);
 
   return result.exitCode == 0;

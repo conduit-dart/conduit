@@ -118,7 +118,7 @@ class AppConfiguration extends Configuration {
 
 class User extends ManagedObject<_User>
     implements _User, ManagedAuthResourceOwner<_User> {
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   String? password;
 }
 

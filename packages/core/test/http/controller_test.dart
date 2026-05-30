@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 import 'package:test_core/src/util/io.dart' show getUnusedPort;
+
+import '../not_tests/helpers.dart';
 
 void main() {
   group("Linking", () {
@@ -15,7 +16,7 @@ void main() {
       final root = PassthruController();
       root
           .linkFunction((req) async => req)!
-          .link(() => Always200Controller())!
+          .link(Always200Controller.new)!
           .link(() => PrepareTailController(completer));
       root.didAddToChannel();
       expect(completer.future, completes);
@@ -29,7 +30,7 @@ void main() {
     setUp(() async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4111);
       root = PassthruController();
-      server.map((r) => Request(r)).listen((req) {
+      server.map(Request.new).listen((req) {
         root.receive(req);
       });
     });
@@ -115,7 +116,7 @@ void main() {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4111);
       root = PassthruController();
 
-      server.map((r) => Request(r)).listen((req) {
+      server.map(Request.new).listen((req) {
         root.receive(req);
       });
     });
@@ -212,7 +213,7 @@ void main() {
         "Request controller's can serialize and encode Serializable objects as JSON by default",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
           final obj = SomeObject()..name = "Bob";
@@ -230,7 +231,7 @@ void main() {
         "Responding to request with no content-type, but does have a body, defaults to application/json",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok({"a": "b"});
@@ -247,7 +248,7 @@ void main() {
         "Responding to a request with no explicit content-type and has a body that cannot be encoded to JSON will throw 500",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok(DateTime.now());
@@ -265,7 +266,7 @@ void main() {
         "Responding to request with no explicit content-type, does not have a body, has no content-type",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
           return Response.ok(null);
@@ -283,9 +284,9 @@ void main() {
         "willSendResponse is always called prior to Response being sent for preflight requests",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
-        next.link(() => Always200Controller());
+        next.link(Always200Controller.new);
         await next.receive(req);
       });
 
@@ -326,9 +327,9 @@ void main() {
         "willSendResponse is always called prior to Response being sent for normal requests",
         () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
-        next.link(() => Always200Controller());
+        next.link(Always200Controller.new);
         await next.receive(req);
       });
 
@@ -357,7 +358,7 @@ void main() {
 
     test("Failure to decode request body as appropriate type is 400", () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((r) async {
           await r.body.decode<Map<String, dynamic>>();

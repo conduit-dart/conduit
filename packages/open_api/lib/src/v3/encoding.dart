@@ -47,7 +47,7 @@ class APIEncoding extends APIObject {
     super.decode(object);
 
     contentType = object.decode("contentType");
-    headers = object.decodeObjectMap("headers", () => APIHeader());
+    headers = object.decodeObjectMap("headers", APIHeader.new);
     allowReserved = object.decode("allowReserved");
     explode = object.decode("explode");
     style = object.decode("style");

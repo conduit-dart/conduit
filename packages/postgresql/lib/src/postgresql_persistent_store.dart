@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
+import 'package:postgres/postgres.dart';
+
 import 'postgres_sql_dialect.dart';
 import 'postgresql_query.dart';
 import 'postgresql_schema_generator.dart';
-import 'package:postgres/postgres.dart';
 
 extension ToSslMode on String? {
   SslMode toSslMode() {
@@ -307,7 +308,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   }) async {
     final Connection connection = await getDatabaseConnection();
 
-    Schema schema = fromSchema;
+    var schema = fromSchema;
 
     await connection.runTx((ctx) async {
       final transactionStore = PostgreSQLPersistentStore._transactionProxy(
@@ -470,7 +471,7 @@ class PostgreSQLPersistentStore extends PersistentStore
         password: password,
       ),
       settings: ConnectionSettings(
-        timeZone: timeZone!,
+        timeZone: timeZone,
         sslMode: sslMode.toSslMode(),
         ignoreSuperfluousParameters: true,
       ),
@@ -480,9 +481,9 @@ class PostgreSQLPersistentStore extends PersistentStore
   Pool getConnectionPool() {
     final settings = PoolSettings(
       maxConnectionCount: 10,
-      queryTimeout: Duration(minutes: 10),
-      connectTimeout: Duration(seconds: 30),
-      timeZone: timeZone!,
+      queryTimeout: const Duration(minutes: 10),
+      connectTimeout: const Duration(seconds: 30),
+      timeZone: timeZone,
       sslMode: sslMode.toSslMode(),
       ignoreSuperfluousParameters: true,
     );

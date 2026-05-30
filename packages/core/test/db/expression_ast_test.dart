@@ -41,7 +41,7 @@ void main() {
 
     test('column-only renders identifier', () {
       final r = d.renderExpression(
-        ColumnExpression('email', tableNamespace: 'users'),
+        const ColumnExpression('email', tableNamespace: 'users'),
       );
       expect(r.sql, 'users.email');
       expect(r.parameters, isEmpty);
@@ -50,7 +50,7 @@ void main() {
 
     test('binary-op renders @-prefixed placeholder + collected param', () {
       final r = d.renderExpression(
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('id', tableNamespace: 't0'),
           ParameterExpression('id_v', 42),
@@ -62,7 +62,7 @@ void main() {
 
     test('AND combinator wraps children in single set of parens', () {
       final r = d.renderExpression(
-        LogicalExpression('AND', [
+        const LogicalExpression('AND', [
           BinaryOpExpression(
             '=',
             ColumnExpression('a', tableNamespace: 't0'),
@@ -81,14 +81,14 @@ void main() {
 
     test('IS NULL respects dialect operator override', () {
       final r = d.renderExpression(
-        IsNullExpression(ColumnExpression('email', tableNamespace: 't0')),
+        const IsNullExpression(ColumnExpression('email', tableNamespace: 't0')),
       );
       expect(r.sql, 't0.email IS NULL');
     });
 
     test('IS NOT NULL via negated', () {
       final r = d.renderExpression(
-        IsNullExpression(
+        const IsNullExpression(
           ColumnExpression('email', tableNamespace: 't0'),
           negated: true,
         ),
@@ -98,7 +98,7 @@ void main() {
 
     test('IN list renders comma-separated placeholders', () {
       final r = d.renderExpression(
-        InExpression(
+        const InExpression(
           ColumnExpression('id', tableNamespace: 't0'),
           [
             ParameterExpression('id_0', 1),
@@ -113,7 +113,7 @@ void main() {
 
     test('NOT IN via negated', () {
       final r = d.renderExpression(
-        InExpression(
+        const InExpression(
           ColumnExpression('id', tableNamespace: 't0'),
           [ParameterExpression('id_0', 1)],
           negated: true,
@@ -124,7 +124,7 @@ void main() {
 
     test('BETWEEN renders both bounds', () {
       final r = d.renderExpression(
-        BetweenExpression(
+        const BetweenExpression(
           ColumnExpression('n', tableNamespace: 't0'),
           ParameterExpression('lo', 1),
           ParameterExpression('hi', 10),
@@ -136,7 +136,7 @@ void main() {
 
     test('LIKE case-sensitive uses dialect default', () {
       final r = d.renderExpression(
-        LikeExpression(
+        const LikeExpression(
           ColumnExpression('name', tableNamespace: 't0'),
           ParameterExpression('p', 'al%'),
           caseSensitive: true,
@@ -147,7 +147,7 @@ void main() {
 
     test('NOT LIKE via negated', () {
       final r = d.renderExpression(
-        LikeExpression(
+        const LikeExpression(
           ColumnExpression('name', tableNamespace: 't0'),
           ParameterExpression('p', 'al%'),
           caseSensitive: true,
@@ -162,7 +162,7 @@ void main() {
       // practice, but the visitor needs to be defensive — silently
       // dropping the second value would corrupt query results.
       final r = d.renderExpression(
-        LogicalExpression('AND', [
+        const LogicalExpression('AND', [
           BinaryOpExpression(
             '=',
             ColumnExpression('a'),
@@ -185,7 +185,7 @@ void main() {
 
     test('comparison emits ? + appends value to positional list', () {
       final r = d.renderExpression(
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('id', tableNamespace: 't0'),
           ParameterExpression('id_v', 42),
@@ -198,7 +198,7 @@ void main() {
 
     test('AND with three children appends in left-to-right order', () {
       final r = d.renderExpression(
-        LogicalExpression('AND', [
+        const LogicalExpression('AND', [
           BinaryOpExpression('=', ColumnExpression('a'),
               ParameterExpression('av', 1)),
           BinaryOpExpression('=', ColumnExpression('b'),
@@ -213,7 +213,7 @@ void main() {
 
     test('IN list expands to ?,?,? with values in order', () {
       final r = d.renderExpression(
-        InExpression(
+        const InExpression(
           ColumnExpression('id'),
           [
             ParameterExpression('a', 1),
@@ -228,7 +228,7 @@ void main() {
 
     test('BETWEEN binds low then high', () {
       final r = d.renderExpression(
-        BetweenExpression(
+        const BetweenExpression(
           ColumnExpression('n'),
           ParameterExpression('lo', 5),
           ParameterExpression('hi', 10),
@@ -240,7 +240,7 @@ void main() {
 
     test('IS NULL uses standard SQL form (no parameter)', () {
       final r = d.renderExpression(
-        IsNullExpression(ColumnExpression('email')),
+        const IsNullExpression(ColumnExpression('email')),
       );
       expect(r.sql, 'email IS NULL');
       expect(r.positionalParameters, isEmpty);
@@ -248,7 +248,7 @@ void main() {
 
     test('Raw expression rewrites @name placeholders into ? + ordered values', () {
       final r = d.renderExpression(
-        RawExpression(
+        const RawExpression(
           'a = @x AND b = @y',
           {'x': 100, 'y': 200},
         ),
@@ -263,7 +263,7 @@ void main() {
       final p1 = QueryPredicate(
         'a = @av',
         {'av': 1},
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('a'),
           ParameterExpression('av', 1),
@@ -272,7 +272,7 @@ void main() {
       final p2 = QueryPredicate(
         'b = @bv',
         {'bv': 2},
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('b'),
           ParameterExpression('bv', 2),
@@ -295,7 +295,7 @@ void main() {
       final p1 = QueryPredicate(
         'p = @p',
         {'p': 1},
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('p'),
           ParameterExpression('p', 1),
@@ -304,7 +304,7 @@ void main() {
       final p2 = QueryPredicate(
         'p = @p',
         {'p': 2},
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('p'),
           ParameterExpression('p', 2),
@@ -320,7 +320,7 @@ void main() {
       final p1 = QueryPredicate(
         'a = @a',
         {'a': 1},
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('a'),
           ParameterExpression('a', 1),

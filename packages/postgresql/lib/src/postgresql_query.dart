@@ -61,7 +61,7 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     final allColumns = <String>{};
     final builders = <QueryBuilder>[];
 
-    for (int i = 0; i < objects.length; i++) {
+    for (var i = 0; i < objects.length; i++) {
       values = objects[i];
       validateInput(Validating.insert);
 

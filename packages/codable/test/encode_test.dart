@@ -347,8 +347,8 @@ class Container extends Coding {
   void decode(KeyedArchive object) {
     super.decode(object);
 
-    root = object.decodeObject("root", () => Parent._());
-    definitions = object.decodeObjectMap("definitions", () => Child._());
+    root = object.decodeObject("root", Parent._);
+    definitions = object.decodeObjectMap("definitions", Child._);
   }
 
   @override
@@ -374,9 +374,9 @@ class Parent extends Coding {
     super.decode(object);
 
     name = object.decode("name");
-    child = object.decodeObject("child", () => Child._());
-    children = object.decodeObjects("children", () => Child._());
-    childMap = object.decodeObjectMap("childMap", () => Child._());
+    child = object.decodeObject("child", Child._);
+    children = object.decodeObjects("children", Child._);
+    childMap = object.decodeObjectMap("childMap", Child._);
   }
 
   @override
@@ -402,7 +402,7 @@ class Child extends Coding {
     super.decode(object);
 
     name = object.decode("name");
-    parent = object.decodeObject("parent", () => Parent._());
+    parent = object.decodeObject("parent", Parent._);
   }
 
   @override

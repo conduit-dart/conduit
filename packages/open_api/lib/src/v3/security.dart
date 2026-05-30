@@ -121,7 +121,7 @@ class APISecurityScheme extends APIObject {
         {
           flows = object.decodeObjectMap(
             "flows",
-            () => APISecuritySchemeOAuth2Flow.empty(),
+            APISecuritySchemeOAuth2Flow.empty,
           );
         }
         break;

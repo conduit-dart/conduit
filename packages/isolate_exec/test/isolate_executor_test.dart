@@ -26,7 +26,7 @@ void main() {
     final msgs = [];
     await IsolateExecutor.run(
       SimpleReturner({}),
-      logHandler: (msg) => msgs.add(msg),
+      logHandler: msgs.add,
       packageConfigURI: Uri.file(
         join(projDir, ".dart_tool/package_config.json"),
       ),
@@ -168,7 +168,7 @@ class InPackage extends Executable<Map<String, String>> {
       "NamedArgumentsObject",
       namedArguments: {#id: "namedArgs"},
     );
-    final SomeObjectBaseClass con =
+    final con =
         instanceOf("NamedConstructorObject", constructorName: #fromID)
             as SomeObjectBaseClass;
     return {"def": def.id, "pos": pos.id, "nam": nam.id, "con": con.id};
@@ -208,6 +208,6 @@ class AdditionalContentsInstantiator extends Executable {
 }
 
 Future<ProcessResult> _getDependencies(String projectDir) {
-  const String cmd = "dart";
+  const cmd = "dart";
   return Process.run(cmd, ["pub", "get"], workingDirectory: projectDir);
 }

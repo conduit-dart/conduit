@@ -511,7 +511,6 @@ void main() async {
       expect(
           response,
           hasResponse(null,
-              body: null,
               headers: {"Content-Type": "application/json; charset=utf-8"}));
     });
   });

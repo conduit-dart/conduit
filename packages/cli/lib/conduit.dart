@@ -16,6 +16,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /// See documentation guides at https://www.theconduit.dev/docs/.
 library;
 
-export 'package:conduit_config/conduit_config.dart';
 export 'package:conduit/src/migration_source.dart';
+export 'package:conduit_config/conduit_config.dart';
 export 'package:logging/logging.dart';

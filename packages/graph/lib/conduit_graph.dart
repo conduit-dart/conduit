@@ -26,6 +26,17 @@
 /// only the type system and abstract store contract.
 library;
 
+// Context
+export 'src/context/graph_context.dart';
+export 'src/context/graph_data_model.dart';
+// Errors
+export 'src/errors/graph_exception.dart';
+// Query DSL
+export 'src/query/graph_filter.dart';
+export 'src/query/graph_pattern.dart';
+export 'src/query/graph_query.dart';
+// Store
+export 'src/store/graph_persistent_store.dart';
 // Types
 export 'src/types/graph_backing.dart';
 export 'src/types/graph_edge.dart';
@@ -33,18 +44,3 @@ export 'src/types/graph_label.dart';
 export 'src/types/graph_node.dart';
 export 'src/types/graph_property_type.dart';
 export 'src/types/graph_relationship_direction.dart';
-
-// Errors
-export 'src/errors/graph_exception.dart';
-
-// Query DSL
-export 'src/query/graph_filter.dart';
-export 'src/query/graph_pattern.dart';
-export 'src/query/graph_query.dart';
-
-// Store
-export 'src/store/graph_persistent_store.dart';
-
-// Context
-export 'src/context/graph_context.dart';
-export 'src/context/graph_data_model.dart';

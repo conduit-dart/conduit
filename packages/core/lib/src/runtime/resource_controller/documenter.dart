@@ -206,7 +206,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
     List<String> operationScopes,
     List<AuthScope> methodScopes,
   ) {
-    final existingScopes = operationScopes.map((s) => AuthScope(s)).toList();
+    final existingScopes = operationScopes.map(AuthScope.new).toList();
 
     for (final methodScope in methodScopes) {
       for (final existingScope in existingScopes) {

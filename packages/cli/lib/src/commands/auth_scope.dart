@@ -5,8 +5,8 @@ import 'package:conduit/src/metadata.dart';
 import 'package:conduit/src/mixins/database_connecting.dart';
 import 'package:conduit/src/mixins/database_managing.dart';
 import 'package:conduit/src/mixins/project.dart';
-import 'package:conduit_core/managed_auth.dart';
 import 'package:conduit_core/conduit_core.dart';
+import 'package:conduit_core/managed_auth.dart';
 
 class CLIAuthScopeClient extends CLICommand
     with CLIDatabaseConnectingCommand, CLIDatabaseManagingCommand, CLIProject {
@@ -45,11 +45,11 @@ class CLIAuthScopeClient extends CLICommand
 
     final scopingClient = AuthClient.public(
       clientID!,
-      allowedScopes: scopes?.map((s) => AuthScope(s)).toList(),
+      allowedScopes: scopes?.map(AuthScope.new).toList(),
     );
 
     final query = Query<ManagedAuthClient>(context)
-      ..where((o) => o.id).equalTo(clientID!)
+      ..where((o) => o.id).equalTo(clientID)
       ..values.allowedScope =
           scopingClient.allowedScopes?.map((s) => s.toString()).join(" ");
 

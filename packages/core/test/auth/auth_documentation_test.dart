@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:conduit_common/conduit_common.dart';
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   group("AuthController", () {
@@ -18,7 +19,7 @@ void main() {
       );
       final authServer = AuthServer(InMemoryAuthStorage());
       authServer.documentComponents(context);
-      final AuthController ac = AuthController(authServer);
+      final ac = AuthController(authServer);
       ac.restore(ac.recycledState);
       ac.didAddToChannel();
       operations = ac.documentOperations(context, "/", APIPath());
@@ -150,7 +151,7 @@ void main() {
           ..paths = {}
           ..components = APIComponents(),
       );
-      final AuthRedirectController ac =
+      final ac =
           AuthRedirectController(AuthServer(InMemoryAuthStorage()));
       ac.restore(ac.recycledState);
       ac.didAddToChannel();

@@ -123,9 +123,7 @@ class APIOperation extends APIObject {
 
     existingResponse.description =
         "${existingResponse.description ?? ""}\n${response!.description}";
-    response.headers?.forEach((name, header) {
-      existingResponse.addHeader(name, header);
-    });
+    response.headers?.forEach(existingResponse.addHeader);
     response.content?.forEach((contentType, mediaType) {
       existingResponse.addContent(contentType, mediaType?.schema);
     });
@@ -143,20 +141,20 @@ class APIOperation extends APIObject {
     description = object.decode("description");
     id = object.decode("operationId");
     parameters = object
-        .decodeObjects("parameters", () => APIParameter.empty())
+        .decodeObjects("parameters", APIParameter.empty)
         ?.nonNulls
         .toList();
     requestBody =
-        object.decodeObject("requestBody", () => APIRequestBody.empty());
-    responses = object.decodeObjectMap("responses", () => APIResponse.empty());
-    callbacks = object.decodeObjectMap("callbacks", () => APICallback());
+        object.decodeObject("requestBody", APIRequestBody.empty);
+    responses = object.decodeObjectMap("responses", APIResponse.empty);
+    callbacks = object.decodeObjectMap("callbacks", APICallback.new);
     deprecated = object.decode("deprecated");
     security = object
-        .decodeObjects("security", () => APISecurityRequirement.empty())
+        .decodeObjects("security", APISecurityRequirement.empty)
         ?.nonNulls
         .toList();
     servers =
-        object.decodeObjects("servers", () => APIServerDescription.empty());
+        object.decodeObjects("servers", APIServerDescription.empty);
   }
 
   @override

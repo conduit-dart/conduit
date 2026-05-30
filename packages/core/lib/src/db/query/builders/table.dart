@@ -181,7 +181,7 @@ class TableBuilder implements Returnable {
       final firstElement = expression.keyPath.path.first;
       final lastElement = expression.keyPath.path.last;
 
-      final bool isPropertyOnThisEntity = expression.keyPath.length == 1;
+      final isPropertyOnThisEntity = expression.keyPath.length == 1;
       final bool isForeignKey = expression.keyPath.length == 2 &&
           lastElement is ManagedAttributeDescription &&
           lastElement.isPrimaryKey &&

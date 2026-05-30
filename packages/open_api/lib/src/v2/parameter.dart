@@ -70,12 +70,12 @@ class APIParameter extends APIProperty {
     }
 
     if (location == APIParameterLocation.body) {
-      schema = object.decodeObject("schema", () => APISchemaObject());
+      schema = object.decodeObject("schema", APISchemaObject.new);
     } else {
       super.decode(object);
       allowEmptyValue = object.decode("allowEmptyValue") ?? false;
       if (type == APIType.array) {
-        items = object.decodeObject("items", () => APIProperty());
+        items = object.decodeObject("items", APIProperty.new);
       }
     }
   }

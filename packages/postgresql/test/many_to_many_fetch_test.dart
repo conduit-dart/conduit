@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'not_tests/model_graph.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
+import 'not_tests/model_graph.dart';
 import 'not_tests/postgres_test_config.dart';
 
 /*

@@ -62,11 +62,10 @@ abstract class CLICommand {
     "version",
     help: "Prints version of this tool",
     negatable: false,
-    defaultsTo: false,
   )
   bool get showVersion => decode<bool>("version");
 
-  @Flag("color", help: "Toggles ANSI color", negatable: true, defaultsTo: true)
+  @Flag("color", help: "Toggles ANSI color", defaultsTo: true)
   bool get showColors => decode<bool>("color");
 
   @Flag(
@@ -74,14 +73,12 @@ abstract class CLICommand {
     abbr: "h",
     help: "Shows this",
     negatable: false,
-    defaultsTo: false,
   )
   bool get helpMeItsScary => decode<bool>("help");
 
   @Flag(
     "stacktrace",
     help: "Shows the stacktrace if an error occurs",
-    defaultsTo: false,
   )
   bool get showStacktrace => decode<bool>("stacktrace");
 
@@ -89,7 +86,6 @@ abstract class CLICommand {
     "machine",
     help:
         "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
-    defaultsTo: false,
   )
   bool get isMachineOutput => decode<bool>("machine");
 
@@ -361,7 +357,7 @@ abstract class CLICommand {
   }
 
   bool isExecutableInShellPath(String name) {
-    final String locator = Platform.isWindows ? "where" : "which";
+    final locator = Platform.isWindows ? "where" : "which";
     final ProcessResult results =
         Process.runSync(locator, [name], runInShell: true);
 

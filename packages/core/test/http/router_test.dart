@@ -3,10 +3,11 @@ import 'dart:convert';
 import "dart:core";
 import "dart:io";
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import "package:test/test.dart";
+
+import '../not_tests/helpers.dart';
 
 void main() {
   group("Router basics", () {
@@ -17,7 +18,7 @@ void main() {
     });
 
     test("Router Handles Requests", () async {
-      final Router router = Router();
+      final router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -31,7 +32,7 @@ void main() {
     });
 
     test("Router 404s on no match", () async {
-      final Router router = Router();
+      final router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -47,7 +48,7 @@ void main() {
     });
 
     test("Router 404 but does not accept html, no body", () async {
-      final Router router = Router();
+      final router = Router();
 
       router.route("/player").linkFunction((req) async {
         return Response.ok("");
@@ -65,7 +66,7 @@ void main() {
     });
 
     test("Router delivers path values", () async {
-      final Router router = Router();
+      final router = Router();
 
       router.route("/player/:id").linkFunction((req) async {
         return Response.ok("${req.path.variables["id"]}");
@@ -81,7 +82,7 @@ void main() {
 
     test("Base API adds to path", () async {
       final router = Router(basePath: "/api");
-      router.route("/player/").link(() => Handler());
+      router.route("/player/").link(Handler.new);
 
       server = await enableRouter(router);
 
@@ -97,7 +98,7 @@ void main() {
 
     test("Change Base API Path after adding routes still succeeds", () async {
       final router = Router(basePath: "/api");
-      router.route("/a").link(() => Handler());
+      router.route("/a").link(Handler.new);
       server = await enableRouter(router);
       final response = await http.get(Uri.parse("http://localhost:4040/api/a"));
       expect(response.statusCode, equals(202));
@@ -295,7 +296,7 @@ void main() {
 
       root.didAddToChannel();
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
-      server.map((httpReq) => Request(httpReq)).listen(root.receive);
+      server.map(Request.new).listen(root.receive);
 
       expect((await http.get(Uri.parse("http://localhost:4040/1"))).body, "1");
       expect((await http.get(Uri.parse("http://localhost:4040/2"))).body, "2");
@@ -321,7 +322,7 @@ void main() {
 Future<HttpServer> enableRouter(Router router) async {
   router.didAddToChannel();
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
-  server.map((httpReq) => Request(httpReq)).listen(router.receive);
+  server.map(Request.new).listen(router.receive);
   return server;
 }
 

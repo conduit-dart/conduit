@@ -1,9 +1,10 @@
 import "dart:core";
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   final app = Application<Channel>();
@@ -109,19 +110,19 @@ class Channel extends ApplicationChannel {
 
     router.route("/auth/token").link(() => AuthController(authServer));
 
-    router.route("/no-authorizer").link(() => C1());
+    router.route("/no-authorizer").link(C1.new);
     router
         .route("/level1-authorizer")
         .link(() => Authorizer.bearer(authServer, scopes: ["level1"]))!
-        .link(() => C1());
+        .link(C1.new);
     router
         .route("/level1-subscope-authorizer")
         .link(() => Authorizer.bearer(authServer, scopes: ["level1:subscope"]))!
-        .link(() => C1());
+        .link(C1.new);
     router
         .route("/authorizer")
         .link(() => Authorizer.bearer(authServer))!
-        .link(() => C1());
+        .link(C1.new);
 
     return router;
   }

@@ -32,6 +32,6 @@ class _FailingChild {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('gen'), onDelete: DeleteRule.nullify, isRequired: true)
+  @Relate(Symbol('gen'), isRequired: true)
   Owner? ref;
 }

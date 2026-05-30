@@ -131,24 +131,21 @@ ParsedConnection parseConnectionString(String input) {
   }
 
   final scheme = uri.scheme.toLowerCase();
-  switch (scheme) {
-    case 'postgres':
-    case 'postgresql':
-      return _parseWire(uri, DbFlavor.postgres, trimmed);
-    case 'mysql':
-      return _parseWire(uri, DbFlavor.mysql, trimmed);
-    case 'sqlite':
-      // Already handled above. If we got here the input was
-      // `sqlite:` without `//`, which we reject so users don't
-      // mistakenly think `sqlite:relative` is supported.
-      throw ConnectionStringFormatException(
-          'sqlite connection strings must use sqlite:// (with two slashes) '
-          'or the literal sqlite::memory:, got "$trimmed".');
-    default:
-      throw ConnectionStringFormatException(
-          'Unsupported scheme "$scheme" — expected one of postgres, '
-          'postgresql, sqlite, mysql.');
-  }
+  return switch (scheme) {
+    'postgres' || 'postgresql' => _parseWire(uri, DbFlavor.postgres, trimmed),
+    'mysql' => _parseWire(uri, DbFlavor.mysql, trimmed),
+    // Already handled above. If we got here the input was `sqlite:`
+    // without `//`, which we reject so users don't mistakenly think
+    // `sqlite:relative` is supported.
+    'sqlite' => throw ConnectionStringFormatException(
+        'sqlite connection strings must use sqlite:// (with two slashes) '
+        'or the literal sqlite::memory:, got "$trimmed".',
+      ),
+    _ => throw ConnectionStringFormatException(
+        'Unsupported scheme "$scheme" — expected one of postgres, '
+        'postgresql, sqlite, mysql.',
+      ),
+  };
 }
 
 ParsedConnection _parseWire(Uri uri, DbFlavor flavor, String raw) {
@@ -201,15 +198,9 @@ PersistentStore? buildStore(
   PersistentStore Function(ParsedConnection)? sqliteFactory,
   PersistentStore Function(ParsedConnection)? mysqlFactory,
 }) {
-  switch (conn.flavor) {
-    case DbFlavor.postgres:
-      if (postgresFactory == null) return null;
-      return postgresFactory(conn);
-    case DbFlavor.sqlite:
-      if (sqliteFactory == null) return null;
-      return sqliteFactory(conn);
-    case DbFlavor.mysql:
-      if (mysqlFactory == null) return null;
-      return mysqlFactory(conn);
-  }
+  return switch (conn.flavor) {
+    DbFlavor.postgres => postgresFactory?.call(conn),
+    DbFlavor.sqlite => sqliteFactory?.call(conn),
+    DbFlavor.mysql => mysqlFactory?.call(conn),
+  };
 }

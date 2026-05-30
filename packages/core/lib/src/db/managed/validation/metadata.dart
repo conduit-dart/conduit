@@ -321,36 +321,26 @@ class Validate {
     ManagedType typeBeingValidated, {
     Type? relationshipInverseType,
   }) {
-    switch (type) {
-      case ValidateType.absent:
-        return null;
-      case ValidateType.present:
-        return null;
-      case ValidateType.oneOf:
-        {
-          return _oneOfCompiler(
-            typeBeingValidated,
-            relationshipInverseType: relationshipInverseType,
-          );
-        }
-      case ValidateType.comparison:
-        return _comparisonCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      case ValidateType.regex:
-        return _regexCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      case ValidateType.length:
-        return _lengthCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      default:
-        return null;
-    }
+    return switch (type) {
+      ValidateType.absent || ValidateType.present => null,
+      ValidateType.oneOf => _oneOfCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.comparison => _comparisonCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.regex => _regexCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.length => _lengthCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      _ => null,
+    };
   }
 
   /// Validates the [input] value.
@@ -452,13 +442,13 @@ class Validate {
             object.minLength = _equalTo;
           } else {
             if (_greaterThan is int) {
-              object.minLength = 1 + (_greaterThan);
+              object.minLength = 1 + _greaterThan;
             } else if (_greaterThanEqualTo is int) {
               object.minLength = _greaterThanEqualTo as int?;
             }
 
             if (_lessThan is int) {
-              object.maxLength = (-1) + (_lessThan);
+              object.maxLength = (-1) + _lessThan;
             } else if (_lessThanEqualTo != null) {
               object.maximum = _lessThanEqualTo as int?;
             }

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
+import 'package:test/test.dart';
 
 import 'not_tests/cli_helpers.dart';
 
@@ -74,7 +74,7 @@ void main() {
         "--stacktrace",
       ],
     );
-    final File mainFile = File(cli.agent.workingDirectory.uri
+    final mainFile = File(cli.agent.workingDirectory.uri
         .resolve("test_project/lib/controller/simple_controller.dart")
         .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
@@ -120,7 +120,7 @@ void main() {
         "-tdb",
       ],
     );
-    final File mainFile = File(cli.agent.workingDirectory.uri
+    final mainFile = File(cli.agent.workingDirectory.uri
         .resolve("test_project/lib/controller/simple_controller.dart")
         .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {

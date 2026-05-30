@@ -316,7 +316,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       // If we do specify scope
       for (final incomingScope in requestedScopes!) {
         final hasExistingScopeOrSuperset = t.scopes!.any(
-          (existingScope) => incomingScope.isSubsetOrEqualTo(existingScope),
+          incomingScope.isSubsetOrEqualTo,
         );
 
         if (!hasExistingScopeOrSuperset) {
@@ -671,7 +671,7 @@ String randomStringOfLength(int length) {
   final buff = StringBuffer();
 
   final r = Random.secure();
-  for (int i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     // Sample uniformly from the alphabet. The previous form
     // `r.nextInt(1000) % 62` biased the first 12 characters (1000 mod
     // 62 = 12), reducing token entropy slightly. `nextInt(n)` is

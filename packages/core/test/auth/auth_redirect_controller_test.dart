@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
 
+import '../not_tests/helpers.dart';
+
 void main() {
   late Application<TestChannel> application;
-  final Agent client = Agent.onPort(8888);
+  final client = Agent.onPort(8888);
 
   Future<TestResponse> codeResponse(Map<String, String?> form) {
     final m = Map<String, String>.from(form);

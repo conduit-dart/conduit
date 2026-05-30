@@ -13,14 +13,14 @@
 /// directly.
 library;
 
+import 'package:conduit_runtime/src/context.dart';
+import 'package:conduit_runtime/src/mirror_context.dart' as mc;
+
 export 'package:conduit_runtime/runtime.dart';
 export 'package:conduit_runtime/src/analyzer.dart';
 export 'package:conduit_runtime/src/compiler.dart';
 export 'package:conduit_runtime/src/mirror_coerce.dart';
 export 'package:conduit_runtime/src/mirror_context.dart';
-
-import 'package:conduit_runtime/src/context.dart';
-import 'package:conduit_runtime/src/mirror_context.dart' as mc;
 
 /// Wires the mirror-based `MirrorContext` as the default factory used by
 /// `RuntimeContext.current`. Call once at the top of `main()` from

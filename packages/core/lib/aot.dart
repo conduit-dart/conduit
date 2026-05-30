@@ -10,11 +10,10 @@
 library;
 
 export 'package:conduit_config/aot.dart';
-export 'package:conduit_core/src/application/channel.dart';
-export 'package:logging/logging.dart';
-
 export 'package:conduit_core/src/application/application.dart';
+export 'package:conduit_core/src/application/channel.dart';
 export 'package:conduit_core/src/auth/auth.dart';
 export 'package:conduit_core/src/db/db.dart';
 export 'package:conduit_core/src/db/managed/relationship_type.dart';
 export 'package:conduit_core/src/http/http.dart';
+export 'package:logging/logging.dart';

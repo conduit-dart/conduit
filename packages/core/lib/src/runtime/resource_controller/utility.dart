@@ -18,7 +18,7 @@ List<AuthScope>? getMethodScopes(DeclarationMirror m) {
       .firstWhereOrNull((im) => im.reflectee is Scope)
       ?.reflectee as Scope?;
 
-  return metadata?.scopes.map((scope) => AuthScope(scope)).toList();
+  return metadata?.scopes.map(AuthScope.new).toList();
 }
 
 Operation? getMethodOperationMetadata(DeclarationMirror m) {

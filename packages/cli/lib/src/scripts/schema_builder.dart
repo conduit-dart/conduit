@@ -31,9 +31,6 @@ class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
       for (final source in sources) {
         final Migration instance = instanceOf(
           source.name,
-          positionalArguments: const [],
-          namedArguments: const <Symbol, dynamic>{},
-          constructorName: Symbol.empty,
         );
         instance.database = SchemaBuilder(null, outputSchema);
         await instance.upgrade();

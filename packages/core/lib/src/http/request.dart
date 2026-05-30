@@ -207,7 +207,7 @@ class Request implements RequestOrResponse {
   }
 
   String get _sanitizedHeaders {
-    final StringBuffer buf = StringBuffer("{");
+    final buf = StringBuffer("{");
 
     raw.headers.forEach((k, v) {
       buf.write("${_truncatedString(k)} : ${_truncatedString(v.join(","))}\\n");

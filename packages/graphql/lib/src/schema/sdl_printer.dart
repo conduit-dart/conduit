@@ -103,7 +103,7 @@ void _walkType(
   Set<GraphQLType<dynamic, dynamic>> scalars,
   Set<GraphQLUnionType> unions,
 ) {
-  GraphQLType current = type;
+  var current = type;
   while (true) {
     if (current is GraphQLNonNullableType) {
       current = current.ofType;

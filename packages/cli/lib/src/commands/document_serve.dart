@@ -62,7 +62,7 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
     router.route("/*").link(() => fileController);
     router.didAddToChannel();
 
-    server.map((req) => Request(req)).listen(router.receive);
+    server.map(Request.new).listen(router.receive);
 
     displayInfo(
       "Document server listening on http://${server.address.host}:${server.port}/.",

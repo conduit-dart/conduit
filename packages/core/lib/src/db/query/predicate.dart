@@ -85,7 +85,7 @@ class QueryPredicate {
     //       AST). If either condition fails we drop the AST and the
     //       backend falls back to rendering from the format string.
     final childExpressions = <SqlExpression>[];
-    bool allHaveExpressions = true;
+    var allHaveExpressions = true;
     for (final p in predicateList) {
       final expr = p.expression;
       if (expr == null) {
@@ -96,8 +96,8 @@ class QueryPredicate {
     }
 
     // If we have duplicate keys anywhere, we need to disambiguate them.
-    int dupeCounter = 0;
-    bool dupeOccurred = false;
+    var dupeCounter = 0;
+    var dupeOccurred = false;
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {
@@ -177,22 +177,14 @@ class ComparisonExpression implements PredicateExpression {
     return ComparisonExpression(value, inverseOperator);
   }
 
-  PredicateOperator get inverseOperator {
-    switch (operator) {
-      case PredicateOperator.lessThan:
-        return PredicateOperator.greaterThanEqualTo;
-      case PredicateOperator.greaterThan:
-        return PredicateOperator.lessThanEqualTo;
-      case PredicateOperator.notEqual:
-        return PredicateOperator.equalTo;
-      case PredicateOperator.lessThanEqualTo:
-        return PredicateOperator.greaterThan;
-      case PredicateOperator.greaterThanEqualTo:
-        return PredicateOperator.lessThan;
-      case PredicateOperator.equalTo:
-        return PredicateOperator.notEqual;
-    }
-  }
+  PredicateOperator get inverseOperator => switch (operator) {
+    PredicateOperator.lessThan => PredicateOperator.greaterThanEqualTo,
+    PredicateOperator.greaterThan => PredicateOperator.lessThanEqualTo,
+    PredicateOperator.notEqual => PredicateOperator.equalTo,
+    PredicateOperator.lessThanEqualTo => PredicateOperator.greaterThan,
+    PredicateOperator.greaterThanEqualTo => PredicateOperator.lessThan,
+    PredicateOperator.equalTo => PredicateOperator.notEqual,
+  };
 }
 
 /// The operator in a string matcher.

@@ -680,31 +680,31 @@ class CORSChannel extends ApplicationChannel with AuthValidator {
   @override
   Controller get entryPoint {
     final router = Router();
-    router.route("/add").link(() => AdditiveController());
+    router.route("/add").link(AdditiveController.new);
 
     router
         .route("/opts")
         .link(() => Authorizer(this))!
-        .link(() => OptionsController());
-    router.route("/restrictive").link(() => RestrictiveOriginController());
-    router.route("/single_method").link(() => SingleMethodController());
+        .link(OptionsController.new);
+    router.route("/restrictive").link(RestrictiveOriginController.new);
+    router.route("/single_method").link(SingleMethodController.new);
     router
         .route("/restrictive_auth")
         .link(() => Authorizer(this))!
-        .link(() => RestrictiveOriginController());
+        .link(RestrictiveOriginController.new);
     router
         .route("/restrictive_nocreds")
-        .link(() => RestrictiveNoCredsOriginController());
-    router.route("/nopolicy").link(() => NoPolicyController());
-    router.route("/defaultpolicy").link(() => DefaultPolicyController());
+        .link(RestrictiveNoCredsOriginController.new);
+    router.route("/nopolicy").link(NoPolicyController.new);
+    router.route("/defaultpolicy").link(DefaultPolicyController.new);
     router
         .route("/nopolicyauth")
         .link(() => Authorizer(this))!
-        .link(() => NoPolicyController());
+        .link(NoPolicyController.new);
     router
         .route("/defaultpolicyauth")
         .link(() => Authorizer(this))!
-        .link(() => DefaultPolicyController());
+        .link(DefaultPolicyController.new);
     return router;
   }
 

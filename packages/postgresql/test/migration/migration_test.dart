@@ -1398,7 +1398,7 @@ class TableDefinition {
       "SELECT column_name, column_default, data_type, is_nullable FROM information_schema.columns WHERE table_name = '$name'",
     ) as List<List<dynamic>>;
 
-    columns = results.map((row) => ColumnDefinition(row)).toList();
+    columns = results.map(ColumnDefinition.new).toList();
 
     final constraints = await store.execute(
             "SELECT c.column_name, t.constraint_type FROM information_schema.key_column_usage AS c "

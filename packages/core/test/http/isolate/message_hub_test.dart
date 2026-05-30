@@ -23,7 +23,7 @@ void main() {
         "A message sent to the hub is received by other channels, but not by sender",
         () async {
       final started = await startWithFreePort(
-        () => Application<HubChannel>(),
+        Application<HubChannel>.new,
         numberOfInstances: 3,
       );
       app = started.app;
@@ -144,7 +144,7 @@ void main() {
 
     test("Send invalid x-isolate data returns error in error stream", () async {
       final started = await startWithFreePort(
-        () => Application<HubChannel>(),
+        Application<HubChannel>.new,
         numberOfInstances: 3,
       );
       app = started.app;
@@ -166,7 +166,7 @@ void main() {
         resendID = isolateIdentifierFromResponse(resp);
       }
 
-      final int expectedReceiverID = resendID == 1 ? 2 : 1;
+      final expectedReceiverID = resendID == 1 ? 2 : 1;
       expect(
         waitForMessages(port, {
           expectedReceiverID: [

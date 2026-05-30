@@ -1,15 +1,16 @@
 import 'dart:convert';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   late ManagedContext context;
 
   setUpAll(() {
     final ps = DefaultPersistentStore();
-    final ManagedDataModel dm = ManagedDataModel([
+    final dm = ManagedDataModel([
       TransientTest,
       TransientTypeTest,
       User,
@@ -72,7 +73,7 @@ void main() {
     final user = User();
     user.id = 1;
     user.name = "Bob";
-    final List<Post> posts = <Post>[
+    final posts = <Post>[
       Post()
         ..text = "A"
         ..id = 1
@@ -824,20 +825,20 @@ class TransientTest extends ManagedObject<_TransientTest>
     implements _TransientTest {
   String? notAnAttribute;
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String get defaultedText => "Mr. $text";
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set defaultedText(String str) {
     text = str.split(" ").last;
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set inputOnly(String s) {
     text = s;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String? get outputOnly => text;
 
   set outputOnly(String? s) {
@@ -845,11 +846,11 @@ class TransientTest extends ManagedObject<_TransientTest>
   }
 
   // This is intentionally invalid
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   String? get invalidInput => text;
 
   // This is intentionally invalid
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   set invalidOutput(String s) {
     text = s;
   }
@@ -861,10 +862,10 @@ class TransientTest extends ManagedObject<_TransientTest>
     text = s;
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   int? inputInt;
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   int? outputInt;
 
   @Serialize()
@@ -888,55 +889,55 @@ class _TransientTest {
 
 class TransientTypeTest extends ManagedObject<_TransientTypeTest>
     implements _TransientTypeTest {
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   int get transientInt => backingInt + 1;
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientInt(int i) {
     backingInt = i - 1;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   int get transientBigInt => backingBigInt ~/ 2;
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientBigInt(int i) {
     backingBigInt = i * 2;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String get transientString => backingString.toLowerCase();
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientString(String s) {
     backingString = s.toUpperCase();
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   DateTime get transientDate => backingDateTime.add(const Duration(days: 1));
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientDate(DateTime d) {
     backingDateTime = d.subtract(const Duration(days: 1));
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   bool get transientBool => !backingBool;
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientBool(bool b) {
     backingBool = !b;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   double get transientDouble => backingDouble / 5;
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientDouble(double d) {
     backingDouble = d * 5;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   Map<String, String> get transientMap {
     final List<String> pairs = backingMapString.split(",");
 
@@ -950,7 +951,7 @@ class TransientTypeTest extends ManagedObject<_TransientTypeTest>
     return returnMap;
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientMap(Map<String, String> m) {
     final pairStrings = m.keys.map((key) {
       final String? value = m[key];
@@ -960,12 +961,12 @@ class TransientTypeTest extends ManagedObject<_TransientTypeTest>
     backingMapString = pairStrings.join(",");
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   List<int> get transientList {
     return backingListString.split(",").map(int.parse).toList();
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set transientList(List<int> l) {
     backingListString = l.map((i) => i.toString()).join(",");
   }
@@ -1008,12 +1009,12 @@ class _TransientTypeTest {
 
 class PrivateField extends ManagedObject<_PrivateField>
     implements _PrivateField {
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set public(String? p) {
     _private = p;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String? get public => _private;
 }
 
@@ -1037,7 +1038,7 @@ enum EnumValues { abcd, efgh, other18 }
 
 class TransientOwner extends ManagedObject<_TransientOwner>
     implements _TransientOwner {
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   int v = 2;
 }
 

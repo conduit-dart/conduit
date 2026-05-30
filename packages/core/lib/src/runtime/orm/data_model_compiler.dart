@@ -54,7 +54,7 @@ class DataModelCompiler {
         .where(_isTypeManagedObjectSubclass)
         .map((c) => c.reflectedType);
 
-    _builders = instanceTypes.map((t) => EntityBuilder(t)).toList();
+    _builders = instanceTypes.map(EntityBuilder.new).toList();
 
     // Phase 1: compile. With tolerance on, drop builders whose
     // relationships can't be resolved against the loaded mirror. The

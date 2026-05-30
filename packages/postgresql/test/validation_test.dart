@@ -165,11 +165,11 @@ class _T {
   @Column(nullable: true)
   String? aOrb;
 
-  @Validate.compare(equalTo: 1, onUpdate: false, onInsert: true)
+  @Validate.compare(equalTo: 1, onUpdate: false)
   @Column(nullable: true)
   int? equalTo1OnInsert;
 
-  @Validate.compare(equalTo: 2, onUpdate: true, onInsert: false)
+  @Validate.compare(equalTo: 2, onInsert: false)
   @Column(nullable: true)
   int? equalTo2OnUpdate;
 }

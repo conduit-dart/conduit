@@ -18,7 +18,6 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   @Flag(
     "use-ssl",
     help: "DEPRECATED: Use ssl-mode instead",
-    defaultsTo: false,
   )
   bool get useSSL => decode("use-ssl");
 

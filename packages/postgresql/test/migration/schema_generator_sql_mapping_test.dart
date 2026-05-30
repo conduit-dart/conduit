@@ -631,7 +631,7 @@ class _GenPost {
 
   String? text;
 
-  @Relate(Symbol('posts'), isRequired: false, onDelete: DeleteRule.restrict)
+  @Relate(Symbol('posts'), onDelete: DeleteRule.restrict)
   GenUser? owner;
 }
 
@@ -658,7 +658,7 @@ class _GenAuth {
   @Column(primaryKey: true)
   int? id;
 
-  @Relate(Symbol('auth'), isRequired: false, onDelete: DeleteRule.cascade)
+  @Relate(Symbol('auth'), onDelete: DeleteRule.cascade)
   GenOwner? owner;
 }
 
@@ -709,7 +709,7 @@ class _GenNotNullable {
   @primaryKey
   int? id;
 
-  @Relate(Symbol('gen'), onDelete: DeleteRule.nullify, isRequired: false)
+  @Relate(Symbol('gen'))
   GenObj? ref;
 }
 

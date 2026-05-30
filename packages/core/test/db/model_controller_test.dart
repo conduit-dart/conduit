@@ -81,7 +81,7 @@ class TestModelController extends QueryController<TestModel> {
 
   @Operation.get()
   Future<Response> getAll() async {
-    int statusCode = 200;
+    var statusCode = 200;
 
     if (query == null) {
       statusCode = 400;
@@ -96,7 +96,7 @@ class TestModelController extends QueryController<TestModel> {
 
   @Operation.get("id")
   Future<Response> getOne(@Bind.path("id") int id) async {
-    int statusCode = 200;
+    var statusCode = 200;
 
     if (query == null) {
       statusCode = 400;
@@ -120,7 +120,7 @@ class TestModelController extends QueryController<TestModel> {
 
   @Operation.put("id")
   Future<Response> putOne(@Bind.path("id") int id) async {
-    int statusCode = 200;
+    var statusCode = 200;
 
     if (query!.values.name != "joe") {
       statusCode = 400;
@@ -147,7 +147,7 @@ class TestModelController extends QueryController<TestModel> {
 
   @Operation.post()
   Future<Response> create() async {
-    int statusCode = 200;
+    var statusCode = 200;
     if (query!.values.name != "joe") {
       statusCode = 400;
     }

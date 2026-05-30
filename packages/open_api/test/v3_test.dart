@@ -17,7 +17,7 @@ void main() {
       expect(orig!.type, APIType.string);
       expect(ref.type, isNull);
 
-      final APISchemaObject? constructed = components
+      final constructed = components
           .resolveUri(Uri(path: "/components/schemas/foo")) as APISchemaObject?;
       expect(constructed, isNotNull);
       expect(constructed!.type, APIType.string);

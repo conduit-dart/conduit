@@ -1,4 +1,4 @@
 analyzer:
   errors:
     empty_catches: ignore
-include: package:lints/recommended.yaml
+include: ../../analysis_options.shared.yaml

@@ -27,9 +27,7 @@ void main() {
     cli.clearOutput();
   });
 
-  tearDownAll(() {
-    DartProjectAgent.tearDownAll();
-  });
+  tearDownAll(DartProjectAgent.tearDownAll);
 
   group("Project naming", () {
     test("Appropriately named project gets created correctly", () async {
@@ -112,7 +110,7 @@ void main() {
         final res = await cli.run("create", ["test_project", "--offline"]);
         expect(res, isZero);
 
-        final List packages =
+        final packages =
             jsonDecode(
                   File(
                     join(
@@ -177,7 +175,7 @@ void main() {
           isZero,
         );
 
-        const String cmd = 'dart';
+        const cmd = 'dart';
         final res = Process.runSync(
           cmd,
           ["pub", "run", "test"],

@@ -784,7 +784,6 @@ class _LoadedItem {
   @Relate(
     Symbol('loadedItems'),
     onDelete: DeleteRule.restrict,
-    isRequired: false,
   )
   Container? container;
 

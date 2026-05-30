@@ -1,9 +1,10 @@
 // ignore_for_file: avoid_setters_without_getters
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   group("Valid data model", () {
@@ -848,20 +849,20 @@ class TransientTest extends ManagedObject<_TransientTest>
     implements _TransientTest {
   String? notAnAttribute;
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String get defaultedText => "Mr. $text";
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set defaultedText(String str) {
     text = str.split(" ").last;
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set inputOnly(String s) {
     text = s;
   }
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String? get outputOnly => text;
 
   set outputOnly(String? s) {
@@ -869,11 +870,11 @@ class TransientTest extends ManagedObject<_TransientTest>
   }
 
   // This is intentionally invalid
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   String? get invalidInput => text;
 
   // This is intentionally invalid
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   set invalidOutput(String s) {
     text = s;
   }
@@ -885,10 +886,10 @@ class TransientTest extends ManagedObject<_TransientTest>
     text = s;
   }
 
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   int? inputInt;
 
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   int? outputInt;
 
   @Serialize()

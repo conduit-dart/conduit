@@ -28,7 +28,7 @@ class CLIDatabaseGenerate extends CLICommand
     final upperAlphaRegex = RegExp('[A-Z]');
     final symbolRegex = RegExp(r'[ ./_\-]');
 
-    for (int i = 0; i < name.length; i++) {
+    for (var i = 0; i < name.length; i++) {
       final char = String.fromCharCode(name.codeUnitAt(i));
       final nextChar = i + 1 == name.length
           ? null

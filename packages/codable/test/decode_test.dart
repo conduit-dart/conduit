@@ -154,7 +154,7 @@ void main() {
       final archive = getJSONArchive({
         "key": {"name": "Bob"}
       });
-      final Parent p = archive.decodeObject("key", () => Parent())!;
+      final Parent p = archive.decodeObject("key", Parent.new)!;
       expect(p.name, "Bob");
       expect(p.child, isNull);
       expect(p.children, isNull);
@@ -168,7 +168,7 @@ void main() {
         ]
       });
       try {
-        archive.decodeObject("key", () => Parent());
+        archive.decodeObject("key", Parent.new);
         fail('unreachable');
       } on ArgumentError {
         // no action required
@@ -183,7 +183,7 @@ void main() {
           {"name": "Sally"}
         ]
       });
-      final List<Parent?>? p = archive.decodeObjects("key", () => Parent());
+      final List<Parent?>? p = archive.decodeObjects("key", Parent.new);
       expect(p![0]!.name, "Bob");
       expect(p[1], isNull);
       expect(p[2]!.name, "Sally");
@@ -196,7 +196,7 @@ void main() {
         "key": {"name": "Bob"}
       });
       try {
-        archive.decodeObjects("key", () => Parent());
+        archive.decodeObjects("key", Parent.new);
         fail('unreachable');
       } on ArgumentError {
         // no op
@@ -213,7 +213,7 @@ void main() {
         ]
       });
       try {
-        archive.decodeObjects("key", () => Parent());
+        archive.decodeObjects("key", Parent.new);
         fail('unreachable');
       } on TypeError {
         // no op
@@ -228,7 +228,7 @@ void main() {
         }
       });
 
-      final map = archive.decodeObjectMap("key", () => Parent())!;
+      final map = archive.decodeObjectMap("key", Parent.new)!;
       expect(map.length, 2);
       expect(map["1"]!.name, "Bob");
       expect(map["2"], isNull);
@@ -238,7 +238,7 @@ void main() {
         () {
       final archive = getJSONArchive({"key": []});
       try {
-        archive.decodeObjectMap("key", () => Parent());
+        archive.decodeObjectMap("key", Parent.new);
         fail('unreachable');
       } on ArgumentError {
         // no op
@@ -252,7 +252,7 @@ void main() {
         "key": {"1": "2"}
       });
       try {
-        archive.decodeObjectMap("key", () => Parent());
+        archive.decodeObjectMap("key", Parent.new);
         fail('unreachable');
       } on TypeError {
         // no op
@@ -269,7 +269,7 @@ void main() {
         }
       });
 
-      final o = archive.decodeObject("key", () => Parent())!;
+      final o = archive.decodeObject("key", Parent.new)!;
       expect(o.name, "Bob");
       expect(o.child!.name, "Sally");
       expect(o.childMap, isNull);
@@ -286,7 +286,7 @@ void main() {
         }
       });
 
-      final o = archive.decodeObject("key", () => Parent())!;
+      final o = archive.decodeObject("key", Parent.new)!;
       expect(o.name, "Bob");
       expect(o.child, isNull);
       expect(o.childMap, isNull);
@@ -304,7 +304,7 @@ void main() {
         }
       });
 
-      final o = archive.decodeObject("key", () => Parent())!;
+      final o = archive.decodeObject("key", Parent.new)!;
       expect(o.name, "Bob");
       expect(o.children, isNull);
       expect(o.child, isNull);
@@ -326,7 +326,7 @@ void main() {
         allowReferences: true,
       );
 
-      final p = archive.decodeObject("parent", () => Parent())!;
+      final p = archive.decodeObject("parent", Parent.new)!;
       expect(p.name, "Bob");
       expect(p.child!.name, "Sally");
       expect(p.child!.parent, isNull);
@@ -366,7 +366,7 @@ void main() {
         allowReferences: true,
       );
 
-      final p = archive.decodeObject("parent", () => Parent())!;
+      final p = archive.decodeObject("parent", Parent.new)!;
       expect(p.name, "Bob");
       expect(p.children?.first?.name, "Sally");
       expect(p.children?.last?.name, "fred");
@@ -390,7 +390,7 @@ void main() {
         allowReferences: true,
       );
 
-      final p = archive.decodeObject("parent", () => Parent())!;
+      final p = archive.decodeObject("parent", Parent.new)!;
       expect(p.name, "Bob");
       expect(p.children?.first?.name, "Sally");
       expect(p.children?.first?.parent!.name, "Bob");
@@ -406,7 +406,7 @@ void main() {
           "things": ["value"]
         }
       });
-      final p = archive.decodeObject("key", () => Parent())!;
+      final p = archive.decodeObject("key", Parent.new)!;
       expect(p.things, ["value"]);
     });
   });
@@ -437,9 +437,9 @@ class Parent extends Coding {
     super.decode(object);
 
     name = object.decode("name");
-    child = object.decodeObject("child", () => Child());
-    children = object.decodeObjects("children", () => Child());
-    childMap = object.decodeObjectMap("childMap", () => Child());
+    child = object.decodeObject("child", Child.new);
+    children = object.decodeObjects("children", Child.new);
+    childMap = object.decodeObjectMap("childMap", Child.new);
     things = object.decode("things");
   }
 
@@ -457,7 +457,7 @@ class Child extends Coding {
     super.decode(object);
 
     name = object.decode("name");
-    parent = object.decodeObject("parent", () => Parent());
+    parent = object.decodeObject("parent", Parent.new);
   }
 
   @override

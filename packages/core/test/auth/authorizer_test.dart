@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 const port = 8001;
 void main() {
@@ -558,7 +559,7 @@ Future<HttpServer> enableAuthorizer(Authorizer authorizer) async {
   router.didAddToChannel();
 
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-  server.map((httpReq) => Request(httpReq)).listen(router.receive);
+  server.map(Request.new).listen(router.receive);
 
   return server;
 }

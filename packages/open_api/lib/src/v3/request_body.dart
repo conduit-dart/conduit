@@ -42,7 +42,7 @@ class APIRequestBody extends APIObject {
 
     description = object.decode("description");
     isRequired = object.decode("required") ?? false;
-    content = object.decodeObjectMap("content", () => APIMediaType());
+    content = object.decodeObjectMap("content", APIMediaType.new);
   }
 
   @override

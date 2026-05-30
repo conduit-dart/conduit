@@ -4,10 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 int port = 8886;
 
@@ -318,7 +319,7 @@ void main() {
           ..contentType = ContentType("application", "octet-stream");
         final initiateResponseCompleter = Completer();
         server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-        server.map((req) => Request(req)).listen((req) async {
+        server.map(Request.new).listen((req) async {
           final next = PassthruController();
           next.linkFunction((req) async {
             initiateResponseCompleter.complete();
@@ -476,7 +477,7 @@ Future serverHasNoMoreConnections(HttpServer server) async {
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-  server.map((req) => Request(req)).listen((req) async {
+  server.map(Request.new).listen((req) async {
     final next = PassthruController();
     next.linkFunction((req) async {
       return response;

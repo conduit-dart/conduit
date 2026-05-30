@@ -33,13 +33,13 @@ class CLIClient {
   final StringBuffer _output = StringBuffer();
 
   static Future activateCLI({String path = "."}) {
-    const String cmd = "dart";
+    const cmd = "dart";
 
     return Process.run(cmd, ["pub", "global", "activate", "-spath", path]);
   }
 
   static Future deactivateCLI() {
-    const String cmd = "dart";
+    const cmd = "dart";
 
     return Process.run(cmd, ["pub", "global", "deactivate", "conduit"]);
   }

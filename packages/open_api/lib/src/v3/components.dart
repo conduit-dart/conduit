@@ -108,28 +108,28 @@ class APIComponents extends APIObject {
     super.decode(object);
 
     schemas = removeNullsFromMap(
-      object.decodeObjectMap("schemas", () => APISchemaObject()),
+      object.decodeObjectMap("schemas", APISchemaObject.new),
     );
     responses = removeNullsFromMap(
-      object.decodeObjectMap("responses", () => APIResponse.empty()),
+      object.decodeObjectMap("responses", APIResponse.empty),
     );
     parameters = removeNullsFromMap(
-      object.decodeObjectMap("parameters", () => APIParameter.empty()),
+      object.decodeObjectMap("parameters", APIParameter.empty),
     );
 //    examples = object.decodeObjectMap("examples", () => APIExample());
     requestBodies = removeNullsFromMap(
-      object.decodeObjectMap("requestBodies", () => APIRequestBody.empty()),
+      object.decodeObjectMap("requestBodies", APIRequestBody.empty),
     );
     headers = removeNullsFromMap(
-      object.decodeObjectMap("headers", () => APIHeader()),
+      object.decodeObjectMap("headers", APIHeader.new),
     );
 
     securitySchemes = removeNullsFromMap(
-      object.decodeObjectMap("securitySchemes", () => APISecurityScheme()),
+      object.decodeObjectMap("securitySchemes", APISecurityScheme.new),
     );
 //    links = object.decodeObjectMap("links", () => APILink());
     callbacks = removeNullsFromMap(
-      object.decodeObjectMap("callbacks", () => APICallback()),
+      object.decodeObjectMap("callbacks", APICallback.new),
     );
   }
 
