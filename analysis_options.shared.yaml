@@ -1,0 +1,25 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    use_super_parameters: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    unnecessary_late: true
+    unnecessary_const: true
+    unnecessary_new: true
+    unnecessary_string_interpolations: true
+    unnecessary_null_checks: true
+    unnecessary_lambdas: true
+    unnecessary_parenthesis: true
+    directives_ordering: true
+    prefer_typing_uninitialized_variables: true
+    avoid_redundant_argument_values: true
+    prefer_collection_literals: true
+    prefer_if_null_operators: true
+    prefer_null_aware_operators: true
+    prefer_spread_collections: true
+    use_function_type_syntax_for_parameters: true
+    omit_obvious_local_variable_types: true
