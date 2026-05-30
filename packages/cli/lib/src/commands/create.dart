@@ -28,7 +28,6 @@ class CLITemplateCreator extends CLICommand {
     "offline",
     negatable: false,
     help: "Will fetch dependencies from a local cache if they exist.",
-    defaultsTo: false,
   )
   bool get offline => decode("offline");
 
@@ -56,7 +55,7 @@ class CLITemplateCreator extends CLICommand {
     destDirectory.createSync();
     final String? globalPath = await findGlobalPath();
     if (globalPath != null) {
-      Directory conduitLocation = Directory(globalPath);
+      var conduitLocation = Directory(globalPath);
       try {
         if (!addDependencyOverridesToPackage(destDirectory.path, {
           "conduit_codable": _packageUri(conduitLocation, 'codable'),
@@ -252,7 +251,7 @@ class CLITemplateCreator extends CLICommand {
     final overridesFile =
         File(path_lib.join(packageDirectoryPath, "pubspec_overrides.yaml"));
 
-    bool valid = true;
+    var valid = true;
 
     final overrideBuffer = StringBuffer();
     overrideBuffer.writeln("dependency_overrides:");

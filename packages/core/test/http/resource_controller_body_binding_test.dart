@@ -2,10 +2,11 @@ import 'dart:convert';
 import "dart:core";
 import "dart:io";
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import "package:test/test.dart";
+
+import '../not_tests/helpers.dart';
 
 void main() {
   HttpServer? server;
@@ -21,7 +22,7 @@ void main() {
 
   group("Happy path", () {
     test("Can read Map body object into Serializable", () async {
-      server = await enableController("/", () => TestController());
+      server = await enableController("/", TestController.new);
       final m = {"name": "Bob"};
       final response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -29,7 +30,7 @@ void main() {
     });
 
     test("Can read List<Map> body object into List<Serializable>", () async {
-      server = await enableController("/", () => ListTestController());
+      server = await enableController("/", ListTestController.new);
       final m = [
         {"name": "Bob"},
         {"name": "Fred"}
@@ -40,7 +41,7 @@ void main() {
     });
 
     test("Can read empty List body", () async {
-      server = await enableController("/", () => ListTestController());
+      server = await enableController("/", ListTestController.new);
       final m = [];
       final response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -48,7 +49,7 @@ void main() {
     });
 
     test("Body arg can be optional", () async {
-      server = await enableController("/", () => OptionalTestController());
+      server = await enableController("/", OptionalTestController.new);
       final m = {"name": "Bob"};
       var response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -61,7 +62,7 @@ void main() {
     });
 
     test("Can read body object declared as property", () async {
-      server = await enableController("/", () => PropertyTestController());
+      server = await enableController("/", PropertyTestController.new);
       final m = {"name": "Bob"};
       final response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -69,7 +70,7 @@ void main() {
     });
 
     test("Can use ignore filters", () async {
-      server = await enableController("/", () => FilterController());
+      server = await enableController("/", FilterController.new);
       expect(
         json.decode((await postJSON({"required": "", "ignore": ""})).body),
         {"required": ""},
@@ -77,17 +78,17 @@ void main() {
     });
 
     test("Can use error filters", () async {
-      server = await enableController("/", () => FilterController());
+      server = await enableController("/", FilterController.new);
       expect((await postJSON({"required": "", "error": ""})).statusCode, 400);
     });
 
     test("Can use required filters", () async {
-      server = await enableController("/", () => FilterController());
+      server = await enableController("/", FilterController.new);
       expect((await postJSON({"key": ""})).statusCode, 400);
     });
 
     test("Can use accept filters", () async {
-      server = await enableController("/", () => FilterController());
+      server = await enableController("/", FilterController.new);
       final response =
           await postJSON({"required": "", "accept": "", "noAccept": ""});
 
@@ -95,7 +96,7 @@ void main() {
     });
 
     test("Can use ignore filters on List<Serializable>", () async {
-      server = await enableController("/", () => FilterListController());
+      server = await enableController("/", FilterListController.new);
       final response = await postJSON([
         {"required": ""},
         {"required": "", "ignore": ""}
@@ -108,7 +109,7 @@ void main() {
     });
 
     test("Can use error filters on List<Serializable>", () async {
-      server = await enableController("/", () => FilterListController());
+      server = await enableController("/", FilterListController.new);
       expect(
         (await postJSON([
           {"required": ""},
@@ -120,7 +121,7 @@ void main() {
     });
 
     test("Can use required filters on List<Serializable>", () async {
-      server = await enableController("/", () => FilterListController());
+      server = await enableController("/", FilterListController.new);
       expect(
         (await postJSON([
           {"required": ""},
@@ -132,7 +133,7 @@ void main() {
     });
 
     test("Can use accept filters on List<Serializable>", () async {
-      server = await enableController("/", () => FilterListController());
+      server = await enableController("/", FilterListController.new);
       final response = await postJSON([
         {"required": "", "accept": ""},
         {"required": "", "noAccept": ""}
@@ -145,7 +146,7 @@ void main() {
     });
 
     test("Can bind primitive map", () async {
-      server = await enableController("/", () => MapController());
+      server = await enableController("/", MapController.new);
       final m = {"name": "Bob"};
       final response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -153,7 +154,7 @@ void main() {
     });
 
     test("Can get a list of bytes from an octet-stream", () async {
-      server = await enableController("/", () => ByteListController());
+      server = await enableController("/", ByteListController.new);
 
       final response = await http.post(
         Uri.parse("http://localhost:4040"),
@@ -168,7 +169,7 @@ void main() {
 
   group("Programmer error cases", () {
     test("fromMap throws uncaught error should return a 500", () async {
-      server = await enableController("/", () => CrashController());
+      server = await enableController("/", CrashController.new);
       final m = {"id": 1, "name": "Crash"};
       final response = await postJSON(m);
       expect(response.statusCode, 500);
@@ -177,7 +178,7 @@ void main() {
 
   group("Input error cases", () {
     test("Provide unknown key returns 400", () async {
-      server = await enableController("/", () => TestController());
+      server = await enableController("/", TestController.new);
       final m = {"name": "Bob", "job": "programmer"};
       final response = await postJSON(m);
       expect(response.statusCode, 400);
@@ -186,7 +187,7 @@ void main() {
     });
 
     test("Body is empty returns 400", () async {
-      server = await enableController("/", () => TestController());
+      server = await enableController("/", TestController.new);
       final m = {"name": "Bob", "job": "programmer"};
       final response = await postJSON(m);
       expect(response.statusCode, 400);
@@ -195,7 +196,7 @@ void main() {
     });
 
     test("Is List when expecting Map returns 400", () async {
-      server = await enableController("/", () => TestController());
+      server = await enableController("/", TestController.new);
       final m = [
         {"id": 2, "name": "Bob"}
       ];
@@ -208,7 +209,7 @@ void main() {
     });
 
     test("Is Map when expecting List returns 400", () async {
-      server = await enableController("/", () => ListTestController());
+      server = await enableController("/", ListTestController.new);
       final m = {"id": 2, "name": "Bob"};
       final response = await postJSON(m);
       expect(response.statusCode, 400);
@@ -219,7 +220,7 @@ void main() {
     });
 
     test("If required body and no body included, return 400", () async {
-      server = await enableController("/", () => TestController());
+      server = await enableController("/", TestController.new);
       final response = await postJSON(null);
       expect(response.statusCode, 400);
       expect(
@@ -229,7 +230,7 @@ void main() {
     });
 
     test("Expect list of objects, got list of strings", () async {
-      server = await enableController("/", () => ListTestController());
+      server = await enableController("/", ListTestController.new);
       final response = await postJSON(["a", "b"]);
       expect(response.statusCode, 400);
       expect(
@@ -385,7 +386,7 @@ Future<HttpServer> enableController(
   router.didAddToChannel();
 
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
-  server.map((httpReq) => Request(httpReq)).listen(router.receive);
+  server.map(Request.new).listen(router.receive);
 
   return server;
 }

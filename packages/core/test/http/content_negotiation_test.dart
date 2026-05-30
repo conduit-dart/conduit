@@ -5,7 +5,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final ClientServer clientServer = ClientServer();
+  final clientServer = ClientServer();
 
   setUp(() async {
     await clientServer.open();
@@ -168,7 +168,7 @@ class ClientServer {
   Future open() async {
     client = HttpClient();
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
-    server.map((r) => Request(r)).listen((r) {
+    server.map(Request.new).listen((r) {
       _requests.add(r);
       r.raw.response.statusCode = 200;
       r.raw.response.close();

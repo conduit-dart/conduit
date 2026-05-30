@@ -14,7 +14,7 @@ class APIHeader extends APIProperty {
     super.decode(object);
     description = object.decode("description");
     if (type == APIType.array) {
-      items = object.decodeObject("items", () => APIProperty());
+      items = object.decodeObject("items", APIProperty.new);
     }
   }
 

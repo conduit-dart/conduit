@@ -221,9 +221,9 @@ class Channel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     return Router()
-      ..route("/a/[:id]").link(() => A())
-      ..route("/b/[:id]").link(() => B())
-      ..route("/b_subclass/[:id]").link(() => BSubclass());
+      ..route("/a/[:id]").link(A.new)
+      ..route("/b/[:id]").link(B.new)
+      ..route("/b_subclass/[:id]").link(BSubclass.new);
   }
 }
 

@@ -17,7 +17,7 @@ void main() {
 
     setUp(() async {
       final started = await startWithFreePort(
-        () => Application<TestChannel>(),
+        Application<TestChannel>.new,
         numberOfInstances: 2,
       );
       app = started.app;
@@ -54,7 +54,7 @@ void main() {
     test("Application handles a bunch of requests", () async {
       final reqs = <Future>[];
       final responses = <http.Response>[];
-      for (int i = 0; i < 500; i++) {
+      for (var i = 0; i < 500; i++) {
         final req = http.get(Uri.parse("http://localhost:$port/t"));
         req.then(responses.add);
         reqs.add(req);

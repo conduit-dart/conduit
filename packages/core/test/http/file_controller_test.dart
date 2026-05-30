@@ -83,7 +83,7 @@ void main() {
     router.didAddToChannel();
 
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-    server.map((r) => Request(r)).listen(router.receive);
+    server.map(Request.new).listen(router.receive);
   });
 
   tearDownAll(() {

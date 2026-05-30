@@ -401,7 +401,7 @@ class AuthScope {
     }
 
     final elements =
-        scopeString.split(":").map((seg) => _AuthScopeSegment(seg)).toList();
+        scopeString.split(":").map(_AuthScopeSegment.new).toList();
 
     var scannedOffset = 0;
     for (var i = 0; i < elements.length - 1; i++) {

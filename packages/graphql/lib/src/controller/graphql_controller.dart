@@ -618,7 +618,7 @@ void _checkSelectionSet(
 }
 
 GraphQLObjectType? _unwrapObjectType(GraphQLType type) {
-  GraphQLType current = type;
+  var current = type;
   while (true) {
     if (current is GraphQLObjectType) return current;
     if (current is GraphQLNonNullableType) {

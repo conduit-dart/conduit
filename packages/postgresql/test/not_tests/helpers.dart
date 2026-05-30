@@ -120,7 +120,7 @@ class InMemoryAuthStorage extends AuthServerDelegate {
   List<AuthScope>? allowedScopes;
 
   void createUsers(int count) {
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       final salt = generateRandomSalt();
       final u = TestUser()
         ..id = i + 1
@@ -428,7 +428,7 @@ class DefaultPersistentStore extends PersistentStore {
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
-    Schema out = fromSchema;
+    var out = fromSchema;
     for (final migration in withMigrations) {
       migration.database = SchemaBuilder(this, out);
       await migration.upgrade();

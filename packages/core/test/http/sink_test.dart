@@ -26,7 +26,7 @@ class TestChannel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     final router = Router();
-    router.route("/controller/[:id]").link(() => FailingController());
+    router.route("/controller/[:id]").link(FailingController.new);
     return router;
   }
 }

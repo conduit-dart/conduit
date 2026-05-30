@@ -59,14 +59,14 @@ class APIDocument extends APIObject {
 
     version = object.decode("openapi") ?? "3.0.0";
     info =
-        object.decodeObject("info", () => APIInfo.empty()) ?? APIInfo.empty();
+        object.decodeObject("info", APIInfo.empty) ?? APIInfo.empty();
     servers =
-        object.decodeObjects("servers", () => APIServerDescription.empty());
-    paths = object.decodeObjectMap("paths", () => APIPath());
-    components = object.decodeObject("components", () => APIComponents());
+        object.decodeObjects("servers", APIServerDescription.empty);
+    paths = object.decodeObjectMap("paths", APIPath.new);
+    components = object.decodeObject("components", APIComponents.new);
     security =
-        object.decodeObjects("security", () => APISecurityRequirement.empty());
-    tags = object.decodeObjects("tags", () => APITag.empty());
+        object.decodeObjects("security", APISecurityRequirement.empty);
+    tags = object.decodeObjects("tags", APITag.empty);
   }
 
   @override

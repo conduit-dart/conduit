@@ -179,7 +179,7 @@ void main() {
         hashLength: auth.hashLength,
         hashRounds: auth.hashRounds,
         hashFunction: auth.hashFunction,
-      )..allowedScopes = ["scope"].map((s) => AuthScope(s)).toList();
+      )..allowedScopes = ["scope"].map(AuthScope.new).toList();
       await auth.addClient(client);
 
       final q = Query<ManagedAuthClient>(context)
@@ -2037,7 +2037,7 @@ class _User extends ResourceOwnerTableDefinition {}
 
 Future<List<User>> createUsers(ManagedContext? ctx, int count) async {
   final list = <User>[];
-  for (int i = 0; i < count; i++) {
+  for (var i = 0; i < count; i++) {
     final salt = generateRandomSalt();
     final u = User()
       ..username = "bob+$i@stablekernel.com"

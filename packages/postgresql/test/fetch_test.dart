@@ -1,9 +1,9 @@
+import 'package:conduit_core/conduit_core.dart';
 import 'package:postgres/postgres.dart';
+import 'package:test/test.dart';
 
 import 'not_tests/helpers.dart';
 import 'not_tests/postgres_test_config.dart';
-import 'package:conduit_core/conduit_core.dart';
-import 'package:test/test.dart';
 
 void main() {
   ManagedContext? context;
@@ -92,7 +92,7 @@ void main() {
   test("Ascending sort descriptors work", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       final m = TestModel(name: "Joe$i", email: "asc$i@a.com");
       final req = Query<TestModel>(context!)..values = m;
       await req.insert();
@@ -105,7 +105,7 @@ void main() {
 
     var result = await req.fetch();
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       expect(result[i].email, "asc$i@a.com");
     }
 
@@ -114,7 +114,7 @@ void main() {
     result = await req.fetch();
 
     int? idIndex = 0;
-    for (final TestModel m in result) {
+    for (final m in result) {
       final int? next = m.id;
       expect(next, greaterThan(idIndex!));
       idIndex = next;
@@ -124,7 +124,7 @@ void main() {
   test("Descending sort descriptors work", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       final m = TestModel(name: "Joe$i", email: "desc$i@a.com");
 
       final req = Query<TestModel>(context!)..values = m;
@@ -138,7 +138,7 @@ void main() {
           "email like @key", {"key": TypedValue(Type.text, "desc%")});
     final result = await req.fetch();
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       final int v = 9 - i;
       expect(result[i].email, "desc$v@a.com");
     }
@@ -147,7 +147,7 @@ void main() {
   test("Predicate sort descriptors work", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       final m = TestModel(name: "Joe$i", email: "desc$i@a.com");
 
       final req = Query<TestModel>(context!)..values = m;
@@ -203,7 +203,7 @@ void main() {
   test("Order by multiple sort descriptors work", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       final m = TestModel(name: "Joe${i % 2}", email: "multi$i@a.com");
 
       final req = Query<TestModel>(context!)..values = m;
@@ -279,7 +279,7 @@ void main() {
     u1 = await (Query<GenUser>(context!)..values = u1).insert();
     u2 = await (Query<GenUser>(context!)..values = u2).insert();
 
-    for (int i = 0; i < 5; i++) {
+    for (var i = 0; i < 5; i++) {
       final p1 = GenPost()..text = "${2 * i}";
       p1.owner = u1;
       await (Query<GenPost>(context!)..values = p1).insert();
@@ -581,7 +581,7 @@ class _GenPost {
 
   String? text;
 
-  @Relate(Symbol('posts'), onDelete: DeleteRule.cascade, isRequired: false)
+  @Relate(Symbol('posts'), onDelete: DeleteRule.cascade)
   GenUser? owner;
 }
 

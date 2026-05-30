@@ -5,9 +5,9 @@ import 'package:conduit_core/src/db/managed/relationship_type.dart';
 import 'package:conduit_core/src/runtime/orm/data_model_compiler.dart';
 import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_core/src/runtime/orm/entity_mirrors.dart';
+import 'package:conduit_core/src/runtime/orm/string_case.dart';
 import 'package:conduit_core/src/runtime/orm/validator_builder.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
-import 'package:conduit_core/src/runtime/orm/string_case.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)

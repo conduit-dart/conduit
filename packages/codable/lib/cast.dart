@@ -124,7 +124,7 @@ class StringMap<V> extends Cast<core.Map<core.String, V>> {
   ) {
     if (from is core.Map) {
       final result = <core.String, V>{};
-      for (final core.String key in from.keys as core.Iterable<core.String>) {
+      for (final key in from.keys as core.Iterable<core.String>) {
         result[key] = _value._cast(from[key], "map entry", key);
       }
       return result;
@@ -141,7 +141,7 @@ class List<E> extends Cast<core.List<E?>> {
     if (from is core.List) {
       final length = from.length;
       final result = core.List<E?>.filled(length, null);
-      for (core.int i = 0; i < length; ++i) {
+      for (var i = 0; i < length; ++i) {
         if (from[i] != null) {
           result[i] = _entry._cast(from[i], "list entry", i);
         } else {
@@ -162,7 +162,7 @@ class Keyed<K, V> extends Cast<core.Map<K, V>> {
   core.Map<K, V> _cast(dynamic from, core.String context, dynamic key) {
     final core.Map<K, V> result = {};
     if (from is core.Map) {
-      for (final K key in from.keys as core.Iterable<K>) {
+      for (final key in from.keys as core.Iterable<K>) {
         if (_map.containsKey(key)) {
           result[key] = _map[key]!._cast(from[key], "map entry", key);
         } else {

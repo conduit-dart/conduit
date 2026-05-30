@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:conduit_common/conduit_common.dart';
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   late APIDocument doc;
@@ -21,7 +22,7 @@ void main() {
     final ctx = APIDocumentContext(doc);
 
     final router = Router()
-      ..route("/path").link(() => BindManagedObjectController())
+      ..route("/path").link(BindManagedObjectController.new)
       ..route("/model/[:id]").link(() => ManagedObjectController<Model1>(dbCtx))
       ..route("/subclass/[:id]").link(() => MOCSubclass(dbCtx));
     router.didAddToChannel();

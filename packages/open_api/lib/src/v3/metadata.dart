@@ -52,8 +52,8 @@ class APIInfo extends APIObject {
     title = object.decode("title");
     description = object.decode("description");
     termsOfServiceURL = object.decode("termsOfService");
-    contact = object.decodeObject("contact", () => APIContact());
-    license = object.decodeObject("license", () => APILicense.empty());
+    contact = object.decodeObject("contact", APIContact.new);
+    license = object.decodeObject("license", APILicense.empty);
     version = object.decode("version");
   }
 

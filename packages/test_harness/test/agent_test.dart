@@ -199,8 +199,7 @@ void main() async {
     test("Client can expect array of JSON", () async {
       final portLocal = await getUnusedPort((port) => port);
       final client = Agent.onPort(portLocal);
-      final server = await HttpServer.bind("localhost", portLocal,
-          v6Only: false, shared: false);
+      final server = await HttpServer.bind("localhost", portLocal);
       final router = Router();
       router.route("/na").link(TestController.new);
       router.didAddToChannel();

@@ -10,7 +10,7 @@ void main() {
     setUpAll(() async {
       context =
           await PostgresTestConfig().contextWithModels([PageableTestModel]);
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
       }
@@ -59,7 +59,7 @@ void main() {
     check(List checkIDs, List<PageableTestModel> values) {
       expect(checkIDs.length, values.length);
       final ids = values.map((v) => v.id).toList();
-      for (int i = 0; i < ids.length; i++) {
+      for (var i = 0; i < ids.length; i++) {
         expect(ids[i], checkIDs[i]);
       }
     }
@@ -67,7 +67,7 @@ void main() {
     setUpAll(() async {
       context =
           await PostgresTestConfig().contextWithModels([PageableTestModel]);
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
       }
@@ -278,7 +278,7 @@ void main() {
     check(List checkIDs, List<PageableTestModel> values) {
       expect(checkIDs.length, values.length);
       final ids = values.map((v) => v.id).toList();
-      for (int i = 0; i < ids.length; i++) {
+      for (var i = 0; i < ids.length; i++) {
         expect(ids[i], checkIDs[i]);
       }
     }
@@ -286,7 +286,7 @@ void main() {
     setUpAll(() async {
       context = await PostgresTestConfig()
           .contextWithModels([PageableTestModel, HasMany, BelongsTo]);
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
       }

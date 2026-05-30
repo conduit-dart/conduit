@@ -240,7 +240,7 @@ void main() {
       // Walk to a concrete relationship field.
       final users = schema.queryType!.fields.firstWhere((f) => f.name == 'users');
       final userType =
-          ((users.type as GraphQLNonNullableType).ofType as GraphQLListType);
+          (users.type as GraphQLNonNullableType).ofType as GraphQLListType;
       final userInner =
           (userType.ofType as GraphQLNonNullableType).ofType as GraphQLObjectType;
       final posts = userInner.fields.firstWhere((f) => f.name == 'posts');

@@ -85,7 +85,7 @@ class QueryPredicate {
     //       AST). If either condition fails we drop the AST and the
     //       backend falls back to rendering from the format string.
     final childExpressions = <SqlExpression>[];
-    bool allHaveExpressions = true;
+    var allHaveExpressions = true;
     for (final p in predicateList) {
       final expr = p.expression;
       if (expr == null) {
@@ -96,8 +96,8 @@ class QueryPredicate {
     }
 
     // If we have duplicate keys anywhere, we need to disambiguate them.
-    int dupeCounter = 0;
-    bool dupeOccurred = false;
+    var dupeCounter = 0;
+    var dupeOccurred = false;
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {

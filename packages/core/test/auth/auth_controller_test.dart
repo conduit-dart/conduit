@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_test/conduit_test.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 int port = 8887;
 void main() {
@@ -25,7 +26,7 @@ void main() {
     router!.didAddToChannel();
 
     server = await HttpServer.bind("localhost", port);
-    server!.map((req) => Request(req)).listen(router!.receive);
+    server!.map(Request.new).listen(router!.receive);
   });
 
   tearDown(() async {
@@ -865,7 +866,7 @@ Future<TestResponse?> grant(
   String clientSecret,
   Map<String, String> form,
 ) {
-  final Agent client = Agent.onPort(port)
+  final client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   final m = Map<String, String>.from(form);
@@ -883,7 +884,7 @@ Future<TestResponse?> refresh(
   String clientSecret,
   Map<String, String> form,
 ) {
-  final Agent client = Agent.onPort(port)
+  final client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   final m = Map<String, String>.from(form);
@@ -901,7 +902,7 @@ Future<TestResponse?> exchange(
   String clientSecret,
   String? code,
 ) {
-  final Agent client = Agent.onPort(port)
+  final client = Agent.onPort(port)
     ..setBasicAuthorization(clientID, clientSecret);
 
   final m = {"grant_type": "authorization_code"};

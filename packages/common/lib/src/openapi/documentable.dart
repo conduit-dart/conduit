@@ -279,7 +279,7 @@ class APIComponentCollection<T extends APIObject> {
       obj.referenceURI = _typeReferenceMap[type]!.referenceURI;
     } else {
       final completer =
-          _resolutionMap.putIfAbsent(type, () => Completer<T>.sync());
+          _resolutionMap.putIfAbsent(type, Completer<T>.sync);
 
       completer.future.then((refObject) {
         obj.referenceURI = refObject.referenceURI;

@@ -39,7 +39,7 @@ class Authorizer extends Controller {
     this.validator, {
     this.parser = const AuthorizationBearerParser(),
     List<String>? scopes,
-  }) : scopes = scopes?.map((s) => AuthScope(s)).toList();
+  }) : scopes = scopes?.map(AuthScope.new).toList();
 
   /// Creates an instance of [Authorizer] with Basic Authentication parsing.
   ///

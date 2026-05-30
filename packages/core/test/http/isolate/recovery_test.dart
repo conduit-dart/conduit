@@ -57,7 +57,7 @@ void main() {
     test("Application with multiple isolates reports uncaught error, recovers",
         () async {
       final contents = <String>[];
-      int counter = 0;
+      var counter = 0;
       final completer = Completer();
       app.logger.onRecord.listen((rec) {
         print("got msg");
@@ -94,7 +94,7 @@ class TestChannel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     final router = Router();
-    router.route("/").link(() => UncaughtCrashController());
+    router.route("/").link(UncaughtCrashController.new);
     return router;
   }
 }

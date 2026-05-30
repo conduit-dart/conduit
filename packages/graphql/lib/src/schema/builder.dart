@@ -1312,7 +1312,7 @@ class SchemaBuilder {
       fields.add(
         GraphQLObjectField<dynamic, dynamic>(
           singularName,
-          (union ?? type),
+          union ?? type,
           resolve: resolverFactory == null
               ? null
               : (_, args) => resolverFactory.byId(entity: entity, args: args),
@@ -1967,7 +1967,7 @@ class SchemaBuilder {
       fields.add(
         GraphQLObjectField<dynamic, dynamic>(
           singular,
-          (union ?? type),
+          union ?? type,
           resolve: byIdResolver,
           arguments: [
             GraphQLFieldInput(

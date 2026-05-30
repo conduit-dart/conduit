@@ -115,7 +115,7 @@ void main() {
         CypherEmitter().emitFilter(f, anchor: anchor);
 
     test('equality maps to =', () {
-      final f = GraphPropertyFilter(
+      const f = GraphPropertyFilter(
         property: 'name',
         operator: GraphFilterOperator.equal,
         value: 'alice',
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('inequality maps to <>', () {
-      final f = GraphPropertyFilter(
+      const f = GraphPropertyFilter(
         property: 'role',
         operator: GraphFilterOperator.notEqual,
         value: 'admin',
@@ -152,7 +152,7 @@ void main() {
 
     test('string ops map to CONTAINS / STARTS WITH / ENDS WITH', () {
       expect(
-        renderFilter(GraphPropertyFilter(
+        renderFilter(const GraphPropertyFilter(
           property: 'name',
           operator: GraphFilterOperator.contains,
           value: 'al',
@@ -160,7 +160,7 @@ void main() {
         'n.name CONTAINS \$p0',
       );
       expect(
-        renderFilter(GraphPropertyFilter(
+        renderFilter(const GraphPropertyFilter(
           property: 'name',
           operator: GraphFilterOperator.startsWith,
           value: 'a',
@@ -168,7 +168,7 @@ void main() {
         'n.name STARTS WITH \$p0',
       );
       expect(
-        renderFilter(GraphPropertyFilter(
+        renderFilter(const GraphPropertyFilter(
           property: 'name',
           operator: GraphFilterOperator.endsWith,
           value: 'e',
@@ -179,7 +179,7 @@ void main() {
 
     test('IN renders with the bound list value', () {
       final emitter = CypherEmitter();
-      final cypher = emitter.emitFilter(GraphPropertyFilter(
+      final cypher = emitter.emitFilter(const GraphPropertyFilter(
         property: 'role',
         operator: GraphFilterOperator.inList,
         value: ['admin', 'staff'],
@@ -190,7 +190,7 @@ void main() {
 
     test('isNull / isNotNull do not bind a parameter', () {
       final e1 = CypherEmitter();
-      final s1 = e1.emitFilter(GraphPropertyFilter(
+      final s1 = e1.emitFilter(const GraphPropertyFilter(
         property: 'deleted_at',
         operator: GraphFilterOperator.isNull,
       ));
@@ -198,7 +198,7 @@ void main() {
       expect(e1.parameters, isEmpty);
 
       final e2 = CypherEmitter();
-      final s2 = e2.emitFilter(GraphPropertyFilter(
+      final s2 = e2.emitFilter(const GraphPropertyFilter(
         property: 'email',
         operator: GraphFilterOperator.isNotNull,
       ));
@@ -208,12 +208,12 @@ void main() {
 
     test('AND / OR compound filters render with parens', () {
       final and = GraphCompoundFilter(GraphFilterCombinator.and, [
-        GraphPropertyFilter(
+        const GraphPropertyFilter(
           property: 'a',
           operator: GraphFilterOperator.equal,
           value: 1,
         ),
-        GraphPropertyFilter(
+        const GraphPropertyFilter(
           property: 'b',
           operator: GraphFilterOperator.equal,
           value: 2,
@@ -222,12 +222,12 @@ void main() {
       expect(renderFilter(and), '(n.a = \$p0 AND n.b = \$p1)');
 
       final or = GraphCompoundFilter(GraphFilterCombinator.or, [
-        GraphPropertyFilter(
+        const GraphPropertyFilter(
           property: 'a',
           operator: GraphFilterOperator.equal,
           value: 1,
         ),
-        GraphPropertyFilter(
+        const GraphPropertyFilter(
           property: 'b',
           operator: GraphFilterOperator.equal,
           value: 2,
@@ -237,7 +237,7 @@ void main() {
     });
 
     test('NOT renders with parens', () {
-      final f = GraphNotFilter(GraphPropertyFilter(
+      const f = GraphNotFilter(GraphPropertyFilter(
         property: 'deleted',
         operator: GraphFilterOperator.equal,
         value: true,
@@ -316,14 +316,13 @@ void main() {
     test('label with hyphen gets backtick-quoted', () {
       final pattern = GraphPattern<User>.build(
         (_) {},
-        variable: 'n',
         label: GraphLabel('Active-User'),
       );
       expect(emitPattern(pattern).cypher, contains('(n:`Active-User`)'));
     });
 
     test('property with dot in name gets backtick-quoted in WHERE', () {
-      final f = GraphPropertyFilter(
+      const f = GraphPropertyFilter(
         property: 'meta.legacy',
         operator: GraphFilterOperator.equal,
         value: true,

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/mixins/project.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {

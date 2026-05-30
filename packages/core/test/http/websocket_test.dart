@@ -160,8 +160,8 @@ class TestChannel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     final router = Router();
-    router.route("/test").link(() => TestController());
-    router.route('/chat').link(() => ChatController());
+    router.route("/test").link(TestController.new);
+    router.route('/chat').link(ChatController.new);
 
     return router;
   }

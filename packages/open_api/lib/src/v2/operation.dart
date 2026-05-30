@@ -42,8 +42,8 @@ class APIOperation extends APIObject {
     consumes = object.decode("consumes");
     produces = object.decode("produces");
     deprecated = object.decode("deprecated");
-    parameters = object.decodeObjects("parameters", () => APIParameter());
-    responses = object.decodeObjectMap("responses", () => APIResponse());
+    parameters = object.decodeObjects("parameters", APIParameter.new);
+    responses = object.decodeObjectMap("responses", APIResponse.new);
     schemes = object.decode("schemes");
     security = object.decode("security");
   }

@@ -81,7 +81,7 @@ void main() {
     });
 
     test('UTF-8 round-trip', () {
-      final v = 'café résumé';
+      const v = 'café résumé';
       final encoded = packStream(v);
       expect(unpackStream(encoded), v);
     });
@@ -219,7 +219,7 @@ void main() {
 
     test('encoder rejects unsupported runtime types', () {
       expect(
-        () => packStream(Symbol('x')),
+        () => packStream(const Symbol('x')),
         throwsArgumentError,
       );
     });

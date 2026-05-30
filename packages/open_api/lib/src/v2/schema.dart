@@ -44,10 +44,10 @@ class APISchemaObject extends APIProperty {
     example = object.decode("example");
     readOnly = object.decode("readOnly") ?? false;
 
-    items = object.decodeObject("items", () => APISchemaObject());
+    items = object.decodeObject("items", APISchemaObject.new);
     additionalProperties =
-        object.decodeObject("additionalProperties", () => APISchemaObject());
-    properties = object.decodeObjectMap("properties", () => APISchemaObject());
+        object.decodeObject("additionalProperties", APISchemaObject.new);
+    properties = object.decodeObjectMap("properties", APISchemaObject.new);
   }
 
   @override

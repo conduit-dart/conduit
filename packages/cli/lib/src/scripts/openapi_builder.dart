@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit/src/command.dart';
 import 'package:conduit/src/mixins/openapi_options.dart';
 import 'package:conduit/src/mixins/project.dart';
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:conduit_runtime/dev.dart';

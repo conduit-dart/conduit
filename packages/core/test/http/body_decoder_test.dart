@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 // import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   final defaultSize = RequestBody.maxSize;
@@ -688,7 +689,7 @@ void main() {
     test("Failed decoding yields 500 from Controller", () async {
       // If body decoding fails, we need to return 500 but also ensure we have closed the request
       // body stream
-      server.map((req) => Request(req)).listen((req) async {
+      server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
           // This'll crash

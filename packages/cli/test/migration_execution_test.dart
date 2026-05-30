@@ -215,7 +215,7 @@ void main() {
   test(
     "If migration fails because adding a new non-nullable column to an table, a friendly error is emitted",
     () async {
-      final StringBuffer buf = StringBuffer();
+      final buf = StringBuffer();
       expect(
         await runMigrationCases(["Case81", "Case82"], log: buf),
         isNonZero,

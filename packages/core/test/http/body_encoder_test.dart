@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   HttpServer? server;
@@ -276,7 +277,7 @@ void main() {
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-  server.map((req) => Request(req)).listen((req) async {
+  server.map(Request.new).listen((req) async {
     final next = PassthruController();
     next.linkFunction((req) async {
       return response;

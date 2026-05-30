@@ -22,7 +22,7 @@ void main() {
   });
 
   test("A controller that does not implement Recyclable is reused", () async {
-    server.root.link(() => DefaultController());
+    server.root.link(DefaultController.new);
     server.root.didAddToChannel();
 
     final r1 = await http.get(Uri.parse("http://localhost:4040"));
@@ -36,7 +36,7 @@ void main() {
   test(
       "A controller that implements Recyclable creates a new instance for each request",
       () async {
-    server.root.link(() => DefaultRecyclable());
+    server.root.link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
     final r1 = await http.get(Uri.parse("http://localhost:4040"));
@@ -50,7 +50,7 @@ void main() {
   test(
       "Receiving simultaneous request will always use a new Recyclable instance",
       () async {
-    server.root.link(() => DefaultRecyclable());
+    server.root.link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
     final addresses = await Future.wait([
@@ -80,7 +80,7 @@ void main() {
   });
 
   test("A Recyclable instance reuses recycleState", () async {
-    server.root.link(() => DefaultRecyclable());
+    server.root.link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
     final states = await Future.wait([
@@ -105,7 +105,7 @@ void main() {
   });
 
   test("recycleState is only called once", () async {
-    server.root.link(() => DefaultRecyclable());
+    server.root.link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
     await Future.wait([
@@ -127,8 +127,8 @@ void main() {
       "A recycled controller always sends unhandled requests to the next linked controller",
       () async {
     server.root
-        .link(() => MiddlewareRecyclable())
-        .link(() => DefaultController());
+        .link(MiddlewareRecyclable.new)
+        .link(DefaultController.new);
     server.root.didAddToChannel();
 
     final List<Map<String, dynamic>> responses = await Future.wait([
@@ -176,8 +176,8 @@ void main() {
       "A recycled controller sends unhandled request to the next linked recyclable",
       () async {
     server.root
-        .link(() => MiddlewareRecyclable())
-        .link(() => DefaultRecyclable());
+        .link(MiddlewareRecyclable.new)
+        .link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
     final List<Map<String, dynamic>> responses = await Future.wait([
@@ -234,7 +234,7 @@ class ServerRoot {
 
   Future open() async {
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
-    server.map((httpReq) => Request(httpReq)).listen(root.receive);
+    server.map(Request.new).listen(root.receive);
   }
 
   Future close() {

@@ -25,7 +25,7 @@ class _SingleEqBench extends BenchmarkBase {
 
   @override
   void run() {
-    final ast = BinaryOpExpression(
+    const ast = BinaryOpExpression(
       '=',
       ColumnExpression('id', tableNamespace: 't0'),
       ParameterExpression('t0_id', 42),
@@ -73,12 +73,12 @@ class _MixedAndOrBench extends BenchmarkBase {
 
   @override
   void run() {
-    final left = BinaryOpExpression(
+    const left = BinaryOpExpression(
       '=',
       ColumnExpression('a', tableNamespace: 't0'),
       ParameterExpression('t0_a', 1),
     );
-    final right = LogicalExpression('OR', [
+    const right = LogicalExpression('OR', [
       BinaryOpExpression(
         '=',
         ColumnExpression('b', tableNamespace: 't0'),
@@ -90,7 +90,7 @@ class _MixedAndOrBench extends BenchmarkBase {
         ParameterExpression('t0_c', 3),
       ),
     ]);
-    final ast = LogicalExpression('AND', [left, right]);
+    const ast = LogicalExpression('AND', [left, right]);
     QueryPredicate.withExpression(
       ast,
       '(t0.a = @t0_a AND (t0.b = @t0_b OR t0.c = @t0_c))',
@@ -120,7 +120,7 @@ class _InListBench extends BenchmarkBase {
       tokens.add('@$name');
     }
     final ast = InExpression(
-      ColumnExpression('id', tableNamespace: 't0'),
+      const ColumnExpression('id', tableNamespace: 't0'),
       values,
     );
     QueryPredicate.withExpression(

@@ -384,7 +384,7 @@ class KeyedArchive extends Object
       return;
     }
 
-    _map[key] = ListArchive.from(value.map((v) => _encodedObject(v)).toList());
+    _map[key] = ListArchive.from(value.map(_encodedObject).toList());
   }
 
   /// Encodes map of [Coding] objects into this object for [key].

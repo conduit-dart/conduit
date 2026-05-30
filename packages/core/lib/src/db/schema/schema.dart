@@ -24,13 +24,13 @@ class Schema {
   /// This is preferred method of creating an instance of this type. Each [ManagedEntity]
   /// in [dataModel] will correspond to a [SchemaTable] in [tables].
   Schema.fromDataModel(ManagedDataModel dataModel) {
-    _tables = dataModel.entities.map((e) => SchemaTable.fromEntity(e)).toList();
+    _tables = dataModel.entities.map(SchemaTable.fromEntity).toList();
   }
 
   /// Creates a deep copy of [otherSchema].
   Schema.from(Schema otherSchema) {
     _tables =
-        otherSchema.tables.map((table) => SchemaTable.from(table)).toList();
+        otherSchema.tables.map(SchemaTable.from).toList();
   }
 
   /// Creates a instance of this type from [map].
@@ -38,7 +38,7 @@ class Schema {
   /// [map] is typically created from [asMap].
   Schema.fromMap(Map<String, dynamic> map) {
     _tables = (map["tables"] as List<Map<String, dynamic>>)
-        .map((t) => SchemaTable.fromMap(t))
+        .map(SchemaTable.fromMap)
         .toList();
   }
 

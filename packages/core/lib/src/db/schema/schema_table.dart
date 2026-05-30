@@ -39,7 +39,7 @@ class SchemaTable {
   /// Creates a deep copy of [otherTable].
   SchemaTable.from(SchemaTable otherTable) {
     name = otherTable.name;
-    _columns = otherTable.columns.map((col) => SchemaColumn.from(col)).toList();
+    _columns = otherTable.columns.map(SchemaColumn.from).toList();
     _uniqueColumnSet = otherTable._uniqueColumnSet;
   }
 
@@ -52,7 +52,7 @@ class SchemaTable {
   SchemaTable.fromMap(Map<String, dynamic> map) {
     name = map["name"] as String?;
     _columns = (map["columns"] as List<Map<String, dynamic>>)
-        .map((c) => SchemaColumn.fromMap(c))
+        .map(SchemaColumn.fromMap)
         .toList();
     uniqueColumnSet = (map["unique"] as List?)?.cast();
   }

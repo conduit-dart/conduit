@@ -16,7 +16,7 @@ abstract class Executable<T extends Object?> {
     Map<Symbol, dynamic> namedArguments = const {},
     Symbol constructorName = Symbol.empty,
   }) {
-    ClassMirror? typeMirror = currentMirrorSystem()
+    var typeMirror = currentMirrorSystem()
         .isolate
         .rootLibrary
         .declarations[Symbol(typeName)] as ClassMirror?;

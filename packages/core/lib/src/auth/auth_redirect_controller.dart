@@ -170,7 +170,7 @@ class AuthRedirectController extends ResourceController {
     }
 
     try {
-      final scopes = scope?.split(" ").map((s) => AuthScope(s)).toList();
+      final scopes = scope?.split(" ").map(AuthScope.new).toList();
 
       if (responseType == "code") {
         if (client!.hashedSecret == null) {

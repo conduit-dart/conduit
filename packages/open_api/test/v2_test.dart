@@ -41,7 +41,7 @@ void main() {
       expect(doc!.paths!.length, greaterThan(0));
       expect(doc!.paths!.length, original!["paths"].length);
 
-      final Map<String, dynamic> originalPaths =
+      final originalPaths =
           original!["paths"] as Map<String, dynamic>;
       doc!.paths!.forEach((k, v) {
         expect(originalPaths.keys.contains(k), true);

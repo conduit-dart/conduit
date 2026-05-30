@@ -156,7 +156,7 @@ class AuthCodeController extends ResourceController {
     }
 
     try {
-      final scopes = scope?.split(" ").map((s) => AuthScope(s)).toList();
+      final scopes = scope?.split(" ").map(AuthScope.new).toList();
 
       final authCode = await authServer.authenticateForCode(
         username,

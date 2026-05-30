@@ -114,7 +114,7 @@ class ApplicationServer {
     server.serverHeader = "conduit/$identifier";
 
     logger.fine("ApplicationServer($identifier).didOpen start listening");
-    server.map((baseReq) => Request(baseReq)).listen(entryPoint.receive);
+    server.map(Request.new).listen(entryPoint.receive);
 
     channel.willStartReceivingRequests();
     logger.info("Server conduit/$identifier started.");

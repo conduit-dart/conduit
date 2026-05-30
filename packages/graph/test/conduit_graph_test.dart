@@ -136,7 +136,7 @@ void main() {
   group('GraphNode', () {
     test('instantiation requires at least one label', () {
       expect(
-        () => _NoLabelNode(),
+        _NoLabelNode.new,
         throwsArgumentError,
       );
     });

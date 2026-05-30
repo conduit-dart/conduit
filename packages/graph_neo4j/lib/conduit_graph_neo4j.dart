@@ -18,9 +18,8 @@
 /// from `conduit_graph` instead.
 library;
 
+// Bolt internals (advanced use).
+export 'src/bolt/bolt.dart';
 export 'src/cypher_emitter.dart'
     show CypherEmitter, CypherStatement, emitPattern, emitQuery;
 export 'src/neo4j_persistent_store.dart' show Neo4jPersistentStore;
-
-// Bolt internals (advanced use).
-export 'src/bolt/bolt.dart';

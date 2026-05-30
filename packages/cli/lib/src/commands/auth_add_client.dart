@@ -101,7 +101,7 @@ class CLIAuthAddClient extends CLICommand
       hashLength: hashLength,
       hashRounds: hashRounds,
       hashFunction: hashFunction,
-    )..allowedScopes = allowedScopes?.map((s) => AuthScope(s)).toList();
+    )..allowedScopes = allowedScopes?.map(AuthScope.new).toList();
 
     final managedCredentials = ManagedAuthClient.fromClient(credentials);
 

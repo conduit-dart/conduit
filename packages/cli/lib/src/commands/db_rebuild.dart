@@ -24,7 +24,6 @@ class CLIDatabaseRebuild extends CLICommand
     abbr: "y",
     help:
         "Skip the interactive confirmation prompt. Required for non-interactive use.",
-    defaultsTo: false,
     negatable: false,
   )
   bool get skipConfirmation => decode<bool>("yes");

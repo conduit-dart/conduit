@@ -216,7 +216,7 @@ class _RouteController extends Controller {
 
       final path = APIPath()
         ..parameters = spec.variableNames
-            .map((pathVar) => APIParameter.path(pathVar))
+            .map(APIParameter.path)
             .toList();
 
       if (spec.segments.any((seg) => seg.isRemainingMatcher)) {

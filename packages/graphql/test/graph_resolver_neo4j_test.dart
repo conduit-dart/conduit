@@ -174,8 +174,8 @@ void main() {
       final edges = ((result as Map)['friends'] as List).cast<Map>();
       // Filter to ones that involve our prefixed nodes.
       final ours = edges.where((e) {
-        final fromId = ((e['from'] as Map)['id']).toString();
-        final toId = ((e['to'] as Map)['id']).toString();
+        final fromId = (e['from'] as Map)['id'].toString();
+        final toId = (e['to'] as Map)['id'].toString();
         return fromId == '${alice.id}' && toId == '${bob.id}';
       }).toList();
       expect(ours, isNotEmpty);

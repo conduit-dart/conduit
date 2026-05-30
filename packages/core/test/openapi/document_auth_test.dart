@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:conduit_common/conduit_common.dart';
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   group("Operations and security schemes", () {
@@ -283,11 +284,11 @@ class TestChannel extends ApplicationChannel {
     router
         .route("/basic/[:id]")
         .link(() => Authorizer.basic(authServer))!
-        .link(() => DocumentedController());
+        .link(DocumentedController.new);
     router
         .route("/bearer-no-scope")
         .link(() => Authorizer.bearer(authServer))!
-        .link(() => DocumentedController());
+        .link(DocumentedController.new);
     router
         .route("/bearer-scope")
         .link(() => Authorizer.bearer(authServer, scopes: ["scope"]))!
@@ -386,18 +387,18 @@ class ScopedControllerChannel extends ApplicationChannel {
     router
         .route("/r1")
         .link(() => Authorizer.bearer(authServer, scopes: ["scope1"]))!
-        .link(() => DocumentedController());
+        .link(DocumentedController.new);
     router
         .route("/r2")
         .link(
           () => Authorizer.bearer(authServer, scopes: ["scope1", "scope2"]),
         )!
-        .link(() => DocumentedController());
+        .link(DocumentedController.new);
 
     router
         .route("/r3")
         .link(() => Authorizer.bearer(authServer))!
-        .link(() => DocumentedController());
+        .link(DocumentedController.new);
     return router;
   }
 }

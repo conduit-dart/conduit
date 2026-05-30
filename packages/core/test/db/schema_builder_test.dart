@@ -13,7 +13,7 @@ void main() {
         Container,
         ExtensiveModel
       ]);
-      final Schema baseSchema = Schema.fromDataModel(dataModel);
+      final baseSchema = Schema.fromDataModel(dataModel);
       builder = SchemaBuilder(null, baseSchema);
     });
 
@@ -322,7 +322,6 @@ class _LoadedItem {
   @Relate(
     Symbol('loadedItems'),
     onDelete: DeleteRule.restrict,
-    isRequired: false,
   )
   Container? container;
 

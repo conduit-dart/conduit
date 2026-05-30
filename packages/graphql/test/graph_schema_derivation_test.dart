@@ -287,7 +287,7 @@ void _collectUnionsFromType(
   Set<GraphQLObjectType> visited,
   List<GraphQLObjectType> stack,
 ) {
-  GraphQLType current = type;
+  var current = type;
   while (true) {
     if (current is GraphQLNonNullableType) {
       current = current.ofType;
@@ -318,7 +318,7 @@ void _walkInto(
   Set<GraphQLObjectType> out,
   List<GraphQLObjectType> stack,
 ) {
-  GraphQLType current = type;
+  var current = type;
   while (true) {
     if (current is GraphQLNonNullableType) {
       current = current.ofType;

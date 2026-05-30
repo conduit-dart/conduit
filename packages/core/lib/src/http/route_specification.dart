@@ -20,7 +20,7 @@ class RouteSpecification {
     String routePattern,
   ) {
     return _pathsFromRoutePattern(routePattern)
-        .map((path) => RouteSpecification(path))
+        .map(RouteSpecification.new)
         .toList();
   }
 
@@ -52,7 +52,7 @@ List<String> _pathsFromRoutePattern(String inputPattern) {
   final openExpression = '('.codeUnitAt(0);
   final closeExpression = ')'.codeUnitAt(0);
 
-  bool insideExpression = false;
+  var insideExpression = false;
   for (var i = 0; i < chars.length; i++) {
     final code = chars[i];
 
@@ -122,7 +122,7 @@ List<RouteSegment> _splitPathSegments(String inputPath) {
   final openExpression = '('.codeUnitAt(0);
   final closeExpression = ')'.codeUnitAt(0);
   final pathDelimiter = '/'.codeUnitAt(0);
-  bool insideExpression = false;
+  var insideExpression = false;
 
   for (var i = 0; i < path.length; i++) {
     final code = chars[i];
@@ -154,5 +154,5 @@ List<RouteSegment> _splitPathSegments(String inputPath) {
   // Add final
   segments.add(buffer.toString());
 
-  return segments.map((seg) => RouteSegment(seg)).toList();
+  return segments.map(RouteSegment.new).toList();
 }

@@ -76,7 +76,7 @@ class AuthController extends ResourceController {
     }
 
     try {
-      final scopes = scope?.split(" ").map((s) => AuthScope(s)).toList();
+      final scopes = scope?.split(" ").map(AuthScope.new).toList();
 
       if (grantType == "password") {
         final token = await authServer.authenticate(

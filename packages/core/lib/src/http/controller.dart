@@ -341,7 +341,7 @@ abstract class Controller
   }
 
   Controller get _lastController {
-    Controller controller = this;
+    var controller = this;
     while (controller.nextController != null) {
       controller = controller.nextController!;
     }

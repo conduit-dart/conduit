@@ -592,13 +592,13 @@ class DefaultChannel extends ApplicationChannel {
     router
         .route("/path/[:id]")
         .linkFunction((req) => req)!
-        .link(() => Middleware())!
+        .link(Middleware.new)!
         .link(() => Endpoint(null, null));
 
     final middleware = Middleware();
     router
         .route("/constant")
-        .link(() => UndocumentedMiddleware())!
+        .link(UndocumentedMiddleware.new)!
         .link(() => middleware)!
         .link(() => Endpoint(controllerPrepared, controllerDocumented));
 

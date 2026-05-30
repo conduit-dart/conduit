@@ -1,7 +1,8 @@
-import 'not_tests/model_graph.dart';
-import 'not_tests/postgres_test_config.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
+
+import 'not_tests/model_graph.dart';
+import 'not_tests/postgres_test_config.dart';
 
 /*
   If you're going to look at these tests, you'll have to draw out the model graph defined in model_graph.dart

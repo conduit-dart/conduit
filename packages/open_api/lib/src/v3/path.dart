@@ -51,7 +51,7 @@ class APIPath extends APIObject {
       return false;
     }
 
-    return parameterNames.every((check) => pathParams.contains(check));
+    return parameterNames.every(pathParams.contains);
   }
 
   // todo (joeconwaystk): alternative servers not yet implemented
@@ -63,7 +63,7 @@ class APIPath extends APIObject {
     summary = object.decode("summary");
     description = object.decode("description");
     parameters =
-        object.decodeObjects("parameters", () => APIParameter.empty()) ??
+        object.decodeObjects("parameters", APIParameter.empty) ??
             <APIParameter?>[];
 
     final methodNames = [
@@ -79,7 +79,7 @@ class APIPath extends APIObject {
     for (final methodName in methodNames) {
       if (object.containsKey(methodName)) {
         operations[methodName] =
-            object.decodeObject(methodName, () => APIOperation.empty());
+            object.decodeObject(methodName, APIOperation.empty);
       }
     }
   }

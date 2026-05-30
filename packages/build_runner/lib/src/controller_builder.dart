@@ -172,7 +172,7 @@ class \$${klass.name}ControllerRuntime extends ControllerRuntime {
     final operations = _operationMethods(klass).toList();
 
     final ivarSrc = ivars
-        .map((b) => _emitParameterLiteral(b))
+        .map(_emitParameterLiteral)
         .join(',\n      ');
     final opsSrc = operations.map((op) => _emitOperationLiteral(klass, op)).join(',\n      ');
 
@@ -278,7 +278,9 @@ ${applySrc.toString().trimRight()}
       if (t is! InterfaceType) continue;
       if (t.element.name != 'Bind') continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
 
       final bindingType = value.getField('bindingType')?.getField('_name')?.toStringValue() ??
           // Older analyzer revs expose enum index instead of _name.
@@ -304,7 +306,9 @@ ${applySrc.toString().trimRight()}
       if (t is! InterfaceType) continue;
       if (t.element.name != 'Operation') continue;
       if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) continue;
+          .startsWith(_conduitCorePackagePrefix)) {
+        continue;
+      }
 
       final method = value.getField('method')?.toStringValue() ?? 'GET';
       final pathVars = <String>[];

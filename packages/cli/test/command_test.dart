@@ -235,7 +235,7 @@ class TestCLICommand extends CLICommand {
   @Option("guaranteed", abbr: "g", help: "The no. of guaranteed people.")
   int get guaranteed => decodeOptional("guaranteed", orElse: () => 1)!;
 
-  @Flag("useSSL", abbr: "u", help: "UseSSL.", negatable: true)
+  @Flag("useSSL", abbr: "u", help: "UseSSL.")
   bool get useSSL => decode("useSSL");
 
   @Flag("useSSLWithDefault", abbr: "d", help: "useSSLWithDefault.")

@@ -2,14 +2,14 @@ import 'dart:io';
 
 Future cachePackages(
     Iterable<String> packageNames, String projectVersion) async {
-  const String cmd = "dart";
+  const cmd = "dart";
   final args = [
     "pub",
     "cache",
     "add",
     "-v",
   ];
-  for (final String name in packageNames) {
+  for (final name in packageNames) {
     final res = await Process.run(
       cmd,
       [...args, name],
@@ -32,36 +32,36 @@ Future cachePackages(
 }
 
 Future<String?> findGlobalPath() async {
-  const String cmd = "dart";
+  const cmd = "dart";
 
   final res = await Process.run(
     cmd,
     ["pub", "global", "list"],
     runInShell: true,
   );
-  RegExp regex = RegExp(r'conduit.* at path "([^"]+)"$', multiLine: true);
+  var regex = RegExp(r'conduit.* at path "([^"]+)"$', multiLine: true);
 
   Match? match = regex.firstMatch(res.stdout);
   return match?.group(1);
 }
 
 Future<String?> findGlobalVersion() async {
-  const String cmd = "dart";
+  const cmd = "dart";
 
   final res = await Process.run(
     cmd,
     ["pub", "global", "list"],
     runInShell: true,
   );
-  RegExp lineRegex = RegExp(r'conduit .*');
-  RegExp versionRegex =
+  var lineRegex = RegExp(r'conduit .*');
+  var versionRegex =
       RegExp(r'\d+\.\d+\.\d+(?:\.\d+)?(?:-[a-zA-Z\d]+(?:\.[a-zA-Z\d]+)*)?');
   Match? lineMatch = lineRegex.firstMatch(res.stdout);
 
   if (lineMatch != null) {
     Match? versionMatch = versionRegex.firstMatch(lineMatch.group(0)!);
     if (versionMatch != null) {
-      return versionMatch.group(0)!;
+      return versionMatch.group(0);
     }
   }
   return null;

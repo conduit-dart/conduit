@@ -25,11 +25,11 @@ import 'package:conduit_core/conduit_core.dart';
 class User extends ManagedObject<_User> implements _User {
   /// Output-only transient: should appear as a nullable `String` in
   /// the schema.
-  @Serialize(input: false, output: true)
+  @Serialize(input: false)
   String get displayName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
 
   /// Input-only transient: should be excluded from the output schema.
-  @Serialize(input: true, output: false)
+  @Serialize(output: false)
   set rawName(String s) {
     final parts = s.split(' ');
     firstName = parts.isNotEmpty ? parts.first : null;

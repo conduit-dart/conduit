@@ -209,11 +209,11 @@ class APIParameter extends APIObject {
     deprecated = object.decode("deprecated");
     allowEmptyValue = object.decode("allowEmptyValue");
 
-    schema = object.decodeObject("schema", () => APISchemaObject());
+    schema = object.decodeObject("schema", APISchemaObject.new);
     style = object.decode("style");
     explode = object.decode("explode");
     allowReserved = object.decode("allowReserved");
-    content = object.decodeObjectMap("content", () => APIMediaType());
+    content = object.decodeObjectMap("content", APIMediaType.new);
   }
 
   @override

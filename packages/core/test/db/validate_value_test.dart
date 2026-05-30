@@ -1,6 +1,7 @@
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   final ctx = ManagedContext(
@@ -448,10 +449,10 @@ class _T {
   @Validate.oneOf([1, 2])
   int? oneOf12;
 
-  @Validate.compare(equalTo: 0, onInsert: true, onUpdate: false)
+  @Validate.compare(equalTo: 0, onUpdate: false)
   int? mustBeZeroOnInsert;
 
-  @Validate.compare(equalTo: 0, onInsert: false, onUpdate: true)
+  @Validate.compare(equalTo: 0, onInsert: false)
   int? mustBeZeroOnUpdate;
 
   @Validate.compare(greaterThan: "bar")
@@ -578,7 +579,7 @@ class _PresenceBelongsTo {
   @primaryKey
   int? id;
 
-  @Validate.present(onInsert: true)
+  @Validate.present()
   @Relate(#present)
   PresenceHas? present;
 }
@@ -599,7 +600,7 @@ class _AbsenceBelongsTo {
   @primaryKey
   int? id;
 
-  @Validate.absent(onInsert: true)
+  @Validate.absent()
   @Relate(#absent)
   AbsenceHas? absent;
 }

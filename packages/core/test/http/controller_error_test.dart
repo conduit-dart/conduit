@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import '../not_tests/helpers.dart';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+
+import '../not_tests/helpers.dart';
 
 void main() {
   HttpServer? server;
@@ -76,7 +77,7 @@ Future<HttpServer> enableController(Controller controller) async {
 
   controller.didAddToChannel();
 
-  server.map((httpReq) => Request(httpReq)).listen(controller.receive);
+  server.map(Request.new).listen(controller.receive);
 
   return server;
 }

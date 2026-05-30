@@ -120,25 +120,25 @@ class PackStreamEncoder {
     }
     if (v >= -0x8000 && v <= 0x7FFF) {
       _out.addByte(0xC9);
-      final b = ByteData(2)..setInt16(0, v, Endian.big);
+      final b = ByteData(2)..setInt16(0, v);
       _out.add(b.buffer.asUint8List());
       return;
     }
     if (v >= -0x80000000 && v <= 0x7FFFFFFF) {
       _out.addByte(0xCA);
-      final b = ByteData(4)..setInt32(0, v, Endian.big);
+      final b = ByteData(4)..setInt32(0, v);
       _out.add(b.buffer.asUint8List());
       return;
     }
     // INT_64.
     _out.addByte(0xCB);
-    final b = ByteData(8)..setInt64(0, v, Endian.big);
+    final b = ByteData(8)..setInt64(0, v);
     _out.add(b.buffer.asUint8List());
   }
 
   void _packFloat(double v) {
     _out.addByte(0xC1);
-    final b = ByteData(8)..setFloat64(0, v, Endian.big);
+    final b = ByteData(8)..setFloat64(0, v);
     _out.add(b.buffer.asUint8List());
   }
 
@@ -152,11 +152,11 @@ class PackStreamEncoder {
       _out.addByte(n);
     } else if (n <= 0xFFFF) {
       _out.addByte(0xD1);
-      final b = ByteData(2)..setUint16(0, n, Endian.big);
+      final b = ByteData(2)..setUint16(0, n);
       _out.add(b.buffer.asUint8List());
     } else {
       _out.addByte(0xD2);
-      final b = ByteData(4)..setUint32(0, n, Endian.big);
+      final b = ByteData(4)..setUint32(0, n);
       _out.add(b.buffer.asUint8List());
     }
     _out.add(bytes);
@@ -171,11 +171,11 @@ class PackStreamEncoder {
       _out.addByte(n);
     } else if (n <= 0xFFFF) {
       _out.addByte(0xD5);
-      final b = ByteData(2)..setUint16(0, n, Endian.big);
+      final b = ByteData(2)..setUint16(0, n);
       _out.add(b.buffer.asUint8List());
     } else {
       _out.addByte(0xD6);
-      final b = ByteData(4)..setUint32(0, n, Endian.big);
+      final b = ByteData(4)..setUint32(0, n);
       _out.add(b.buffer.asUint8List());
     }
     for (final item in items) {
@@ -192,11 +192,11 @@ class PackStreamEncoder {
       _out.addByte(n);
     } else if (n <= 0xFFFF) {
       _out.addByte(0xD9);
-      final b = ByteData(2)..setUint16(0, n, Endian.big);
+      final b = ByteData(2)..setUint16(0, n);
       _out.add(b.buffer.asUint8List());
     } else {
       _out.addByte(0xDA);
-      final b = ByteData(4)..setUint32(0, n, Endian.big);
+      final b = ByteData(4)..setUint32(0, n);
       _out.add(b.buffer.asUint8List());
     }
     m.forEach((k, v) {
@@ -346,11 +346,11 @@ class PackStreamDecoder {
       case 1:
         return bd.getInt8(0);
       case 2:
-        return bd.getInt16(0, Endian.big);
+        return bd.getInt16(0);
       case 4:
-        return bd.getInt32(0, Endian.big);
+        return bd.getInt32(0);
       case 8:
-        return bd.getInt64(0, Endian.big);
+        return bd.getInt64(0);
       default:
         throw StateError('unreachable: int width $width');
     }
@@ -358,7 +358,7 @@ class PackStreamDecoder {
 
   double _readFloat() {
     final bytes = _readBytes(8);
-    return ByteData.sublistView(bytes).getFloat64(0, Endian.big);
+    return ByteData.sublistView(bytes).getFloat64(0);
   }
 
   String _readUtf8(int len) {
@@ -390,7 +390,7 @@ class PackStreamDecoder {
 
   BoltStructure _readStructure(int len) {
     if (_pos >= _bytes.length) {
-      throw FormatException('PackStream: missing structure tag');
+      throw const FormatException('PackStream: missing structure tag');
     }
     final tag = _bytes[_pos++];
     final fields = <Object?>[];

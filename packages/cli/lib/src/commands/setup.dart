@@ -19,7 +19,6 @@ class CLISetup extends CLICommand with CLIProject {
     abbr: "c",
     negatable: false,
     help: "Confirms that you wish to carry out this setup.",
-    defaultsTo: false,
   )
   bool get confirm => decode("confirm");
 

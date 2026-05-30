@@ -452,13 +452,13 @@ class Validate {
             object.minLength = _equalTo;
           } else {
             if (_greaterThan is int) {
-              object.minLength = 1 + (_greaterThan);
+              object.minLength = 1 + _greaterThan;
             } else if (_greaterThanEqualTo is int) {
               object.minLength = _greaterThanEqualTo as int?;
             }
 
             if (_lessThan is int) {
-              object.maxLength = (-1) + (_lessThan);
+              object.maxLength = (-1) + _lessThan;
             } else if (_lessThanEqualTo != null) {
               object.maximum = _lessThanEqualTo as int?;
             }
