@@ -37,20 +37,14 @@ class CLIAuthAddClient extends CLICommand
     defaultsTo: "sha256",
     allowed: ["sha256", "sha1", "md5"],
   )
-  Hash get hashFunction {
-    switch (decode<String>("hash-function")) {
-      case "sha256":
-        return sha256;
-      case "sha1":
-        return sha1;
-      case "md5":
-        return md5;
-      default:
-        throw CLIException(
-          "Value '${decode("hash-function")}' is not valid for option hash-function.",
-        );
-    }
-  }
+  Hash get hashFunction => switch (decode<String>("hash-function")) {
+    "sha256" => sha256,
+    "sha1" => sha1,
+    "md5" => md5,
+    final value => throw CLIException(
+      "Value '$value' is not valid for option hash-function.",
+    ),
+  };
 
   @Option(
     "hash-rounds",

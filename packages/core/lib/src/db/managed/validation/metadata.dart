@@ -321,36 +321,26 @@ class Validate {
     ManagedType typeBeingValidated, {
     Type? relationshipInverseType,
   }) {
-    switch (type) {
-      case ValidateType.absent:
-        return null;
-      case ValidateType.present:
-        return null;
-      case ValidateType.oneOf:
-        {
-          return _oneOfCompiler(
-            typeBeingValidated,
-            relationshipInverseType: relationshipInverseType,
-          );
-        }
-      case ValidateType.comparison:
-        return _comparisonCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      case ValidateType.regex:
-        return _regexCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      case ValidateType.length:
-        return _lengthCompiler(
-          typeBeingValidated,
-          relationshipInverseType: relationshipInverseType,
-        );
-      default:
-        return null;
-    }
+    return switch (type) {
+      ValidateType.absent || ValidateType.present => null,
+      ValidateType.oneOf => _oneOfCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.comparison => _comparisonCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.regex => _regexCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      ValidateType.length => _lengthCompiler(
+        typeBeingValidated,
+        relationshipInverseType: relationshipInverseType,
+      ),
+      _ => null,
+    };
   }
 
   /// Validates the [input] value.

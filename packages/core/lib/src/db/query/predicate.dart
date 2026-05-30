@@ -177,22 +177,14 @@ class ComparisonExpression implements PredicateExpression {
     return ComparisonExpression(value, inverseOperator);
   }
 
-  PredicateOperator get inverseOperator {
-    switch (operator) {
-      case PredicateOperator.lessThan:
-        return PredicateOperator.greaterThanEqualTo;
-      case PredicateOperator.greaterThan:
-        return PredicateOperator.lessThanEqualTo;
-      case PredicateOperator.notEqual:
-        return PredicateOperator.equalTo;
-      case PredicateOperator.lessThanEqualTo:
-        return PredicateOperator.greaterThan;
-      case PredicateOperator.greaterThanEqualTo:
-        return PredicateOperator.lessThan;
-      case PredicateOperator.equalTo:
-        return PredicateOperator.notEqual;
-    }
-  }
+  PredicateOperator get inverseOperator => switch (operator) {
+    PredicateOperator.lessThan => PredicateOperator.greaterThanEqualTo,
+    PredicateOperator.greaterThan => PredicateOperator.lessThanEqualTo,
+    PredicateOperator.notEqual => PredicateOperator.equalTo,
+    PredicateOperator.lessThanEqualTo => PredicateOperator.greaterThan,
+    PredicateOperator.greaterThanEqualTo => PredicateOperator.lessThan,
+    PredicateOperator.equalTo => PredicateOperator.notEqual,
+  };
 }
 
 /// The operator in a string matcher.
