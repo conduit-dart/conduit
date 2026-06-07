@@ -75,17 +75,9 @@ class ManagedContext implements APIComponentDocumenter {
   /// executed will be rolled back and this method will rethrow the exception.
   ///
   /// You may manually rollback a query by throwing a [Rollback] object. This will exit the
-  /// [transactionBlock], roll back any changes made in the transaction, but this method will not
-  /// throw.
-  ///
-  /// TODO: the following statement is not true.
-  /// Rollback takes a string but the transaction
-  /// returns \<T>.  It would seem to be a better idea to still throw the manual Rollback
-  /// so the user has a consistent method of handling the rollback. We could add a property
-  /// to the Rollback class 'manual' which would be used to indicate a manual rollback.
-  /// For the moment I've changed the return type to Future\<void> as
-  /// The parameter passed to [Rollback]'s constructor will be returned from this method
-  /// so that the caller can determine why the transaction was rolled back.
+  /// [transactionBlock], roll back any changes made in the transaction, and rethrow the
+  /// [Rollback] from this method. Catch it to determine why the transaction was rolled back
+  /// via [Rollback.reason].
   ///
   /// Example usage:
   ///
@@ -174,11 +166,13 @@ class ManagedContext implements APIComponentDocumenter {
 class Rollback {
   /// Default constructor, takes a [reason] object that can be anything.
   ///
-  /// The parameter [reason] will be returned by [ManagedContext.transaction].
+  /// The parameter [reason] is made available on the [Rollback] rethrown by
+  /// [ManagedContext.transaction] when this instance is thrown.
   Rollback(this.reason);
 
   /// The reason this rollback occurred.
   ///
-  /// This value is returned from [ManagedContext.transaction] when this instance is thrown.
+  /// This value is available on the [Rollback] rethrown from [ManagedContext.transaction]
+  /// when this instance is thrown.
   final String reason;
 }
