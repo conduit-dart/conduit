@@ -45,6 +45,15 @@ steps:
       - dart pub global activate melos
       - melos bootstrap
 
+  nix-shell:
+    # Reproducible Nix devShell smoke: proves flake.nix materializes the
+    # pinned Dart toolchain. Independent of the dart:beta bootstrap chain.
+    image: nixos/nix:2.24.9
+    environment:
+      NIX_CONFIG: "experimental-features = nix-command flakes"
+    commands:
+      - nix develop -c dart --version
+
   lint:
     image: *dart_image
     depends_on: [bootstrap]
