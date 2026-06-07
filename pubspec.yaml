@@ -79,6 +79,13 @@ melos:
     build-aot:
       description: Build the Dart-beta AOT-builder image used to AOT-compile Conduit apps.
       run: docker build -t conduit-aot-builder -f docker/Dockerfile.flutter-aot --target aot-builder .
+    release-rehearsal:
+      description: |
+        Rehearse a release by publishing the workspace to a self-hosted pub
+        server (any pub-compatible host, e.g. unpub) instead of pub.dev, to
+        verify the full publish + consume round-trip before tagging. Requires
+        PUB_SERVER_URL and PUB_TOKEN.
+      run: tool/release-rehearsal.sh
     sync-version:
       run: |
         export v=`dart pub deps -s list | grep conduit_workspace | awk '{print $2}' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'`; \
