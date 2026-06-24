@@ -5,6 +5,7 @@
  - **REFACTOR**: bump minimum Dart SDK to `>=3.12.0` ([#250](https://github.com/conduit-dart/conduit/pull/250)).
  - **FEAT**(core): unified Persistence umbrella for relational + graph contexts ([#271](https://github.com/conduit-dart/conduit/pull/271)).
  - **REFACTOR**(core): lift query builders to dialect-agnostic core; wire SQLite + MySQL newQuery ([#275](https://github.com/conduit-dart/conduit/pull/275)).
+ - **FEAT**(db): add `SqlDialect.decodeValue` — the read-side inverse of `encodeValue`, letting text-backed dialects (e.g. SQLite) JSON-decode `document` columns on the way out of the driver. Default is pass-through, so Postgres (`jsonb`) is unchanged.
  - **CHORE**(bench): predicate / AST-rendering benchmarks + post-#267 regression analysis ([#270](https://github.com/conduit-dart/conduit/pull/270)).
 
 ## 6.0.0

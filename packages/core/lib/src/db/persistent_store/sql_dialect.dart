@@ -66,6 +66,16 @@ abstract class SqlDialect {
   /// overrides to wrap with `TypedValue`.
   Object? encodeValue(Object? value, ManagedPropertyType? type) => value;
 
+  /// Inverse of [encodeValue]: coerce a raw value coming back from the
+  /// driver into the Dart form the column builders expect, before it is
+  /// wrapped by `ColumnBuilder.convertValueFromStorage`.
+  ///
+  /// Default is pass-through — drivers that return native types (e.g.
+  /// Postgres decoding `jsonb` into a Dart `Map`) need no coercion. The
+  /// SQLite dialect overrides this to JSON-decode `document` columns,
+  /// which it stores as TEXT.
+  Object? decodeValue(Object? value, ManagedPropertyType? type) => value;
+
   // -- Parameter placeholder syntax -------------------------------------------
 
   /// How to refer to a named parameter inside a SQL string. Default is

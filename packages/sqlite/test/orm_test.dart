@@ -11,13 +11,16 @@
 ///    `matcher_test.dart`.
 ///  - belongs-to relationship insert + join — see
 ///    `belongs_to_fetch_test.dart`.
+///  - hasMany `ManagedSet` eager-fetch with a set-aware join — see
+///    `has_many_fetch_test.dart`.
+///  - `Document` (JSON-as-TEXT) round-trip — see `document_test.dart`.
 ///  - reduce.count — see `aggregate_function_test.dart`.
 ///
-/// Tests known to be Postgres-specific (e.g. Document/jsonb,
-/// ManagedSet eager-fetch with set-aware joins) are skipped here;
-/// SQLite has no native JSON binding and the set-join behavior
-/// currently leans on Postgres's ROWS quirks. Track them in a
-/// follow-up pass once we add a fuller portable matrix.
+/// `Document` columns are stored as JSON text (SQLite has no native
+/// JSON storage class); the persistent store JSON-encodes the payload
+/// on bind and core JSON-decodes it on read. The remaining
+/// Postgres-specific surface (jsonb path operators, `->`/`->>`
+/// sub-document predicates) is still out of scope here.
 library;
 
 import 'package:conduit_core/conduit_core.dart';
@@ -237,6 +240,55 @@ void main() {
       expect(pet!.name, 'Rex');
       expect(pet.owner!.name, 'Bob');
     });
+
+    test('hasMany ManagedSet eager-fetch via join(set:)', () async {
+      context = await _bootstrap([Owner, Pet]);
+      final owner =
+          await (Query<Owner>(context!)..values.name = 'Bob').insert();
+      for (final name in ['Rex', 'Fido']) {
+        await (Query<Pet>(context!)
+              ..values.name = name
+              ..values.owner = (Owner()..id = owner.id))
+            .insert();
+      }
+
+      final owners =
+          await (Query<Owner>(context!)..join(set: (o) => o.pets)).fetch();
+      expect(owners, hasLength(1));
+      expect(
+        owners.first.pets!.map((p) => p.name).toSet(),
+        {'Rex', 'Fido'},
+      );
+    });
+  });
+
+  group('SqlitePersistentStore.newQuery — Document (JSON-as-TEXT)', () {
+    test('round-trips a Map document', () async {
+      context = await _bootstrap([Note]);
+      await (Query<Note>(context!)
+            ..values.body = Document({'k': 'v', 'n': 1, 'nested': {'a': true}}))
+          .insert();
+
+      final got = await Query<Note>(context!).fetchOne();
+      expect(got, isNotNull);
+      expect(got!.body!.data, {'k': 'v', 'n': 1, 'nested': {'a': true}});
+    });
+
+    test('round-trips a List document', () async {
+      context = await _bootstrap([Note]);
+      await (Query<Note>(context!)..values.body = Document([1, 2, 3])).insert();
+
+      final got = await Query<Note>(context!).fetchOne();
+      expect(got!.body!.data, [1, 2, 3]);
+    });
+
+    test('round-trips a scalar string document', () async {
+      context = await _bootstrap([Note]);
+      await (Query<Note>(context!)..values.body = Document('hello')).insert();
+
+      final got = await Query<Note>(context!).fetchOne();
+      expect(got!.body!.data, 'hello');
+    });
   });
 
   group('SqlitePersistentStore.newQuery — reduce', () {
@@ -286,4 +338,14 @@ class _Pet {
 
   @Relate(#pets)
   Owner? owner;
+}
+
+class Note extends ManagedObject<_Note> implements _Note {}
+
+class _Note {
+  @primaryKey
+  int? id;
+
+  @Column(nullable: true)
+  Document? body;
 }

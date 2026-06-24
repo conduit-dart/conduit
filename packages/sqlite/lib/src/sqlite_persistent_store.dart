@@ -6,17 +6,14 @@ import 'package:sqlite3/sqlite3.dart' as s3;
 import 'sqlite_query.dart';
 import 'sqlite_schema_generator.dart';
 
-/// SQLite-backed `PersistentStore`. **v0 scope: schema management +
-/// migrations + raw `execute` / `executeQuery` / `transaction` only.**
-/// The full ORM query path (`newQuery<T>`) is deferred until the query
-/// builders are extracted from the postgresql package into core; until
-/// then this store throws `UnimplementedError` from `newQuery`.
+/// SQLite-backed `PersistentStore`: schema management + migrations, raw
+/// `execute` / `executeQuery` / `transaction`, and the full ORM query
+/// path via [newQuery] (delegated to `SqliteQuery`, which composes SQL
+/// off the dialect-agnostic `QueryBuilder` in `conduit_core`).
 ///
-/// Why ship before the ORM path is wired: the schema management half is
-/// what closes the test-harness gap (in-memory SQLite for migrations and
-/// fixture seeding without Docker). Apps that want full ORM queries
-/// against SQLite should track the multi-backend ORM roadmap; for now,
-/// postgres remains the only backend with `newQuery` support.
+/// Beyond running the ORM, the schema-management half closes the
+/// test-harness gap: in-memory SQLite for migrations and fixture seeding
+/// without standing up Postgres in Docker.
 ///
 /// Two factories:
 ///
