@@ -19,6 +19,8 @@ events, never on PRs. Create the cron in the Woodpecker repo settings
 | `target/` | Minimal Conduit app, entirely env-configured (`ISOLATES`, `POOL_SIZE`, `POSTGRES_*`). Routes: `/items` (read/insert), `/tx` (transactional insert+count), `/slow?ms=` (pg_sleep), `/healthz`. |
 | `monitor/` | Sidecar that attaches to the target's Dart VM service, samples per-isolate heap stats every second, serves the latest sample as JSON, and appends JSONL. |
 | `k6/pooling_baseline.js` | Three load scenarios (read-heavy, write+tx mix, slow-query) plus a 1-VU monitor scenario that re-emits the sidecar's per-isolate metrics as k6 Trends. |
+| `provision/` | `provision.sh up/ips/down` — ephemeral two-machine Hetzner rig for citable runs (cost analysis: `docs/LOAD_PROVISIONING.md`). |
+| `ci/` | `compare_summaries.dart` — cross-run p95 comparison used by the Woodpecker smoke lane. |
 
 ## Running
 

@@ -113,6 +113,15 @@ by latency inflation (queue growth → timeouts → 503s), pooled stores by
 Postgres `max_connections` exhaustion — which one you hit first tells
 you which knob to turn next.
 
+## Where to run these
+
+Smoke and relative comparisons: the CI lane / any dev machine. Anything
+whose absolute numbers will be cited: two ephemeral cloud machines so
+the load generator doesn't share CPU with the target — provisioning
+script and cost analysis in
+[LOAD_PROVISIONING.md](LOAD_PROVISIONING.md) (short version: ~€0.10 per
+session on hourly-billed Hetzner ARM VMs).
+
 ## Reporting conventions
 
 Every run must carry `--tag isolates=… --tag pool=…` (and `--tag
