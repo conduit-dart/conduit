@@ -37,13 +37,13 @@ Full audit result (July 2026): drivers are current (`postgres` v3 API,
 third-party HTTP layer — core rides `dart:io`. The wins are wiring, not
 dependency swaps:
 
-1. **Wire up the dead Postgres connection pool.** (highest impact)
-   `PostgreSQLPersistentStore.getConnectionPool()` builds a
-   `Pool.withEndpoints(..., maxConnectionCount: 10)` but is never called;
-   every isolate serializes all queries over one `Connection`
-   (`postgresql_persistent_store.dart:148`, `:481-501`). postgres v3 `Pool`
-   implements `Session`, so the execution context can switch over with no new
-   dependency. Needs load-test evidence before/after.
+1. **Wire up the dead Postgres connection pool.** *(landed — opt-in)*
+   `PostgreSQLPersistentStore` now takes `maxConnectionCount` (default 1 =
+   legacy single-connection behavior); above 1 the store fronts a postgres
+   v3 `Pool` and transactions check out dedicated connections. See
+   [CONNECTION_POOLING.md](CONNECTION_POOLING.md) for the design and the
+   semantics that change in pooled mode. Still owed: load-test evidence
+   and a decision on flipping the default in the next major.
 2. **Cache prepared statements.** Every ORM call re-parses via
    `Sql.named(...)` + `QueryMode.extended` and discards the statement
    (`postgresql_persistent_store.dart:383-388`; same pattern in

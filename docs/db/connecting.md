@@ -111,5 +111,9 @@ database:
 
 ### Connection Behavior
 
-A persistent store manages one database connection. This connection is automatically maintained - the first time a query is executed, the connection is opened. If the connection is lost, the next query will reopen the connection. If a connection fails to open, an exception is thrown when trying to execute a query. This connection will return a 503 response if left uncaught.
+By default, a persistent store manages one database connection. This connection is automatically maintained - the first time a query is executed, the connection is opened. If the connection is lost, the next query will reopen the connection. If a connection fails to open, an exception is thrown when trying to execute a query. This connection will return a 503 response if left uncaught.
+
+Because a single connection handles one query at a time, queries within an isolate execute serially. The PostgreSQL store can instead front a connection pool: construct `PostgreSQLPersistentStore` with `maxConnectionCount` greater than 1, or add `maxConnectionCount` to the `database:` block of your configuration file and pass it through when creating the store. With a pool, concurrent requests execute queries in parallel and each transaction runs on its own pooled connection.
+
+A pooled store changes two behaviors to be aware of. First, queries no longer serialize per store — code that issues queries without awaiting them can no longer rely on them executing in order. Second, session-scoped database state (temporary tables, `SET` commands, advisory locks) is not meaningful through a pooled store, because each statement may execute on a different connection; for this reason the test harness should keep the default of 1. See `docs/CONNECTION_POOLING.md` in the repository for the full design.
 
