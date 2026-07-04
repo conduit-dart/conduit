@@ -26,7 +26,7 @@ However, when implementing `ApplicationChannel.initializeApplication`, code runs
 
 ## How Many Isolates Should I Use
 
-To give you a starting point, the default number of isolates for an application is 3 when started with `conduit serve`. While less than 3 isolates will most certainly degrade performance, more than 3 doesn't necessarily improve performance. \(And many more will certainly degrade performance.\)
+By default, an application runs on a single isolate: `conduit serve` and the project templates default `--isolates` to 0, which runs the channel on the main isolate. For production workloads you will almost always want more — a good starting point is 2-3 isolates, tuned from there.
 
 There are a number of variables that factor into the isolate count decision. First, recall a computer essentially does two things: it executes instructions and transmits data. Both of these tasks take time, especially when that data is transmitted to another computer thousands of miles away. \(It is a modern marvel that these tasks occur as fast as they do - one that we often take for granted.\)
 
@@ -54,5 +54,5 @@ There are diminishing returns as more database connections are added. That's bec
 
 As a general rule, start with N-1 isolates, where N is the number of processors on the machine. Use `wrk` and Observatory to profile your application and tune accordingly. In a multi-instance environment, remember that the total number of database connections is MxN, where M is the number of machines and N is the number of isolates.
 
-If you find yourself in a jam where IO would be better served by less isolates, but CPU would be better served by more isolates, you may consider using a database connection pool isolate.
+If you find yourself in a jam where IO would be better served by more database connections, but CPU would be better served by fewer isolates, the PostgreSQL persistent store supports per-isolate connection pooling: construct it with `maxConnectionCount` greater than 1 (or set `maxConnectionCount` in your database configuration) and each isolate maintains a pool of that size instead of a single connection. The total number of database connections is then machines × isolates × pool size — size this against your database server's connection limit. See [Database Connection Behavior](../db/connecting.md) for the semantics of a pooled store.
 

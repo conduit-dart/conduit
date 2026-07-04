@@ -849,6 +849,27 @@ void main() {
     expect(dbConfig.databaseName, "dbname");
   });
 
+  test("DatabaseConfiguration.maxConnectionCount defaults to 1", () {
+    const yamlString = "port: 80\n"
+        "database:\n"
+        "  host: stablekernel.com\n"
+        "  port: 5432\n"
+        "  databaseName: dbname\n";
+    final dbConfig = TopLevelConfiguration.fromString(yamlString).database;
+    expect(dbConfig.maxConnectionCount, 1);
+  });
+
+  test("DatabaseConfiguration.maxConnectionCount is read when present", () {
+    const yamlString = "port: 80\n"
+        "database:\n"
+        "  host: stablekernel.com\n"
+        "  port: 5432\n"
+        "  databaseName: dbname\n"
+        "  maxConnectionCount: 8\n";
+    final dbConfig = TopLevelConfiguration.fromString(yamlString).database;
+    expect(dbConfig.maxConnectionCount, 8);
+  });
+
   test(
       "Assigning value of incorrect type to parsed integer emits error and field name",
       () {

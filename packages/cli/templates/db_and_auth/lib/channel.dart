@@ -88,6 +88,7 @@ class WildfireChannel extends ApplicationChannel
       connectionInfo.host,
       connectionInfo.port,
       connectionInfo.databaseName,
+      maxConnectionCount: connectionInfo.maxConnectionCount,
     );
 
     return ManagedContext(dataModel, psc);
