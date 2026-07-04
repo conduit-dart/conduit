@@ -84,12 +84,11 @@ Next steps, in order of value:
 2. **Keep docs snapshots dated and superseding** (REFACTOR_CONTEXT →
    this file → next); agents read these first, so staleness is actively
    harmful. Delete rather than accumulate.
-3. **Make verification agent-runnable**: the biggest alignment gap is that
-   tests need a provisioned Postgres. A `melos test-fast` scope that runs the
-   pure-Dart packages (codable, open_api, password_hash, config, runtime,
-   build_runner) with no database — mirroring the Woodpecker
-   `workspace-unit-tests` step — gives any agent (or human) a cheap local
-   gate before the full suite.
+3. **Make verification agent-runnable** *(landed on this branch)*: tests
+   otherwise need a provisioned Postgres, so `melos run test-fast` runs the
+   database-free packages (codable, open_api, password_hash, config,
+   build_runner) — mirroring the Woodpecker `workspace-unit-tests` +
+   `build-runner-tests` steps — as a cheap local gate before the full suite.
 
 ## 4. Feature planning
 

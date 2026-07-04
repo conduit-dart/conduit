@@ -35,7 +35,8 @@ docker-compose -f ci/docker-compose.yaml up -d
 export POSTGRES_USER=conduit_test_user POSTGRES_PASSWORD='conduit!' \
        POSTGRES_DB=conduit_test_db POSTGRES_PORT=15432 POSTGRES_HOST=localhost
 
-melos run test-unit              # unit tests across packages (fail-fast, serial)
+melos run test-fast              # DB-free scope (codable/open_api/password_hash/config/build_runner) — run this first
+melos run test-unit              # unit tests across packages (fail-fast, serial; needs Postgres)
 melos run analyze                # dart analyze every package
 melos run fix                    # dart fix --apply across packages
 melos exec --scope="conduit_core" -- dart test test/http/router_test.dart   # one package/file
