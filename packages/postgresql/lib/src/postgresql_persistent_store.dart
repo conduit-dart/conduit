@@ -43,6 +43,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
+    this.maxConnectionCount = 1,
     SqlDialect dialect = const PostgresSqlDialect(),
     // The lint wants `this._dialect`, but private-named optional params
     // aren't allowed in Dart; the assignment form is the idiomatic
@@ -62,6 +63,7 @@ class PostgreSQLPersistentStore extends PersistentStore
     this.databaseName, {
     this.timeZone = "UTC",
     this.sslMode,
+    this.maxConnectionCount = 1,
     SqlDialect dialect = const PostgresSqlDialect(),
     // The lint wants `this._dialect`, but private-named optional params
     // aren't allowed in Dart; the assignment form is the idiomatic
@@ -80,7 +82,8 @@ class PostgreSQLPersistentStore extends PersistentStore
       port = from.port,
       databaseName = from.databaseName,
       timeZone = from.timeZone,
-      sslMode = from.sslMode;
+      sslMode = from.sslMode,
+      maxConnectionCount = from.maxConnectionCount;
 
   factory PostgreSQLPersistentStore._transactionProxy(
     PostgreSQLPersistentStore parent,
@@ -116,6 +119,21 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// The SSL mode of the connection to the database.
   final String? sslMode;
 
+  /// The maximum number of concurrent connections this store may open.
+  ///
+  /// Defaults to 1: the store maintains a single connection and queries
+  /// serialize on it (the historical Conduit behavior — see
+  /// `docs/CONNECTION_POOLING.md`). When greater than 1, the store fronts
+  /// a connection pool of this size: queries from concurrent requests
+  /// execute in parallel, and [transaction] checks out a dedicated
+  /// connection per transaction.
+  ///
+  /// Pooled stores do not provide session affinity outside a transaction:
+  /// session-scoped state (temporary tables, `SET`, advisory locks) is not
+  /// meaningful, and un-awaited queries are no longer implicitly ordered.
+  /// Total connections per application = isolates × [maxConnectionCount].
+  final int maxConnectionCount;
+
   final SqlDialect _dialect;
 
   /// The SQL dialect this store was constructed with — controls type
@@ -129,12 +147,19 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// Connections are automatically opened when a query is executed, so this property should not be used
   /// under normal operation. See [getDatabaseConnection].
   bool get isConnected {
+    if (isPooled) {
+      return _pool != null;
+    }
+
     if (_databaseConnection == null) {
       return false;
     }
 
     return _databaseConnection!.isOpen;
   }
+
+  /// Whether this store fronts a connection pool ([maxConnectionCount] > 1).
+  bool get isPooled => maxConnectionCount > 1;
 
   /// Amount of time to wait before connection fails to open.
   ///
@@ -145,22 +170,66 @@ class PostgreSQLPersistentStore extends PersistentStore
     (connection) => connection.close(),
   );
 
+  static final Finalizer<Pool> _poolFinalizer = Finalizer((pool) => pool.close());
+
   Connection? _databaseConnection;
   Completer<Connection>? _pendingConnectionCompleter;
+  Pool? _pool;
 
   /// Retrieves the query execution context of this store.
   ///
   /// Use this property to execute raw queries on the underlying database connection.
   /// If running a transaction, this context is the transaction context.
-  Future<Session> get executionContext => getDatabaseConnection();
+  /// On a pooled store ([isPooled]), this is the pool itself and each
+  /// statement may execute on a different pooled connection.
+  Future<Session> get executionContext async {
+    if (isPooled) {
+      return _getPool();
+    }
+    return getDatabaseConnection();
+  }
+
+  /// The [SessionExecutor] transactions run against: the single connection
+  /// by default, the pool when [isPooled] (each transaction then checks out
+  /// its own connection).
+  Future<SessionExecutor> _transactionExecutor() async {
+    if (isPooled) {
+      return _getPool();
+    }
+    return getDatabaseConnection();
+  }
+
+  Pool _getPool() {
+    final existing = _pool;
+    if (existing != null) {
+      return existing;
+    }
+    final pool = getConnectionPool();
+    _pool = pool;
+    _poolFinalizer.attach(this, pool, detach: this);
+    return pool;
+  }
 
   /// Retrieves a connection to the database this instance connects to.
   ///
-  /// If no connection exists, one will be created. A store will have no more than one connection at a time.
+  /// If no connection exists, one will be created. A non-pooled store will
+  /// have no more than one connection at a time.
   ///
   /// When executing queries, prefer to use [executionContext] instead. Failure to do so might result
   /// in issues when executing queries during a transaction.
+  ///
+  /// Throws [StateError] on a pooled store ([isPooled]): a raw connection's
+  /// session state would not be visible to queries, which execute on
+  /// arbitrary pooled connections.
   Future<Connection> getDatabaseConnection() async {
+    if (isPooled) {
+      throw StateError(
+        "getDatabaseConnection() is unavailable on a pooled "
+        "PostgreSQLPersistentStore (maxConnectionCount: $maxConnectionCount). "
+        "Use executionContext, or construct the store with "
+        "maxConnectionCount: 1.",
+      );
+    }
     if (_databaseConnection == null || !_databaseConnection!.isOpen) {
       if (_pendingConnectionCompleter == null) {
         _pendingConnectionCompleter = Completer<Connection>();
@@ -241,6 +310,13 @@ class PostgreSQLPersistentStore extends PersistentStore
     await _databaseConnection?.close();
     _finalizer.detach(this);
     _databaseConnection = null;
+
+    final pool = _pool;
+    if (pool != null) {
+      _pool = null;
+      _poolFinalizer.detach(this);
+      await pool.close();
+    }
   }
 
   @override
@@ -248,10 +324,10 @@ class PostgreSQLPersistentStore extends PersistentStore
     ManagedContext transactionContext,
     Future<T> Function(ManagedContext transaction) transactionBlock,
   ) async {
-    final Connection dbConnection = await getDatabaseConnection();
+    final SessionExecutor executor = await _transactionExecutor();
 
     try {
-      return await dbConnection.runTx((dbTransactionContext) async {
+      return await executor.runTx((dbTransactionContext) async {
         transactionContext.persistentStore =
             PostgreSQLPersistentStore._transactionProxy(
               this,
@@ -306,11 +382,11 @@ class PostgreSQLPersistentStore extends PersistentStore
     List<Migration> withMigrations, {
     bool temporary = false,
   }) async {
-    final Connection connection = await getDatabaseConnection();
+    final SessionExecutor executor = await _transactionExecutor();
 
     var schema = fromSchema;
 
-    await connection.runTx((ctx) async {
+    await executor.runTx((ctx) async {
       final transactionStore = PostgreSQLPersistentStore._transactionProxy(
         this,
         ctx,
@@ -478,9 +554,12 @@ class PostgreSQLPersistentStore extends PersistentStore
     );
   }
 
+  /// Builds a [Pool] against this store's endpoint, sized to
+  /// [maxConnectionCount]. Pooled stores ([isPooled]) create and reuse one
+  /// of these lazily; calling this directly always constructs a new pool.
   Pool getConnectionPool() {
     final settings = PoolSettings(
-      maxConnectionCount: 10,
+      maxConnectionCount: maxConnectionCount,
       queryTimeout: const Duration(minutes: 10),
       connectTimeout: const Duration(seconds: 30),
       timeZone: timeZone,
@@ -522,4 +601,16 @@ class _TransactionProxy extends PostgreSQLPersistentStore {
 
   @override
   Future<Session> get executionContext async => context;
+
+  // A (mis)use of the transaction context to start another transaction
+  // must not mint a second pool on this proxy instance — share the owning
+  // store's pool. Non-pooled stores keep the legacy behavior (a
+  // proxy-local connection running an independent transaction).
+  @override
+  Future<SessionExecutor> _transactionExecutor() {
+    if (isPooled) {
+      return parent._transactionExecutor();
+    }
+    return super._transactionExecutor();
+  }
 }

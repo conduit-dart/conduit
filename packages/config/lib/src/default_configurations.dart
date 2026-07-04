@@ -19,6 +19,7 @@ class DatabaseConfiguration extends Configuration {
     this.port,
     this.databaseName, {
     this.isTemporary = false,
+    this.maxConnectionCount = 1,
   });
 
   /// The host of the database to connect to.
@@ -52,6 +53,15 @@ class DatabaseConfiguration extends Configuration {
   /// dropping it after the tests are complete.
   /// This property is optional.
   bool isTemporary = false;
+
+  /// The maximum number of concurrent connections a persistent store may
+  /// open against this database (its connection pool size).
+  ///
+  /// This property is optional. Defaults to 1, which preserves the
+  /// single-connection-per-store behavior: queries serialize on one
+  /// connection. Values greater than 1 enable pooling in stores that
+  /// support it (currently PostgreSQL only).
+  int maxConnectionCount = 1;
 
   @override
   void decode(dynamic value) {
