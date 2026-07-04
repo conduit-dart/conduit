@@ -2,8 +2,15 @@
 
 Produces the load-test evidence for connection pooling
 (`docs/CONNECTION_POOLING.md`); design rationale in
-`docs/LOAD_TESTING.md`. Nothing here is a workspace member — each Dart
-tool resolves standalone with `dart pub get`, and none of it runs in CI.
+`docs/LOAD_TESTING.md`, scenario guide in `docs/SCALE_TESTING.md`.
+
+`target/` and `monitor/` are *private* workspace members: `melos
+bootstrap` resolves them and `melos run analyze` type-checks them on
+every PR, but publish/test scripts skip them. A smoke-scale run of the
+whole harness (`ci/load-smoke.sh`) is wired into Woodpecker as the
+`load-test-smoke` step — it fires only on `cron` or `manual` pipeline
+events, never on PRs. Create the cron in the Woodpecker repo settings
+(suggested: `load-smoke`, weekly) or trigger a manual run from the UI.
 
 ## Pieces
 

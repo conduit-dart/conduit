@@ -33,6 +33,8 @@ workspace:
   - packages/test_harness
   - packages/fs_test_agent
   - examples/graphql_cross_source
+  - tool/load/target
+  - tool/load/monitor
 
 melos:
   command:

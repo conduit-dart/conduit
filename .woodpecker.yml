@@ -17,7 +17,9 @@
 #     ├── workspace-unit-tests (non-DB packages)
 #     ├── aot-smoke           ← build_runner path (hand-rolled app)
 #     ├── template-aot-smoke  ← `conduit create -t default` → AOT binary
-#     └── core-integration-tests (with postgres service)
+#     ├── core-integration-tests (with postgres service)
+#     └── load-test-smoke     ← cron/manual only: k6 pooling smoke
+#                               (tool/load/, docs/SCALE_TESTING.md)
 #
 # PUB_CACHE is exported from inside `commands:` (not from `environment:`)
 # because the pipeline-level `${CI_WORKSPACE}` interpolation expands
@@ -32,6 +34,11 @@ when:
   - event: pull_request
   - event: push
     branch: [main, master]
+  # cron/manual runs execute ONLY the load-test-smoke lane; every other
+  # step is gated to [pull_request, push] below. Create the cron in the
+  # Woodpecker repo settings (suggested name: load-smoke, weekly).
+  - event: cron
+  - event: manual
 
 variables:
   - &dart_image dart:beta
@@ -46,6 +53,8 @@ steps:
       - melos bootstrap
 
   nix-shell:
+    when:
+      - event: [pull_request, push]
     # Reproducible Nix devShell smoke: proves flake.nix materializes the
     # pinned Dart toolchain. Independent of the dart:beta bootstrap chain.
     image: nixos/nix:2.24.9
@@ -55,6 +64,8 @@ steps:
       - nix develop -c dart --version
 
   lint:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap]
     commands:
@@ -63,6 +74,8 @@ steps:
       - melos run analyze
 
   build-runner-tests:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap]
     commands:
@@ -71,6 +84,8 @@ steps:
       - cd packages/build_runner && dart test -r failures-only
 
   workspace-unit-tests:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap]
     environment:
@@ -89,6 +104,8 @@ steps:
         -- "dart test -r failures-only"
 
   aot-smoke:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap, build-runner-tests]
     commands:
@@ -97,6 +114,8 @@ steps:
       - bash ci/aot-smoke.sh
 
   template-aot-smoke:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap, build-runner-tests]
     commands:
@@ -107,6 +126,8 @@ steps:
       - bash ci/template-aot-smoke.sh
 
   core-integration-tests:
+    when:
+      - event: [pull_request, push]
     image: *dart_image
     depends_on: [bootstrap]
     environment:
@@ -124,6 +145,26 @@ steps:
       - export PATH="$PATH:$PUB_CACHE/bin"
       - cd packages/core
       - dart test -r failures-only
+
+  load-test-smoke:
+    # Cron/manual-only k6 smoke of the pooling harness (tool/load/):
+    # pool=1 vs pool=8 at low rate, per-isolate heap watched via the VM
+    # service. Hard-fails on k6 thresholds (error rate, heap cap); the
+    # cross-run comparison is informational. See docs/SCALE_TESTING.md.
+    when:
+      - event: [cron, manual]
+    image: *dart_image
+    depends_on: [bootstrap]
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: '5432'
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: 'conduit!'
+      POSTGRES_DB: conduit_test_db
+    commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
+      - export PATH="$PATH:$PUB_CACHE/bin"
+      - bash ci/load-smoke.sh
 
 services:
   postgres:

@@ -12,8 +12,12 @@ which this exists to measure.
    *during* load, in the same output stream as latency — Conduit's whole
    concurrency story is isolates, and process-level metrics can't show
    whether one isolate is hot while three idle.
-3. Stay out of CI: manual, dev-machine tooling. Nothing joins the melos
-   workspace.
+3. Stay off the PR critical path. The Dart tools are *private* workspace
+   members (so `melos run analyze` type-checks them on every PR), and a
+   smoke-scale run (`ci/load-smoke.sh`, Woodpecker `load-test-smoke`
+   step) fires only on cron/manual pipeline events. Full-scale runs stay
+   manual — see [SCALE_TESTING.md](SCALE_TESTING.md) for the scenario
+   guide.
 
 ## Why k6
 
