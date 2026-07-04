@@ -1,0 +1,12 @@
+# Isolate-metrics sidecar — NOT a workspace member; resolved standalone.
+name: isolate_monitor
+description: Polls the Dart VM service for per-isolate metrics and serves them as JSON for the k6 monitor scenario.
+publish_to: none
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+
+dependencies:
+  # Standalone tool: track whatever the current SDK's service protocol
+  # bindings are rather than pinning a major that will go stale.
+  vm_service: any

@@ -1,7 +1,8 @@
 # Connection pooling design — per-isolate pools for the Postgres store
 
 Status: implemented (opt-in, default off) — 2026-07.
-Companion to [PLANNING.md](PLANNING.md) §2 item 1.
+Companion to [PLANNING.md](PLANNING.md) §2 item 1. Measurement harness:
+[LOAD_TESTING.md](LOAD_TESTING.md) / `tool/load/`.
 
 ## The question
 
