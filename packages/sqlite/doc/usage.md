@@ -9,7 +9,7 @@ Docker.
 ```yaml
 # pubspec.yaml
 dependencies:
-  conduit_sqlite: ^6.0.0
+  conduit_sqlite: ^7.0.0
 ```
 
 The package depends on `package:sqlite3` (which loads the system

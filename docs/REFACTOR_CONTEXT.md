@@ -27,7 +27,7 @@ between those two.
 
 ## 2. Workspace layout
 
-Packages (from [pubspec.yaml](pubspec.yaml) / [melos.yaml.orig](melos.yaml.orig)):
+Packages (from [pubspec.yaml](pubspec.yaml)):
 
 | Package | Role | Published | Notes |
 | --- | --- | --- | --- |

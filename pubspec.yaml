@@ -47,6 +47,20 @@ melos:
       run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
       packageFilters:
         noPrivate: true
+    test-fast:
+      description: |
+        Database-free unit tests: the same scope as the Woodpecker
+        build-runner-tests + workspace-unit-tests steps. A cheap local
+        gate before the Postgres-backed test-unit suite. The env-var
+        prefix (required by conduit_config tests) makes this POSIX-only.
+      run: >
+        melos exec -c1 --fail-fast
+        --scope conduit_build_runner
+        --scope conduit_codable
+        --scope conduit_open_api
+        --scope conduit_password_hash
+        --scope conduit_config
+        -- "TEST_VALUE=1 TEST_BOOL=true TEST_DB_ENV_VAR=postgres://user:password@host:5432/dbname dart test -r failures-only"
     analyze: melos exec -- dart analyze .
     upgrade: melos exec -- dart pub upgrade
     outdated:
