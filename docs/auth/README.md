@@ -12,7 +12,7 @@ The `conduit auth` command-line tool manages configuration - such as client iden
 
 ## Guides
 
-* [What is OAuth 2.0?]()
+* [What is OAuth 2.0?](what_is_oauth.md)
 * [Creating and Using AuthServers](server.md)
 * [Securing Routes with Authorizer](authorizer.md)
 * [Adding Authentication Endpoints](controllers.md)
