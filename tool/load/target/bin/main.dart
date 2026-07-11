@@ -114,7 +114,7 @@ class TxController extends ResourceController {
       final q = Query<Item>(t)
         ..values.name = "tx-${DateTime.now().microsecondsSinceEpoch}";
       await q.insert();
-      return (await Query<Item>(t).reduce.count()) ?? 0;
+      return Query<Item>(t).reduce.count();
     });
     return Response.ok({"count": count});
   }

@@ -4,7 +4,7 @@
 /// --enable-vm-service), samples every isolate's heap statistics on an
 /// interval, and:
 ///
-///   1. serves the latest sample as JSON on http://0.0.0.0:<port>/metrics.json
+///   1. serves the latest sample as JSON on `http://0.0.0.0:<port>/metrics.json`
 ///      — the k6 `isolate_monitor` scenario polls this and feeds the values
 ///      into k6 Trend metrics, so isolate resources appear in k6's own
 ///      output and can gate thresholds;
