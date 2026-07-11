@@ -126,15 +126,13 @@ void main() {
     });
 
     test("transaction rolls back when the block throws", () async {
-      try {
-        await context.transaction((t) async {
+      await expectLater(
+        context.transaction((t) async {
           await Query.insertObject(t, PoolModel()..name = "doomed");
           throw StateError("abort");
-        });
-        fail("unreachable");
-      } on StateError {
-        // expected
-      }
+        }),
+        throwsStateError,
+      );
 
       expect(await Query<PoolModel>(context).fetch(), isEmpty);
     });
