@@ -43,3 +43,4 @@ _build/
 .pub-cache-docker/
 # load-test harness output
 tool/load/**/*.jsonl
+load-smoke-out/

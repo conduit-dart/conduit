@@ -76,6 +76,10 @@ export const options = {
     http_req_failed: ['rate<0.01'],
     'http_req_duration{endpoint:items_read}': ['p(95)<250'],
     'http_req_duration{endpoint:tx}': ['p(95)<500'],
+    // Generous bound; exists mainly so the slow submetric appears in
+    // --summary-export (k6 only exports submetrics that have thresholds),
+    // which the CI cross-run comparison keys on.
+    'http_req_duration{endpoint:slow}': ['p(95)<30000'],
     // Guardrail rather than target: catches unbounded heap growth (e.g. a
     // pool/connection leak) during the run.
     dart_isolate_heap_bytes: ['max<536870912'], // 512 MiB per isolate

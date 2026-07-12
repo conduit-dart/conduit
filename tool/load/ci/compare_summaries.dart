@@ -45,12 +45,16 @@ void main(List<String> args) {
   }
 
   var slowRegressed = false;
+  var slowMissing = true;
   for (final key in trackedMetrics) {
     final a = p95(baseline, key);
     final b = p95(pooled, key);
     if (a == null || b == null) {
       print("${key.padRight(45)}${"-".padLeft(14)}${"-".padLeft(14)}");
       continue;
+    }
+    if (key.contains("endpoint:slow")) {
+      slowMissing = false;
     }
     final delta = a == 0 ? 0.0 : ((b - a) / a) * 100.0;
     print(key.padRight(45) +
@@ -63,7 +67,11 @@ void main(List<String> args) {
   }
 
   print("");
-  if (slowRegressed) {
+  if (slowMissing) {
+    print("WARN: slow-query submetric absent from one or both summaries — "
+        "no pooling verdict. (k6 only exports submetrics that have "
+        "thresholds; check the script's thresholds block.)");
+  } else if (slowRegressed) {
     print("WARN: pooled slow-query p95 is not better than single-connection "
         "baseline. Expected pooling to raise slow-query capacity — check "
         "target logs and heap samples before trusting this run.");
