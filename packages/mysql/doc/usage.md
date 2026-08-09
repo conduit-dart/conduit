@@ -11,7 +11,7 @@ core).
 ```yaml
 # pubspec.yaml
 dependencies:
-  conduit_mysql: ^6.0.0
+  conduit_mysql: ^7.0.0
 ```
 
 The driver is `package:mysql_dart` 1.2+, native Dart, tested against
