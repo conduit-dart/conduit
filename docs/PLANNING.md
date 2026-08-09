@@ -42,8 +42,10 @@ dependency swaps:
    legacy single-connection behavior); above 1 the store fronts a postgres
    v3 `Pool` and transactions check out dedicated connections. See
    [CONNECTION_POOLING.md](CONNECTION_POOLING.md) for the design and the
-   semantics that change in pooled mode. Still owed: load-test evidence
-   and a decision on flipping the default in the next major.
+   semantics that change in pooled mode. A k6 harness with per-isolate
+   resource monitoring now lives in `tool/load/` (design:
+   [LOAD_TESTING.md](LOAD_TESTING.md)). Still owed: the evidence runs and
+   a decision on flipping the default in the next major.
 2. **Cache prepared statements.** Every ORM call re-parses via
    `Sql.named(...)` + `QueryMode.extended` and discards the statement
    (`postgresql_persistent_store.dart:383-388`; same pattern in

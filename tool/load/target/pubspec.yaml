@@ -1,0 +1,16 @@
+# Load-test target app. A private workspace member: `melos bootstrap`
+# resolves it and `melos run analyze` type-checks it, but publish/test
+# scripts skip it (publish_to: none).
+name: load_target
+description: Minimal Conduit app used as the k6 load-testing target.
+publish_to: none
+
+environment:
+  sdk: ">=3.12.0 <4.0.0"
+resolution: workspace
+
+dependencies:
+  conduit_core:
+    path: ../../../packages/core
+  conduit_postgresql:
+    path: ../../../packages/postgresql
