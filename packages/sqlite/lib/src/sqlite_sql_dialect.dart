@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:conduit_core/conduit_core.dart';
 
 /// SQLite-flavored SQL generation. Differs from the default `SqlDialect`
@@ -67,6 +69,34 @@ class SqliteSqlDialect extends SqlDialect {
         return 'TEXT';
     }
     return null;
+  }
+
+  // -- Document (JSON) transcoding -------------------------------------------
+
+  /// SQLite has no native JSON storage class — `document` columns are
+  /// declared `TEXT`. The sqlite3 driver only binds null/bool/int/num/
+  /// String/`List<int>`, so the structured `Map`/`List` (and scalar)
+  /// payload that `convertValueForStorage` produces is JSON-encoded to a
+  /// String here. Encoding *every* document value (not just collections)
+  /// keeps the stored form unambiguous, so [decodeValue] can decode
+  /// uniformly without guessing whether a TEXT value was already JSON.
+  @override
+  Object? encodeValue(Object? value, ManagedPropertyType? type) {
+    if (type == ManagedPropertyType.document && value != null) {
+      return json.encode(value);
+    }
+    return value;
+  }
+
+  /// Inverse of [encodeValue]: `document` columns come back from the
+  /// driver as the JSON String written by [encodeValue]; decode it to the
+  /// structured payload `Document` expects. All other types pass through.
+  @override
+  Object? decodeValue(Object? value, ManagedPropertyType? type) {
+    if (type == ManagedPropertyType.document && value is String) {
+      return json.decode(value);
+    }
+    return value;
   }
 
   // -- Parameter syntax ------------------------------------------------------

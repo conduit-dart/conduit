@@ -134,7 +134,14 @@ class ColumnBuilder extends Returnable {
         }
         return p.enumerationValueMap[value];
       } else if (p.type!.kind == ManagedPropertyType.document) {
-        return Document(value);
+        // Backends that store documents as native JSON (postgres jsonb)
+        // return a decoded `Map`/`List`; text-backed dialects (sqlite)
+        // return the JSON string. `SqlDialect.decodeValue` is the seam
+        // that lets such a dialect JSON-decode the payload here while
+        // postgres (the identity default) stays byte-identical.
+        final decoded =
+            table?.dialect.decodeValue(value, p.type!.kind) ?? value;
+        return Document(decoded);
       }
     }
 

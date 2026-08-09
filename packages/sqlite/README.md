@@ -28,11 +28,13 @@ Connection-string forms: `sqlite::memory:`,
 
 ## Status
 
-Published from the Conduit 7.0.0 release. Schema management + migrations,
-transactions (with `SAVEPOINT` nesting), and the raw execute path are
-supported; foreign keys are enforced on open. The ORM `newQuery<T>` path is
-not yet implemented (blocked on extracting query builders from
-`conduit_postgresql` into core), and v1 is JIT-only — the
-`conduit_build_runner` `ManagedObjectBuilder` does not yet support
-`@Relate`, so non-trivial ORM apps cannot AOT-compile against this backend
-until that lands. Details in [`doc/usage.md`](doc/usage.md).
+Published from the Conduit 7.0.0 release. The full `Query<T>` ORM path
+is wired: CRUD, predicates, `belongsTo`/`hasMany` joins, paging,
+`reduce`, and `Document` (JSON-as-TEXT) columns all work — alongside
+schema management, migrations, and raw `execute`.
+
+One caveat for relational apps: the `conduit_build_runner`
+`ManagedObjectBuilder` is still Phase-1 (single-table, no `@Relate`), so
+apps with relationships run against SQLite under the JIT/mirrors runtime
+rather than AOT-compiled. See [`doc/usage.md`](doc/usage.md) for the full
+capability + limitation matrix.
