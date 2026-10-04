@@ -61,11 +61,13 @@ steps:
     when:
       - event: [pull_request, push]
     # Reproducible Nix devShell smoke: proves flake.nix materializes the
-    # pinned Dart toolchain. Independent of the dart_image bootstrap chain.
+    # pinned Dart toolchain and that it satisfies the workspace SDK floor
+    # (`checks.dart-sdk-floor`). Independent of the dart_image bootstrap chain.
     image: nixos/nix:2.24.9
     environment:
       NIX_CONFIG: "experimental-features = nix-command flakes"
     commands:
+      - nix flake check -L
       - nix develop -c dart --version
 
   lint:
