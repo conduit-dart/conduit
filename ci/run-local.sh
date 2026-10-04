@@ -8,7 +8,7 @@
 #   ci/run-local.sh lint aot-smoke # run only the named gates
 #
 # Available gates: lint build-runner-tests workspace-unit-tests
-#                  aot-smoke legacy-smoke core-integration-tests
+#                  aot-smoke template-aot-smoke core-integration-tests
 #
 # State that persists between runs:
 #   docker volume "conduit-pub-cache" — workspace pub cache
