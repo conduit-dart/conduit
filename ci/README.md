@@ -27,17 +27,10 @@ block a release; treat each one as an independent contract.
 - `ci/.env` — Postgres connection variables for `conduit_core` integration tests. The Woodpecker pipeline overrides these to point at the in-pipeline `postgres` service (host `postgres`, port `5432`); the GitHub Actions matrix uses host `localhost` port `15432` via the published service mapping. Either way the test env vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `TEST_DB_ENV_VAR`, `TEST_VALUE`, `TEST_BOOL`) come from this file.
 - `ci/docker-compose.yaml` — local-dev Postgres service for `melos run test-unit` work. Not used by CI.
 - `ci/ssl/`, `ci/conduit.cert.pem`, `ci/conduit.key.pem` — TLS material the integration tests load when exercising HTTPS paths.
-- `ci/aot-smoke.sh`, `ci/legacy-smoke.sh` — see file headers; both are bash, both expect `PUB_CACHE` and `PATH` set to the workspace pub cache by the surrounding pipeline.
+- `ci/aot-smoke.sh`, `ci/template-aot-smoke.sh` — see file headers; both are bash, both expect `PUB_CACHE` and `PATH` set to the workspace pub cache by the surrounding pipeline.
 
 ## What's *not* a deployable-state gate
 
-- The five `conduit_runtime` tests in `test/build_test.dart`,
-  `test/context_test.dart`, `test/project_analyzer_test.dart` are
-  expected to fail in the current environment (path-resolution issues
-  pre-existing on `origin/master e6248ca2` — verified by running them
-  against a clean worktree of that commit). They are excluded from
-  `workspace-unit-tests` for now; un-excluding requires fixing the
-  upstream issue.
 - Multi-arch Docker image builds (`docker:` and `docker-flutter:` jobs
   in `.github/workflows/publish.yml`) only run on `chore:`-prefixed
   master commits and require Docker Hub + GHCR credentials. They are
