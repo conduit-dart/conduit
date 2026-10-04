@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
@@ -74,8 +73,10 @@ abstract class ResourceController()
             ?.resourceController;
   }
 
+  /// Nothing to recycle: operation bindings are cached on the runtime, so
+  /// [restore] ignores its argument.
   @override
-  void get recycledState => nullptr;
+  void get recycledState {}
 
   ResourceControllerRuntime? _runtime;
 
