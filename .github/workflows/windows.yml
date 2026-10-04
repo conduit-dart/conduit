@@ -8,8 +8,11 @@ on:
       - 'docs/**'
   workflow_dispatch:
 
+# Scope cancellation to one PR (or one ref for manual runs). A fixed group
+# name made every new PR cancel the in-flight runs of every other open PR.
+# A new push to the same PR still cancels that PR's superseded run.
 concurrency:
-  group: "windows-test"
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 defaults:
