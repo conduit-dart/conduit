@@ -35,6 +35,32 @@ jobs:
       # releases, so beta/main would flap on unrelated formatter changes.
       if: matrix.sdk == 'stable'
       run: dart format --output=none --set-exit-if-changed .
+    - name: Dependency advisories (informational)
+      # Non-gating. pub has no `outdated --mode=security`; the advisory
+      # signal (GitHub Advisory Database, as surfaced by pub.dev) is the
+      # `isCurrentAffectedByAdvisory` flag in `dart pub outdated --json`.
+      # Also reports discontinued and retracted resolutions. Linux/stable
+      # only: the resolution is platform-independent.
+      if: matrix.sdk == 'stable'
+      continue-on-error: true
+      run: |
+        dart pub outdated --json --show-all > "$RUNNER_TEMP/outdated.json"
+        flagged="$(jq -r '.packages[]
+          | select(.isCurrentAffectedByAdvisory or .isDiscontinued or .isCurrentRetracted)
+          | "\(.package) \(.current.version // "?"): advisory=\(.isCurrentAffectedByAdvisory) discontinued=\(.isDiscontinued) retracted=\(.isCurrentRetracted)"' \
+          "$RUNNER_TEMP/outdated.json")"
+        {
+          echo "### Dependency advisories"
+          if [ -z "$flagged" ]; then
+            echo "No resolved dependency is affected by an advisory, discontinued, or retracted."
+          else
+            echo '```'; echo "$flagged"; echo '```'
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"
+        if [ -n "$flagged" ]; then
+          while IFS= read -r line; do echo "::warning title=pub dependency::$line"; done <<< "$flagged"
+          exit 1
+        fi
     - name: Template AOT smoke
       run: bash ci/template-aot-smoke.sh
   unit:

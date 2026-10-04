@@ -1,0 +1,34 @@
+# Weekly, grouped dependency updates.
+#
+# conduit is a pub workspace (root pubspec.yaml `workspace:` list); the
+# root resolves every member, but each member's constraints live in its
+# own pubspec.yaml, so Dependabot scans the root and every package.
+# Lockfiles are not committed (library workspace), so pub updates show
+# up as constraint bumps. One grouped PR per ecosystem per week keeps
+# the noise to two PRs at most.
+version: 2
+updates:
+  - package-ecosystem: pub
+    directories:
+      - "/"
+      - "/packages/*"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      pub-dependencies:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      github-actions:
+        patterns: ["*"]
