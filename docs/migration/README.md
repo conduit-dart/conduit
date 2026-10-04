@@ -8,4 +8,6 @@
 * [7.0.md] — `conduit build` retired, `build_runner` + `dart compile exe`
   is the new AOT path; first publish of `conduit_sqlite`, `_mysql`,
   `_graph`, `_graph_neo4j`, `_graphql`; unified `PersistenceContext`;
-  dialect-agnostic `newQuery<T>`; Dart `>=3.12.0`.
+  dialect-agnostic `newQuery<T>`; Dart `>=3.12.0`. §10 tracks what is on
+  `master` for the next release (Dart `>=3.13.0`, shared lint floor,
+  `analyzer ^13`).
