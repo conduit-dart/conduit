@@ -1,0 +1,54 @@
+# AI pipeline: retry dispatcher.
+#
+# A maintainer adds `ai:retry` to re-run the stage an issue is stuck at:
+# implementation if research is done (and Gate 2 passed or was not needed),
+# research otherwise. Runs on a GitHub-hosted runner. See docs/AI_PIPELINE.md.
+name: AI retry
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  actions: write
+  issues: write
+
+jobs:
+  retry:
+    if: github.event.label.name == 'ai:retry'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tool/ai/gate.sh
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          SENDER: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          REQUIRED_LABELS: ai:approved ai:retry
+        run: tool/ai/gate.sh
+      - name: Dispatch the stuck stage
+        if: steps.gate.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          state=$(gh issue view "$ISSUE" --repo "$REPO" --json labels,comments --jq '{
+            deps_approved: ([.labels[].name] | index("deps:approved") != null),
+            research: ([.comments[].body | select(startswith("<!-- conduit-ai:research -->"))] | length > 0),
+            candidates: ([.comments[].body | select(startswith("<!-- conduit-ai:deps-candidates -->"))] | length > 0)
+          }')
+          if jq -e '.research and (.deps_approved or (.candidates | not))' <<<"$state" >/dev/null; then
+            stage=ai-implement.yml
+          else
+            stage=ai-research.yml
+          fi
+          echo "state: $state -> $stage"
+          gh workflow run "$stage" --repo "$REPO" -f issue="$ISSUE"
+          gh issue edit "$ISSUE" --repo "$REPO" --remove-label ai:retry

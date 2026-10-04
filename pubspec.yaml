@@ -35,6 +35,7 @@ workspace:
   - examples/graphql_cross_source
   - tool/load/target
   - tool/load/monitor
+  - tool/ai
 
 melos:
   command:

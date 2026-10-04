@@ -4,6 +4,9 @@ Design notes for running scheduled, autonomous maintenance on this repo using
 locally hosted LLMs. Written 2026-07. Nothing in this document is wired into
 CI yet — it is a menu plus a rollout plan.
 
+For the event-driven counterpart (feature request → research → PR →
+release, with maintainer gates), see [AI_PIPELINE.md](AI_PIPELINE.md).
+
 ## Why this fits Conduit
 
 The project already runs a **self-hosted Woodpecker CI** (`.woodpecker.yml`,

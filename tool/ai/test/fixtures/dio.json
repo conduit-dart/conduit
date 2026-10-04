@@ -1,0 +1,14 @@
+{
+  "name": "dio",
+  "isDiscontinued": null,
+  "replacedBy": null,
+  "latest": {
+    "version": "5.11.1",
+    "published": "2026-09-04T02:46:21.721502Z",
+    "pubspec": {
+      "environment": {
+        "sdk": ">=2.18.0 <4.0.0"
+      }
+    }
+  }
+}

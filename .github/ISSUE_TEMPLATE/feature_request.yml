@@ -1,0 +1,57 @@
+name: Feature request
+description: Suggest an idea for this project
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests go through a maintainer-gated, AI-assisted pipeline
+        (research → optional dependency review → implementation PR → review).
+        Nothing is built until a maintainer approves the request.
+        See [docs/AI_PIPELINE.md](https://github.com/conduit-dart/conduit/blob/master/docs/AI_PIPELINE.md).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Is your feature request related to a problem? What are you trying to do, and what gets in the way?
+      placeholder: I'm always frustrated when ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen? Sketch the API if you have one in mind.
+      render: dart
+    validations:
+      required: true
+  - type: dropdown
+    id: packages
+    attributes:
+      label: Affected packages
+      description: Best guess is fine.
+      multiple: true
+      options:
+        - conduit_core (HTTP, routing, controllers)
+        - conduit_core (ORM / database)
+        - conduit_core (auth)
+        - conduit (CLI)
+        - conduit_postgresql
+        - conduit_sqlite
+        - conduit_mysql
+        - conduit_graph / conduit_graph_neo4j
+        - conduit_graphql
+        - conduit_open_api
+        - conduit_test (test harness)
+        - Other / not sure
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other solutions or workarounds you've considered.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, screenshots, related issues.

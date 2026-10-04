@@ -1,0 +1,16 @@
+name: conduit_ai_tool
+description: Helpers for conduit's AI-assisted issue-to-release pipeline (.github/workflows/ai-*.yml).
+publish_to: none
+
+environment:
+  sdk: ">=3.13.0 <4.0.0"
+
+resolution: workspace
+
+dependencies:
+  pub_semver: ^2.1.4
+  yaml: ^3.1.2
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.2

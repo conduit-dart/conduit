@@ -22,7 +22,8 @@ OpenAPI generation. Monorepo managed with **Melos** (Dart pub workspace).
 usage, ranked refactor targets). Read it before any cross-package refactor.
 `docs/PLANNING.md` (2026-07) supersedes its housekeeping list and ranks
 current feature/performance work. `docs/AGENTIC_MAINTENANCE.md` covers the
-scheduled-maintenance design.
+scheduled-maintenance design; `docs/AI_PIPELINE.md` covers the label-gated
+feature-request → release pipeline (`.github/workflows/ai-*.yml`, `tool/ai/`).
 
 ## Setup and commands
 

@@ -1,0 +1,166 @@
+# AI pipeline, stage 4: release prep.
+#
+# Automates CONTRIBUTING.md § Releasing steps 1–2 and stops there:
+#   - the next version comes from conventional commits (tool/ai), not a model
+#   - `melos run sync-version` writes the CHANGELOG sections
+#   - an agent curates the CHANGELOGs and migration notes
+#   - a release PR is opened and the existing publish.yml dry run is started
+# A maintainer merges the PR and pushes the `vX.Y.Z` tag; publish.yml stays
+# the only path to pub.dev. See docs/AI_PIPELINE.md.
+name: AI release prep
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version (x.y.z). Empty = derive from conventional commits.
+        required: false
+
+concurrency:
+  group: ai-release-prep
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  gate:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'release:prepare'
+    runs-on: ubuntu-latest
+    outputs:
+      # Label path: the gate script. Manual dispatch already needs write
+      # access, so it only checks the kill switch.
+      ok: ${{ steps.gate.outputs.ok || steps.dispatch.outputs.ok }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tool/ai/gate.sh
+          sparse-checkout-cone-mode: false
+      - id: gate
+        if: github.event_name == 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          SENDER: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          REQUIRED_LABELS: release:prepare
+        run: tool/ai/gate.sh
+      - id: dispatch
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+        run: echo "ok=$([ "$ENABLED" = true ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  prep:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
+    runs-on: [self-hosted, conduit-ai]
+    timeout-minutes: 60
+    env:
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number }}
+      INPUT_VERSION: ${{ inputs.version }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.AI_APP_ID }}
+          private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: master
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Decide the version (deterministic)
+        run: |
+          mkdir -p .ai
+          dart pub get >/dev/null
+          last=$(git describe --tags --abbrev=0 --match 'v[0-9]*')
+          current=$(grep -m1 -E '^version:' pubspec.yaml | awk '{print $2}')
+          git log -z --format=%B "${last}..HEAD" > .ai/commits.txt
+          git log --format='- %s (%h)' "${last}..HEAD" > .ai/commit-subjects.txt
+          derived=$(dart run tool/ai/bin/next_version.dart --current "$current" \
+            --commits .ai/commits.txt --breaking-out .ai/breaking.txt)
+          version=${INPUT_VERSION:-$derived}
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "bad version '$version'" >&2; exit 1; }
+          if git rev-parse -q --verify "refs/tags/v${version}" >/dev/null; then
+            echo "tag v${version} already exists" >&2; exit 1
+          fi
+          echo "$version" > .ai/version.txt
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "LAST_TAG=$last" >> "$GITHUB_ENV"
+          echo "release ${last} -> v${version} (derived ${derived})"
+
+      - name: Set version and write CHANGELOGs (melos)
+        run: |
+          git switch -c "claude/ai-release-v${VERSION}"
+          sed -i -E "s/^version: .*/version: ${VERSION}/" pubspec.yaml
+          git tag -l > .ai/tags-before.txt
+          git -c user.name=ci -c user.email=ci@localhost commit -q -am "set workspace version ${VERSION}"
+          melos run sync-version
+          # melos version commits and tags locally. Drop every new tag so
+          # nothing here can ever be pushed as a release tag, then fold the
+          # commits back into a working-tree change for one clean commit.
+          comm -13 <(sort .ai/tags-before.txt) <(git tag -l | sort) | xargs -r git tag -d
+          git reset -q --soft origin/master
+
+      - name: Curate CHANGELOGs and migration notes (agent)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+        run: |
+          tool/ai/run-agent.sh .github/ai/prompts/release-prep.md 60 \
+            "Read,Glob,Grep,Edit(packages/*/CHANGELOG.md),Edit(docs/migration/**),Write(docs/migration/**),Write(.ai/release-notes.md),Bash(git log:*),Bash(git show:*),Bash(git diff:*)"
+          test -s .ai/release-notes.md
+          # Only CHANGELOGs, docs/migration and the version files may change.
+          bad=$(git status --porcelain | awk '{print $2}' \
+            | grep -vE '^(packages/[^/]+/CHANGELOG\.md|packages/[^/]+/pubspec\.yaml|pubspec\.yaml|docs/migration/.*|\.ai/.*)$' || true)
+          [ -z "$bad" ] || { echo "unexpected changes: $bad" >&2; exit 1; }
+
+      - name: Commit, push, open release PR, start dry run
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          branch="claude/ai-release-v${VERSION}"
+          bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          git add -A -- pubspec.yaml packages/*/pubspec.yaml packages/*/CHANGELOG.md docs/migration
+          git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
+            commit -q -m "chore(release): v${VERSION}" -m "Prepared by the AI pipeline: $RUN_URL"
+          # Push exactly one branch ref. Never --tags / --follow-tags.
+          git push -q origin "refs/heads/${branch}:refs/heads/${branch}"
+          {
+            echo "## Release v${VERSION}"
+            echo
+            cat .ai/release-notes.md
+            echo
+            echo "## Checklist (maintainer)"
+            echo
+            echo "- [ ] CHANGELOG sections read correctly"
+            echo "- [ ] \`publish.yml\` dry run is green (started automatically on this branch)"
+            echo "- [ ] Merge, then push the tag: \`git tag v${VERSION} <merge-sha> && git push origin v${VERSION}\`"
+            echo
+            echo "Commits since ${LAST_TAG}:"
+            echo
+            cat .ai/commit-subjects.txt
+            echo
+            echo "<sub>Prepared by the AI pipeline · [run]($RUN_URL) · no tag is created by automation.</sub>"
+          } > .ai/pr.md
+          url=$(gh pr create --repo "$REPO" --base master --head "$branch" \
+            --label bot:ai-pipeline --title "chore(release): v${VERSION}" --body-file .ai/pr.md)
+          gh workflow run publish.yml --repo "$REPO" --ref "$branch" -f version="$VERSION" -f dry_run=true
+          gh pr comment "$url" --repo "$REPO" \
+            --body "Started the \`publish.yml\` dry run for v${VERSION} on this branch: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/publish.yml"
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --repo "$REPO" --body "Release PR for v${VERSION}: $url"
+            gh issue edit "$ISSUE" --repo "$REPO" --remove-label release:prepare || true
+          fi

@@ -1,0 +1,5 @@
+# actionlint configuration.
+self-hosted-runner:
+  # Ephemeral runner for the AI pipeline (docs/AI_PIPELINE.md).
+  labels:
+    - conduit-ai

@@ -1,0 +1,32 @@
+{
+  "grantedPoints": 160,
+  "maxPoints": 160,
+  "likeCount": 8359,
+  "downloadCount30Days": 4738973,
+  "tags": [
+    "publisher:flutter.cn",
+    "has:topic",
+    "sdk:dart",
+    "sdk:flutter",
+    "platform:android",
+    "platform:ios",
+    "platform:windows",
+    "platform:linux",
+    "platform:macos",
+    "platform:web",
+    "runtime:native-aot",
+    "runtime:native-jit",
+    "runtime:web",
+    "is:null-safe",
+    "is:wasm-ready",
+    "is:dart3-compatible",
+    "license:mit",
+    "license:fsf-libre",
+    "license:osi-approved",
+    "topic:dio",
+    "topic:http",
+    "topic:network",
+    "topic:interceptor",
+    "topic:middleware"
+  ]
+}
