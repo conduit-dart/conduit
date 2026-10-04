@@ -78,6 +78,6 @@ class SkipOn {
 /// only makes sense for Postgres because it touches a Postgres-only
 /// feature (`ILIKE`, `JSONB`, `RETURNING`, `to_regclass`).
 class PostgresOnly extends OnlyOn {
-  const PostgresOnly({String? reason})
-    : super(const [Dialect.postgres], reason: reason);
+  const PostgresOnly({super.reason})
+    : super(const [Dialect.postgres]);
 }

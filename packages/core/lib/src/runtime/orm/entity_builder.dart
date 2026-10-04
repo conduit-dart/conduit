@@ -56,7 +56,7 @@ class EntityBuilder {
   String get tableDefinitionTypeName =>
       MirrorSystem.getName(tableDefinitionType.simpleName);
 
-  void compile(final List<EntityBuilder> entityBuilders) {
+  void compile(List<EntityBuilder> entityBuilders) {
     for (final p in properties) {
       p.compile(entityBuilders);
     }
@@ -66,7 +66,7 @@ class EntityBuilder {
         .toList();
   }
 
-  void validate(final List<EntityBuilder> entityBuilders) {
+  void validate(List<EntityBuilder> entityBuilders) {
     // Check that we have a default constructor
     if (!classHasDefaultConstructor(instanceType)) {
       throw ManagedDataModelErrorImpl.noConstructor(instanceType);

@@ -73,7 +73,7 @@ class PropertyBuilder {
   DeleteRule? deleteRule;
   List<ValidatorBuilder>? _validators;
 
-  void compile(final List<EntityBuilder> entityBuilders) {
+  void compile(List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (relate != null) {
         relatedProperty = _getRelatedEntityBuilderFrom(
@@ -104,7 +104,7 @@ class PropertyBuilder {
     }
   }
 
-  void validate(final List<EntityBuilder> entityBuilders) {
+  void validate(List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (!isRelationship ||
           relationshipType == ManagedRelationshipType.belongsTo) {
@@ -290,7 +290,7 @@ class PropertyBuilder {
   }
 
   EntityBuilder _getRelatedEntityBuilderFrom(
-    final List<EntityBuilder> builders,
+    List<EntityBuilder> builders,
   ) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
