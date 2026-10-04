@@ -309,8 +309,7 @@ void main() {
         hasResponse(
           400,
           body: {
-            "error":
-                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
+            "error": "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
           },
         ),
       );

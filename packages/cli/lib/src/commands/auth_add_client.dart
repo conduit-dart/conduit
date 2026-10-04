@@ -17,23 +17,20 @@ class CLIAuthAddClient extends CLICommand
   @Option(
     "secret",
     abbr: "s",
-    help:
-        "The client secret. This secret will be hashed on insertion, so you *must* store it somewhere. For public clients, this option may be omitted.",
+    help: "The client secret. This secret will be hashed on insertion, so you *must* store it somewhere. For public clients, this option may be omitted.",
   )
   String? get secret => decodeOptional("secret");
 
   @Option(
     "redirect-uri",
     abbr: "r",
-    help:
-        "The redirect URI of the client if it supports the authorization code or implicit flow. May be omitted.",
+    help: "The redirect URI of the client if it supports the authorization code or implicit flow. May be omitted.",
   )
   String? get redirectUri => decodeOptional("redirect-uri");
 
   @Option(
     "hash-function",
-    help:
-        "Hash function to apply when hashing secret. Must match AuthServer.hashFunction.",
+    help: "Hash function to apply when hashing secret. Must match AuthServer.hashFunction.",
     defaultsTo: "sha256",
     allowed: ["sha256", "sha1", "md5"],
   )
@@ -48,24 +45,21 @@ class CLIAuthAddClient extends CLICommand
 
   @Option(
     "hash-rounds",
-    help:
-        "Number of hash rounds to apply to secret. Must match AuthServer.hashRounds.",
+    help: "Number of hash rounds to apply to secret. Must match AuthServer.hashRounds.",
     defaultsTo: "1000",
   )
   int get hashRounds => decode<int>("hash-rounds");
 
   @Option(
     "hash-length",
-    help:
-        "Length in bytes of secret key after hashing. Must match AuthServer.hashLength.",
+    help: "Length in bytes of secret key after hashing. Must match AuthServer.hashLength.",
     defaultsTo: "32",
   )
   int get hashLength => decode<int>("hash-length");
 
   @Option(
     "allowed-scopes",
-    help:
-        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    help: "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
     defaultsTo: "",
   )
   List<String>? get allowedScopes {

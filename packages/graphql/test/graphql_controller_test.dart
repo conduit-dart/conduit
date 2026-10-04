@@ -101,17 +101,14 @@ void main() {
     expect(errors.first['message'] as String, contains('Syntax'));
   });
 
-  test(
-    'POST query referencing undefined field returns 400 with field name in error',
-    () async {
-      final res = await _post(server, {'query': '{ nonexistentField }'});
-      expect(res.statusCode, 400);
-      final body = json.decode(res.body) as Map<String, dynamic>;
-      final errors = body['errors'] as List;
-      expect(errors, isNotEmpty);
-      expect(errors.first['message'] as String, contains('nonexistentField'));
-    },
-  );
+  test('POST query referencing undefined field returns 400 with field name in error', () async {
+    final res = await _post(server, {'query': '{ nonexistentField }'});
+    expect(res.statusCode, 400);
+    final body = json.decode(res.body) as Map<String, dynamic>;
+    final errors = body['errors'] as List;
+    expect(errors, isNotEmpty);
+    expect(errors.first['message'] as String, contains('nonexistentField'));
+  });
 
   test(
     'POST mutation that throws returns 200 with errors array (per spec)',

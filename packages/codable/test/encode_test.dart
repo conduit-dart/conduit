@@ -160,49 +160,41 @@ void main() {
       },
     );
 
-    test(
-      "If reference doesn't exist in objectMap, an error is thrown when creating document",
-      () {
-        final container = Container(
-          Parent(
-            "Bob",
-            childMap: {
-              "c": Child._()..referenceURI = Uri(path: "/definitions/child"),
-            },
-          ),
-          {},
-        );
+    test("If reference doesn't exist in objectMap, an error is thrown when creating document", () {
+      final container = Container(
+        Parent(
+          "Bob",
+          childMap: {
+            "c": Child._()..referenceURI = Uri(path: "/definitions/child"),
+          },
+        ),
+        {},
+      );
 
-        try {
-          KeyedArchive.archive(container, allowReferences: true);
-          fail('unreachable');
-        } on ArgumentError catch (e) {
-          expect(e.toString(), contains("#/definitions/child"));
-        }
-      },
-    );
+      try {
+        KeyedArchive.archive(container, allowReferences: true);
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("#/definitions/child"));
+      }
+    });
 
-    test(
-      "If reference doesn't exist in objectList, an error is thrown when creating document",
-      () {
-        final container = Container(
-          Parent(
-            "Bob",
-            children: [
-              Child._()..referenceURI = Uri(path: "/definitions/child"),
-            ],
-          ),
-          {},
-        );
+    test("If reference doesn't exist in objectList, an error is thrown when creating document", () {
+      final container = Container(
+        Parent(
+          "Bob",
+          children: [Child._()..referenceURI = Uri(path: "/definitions/child")],
+        ),
+        {},
+      );
 
-        try {
-          KeyedArchive.archive(container, allowReferences: true);
-          fail('unreachable');
-        } on ArgumentError catch (e) {
-          expect(e.toString(), contains("#/definitions/child"));
-        }
-      },
-    );
+      try {
+        KeyedArchive.archive(container, allowReferences: true);
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("#/definitions/child"));
+      }
+    });
 
     test("Parent can contain reference to child in a list of objects", () {
       final container = Container(

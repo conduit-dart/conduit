@@ -63,109 +63,91 @@ void main() {
   /////////
 
   group("GET success case", () {
-    test(
-      "GET login form with valid code values returns a 'page' with the provided values",
-      () async {
-        final req = client.request("/auth/code")
-          ..query = {
-            "client_id": "com.stablekernel.redirect",
-            "response_type": "code",
-          };
-
-        final resp = await req.get();
-        expect(
-          resp,
-          hasResponse(
-            200,
-            headers: {"content-type": "text/html; charset=utf-8"},
-          ),
-        );
-
-        // The data is actually JSON for purposes of this test, just makes it easier to validate here.
-        expect(json.decode(resp.body.as<String>()), {
-          "response_type": "code",
+    test("GET login form with valid code values returns a 'page' with the provided values", () async {
+      final req = client.request("/auth/code")
+        ..query = {
           "client_id": "com.stablekernel.redirect",
-          "state": null,
-          "scope": null,
-          "path": "/auth/code",
-        });
-      },
-    );
-
-    test(
-      "GET login form with valid token values returns a 'page' with the provided values",
-      () async {
-        final req = client.request("/auth/redirect")
-          ..query = {
-            "client_id": "com.stablekernel.public.redirect",
-            "response_type": "token",
-          };
-
-        final resp = await req.get();
-        expect(
-          resp,
-          hasResponse(
-            200,
-            headers: {"content-type": "text/html; charset=utf-8"},
-          ),
-        );
-
-        // The data is actually JSON for purposes of this test, just makes it easier to validate here.
-        expect(json.decode(resp.body.as<String>()), {
-          "response_type": "token",
-          "client_id": "com.stablekernel.public.redirect",
-          "state": null,
-          "scope": null,
-          "path": "/auth/redirect",
-        });
-      },
-    );
-
-    test(
-      "GET login form with valid code values returns a 'page' with the provided values + state + scope",
-      () async {
-        final req = client.request("/auth/code")
-          ..query = {
-            "client_id": "com.stablekernel.redirect",
-            "state": "Alaska",
-            "response_type": "code",
-            "scope": "readonly viewonly",
-          };
-        final resp = await req.get();
-        expect(resp, hasStatus(200));
-        expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
-        expect(json.decode(resp.body.as<String>()), {
           "response_type": "code",
+        };
+
+      final resp = await req.get();
+      expect(
+        resp,
+        hasResponse(200, headers: {"content-type": "text/html; charset=utf-8"}),
+      );
+
+      // The data is actually JSON for purposes of this test, just makes it easier to validate here.
+      expect(json.decode(resp.body.as<String>()), {
+        "response_type": "code",
+        "client_id": "com.stablekernel.redirect",
+        "state": null,
+        "scope": null,
+        "path": "/auth/code",
+      });
+    });
+
+    test("GET login form with valid token values returns a 'page' with the provided values", () async {
+      final req = client.request("/auth/redirect")
+        ..query = {
+          "client_id": "com.stablekernel.public.redirect",
+          "response_type": "token",
+        };
+
+      final resp = await req.get();
+      expect(
+        resp,
+        hasResponse(200, headers: {"content-type": "text/html; charset=utf-8"}),
+      );
+
+      // The data is actually JSON for purposes of this test, just makes it easier to validate here.
+      expect(json.decode(resp.body.as<String>()), {
+        "response_type": "token",
+        "client_id": "com.stablekernel.public.redirect",
+        "state": null,
+        "scope": null,
+        "path": "/auth/redirect",
+      });
+    });
+
+    test("GET login form with valid code values returns a 'page' with the provided values + state + scope", () async {
+      final req = client.request("/auth/code")
+        ..query = {
           "client_id": "com.stablekernel.redirect",
           "state": "Alaska",
+          "response_type": "code",
           "scope": "readonly viewonly",
-          "path": "/auth/code",
-        });
-      },
-    );
+        };
+      final resp = await req.get();
+      expect(resp, hasStatus(200));
+      expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
+      expect(json.decode(resp.body.as<String>()), {
+        "response_type": "code",
+        "client_id": "com.stablekernel.redirect",
+        "state": "Alaska",
+        "scope": "readonly viewonly",
+        "path": "/auth/code",
+      });
+    });
 
-    test(
-      "GET login form with valid token values returns a 'page' with the provided values + state + scope",
-      () async {
-        final req = client.request("/auth/redirect")
-          ..query = {
-            "client_id": "com.stablekernel.public.redirect",
-            "state": "Alaska",
-            "response_type": "token",
-            "scope": "readonly viewonly",
-          };
-        final resp = await req.get();
-        expect(resp, hasStatus(200));
-        expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
-        expect(json.decode(resp.body.as<String>()), {
-          "response_type": "token",
+    test("GET login form with valid token values returns a 'page' with the provided values + state + scope", () async {
+      final req = client.request("/auth/redirect")
+        ..query = {
           "client_id": "com.stablekernel.public.redirect",
           "state": "Alaska",
+          "response_type": "token",
           "scope": "readonly viewonly",
-          "path": "/auth/redirect",
-        });
-      },
-    );
+        };
+      final resp = await req.get();
+      expect(resp, hasStatus(200));
+      expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
+      expect(json.decode(resp.body.as<String>()), {
+        "response_type": "token",
+        "client_id": "com.stablekernel.public.redirect",
+        "state": "Alaska",
+        "scope": "readonly viewonly",
+        "path": "/auth/redirect",
+      });
+    });
   });
 
   group("GET failure cases", () {
@@ -808,23 +790,20 @@ void main() {
   });
 
   group("Token Invalid requests and state", () {
-    test(
-      "Does not allow response_type of token if allowsImplicit is false",
-      () async {
-        final encodedUsername = Uri.encodeQueryComponent(user1["username"]!);
-        final encodedPassword = Uri.encodeQueryComponent(user1["password"]!);
+    test("Does not allow response_type of token if allowsImplicit is false", () async {
+      final encodedUsername = Uri.encodeQueryComponent(user1["username"]!);
+      final encodedPassword = Uri.encodeQueryComponent(user1["password"]!);
 
-        final req = client.request("/auth/code")
-          ..encodeBody = false
-          ..body = utf8.encode(
-            "username=$encodedUsername&password=$encodedPassword&response_type=token&client_id=com.stablekernel.public.redirect&state=a",
-          )
-          ..contentType = ContentType("application", "x-www-form-urlencoded");
-        final resp = await req.post();
-        expect(resp, hasStatus(400));
-        expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
-      },
-    );
+      final req = client.request("/auth/code")
+        ..encodeBody = false
+        ..body = utf8.encode(
+          "username=$encodedUsername&password=$encodedPassword&response_type=token&client_id=com.stablekernel.public.redirect&state=a",
+        )
+        ..contentType = ContentType("application", "x-www-form-urlencoded");
+      final resp = await req.post();
+      expect(resp, hasStatus(400));
+      expect(resp, hasHeaders({"content-type": "text/html; charset=utf-8"}));
+    });
 
     test("Omit state is error", () async {
       final resp = await tokenResponse({

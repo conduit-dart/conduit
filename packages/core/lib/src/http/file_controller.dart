@@ -6,8 +6,10 @@ import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
 
-typedef FileControllerClosure =
-    FutureOr<Response> Function(FileController controller, Request req);
+typedef FileControllerClosure = FutureOr<Response> Function(
+  FileController controller,
+  Request req,
+);
 
 /// Serves files from a directory on the filesystem.
 ///

@@ -77,85 +77,79 @@ void main() {
       createdUser = delegate.users[1];
     });
 
-    test(
-      "Can create token with all information + refresh token if client is confidential",
-      () async {
-        final token = await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.app1",
-          "kilimanjaro",
-        );
-        expect(token.accessToken, isString);
-        expect(token.refreshToken, isString);
-        expect(token.clientID, "com.stablekernel.app1");
-        expect(token.resourceOwnerIdentifier, createdUser!.id);
+    test("Can create token with all information + refresh token if client is confidential", () async {
+      final token = await auth.authenticate(
+        createdUser!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.app1",
+        "kilimanjaro",
+      );
+      expect(token.accessToken, isString);
+      expect(token.refreshToken, isString);
+      expect(token.clientID, "com.stablekernel.app1");
+      expect(token.resourceOwnerIdentifier, createdUser!.id);
 
-        final now = DateTime.now().toUtc();
-        expect(token.issueDate!.difference(now).inSeconds.abs(), lessThan(5));
-        expect(
-          token.issueDate!.isBefore(now) ||
-              token.issueDate!.isAtSameMomentAs(now),
-          true,
-        );
-        expect(token.expirationDate!.isAfter(now), true);
-        expect(token.type, "bearer");
+      final now = DateTime.now().toUtc();
+      expect(token.issueDate!.difference(now).inSeconds.abs(), lessThan(5));
+      expect(
+        token.issueDate!.isBefore(now) ||
+            token.issueDate!.isAtSameMomentAs(now),
+        true,
+      );
+      expect(token.expirationDate!.isAfter(now), true);
+      expect(token.type, "bearer");
 
-        expect(
-          token.issueDate!.difference(token.expirationDate!).inSeconds.abs(),
-          greaterThan(86399),
-        );
-        expect(
-          token.issueDate!.difference(token.expirationDate!).inSeconds.abs(),
-          lessThan(86401),
-        );
-      },
-    );
+      expect(
+        token.issueDate!.difference(token.expirationDate!).inSeconds.abs(),
+        greaterThan(86399),
+      );
+      expect(
+        token.issueDate!.difference(token.expirationDate!).inSeconds.abs(),
+        lessThan(86401),
+      );
+    });
 
-    test(
-      "Can create token with all information minus refresh token if client is public",
-      () async {
-        var token = await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.public",
-          "",
-        );
-        expect(token.accessToken, isString);
-        expect(token.refreshToken, isNull);
-        expect(token.clientID, "com.stablekernel.public");
-        expect(token.resourceOwnerIdentifier, createdUser!.id);
+    test("Can create token with all information minus refresh token if client is public", () async {
+      var token = await auth.authenticate(
+        createdUser!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.public",
+        "",
+      );
+      expect(token.accessToken, isString);
+      expect(token.refreshToken, isNull);
+      expect(token.clientID, "com.stablekernel.public");
+      expect(token.resourceOwnerIdentifier, createdUser!.id);
 
-        var now = DateTime.now().toUtc();
-        expect(
-          token.issueDate!.isBefore(now) ||
-              token.issueDate!.isAtSameMomentAs(now),
-          true,
-        );
-        expect(token.expirationDate!.isAfter(now), true);
-        expect(token.type, "bearer");
+      var now = DateTime.now().toUtc();
+      expect(
+        token.issueDate!.isBefore(now) ||
+            token.issueDate!.isAtSameMomentAs(now),
+        true,
+      );
+      expect(token.expirationDate!.isAfter(now), true);
+      expect(token.type, "bearer");
 
-        token = await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.public",
-          null,
-        );
-        expect(token.accessToken, isString);
-        expect(token.refreshToken, isNull);
-        expect(token.clientID, "com.stablekernel.public");
-        expect(token.resourceOwnerIdentifier, createdUser!.id);
+      token = await auth.authenticate(
+        createdUser!.username,
+        InMemoryAuthStorage.defaultPassword,
+        "com.stablekernel.public",
+        null,
+      );
+      expect(token.accessToken, isString);
+      expect(token.refreshToken, isNull);
+      expect(token.clientID, "com.stablekernel.public");
+      expect(token.resourceOwnerIdentifier, createdUser!.id);
 
-        now = DateTime.now().toUtc();
-        expect(
-          token.issueDate!.isBefore(now) ||
-              token.issueDate!.isAtSameMomentAs(now),
-          true,
-        );
-        expect(token.expirationDate!.isAfter(now), true);
-        expect(token.type, "bearer");
-      },
-    );
+      now = DateTime.now().toUtc();
+      expect(
+        token.issueDate!.isBefore(now) ||
+            token.issueDate!.isAtSameMomentAs(now),
+        true,
+      );
+      expect(token.expirationDate!.isAfter(now), true);
+      expect(token.type, "bearer");
+    });
 
     test("Create token fails if username is incorrect", () async {
       try {
@@ -303,24 +297,21 @@ void main() {
       }
     });
 
-    test(
-      "Don't grant requested scope if it exceeds allowed scope of ResourceOwner",
-      () async {
-        delegate.allowedScopes = [AuthScope("user.self")];
-        try {
-          await auth.authenticate(
-            createdUser!.username,
-            InMemoryAuthStorage.defaultPassword,
-            "com.stablekernel.public.scoped",
-            null,
-            requestedScopes: [AuthScope("user")],
-          );
-          fail("Should throw AuthServerException");
-        } on AuthServerException catch (e) {
-          expect(e.reason, AuthRequestError.invalidScope);
-        }
-      },
-    );
+    test("Don't grant requested scope if it exceeds allowed scope of ResourceOwner", () async {
+      delegate.allowedScopes = [AuthScope("user.self")];
+      try {
+        await auth.authenticate(
+          createdUser!.username,
+          InMemoryAuthStorage.defaultPassword,
+          "com.stablekernel.public.scoped",
+          null,
+          requestedScopes: [AuthScope("user")],
+        );
+        fail("Should throw AuthServerException");
+      } on AuthServerException catch (e) {
+        expect(e.reason, AuthRequestError.invalidScope);
+      }
+    });
 
     test("Cannot verify token that doesn't exist", () async {
       try {
@@ -368,49 +359,46 @@ void main() {
       );
     });
 
-    test(
-      "Can refresh token with all information + refresh token if token had refresh token",
-      () async {
-        final token = await auth.refresh(
-          initialToken.refreshToken,
-          "com.stablekernel.app1",
-          "kilimanjaro",
-        );
-        expect(token.accessToken, isNot(initialToken.accessToken));
-        expect(token.refreshToken, initialToken.refreshToken);
-        expect(token.accessToken, isString);
-        expect(token.refreshToken, isString);
-        expect(token.clientID, "com.stablekernel.app1");
-        expect(token.resourceOwnerIdentifier, createdUser!.id);
-        expect(
-          token.issueDate!.difference(DateTime.now().toUtc()).inSeconds.abs(),
-          lessThan(5),
-        );
+    test("Can refresh token with all information + refresh token if token had refresh token", () async {
+      final token = await auth.refresh(
+        initialToken.refreshToken,
+        "com.stablekernel.app1",
+        "kilimanjaro",
+      );
+      expect(token.accessToken, isNot(initialToken.accessToken));
+      expect(token.refreshToken, initialToken.refreshToken);
+      expect(token.accessToken, isString);
+      expect(token.refreshToken, isString);
+      expect(token.clientID, "com.stablekernel.app1");
+      expect(token.resourceOwnerIdentifier, createdUser!.id);
+      expect(
+        token.issueDate!.difference(DateTime.now().toUtc()).inSeconds.abs(),
+        lessThan(5),
+      );
 
-        final now = DateTime.now().toUtc();
-        expect(
-          token.issueDate!.isBefore(now) ||
-              token.issueDate!.isAtSameMomentAs(now),
-          true,
-        );
-        expect(token.expirationDate!.isAfter(now), true);
-        expect(token.type, "bearer");
+      final now = DateTime.now().toUtc();
+      expect(
+        token.issueDate!.isBefore(now) ||
+            token.issueDate!.isAtSameMomentAs(now),
+        true,
+      );
+      expect(token.expirationDate!.isAfter(now), true);
+      expect(token.type, "bearer");
 
-        expect(
-          token.issueDate!.isAfter(initialToken.issueDate!) ||
-              token.issueDate!.isAtSameMomentAs(initialToken.issueDate!),
-          true,
-        );
-        expect(
-          token.issueDate!.difference(token.expirationDate!),
-          initialToken.issueDate!.difference(initialToken.expirationDate!),
-        );
+      expect(
+        token.issueDate!.isAfter(initialToken.issueDate!) ||
+            token.issueDate!.isAtSameMomentAs(initialToken.issueDate!),
+        true,
+      );
+      expect(
+        token.issueDate!.difference(token.expirationDate!),
+        initialToken.issueDate!.difference(initialToken.expirationDate!),
+      );
 
-        final authorization = await auth.verify(token.accessToken);
-        expect(authorization.clientID, "com.stablekernel.app1");
-        expect(authorization.ownerID, initialToken.resourceOwnerIdentifier);
-      },
-    );
+      final authorization = await auth.verify(token.accessToken);
+      expect(authorization.clientID, "com.stablekernel.app1");
+      expect(authorization.ownerID, initialToken.resourceOwnerIdentifier);
+    });
 
     test("After refresh, the previous token cannot be used", () async {
       await auth.refresh(
@@ -716,47 +704,40 @@ void main() {
       },
     );
 
-    test(
-      "Code that has been exchanged already fails, issued and refreshed token is revoked",
-      () async {
-        final issuedToken = await auth.exchange(
-          code.code,
-          "com.stablekernel.redirect",
-          "mckinley",
-        );
-        final refreshedToken = await auth.refresh(
-          issuedToken.refreshToken,
-          "com.stablekernel.redirect",
-          "mckinley",
-        );
+    test("Code that has been exchanged already fails, issued and refreshed token is revoked", () async {
+      final issuedToken = await auth.exchange(
+        code.code,
+        "com.stablekernel.redirect",
+        "mckinley",
+      );
+      final refreshedToken = await auth.refresh(
+        issuedToken.refreshToken,
+        "com.stablekernel.redirect",
+        "mckinley",
+      );
 
-        try {
-          await auth.exchange(
-            code.code,
-            "com.stablekernel.redirect",
-            "mckinley",
-          );
+      try {
+        await auth.exchange(code.code, "com.stablekernel.redirect", "mckinley");
 
-          expect(true, false);
-          // ignore: empty_catches
-        } on AuthServerException {}
+        expect(true, false);
+        // ignore: empty_catches
+      } on AuthServerException {}
 
-        // Can no longer use issued token
-        try {
-          await auth.verify(issuedToken.accessToken);
-          fail("unreachable");
-        } on AuthServerException catch (e) {
-          expect(e.reason, AuthRequestError.invalidGrant);
-        }
+      // Can no longer use issued token
+      try {
+        await auth.verify(issuedToken.accessToken);
+        fail("unreachable");
+      } on AuthServerException catch (e) {
+        expect(e.reason, AuthRequestError.invalidGrant);
+      }
 
-        try {
-          await auth.verify(refreshedToken.accessToken);
-          fail("unreachable");
-        } on AuthServerException catch (e) {
-          expect(e.reason, AuthRequestError.invalidGrant);
-        }
-      },
-    );
+      try {
+        await auth.verify(refreshedToken.accessToken);
+        fail("unreachable");
+      } on AuthServerException catch (e) {
+        expect(e.reason, AuthRequestError.invalidGrant);
+      }
+    });
 
     test("Null client ID fails", () async {
       try {

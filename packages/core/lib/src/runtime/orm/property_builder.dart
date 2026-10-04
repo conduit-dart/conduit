@@ -23,9 +23,9 @@ class PropertyBuilder {
     * is replicated in the generated code. if more implicit validators are created, a more general
     * purpose solution should be created
     * */
-    _validators = validatorsFromDeclaration(
-      declaration,
-    ).map((v) => ValidatorBuilder(this, v)).toList();
+    _validators = validatorsFromDeclaration(declaration)
+        .map((v) => ValidatorBuilder(this, v))
+        .toList();
 
     if (column?.validators.isNotEmpty ?? false) {
       _validators!.addAll(
@@ -76,9 +76,8 @@ class PropertyBuilder {
   void compile(List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (relate != null) {
-        relatedProperty = _getRelatedEntityBuilderFrom(
-          entityBuilders,
-        ).getInverseOf(this);
+        relatedProperty = _getRelatedEntityBuilderFrom(entityBuilders)
+            .getInverseOf(this);
         type = relatedProperty!.parent.primaryKeyProperty.type;
         relationshipType = ManagedRelationshipType.belongsTo;
         includeInDefaultResultSet = true;
@@ -289,9 +288,7 @@ class PropertyBuilder {
         : name;
   }
 
-  EntityBuilder _getRelatedEntityBuilderFrom(
-    List<EntityBuilder> builders,
-  ) {
+  EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder> builders) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
       return builders.firstWhere(

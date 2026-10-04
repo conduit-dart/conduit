@@ -6,8 +6,7 @@ mixin CLIDocumentOptions implements CLICommand {
     "resolve-relative-urls",
     defaultsTo: true,
     abbr: "r",
-    help:
-        "Whether relative URLs are resolved against the first server in document",
+    help: "Whether relative URLs are resolved against the first server in document",
   )
   bool get resolveRelativeUrls => decode("resolve-relative-urls");
 
@@ -41,8 +40,7 @@ mixin CLIDocumentOptions implements CLICommand {
   @Option(
     "config-path",
     abbr: "c",
-    help:
-        "The path to a configuration file that this application needs to initialize resources for the purpose of documenting its API.",
+    help: "The path to a configuration file that this application needs to initialize resources for the purpose of documenting its API.",
     defaultsTo: "config.src.yaml",
   )
   String get configurationPath => decode("config-path");

@@ -17,9 +17,9 @@ void main() {
       expect(orig!.type, APIType.string);
       expect(ref.type, isNull);
 
-      final constructed =
-          components.resolveUri(Uri(path: "/components/schemas/foo"))
-              as APISchemaObject?;
+      final constructed = components.resolveUri(
+        Uri(path: "/components/schemas/foo"),
+      ) as APISchemaObject?;
       expect(constructed, isNotNull);
       expect(constructed!.type, APIType.string);
     });
@@ -83,9 +83,8 @@ void main() {
         doc.components!.schemas["container"]!.referenceURI!.toFilePath(
           windows: Platform.isWindows,
         ),
-        Uri.parse(
-          "/components/schemas/string",
-        ).toFilePath(windows: Platform.isWindows),
+        Uri.parse("/components/schemas/string")
+            .toFilePath(windows: Platform.isWindows),
       );
 
       doc.components!.schemas["other"] = APISchemaObject()

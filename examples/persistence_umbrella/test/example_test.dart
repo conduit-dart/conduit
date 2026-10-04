@@ -49,9 +49,9 @@ void main() {
         final resp = await req.close();
         expect(resp.statusCode, 200);
 
-        final body =
-            jsonDecode(await resp.transform(utf8.decoder).join())
-                as Map<String, dynamic>;
+        final body = jsonDecode(
+          await resp.transform(utf8.decoder).join(),
+        ) as Map<String, dynamic>;
         expect(body['user'], isNotNull);
         expect(body['user']['name'], 'Ada Lovelace');
         expect(body['friends'], [2]);
@@ -64,9 +64,9 @@ void main() {
       final resp = await req.close();
       expect(resp.statusCode, 200);
 
-      final body =
-          jsonDecode(await resp.transform(utf8.decoder).join())
-              as Map<String, dynamic>;
+      final body = jsonDecode(
+        await resp.transform(utf8.decoder).join(),
+      ) as Map<String, dynamic>;
       expect(body['user']['name'], 'Grace Hopper');
       expect(body['friends'], [1]);
     });

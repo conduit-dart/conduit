@@ -51,13 +51,10 @@ void main() {
       expect(res, hasAuthResponse(200, bearerTokenWithoutRefreshMatcher));
     });
 
-    test(
-      "Can authenticate with resource owner grant with client ID that has redirect url",
-      () async {
-        final res = await grant("com.stablekernel.redirect", "mckinley", user1);
-        expect(res, hasAuthResponse(200, bearerTokenMatcher));
-      },
-    );
+    test("Can authenticate with resource owner grant with client ID that has redirect url", () async {
+      final res = await grant("com.stablekernel.redirect", "mckinley", user1);
+      expect(res, hasAuthResponse(200, bearerTokenMatcher));
+    });
 
     test("Can be scoped", () async {
       final m = Map<String, String>.from(user1);
@@ -617,13 +614,10 @@ void main() {
       expect(resp, hasResponse(400, body: {"error": "invalid_client"}));
     });
 
-    test(
-      "Confidential client can't be used as a public client (i.e. without secret)",
-      () async {
-        final resp = await grant("com.stablekernel.app1", "", user1);
-        expect(resp, hasResponse(400, body: {"error": "invalid_client"}));
-      },
-    );
+    test("Confidential client can't be used as a public client (i.e. without secret)", () async {
+      final resp = await grant("com.stablekernel.app1", "", user1);
+      expect(resp, hasResponse(400, body: {"error": "invalid_client"}));
+    });
 
     test("Public client has wrong secret (any secret)", () async {
       final resp = await grant("com.stablekernel.public", "foo", user1);

@@ -204,20 +204,17 @@ void main() {
       );
     });
 
-    test(
-      "Table names are derived from table definition type, can be overridden by annotation",
-      () {
-        expect(dataModel.entityForType(User).tableName, "_User");
-        expect(dataModel.entityForType(Item).tableName, "_Item");
-        expect(dataModel.entityForType(Manager).tableName, "_Manager");
-        expect(dataModel.entityForType(EnumObject).tableName, "_EnumObject");
-        expect(
-          dataModel.entityForType(DocumentObject).tableName,
-          "_DocumentObject",
-        );
-        expect(dataModel.entityForType(AnnotatedTable).tableName, "foobar");
-      },
-    );
+    test("Table names are derived from table definition type, can be overridden by annotation", () {
+      expect(dataModel.entityForType(User).tableName, "_User");
+      expect(dataModel.entityForType(Item).tableName, "_Item");
+      expect(dataModel.entityForType(Manager).tableName, "_Manager");
+      expect(dataModel.entityForType(EnumObject).tableName, "_EnumObject");
+      expect(
+        dataModel.entityForType(DocumentObject).tableName,
+        "_DocumentObject",
+      );
+      expect(dataModel.entityForType(AnnotatedTable).tableName, "foobar");
+    });
 
     test("Managed objects can have foreign key references to one another", () {
       final dm = ManagedDataModel([CyclicLeft, CyclicRight]);
@@ -357,24 +354,21 @@ void main() {
       );
     });
 
-    test(
-      "ManagedObject with multiple relationships where one is deferred succeeds in finding relationship",
-      () {
-        final model = ManagedDataModel([
-          DoubleRelationshipForeignKeyModel,
-          DoubleRelationshipHasModel,
-          SomeOtherRelationshipModel,
-        ]);
+    test("ManagedObject with multiple relationships where one is deferred succeeds in finding relationship", () {
+      final model = ManagedDataModel([
+        DoubleRelationshipForeignKeyModel,
+        DoubleRelationshipHasModel,
+        SomeOtherRelationshipModel,
+      ]);
 
-        final partial = model
-            .entityForType(DoubleRelationshipForeignKeyModel)
-            .relationships["partial"]!;
-        expect(
-          partial.destinationEntity.tableName,
-          model.entityForType(SomeOtherRelationshipModel).tableName,
-        );
-      },
-    );
+      final partial = model
+          .entityForType(DoubleRelationshipForeignKeyModel)
+          .relationships["partial"]!;
+      expect(
+        partial.destinationEntity.tableName,
+        model.entityForType(SomeOtherRelationshipModel).tableName,
+      );
+    });
   });
 
   group("Valid data model with deferred types", () {
@@ -473,90 +467,72 @@ void main() {
     expect(entity.attributes["notAnAttribute"], isNull);
   });
 
-  test(
-    "Types with same inverse name for two relationships use type as tie-breaker to determine inverse",
-    () {
-      final model = ManagedDataModel([LeftMany, JoinMany, RightMany]);
+  test("Types with same inverse name for two relationships use type as tie-breaker to determine inverse", () {
+    final model = ManagedDataModel([LeftMany, JoinMany, RightMany]);
 
-      final joinEntity = model.entityForType(JoinMany);
-      expect(
-        joinEntity.relationships["left"]!.destinationEntity.instanceType ==
-            LeftMany,
-        true,
-      );
-      expect(
-        joinEntity.relationships["right"]!.destinationEntity.instanceType ==
-            RightMany,
-        true,
-      );
-    },
-  );
+    final joinEntity = model.entityForType(JoinMany);
+    expect(
+      joinEntity.relationships["left"]!.destinationEntity.instanceType ==
+          LeftMany,
+      true,
+    );
+    expect(
+      joinEntity.relationships["right"]!.destinationEntity.instanceType ==
+          RightMany,
+      true,
+    );
+  });
 
   group("Multi-unique", () {
-    test(
-      "Add Table to table definition with unique list makes instances unique for those columns",
-      () {
-        final dm = ManagedDataModel([MultiUnique]);
-        final e = dm.entityForType(MultiUnique);
+    test("Add Table to table definition with unique list makes instances unique for those columns", () {
+      final dm = ManagedDataModel([MultiUnique]);
+      final e = dm.entityForType(MultiUnique);
 
-        expect(e.uniquePropertySet!.length, 2);
-        expect(e.uniquePropertySet!.contains(e.properties["a"]), true);
-        expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
-      },
-    );
+      expect(e.uniquePropertySet!.length, 2);
+      expect(e.uniquePropertySet!.contains(e.properties["a"]), true);
+      expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
+    });
 
-    test(
-      "Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship",
-      () {
-        final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
-        final e = dm.entityForType(MultiUniqueBelongsTo);
-        expect(e.uniquePropertySet!.length, 2);
-        expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
-        expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
-      },
-    );
+    test("Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship", () {
+      final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
+      final e = dm.entityForType(MultiUniqueBelongsTo);
+      expect(e.uniquePropertySet!.length, 2);
+      expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
+      expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
+    });
 
-    test(
-      "Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship",
-      () {
-        final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
-        final e = dm.entityForType(MultiUniqueBelongsTo);
-        expect(e.uniquePropertySet!.length, 2);
-        expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
-        expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
-      },
-    );
+    test("Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship", () {
+      final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
+      final e = dm.entityForType(MultiUniqueBelongsTo);
+      expect(e.uniquePropertySet!.length, 2);
+      expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
+      expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
+    });
 
-    test(
-      "Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship",
-      () {
-        final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
-        final e = dm.entityForType(MultiUniqueBelongsTo);
-        expect(e.uniquePropertySet!.length, 2);
-        expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
-        expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
-      },
-    );
+    test("Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship", () {
+      final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
+      final e = dm.entityForType(MultiUniqueBelongsTo);
+      expect(e.uniquePropertySet!.length, 2);
+      expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
+      expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
+    });
 
-    test(
-      "Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship",
-      () {
-        final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
-        final e = dm.entityForType(MultiUniqueBelongsTo);
-        expect(e.uniquePropertySet!.length, 2);
-        expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
-        expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
-      },
-    );
+    test("Add Table to table definition with unique list makes instances unique for those columns, where column is foreign key relationship", () {
+      final dm = ManagedDataModel([MultiUniqueBelongsTo, MultiUniqueHasA]);
+      final e = dm.entityForType(MultiUniqueBelongsTo);
+      expect(e.uniquePropertySet!.length, 2);
+      expect(e.uniquePropertySet!.contains(e.properties["rel"]), true);
+      expect(e.uniquePropertySet!.contains(e.properties["b"]), true);
+    });
   });
 
   group("@Table(...) and @Column(...) basic naming", () {
     late SchemaTable tableSchema;
 
     setUpAll(() {
-      tableSchema = Schema.fromDataModel(
-        ManagedDataModel([Ticket]),
-      ).tables.first;
+      tableSchema = Schema.fromDataModel(ManagedDataModel([Ticket]))
+          .tables
+          .first;
     });
 
     test("Table default 'legacy' naming", () {
@@ -580,9 +556,9 @@ void main() {
     late SchemaTable tableSchema;
 
     setUpAll(() {
-      tableSchema = Schema.fromDataModel(
-        ManagedDataModel([StadiumVenue]),
-      ).tables.first;
+      tableSchema = Schema.fromDataModel(ManagedDataModel([StadiumVenue]))
+          .tables
+          .first;
     });
 
     test("Table snake_case naming", () {
@@ -600,12 +576,9 @@ void main() {
       },
     );
 
-    test(
-      "Column legacy naming overriding snake case naming from @Table() annotation",
-      () {
-        expect(tableSchema.columnForName('extradescription'), isNotNull);
-      },
-    );
+    test("Column legacy naming overriding snake case naming from @Table() annotation", () {
+      expect(tableSchema.columnForName('extradescription'), isNotNull);
+    });
   });
 
   group("ResponseKey tests", () {
@@ -690,30 +663,24 @@ void main() {
       expect(tableSchema.columnForName('SHORT_DESCRIPTION'), isNotNull);
     });
 
-    test(
-      "Column legacy naming by @Column() annotation overriding useSnakeCaseName",
-      () {
-        expect(e.properties['extraDescription'], isNotNull);
-        expect(tableSchema.columnForName('extradescription'), isNotNull);
-      },
-    );
+    test("Column legacy naming by @Column() annotation overriding useSnakeCaseName", () {
+      expect(e.properties['extraDescription'], isNotNull);
+      expect(tableSchema.columnForName('extradescription'), isNotNull);
+    });
 
-    test(
-      "ResponseModel includeIfNullField with ResponseKey includeIfNull override",
-      () {
-        expect(outputMap['venue_location'], isNotNull);
-        expect(outputMap.containsKey('info'), true);
-        expect(outputMap.containsKey('extra_info'), true);
-        expect(
-          outputMap,
-          partial({
-            'CrEaTiOn_DaTe': isNotPresent,
-            'SHORT_DESCRIPTION': isNotPresent,
-            'extraDescription': isNotPresent,
-          }),
-        );
-      },
-    );
+    test("ResponseModel includeIfNullField with ResponseKey includeIfNull override", () {
+      expect(outputMap['venue_location'], isNotNull);
+      expect(outputMap.containsKey('info'), true);
+      expect(outputMap.containsKey('extra_info'), true);
+      expect(
+        outputMap,
+        partial({
+          'CrEaTiOn_DaTe': isNotPresent,
+          'SHORT_DESCRIPTION': isNotPresent,
+          'extraDescription': isNotPresent,
+        }),
+      );
+    });
   });
 }
 

@@ -22,16 +22,14 @@ class CLIDatabaseRebuild extends CLICommand
   @Flag(
     "yes",
     abbr: "y",
-    help:
-        "Skip the interactive confirmation prompt. Required for non-interactive use.",
+    help: "Skip the interactive confirmation prompt. Required for non-interactive use.",
     negatable: false,
   )
   bool get skipConfirmation => decode<bool>("yes");
 
   @Option(
     "name",
-    help:
-        "Name of the regenerated migration. Automatically lower- and snake-cased.",
+    help: "Name of the regenerated migration. Automatically lower- and snake-cased.",
     defaultsTo: "initial",
   )
   String get migrationName => decode<String>("name");

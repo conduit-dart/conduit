@@ -68,29 +68,23 @@ void main() {
     expect(response.contentType, ContentType.json);
   });
 
-  test(
-    "Setting content type as String through headers returns same type from contentType",
-    () {
-      final response = Response.ok(
-        null,
-        headers: {HttpHeaders.contentTypeHeader: "application/xml"},
-      );
-      expect(response.contentType!.primaryType, "application");
-      expect(response.contentType!.subType, "xml");
-    },
-  );
+  test("Setting content type as String through headers returns same type from contentType", () {
+    final response = Response.ok(
+      null,
+      headers: {HttpHeaders.contentTypeHeader: "application/xml"},
+    );
+    expect(response.contentType!.primaryType, "application");
+    expect(response.contentType!.subType, "xml");
+  });
 
-  test(
-    "Setting content type as ContentType through headers returns same type from contentType",
-    () {
-      final response = Response.ok(
-        null,
-        headers: {
-          HttpHeaders.contentTypeHeader: ContentType("application", "xml"),
-        },
-      );
-      expect(response.contentType!.primaryType, "application");
-      expect(response.contentType!.subType, "xml");
-    },
-  );
+  test("Setting content type as ContentType through headers returns same type from contentType", () {
+    final response = Response.ok(
+      null,
+      headers: {
+        HttpHeaders.contentTypeHeader: ContentType("application", "xml"),
+      },
+    );
+    expect(response.contentType!.primaryType, "application");
+    expect(response.contentType!.subType, "xml");
+  });
 }

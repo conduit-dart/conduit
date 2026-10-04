@@ -73,24 +73,21 @@ void main() {
       expect(t2.length, 0);
     });
 
-    test(
-      "Cannot create query on context whose data model doesn't contain query type",
-      () async {
-        try {
-          Query<T>(ctx2);
-          fail('unreachable');
-        } on ArgumentError catch (e) {
-          expect(e.toString(), contains("Invalid context"));
-        }
+    test("Cannot create query on context whose data model doesn't contain query type", () async {
+      try {
+        Query<T>(ctx2);
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid context"));
+      }
 
-        try {
-          Query<U>(ctx1);
-          fail('unreachable');
-        } on ArgumentError catch (e) {
-          expect(e.toString(), contains("Invalid context"));
-        }
-      },
-    );
+      try {
+        Query<U>(ctx1);
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid context"));
+      }
+    });
   });
 }
 

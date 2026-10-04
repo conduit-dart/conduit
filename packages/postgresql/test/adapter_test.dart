@@ -94,38 +94,35 @@ void main() {
       },
     );
 
-    test(
-      "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
-      () async {
-        persistentStore = PostgresTestConfig().persistentStore(port: 15434);
+    test("Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)", () async {
+      persistentStore = PostgresTestConfig().persistentStore(port: 15434);
 
-        var expectedValues = [1, 2, 3, 4, 5];
-        var values = await Future.wait(
-          expectedValues.map(
-            (i) => persistentStore!.execute("select $i").catchError((e) => e),
-          ),
-        );
-        expect(values, everyElement(const TypeMatcher<QueryException>()));
+      var expectedValues = [1, 2, 3, 4, 5];
+      var values = await Future.wait(
+        expectedValues.map(
+          (i) => persistentStore!.execute("select $i").catchError((e) => e),
+        ),
+      );
+      expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-        proxy = SocketProxy(15434, PostgresTestConfig().port);
-        await proxy?.open();
+      proxy = SocketProxy(15434, PostgresTestConfig().port);
+      await proxy?.open();
 
-        expectedValues = [5, 6, 7, 8, 9];
-        values = await Future.wait(
-          expectedValues.map((i) => persistentStore!.execute("select $i")),
-        );
-        expect(
-          values,
-          expectedValues
-              .map(
-                (v) => [
-                  [v],
-                ],
-              )
-              .toList(),
-        );
-      },
-    );
+      expectedValues = [5, 6, 7, 8, 9];
+      values = await Future.wait(
+        expectedValues.map((i) => persistentStore!.execute("select $i")),
+      );
+      expect(
+        values,
+        expectedValues
+            .map(
+              (v) => [
+                [v],
+              ],
+            )
+            .toList(),
+      );
+    });
 
     test(
       "Connect to bad db fails gracefully, can then be used again",

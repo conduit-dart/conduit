@@ -217,9 +217,8 @@ void main() {
 
   group('SchemaBuilder configuration', () {
     test('bigIntegerAsString=false lowers bigInteger to Int', () {
-      final intSchema = SchemaBuilder(
-        bigIntegerAsString: false,
-      ).fromManagedDataModel(dataModel);
+      final intSchema = SchemaBuilder(bigIntegerAsString: false)
+          .fromManagedDataModel(dataModel);
       // Now User.id is Int!.
       expect(_fieldType(intSchema, 'User', 'id'), equals('Int!'));
       // viewCount has no `nullable: true`, so it's non-null -> Int!

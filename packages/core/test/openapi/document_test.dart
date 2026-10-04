@@ -184,52 +184,47 @@ void main() {
       },
     );
 
-    test(
-      "Deferred async/sync components can be used to register components after they have been referenced",
-      () async {
-        ctx.document.paths = {
-          "/path": APIPath(
-            operations: {
-              "get": APIOperation("id1", {
-                "200": ctx.responses.getObjectWithType(String),
-              }),
-            },
-          ),
-        };
-
-        ctx.document.components!.responses["test"] = APIResponse(
-          "desc",
-          content: {
-            "application/json": APIMediaType(
-              schema: ctx.schema.getObject("foo"),
-            ),
+    test("Deferred async/sync components can be used to register components after they have been referenced", () async {
+      ctx.document.paths = {
+        "/path": APIPath(
+          operations: {
+            "get": APIOperation("id1", {
+              "200": ctx.responses.getObjectWithType(String),
+            }),
           },
-        );
+        ),
+      };
 
-        ctx.schema.register("foo", APISchemaObject.integer());
-        ctx.defer(() {
-          return Future(
-            () => ctx.responses.register(
-              "whatever",
-              APIResponse("foo"),
-              representation: String,
-            ),
-          );
-        });
+      ctx.document.components!.responses["test"] = APIResponse(
+        "desc",
+        content: {
+          "application/json": APIMediaType(schema: ctx.schema.getObject("foo")),
+        },
+      );
 
-        await ctx.finalize();
+      ctx.schema.register("foo", APISchemaObject.integer());
+      ctx.defer(() {
+        return Future(
+          () => ctx.responses.register(
+            "whatever",
+            APIResponse("foo"),
+            representation: String,
+          ),
+        );
+      });
 
-        final map = ctx.document.asMap();
-        expect(
-          map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
-          "#/components/responses/whatever",
-        );
-        expect(
-          map["components"]["responses"]["test"]["content"]["application/json"]["schema"][r"$ref"],
-          "#/components/schemas/foo",
-        );
-      },
-    );
+      await ctx.finalize();
+
+      final map = ctx.document.asMap();
+      expect(
+        map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
+        "#/components/responses/whatever",
+      );
+      expect(
+        map["components"]["responses"]["test"]["content"]["application/json"]["schema"][r"$ref"],
+        "#/components/schemas/foo",
+      );
+    });
   });
 
   group("Happy path", () {
@@ -326,21 +321,15 @@ void main() {
         expect(doc.components!.parameters["x-api-key"], isNotNull);
       });
 
-      test(
-        "APIComponentDocumenter properties in channel are automatically emitted in components",
-        () {
-          expect(doc.components!.schemas["someObject"], isNotNull);
-          expect(doc.components!.schemas["named-component"], isNotNull);
-          expect(doc.components!.schemas["ref-component"], isNotNull);
-        },
-      );
+      test("APIComponentDocumenter properties in channel are automatically emitted in components", () {
+        expect(doc.components!.schemas["someObject"], isNotNull);
+        expect(doc.components!.schemas["named-component"], isNotNull);
+        expect(doc.components!.schemas["ref-component"], isNotNull);
+      });
 
-      test(
-        "Componentable getter/regular instance method in channel does not automatically emit components",
-        () {
-          expect(doc.components!.schemas["won't-show-up"], isNull);
-        },
-      );
+      test("Componentable getter/regular instance method in channel does not automatically emit components", () {
+        expect(doc.components!.schemas["won't-show-up"], isNull);
+      });
 
       test("Can resolve component by type", () {
         final ref =

@@ -376,19 +376,16 @@ void main() {
       );
     });
 
-    test(
-      "Attempt to join many to many relationship on the same property throws an exception before executing",
-      () async {
-        try {
-          final q = Query<Team>(ctx!);
+    test("Attempt to join many to many relationship on the same property throws an exception before executing", () async {
+      try {
+        final q = Query<Team>(ctx!);
 
-          q.join(set: (t) => t.homeGames).join(object: (g) => g.homeTeam);
-          expect(true, false);
-        } on StateError catch (e) {
-          expect(e.toString(), contains("Invalid query construction"));
-        }
-      },
-    );
+        q.join(set: (t) => t.homeGames).join(object: (g) => g.homeTeam);
+        expect(true, false);
+      } on StateError catch (e) {
+        expect(e.toString(), contains("Invalid query construction"));
+      }
+    });
   });
 
   group("Self joins - implicit", () {
@@ -459,48 +456,42 @@ void main() {
       );
     });
 
-    test(
-      "Join on to-many, with where clause on joined table that acesses parent table",
-      () async {
-        // 'All teams and their away games where %Minn% is away team'
-        var q = Query<Team>(ctx!);
-        q
-            .join(set: (t) => t.awayGames)
-            .where((o) => o.awayTeam!.name)
-            .contains("Minn");
-        var results = await q.fetch();
-        expect(results.length, 3);
-        expect(
-          results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
-          1,
-        );
-        expect(
-          results
-              .where((t) => t.name != "Minnesota")
-              .every((t) => t.awayGames!.isEmpty),
-          true,
-        );
+    test("Join on to-many, with where clause on joined table that acesses parent table", () async {
+      // 'All teams and their away games where %Minn% is away team'
+      var q = Query<Team>(ctx!);
+      q
+          .join(set: (t) => t.awayGames)
+          .where((o) => o.awayTeam!.name)
+          .contains("Minn");
+      var results = await q.fetch();
+      expect(results.length, 3);
+      expect(
+        results.firstWhere((t) => t.name == "Minnesota").awayGames!.length,
+        1,
+      );
+      expect(
+        results
+            .where((t) => t.name != "Minnesota")
+            .every((t) => t.awayGames!.isEmpty),
+        true,
+      );
 
-        // All teams and their games played at %Minn%
-        q = Query<Team>(ctx!);
-        q
-            .join(set: (t) => t.awayGames)
-            .where((o) => o.homeTeam!.name)
-            .contains("Minn");
-        results = await q.fetch();
-        expect(results.length, 3);
-        expect(
-          results.firstWhere((t) => t.name == "Iowa").awayGames!.length,
-          1,
-        );
-        expect(
-          results
-              .where((t) => t.name != "Iowa")
-              .every((t) => t.awayGames!.isEmpty),
-          true,
-        );
-      },
-    );
+      // All teams and their games played at %Minn%
+      q = Query<Team>(ctx!);
+      q
+          .join(set: (t) => t.awayGames)
+          .where((o) => o.homeTeam!.name)
+          .contains("Minn");
+      results = await q.fetch();
+      expect(results.length, 3);
+      expect(results.firstWhere((t) => t.name == "Iowa").awayGames!.length, 1);
+      expect(
+        results
+            .where((t) => t.name != "Iowa")
+            .every((t) => t.awayGames!.isEmpty),
+        true,
+      );
+    });
   });
 
   group("Self joins - standard + filter", () {

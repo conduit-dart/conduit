@@ -27,9 +27,8 @@ void main() {
 
   group('generateFilterArgs', () {
     test('list-all fields gain a where: arg', () {
-      final schema = SchemaBuilder(
-        generateFilterArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateFilterArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -42,9 +41,8 @@ void main() {
     });
 
     test('UserFilter input has one field per non-transient attribute', () {
-      final schema = SchemaBuilder(
-        generateFilterArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateFilterArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -69,9 +67,8 @@ void main() {
     });
 
     test('Each filter field is a <Scalar>Predicate input', () {
-      final schema = SchemaBuilder(
-        generateFilterArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateFilterArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -91,9 +88,8 @@ void main() {
     test(
       'StringPredicate carries eq/ne/gt/gte/lt/lte/in/notIn/like/isNull',
       () {
-        final schema = SchemaBuilder(
-          generateFilterArgs: true,
-        ).fromManagedDataModel(dataModel);
+        final schema = SchemaBuilder(generateFilterArgs: true)
+            .fromManagedDataModel(dataModel);
         final users = schema.queryType!.fields.firstWhere(
           (f) => f.name == 'users',
         );
@@ -123,9 +119,8 @@ void main() {
     );
 
     test('non-string scalars omit the like predicate', () {
-      final schema = SchemaBuilder(
-        generateFilterArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateFilterArgs: true)
+          .fromManagedDataModel(dataModel);
       final posts = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'posts',
       );
@@ -144,9 +139,8 @@ void main() {
 
   group('generateSortArgs', () {
     test('list-all fields gain an orderBy: arg', () {
-      final schema = SchemaBuilder(
-        generateSortArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateSortArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -156,9 +150,8 @@ void main() {
     });
 
     test('UserSortInput has field: enum and direction: enum', () {
-      final schema = SchemaBuilder(
-        generateSortArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateSortArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -192,9 +185,8 @@ void main() {
     });
 
     test('UserSortField has a value per non-transient attribute', () {
-      final schema = SchemaBuilder(
-        generateSortArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generateSortArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -226,9 +218,8 @@ void main() {
 
   group('generatePaginationArgs', () {
     test('list-all fields gain limit + offset', () {
-      final schema = SchemaBuilder(
-        generatePaginationArgs: true,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(generatePaginationArgs: true)
+          .fromManagedDataModel(dataModel);
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
       );
@@ -265,9 +256,8 @@ void main() {
         return (Object? p, Map<String, dynamic> a) => 'sentinel';
       }
 
-      final schema = SchemaBuilder(
-        attributeResolver: attrHook,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(attributeResolver: attrHook)
+          .fromManagedDataModel(dataModel);
       // Should have been invoked at least once per non-skipped attr.
       expect(hookedAttrs, isNotEmpty);
 
@@ -291,9 +281,8 @@ void main() {
         return (Object? p, Map<String, dynamic> a) => const [];
       }
 
-      final schema = SchemaBuilder(
-        queryListResolver: listHook,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(queryListResolver: listHook)
+          .fromManagedDataModel(dataModel);
       expect(hookedEntities, contains('User'));
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',
@@ -319,9 +308,8 @@ void main() {
         return (Object? p, Map<String, dynamic> a) => null;
       }
 
-      final schema = SchemaBuilder(
-        relationshipResolver: relHook,
-      ).fromManagedDataModel(dataModel);
+      final schema = SchemaBuilder(relationshipResolver: relHook)
+          .fromManagedDataModel(dataModel);
       // Walk to a concrete relationship field.
       final users = schema.queryType!.fields.firstWhere(
         (f) => f.name == 'users',

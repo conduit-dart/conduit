@@ -210,9 +210,8 @@ class EntityBuilder {
     }
 
     String mirrorName() {
-      final declaredTableNameClass = classHierarchyForClass(
-        tableDefinitionType,
-      ).firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
+      final declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
+          .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
 
       if (declaredTableNameClass == null) {
         return tableDefinitionTypeName;
@@ -233,9 +232,9 @@ class EntityBuilder {
 
   List<PropertyBuilder> _getProperties() {
     final transientProperties = _getTransientAttributes();
-    final persistentProperties = instanceVariablesFromClass(
-      tableDefinitionType,
-    ).map((p) => PropertyBuilder(this, p)).toList();
+    final persistentProperties = instanceVariablesFromClass(tableDefinitionType)
+        .map((p) => PropertyBuilder(this, p))
+        .toList();
 
     return [...transientProperties, ...persistentProperties];
   }

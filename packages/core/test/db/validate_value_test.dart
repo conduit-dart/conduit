@@ -70,17 +70,14 @@ void main() {
       },
     );
 
-    test(
-      "If primary key has a validator, it is not run when evaluated as a foreign key",
-      () {
-        final fk = FK();
-        fk.parent = Parent()..id = 10;
-        expect(fk.validate().isValid, true);
+    test("If primary key has a validator, it is not run when evaluated as a foreign key", () {
+      final fk = FK();
+      fk.parent = Parent()..id = 10;
+      expect(fk.validate().isValid, true);
 
-        expect(fk.parent.validate().isValid, false);
-        expect(fk.parent.validate().errors.first, contains("Parent.id"));
-      },
-    );
+      expect(fk.parent.validate().isValid, false);
+      expect(fk.parent.validate().errors.first, contains("Parent.id"));
+    });
   });
 
   group("Validate.matches", () {

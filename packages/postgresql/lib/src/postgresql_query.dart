@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conduit_core/conduit_core.dart';
+
 import 'postgresql_query_reduce.dart';
 
 class PostgresQuery<InstanceType extends ManagedObject> extends Object

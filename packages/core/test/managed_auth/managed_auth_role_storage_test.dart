@@ -87,23 +87,20 @@ void main() {
       expect(t.scopes!.any((s) => s.isExactly("user")), true);
     });
 
-    test(
-      "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
-      () async {
-        try {
-          await auth.authenticate(
-            createdUsers.firstWhere((u) => u.role == "user").username,
-            User.defaultPassword,
-            "redirect",
-            "a",
-            requestedScopes: [AuthScope("location:add")],
-          );
-          expect(true, false);
-        } on AuthServerException catch (e) {
-          expect(e.reason, AuthRequestError.invalidScope);
-        }
-      },
-    );
+    test("Role that allows scope but not requested, netting no scope, prevents access token from being granted", () async {
+      try {
+        await auth.authenticate(
+          createdUsers.firstWhere((u) => u.role == "user").username,
+          User.defaultPassword,
+          "redirect",
+          "a",
+          requestedScopes: [AuthScope("location:add")],
+        );
+        expect(true, false);
+      } on AuthServerException catch (e) {
+        expect(e.reason, AuthRequestError.invalidScope);
+      }
+    });
 
     test(
       "Role that allows no scope prevents access token from being granted",
@@ -123,25 +120,22 @@ void main() {
       },
     );
 
-    test(
-      "Client allows full scope, role restricts it to a subset, can only grant subset",
-      () async {
-        final t = await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [
-            AuthScope("user.readonly"),
-            AuthScope("location:add:xyz"),
-          ],
-        );
+    test("Client allows full scope, role restricts it to a subset, can only grant subset", () async {
+      final t = await auth.authenticate(
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        "a",
+        requestedScopes: [
+          AuthScope("user.readonly"),
+          AuthScope("location:add:xyz"),
+        ],
+      );
 
-        expect(t.scopes!.length, 2);
-        expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
-        expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
-      },
-    );
+      expect(t.scopes!.length, 2);
+      expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
+      expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
+    });
 
     test(
       "User allowed scopes can't grant higher privileges than client",
@@ -260,22 +254,19 @@ void main() {
       expect(t.scopes!.any((s) => s.isExactly("user")), true);
     });
 
-    test(
-      "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
-      () async {
-        try {
-          await auth.authenticateForCode(
-            createdUsers.firstWhere((u) => u.role == "user").username,
-            User.defaultPassword,
-            "redirect",
-            requestedScopes: [AuthScope("location:add")],
-          );
-          expect(true, false);
-        } on AuthServerException catch (e) {
-          expect(e.reason, AuthRequestError.invalidScope);
-        }
-      },
-    );
+    test("Role that allows scope but not requested, netting no scope, prevents access token from being granted", () async {
+      try {
+        await auth.authenticateForCode(
+          createdUsers.firstWhere((u) => u.role == "user").username,
+          User.defaultPassword,
+          "redirect",
+          requestedScopes: [AuthScope("location:add")],
+        );
+        expect(true, false);
+      } on AuthServerException catch (e) {
+        expect(e.reason, AuthRequestError.invalidScope);
+      }
+    });
 
     test(
       "Role that allows no scope prevents access token from being granted",
@@ -294,25 +285,22 @@ void main() {
       },
     );
 
-    test(
-      "Client allows full scope, role restricts it to a subset, can only grant subset",
-      () async {
-        final code = await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "viewer").username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [
-            AuthScope("user.readonly"),
-            AuthScope("location:add:xyz"),
-          ],
-        );
-        final t = await auth.exchange(code.code, "redirect", "a");
+    test("Client allows full scope, role restricts it to a subset, can only grant subset", () async {
+      final code = await auth.authenticateForCode(
+        createdUsers.firstWhere((u) => u.role == "viewer").username,
+        User.defaultPassword,
+        "redirect",
+        requestedScopes: [
+          AuthScope("user.readonly"),
+          AuthScope("location:add:xyz"),
+        ],
+      );
+      final t = await auth.exchange(code.code, "redirect", "a");
 
-        expect(t.scopes!.length, 2);
-        expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
-        expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
-      },
-    );
+      expect(t.scopes!.length, 2);
+      expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
+      expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
+    });
 
     test(
       "User allowed scopes can't grant higher privileges than client",

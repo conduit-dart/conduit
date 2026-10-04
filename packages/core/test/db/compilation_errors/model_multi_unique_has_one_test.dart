@@ -2,20 +2,17 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    "Add Table to table definition with has- property in unique list throws exception",
-    () {
-      try {
-        ManagedDataModel([
-          MultiUniqueFailureRelationship,
-          MultiUniqueFailureRelationshipInverse,
-        ]);
-        expect(true, false);
-      } on ManagedDataModelError catch (e) {
-        expect(e.message, contains("declares 'a' as unique"));
-      }
-    },
-  );
+  test("Add Table to table definition with has- property in unique list throws exception", () {
+    try {
+      ManagedDataModel([
+        MultiUniqueFailureRelationship,
+        MultiUniqueFailureRelationshipInverse,
+      ]);
+      expect(true, false);
+    } on ManagedDataModelError catch (e) {
+      expect(e.message, contains("declares 'a' as unique"));
+    }
+  });
 }
 
 class MultiUniqueFailureRelationship

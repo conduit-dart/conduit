@@ -359,11 +359,9 @@ class PostgreSQLPersistentStore extends PersistentStore
   @override
   Future<int> get schemaVersion async {
     try {
-      final values =
-          await execute(
-                "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC",
-              )
-              as List<List<dynamic>>;
+      final values = await execute(
+        "SELECT versionNumber, dateOfUpgrade FROM $versionTableName ORDER BY dateOfUpgrade ASC",
+      ) as List<List<dynamic>>;
       if (values.isEmpty) {
         return 0;
       }

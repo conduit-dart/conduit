@@ -31,56 +31,50 @@ void main() {
     expect(request.acceptsContentType(ContentType.binary), true);
   });
 
-  test(
-    "Two implicitly equal q-values order is defined by their position in request",
-    () async {
-      final request = await clientServer.getWithTypes([
-        "text/plain",
-        "text/html",
-      ]);
-      expect(
-        request.acceptableContentTypes.any(
-          (ct) => ct.primaryType == "text" && ct.subType == "plain",
-        ),
-        true,
-      );
-      expect(
-        request.acceptableContentTypes.any(
-          (ct) => ct.primaryType == "text" && ct.subType == "html",
-        ),
-        true,
-      );
-      expect(request.acceptsContentType(ContentType.json), false);
-      expect(request.acceptsContentType(ContentType.html), true);
-      expect(request.acceptsContentType(ContentType.text), true);
-      expect(request.acceptsContentType(ContentType.binary), false);
-    },
-  );
+  test("Two implicitly equal q-values order is defined by their position in request", () async {
+    final request = await clientServer.getWithTypes([
+      "text/plain",
+      "text/html",
+    ]);
+    expect(
+      request.acceptableContentTypes.any(
+        (ct) => ct.primaryType == "text" && ct.subType == "plain",
+      ),
+      true,
+    );
+    expect(
+      request.acceptableContentTypes.any(
+        (ct) => ct.primaryType == "text" && ct.subType == "html",
+      ),
+      true,
+    );
+    expect(request.acceptsContentType(ContentType.json), false);
+    expect(request.acceptsContentType(ContentType.html), true);
+    expect(request.acceptsContentType(ContentType.text), true);
+    expect(request.acceptsContentType(ContentType.binary), false);
+  });
 
-  test(
-    "Two explicitly equal q-values order is defined by their position in request",
-    () async {
-      final request = await clientServer.getWithTypes([
-        "text/plain; q=1.0",
-        "text/html; q=1.0",
-      ]);
+  test("Two explicitly equal q-values order is defined by their position in request", () async {
+    final request = await clientServer.getWithTypes([
+      "text/plain; q=1.0",
+      "text/html; q=1.0",
+    ]);
 
-      expect(
-        request.acceptableContentTypes.first.primaryType == "text" &&
-            request.acceptableContentTypes.first.subType == "plain",
-        true,
-      );
-      expect(
-        request.acceptableContentTypes.last.primaryType == "text" &&
-            request.acceptableContentTypes.last.subType == "html",
-        true,
-      );
-      expect(request.acceptsContentType(ContentType.json), false);
-      expect(request.acceptsContentType(ContentType.html), true);
-      expect(request.acceptsContentType(ContentType.text), true);
-      expect(request.acceptsContentType(ContentType.binary), false);
-    },
-  );
+    expect(
+      request.acceptableContentTypes.first.primaryType == "text" &&
+          request.acceptableContentTypes.first.subType == "plain",
+      true,
+    );
+    expect(
+      request.acceptableContentTypes.last.primaryType == "text" &&
+          request.acceptableContentTypes.last.subType == "html",
+      true,
+    );
+    expect(request.acceptsContentType(ContentType.json), false);
+    expect(request.acceptsContentType(ContentType.html), true);
+    expect(request.acceptsContentType(ContentType.text), true);
+    expect(request.acceptsContentType(ContentType.binary), false);
+  });
 
   test("Q-value with explicit 1 (not 1.0) is interpreted as 1.0", () async {
     final request = await clientServer.getWithTypes([

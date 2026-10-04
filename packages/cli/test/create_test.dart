@@ -39,9 +39,8 @@ void main() {
       expect(res, 0);
 
       expect(
-        Directory(
-          join(cli.agent.workingDirectory.path, "test_project"),
-        ).existsSync(),
+        Directory(join(cli.agent.workingDirectory.path, "test_project"))
+            .existsSync(),
         isTrue,
       );
     });
@@ -62,9 +61,8 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-        Directory(
-          join(cli.agent.workingDirectory.path, "test_project/"),
-        ).existsSync(),
+        Directory(join(cli.agent.workingDirectory.path, "test_project/"))
+            .existsSync(),
         isFalse,
       );
     });
@@ -76,9 +74,8 @@ void main() {
       expect(cli.output, contains("snake_case"));
 
       expect(
-        Directory(
-          join(cli.agent.workingDirectory.path, "test_project"),
-        ).existsSync(),
+        Directory(join(cli.agent.workingDirectory.path, "test_project"))
+            .existsSync(),
         isFalse,
       );
     });

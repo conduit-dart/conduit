@@ -74,8 +74,7 @@ abstract class CLICommand {
 
   @Flag(
     "machine",
-    help:
-        "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
+    help: "Output is machine-readable, usable for creating tools on top of this CLI. Behavior varies by command.",
   )
   bool get isMachineOutput => decode<bool>("machine");
 

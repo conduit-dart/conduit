@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:conduit_core/src/db/managed/object.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 

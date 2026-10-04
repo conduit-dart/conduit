@@ -308,8 +308,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
       } else {
         return Response.badRequest(
           body: {
-            "error":
-                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
+            "error": "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
           },
         );
       }
@@ -333,8 +332,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         if (split.length != 2) {
           throw Response.badRequest(
             body: {
-              "error":
-                  "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'.",
+              "error": "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'.",
             },
           );
         }

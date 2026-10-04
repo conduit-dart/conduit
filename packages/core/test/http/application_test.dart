@@ -99,34 +99,31 @@ void main() {
   });
 
   group("Failure", () {
-    test(
-      "Application (on main thread) start fails and logs appropriate message if request stream doesn't open",
-      () async {
-        final crashingApp = Application<CrashingTestChannel>();
+    test("Application (on main thread) start fails and logs appropriate message if request stream doesn't open", () async {
+      final crashingApp = Application<CrashingTestChannel>();
 
-        try {
-          crashingApp.options.context["crashIn"] = "addRoutes";
-          await crashingApp.startOnCurrentIsolate();
-          expect(true, false);
-        } on Exception catch (e) {
-          expect(e.toString(), contains("addRoutes"));
-        }
-
-        try {
-          crashingApp.options.context["crashIn"] = "prepare";
-          await crashingApp.startOnCurrentIsolate();
-          expect(true, false);
-        } on Exception catch (e) {
-          expect(e.toString(), contains("prepare"));
-        }
-
-        crashingApp.options.context["crashIn"] = "dontCrash";
+      try {
+        crashingApp.options.context["crashIn"] = "addRoutes";
         await crashingApp.startOnCurrentIsolate();
-        final response = await http.get(Uri.parse("http://localhost:8888/t"));
-        expect(response.statusCode, 200);
-        await crashingApp.stop();
-      },
-    );
+        expect(true, false);
+      } on Exception catch (e) {
+        expect(e.toString(), contains("addRoutes"));
+      }
+
+      try {
+        crashingApp.options.context["crashIn"] = "prepare";
+        await crashingApp.startOnCurrentIsolate();
+        expect(true, false);
+      } on Exception catch (e) {
+        expect(e.toString(), contains("prepare"));
+      }
+
+      crashingApp.options.context["crashIn"] = "dontCrash";
+      await crashingApp.startOnCurrentIsolate();
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      expect(response.statusCode, 200);
+      await crashingApp.stop();
+    });
   });
 }
 

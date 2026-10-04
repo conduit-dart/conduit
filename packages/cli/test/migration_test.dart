@@ -21,73 +21,66 @@ void main() {
       await store.close();
     });
 
-    test(
-      "Migration subclasses can be executed and commands are generated and executed on the DB, schema is udpated",
-      () async {
-        // Note that the permutations of operations are covered in different tests, this is just to ensure that
-        // executing a migration/upgrade all work together.
-        final schema = Schema([
-          SchemaTable("tableToKeep", [
-            SchemaColumn("columnToEdit", ManagedPropertyType.string),
-            SchemaColumn("columnToDelete", ManagedPropertyType.integer),
-          ]),
-          SchemaTable("tableToDelete", [
-            SchemaColumn("whocares", ManagedPropertyType.integer),
-          ]),
-          SchemaTable("tableToRename", [
-            SchemaColumn("whocares", ManagedPropertyType.integer),
-          ]),
-        ]);
+    test("Migration subclasses can be executed and commands are generated and executed on the DB, schema is udpated", () async {
+      // Note that the permutations of operations are covered in different tests, this is just to ensure that
+      // executing a migration/upgrade all work together.
+      final schema = Schema([
+        SchemaTable("tableToKeep", [
+          SchemaColumn("columnToEdit", ManagedPropertyType.string),
+          SchemaColumn("columnToDelete", ManagedPropertyType.integer),
+        ]),
+        SchemaTable("tableToDelete", [
+          SchemaColumn("whocares", ManagedPropertyType.integer),
+        ]),
+        SchemaTable("tableToRename", [
+          SchemaColumn("whocares", ManagedPropertyType.integer),
+        ]),
+      ]);
 
-        final initialBuilder = SchemaBuilder.toSchema(
-          store,
-          schema,
-          isTemporary: true,
-        );
-        for (final cmd in initialBuilder.commands) {
-          await store.execute(cmd);
-        }
+      final initialBuilder = SchemaBuilder.toSchema(
+        store,
+        schema,
+        isTemporary: true,
+      );
+      for (final cmd in initialBuilder.commands) {
+        await store.execute(cmd);
+      }
 
-        final mig = Migration1();
-        mig.version = 1;
-        final outSchema = await store.upgrade(schema, [mig], temporary: true);
+      final mig = Migration1();
+      mig.version = 1;
+      final outSchema = await store.upgrade(schema, [mig], temporary: true);
 
-        expect(outSchema, isNotNull);
+      expect(outSchema, isNotNull);
 
-        // 'Sync up' that schema to compare it
-        final tableToKeep = schema.tableForName("tableToKeep")!;
-        tableToKeep.addColumn(
-          SchemaColumn(
-            "addedColumn",
-            ManagedPropertyType.integer,
-            defaultValue: "2",
-          ),
-        );
-        tableToKeep.removeColumn(tableToKeep.columnForName("columnToDelete")!);
-        tableToKeep.columnForName("columnToEdit")!.defaultValue = "'foo'";
+      // 'Sync up' that schema to compare it
+      final tableToKeep = schema.tableForName("tableToKeep")!;
+      tableToKeep.addColumn(
+        SchemaColumn(
+          "addedColumn",
+          ManagedPropertyType.integer,
+          defaultValue: "2",
+        ),
+      );
+      tableToKeep.removeColumn(tableToKeep.columnForName("columnToDelete")!);
+      tableToKeep.columnForName("columnToEdit")!.defaultValue = "'foo'";
 
-        schema.removeTable(schema.tableForName("tableToDelete")!);
+      schema.removeTable(schema.tableForName("tableToDelete")!);
 
-        schema.addTable(
-          SchemaTable("foo", [
-            SchemaColumn(
-              "foobar",
-              ManagedPropertyType.integer,
-              isIndexed: true,
-            ),
-          ]),
-        );
+      schema.addTable(
+        SchemaTable("foo", [
+          SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true),
+        ]),
+      );
 
-        expect(outSchema.differenceFrom(schema).hasDifferences, false);
+      expect(outSchema.differenceFrom(schema).hasDifferences, false);
 
-        final insertResults = await store.execute(
-          "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn",
-        );
-        expect(insertResults, [
-          ['1', 2],
-        ]);
-      },
-    );
+      final insertResults = await store.execute(
+        "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn",
+      );
+      expect(insertResults, [
+        ['1', 2],
+      ]);
+    });
   });
 
   group("Scanning for migration files", () {
@@ -97,19 +90,17 @@ void main() {
     );
     addFiles(List<String> filenames) {
       for (final name in filenames) {
-        File.fromUri(
-          migrationsDirectory.uri.resolve(name),
-        ).writeAsStringSync(" ");
+        File.fromUri(migrationsDirectory.uri.resolve(name))
+            .writeAsStringSync(" ");
       }
     }
 
     addValidMigrationFile(List<String> filenames) {
       for (final name in filenames) {
-        File.fromUri(migrationsDirectory.uri.resolve(name)).writeAsStringSync(
-          """
+        File.fromUri(migrationsDirectory.uri.resolve(name))
+            .writeAsStringSync("""
 class Migration1 extends Migration { @override Future upgrade() async {} @override Future downgrade() async {} @override Future seed() async {} }
-        """,
-        );
+        """);
       }
     }
 

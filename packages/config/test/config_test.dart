@@ -762,18 +762,15 @@ void main() {
     expect(values.database!.databaseName, "dbname");
   });
 
-  test(
-    "Database configuration as a string can contain an URL-encoded authority",
-    () {
-      const yamlString =
-          "port: 80\n"
-          "database: 'postgres://dart%40google.com:pass%23word@host:5432/dbname'\n";
+  test("Database configuration as a string can contain an URL-encoded authority", () {
+    const yamlString =
+        "port: 80\n"
+        "database: 'postgres://dart%40google.com:pass%23word@host:5432/dbname'\n";
 
-      final values = OptionalEmbeddedContainer.fromString(yamlString);
-      expect(values.database!.username, "dart@google.com");
-      expect(values.database!.password, "pass#word");
-    },
-  );
+    final values = OptionalEmbeddedContainer.fromString(yamlString);
+    expect(values.database!.username, "dart@google.com");
+    expect(values.database!.password, "pass#word");
+  });
 
   test(
     "Omitting optional values in a 'decoded' config still returns succees",
@@ -902,54 +899,48 @@ void main() {
     expect(dbConfig.maxConnectionCount, 8);
   });
 
-  test(
-    "Assigning value of incorrect type to parsed integer emits error and field name",
-    () {
-      const yamlString =
-          "port: foobar\n"
-          "name: foobar\n"
-          "database:\n"
-          "  host: stablekernel.com\n"
-          "  username: bob\n"
-          "  password: fred\n"
-          "  databaseName: dbname\n"
-          "  port: 5000";
+  test("Assigning value of incorrect type to parsed integer emits error and field name", () {
+    const yamlString =
+        "port: foobar\n"
+        "name: foobar\n"
+        "database:\n"
+        "  host: stablekernel.com\n"
+        "  username: bob\n"
+        "  password: fred\n"
+        "  databaseName: dbname\n"
+        "  port: 5000";
 
-      try {
-        TopLevelConfiguration.fromString(yamlString);
-        fail('unreachable');
-      } on ConfigurationException catch (e) {
-        expect(e.toString(), contains("TopLevelConfiguration"));
-        expect(e.toString(), contains("port"));
-        expect(e.toString(), contains("foobar"));
-      }
-    },
-  );
+    try {
+      TopLevelConfiguration.fromString(yamlString);
+      fail('unreachable');
+    } on ConfigurationException catch (e) {
+      expect(e.toString(), contains("TopLevelConfiguration"));
+      expect(e.toString(), contains("port"));
+      expect(e.toString(), contains("foobar"));
+    }
+  });
 
-  test(
-    "Assigning value of incorrect type to nested field emits error and field name",
-    () {
-      const yamlString =
-          "port: 1000\n"
-          "name: foobar\n"
-          "database:\n"
-          "  host: stablekernel.com\n"
-          "  username:\n"
-          "    - item\n"
-          "  password: password\n"
-          "  databaseName: dbname\n"
-          "  port: 5000";
+  test("Assigning value of incorrect type to nested field emits error and field name", () {
+    const yamlString =
+        "port: 1000\n"
+        "name: foobar\n"
+        "database:\n"
+        "  host: stablekernel.com\n"
+        "  username:\n"
+        "    - item\n"
+        "  password: password\n"
+        "  databaseName: dbname\n"
+        "  port: 5000";
 
-      try {
-        TopLevelConfiguration.fromString(yamlString);
-        fail('unreachable');
-      } on ConfigurationException catch (e) {
-        expect(e.toString(), contains("TopLevelConfiguration"));
-        expect(e.toString(), contains("database.username"));
-        expect(e.toString(), contains("input is wrong type"));
-      }
-    },
-  );
+    try {
+      TopLevelConfiguration.fromString(yamlString);
+      fail('unreachable');
+    } on ConfigurationException catch (e) {
+      expect(e.toString(), contains("TopLevelConfiguration"));
+      expect(e.toString(), contains("database.username"));
+      expect(e.toString(), contains("input is wrong type"));
+    }
+  });
 
   test("Can read boolean values without quotes", () {
     const yamlTrue = "value: true";

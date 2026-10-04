@@ -27,9 +27,9 @@ void main() {
     final authHeader = userClient.headers["authorization"];
     expect(authHeader, startsWith("Bearer"));
 
-    final q = Query<ManagedAuthToken>(
-      harness.context!,
-    )..where((o) => o.accessToken).equalTo((authHeader as String).substring(7));
+    final q = Query<ManagedAuthToken>(harness.context!)
+      ..where((o) => o.accessToken)
+          .equalTo((authHeader as String).substring(7));
     final token = await q.fetchOne();
     expect(token!.client.id, "id");
   });
@@ -53,9 +53,9 @@ void main() {
     final authHeader = userClient.headers["authorization"];
     expect(authHeader, startsWith("Bearer"));
 
-    final q = Query<ManagedAuthToken>(
-      harness.context!,
-    )..where((o) => o.accessToken).equalTo((authHeader as String).substring(7));
+    final q = Query<ManagedAuthToken>(harness.context!)
+      ..where((o) => o.accessToken)
+          .equalTo((authHeader as String).substring(7));
     final token = await q.fetchOne();
     expect(token!.client.id, "confidential-id");
   });

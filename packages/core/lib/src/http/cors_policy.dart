@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:conduit_core/src/http/http.dart';
 
 /// Describes a CORS policy for a [Controller].

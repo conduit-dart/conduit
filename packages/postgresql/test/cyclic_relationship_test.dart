@@ -73,9 +73,8 @@ void main() {
 
       q = Query<SelfRef>(context!)
         ..where((s) => s.id).equalTo(parent.id)
-        ..join(
-          set: (s) => s.children,
-        ).sortBy((s) => s.name, QuerySortOrder.ascending);
+        ..join(set: (s) => s.children)
+            .sortBy((s) => s.name, QuerySortOrder.ascending);
       final all = await q.fetch();
       expect(all.map((s) => s.asMap()).toList(), [
         {

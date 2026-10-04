@@ -52,180 +52,162 @@ void main() {
       },
     );
 
-    test(
-      "Fetch has-many relationship that is empty returns empty, and deeper nested relationships are ignored even when included",
-      () async {
-        final q = Query<Parent>(context!)..where((o) => o.name).equalTo("D");
+    test("Fetch has-many relationship that is empty returns empty, and deeper nested relationships are ignored even when included", () async {
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("D");
 
-        q.join(set: (p) => p.children)
-          ..join(object: (c) => c.toy)
-          ..join(set: (c) => c.vaccinations);
+      q.join(set: (p) => p.children)
+        ..join(object: (c) => c.toy)
+        ..join(set: (c) => c.vaccinations);
 
-        verifier(Parent? p) {
-          expect(p, isNotNull);
-          expect(p!.name, "D");
-          expect(p.pid, isNotNull);
-          expect(p.children, []);
-        }
+      verifier(Parent? p) {
+        expect(p, isNotNull);
+        expect(p!.name, "D");
+        expect(p.pid, isNotNull);
+        expect(p.children, []);
+      }
 
-        verifier(await q.fetchOne());
-        verifier((await q.fetch()).first);
-      },
-    );
+      verifier(await q.fetchOne());
+      verifier((await q.fetch()).first);
+    });
 
-    test(
-      "Fetch has-many relationship that is non-empty returns values for scalar properties in subobjects only",
-      () async {
-        final q = Query<Parent>(context!)
-          ..join(set: (p) => p.children)
-          ..where((o) => o.name).equalTo("C");
+    test("Fetch has-many relationship that is non-empty returns values for scalar properties in subobjects only", () async {
+      final q = Query<Parent>(context!)
+        ..join(set: (p) => p.children)
+        ..where((o) => o.name).equalTo("C");
 
-        verifier(Parent? p) {
-          expect(p, isNotNull);
-          expect(p!.name, "C");
-          expect(p.pid, isNotNull);
-          expect(p.children!.first.cid, isNotNull);
-          expect(p.children!.first.name, "C5");
-          expect(p.children!.first.backing.contents.containsKey("toy"), false);
-          expect(
-            p.children!.first.backing.contents.containsKey("vaccinations"),
-            false,
-          );
-        }
-
-        verifier(await q.fetchOne());
-        verifier((await q.fetch()).first);
-      },
-    );
-
-    test(
-      "Fetch has-many relationship, include has-one and has-many in that has-many, where bottom of graph has valid object for hasmany but not for hasone",
-      () async {
-        final q = Query<Parent>(context!)..where((o) => o.name).equalTo("B");
-
-        q.join(set: (p) => p.children)
-          ..sortBy((c) => c.cid, QuerySortOrder.ascending)
-          ..join(object: (c) => c.toy)
-          ..join(set: (c) => c.vaccinations);
-
-        verifier(Parent? p) {
-          expect(p, isNotNull);
-          expect(p!.name, "B");
-          expect(p.pid, isNotNull);
-          expect(p.children!.first.cid, isNotNull);
-          expect(p.children!.first.name, "C3");
-          expect(p.children!.first.backing.contents.containsKey("toy"), true);
-          expect(p.children!.first.toy, isNull);
-          expect(p.children!.first.vaccinations!.length, 1);
-          expect(p.children!.first.vaccinations!.first.vid, isNotNull);
-          expect(p.children!.first.vaccinations!.first.kind, "V3");
-
-          expect(p.children!.last.cid, isNotNull);
-          expect(p.children!.last.name, "C4");
-          expect(p.children!.last.backing.contents.containsKey("toy"), true);
-          expect(p.children!.last.toy, isNull);
-          expect(p.children!.last.vaccinations, []);
-        }
-
-        verifier(await q.fetchOne());
-        verifier((await q.fetch()).first);
-      },
-    );
-
-    test(
-      "Fetch has-many relationship, include has-one and has-many in that has-many, where bottom of graph has valid object for hasone but not for hasmany",
-      () async {
-        final q = Query<Parent>(context!)..where((o) => o.name).equalTo("A");
-
-        q.join(set: (p) => p.children)
-          ..sortBy((c) => c.cid, QuerySortOrder.ascending)
-          ..join(object: (c) => c.toy)
-          ..join(
-            set: (c) => c.vaccinations,
-          ).sortBy((v) => v.vid, QuerySortOrder.ascending);
-
-        verifier(Parent? p) {
-          expect(p, isNotNull);
-          expect(p!.name, "A");
-          expect(p.pid, isNotNull);
-          expect(p.children!.first.cid, isNotNull);
-          expect(p.children!.first.name, "C1");
-          expect(p.children!.first.toy!.tid, isNotNull);
-          expect(p.children!.first.toy!.name, "T1");
-          expect(p.children!.first.vaccinations!.length, 2);
-          expect(p.children!.first.vaccinations!.first.vid, isNotNull);
-          expect(p.children!.first.vaccinations!.first.kind, "V1");
-          expect(p.children!.first.vaccinations!.last.vid, isNotNull);
-          expect(p.children!.first.vaccinations!.last.kind, "V2");
-
-          expect(p.children!.last.cid, isNotNull);
-          expect(p.children!.last.name, "C2");
-          expect(p.children!.last.toy!.tid, isNotNull);
-          expect(p.children!.last.toy!.name, "T2");
-          expect(p.children!.last.vaccinations, []);
-        }
-
-        verifier(await q.fetchOne());
-        verifier((await q.fetch()).first);
-      },
-    );
-
-    test(
-      "Fetching multiple top-level instances and including one level of subobjects",
-      () async {
-        final q = Query<Parent>(context!)
-          ..sortBy((p) => p.pid, QuerySortOrder.ascending)
-          ..join(set: (p) => p.children)
-          ..where((o) => o.name).oneOf(["A", "C", "D"]);
-        final results = await q.fetch();
-        expect(results.length, 3);
-
-        expect(results.first.pid, isNotNull);
-        expect(results.first.name, "A");
-        expect(results.first.children!.length, 2);
-        expect(results.first.children!.first.name, "C1");
+      verifier(Parent? p) {
+        expect(p, isNotNull);
+        expect(p!.name, "C");
+        expect(p.pid, isNotNull);
+        expect(p.children!.first.cid, isNotNull);
+        expect(p.children!.first.name, "C5");
+        expect(p.children!.first.backing.contents.containsKey("toy"), false);
         expect(
-          results.first.children!.first.backing.contents.containsKey("toy"),
+          p.children!.first.backing.contents.containsKey("vaccinations"),
           false,
         );
-        expect(
-          results.first.children!.first.backing.contents.containsKey(
-            "vaccinations",
-          ),
-          false,
-        );
-        expect(results.first.children!.last.name, "C2");
-        expect(
-          results.first.children!.last.backing.contents.containsKey("toy"),
-          false,
-        );
-        expect(
-          results.first.children!.last.backing.contents.containsKey(
-            "vaccinations",
-          ),
-          false,
-        );
+      }
 
-        expect(results[1].pid, isNotNull);
-        expect(results[1].name, "C");
-        expect(results[1].children!.length, 1);
-        expect(results[1].children!.first.name, "C5");
-        expect(
-          results[1].children!.first.backing.contents.containsKey("toy"),
-          false,
-        );
-        expect(
-          results[1].children!.first.backing.contents.containsKey(
-            "vaccinations",
-          ),
-          false,
-        );
+      verifier(await q.fetchOne());
+      verifier((await q.fetch()).first);
+    });
 
-        expect(results.last.pid, isNotNull);
-        expect(results.last.name, "D");
-        expect(results.last.children!.length, 0);
-      },
-    );
+    test("Fetch has-many relationship, include has-one and has-many in that has-many, where bottom of graph has valid object for hasmany but not for hasone", () async {
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("B");
+
+      q.join(set: (p) => p.children)
+        ..sortBy((c) => c.cid, QuerySortOrder.ascending)
+        ..join(object: (c) => c.toy)
+        ..join(set: (c) => c.vaccinations);
+
+      verifier(Parent? p) {
+        expect(p, isNotNull);
+        expect(p!.name, "B");
+        expect(p.pid, isNotNull);
+        expect(p.children!.first.cid, isNotNull);
+        expect(p.children!.first.name, "C3");
+        expect(p.children!.first.backing.contents.containsKey("toy"), true);
+        expect(p.children!.first.toy, isNull);
+        expect(p.children!.first.vaccinations!.length, 1);
+        expect(p.children!.first.vaccinations!.first.vid, isNotNull);
+        expect(p.children!.first.vaccinations!.first.kind, "V3");
+
+        expect(p.children!.last.cid, isNotNull);
+        expect(p.children!.last.name, "C4");
+        expect(p.children!.last.backing.contents.containsKey("toy"), true);
+        expect(p.children!.last.toy, isNull);
+        expect(p.children!.last.vaccinations, []);
+      }
+
+      verifier(await q.fetchOne());
+      verifier((await q.fetch()).first);
+    });
+
+    test("Fetch has-many relationship, include has-one and has-many in that has-many, where bottom of graph has valid object for hasone but not for hasmany", () async {
+      final q = Query<Parent>(context!)..where((o) => o.name).equalTo("A");
+
+      q.join(set: (p) => p.children)
+        ..sortBy((c) => c.cid, QuerySortOrder.ascending)
+        ..join(object: (c) => c.toy)
+        ..join(set: (c) => c.vaccinations)
+            .sortBy((v) => v.vid, QuerySortOrder.ascending);
+
+      verifier(Parent? p) {
+        expect(p, isNotNull);
+        expect(p!.name, "A");
+        expect(p.pid, isNotNull);
+        expect(p.children!.first.cid, isNotNull);
+        expect(p.children!.first.name, "C1");
+        expect(p.children!.first.toy!.tid, isNotNull);
+        expect(p.children!.first.toy!.name, "T1");
+        expect(p.children!.first.vaccinations!.length, 2);
+        expect(p.children!.first.vaccinations!.first.vid, isNotNull);
+        expect(p.children!.first.vaccinations!.first.kind, "V1");
+        expect(p.children!.first.vaccinations!.last.vid, isNotNull);
+        expect(p.children!.first.vaccinations!.last.kind, "V2");
+
+        expect(p.children!.last.cid, isNotNull);
+        expect(p.children!.last.name, "C2");
+        expect(p.children!.last.toy!.tid, isNotNull);
+        expect(p.children!.last.toy!.name, "T2");
+        expect(p.children!.last.vaccinations, []);
+      }
+
+      verifier(await q.fetchOne());
+      verifier((await q.fetch()).first);
+    });
+
+    test("Fetching multiple top-level instances and including one level of subobjects", () async {
+      final q = Query<Parent>(context!)
+        ..sortBy((p) => p.pid, QuerySortOrder.ascending)
+        ..join(set: (p) => p.children)
+        ..where((o) => o.name).oneOf(["A", "C", "D"]);
+      final results = await q.fetch();
+      expect(results.length, 3);
+
+      expect(results.first.pid, isNotNull);
+      expect(results.first.name, "A");
+      expect(results.first.children!.length, 2);
+      expect(results.first.children!.first.name, "C1");
+      expect(
+        results.first.children!.first.backing.contents.containsKey("toy"),
+        false,
+      );
+      expect(
+        results.first.children!.first.backing.contents.containsKey(
+          "vaccinations",
+        ),
+        false,
+      );
+      expect(results.first.children!.last.name, "C2");
+      expect(
+        results.first.children!.last.backing.contents.containsKey("toy"),
+        false,
+      );
+      expect(
+        results.first.children!.last.backing.contents.containsKey(
+          "vaccinations",
+        ),
+        false,
+      );
+
+      expect(results[1].pid, isNotNull);
+      expect(results[1].name, "C");
+      expect(results[1].children!.length, 1);
+      expect(results[1].children!.first.name, "C5");
+      expect(
+        results[1].children!.first.backing.contents.containsKey("toy"),
+        false,
+      );
+      expect(
+        results[1].children!.first.backing.contents.containsKey("vaccinations"),
+        false,
+      );
+
+      expect(results.last.pid, isNotNull);
+      expect(results.last.name, "D");
+      expect(results.last.children!.length, 0);
+    });
 
     test("Fetch entire graph", () async {
       final q = Query<Parent>(context!);
@@ -291,9 +273,8 @@ void main() {
         q.join(set: (p) => p.children)
           ..sortBy((c) => c.cid, QuerySortOrder.ascending)
           ..join(object: (c) => c.toy)
-          ..join(
-            set: (c) => c.vaccinations,
-          ).sortBy((v) => v.vid, QuerySortOrder.ascending);
+          ..join(set: (c) => c.vaccinations)
+              .sortBy((v) => v.vid, QuerySortOrder.ascending);
 
         final results = await q.fetch();
 
@@ -320,9 +301,8 @@ void main() {
         q.join(set: (p) => p.children)
           ..where((o) => o.name).equalTo("C1")
           ..sortBy((c) => c.cid, QuerySortOrder.ascending)
-          ..join(
-            set: (c) => c.vaccinations,
-          ).sortBy((v) => v.vid, QuerySortOrder.ascending)
+          ..join(set: (c) => c.vaccinations)
+              .sortBy((v) => v.vid, QuerySortOrder.ascending)
           ..join(object: (c) => c.toy);
 
         final results = await q.fetch();
@@ -385,22 +365,19 @@ void main() {
       },
     );
 
-    test(
-      "Predicate that omits top-level objects but would include lower level object return no results",
-      () async {
-        final q = Query<Parent>(context!)..where((o) => o.pid).equalTo(5);
+    test("Predicate that omits top-level objects but would include lower level object return no results", () async {
+      final q = Query<Parent>(context!)..where((o) => o.pid).equalTo(5);
 
-        final childJoin = q.join(set: (p) => p.children)
-          ..join(object: (c) => c.toy);
-        childJoin
-            .join(set: (c) => c.vaccinations)
-            .where((o) => o.kind)
-            .equalTo("V1");
+      final childJoin = q.join(set: (p) => p.children)
+        ..join(object: (c) => c.toy);
+      childJoin
+          .join(set: (c) => c.vaccinations)
+          .where((o) => o.kind)
+          .equalTo("V1");
 
-        final results = await q.fetch();
-        expect(results.length, 0);
-      },
-    );
+      final results = await q.fetch();
+      expect(results.length, 0);
+    });
   });
 
   group("Sort descriptor impact", () {
@@ -513,9 +490,8 @@ void main() {
       "Trying to fetch hasMany relationship through resultProperties fails",
       () async {
         try {
-          Query<Parent>(
-            context!,
-          ).returningProperties((p) => [p.pid, p.children]);
+          Query<Parent>(context!)
+              .returningProperties((p) => [p.pid, p.children]);
         } on ArgumentError catch (e) {
           expect(
             e.toString(),
@@ -527,26 +503,21 @@ void main() {
       },
     );
 
-    test(
-      "Trying to fetch nested hasMany relationship through resultProperties fails",
-      () async {
-        try {
-          final q = Query<Parent>(context!);
-          q
-              .join(set: (p) => p.children)
-              .returningProperties((p) => [p.cid, p.vaccinations]);
+    test("Trying to fetch nested hasMany relationship through resultProperties fails", () async {
+      try {
+        final q = Query<Parent>(context!);
+        q
+            .join(set: (p) => p.children)
+            .returningProperties((p) => [p.cid, p.vaccinations]);
 
-          expect(true, false);
-        } on ArgumentError catch (e) {
-          expect(
-            e.toString(),
-            contains(
-              "Cannot select has-many or has-one relationship properties",
-            ),
-          );
-        }
-      },
-    );
+        expect(true, false);
+      } on ArgumentError catch (e) {
+        expect(
+          e.toString(),
+          contains("Cannot select has-many or has-one relationship properties"),
+        );
+      }
+    });
   });
 }
 

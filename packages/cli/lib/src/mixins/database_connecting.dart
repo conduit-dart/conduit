@@ -20,8 +20,7 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
 
   @Option(
     "ssl-mode",
-    help:
-        "Whether or not the database connection should use SSL (disable/require/verifyFull)",
+    help: "Whether or not the database connection should use SSL (disable/require/verifyFull)",
     defaultsTo: "disable",
   )
   String get sslMode => decode("ssl-mode");
@@ -29,8 +28,7 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
   @Option(
     "connect",
     abbr: "c",
-    help:
-        "A database connection URI string. If this option is set, database-config is ignored.",
+    help: "A database connection URI string. If this option is set, database-config is ignored.",
     valueHelp: "postgres://user:password@localhost:port/databaseName",
   )
   String? get databaseConnectionString => decodeOptional("connect");

@@ -405,30 +405,27 @@ void main() {
       },
     );
 
-    test(
-      "fails when at least one bad object is give and does not insert any objects into the database.",
-      () async {
-        context = await PostgresTestConfig().contextWithModels([TestModel]);
+    test("fails when at least one bad object is give and does not insert any objects into the database.", () async {
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-        final goodModel = TestModel()
-          ..name = "bob"
-          ..emailAddress = "1@a.com";
+      final goodModel = TestModel()
+        ..name = "bob"
+        ..emailAddress = "1@a.com";
 
-        final badModel = TestModel()
-          ..name = null
-          ..emailAddress = "2@a.com";
+      final badModel = TestModel()
+        ..name = null
+        ..emailAddress = "2@a.com";
 
-        try {
-          await Query.insertObjects(context!, [goodModel, badModel]);
-          fail('should not be reached');
-        } on QueryException catch (e) {
-          expectNullViolation(e, columnName: "simple.name");
-        }
+      try {
+        await Query.insertObjects(context!, [goodModel, badModel]);
+        fail('should not be reached');
+      } on QueryException catch (e) {
+        expectNullViolation(e, columnName: "simple.name");
+      }
 
-        final insertedModels = await Query<TestModel>(context!).fetch();
-        expect(insertedModels, isEmpty);
-      },
-    );
+      final insertedModels = await Query<TestModel>(context!).fetch();
+      expect(insertedModels, isEmpty);
+    });
   });
 
   group("Method insertMany(..) in `Query`", () {
@@ -531,30 +528,27 @@ void main() {
       },
     );
 
-    test(
-      "fails when at least one bad object is give and does not insert any objects into the database.",
-      () async {
-        context = await PostgresTestConfig().contextWithModels([TestModel]);
+    test("fails when at least one bad object is give and does not insert any objects into the database.", () async {
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-        final goodModel = TestModel()
-          ..name = "bob"
-          ..emailAddress = "1@a.com";
+      final goodModel = TestModel()
+        ..name = "bob"
+        ..emailAddress = "1@a.com";
 
-        final badModel = TestModel()
-          ..name = null
-          ..emailAddress = "2@a.com";
+      final badModel = TestModel()
+        ..name = null
+        ..emailAddress = "2@a.com";
 
-        try {
-          await Query<TestModel>(context!).insertMany([goodModel, badModel]);
-          fail("should not be reached");
-        } on QueryException catch (e) {
-          expectNullViolation(e, columnName: "simple.name");
-        }
+      try {
+        await Query<TestModel>(context!).insertMany([goodModel, badModel]);
+        fail("should not be reached");
+      } on QueryException catch (e) {
+        expectNullViolation(e, columnName: "simple.name");
+      }
 
-        final modelsInDb = await Query<TestModel>(context!).fetch();
-        expect(modelsInDb, isEmpty);
-      },
-    );
+      final modelsInDb = await Query<TestModel>(context!).fetch();
+      expect(modelsInDb, isEmpty);
+    });
 
     test("fails when two of the records given conflict on a unique field "
         "and does not insert any objects into the database.", () async {

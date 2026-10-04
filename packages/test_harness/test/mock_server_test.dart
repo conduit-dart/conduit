@@ -77,13 +77,10 @@ void main() {
       expect(server.isEmpty, true);
     });
 
-    test(
-      "Mock server returns an error by default if there are no enqueued requests",
-      () async {
-        final response = await testClient.request("/hello").get();
-        expect(response.statusCode, 503);
-      },
-    );
+    test("Mock server returns an error by default if there are no enqueued requests", () async {
+      final response = await testClient.request("/hello").get();
+      expect(response.statusCode, 503);
+    });
 
     test("Mock server default response can be changed", () async {
       server.defaultResponse = Response.ok({

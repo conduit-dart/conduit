@@ -199,15 +199,12 @@ void main() {
     }
   });
 
-  test(
-    "Handles input of type num for double precision float properties of the model",
-    () {
-      final m = TransientTypeTest()
-        ..readFromMap(washMap({"transientDouble": 30}));
+  test("Handles input of type num for double precision float properties of the model", () {
+    final m = TransientTypeTest()
+      ..readFromMap(washMap({"transientDouble": 30}));
 
-      expect(m.transientDouble, 30.0);
-    },
-  );
+    expect(m.transientDouble, 30.0);
+  });
 
   test("Reads embedded object", () {
     final postMap = {
@@ -250,8 +247,7 @@ void main() {
     final u = User();
     u.name = "Bob";
     u.dateCreated = null;
-    u.name =
-        null; // I previously set this to a value on purpose and then reset it to null
+    u.name = null; // I previously set this to a value on purpose and then reset it to null
 
     expect(u.name, isNull);
     expect(u.dateCreated, isNull);
@@ -537,69 +533,60 @@ void main() {
     expect(tm["anotherKey"], "anotherValue");
   });
 
-  test(
-    "If primitive type cannot be parsed into correct type, it fails with validation exception",
-    () {
-      try {
-        TransientTypeTest().readFromMap({"transientInt": "a string"});
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
-    },
-  );
+  test("If primitive type cannot be parsed into correct type, it fails with validation exception", () {
+    try {
+      TransientTypeTest().readFromMap({"transientInt": "a string"});
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
+  });
 
-  test(
-    "If map type cannot be parsed into exact type, it fails with validation exception",
-    () {
-      try {
-        TransientTypeTest().readFromMap({
-          "deepMap": wash({"str": 1}),
-        });
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
+  test("If map type cannot be parsed into exact type, it fails with validation exception", () {
+    try {
+      TransientTypeTest().readFromMap({
+        "deepMap": wash({"str": 1}),
+      });
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
 
-      try {
-        TransientTypeTest().readFromMap({
-          "deepMap": wash({
-            "key": {"str": "val", "int": 2},
-          }),
-        });
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
+    try {
+      TransientTypeTest().readFromMap({
+        "deepMap": wash({
+          "key": {"str": "val", "int": 2},
+        }),
+      });
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
 
-      try {
-        TransientTypeTest().readFromMap({"deepMap": wash("str")});
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
-    },
-  );
+    try {
+      TransientTypeTest().readFromMap({"deepMap": wash("str")});
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
+  });
 
-  test(
-    "If complex type cannot be parsed into exact type, it fails with validation exception",
-    () {
-      try {
-        TransientTypeTest().readFromMap({
-          "deepList": wash(["string"]),
-        });
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
+  test("If complex type cannot be parsed into exact type, it fails with validation exception", () {
+    try {
+      TransientTypeTest().readFromMap({
+        "deepList": wash(["string"]),
+      });
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
 
-      try {
-        TransientTypeTest().readFromMap({
-          "deepList": wash([
-            {"str": "val"},
-            "string",
-          ]),
-        });
-        fail('unreachable');
-        // ignore: empty_catches
-      } on ValidationException {}
-    },
-  );
+    try {
+      TransientTypeTest().readFromMap({
+        "deepList": wash([
+          {"str": "val"},
+          "string",
+        ]),
+      });
+      fail('unreachable');
+      // ignore: empty_catches
+    } on ValidationException {}
+  });
 
   test("Reading hasMany relationship from JSON succeeds", () {
     final u = User();
@@ -617,20 +604,17 @@ void main() {
     expect(u.posts![0].text, "Hi");
   });
 
-  test(
-    "Reading/writing instance property that isn't marked as transient shows up nowhere",
-    () {
-      final t = TransientTest();
-      try {
-        t.readFromMap(washMap({"notAnAttribute": true}));
-        expect(true, false);
-        // ignore: empty_catches
-      } on ValidationException {}
+  test("Reading/writing instance property that isn't marked as transient shows up nowhere", () {
+    final t = TransientTest();
+    try {
+      t.readFromMap(washMap({"notAnAttribute": true}));
+      expect(true, false);
+      // ignore: empty_catches
+    } on ValidationException {}
 
-      t.notAnAttribute = "foo";
-      expect(t.asMap().containsKey("notAnAttribute"), false);
-    },
-  );
+    t.notAnAttribute = "foo";
+    expect(t.asMap().containsKey("notAnAttribute"), false);
+  });
 
   test(
     "Omit transient properties in asMap when object is a foreign key reference",
@@ -687,25 +671,22 @@ void main() {
       expect(e.asMap()["enumValues"], "other18");
     });
 
-    test(
-      "Cannot assign value via backingMap or readMap that isn't a valid enum case",
-      () {
-        final e = EnumObject();
-        try {
-          e.readFromMap(washMap({"enumValues": "foobar"}));
-          expect(true, false);
-        } on ValidationException catch (e) {
-          expectError(e, contains("invalid option for key 'enumValues'"));
-        }
+    test("Cannot assign value via backingMap or readMap that isn't a valid enum case", () {
+      final e = EnumObject();
+      try {
+        e.readFromMap(washMap({"enumValues": "foobar"}));
+        expect(true, false);
+      } on ValidationException catch (e) {
+        expectError(e, contains("invalid option for key 'enumValues'"));
+      }
 
-        try {
-          e["enumValues"] = "foobar";
-          expect(true, false);
-        } on ValidationException catch (e) {
-          expectError(e, contains("invalid input value for 'enumValues'"));
-        }
-      },
-    );
+      try {
+        e["enumValues"] = "foobar";
+        expect(true, false);
+      } on ValidationException catch (e) {
+        expectError(e, contains("invalid input value for 'enumValues'"));
+      }
+    });
   });
 
   group("Private fields", () {

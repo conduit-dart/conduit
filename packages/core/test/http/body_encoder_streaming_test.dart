@@ -180,73 +180,67 @@ void main() {
       client.close(force: true);
     });
 
-    test(
-      "Content-Type that can be gzipped but request does not have Accept-Encoding not gzipped",
-      () async {
-        final sc = StreamController<String>();
-        server = await bindAndRespondWith(
-          Response.ok(sc.stream)..contentType = ContentType.text,
-        );
+    test("Content-Type that can be gzipped but request does not have Accept-Encoding not gzipped", () async {
+      final sc = StreamController<String>();
+      server = await bindAndRespondWith(
+        Response.ok(sc.stream)..contentType = ContentType.text,
+      );
 
-        final req = await client.getUrl(Uri.parse("http://localhost:$port"));
-        req.headers.clear();
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
+      req.headers.clear();
 
-        final respFuture = req.close();
+      final respFuture = req.close();
 
-        sc.add("abcd");
-        sc.add("efgh");
+      sc.add("abcd");
+      sc.add("efgh");
 
-        sc.close();
+      sc.close();
 
-        final resp = await respFuture;
+      final resp = await respFuture;
 
-        expect(
-          resp.headers.contentType.toString(),
-          equals(ContentType.text.toString()),
-        );
-        expect(resp.headers.value("content-encoding"), isNull);
-        expect(resp.headers.value("transfer-encoding"), "chunked");
-        expect(resp.headers.value("content-length"), isNull);
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.text.toString()),
+      );
+      expect(resp.headers.value("content-encoding"), isNull);
+      expect(resp.headers.value("transfer-encoding"), "chunked");
+      expect(resp.headers.value("content-length"), isNull);
 
-        expect(resp.statusCode, 200);
-        final allBody = (await resp.toList()).expand((i) => i).toList();
-        expect(utf8.decode(allBody), "abcdefgh");
-      },
-    );
+      expect(resp.statusCode, 200);
+      final allBody = (await resp.toList()).expand((i) => i).toList();
+      expect(utf8.decode(allBody), "abcdefgh");
+    });
 
-    test(
-      "Content-Type that can be gzipped and request has Accept-Encoding but not gzip doesn't get gzipped",
-      () async {
-        final sc = StreamController<String>();
-        server = await bindAndRespondWith(
-          Response.ok(sc.stream)..contentType = ContentType.text,
-        );
+    test("Content-Type that can be gzipped and request has Accept-Encoding but not gzip doesn't get gzipped", () async {
+      final sc = StreamController<String>();
+      server = await bindAndRespondWith(
+        Response.ok(sc.stream)..contentType = ContentType.text,
+      );
 
-        final req = await client.getUrl(Uri.parse("http://localhost:$port"));
-        req.headers.clear();
-        req.headers.add("accept-encoding", "deflate");
-        final respFuture = req.close();
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
+      req.headers.clear();
+      req.headers.add("accept-encoding", "deflate");
+      final respFuture = req.close();
 
-        sc.add("abcd");
-        sc.add("efgh");
+      sc.add("abcd");
+      sc.add("efgh");
 
-        sc.close();
+      sc.close();
 
-        final resp = await respFuture;
+      final resp = await respFuture;
 
-        expect(
-          resp.headers.contentType.toString(),
-          equals(ContentType.text.toString()),
-        );
-        expect(resp.headers.value("content-encoding"), isNull);
-        expect(resp.headers.value("transfer-encoding"), "chunked");
-        expect(resp.headers.value("content-length"), isNull);
+      expect(
+        resp.headers.contentType.toString(),
+        equals(ContentType.text.toString()),
+      );
+      expect(resp.headers.value("content-encoding"), isNull);
+      expect(resp.headers.value("transfer-encoding"), "chunked");
+      expect(resp.headers.value("content-length"), isNull);
 
-        expect(resp.statusCode, 200);
-        final allBody = (await resp.toList()).expand((i) => i).toList();
-        expect(utf8.decode(allBody), "abcdefgh");
-      },
-    );
+      expect(resp.statusCode, 200);
+      final allBody = (await resp.toList()).expand((i) => i).toList();
+      expect(utf8.decode(allBody), "abcdefgh");
+    });
 
     test(
       "Unregistered content-type of Stream<List<int>> does not get gzipped",
@@ -275,37 +269,34 @@ void main() {
       },
     );
 
-    test(
-      "Content-type that can't be gzipped and Accept-Encoding accepts gzip, not gzipped",
-      () async {
-        final sc = StreamController<String>();
-        final ct = ContentType("application", "3");
-        CodecRegistry.defaultInstance.add(
-          ct,
-          const Utf8Codec(),
-          allowCompression: false,
-        );
-        server = await bindAndRespondWith(
-          Response.ok(sc.stream)..contentType = ct,
-        );
-        final req = await client.getUrl(Uri.parse("http://localhost:$port"));
-        req.headers.clear();
-        req.headers.add("accept-encoding", "gzip");
-        final respFuture = req.close();
+    test("Content-type that can't be gzipped and Accept-Encoding accepts gzip, not gzipped", () async {
+      final sc = StreamController<String>();
+      final ct = ContentType("application", "3");
+      CodecRegistry.defaultInstance.add(
+        ct,
+        const Utf8Codec(),
+        allowCompression: false,
+      );
+      server = await bindAndRespondWith(
+        Response.ok(sc.stream)..contentType = ct,
+      );
+      final req = await client.getUrl(Uri.parse("http://localhost:$port"));
+      req.headers.clear();
+      req.headers.add("accept-encoding", "gzip");
+      final respFuture = req.close();
 
-        sc.add("abcd");
+      sc.add("abcd");
 
-        sc.close();
+      sc.close();
 
-        final resp = await respFuture;
+      final resp = await respFuture;
 
-        expect(resp.headers.contentType.toString(), ct.toString());
-        expect(resp.headers.value("content-encoding"), isNull);
+      expect(resp.headers.contentType.toString(), ct.toString());
+      expect(resp.headers.value("content-encoding"), isNull);
 
-        expect(resp.statusCode, 200);
-        expect(utf8.decode(await resp.first), "abcd");
-      },
-    );
+      expect(resp.statusCode, 200);
+      expect(utf8.decode(await resp.first), "abcd");
+    });
   });
 
   group("Client cancellation", () {
@@ -315,40 +306,37 @@ void main() {
       await server.close(force: true);
     });
 
-    test(
-      "Client request is cancelled during stream cleans up appropriately",
-      () async {
-        final sc = StreamController<List<int>>();
-        final response = Response.ok(sc.stream)
-          ..contentType = ContentType("application", "octet-stream");
-        final initiateResponseCompleter = Completer();
-        server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
-        server.map(Request.new).listen((req) async {
-          final next = PassthruController();
-          next.linkFunction((req) async {
-            initiateResponseCompleter.complete();
-            return response;
-          });
-          await next.receive(req);
+    test("Client request is cancelled during stream cleans up appropriately", () async {
+      final sc = StreamController<List<int>>();
+      final response = Response.ok(sc.stream)
+        ..contentType = ContentType("application", "octet-stream");
+      final initiateResponseCompleter = Completer();
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, port);
+      server.map(Request.new).listen((req) async {
+        final next = PassthruController();
+        next.linkFunction((req) async {
+          initiateResponseCompleter.complete();
+          return response;
         });
+        await next.receive(req);
+      });
 
-        final socket = await Socket.connect("localhost", port);
-        const request =
-            "GET /r HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
-        socket.add(request.codeUnits);
+      final socket = await Socket.connect("localhost", port);
+      const request =
+          "GET /r HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
+      socket.add(request.codeUnits);
 
-        await initiateResponseCompleter.future;
+      await initiateResponseCompleter.future;
 
-        sc.add([1, 2, 3, 4]);
-        expect(server.connectionsInfo().active, 1);
+      sc.add([1, 2, 3, 4]);
+      expect(server.connectionsInfo().active, 1);
 
-        await socket.close();
-        socket.destroy();
-        await sc.close();
+      await socket.close();
+      socket.destroy();
+      await sc.close();
 
-        expect(serverHasNoMoreConnections(server), completes);
-      },
-    );
+      expect(serverHasNoMoreConnections(server), completes);
+    });
   });
 
   // This group only gets ran when not on windows, because there is some issue

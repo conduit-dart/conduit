@@ -261,145 +261,119 @@ void main() {
       },
     );
 
-    test(
-      "Add new foreign key column while setting a new unique column set that contains it",
-      () async {
-        final schemas = [
-          Schema.empty(),
-          Schema([
-            SchemaTable("t", [
-              SchemaColumn(
-                "id",
-                ManagedPropertyType.integer,
-                isPrimaryKey: true,
-              ),
-            ]),
-            SchemaTable("u", [
+    test("Add new foreign key column while setting a new unique column set that contains it", () async {
+      final schemas = [
+        Schema.empty(),
+        Schema([
+          SchemaTable("t", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
+          ]),
+          SchemaTable("u", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
+            SchemaColumn("x", ManagedPropertyType.integer),
+          ]),
+        ]),
+        Schema([
+          SchemaTable("t", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
+          ]),
+          SchemaTable(
+            "u",
+            [
               SchemaColumn(
                 "id",
                 ManagedPropertyType.integer,
                 isPrimaryKey: true,
               ),
               SchemaColumn("x", ManagedPropertyType.integer),
-            ]),
+              SchemaColumn.relationship(
+                "ref",
+                ManagedPropertyType.integer,
+                relatedTableName: "t",
+                relatedColumnName: "id",
+              ),
+            ],
+            uniqueColumnSetNames: ["x", "ref"],
+          ),
+        ]),
+      ];
+
+      await applyDifference(store, schemas[0], schemas[1]);
+      await applyDifference(store, schemas[1], schemas[2]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
+      expect(defs["u"]!.uniqueSet, isNotNull);
+      expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x"]);
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+    });
+
+    test("Add new foreign key column while changing a unique column set to contain that foreign key", () async {
+      final schemas = [
+        Schema.empty(),
+        Schema([
+          SchemaTable("t", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
           ]),
-          Schema([
-            SchemaTable("t", [
+          SchemaTable(
+            "u",
+            [
               SchemaColumn(
                 "id",
                 ManagedPropertyType.integer,
                 isPrimaryKey: true,
               ),
-            ]),
-            SchemaTable(
-              "u",
-              [
-                SchemaColumn(
-                  "id",
-                  ManagedPropertyType.integer,
-                  isPrimaryKey: true,
-                ),
-                SchemaColumn("x", ManagedPropertyType.integer),
-                SchemaColumn.relationship(
-                  "ref",
-                  ManagedPropertyType.integer,
-                  relatedTableName: "t",
-                  relatedColumnName: "id",
-                ),
-              ],
-              uniqueColumnSetNames: ["x", "ref"],
-            ),
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn("y", ManagedPropertyType.integer),
+            ],
+            uniqueColumnSetNames: ["x", "y"],
+          ),
+        ]),
+        Schema([
+          SchemaTable("t", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
           ]),
-        ];
-
-        await applyDifference(store, schemas[0], schemas[1]);
-        await applyDifference(store, schemas[1], schemas[2]);
-        final defs = await TableDefinition.get(store, ["t", "u"]);
-        expect(defs["u"]!.uniqueSet, isNotNull);
-        expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x"]);
-        defs["u"]!.expectColumn(
-          "ref_id",
-          "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL",
-        );
-      },
-    );
-
-    test(
-      "Add new foreign key column while changing a unique column set to contain that foreign key",
-      () async {
-        final schemas = [
-          Schema.empty(),
-          Schema([
-            SchemaTable("t", [
+          SchemaTable(
+            "u",
+            [
               SchemaColumn(
                 "id",
                 ManagedPropertyType.integer,
                 isPrimaryKey: true,
               ),
-            ]),
-            SchemaTable(
-              "u",
-              [
-                SchemaColumn(
-                  "id",
-                  ManagedPropertyType.integer,
-                  isPrimaryKey: true,
-                ),
-                SchemaColumn("x", ManagedPropertyType.integer),
-                SchemaColumn("y", ManagedPropertyType.integer),
-              ],
-              uniqueColumnSetNames: ["x", "y"],
-            ),
-          ]),
-          Schema([
-            SchemaTable("t", [
-              SchemaColumn(
-                "id",
+              SchemaColumn("x", ManagedPropertyType.integer),
+              SchemaColumn("y", ManagedPropertyType.integer),
+              SchemaColumn.relationship(
+                "ref",
                 ManagedPropertyType.integer,
-                isPrimaryKey: true,
+                relatedTableName: "t",
+                relatedColumnName: "id",
               ),
-            ]),
-            SchemaTable(
-              "u",
-              [
-                SchemaColumn(
-                  "id",
-                  ManagedPropertyType.integer,
-                  isPrimaryKey: true,
-                ),
-                SchemaColumn("x", ManagedPropertyType.integer),
-                SchemaColumn("y", ManagedPropertyType.integer),
-                SchemaColumn.relationship(
-                  "ref",
-                  ManagedPropertyType.integer,
-                  relatedTableName: "t",
-                  relatedColumnName: "id",
-                ),
-              ],
-              uniqueColumnSetNames: ["x", "y", "ref"],
-            ),
-          ]),
-        ];
+            ],
+            uniqueColumnSetNames: ["x", "y", "ref"],
+          ),
+        ]),
+      ];
 
-        await applyDifference(store, schemas[0], schemas[1]);
-        await applyDifference(store, schemas[1], schemas[2]);
-        final defs = await TableDefinition.get(store, ["t", "u"]);
-        expect(defs["u"]!.uniqueSet, isNotNull);
-        expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x", "y"]);
-        defs["u"]!.expectColumn(
-          "ref_id",
-          "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL",
-        );
-      },
-    );
+      await applyDifference(store, schemas[0], schemas[1]);
+      await applyDifference(store, schemas[1], schemas[2]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
+      expect(defs["u"]!.uniqueSet, isNotNull);
+      expect(defs["u"]!.uniqueSet!..sort(), ["ref_id", "x", "y"]);
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+    });
   });
 
   group("Columns (no relationship)", () {
@@ -931,57 +905,42 @@ void main() {
       );
     });
 
-    test(
-      "Add a new table and a foreign key from an existing table to the new table",
-      () async {
-        final schemas = [
-          Schema.empty(),
-          Schema([
-            SchemaTable("u", [
-              SchemaColumn(
-                "id",
-                ManagedPropertyType.integer,
-                isPrimaryKey: true,
-              ),
-            ]),
+    test("Add a new table and a foreign key from an existing table to the new table", () async {
+      final schemas = [
+        Schema.empty(),
+        Schema([
+          SchemaTable("u", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
           ]),
-          Schema([
-            SchemaTable("u", [
-              SchemaColumn(
-                "id",
-                ManagedPropertyType.integer,
-                isPrimaryKey: true,
-              ),
-              SchemaColumn.relationship(
-                "ref",
-                ManagedPropertyType.integer,
-                relatedTableName: "t",
-                relatedColumnName: "id",
-              ),
-            ]),
-            SchemaTable("t", [
-              SchemaColumn(
-                "id",
-                ManagedPropertyType.integer,
-                isPrimaryKey: true,
-              ),
-            ]),
+        ]),
+        Schema([
+          SchemaTable("u", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
+            SchemaColumn.relationship(
+              "ref",
+              ManagedPropertyType.integer,
+              relatedTableName: "t",
+              relatedColumnName: "id",
+            ),
           ]),
-        ];
+          SchemaTable("t", [
+            SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true),
+          ]),
+        ]),
+      ];
 
-        await applyDifference(store, schemas[0], schemas[1]);
-        await applyDifference(store, schemas[1], schemas[2]);
-        final defs = await TableDefinition.get(store, ["t", "u"]);
-        defs["u"]!.expectColumn(
-          "ref_id",
-          "integer",
-          nullable: true,
-          relatedTableName: "t",
-          relatedColumnName: "id",
-          deleteRule: "SET NULL",
-        );
-      },
-    );
+      await applyDifference(store, schemas[0], schemas[1]);
+      await applyDifference(store, schemas[1], schemas[2]);
+      final defs = await TableDefinition.get(store, ["t", "u"]);
+      defs["u"]!.expectColumn(
+        "ref_id",
+        "integer",
+        nullable: true,
+        relatedTableName: "t",
+        relatedColumnName: "id",
+        deleteRule: "SET NULL",
+      );
+    });
 
     test("Add a new foreign key column", () async {
       final schemas = [
@@ -1433,31 +1392,25 @@ class TableDefinition {
   List<String>? uniqueSet;
 
   Future<void> resolve(PostgreSQLPersistentStore store) async {
-    final exists =
-        await store.execute(
-              "SELECT table_name FROM information_schema.tables WHERE table_name = '$name'",
-            )
-            as List<List<dynamic>>;
+    final exists = await store.execute(
+      "SELECT table_name FROM information_schema.tables WHERE table_name = '$name'",
+    ) as List<List<dynamic>>;
     isValid = exists.length == 1;
 
     if (!isValid) {
       return;
     }
 
-    final results =
-        await store.execute(
-              "SELECT column_name, column_default, data_type, is_nullable FROM information_schema.columns WHERE table_name = '$name'",
-            )
-            as List<List<dynamic>>;
+    final results = await store.execute(
+      "SELECT column_name, column_default, data_type, is_nullable FROM information_schema.columns WHERE table_name = '$name'",
+    ) as List<List<dynamic>>;
 
     columns = results.map(ColumnDefinition.new).toList();
 
-    final constraints =
-        await store.execute(
-              "SELECT c.column_name, t.constraint_type FROM information_schema.key_column_usage AS c "
-              "LEFT JOIN information_schema.table_constraints AS t ON t.constraint_name = c.constraint_name WHERE t.table_name = '$name'",
-            )
-            as List<List<dynamic>>;
+    final constraints = await store.execute(
+      "SELECT c.column_name, t.constraint_type FROM information_schema.key_column_usage AS c "
+      "LEFT JOIN information_schema.table_constraints AS t ON t.constraint_name = c.constraint_name WHERE t.table_name = '$name'",
+    ) as List<List<dynamic>>;
     for (final constraint in constraints) {
       final col = columns.firstWhere((c) => c.name == constraint.first);
 
@@ -1468,11 +1421,9 @@ class TableDefinition {
       }
     }
 
-    final indices =
-        await store.execute(
-              "SELECT indexdef FROM pg_indexes WHERE tablename = '$name'",
-            )
-            as List<List<dynamic>>;
+    final indices = await store.execute(
+      "SELECT indexdef FROM pg_indexes WHERE tablename = '$name'",
+    ) as List<List<dynamic>>;
     final lookupIndex = RegExp(
       "CREATE INDEX ([A-Za-z_]*) ON [A-Za-z_0-9\\.]* USING [A-Za-z_]* \\(([a-zA-Z0-9_]*)\\)",
     );
@@ -1502,15 +1453,13 @@ class TableDefinition {
       }
     }
 
-    final foreignKeys =
-        await store.execute(
-              "SELECT ccu.table_name, ccu.column_name, kcu.column_name, rc.delete_rule FROM information_schema.table_constraints tc "
-              "INNER JOIN information_schema.referential_constraints rc ON (tc.constraint_name=rc.constraint_name) "
-              "INNER JOIN information_schema.key_column_usage kcu ON (tc.constraint_name=kcu.constraint_name) "
-              "INNER JOIN information_schema.constraint_column_usage ccu ON (tc.constraint_name=ccu.constraint_name) "
-              "WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name ='$name';",
-            )
-            as List<List<dynamic>>;
+    final foreignKeys = await store.execute(
+      "SELECT ccu.table_name, ccu.column_name, kcu.column_name, rc.delete_rule FROM information_schema.table_constraints tc "
+      "INNER JOIN information_schema.referential_constraints rc ON (tc.constraint_name=rc.constraint_name) "
+      "INNER JOIN information_schema.key_column_usage kcu ON (tc.constraint_name=kcu.constraint_name) "
+      "INNER JOIN information_schema.constraint_column_usage ccu ON (tc.constraint_name=ccu.constraint_name) "
+      "WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name ='$name';",
+    ) as List<List<dynamic>>;
     for (final foreignKey in foreignKeys) {
       final col = columns.firstWhere((c) => c.name == foreignKey[2]);
 

@@ -17,8 +17,7 @@ class CLIAuthScopeClient extends CLICommand
 
   @Option(
     "scopes",
-    help:
-        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    help: "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
     defaultsTo: "",
   )
   List<String>? get scopes {

@@ -204,23 +204,20 @@ void main() {
       },
     );
 
-    test(
-      "If any element of coding list is not a coding object, an exception is thrown",
-      () {
-        final archive = getJSONArchive({
-          "key": [
-            {"name": "Bob"},
-            'foo',
-          ],
-        });
-        try {
-          archive.decodeObjects("key", Parent.new);
-          fail('unreachable');
-        } on TypeError {
-          // no op
-        }
-      },
-    );
+    test("If any element of coding list is not a coding object, an exception is thrown", () {
+      final archive = getJSONArchive({
+        "key": [
+          {"name": "Bob"},
+          'foo',
+        ],
+      });
+      try {
+        archive.decodeObjects("key", Parent.new);
+        fail('unreachable');
+      } on TypeError {
+        // no op
+      }
+    });
 
     test("Can decode map of Coding objects", () {
       final archive = getJSONArchive({
@@ -249,20 +246,17 @@ void main() {
       },
     );
 
-    test(
-      "If any element of coding map is not a coding object, an exception is thrown",
-      () {
-        final archive = getJSONArchive({
-          "key": {"1": "2"},
-        });
-        try {
-          archive.decodeObjectMap("key", Parent.new);
-          fail('unreachable');
-        } on TypeError {
-          // no op
-        }
-      },
-    );
+    test("If any element of coding map is not a coding object, an exception is thrown", () {
+      final archive = getJSONArchive({
+        "key": {"1": "2"},
+      });
+      try {
+        archive.decodeObjectMap("key", Parent.new);
+        fail('unreachable');
+      } on TypeError {
+        // no op
+      }
+    });
   });
 
   group("Deep Coding objects", () {

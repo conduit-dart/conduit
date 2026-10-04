@@ -30,33 +30,30 @@ void main() {
       expect(operations, {"post": isNotNull});
     });
 
-    test(
-      "POST has body parameteters for username, password, refresh_token, scope, code, grant_type",
-      () {
-        final op = operations!["post"]!;
-        expect(op.parameters!.length, 0);
-        expect(op.requestBody!.isRequired, true);
+    test("POST has body parameteters for username, password, refresh_token, scope, code, grant_type", () {
+      final op = operations!["post"]!;
+      expect(op.parameters!.length, 0);
+      expect(op.requestBody!.isRequired, true);
 
-        final content =
-            op.requestBody!.content!["application/x-www-form-urlencoded"]!;
-        expect(content, isNotNull);
+      final content =
+          op.requestBody!.content!["application/x-www-form-urlencoded"]!;
+      expect(content, isNotNull);
 
-        expect(content.schema!.type, APIType.object);
-        expect(content.schema!.properties!.length, 6);
-        expect(
-          content.schema!.properties!["refresh_token"]!.type,
-          APIType.string,
-        );
-        expect(content.schema!.properties!["scope"]!.type, APIType.string);
-        expect(content.schema!.properties!["code"]!.type, APIType.string);
-        expect(content.schema!.properties!["grant_type"]!.type, APIType.string);
-        expect(content.schema!.properties!["username"]!.type, APIType.string);
-        expect(content.schema!.properties!["password"]!.type, APIType.string);
+      expect(content.schema!.type, APIType.object);
+      expect(content.schema!.properties!.length, 6);
+      expect(
+        content.schema!.properties!["refresh_token"]!.type,
+        APIType.string,
+      );
+      expect(content.schema!.properties!["scope"]!.type, APIType.string);
+      expect(content.schema!.properties!["code"]!.type, APIType.string);
+      expect(content.schema!.properties!["grant_type"]!.type, APIType.string);
+      expect(content.schema!.properties!["username"]!.type, APIType.string);
+      expect(content.schema!.properties!["password"]!.type, APIType.string);
 
-        expect(content.schema!.properties!["password"]!.format, "password");
-        expect(content.schema!.isRequired, ["grant_type"]);
-      },
-    );
+      expect(content.schema!.properties!["password"]!.format, "password");
+      expect(content.schema!.isRequired, ["grant_type"]);
+    });
 
     test("POST requires client authorization", () {
       expect(operations!["post"]!.security!.length, 1);
@@ -198,38 +195,35 @@ void main() {
       },
     );
 
-    test(
-      "POST has body parameteters for client_id, state, response_type, scope, username and password",
-      () {
-        final op = operations!["post"]!;
-        expect(op.parameters!.length, 0);
-        expect(op.requestBody!.isRequired, true);
+    test("POST has body parameteters for client_id, state, response_type, scope, username and password", () {
+      final op = operations!["post"]!;
+      expect(op.parameters!.length, 0);
+      expect(op.requestBody!.isRequired, true);
 
-        final content =
-            op.requestBody!.content!["application/x-www-form-urlencoded"]!;
-        expect(content, isNotNull);
+      final content =
+          op.requestBody!.content!["application/x-www-form-urlencoded"]!;
+      expect(content, isNotNull);
 
-        expect(content.schema!.type, APIType.object);
-        expect(content.schema!.properties!.length, 6);
-        expect(content.schema!.properties!["client_id"]!.type, APIType.string);
-        expect(content.schema!.properties!["scope"]!.type, APIType.string);
-        expect(content.schema!.properties!["state"]!.type, APIType.string);
-        expect(
-          content.schema!.properties!["response_type"]!.type,
-          APIType.string,
-        );
-        expect(content.schema!.properties!["username"]!.type, APIType.string);
-        expect(content.schema!.properties!["password"]!.type, APIType.string);
-        expect(content.schema!.properties!["password"]!.format, "password");
-        expect(content.schema!.isRequired, [
-          "client_id",
-          "state",
-          "response_type",
-          "username",
-          "password",
-        ]);
-      },
-    );
+      expect(content.schema!.type, APIType.object);
+      expect(content.schema!.properties!.length, 6);
+      expect(content.schema!.properties!["client_id"]!.type, APIType.string);
+      expect(content.schema!.properties!["scope"]!.type, APIType.string);
+      expect(content.schema!.properties!["state"]!.type, APIType.string);
+      expect(
+        content.schema!.properties!["response_type"]!.type,
+        APIType.string,
+      );
+      expect(content.schema!.properties!["username"]!.type, APIType.string);
+      expect(content.schema!.properties!["password"]!.type, APIType.string);
+      expect(content.schema!.properties!["password"]!.format, "password");
+      expect(content.schema!.isRequired, [
+        "client_id",
+        "state",
+        "response_type",
+        "username",
+        "password",
+      ]);
+    });
 
     test("POST response can be redirect or bad request", () {
       expect(operations!["post"]!.responses, {

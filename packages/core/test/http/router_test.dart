@@ -133,9 +133,8 @@ void main() {
 
     test("Base API + Route Variables correctly identifies segment", () async {
       final router = Router(basePath: "/api/")
-        ..route(
-          "/a/[:id]",
-        ).linkFunction((req) async => Response.ok(req.path.variables));
+        ..route("/a/[:id]")
+            .linkFunction((req) async => Response.ok(req.path.variables));
       server = await enableRouter(router);
 
       var response = await http.get(Uri.parse("http://localhost:4040/api/a/1"));

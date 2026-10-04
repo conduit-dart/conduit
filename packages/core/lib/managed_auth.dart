@@ -488,9 +488,8 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
     if (results.length == 1) {
       final deleteQ = Query<ManagedAuthToken>(context)
         ..where((o) => o.resourceOwner).identifiedBy(resourceOwnerIdentifier)
-        ..where(
-          (o) => o.expirationDate,
-        ).lessThanEqualTo(results.first.expirationDate);
+        ..where((o) => o.expirationDate)
+            .lessThanEqualTo(results.first.expirationDate);
 
       return deleteQ.delete();
     }

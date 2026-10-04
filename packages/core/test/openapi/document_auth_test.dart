@@ -30,28 +30,25 @@ void main() {
       expect(schemes["oauth2-client-authentication"]!.scheme, "basic");
     });
 
-    test(
-      "Basic Authorizer adds oauth2 client authentication to operations for all paths",
-      () {
-        final noVarPath = doc.paths!["/basic"]!;
-        expect(noVarPath.operations.length, 2);
-        expect(noVarPath.operations["get"]!.security!.length, 1);
-        expect(noVarPath.operations["get"]!.security!.first.requirements, {
-          "oauth2-client-authentication": [],
-        });
-        expect(noVarPath.operations["post"]!.security!.length, 1);
-        expect(noVarPath.operations["post"]!.security!.first.requirements, {
-          "oauth2-client-authentication": [],
-        });
+    test("Basic Authorizer adds oauth2 client authentication to operations for all paths", () {
+      final noVarPath = doc.paths!["/basic"]!;
+      expect(noVarPath.operations.length, 2);
+      expect(noVarPath.operations["get"]!.security!.length, 1);
+      expect(noVarPath.operations["get"]!.security!.first.requirements, {
+        "oauth2-client-authentication": [],
+      });
+      expect(noVarPath.operations["post"]!.security!.length, 1);
+      expect(noVarPath.operations["post"]!.security!.first.requirements, {
+        "oauth2-client-authentication": [],
+      });
 
-        final varPath = doc.paths!["/basic/{id}"]!;
-        expect(varPath.operations.length, 1);
-        expect(varPath.operations["get"]!.security!.length, 1);
-        expect(varPath.operations["get"]!.security!.first.requirements, {
-          "oauth2-client-authentication": [],
-        });
-      },
-    );
+      final varPath = doc.paths!["/basic/{id}"]!;
+      expect(varPath.operations.length, 1);
+      expect(varPath.operations["get"]!.security!.length, 1);
+      expect(varPath.operations["get"]!.security!.first.requirements, {
+        "oauth2-client-authentication": [],
+      });
+    });
 
     test(
       "No scope bearer authorizer adds oauth2 authentication to operations",
@@ -69,31 +66,22 @@ void main() {
       },
     );
 
-    test(
-      "Scoped bearer authorizer adds oauth2 authentication to operations w/ scope",
-      () {
-        final noVarPath = doc.paths!["/bearer-scope"]!;
-        expect(noVarPath.operations.length, 2);
-        expect(noVarPath.operations["get"]!.security!.length, 1);
-        expect(noVarPath.operations["get"]!.security!.first.requirements, {
-          "oauth2": ["scope"],
-        });
-        expect(noVarPath.operations["post"]!.security!.length, 1);
-        expect(noVarPath.operations["post"]!.security!.first.requirements, {
-          "oauth2": ["scope"],
-        });
-      },
-    );
+    test("Scoped bearer authorizer adds oauth2 authentication to operations w/ scope", () {
+      final noVarPath = doc.paths!["/bearer-scope"]!;
+      expect(noVarPath.operations.length, 2);
+      expect(noVarPath.operations["get"]!.security!.length, 1);
+      expect(noVarPath.operations["get"]!.security!.first.requirements, {
+        "oauth2": ["scope"],
+      });
+      expect(noVarPath.operations["post"]!.security!.length, 1);
+      expect(noVarPath.operations["post"]!.security!.first.requirements, {
+        "oauth2": ["scope"],
+      });
+    });
 
-    test(
-      "Authorizer does not prevent linked controllers from registering components",
-      () {
-        expect(
-          doc.components!.schemas["verifyComponents"]!.type,
-          APIType.string,
-        );
-      },
-    );
+    test("Authorizer does not prevent linked controllers from registering components", () {
+      expect(doc.components!.schemas["verifyComponents"]!.type, APIType.string);
+    });
 
     test(
       "Authorizer adds Forbidden and Unauthorized to response components",
@@ -187,17 +175,14 @@ void main() {
   });
 
   group("Controller Registration and Scopes", () {
-    test(
-      "If no controllers added to channel, do not support have flows for oauth2 security type",
-      () async {
-        final doc = await Application.document(
-          TestChannel,
-          ApplicationOptions(),
-          {"name": "Test", "version": "1.0"},
-        );
-        expect(doc.components!.securitySchemes["oauth2"]!.flows, {});
-      },
-    );
+    test("If no controllers added to channel, do not support have flows for oauth2 security type", () async {
+      final doc = await Application.document(
+        TestChannel,
+        ApplicationOptions(),
+        {"name": "Test", "version": "1.0"},
+      );
+      expect(doc.components!.securitySchemes["oauth2"]!.flows, {});
+    });
 
     test(
       "If only AuthController added to channel, do not support auth code flow",
@@ -238,65 +223,58 @@ void main() {
       },
     );
 
-    test(
-      "If both AuthController and AuthRedirectController added to channel, support both flows and have appropriate urls",
-      () async {
-        final doc = await Application.document(
-          ScopedControllerChannel,
-          ApplicationOptions(),
-          {"name": "Test", "version": "1.0"},
-        );
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["password"]!
-              .refreshURL,
-          Uri(path: "auth/token"),
-        );
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["password"]!
-              .tokenURL,
-          Uri(path: "auth/token"),
-        );
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["password"]!
-              .authorizationURL,
-          isNull,
-        );
+    test("If both AuthController and AuthRedirectController added to channel, support both flows and have appropriate urls", () async {
+      final doc = await Application.document(
+        ScopedControllerChannel,
+        ApplicationOptions(),
+        {"name": "Test", "version": "1.0"},
+      );
+      expect(
+        doc
+            .components!
+            .securitySchemes["oauth2"]!
+            .flows!["password"]!
+            .refreshURL,
+        Uri(path: "auth/token"),
+      );
+      expect(
+        doc.components!.securitySchemes["oauth2"]!.flows!["password"]!.tokenURL,
+        Uri(path: "auth/token"),
+      );
+      expect(
+        doc
+            .components!
+            .securitySchemes["oauth2"]!
+            .flows!["password"]!
+            .authorizationURL,
+        isNull,
+      );
 
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["authorizationCode"]!
-              .refreshURL,
-          Uri(path: "auth/token"),
-        );
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["authorizationCode"]!
-              .tokenURL,
-          Uri(path: "auth/token"),
-        );
-        expect(
-          doc
-              .components!
-              .securitySchemes["oauth2"]!
-              .flows!["authorizationCode"]!
-              .authorizationURL,
-          Uri(path: "auth/code"),
-        );
-      },
-    );
+      expect(
+        doc
+            .components!
+            .securitySchemes["oauth2"]!
+            .flows!["authorizationCode"]!
+            .refreshURL,
+        Uri(path: "auth/token"),
+      );
+      expect(
+        doc
+            .components!
+            .securitySchemes["oauth2"]!
+            .flows!["authorizationCode"]!
+            .tokenURL,
+        Uri(path: "auth/token"),
+      );
+      expect(
+        doc
+            .components!
+            .securitySchemes["oauth2"]!
+            .flows!["authorizationCode"]!
+            .authorizationURL,
+        Uri(path: "auth/code"),
+      );
+    });
 
     test(
       "Referenced scopes for supported flows are available in oauth2 flow map",

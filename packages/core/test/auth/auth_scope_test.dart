@@ -110,45 +110,30 @@ void main() {
     expect(scope.allows("user.readonly"), false);
   });
 
-  test(
-    "Single element scope does not allow more restrictive multiple element scope",
-    () {
-      final scope = AuthScope("user");
-      expect(scope.allows("user:location"), false);
-    },
-  );
+  test("Single element scope does not allow more restrictive multiple element scope", () {
+    final scope = AuthScope("user");
+    expect(scope.allows("user:location"), false);
+  });
 
-  test(
-    "Single element scope with modifier does not allow more restrictive multiple element scope even though it has same modifier",
-    () {
-      final scope = AuthScope("user.readonly");
-      expect(scope.allows("user:location.readonly"), false);
-    },
-  );
+  test("Single element scope with modifier does not allow more restrictive multiple element scope even though it has same modifier", () {
+    final scope = AuthScope("user.readonly");
+    expect(scope.allows("user:location.readonly"), false);
+  });
 
-  test(
-    "Multiple element scope does not allow multiple element, even if root is same",
-    () {
-      final scope = AuthScope("user:location");
-      expect(scope.allows("user:posts"), false);
-    },
-  );
+  test("Multiple element scope does not allow multiple element, even if root is same", () {
+    final scope = AuthScope("user:location");
+    expect(scope.allows("user:posts"), false);
+  });
 
-  test(
-    "Multiple element scope does not allow modifier restricted, even though elements are the same",
-    () {
-      final scope = AuthScope("user:location");
-      expect(scope.allows("user:location.readonly"), false);
-    },
-  );
+  test("Multiple element scope does not allow modifier restricted, even though elements are the same", () {
+    final scope = AuthScope("user:location");
+    expect(scope.allows("user:location.readonly"), false);
+  });
 
-  test(
-    "Multiple element scope does not allow different modifier, even though elements are the same",
-    () {
-      final scope = AuthScope("user:location.something");
-      expect(scope.allows("user:location.readonly"), false);
-    },
-  );
+  test("Multiple element scope does not allow different modifier, even though elements are the same", () {
+    final scope = AuthScope("user:location.something");
+    expect(scope.allows("user:location.readonly"), false);
+  });
 
   test("Multiple element scope that does not allow more restrictive scope", () {
     final scope = AuthScope("user:location");

@@ -164,18 +164,12 @@ void main() {
       expect(schema!.properties!["lessThan"]!.exclusiveMinimum, isNull);
     });
 
-    test(
-      "Schema object contains maximumExclusive if min exclusive value in validator",
-      () {
-        expect(schema!.properties!["lessThanEqualTo"]!.maximum, 1);
-        expect(schema!.properties!["lessThanEqualTo"]!.exclusiveMaximum, false);
-        expect(schema!.properties!["lessThanEqualTo"]!.minimum, isNull);
-        expect(
-          schema!.properties!["lessThanEqualTo"]!.exclusiveMinimum,
-          isNull,
-        );
-      },
-    );
+    test("Schema object contains maximumExclusive if min exclusive value in validator", () {
+      expect(schema!.properties!["lessThanEqualTo"]!.maximum, 1);
+      expect(schema!.properties!["lessThanEqualTo"]!.exclusiveMaximum, false);
+      expect(schema!.properties!["lessThanEqualTo"]!.minimum, isNull);
+      expect(schema!.properties!["lessThanEqualTo"]!.exclusiveMinimum, isNull);
+    });
 
     test("Schema object contains minimum if max value in validator", () {
       expect(schema!.properties!["greaterThan"]!.maximum, isNull);
@@ -184,21 +178,18 @@ void main() {
       expect(schema!.properties!["greaterThan"]!.exclusiveMinimum, true);
     });
 
-    test(
-      "Schema object contains minimumExclusive if max exclusive value in validator",
-      () {
-        expect(schema!.properties!["greaterThanEqualTo"]!.maximum, isNull);
-        expect(
-          schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum,
-          isNull,
-        );
-        expect(schema!.properties!["greaterThanEqualTo"]!.minimum, 1);
-        expect(
-          schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum,
-          false,
-        );
-      },
-    );
+    test("Schema object contains minimumExclusive if max exclusive value in validator", () {
+      expect(schema!.properties!["greaterThanEqualTo"]!.maximum, isNull);
+      expect(
+        schema!.properties!["greaterThanEqualTo"]!.exclusiveMaximum,
+        isNull,
+      );
+      expect(schema!.properties!["greaterThanEqualTo"]!.minimum, 1);
+      expect(
+        schema!.properties!["greaterThanEqualTo"]!.exclusiveMinimum,
+        false,
+      );
+    });
 
     test("Schema object contains range if range validator", () {
       expect(schema!.properties!["range"]!.maximum, 5);
@@ -237,19 +228,16 @@ void main() {
   });
 
   group("Controller integration", () {
-    test(
-      "If ResourceController binds ManagedObject, schema component definition comes from context",
-      () {
-        final schema = doc.components!.schemas["Model1"]!;
-        expect(schema.properties!["string"]!.type, APIType.string);
-        expect(schema.properties!["dateTime"], isNotNull);
-        expect(schema.properties!["getter"], isNotNull);
-        expect(schema.properties!["setter"], isNotNull);
-        expect(schema.properties!["field"], isNotNull);
-        expect(schema.properties!["id"], isNotNull);
-        expect(schema.properties!["boolean"], isNotNull);
-      },
-    );
+    test("If ResourceController binds ManagedObject, schema component definition comes from context", () {
+      final schema = doc.components!.schemas["Model1"]!;
+      expect(schema.properties!["string"]!.type, APIType.string);
+      expect(schema.properties!["dateTime"], isNotNull);
+      expect(schema.properties!["getter"], isNotNull);
+      expect(schema.properties!["setter"], isNotNull);
+      expect(schema.properties!["field"], isNotNull);
+      expect(schema.properties!["id"], isNotNull);
+      expect(schema.properties!["boolean"], isNotNull);
+    });
 
     test("Can emit document for ManagedObjectController", () {
       expect(doc.paths!["/model"]!.operations.length, 2);

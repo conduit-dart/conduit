@@ -63,12 +63,10 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
         );
 
     final instances = sources.map((s) {
-      final type =
-          migrationTypes.firstWhere((cm) {
-                return cm is ClassMirror &&
-                    MirrorSystem.getName(cm.simpleName) == s.name;
-              })
-              as ClassMirror;
+      final type = migrationTypes.firstWhere((cm) {
+        return cm is ClassMirror &&
+            MirrorSystem.getName(cm.simpleName) == s.name;
+      }) as ClassMirror;
       final migration =
           type.newInstance(Symbol.empty, []).reflectee as Migration;
       migration.version = s.versionNumber;

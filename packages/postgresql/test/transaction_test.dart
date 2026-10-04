@@ -45,53 +45,44 @@ void main() {
     expect(result, isNull);
   });
 
-  test(
-    "Queries outside of transaction block while transaction block is running are queued until transaction is complete",
-    () async {
-      context.transaction((t) async {
+  test("Queries outside of transaction block while transaction block is running are queued until transaction is complete", () async {
+    context.transaction((t) async {
+      await Query.insertObject(t, Model()..name = "1");
+      await Query.insertObject(t, Model()..name = "2");
+      await Query.insertObject(t, Model()..name = "3");
+    });
+
+    final results = await Query<Model>(context).fetch();
+    expect(results.length, 3);
+  });
+
+  test("Error thrown from query rolls back transaction and is thrown by transaction method", () async {
+    try {
+      await context.transaction((t) async {
         await Query.insertObject(t, Model()..name = "1");
-        await Query.insertObject(t, Model()..name = "2");
-        await Query.insertObject(t, Model()..name = "3");
+        // This query will fail because name is null
+        await Query.insertObject(t, Model());
+        fail('unreachable');
       });
+    } on QueryException catch (e) {
+      expect(e.toString(), contains("not-null"));
+    }
 
-      final results = await Query<Model>(context).fetch();
-      expect(results.length, 3);
-    },
-  );
+    expect((await Query<Model>(context).fetch()).length, 0);
+  });
 
-  test(
-    "Error thrown from query rolls back transaction and is thrown by transaction method",
-    () async {
-      try {
-        await context.transaction((t) async {
-          await Query.insertObject(t, Model()..name = "1");
-          // This query will fail because name is null
-          await Query.insertObject(t, Model());
-          fail('unreachable');
-        });
-      } on QueryException catch (e) {
-        expect(e.toString(), contains("not-null"));
-      }
+  test("Error thrown from non-query code in transaction rolls back transaction and thrown by transaction method", () async {
+    try {
+      await context.transaction((t) async {
+        await Query.insertObject(t, Model()..name = "1");
+        throw StateError("hello");
+      });
+    } on StateError catch (e) {
+      expect(e.toString(), contains("hello"));
+    }
 
-      expect((await Query<Model>(context).fetch()).length, 0);
-    },
-  );
-
-  test(
-    "Error thrown from non-query code in transaction rolls back transaction and thrown by transaction method",
-    () async {
-      try {
-        await context.transaction((t) async {
-          await Query.insertObject(t, Model()..name = "1");
-          throw StateError("hello");
-        });
-      } on StateError catch (e) {
-        expect(e.toString(), contains("hello"));
-      }
-
-      expect((await Query<Model>(context).fetch()).length, 0);
-    },
-  );
+    expect((await Query<Model>(context).fetch()).length, 0);
+  });
 
   test(
     "A thrown rollback rolls back transaction and throws rollback",
@@ -130,32 +121,29 @@ void main() {
     },
   );
 
-  test(
-    "Query on original context within transaction block times out and cancels transaction",
-    () async {
-      try {
-        await context.transaction((t) async {
-          await Query.insertObject(t, Model()..name = "1");
-          final q = Query<Model>(context)
-            ..timeoutInSeconds = 1
-            ..values.name = '2';
-          await q.insert();
-          await Query.insertObject(t, Model()..name = "3");
-        });
-        fail('unreachable');
-      } on QueryException catch (e) {
-        expect(
-          e.toString(),
-          contains(
-            "Attempting to execute query on connection while inside a `runTx` call.",
-          ),
-        );
-      }
+  test("Query on original context within transaction block times out and cancels transaction", () async {
+    try {
+      await context.transaction((t) async {
+        await Query.insertObject(t, Model()..name = "1");
+        final q = Query<Model>(context)
+          ..timeoutInSeconds = 1
+          ..values.name = '2';
+        await q.insert();
+        await Query.insertObject(t, Model()..name = "3");
+      });
+      fail('unreachable');
+    } on QueryException catch (e) {
+      expect(
+        e.toString(),
+        contains(
+          "Attempting to execute query on connection while inside a `runTx` call.",
+        ),
+      );
+    }
 
-      final q = Query<Model>(context);
-      expect(await q.fetch(), isEmpty);
-    },
-  );
+    final q = Query<Model>(context);
+    expect(await q.fetch(), isEmpty);
+  });
 }
 
 class _Model {

@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:conduit_core/conduit_core.dart';
 import 'package:postgres/postgres.dart';
+
 import 'postgresql_persistent_store.dart';
 import 'postgresql_query.dart';
 

@@ -12,12 +12,9 @@ void main() {
     await store.close();
   });
 
-  test(
-    "Getting version number with 'blank' database (aka no version table yet) returns 0",
-    () async {
-      expect(await store.schemaVersion, 0);
-    },
-  );
+  test("Getting version number with 'blank' database (aka no version table yet) returns 0", () async {
+    expect(await store.schemaVersion, 0);
+  });
 
   test(
     "Version table gets created on initiating upgrade if it doesn't exist",
@@ -34,22 +31,19 @@ void main() {
     },
   );
 
-  test(
-    "Subsequent upgrades do not fail because the verison table is already created",
-    () async {
-      final s1 = await store.upgrade(Schema.empty(), [
-        EmptyMigration()..version = 1,
-      ], temporary: true);
-      await store.upgrade(s1, [EmptyMigration()..version = 2], temporary: true);
+  test("Subsequent upgrades do not fail because the verison table is already created", () async {
+    final s1 = await store.upgrade(Schema.empty(), [
+      EmptyMigration()..version = 1,
+    ], temporary: true);
+    await store.upgrade(s1, [EmptyMigration()..version = 2], temporary: true);
 
-      final rows = await store.execute(
-        "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
-      );
-      expect(rows.length, 2);
-      expect(rows.first.first, 1);
-      expect(rows.last.first, 2);
-    },
-  );
+    final rows = await store.execute(
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+    );
+    expect(rows.length, 2);
+    expect(rows.first.first, 1);
+    expect(rows.last.first, 2);
+  });
 
   test("Trying to upgrade to version that already exists fails", () async {
     final s1 = await store.upgrade(Schema.empty(), [

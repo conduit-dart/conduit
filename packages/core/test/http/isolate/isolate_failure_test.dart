@@ -11,34 +11,31 @@ void main() {
   tearDownAll(Logger("conduit").clearListeners);
 
   group("Failures", () {
-    test(
-      "Application start fails and logs appropriate message if request stream doesn't open",
-      () async {
-        final crashingApp = Application<CrashChannel>();
+    test("Application start fails and logs appropriate message if request stream doesn't open", () async {
+      final crashingApp = Application<CrashChannel>();
 
-        try {
-          crashingApp.options.context["crashIn"] = "addRoutes";
-          await crashingApp.start(consoleLogging: true);
-          expect(true, false);
-        } on ApplicationStartupException catch (e) {
-          expect(e.toString(), contains("TestException: addRoutes"));
-        }
-
-        try {
-          crashingApp.options.context["crashIn"] = "prepare";
-          await crashingApp.start(consoleLogging: true);
-          expect(true, false);
-        } on ApplicationStartupException catch (e) {
-          expect(e.toString(), contains("TestException: prepare"));
-        }
-
-        crashingApp.options.context["crashIn"] = "dontCrash";
+      try {
+        crashingApp.options.context["crashIn"] = "addRoutes";
         await crashingApp.start(consoleLogging: true);
-        final response = await http.get(Uri.parse("http://localhost:8888/t"));
-        expect(response.statusCode, 200);
-        await crashingApp.stop();
-      },
-    );
+        expect(true, false);
+      } on ApplicationStartupException catch (e) {
+        expect(e.toString(), contains("TestException: addRoutes"));
+      }
+
+      try {
+        crashingApp.options.context["crashIn"] = "prepare";
+        await crashingApp.start(consoleLogging: true);
+        expect(true, false);
+      } on ApplicationStartupException catch (e) {
+        expect(e.toString(), contains("TestException: prepare"));
+      }
+
+      crashingApp.options.context["crashIn"] = "dontCrash";
+      await crashingApp.start(consoleLogging: true);
+      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      expect(response.statusCode, 200);
+      await crashingApp.stop();
+    });
 
     test(
       "Application that fails to open because port is bound fails gracefully",
@@ -79,24 +76,21 @@ void main() {
       },
     );
 
-    test(
-      "Isolate timeout kills application when first isolate succeeds, but next fails",
-      () async {
-        final timeoutApp = Application<TimeoutChannel>()
-          ..isolateStartupTimeout = const Duration(seconds: 4)
-          ..options.context["timeout2"] = 10;
+    test("Isolate timeout kills application when first isolate succeeds, but next fails", () async {
+      final timeoutApp = Application<TimeoutChannel>()
+        ..isolateStartupTimeout = const Duration(seconds: 4)
+        ..options.context["timeout2"] = 10;
 
-        try {
-          await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
-          expect(true, false);
-        } on TimeoutException catch (e) {
-          expect(e.toString(), contains("Isolate (2) failed to launch"));
-        }
+      try {
+        await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
+        expect(true, false);
+      } on TimeoutException catch (e) {
+        expect(e.toString(), contains("Isolate (2) failed to launch"));
+      }
 
-        expect(timeoutApp.supervisors.length, 0);
-        print("-- test completes");
-      },
-    );
+      expect(timeoutApp.supervisors.length, 0);
+      print("-- test completes");
+    });
   });
 }
 

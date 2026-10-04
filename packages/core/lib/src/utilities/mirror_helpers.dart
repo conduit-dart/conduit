@@ -1,4 +1,5 @@
 import 'dart:mirrors';
+
 import 'package:collection/collection.dart' show IterableExtension;
 
 Iterable<ClassMirror> classHierarchyForClass(ClassMirror t) sync* {

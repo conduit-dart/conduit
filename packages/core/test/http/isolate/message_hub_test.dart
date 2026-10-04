@@ -19,39 +19,36 @@ void main() {
       await app.stop();
     });
 
-    test(
-      "A message sent to the hub is received by other channels, but not by sender",
-      () async {
-        final started = await startWithFreePort(
-          Application<HubChannel>.new,
-          numberOfInstances: 3,
-        );
-        app = started.app;
-        port = started.port;
+    test("A message sent to the hub is received by other channels, but not by sender", () async {
+      final started = await startWithFreePort(
+        Application<HubChannel>.new,
+        numberOfInstances: 3,
+      );
+      app = started.app;
+      port = started.port;
 
-        final resp = await postMessage(port, "msg1");
-        final postingIsolateID = isolateIdentifierFromResponse(resp);
-        var id1 = 1;
-        var id2 = 2;
-        if (postingIsolateID == 1) {
-          id1 = 3;
-        } else if (postingIsolateID == 2) {
-          id2 = 3;
-        }
+      final resp = await postMessage(port, "msg1");
+      final postingIsolateID = isolateIdentifierFromResponse(resp);
+      var id1 = 1;
+      var id2 = 2;
+      if (postingIsolateID == 1) {
+        id1 = 3;
+      } else if (postingIsolateID == 2) {
+        id2 = 3;
+      }
 
-        expect(
-          waitForMessages(port, {
-            id1: [
-              {"isolateID": postingIsolateID, "message": "msg1"},
-            ],
-            id2: [
-              {"isolateID": postingIsolateID, "message": "msg1"},
-            ],
-          }, butNeverReceiveIn: postingIsolateID),
-          completes,
-        );
-      },
-    );
+      expect(
+        waitForMessages(port, {
+          id1: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
+          ],
+          id2: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
+          ],
+        }, butNeverReceiveIn: postingIsolateID),
+        completes,
+      );
+    });
 
     test(
       "A message sent in prepare is received by all channels eventually",

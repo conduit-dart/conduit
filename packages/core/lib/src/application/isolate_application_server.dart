@@ -76,8 +76,9 @@ class ApplicationIsolateServer extends ApplicationServer {
   }
 }
 
-typedef IsolateEntryFunction =
-    void Function(ApplicationInitialServerMessage message);
+typedef IsolateEntryFunction = void Function(
+  ApplicationInitialServerMessage message,
+);
 
 class ApplicationInitialServerMessage {
   ApplicationInitialServerMessage(

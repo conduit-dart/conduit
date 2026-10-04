@@ -238,9 +238,8 @@ void main() {
 
   group('GraphQuery filter AST', () {
     test('where compiles a closure to a structured filter', () {
-      final q = GraphQuery<User>(
-        pattern: GraphPattern<User>.build((_) {}),
-      ).where((u) => u['age'].greaterThan(21));
+      final q = GraphQuery<User>(pattern: GraphPattern<User>.build((_) {}))
+          .where((u) => u['age'].greaterThan(21));
 
       final f = q.filter;
       expect(f, isA<GraphPropertyFilter>());
@@ -263,9 +262,8 @@ void main() {
     });
 
     test('compound expressions support OR via the filter API', () {
-      final q = GraphQuery<User>(
-        pattern: GraphPattern<User>.build((_) {}),
-      ).where((u) => u['age'].lessThan(18).or(u['age'].greaterThan(65)));
+      final q = GraphQuery<User>(pattern: GraphPattern<User>.build((_) {}))
+          .where((u) => u['age'].lessThan(18).or(u['age'].greaterThan(65)));
 
       final f = q.filter;
       expect(f, isA<GraphCompoundFilter>());

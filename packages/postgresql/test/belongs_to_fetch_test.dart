@@ -363,9 +363,8 @@ void main() {
     test("Bidirectional join", () async {
       final q = Query<ChildObject>(ctx!)
         ..sortBy((c) => c.cid, QuerySortOrder.ascending)
-        ..join(
-          set: (c) => c.grandChildren,
-        ).sortBy((g) => g.gid, QuerySortOrder.descending)
+        ..join(set: (c) => c.grandChildren)
+            .sortBy((g) => g.gid, QuerySortOrder.descending)
         ..join(object: (c) => c.parents);
 
       final results = await q.fetch();
@@ -501,23 +500,20 @@ void main() {
       );
     });
 
-    test(
-      "Can use two 'where' criteria on parent object when not joining parent object explicitly",
-      () async {
-        final q = Query<ChildObject>(ctx!)
-          ..where((o) => o.parent!.value1).equalTo(1)
-          ..where((o) => o.parent!.value2).equalTo(1);
-        final res1 = await q.fetchOne();
-        expect(res1, isNotNull);
-        expect(res1!.cid, 1);
+    test("Can use two 'where' criteria on parent object when not joining parent object explicitly", () async {
+      final q = Query<ChildObject>(ctx!)
+        ..where((o) => o.parent!.value1).equalTo(1)
+        ..where((o) => o.parent!.value2).equalTo(1);
+      final res1 = await q.fetchOne();
+      expect(res1, isNotNull);
+      expect(res1!.cid, 1);
 
-        final q2 = Query<ChildObject>(ctx!)
-          ..where((o) => o.parent!.value1).equalTo(1)
-          ..where((o) => o.parent!.value2).equalTo(2);
-        final res2 = await q2.fetch();
-        expect(res2.length, 0);
-      },
-    );
+      final q2 = Query<ChildObject>(ctx!)
+        ..where((o) => o.parent!.value1).equalTo(1)
+        ..where((o) => o.parent!.value2).equalTo(2);
+      final res2 = await q2.fetch();
+      expect(res2.length, 0);
+    });
   });
 
   group("Join on parent of hasOne relationship", () {

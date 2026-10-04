@@ -126,21 +126,18 @@ void main() {
     expect(response.body, contains("<html>"));
   });
 
-  test(
-    "If 404 response to request without Accept: text/html, do not include HTML body",
-    () async {
-      final response = await getFile(
-        "/file.foobar",
-        headers: {HttpHeaders.acceptHeader: "text/plain"},
-      );
-      expect(response.headers["last-modified"], isNull);
-      expect(response.headers["cache-control"], isNull);
-      expect(response.headers["content-type"], isNull);
+  test("If 404 response to request without Accept: text/html, do not include HTML body", () async {
+    final response = await getFile(
+      "/file.foobar",
+      headers: {HttpHeaders.acceptHeader: "text/plain"},
+    );
+    expect(response.headers["last-modified"], isNull);
+    expect(response.headers["cache-control"], isNull);
+    expect(response.headers["content-type"], isNull);
 
-      expect(response.statusCode, 404);
-      expect(response.body, isEmpty);
-    },
-  );
+    expect(response.statusCode, 404);
+    expect(response.body, isEmpty);
+  });
 
   test("Unknown extension-content type is application/octet-stream", () async {
     final response = await getFile("/file.unk");
@@ -228,23 +225,20 @@ void main() {
     expect(response.body, htmlContents);
   });
 
-  test(
-    "Client connection closed before data is sent still shuts down stream",
-    () async {
-      final socket = await Socket.connect("localhost", 8888);
-      const request =
-          "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
-      socket.add(request.codeUnits);
-      await socket.flush();
-      socket.destroy();
+  test("Client connection closed before data is sent still shuts down stream", () async {
+    final socket = await Socket.connect("localhost", 8888);
+    const request =
+        "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
+    socket.add(request.codeUnits);
+    await socket.flush();
+    socket.destroy();
 
-      final response = await getFile("/file.html");
-      expect(response.statusCode, 200);
-      expect(response.body, htmlContents);
+    final response = await getFile("/file.html");
+    expect(response.statusCode, 200);
+    expect(response.body, htmlContents);
 
-      expect(serverHasNoMoreConnections(server), completes);
-    },
-  );
+    expect(serverHasNoMoreConnections(server), completes);
+  });
 
   test("Provide onFileNotFound provides another response", () async {
     final response = await http.get(
@@ -280,39 +274,33 @@ void main() {
       expect(response.body, htmlContents);
     });
 
-    test(
-      "Fetch file with If-Modified-Since before last modified date, returns file",
-      () async {
-        final response = await getCacheableFile(
-          "/file.html",
-          ifModifiedSince: DateTime(2000),
-        );
-        expect(response.statusCode, 200);
-        expect(response.headers["content-type"], "text/html; charset=utf-8");
-        expect(response.headers["content-encoding"], "gzip");
-        expect(response.headers["transfer-encoding"], "chunked");
-        expect(response.headers["cache-control"], "public, no-cache");
-        expect(HttpDate.parse(response.headers["last-modified"]!), isNotNull);
-        expect(response.body, htmlContents);
-      },
-    );
+    test("Fetch file with If-Modified-Since before last modified date, returns file", () async {
+      final response = await getCacheableFile(
+        "/file.html",
+        ifModifiedSince: DateTime(2000),
+      );
+      expect(response.statusCode, 200);
+      expect(response.headers["content-type"], "text/html; charset=utf-8");
+      expect(response.headers["content-encoding"], "gzip");
+      expect(response.headers["transfer-encoding"], "chunked");
+      expect(response.headers["cache-control"], "public, no-cache");
+      expect(HttpDate.parse(response.headers["last-modified"]!), isNotNull);
+      expect(response.body, htmlContents);
+    });
 
-    test(
-      "Fetch file with If-Modified-Since after last modified date, returns 304 with no body",
-      () async {
-        final response = await getCacheableFile(
-          "/file.html",
-          ifModifiedSince: DateTime.now().add(const Duration(hours: 1)),
-        );
-        expect(response.statusCode, 304);
-        expect(response.headers["content-type"], isNull);
-        expect(response.headers["content-encoding"], isNull);
-        expect(response.headers["transfer-encoding"], isNull);
-        expect(response.headers["cache-control"], "public, no-cache");
-        expect(HttpDate.parse(response.headers["last-modified"]!), isNotNull);
-        expect(response.body.isEmpty, true);
-      },
-    );
+    test("Fetch file with If-Modified-Since after last modified date, returns 304 with no body", () async {
+      final response = await getCacheableFile(
+        "/file.html",
+        ifModifiedSince: DateTime.now().add(const Duration(hours: 1)),
+      );
+      expect(response.statusCode, 304);
+      expect(response.headers["content-type"], isNull);
+      expect(response.headers["content-encoding"], isNull);
+      expect(response.headers["transfer-encoding"], isNull);
+      expect(response.headers["cache-control"], "public, no-cache");
+      expect(HttpDate.parse(response.headers["last-modified"]!), isNotNull);
+      expect(response.body.isEmpty, true);
+    });
 
     test("JS file has large max-age", () async {
       final response = await getCacheableFile("/file.js");

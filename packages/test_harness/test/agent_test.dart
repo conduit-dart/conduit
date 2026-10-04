@@ -52,23 +52,20 @@ void main() async {
       expectResponse(await tc.request("/").get(), 200);
     });
 
-    test(
-      "Create agent from another agent has same request URL, contentType and headers",
-      () {
-        final original = Agent.fromOptions(
-          ApplicationOptions()
-            ..port = 2121
-            ..address = "foobar.com",
-        );
-        original.headers["key"] = "value";
-        original.contentType = ContentType.text;
+    test("Create agent from another agent has same request URL, contentType and headers", () {
+      final original = Agent.fromOptions(
+        ApplicationOptions()
+          ..port = 2121
+          ..address = "foobar.com",
+      );
+      original.headers["key"] = "value";
+      original.contentType = ContentType.text;
 
-        final clone = Agent.from(original);
-        expect(clone.baseURL, original.baseURL);
-        expect(clone.headers, original.headers);
-        expect(clone.contentType, original.contentType);
-      },
-    );
+      final clone = Agent.from(original);
+      expect(clone.baseURL, original.baseURL);
+      expect(clone.headers, original.headers);
+      expect(clone.contentType, original.contentType);
+    });
   });
 
   group("Request building", () {

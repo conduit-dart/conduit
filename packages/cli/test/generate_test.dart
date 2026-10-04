@@ -1,7 +1,9 @@
 import 'dart:io';
+
 import 'package:fs_test_agent/dart_project_agent.dart';
 import 'package:fs_test_agent/working_directory_agent.dart';
 import 'package:test/test.dart';
+
 import 'not_tests/cli_helpers.dart';
 
 void main() {
@@ -59,24 +61,21 @@ class _TestObject {
     expect(projectUnderTestCli.defaultMigrationDirectory.existsSync(), true);
   });
 
-  test(
-    "If there are no migration files, create an initial one that validates to schema",
-    () async {
-      // Putting a non-migration file in there to ensure that this doesn't prevent from being ugpraded
-      projectUnderTestCli.defaultMigrationDirectory.createSync();
-      projectUnderTestCli.agent.addOrReplaceFile(
-        "migrations/notmigration.dart",
-        " ",
-      );
+  test("If there are no migration files, create an initial one that validates to schema", () async {
+    // Putting a non-migration file in there to ensure that this doesn't prevent from being ugpraded
+    projectUnderTestCli.defaultMigrationDirectory.createSync();
+    projectUnderTestCli.agent.addOrReplaceFile(
+      "migrations/notmigration.dart",
+      " ",
+    );
 
-      var res = await projectUnderTestCli.run("db", ["generate"]);
-      expect(res, isZero);
-      projectUnderTestCli.clearOutput();
+    var res = await projectUnderTestCli.run("db", ["generate"]);
+    expect(res, isZero);
+    projectUnderTestCli.clearOutput();
 
-      res = await projectUnderTestCli.run("db", ["validate"]);
-      expect(res, isZero);
-    },
-  );
+    res = await projectUnderTestCli.run("db", ["validate"]);
+    expect(res, isZero);
+  });
 
   test(
     "If there is already a migration file, create an upgrade file with changes",

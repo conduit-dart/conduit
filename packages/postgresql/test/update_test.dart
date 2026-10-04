@@ -39,37 +39,34 @@ void main() {
     expect(result.emailAddress, "2@a.com");
   });
 
-  test(
-    "Updating non-nullable property to null gives error that specifies the offending property",
-    () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
+  test("Updating non-nullable property to null gives error that specifies the offending property", () async {
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      final m = TestModel()
-        ..name = "Bob"
-        ..emailAddress = "1@a.com";
+    final m = TestModel()
+      ..name = "Bob"
+      ..emailAddress = "1@a.com";
 
-      var req = Query<TestModel>(context!)..values = m;
-      await req.insert();
+    var req = Query<TestModel>(context!)..values = m;
+    await req.insert();
 
-      m
-        ..name = null
-        ..emailAddress = "2@a.com";
+    m
+      ..name = null
+      ..emailAddress = "2@a.com";
 
-      req = Query<TestModel>(context!)
-        ..predicate = QueryPredicate("name = @name", {
-          "name": TypedValue(Type.text, "Bob"),
-        })
-        ..values = m;
+    req = Query<TestModel>(context!)
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "Bob"),
+      })
+      ..values = m;
 
-      try {
-        await req.update();
-        fail('unreachable');
-      } on QueryException catch (e) {
-        expect(e.message, contains("non_null_violation"));
-        expect(e.response.body["detail"], contains("_testmodel.name"));
-      }
-    },
-  );
+    try {
+      await req.update();
+      fail('unreachable');
+    } on QueryException catch (e) {
+      expect(e.message, contains("non_null_violation"));
+      expect(e.response.body["detail"], contains("_testmodel.name"));
+    }
+  });
 
   test("Setting relationship to a new value succeeds", () async {
     context = await PostgresTestConfig().contextWithModels([Child, Parent]);
@@ -315,35 +312,32 @@ void main() {
     expect(res.map((tm) => tm.name), everyElement("Fred"));
   });
 
-  test(
-    "Attempted update that will cause conflict throws appropriate QueryException",
-    () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
+  test("Attempted update that will cause conflict throws appropriate QueryException", () async {
+    context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      final objects = [
-        TestModel()
-          ..name = "Bob"
-          ..emailAddress = "1@a.com",
-        TestModel()
-          ..name = "Fred"
-          ..emailAddress = "2@a.com",
-      ];
-      for (final o in objects) {
-        final req = Query<TestModel>(context!)..values = o;
-        await req.insert();
-      }
+    final objects = [
+      TestModel()
+        ..name = "Bob"
+        ..emailAddress = "1@a.com",
+      TestModel()
+        ..name = "Fred"
+        ..emailAddress = "2@a.com",
+    ];
+    for (final o in objects) {
+      final req = Query<TestModel>(context!)..values = o;
+      await req.insert();
+    }
 
-      try {
-        final q = Query<TestModel>(context!)
-          ..where((o) => o.emailAddress).equalTo("2@a.com")
-          ..values.emailAddress = "1@a.com";
-        await q.updateOne();
-        expect(true, false);
-      } on QueryException catch (e) {
-        expect(e.event, QueryExceptionEvent.conflict);
-      }
-    },
-  );
+    try {
+      final q = Query<TestModel>(context!)
+        ..where((o) => o.emailAddress).equalTo("2@a.com")
+        ..values.emailAddress = "1@a.com";
+      await q.updateOne();
+      expect(true, false);
+    } on QueryException catch (e) {
+      expect(e.event, QueryExceptionEvent.conflict);
+    }
+  });
 
   test("Can use enum to set property to be stored in db", () async {
     context = await PostgresTestConfig().contextWithModels([EnumObject]);

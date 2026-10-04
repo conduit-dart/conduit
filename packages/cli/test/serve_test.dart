@@ -53,9 +53,8 @@ void main() {
     expect(projectUnderTestCli.output, contains("config.yaml"));
 
     final thisPubspec = yaml.loadYaml(
-      File.fromUri(
-        Directory.current.uri.resolve("pubspec.yaml"),
-      ).readAsStringSync(),
+      File.fromUri(Directory.current.uri.resolve("pubspec.yaml"))
+          .readAsStringSync(),
     );
     final thisVersion = Version.parse(thisPubspec["version"] as String);
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));

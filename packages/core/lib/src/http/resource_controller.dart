@@ -277,9 +277,8 @@ abstract class ResourceController extends Controller
     );
     if (operation == null) {
       throw Response(405, {
-        "Allow": _allowedMethodsForPathVariables(
-          request!.path.variables.keys,
-        ).join(", "),
+        "Allow": _allowedMethodsForPathVariables(request!.path.variables.keys)
+            .join(", "),
       }, null);
     }
 

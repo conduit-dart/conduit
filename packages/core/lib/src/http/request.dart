@@ -367,9 +367,9 @@ class Request implements RequestOrResponse {
   ) {
     Codec<String, List<int>>? codec;
     if (resp.encodeBody) {
-      codec =
-          CodecRegistry.defaultInstance.codecForContentType(resp.contentType)
-              as Codec<String, List<int>>?;
+      codec = CodecRegistry.defaultInstance.codecForContentType(
+        resp.contentType,
+      ) as Codec<String, List<int>>?;
     }
 
     final canGzip =

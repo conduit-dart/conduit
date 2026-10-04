@@ -8,8 +8,7 @@ import 'package:conduit/src/mixins/project.dart';
 class CLISetup extends CLICommand with CLIProject {
   @Flag(
     "tests",
-    help:
-        "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
+    help: "Sets up a local database to run application tests. If no other option is on, the command defaults to this flag.",
     defaultsTo: true,
   )
   bool get shouldSetupTests => decode("tests");
@@ -26,8 +25,7 @@ class CLISetup extends CLICommand with CLIProject {
     "granting-user",
     abbr: "u",
     defaultsTo: "postgres",
-    help:
-        "The username of the PostgreSQL user that has privileges to create a new test user and test database.",
+    help: "The username of the PostgreSQL user that has privileges to create a new test user and test database.",
   )
   String get grantingUser => decode("granting-user");
 
