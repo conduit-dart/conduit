@@ -1,8 +1,13 @@
 include: ../../analysis_options.shared.yaml
 
+# `empty_catches` is deliberately left at its default (enforced).
+# It used to be set to `ignore` here (since #222), nominally for
+# best-effort teardown in `Application.stop` and isolate shutdown -- but
+# those sites log via `logger.severe`, and by 2026-10 the override only
+# masked a single test. A catch that intentionally swallows must say why
+# in a comment inside the block (the lint accepts that); don't re-add the
+# blanket ignore, it hides new swallowed exceptions in lib/ too.
 analyzer:
-  errors:
-    empty_catches: ignore
   exclude:
     - tmp/**
     - templates/**

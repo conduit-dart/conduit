@@ -99,7 +99,11 @@ void main() {
           final result = await resultFuture;
           expect(result.statusCode, 500);
           expect(result.bodyBytes, []);
-        } on http.ClientException {}
+        } on http.ClientException {
+          // Expected in the other mode: the server tears the connection
+          // down mid-stream, so the client sees a ClientException instead
+          // of a 500. Either outcome is a pass; anything else rethrows.
+        }
       },
     );
   });

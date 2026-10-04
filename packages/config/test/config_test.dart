@@ -744,7 +744,9 @@ void main() {
     try {
       final _ = OptionalEmbeddedContainer.fromString(yamlString);
       fail('unreachable');
-    } on ConfigurationException {}
+    } on ConfigurationException {
+      // Expected: the nested item is missing its required `host`.
+    }
   });
 
   test("Database configuration can come from string", () {
