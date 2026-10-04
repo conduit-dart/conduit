@@ -259,7 +259,7 @@ Future<http.Response> postJSON(dynamic body) {
   );
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey
@@ -369,8 +369,8 @@ class MapController extends ResourceController {
   }
 }
 
-class ByteListController extends ResourceController {
-  ByteListController() {
+class ByteListController() extends ResourceController {
+  this {
     acceptedContentTypes = [ContentType("application", "octet-stream")];
   }
 

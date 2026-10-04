@@ -11,66 +11,60 @@ import 'package:conduit_runtime/runtime.dart';
 /// Each property a [ManagedObject] object manages is described by an instance of [ManagedPropertyDescription], which contains useful information
 /// about the property such as its name and type. Those properties are represented by concrete subclasses of this class, [ManagedRelationshipDescription]
 /// and [ManagedAttributeDescription].
-abstract class ManagedPropertyDescription {
-  ManagedPropertyDescription(
-    this.entity,
-    this.name,
-    this.type,
-    this.declaredType, {
-    bool unique = false,
-    bool indexed = false,
-    bool nullable = false,
-    bool includedInDefaultResultSet = true,
-    this.autoincrement = false,
-    this._validators = const [],
-    this.responseModel,
-    this.responseKey,
-  }) : isUnique = unique,
-       isIndexed = indexed,
-       isNullable = nullable,
-       isIncludedInDefaultResultSet = includedInDefaultResultSet {
-    for (final v in _validators) {
-      v.property = this;
-    }
-  }
-
+abstract class ManagedPropertyDescription(
   /// A reference to the [ManagedEntity] that contains this property.
-  final ManagedEntity entity;
+  final ManagedEntity entity,
+
+  /// The identifying name of this property.
+  final String name,
 
   /// The value type of this property.
   ///
   /// Will indicate the Dart type and database column type of this property.
-  final ManagedType? type;
+  final ManagedType? type,
 
-  /// The identifying name of this property.
-  final String name;
-
-  /// Whether or not this property must be unique to across all instances represented by [entity].
-  ///
-  /// Defaults to false.
-  final bool isUnique;
-
-  /// Whether or not this property should be indexed by a [PersistentStore].
-  ///
-  /// Defaults to false.
-  final bool isIndexed;
-
-  /// Whether or not this property can be null.
-  ///
-  /// Defaults to false.
-  final bool isNullable;
-
-  /// Whether or not this property is returned in the default set of [Query.returningProperties].
-  ///
-  /// This defaults to true. If true, when executing a [Query] that does not explicitly specify [Query.returningProperties],
-  /// this property will be returned. If false, you must explicitly specify this property in [Query.returningProperties] to retrieve it from persistent storage.
-  final bool isIncludedInDefaultResultSet;
+  /// The type of the variable that this property represents.
+  final Type? declaredType, {
+  bool unique = false,
+  bool indexed = false,
+  bool nullable = false,
+  bool includedInDefaultResultSet = true,
 
   /// Whether or not this property should use an auto-incrementing scheme.
   ///
   /// By default, false. When true, it signals to the [PersistentStore] that this property should automatically be assigned a value
   /// by the database.
-  final bool autoincrement;
+  final bool autoincrement = false,
+  final List<ManagedValidator> _validators = const [],
+  final ResponseModel? responseModel,
+  final ResponseKey? responseKey,
+}) {
+  this {
+    for (final v in _validators) {
+      v.property = this;
+    }
+  }
+
+  /// Whether or not this property must be unique to across all instances represented by [entity].
+  ///
+  /// Defaults to false.
+  final bool isUnique = unique;
+
+  /// Whether or not this property should be indexed by a [PersistentStore].
+  ///
+  /// Defaults to false.
+  final bool isIndexed = indexed;
+
+  /// Whether or not this property can be null.
+  ///
+  /// Defaults to false.
+  final bool isNullable = nullable;
+
+  /// Whether or not this property is returned in the default set of [Query.returningProperties].
+  ///
+  /// This defaults to true. If true, when executing a [Query] that does not explicitly specify [Query.returningProperties],
+  /// this property will be returned. If false, you must explicitly specify this property in [Query.returningProperties] to retrieve it from persistent storage.
+  final bool isIncludedInDefaultResultSet = includedInDefaultResultSet;
 
   /// Whether or not this attribute is private or not.
   ///
@@ -84,11 +78,6 @@ abstract class ManagedPropertyDescription {
 
   /// [ManagedValidator]s for this instance.
   List<ManagedValidator> get validators => _validators;
-
-  final List<ManagedValidator> _validators;
-
-  final ResponseModel? responseModel;
-  final ResponseKey? responseKey;
 
   /// Whether or not a the argument can be assigned to this property.
   bool isAssignableWith(dynamic dartValue) => type!.isAssignableWith(dartValue);
@@ -106,9 +95,6 @@ abstract class ManagedPropertyDescription {
   /// and turns it into a Dart representation . How this value is computed
   /// depends on this instance's definition.
   dynamic convertFromPrimitiveValue(dynamic value);
-
-  /// The type of the variable that this property represents.
-  final Type? declaredType;
 
   /// Returns an [APISchemaObject] that represents this property.
   ///
@@ -156,7 +142,7 @@ abstract class ManagedPropertyDescription {
 /// Each scalar property [ManagedObject] object persists is described by an instance of [ManagedAttributeDescription]. This class
 /// adds two properties to [ManagedPropertyDescription] that are only valid for non-relationship types, [isPrimaryKey] and [defaultValue].
 class ManagedAttributeDescription extends ManagedPropertyDescription {
-  ManagedAttributeDescription(
+  new(
     super.entity,
     super.name,
     ManagedType super.type,
@@ -174,7 +160,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     super.responseKey,
   }) : isPrimaryKey = primaryKey;
 
-  ManagedAttributeDescription.transient(
+  new transient(
     super.entity,
     super.name,
     ManagedType super.type,
@@ -395,25 +381,31 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
 }
 
 /// Contains information for a relationship property of a [ManagedObject].
-class ManagedRelationshipDescription extends ManagedPropertyDescription {
-  ManagedRelationshipDescription(
-    super.entity,
-    super.name,
-    super.type,
-    super.declaredType,
-    this.destinationEntity,
-    this.deleteRule,
-    this.relationshipType,
-    this.inverseKey, {
-    super.unique,
-    super.indexed,
-    super.nullable,
-    super.includedInDefaultResultSet,
-    super.validators = const [],
-    super.responseModel,
-    super.responseKey,
-  });
+class ManagedRelationshipDescription(
+  super.entity,
+  super.name,
+  super.type,
+  super.declaredType,
 
+  /// The entity that this relationship's instances are represented by.
+  final ManagedEntity destinationEntity,
+
+  /// The delete rule for this relationship.
+  final DeleteRule? deleteRule,
+
+  /// The type of relationship.
+  final ManagedRelationshipType relationshipType,
+
+  /// The name of the [ManagedRelationshipDescription] on [destinationEntity] that represents the inverse of this relationship.
+  final String inverseKey, {
+  super.unique,
+  super.indexed,
+  super.nullable,
+  super.includedInDefaultResultSet,
+  super.validators = const [],
+  super.responseModel,
+  super.responseKey,
+}) extends ManagedPropertyDescription {
   static ManagedRelationshipDescription make<T>(
     ManagedEntity entity,
     String name,
@@ -448,18 +440,6 @@ class ManagedRelationshipDescription extends ManagedPropertyDescription {
       responseModel: responseModel,
     );
   }
-
-  /// The entity that this relationship's instances are represented by.
-  final ManagedEntity destinationEntity;
-
-  /// The delete rule for this relationship.
-  final DeleteRule? deleteRule;
-
-  /// The type of relationship.
-  final ManagedRelationshipType relationshipType;
-
-  /// The name of the [ManagedRelationshipDescription] on [destinationEntity] that represents the inverse of this relationship.
-  final String inverseKey;
 
   /// The [ManagedRelationshipDescription] on [destinationEntity] that represents the inverse of this relationship.
   ManagedRelationshipDescription? get inverse =>

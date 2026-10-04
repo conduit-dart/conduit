@@ -24,7 +24,7 @@ class Table {
   /// the name of the underlying table matches the name of the table definition class.
   ///
   /// See also [Table.unique] for the behavior of [uniquePropertySet].
-  const Table({
+  const new({
     this.useSnakeCaseName = false,
     this.name,
     this.uniquePropertySet,
@@ -37,7 +37,7 @@ class Table {
   /// must be unique for the combined properties in [properties]. [properties] must contain symbolic names of
   /// properties declared in the table definition, and those properties must be either attributes
   /// or belongs-to relationship properties. See [Table] for example.
-  const Table.unique(List<Symbol> properties)
+  const new unique(List<Symbol> properties)
     : this(uniquePropertySet: properties);
 
   /// Each instance of the associated table definition is unique for these properties.
@@ -83,35 +83,31 @@ enum DeleteRule {
 /// that has a foreign key reference to the related [ManagedObject]. Relationships are made up of two [ManagedObject]s, where each
 /// has a property that refers to the other. Only one of those properties may have this metadata. The property with this metadata
 /// resolves to a column in the database. The relationship property without this metadata resolves to a row or rows in the database.
-class Relate {
-  /// Creates an instance of this type.
-  const Relate(
-    this.inversePropertyName, {
-    this.onDelete = DeleteRule.nullify,
-    this.isRequired = false,
-  });
-
-  const Relate.deferred(DeleteRule onDelete, {bool isRequired = false})
-    : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
-
+class const Relate(
   /// The symbol for the property in the related [ManagedObject].
   ///
   /// This value must be the symbol for the property in the related [ManagedObject]. This creates the link between
   /// two sides of a relationship between a [ManagedObject].
-  final Symbol inversePropertyName;
+  final Symbol inversePropertyName, {
 
   /// The delete rule to use when a related instance is deleted.
   ///
   /// This rule dictates how the database should handle deleting objects that have relationships. See [DeleteRule] for possible options.
   ///
   /// If [isRequired] is true, this value may not be [DeleteRule.nullify]. This value defaults to [DeleteRule.nullify].
-  final DeleteRule onDelete;
+  final DeleteRule onDelete = DeleteRule.nullify,
 
   /// Whether or not this relationship is required.
   ///
   /// By default, [Relate] properties are not required to support the default value of [onDelete].
   /// By setting this value to true, an instance of this entity cannot be created without a valid value for the relationship property.
-  final bool isRequired;
+  final bool isRequired = false,
+}) {
+  /// Creates an instance of this type.
+  this;
+
+  const new deferred(DeleteRule onDelete, {bool isRequired = false})
+    : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
 
   bool get isDeferred => inversePropertyName == _deferredSymbol;
 
@@ -137,7 +133,7 @@ class Column {
   ///
   /// [defaultValue] is sent as-is to the database, therefore, if the default value is the integer value 2,
   /// pass the string "2". If the default value is a string, it must also be wrapped in single quotes: "'defaultValue'".
-  const Column({
+  const new({
     this.databaseType,
     bool primaryKey = false,
     bool nullable = false,
@@ -230,9 +226,7 @@ class Column {
 
 /// An annotation used to specify how a Model is serialized in API responses.
 @Target({TargetKind.classType})
-class ResponseModel {
-  const ResponseModel({this.includeIfNullField = true});
-
+class const ResponseModel({
   /// Whether the serializer should include fields with `null` values in the
   /// serialized Model output.
   ///
@@ -241,13 +235,13 @@ class ResponseModel {
   ///
   /// If a field is annotated with `@ResponseKey()` with a non-`null` value for
   /// `includeIfNull`, that value takes precedent.
-  final bool includeIfNullField;
-}
+  final bool includeIfNullField = true,
+});
 
 /// An annotation used to specify how a field is serialized in API responses.
 @Target({TargetKind.field, TargetKind.getter, TargetKind.setter})
 class ResponseKey {
-  const ResponseKey({this.name, this.includeIfNull});
+  const new({this.name, this.includeIfNull});
 
   /// The name to be used when serializing this field.
   ///
@@ -269,7 +263,7 @@ class ResponseKey {
 /// Annotation for [ManagedObject] properties that allows them to participate in [ManagedObject.asMap] and/or [ManagedObject.readFromMap].
 ///
 /// See constructor.
-class Serialize {
+class const Serialize({bool input = true, bool output = true}) {
   /// Annotates a [ManagedObject] property so it can be serialized.
   ///
   /// A [ManagedObject] property declaration with this metadata will have its value encoded/decoded when
@@ -281,15 +275,13 @@ class Serialize {
   /// This key is only included if the value is non-null.
   ///
   /// Both [input] and [output] default to true.
-  const Serialize({bool input = true, bool output = true})
-    : isAvailableAsInput = input,
-      isAvailableAsOutput = output;
+  this;
 
   /// See constructor.
-  final bool isAvailableAsInput;
+  final bool isAvailableAsInput = input;
 
   /// See constructor.
-  final bool isAvailableAsOutput;
+  final bool isAvailableAsOutput = output;
 }
 
 /// Primary key annotation for a ManagedObject table definition property.

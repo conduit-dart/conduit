@@ -8,7 +8,7 @@ import 'package:conduit_postgresql/conduit_postgresql.dart';
 import 'package:postgres/postgres.dart';
 
 class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
-  RunUpgradeExecutable(super.message)
+  new(super.message)
     : inputSchema = Schema.fromMap(message["schema"] as Map<String, dynamic>),
       dbInfo = DBInfo.fromMap(message["dbInfo"] as Map<String, dynamic>),
       sources = (message["migrations"] as List<Map>)
@@ -16,12 +16,8 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
           .toList(),
       currentVersion = message["currentVersion"] as int?;
 
-  RunUpgradeExecutable.input(
-    this.inputSchema,
-    this.dbInfo,
-    this.sources,
-    this.currentVersion,
-  ) : super({
+  new input(this.inputSchema, this.dbInfo, this.sources, this.currentVersion)
+    : super({
         "schema": inputSchema.asMap(),
         "dbInfo": dbInfo.asMap(),
         "migrations": sources.map((source) => source.asMap()).toList(),
@@ -125,7 +121,7 @@ class RunUpgradeExecutable extends Executable<Map<String, dynamic>> {
 }
 
 class DBInfo {
-  DBInfo(
+  new(
     this.flavor,
     this.username,
     this.password,
@@ -136,7 +132,7 @@ class DBInfo {
     this.sslMode,
   });
 
-  DBInfo.fromMap(Map<String, dynamic> map)
+  new fromMap(Map<String, dynamic> map)
     : flavor = map["flavor"] as String?,
       username = map["username"] as String?,
       password = map["password"] as String?,

@@ -88,7 +88,7 @@ const String dataLoaderRegistryArgKey = 'conduitDataLoaderRegistry';
 /// idempotent and side-effect-free, so a single factory can serve
 /// every controller instance bound to the same context.
 class SqlResolverFactory {
-  SqlResolverFactory(this.context);
+  new(this.context);
 
   /// The Conduit [ManagedContext] every produced resolver runs against.
   /// Must contain entities matching the schema the resolvers were
@@ -745,12 +745,12 @@ class SqlResolverFactory {
 /// identity — we want every resolver invocation that targets the same
 /// `Post.author` field to hit the same loader within a request.
 class _LoaderKey {
-  const _LoaderKey._(this._kind, this._rel);
+  const new _(this._kind, this._rel);
 
-  factory _LoaderKey.belongsTo(ManagedRelationshipDescription rel) =>
+  factory belongsTo(ManagedRelationshipDescription rel) =>
       _LoaderKey._('belongsTo', rel);
 
-  factory _LoaderKey.hasMany(ManagedRelationshipDescription rel) =>
+  factory hasMany(ManagedRelationshipDescription rel) =>
       _LoaderKey._('hasMany', rel);
 
   final String _kind;

@@ -21,11 +21,11 @@ import 'package:conduit_graphql/conduit_graphql.dart';
 
 // -- Node types -------------------------------------------------------------
 
-class User extends GraphNode<User> {
+class User() extends GraphNode<User> {
   /// Multi-label: `User` carries both `User` and `Account` in the
   /// store. The schema builder surfaces this as a `UserOrAccount`
   /// union of two object types.
-  User()
+  this
     : super(
         labels: const [
           GraphLabel.unchecked('User'),
@@ -35,27 +35,27 @@ class User extends GraphNode<User> {
 }
 
 class Post extends GraphNode<Post> {
-  Post() : super(labels: const [GraphLabel.unchecked('Post')]);
+  new() : super(labels: const [GraphLabel.unchecked('Post')]);
 }
 
 // -- Edge types --------------------------------------------------------------
 
-class Friend extends GraphEdge<User, User> {
-  Friend({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Friend'));
+class Friend({required super.from, required super.to})
+    extends GraphEdge<User, User> {
+  this : super(label: const GraphLabel.unchecked('Friend'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;
 }
 
 class Authored extends GraphEdge<User, Post> {
-  Authored({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Authored'));
 }
 
-class Liked extends GraphEdge<User, Post> {
-  Liked({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Liked'));
+class Liked({required super.from, required super.to})
+    extends GraphEdge<User, Post> {
+  this : super(label: const GraphLabel.unchecked('Liked'));
 
   int? get score => this['score'] as int?;
   set score(int? v) => this['score'] = v;

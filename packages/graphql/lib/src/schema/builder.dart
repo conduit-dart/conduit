@@ -66,7 +66,60 @@ import 'scalars.dart';
 /// surface for callers who only want the factory's output type.
 typedef SchemaResolver = GraphQLFieldResolver<Object?, Object?>;
 
-class SchemaBuilder {
+class SchemaBuilder({
+  GraphQLScalarType<DateTime, String>? dateTimeScalar,
+  GraphQLScalarType<String, String>? uuidScalar,
+
+  /// When `true` (the default), `ManagedPropertyType.bigInteger` lowers
+  /// to `GraphQLString` rather than `GraphQLInt`, because GraphQL's
+  /// `Int` scalar is a signed 32-bit integer and Conduit big-integers
+  /// can carry 64-bit values that overflow it. Set to `false` to lower
+  /// big-ints to `Int` if the deployment guarantees 32-bit-safe
+  /// values.
+  final bool bigIntegerAsString = true,
+
+  /// Optional resolver hook invoked at attribute-field construction
+  /// time. Returns `null` to leave the field's `resolve:` slot empty
+  /// (the executor's default Map-lookup path applies).
+  ///
+  /// The hook runs once per attribute per emission, so closures
+  /// captured into the returned resolver should be stable across
+  /// requests (the resolver itself is invoked per request).
+  final SchemaResolver? Function(ManagedAttributeDescription attr)?
+  attributeResolver,
+
+  /// Optional resolver hook invoked at relationship-field construction
+  /// time. Returns `null` to leave the field's `resolve:` slot empty.
+  final SchemaResolver? Function(ManagedRelationshipDescription rel)?
+  relationshipResolver,
+
+  /// Optional resolver hook invoked at Query-root list-field
+  /// construction time (i.e. for `<plural>: [<Entity>!]!`).
+  final SchemaResolver? Function(ManagedEntity entity)? queryListResolver,
+
+  /// Optional resolver hook invoked at Query-root by-pk-field
+  /// construction time (i.e. for `<singular>(<pk>: <pkType>!)`).
+  final SchemaResolver? Function(ManagedEntity entity)? queryByPkResolver,
+
+  /// When `true`, list-all Query-root fields gain a `where:` argument
+  /// of a generated `<Entity>Filter` input type. Each filterable
+  /// attribute becomes a field on that input, accepting one of
+  /// `eq:/ne:/gt:/gte:/lt:/lte:/in:/notIn:/like:/isNull:` per
+  /// scalar predicate input (lowering documented in
+  /// `SqlResolverFactory`).
+  final bool generateFilterArgs = false,
+
+  /// When `true`, list-all Query-root fields gain an
+  /// `orderBy: [<Entity>SortInput!]` argument. The sort input carries
+  /// a `field:` enum (one entry per attribute) and a `direction:`
+  /// (`ASC | DESC`).
+  final bool generateSortArgs = false,
+
+  /// When `true`, list-all Query-root fields gain `limit: Int` and
+  /// `offset: Int` arguments. The resolver lowers them to
+  /// `Query.fetchLimit` / `Query.offset`.
+  final bool generatePaginationArgs = false,
+}) {
   /// Constructs a builder with optional overrides for the custom
   /// scalars used during emission and optional resolver / argument
   /// hooks for G3+.
@@ -82,80 +135,20 @@ class SchemaBuilder {
   /// no arguments. Flipping any of them on grows the schema with a
   /// new generated type per entity (a `<Entity>Filter` input, a
   /// `<Entity>SortInput`, etc.).
-  SchemaBuilder({
-    GraphQLScalarType<DateTime, String>? dateTimeScalar,
-    GraphQLScalarType<String, String>? uuidScalar,
-    this.bigIntegerAsString = true,
-    this.attributeResolver,
-    this.relationshipResolver,
-    this.queryListResolver,
-    this.queryByPkResolver,
-    this.generateFilterArgs = false,
-    this.generateSortArgs = false,
-    this.generatePaginationArgs = false,
-  }) : dateTimeScalar = dateTimeScalar ?? graphQLDateTime,
-       uuidScalar = uuidScalar ?? graphQLUUID;
+  this;
 
   /// Scalar used for `ManagedPropertyType.datetime` properties.
   /// Defaults to [graphQLDateTime].
-  final GraphQLScalarType<DateTime, String> dateTimeScalar;
+  final GraphQLScalarType<DateTime, String> dateTimeScalar =
+      dateTimeScalar ?? graphQLDateTime;
 
   /// Scalar used for properties marked as UUIDs. Currently this only
   /// matters when the user supplies a UUID-typed `String` column via a
   /// custom annotation; the default scalar mapping treats any
   /// non-UUID-tagged string as `GraphQLString`. The slot exists so
   /// future phases can light it up without breaking the API.
-  final GraphQLScalarType<String, String> uuidScalar;
-
-  /// When `true` (the default), `ManagedPropertyType.bigInteger` lowers
-  /// to `GraphQLString` rather than `GraphQLInt`, because GraphQL's
-  /// `Int` scalar is a signed 32-bit integer and Conduit big-integers
-  /// can carry 64-bit values that overflow it. Set to `false` to lower
-  /// big-ints to `Int` if the deployment guarantees 32-bit-safe
-  /// values.
-  final bool bigIntegerAsString;
-
-  /// Optional resolver hook invoked at attribute-field construction
-  /// time. Returns `null` to leave the field's `resolve:` slot empty
-  /// (the executor's default Map-lookup path applies).
-  ///
-  /// The hook runs once per attribute per emission, so closures
-  /// captured into the returned resolver should be stable across
-  /// requests (the resolver itself is invoked per request).
-  final SchemaResolver? Function(ManagedAttributeDescription attr)?
-  attributeResolver;
-
-  /// Optional resolver hook invoked at relationship-field construction
-  /// time. Returns `null` to leave the field's `resolve:` slot empty.
-  final SchemaResolver? Function(ManagedRelationshipDescription rel)?
-  relationshipResolver;
-
-  /// Optional resolver hook invoked at Query-root list-field
-  /// construction time (i.e. for `<plural>: [<Entity>!]!`).
-  final SchemaResolver? Function(ManagedEntity entity)? queryListResolver;
-
-  /// Optional resolver hook invoked at Query-root by-pk-field
-  /// construction time (i.e. for `<singular>(<pk>: <pkType>!)`).
-  final SchemaResolver? Function(ManagedEntity entity)? queryByPkResolver;
-
-  /// When `true`, list-all Query-root fields gain a `where:` argument
-  /// of a generated `<Entity>Filter` input type. Each filterable
-  /// attribute becomes a field on that input, accepting one of
-  /// `eq:/ne:/gt:/gte:/lt:/lte:/in:/notIn:/like:/isNull:` per
-  /// scalar predicate input (lowering documented in
-  /// `SqlResolverFactory`).
-  final bool generateFilterArgs;
-
-  /// When `true`, list-all Query-root fields gain an
-  /// `orderBy: [<Entity>SortInput!]` argument. The sort input carries
-  /// a `field:` enum (one entry per attribute) and a `direction:`
-  /// (`ASC | DESC`).
-  final bool generateSortArgs;
-
-  /// When `true`, list-all Query-root fields gain `limit: Int` and
-  /// `offset: Int` arguments. The resolver lowers them to
-  /// `Query.fetchLimit` / `Query.offset`.
-  final bool generatePaginationArgs;
+  final GraphQLScalarType<String, String> uuidScalar =
+      uuidScalar ?? graphQLUUID;
 
   /// Derives a [GraphQLSchema] from [model].
   ///
@@ -2007,7 +2000,7 @@ class SchemaBuilder {
 /// [GraphQLSchema] with the side-channel maps callers need to introspect
 /// which half of the umbrella produced which type.
 class PersistenceSchema {
-  PersistenceSchema._({
+  new _({
     required this.schema,
     required this.sqlObjectTypes,
     required this.graphObjectTypes,

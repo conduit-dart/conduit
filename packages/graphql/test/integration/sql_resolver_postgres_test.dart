@@ -308,13 +308,7 @@ List<String> _commandsFromDataModel(
 /// Counting only `executeQuery` keeps the counter focused on the SQL
 /// the resolver-driven query path emits.
 class _CountingPostgresStore extends PostgreSQLPersistentStore {
-  _CountingPostgresStore(
-    super.username,
-    super.password,
-    super.host,
-    super.port,
-    super.dbName,
-  );
+  new(super.username, super.password, super.host, super.port, super.dbName);
 
   int queryCount = 0;
 

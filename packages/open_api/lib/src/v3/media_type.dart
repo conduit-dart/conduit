@@ -5,8 +5,8 @@ import 'package:conduit_open_api/src/v3/schema.dart';
 
 /// Each [APIMediaType] provides schema and examples for the media type identified by its key.
 class APIMediaType extends APIObject {
-  APIMediaType({this.schema, this.encoding});
-  APIMediaType.empty();
+  new({this.schema, this.encoding});
+  new empty();
 
   /// The schema defining the type used for the request body.
   APISchemaObject? schema;

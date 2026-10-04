@@ -11,8 +11,8 @@ import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
 /// Used internally.
-class CLITemplateCreator extends CLICommand {
-  CLITemplateCreator() {
+class CLITemplateCreator() extends CLICommand {
+  this {
     registerCommand(CLITemplateList());
   }
 

@@ -43,10 +43,10 @@ import 'package:conduit_core/src/db/query/query.dart';
 class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
     implements _ManagedAuthToken {
   /// Empty instance.
-  ManagedAuthToken() : super();
+  new() : super();
 
   /// Instance from an [AuthToken].
-  ManagedAuthToken.fromToken(AuthToken t) : super() {
+  new fromToken(AuthToken t) : super() {
     final tokenResourceOwner = entity
         .relationships["resourceOwner"]!
         .destinationEntity
@@ -64,7 +64,7 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
   }
 
   /// Instance from an [AuthCode].
-  ManagedAuthToken.fromCode(AuthCode code) : super() {
+  new fromCode(AuthCode code) : super() {
     final tokenResourceOwner = entity
         .relationships["resourceOwner"]!
         .destinationEntity
@@ -174,10 +174,10 @@ class _ManagedAuthToken {
 class ManagedAuthClient extends ManagedObject<_ManagedAuthClient>
     implements _ManagedAuthClient {
   /// Default constructor.
-  ManagedAuthClient();
+  new();
 
   /// Create from an [AuthClient].
-  ManagedAuthClient.fromClient(AuthClient client) {
+  new fromClient(AuthClient client) {
     id = client.id;
     hashedSecret = client.hashedSecret;
     salt = client.salt;
@@ -286,7 +286,7 @@ class ResourceOwnerTableDefinition implements ResourceOwner {
 /// a table definition that extends [ResourceOwnerTableDefinition]. Since all [ManagedObject] subclasses
 /// extend their table definition, this interface requirement is met.
 abstract class ManagedAuthResourceOwner<T>
-    implements ResourceOwnerTableDefinition, ManagedObject<T> {}
+    implements ResourceOwnerTableDefinition, ManagedObject<T>;
 
 /// [AuthServerDelegate] implementation for an [AuthServer] using [ManagedObject]s.
 ///
@@ -307,7 +307,7 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
   /// Creates an instance of this type.
   ///
   /// [context]'s [ManagedDataModel] must contain [T], [ManagedAuthToken] and [ManagedAuthClient].
-  ManagedAuthDelegate(this.context, {this.tokenLimit = 40});
+  new(this.context, {this.tokenLimit = 40});
 
   /// The [ManagedContext] this instance uses to store and retrieve values.
   final ManagedContext context;

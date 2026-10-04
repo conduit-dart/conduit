@@ -83,9 +83,7 @@ class Persistence<G extends Object> {
   /// Either [sql], [graph], or both may be provided. A [Persistence] with
   /// neither configured is legal but generally a programmer error — the
   /// only legitimate use is a deployment-time degraded-mode flag.
-  Persistence({PersistentStore? sql, G? graph})
-    : _sqlStore = sql,
-      _graphStore = graph;
+  new({PersistentStore? sql, G? graph}) : _sqlStore = sql, _graphStore = graph;
 
   final PersistentStore? _sqlStore;
   final G? _graphStore;

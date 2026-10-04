@@ -29,7 +29,7 @@ import 'package:conduit_core/src/db/query/expression_ast.dart';
 enum SqlParameterStyle { named, positional }
 
 abstract class SqlDialect {
-  const SqlDialect();
+  const new();
 
   /// Short name used to suffix the version table and to differentiate
   /// dialects in error messages and logs. e.g. 'postgres', 'sqlite',

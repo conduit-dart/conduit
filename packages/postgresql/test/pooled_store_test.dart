@@ -168,4 +168,4 @@ class _PoolModel {
   String? name;
 }
 
-class PoolModel extends ManagedObject<_PoolModel> implements _PoolModel {}
+class PoolModel extends ManagedObject<_PoolModel> implements _PoolModel;

@@ -14,7 +14,7 @@ void main() {
 }
 
 class HasNoDefaultConstructor extends ManagedObject<_ConstructorTableDef> {
-  HasNoDefaultConstructor.foo();
+  new foo();
 }
 
 class _ConstructorTableDef {

@@ -9,7 +9,7 @@ import 'package:conduit_core/src/http/http.dart';
 /// [decode] to convert the contents of this object into a Dart type (e.g, [Map] or [List]).
 ///
 /// See also [CodecRegistry] for how decoding occurs.
-class RequestBody extends BodyDecoder {
+class RequestBody(HttpRequest super.request) extends BodyDecoder {
   /// Creates a new instance of this type.
   ///
   /// Instances of this type decode [request]'s body based on its content-type.
@@ -17,16 +17,14 @@ class RequestBody extends BodyDecoder {
   /// See [CodecRegistry] for more information about how data is decoded.
   ///
   /// Decoded data is cached the after it is decoded.
-  RequestBody(HttpRequest super.request)
-    : _request = request,
-      _originalByteStream = request;
+  this;
 
   /// The maximum size of a request body.
   ///
   /// A request with a body larger than this size will be rejected. Value is in bytes. Defaults to 10MB (1024 * 1024 * 10).
   static int maxSize = 1024 * 1024 * 10;
 
-  final HttpRequest _request;
+  final HttpRequest _request = request;
 
   bool get _hasContent =>
       _hasContentLength || _request.headers.chunkedTransferEncoding;
@@ -95,7 +93,7 @@ class RequestBody extends BodyDecoder {
       contentType!.primaryType == "application" &&
       contentType!.subType == "x-www-form-urlencoded";
 
-  final Stream<List<int>> _originalByteStream;
+  final Stream<List<int>> _originalByteStream = request;
   StreamController<List<int>>? _bufferingController;
   int _bytesRead = 0;
 }

@@ -5,7 +5,7 @@ import 'package:conduit/src/commands/auth_add_client.dart';
 import 'package:conduit/src/commands/auth_scope.dart';
 
 class CLIAuth extends CLICommand {
-  CLIAuth() {
+  new() {
     registerCommand(CLIAuthAddClient());
     registerCommand(CLIAuthScopeClient());
   }

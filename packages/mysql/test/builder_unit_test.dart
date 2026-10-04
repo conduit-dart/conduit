@@ -50,7 +50,7 @@ void main() {
   });
 }
 
-class Simple extends ManagedObject<_Simple> implements _Simple {}
+class Simple extends ManagedObject<_Simple> implements _Simple;
 
 class _Simple {
   @primaryKey

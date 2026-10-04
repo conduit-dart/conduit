@@ -171,7 +171,7 @@ Future populate() async {
   await addEmployees(company2);
 }
 
-class Company extends ManagedObject<_Company> implements _Company {}
+class Company extends ManagedObject<_Company> implements _Company;
 
 class _Company {
   @primaryKey
@@ -183,7 +183,7 @@ class _Company {
   ManagedSet<Report>? quarterlyReports;
 }
 
-class Employee extends ManagedObject<_Employee> implements _Employee {}
+class Employee extends ManagedObject<_Employee> implements _Employee;
 
 class _Employee {
   @primaryKey
@@ -197,7 +197,7 @@ class _Employee {
   Record? personalRecord;
 }
 
-class Record extends ManagedObject<_Record> implements _Record {}
+class Record extends ManagedObject<_Record> implements _Record;
 
 class _Record {
   @primaryKey
@@ -209,7 +209,7 @@ class _Record {
   Employee? employee;
 }
 
-class Report extends ManagedObject<_Report> implements _Report {}
+class Report extends ManagedObject<_Report> implements _Report;
 
 class _Report {
   @primaryKey

@@ -10,7 +10,7 @@ import 'package:conduit/src/commands/db_validate.dart';
 import 'package:conduit/src/commands/db_version.dart';
 
 class CLIDatabase extends CLICommand {
-  CLIDatabase() {
+  new() {
     registerCommand(CLIDatabaseUpgrade());
     registerCommand(CLIDatabaseGenerate());
     registerCommand(CLIDatabaseShowMigrations());

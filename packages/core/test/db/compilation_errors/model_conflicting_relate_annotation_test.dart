@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class InvalidCyclicLeft extends ManagedObject<_InvalidCyclicLeft> {}
+class InvalidCyclicLeft extends ManagedObject<_InvalidCyclicLeft>;
 
 class _InvalidCyclicLeft {
   @primaryKey
@@ -11,7 +11,7 @@ class _InvalidCyclicLeft {
   InvalidCyclicRight? ref;
 }
 
-class InvalidCyclicRight extends ManagedObject<_InvalidCyclicRight> {}
+class InvalidCyclicRight extends ManagedObject<_InvalidCyclicRight>;
 
 class _InvalidCyclicRight {
   @primaryKey

@@ -12,9 +12,9 @@ import 'package:conduit_postgresql/conduit_postgresql.dart';
 ///   2. Default matching `ci/docker-compose.yaml` — bring it up with
 ///      `docker compose -f ci/docker-compose.yaml up -d`.
 class PostgresTestConfig {
-  factory PostgresTestConfig() => _self;
+  factory() => _self;
 
-  PostgresTestConfig._internal();
+  new _internal();
 
   static final PostgresTestConfig _self = PostgresTestConfig._internal();
 

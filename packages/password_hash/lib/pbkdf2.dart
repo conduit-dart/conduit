@@ -7,11 +7,11 @@ import 'package:crypto/crypto.dart';
 /// Instances of this type derive a key from a password, salt, and hash function.
 ///
 /// https://en.wikipedia.org/wiki/PBKDF2
-class PBKDF2 {
+class PBKDF2({Hash? hashAlgorithm}) {
   /// Creates instance capable of generating a key.
   ///
   /// [hashAlgorithm] defaults to [sha256].
-  PBKDF2({Hash? hashAlgorithm}) {
+  this {
     this.hashAlgorithm = hashAlgorithm ?? sha256;
   }
 
@@ -87,15 +87,15 @@ class PBKDF2 {
 
 /// Thrown when [PBKDF2] throws an exception.
 class PBKDF2Exception implements Exception {
-  PBKDF2Exception(this.message);
+  new(this.message);
   String message;
 
   @override
   String toString() => "PBKDF2Exception: $message";
 }
 
-class _XORDigestSink implements Sink<Digest> {
-  _XORDigestSink(ByteData inputBuffer, Hmac hmac) {
+class _XORDigestSink(ByteData inputBuffer, Hmac hmac) implements Sink<Digest> {
+  this {
     lastDigest = hmac.convert(inputBuffer.buffer.asUint8List()).bytes;
     bytes = ByteData(lastDigest.length)
       ..buffer.asUint8List().setRange(0, lastDigest.length, lastDigest);

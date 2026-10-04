@@ -20,11 +20,13 @@ import 'package:conduit_core/src/db/query/builders/table.dart';
 import 'package:conduit_core/src/db/query/predicate.dart';
 
 /// Common interface for values that can be mapped to/from a database.
-abstract class Returnable {}
+abstract class Returnable;
 
-class ColumnBuilder extends Returnable {
-  ColumnBuilder(this.table, this.property, {this.documentKeyPath});
-
+class ColumnBuilder(
+  final TableBuilder? table,
+  final ManagedPropertyDescription? property, {
+  final List<dynamic>? documentKeyPath,
+}) extends Returnable {
   static List<Returnable> fromKeys(TableBuilder table, List<KeyPath> keys) {
     final entity = table.entity;
 
@@ -92,10 +94,6 @@ class ColumnBuilder extends Returnable {
     PredicateOperator.greaterThanEqualTo: ">=",
     PredicateOperator.equalTo: "=",
   };
-
-  final TableBuilder? table;
-  final ManagedPropertyDescription? property;
-  final List<dynamic>? documentKeyPath;
 
   dynamic convertValueForStorage(dynamic value) {
     if (value == null) {

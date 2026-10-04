@@ -5,24 +5,24 @@ import 'package:test/test.dart';
 // Test fixtures: tiny social graph reused across tests.
 
 class User extends GraphNode<User> {
-  User({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
+  new({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
     if (name != null) this['name'] = name;
     if (age != null) this['age'] = age;
   }
 }
 
-class Post extends GraphNode<Post> {
-  Post() : super(labels: [GraphLabel('Post')]);
+class Post() extends GraphNode<Post> {
+  this : super(labels: [GraphLabel('Post')]);
 }
 
 class Friend extends GraphEdge<User, User> {
-  Friend({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Friend'));
 }
 
-class Authored extends GraphEdge<User, Post> {
-  Authored({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Authored'));
+class Authored({required super.from, required super.to})
+    extends GraphEdge<User, Post> {
+  this : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 void main() {

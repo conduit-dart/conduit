@@ -6,7 +6,7 @@ import 'package:conduit_open_api/src/v2/response.dart';
 
 /// Represents a HTTP operation (a path/method pair) in the OpenAPI specification.
 class APIOperation extends APIObject {
-  APIOperation();
+  new();
 
   @override
   Map<String, cast.Cast> get castMap => {

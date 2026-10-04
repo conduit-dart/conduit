@@ -4,7 +4,7 @@ import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/mirror_property.dart';
 
 class ConfigurationRuntimeImpl extends ConfigurationRuntime {
-  ConfigurationRuntimeImpl(this.type) {
+  new(this.type) {
     // Should be done in the constructor so a type check could be run.
     properties = _collectProperties();
   }

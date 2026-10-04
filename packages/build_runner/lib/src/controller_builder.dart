@@ -538,35 +538,27 @@ ${applySrc.toString().trimRight()}
   }
 }
 
-class _BindMeta {
-  _BindMeta({required this.bindingType, required this.name});
-  final String bindingType;
-  final String? name;
-}
+class _BindMeta({
+  required final String bindingType,
+  required final String? name,
+});
 
 class _OperationMeta {
-  _OperationMeta({required this.httpMethod, required this.pathVariables});
+  new({required this.httpMethod, required this.pathVariables});
   final String httpMethod;
   final List<String> pathVariables;
 }
 
-class _Binding {
-  _Binding({
-    required this.symbolName,
-    required this.bind,
-    required this.type,
-    required this.isRequired,
-    required this.defaultValueSource,
-  });
-  final String symbolName;
-  final _BindMeta bind;
-  final DartType type;
-  final bool isRequired;
-  final String defaultValueSource;
-}
+class _Binding({
+  required final String symbolName,
+  required final _BindMeta bind,
+  required final DartType type,
+  required final bool isRequired,
+  required final String defaultValueSource,
+});
 
 class _OperationMethod {
-  _OperationMethod({
+  new({
     required this.dartMethodName,
     required this.operation,
     required this.positional,

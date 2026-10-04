@@ -6,9 +6,9 @@ import 'package:conduit_open_api/src/v3/schema.dart';
 
 /// Describes a single response from an API Operation, including design-time, static links to operations based on the response.
 class APIResponse extends APIObject {
-  APIResponse(this.description, {this.content, this.headers});
-  APIResponse.empty();
-  APIResponse.schema(
+  new(this.description, {this.content, this.headers});
+  new empty();
+  new schema(
     this.description,
     APISchemaObject schema, {
     Iterable<String> contentTypes = const ["application/json"],

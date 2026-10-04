@@ -7,16 +7,17 @@ import 'dart:async';
 import 'dart:io';
 
 /// A utility for manipulating files and directories in [workingDirectory].
-class WorkingDirectoryAgent {
-  WorkingDirectoryAgent(this.workingDirectory, {bool create = true}) {
+class WorkingDirectoryAgent(
+  final Directory workingDirectory, {
+  bool create = true,
+}) {
+  this {
     if (create) {
       workingDirectory.createSync(recursive: true);
     }
   }
 
-  WorkingDirectoryAgent.current() : this(Directory.current);
-
-  final Directory workingDirectory;
+  new current() : this(Directory.current);
 
   static void copyDirectory({required Uri src, required Uri dst}) {
     final srcDir = Directory.fromUri(src);

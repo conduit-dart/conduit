@@ -16,18 +16,15 @@ enum APISchemaAdditionalPropertyPolicy {
 
 /// Represents a schema object in the OpenAPI specification.
 class APISchemaObject extends APIObject {
-  APISchemaObject();
-  APISchemaObject.empty();
+  new();
+  new empty();
 
-  APISchemaObject.string({this.format}) : type = APIType.string;
-  APISchemaObject.number() : type = APIType.number;
-  APISchemaObject.integer() : type = APIType.integer;
-  APISchemaObject.boolean() : type = APIType.boolean;
-  APISchemaObject.map({
-    APIType? ofType,
-    APISchemaObject? ofSchema,
-    bool any = false,
-  }) : type = APIType.object {
+  new string({this.format}) : type = APIType.string;
+  new number() : type = APIType.number;
+  new integer() : type = APIType.integer;
+  new boolean() : type = APIType.boolean;
+  new map({APIType? ofType, APISchemaObject? ofSchema, bool any = false})
+    : type = APIType.object {
     if (ofType != null) {
       additionalPropertySchema = APISchemaObject()..type = ofType;
     } else if (ofSchema != null) {
@@ -39,7 +36,7 @@ class APISchemaObject extends APIObject {
       );
     }
   }
-  APISchemaObject.array({APIType? ofType, APISchemaObject? ofSchema})
+  new array({APIType? ofType, APISchemaObject? ofSchema})
     : type = APIType.array {
     if (ofType != null) {
       items = APISchemaObject()..type = ofType;
@@ -51,12 +48,12 @@ class APISchemaObject extends APIObject {
       );
     }
   }
-  APISchemaObject.object(this.properties) : type = APIType.object;
-  APISchemaObject.file({bool isBase64Encoded = false})
+  new object(this.properties) : type = APIType.object;
+  new file({bool isBase64Encoded = false})
     : type = APIType.string,
       format = isBase64Encoded ? "byte" : "binary";
 
-  APISchemaObject.freeForm()
+  new freeForm()
     : type = APIType.object,
       additionalPropertyPolicy = APISchemaAdditionalPropertyPolicy.freeForm;
 

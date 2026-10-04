@@ -11,12 +11,8 @@ import 'package:conduit_core/src/runtime/orm_impl.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';
 
-class EntityBuilder {
-  EntityBuilder(Type type)
-    : instanceType = reflectClass(type),
-      tableDefinitionType = getTableDefinitionForType(type),
-      metadata = firstMetadataOfType(getTableDefinitionForType(type)),
-      responseModel = firstMetadataOfType(getTableDefinitionForType(type)) {
+class EntityBuilder(Type type) {
+  this {
     entity = ManagedEntity(
       name,
       type,
@@ -36,10 +32,12 @@ class EntityBuilder {
     primaryKeyProperty = primaryKeyProperty1;
   }
 
-  final ClassMirror instanceType;
-  final ClassMirror tableDefinitionType;
-  final Table? metadata;
-  final ResponseModel? responseModel;
+  final ClassMirror instanceType = reflectClass(type);
+  final ClassMirror tableDefinitionType = getTableDefinitionForType(type);
+  final Table? metadata = firstMetadataOfType(getTableDefinitionForType(type));
+  final ResponseModel? responseModel = firstMetadataOfType(
+    getTableDefinitionForType(type),
+  );
 
   late final ManagedEntityRuntime runtime;
 

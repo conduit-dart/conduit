@@ -7,18 +7,17 @@ import 'package:conduit_core/src/db/query/builders/column.dart';
 import 'package:conduit_core/src/db/query/builders/table.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
-class ColumnSortBuilder extends ColumnBuilder {
-  ColumnSortBuilder(TableBuilder table, String key, QuerySortOrder order)
-    : order = order == QuerySortOrder.ascending ? "ASC" : "DESC",
-      super(table, table.entity.properties[key]);
+class ColumnSortBuilder(TableBuilder table, String key, QuerySortOrder order)
+    extends ColumnBuilder {
+  this : super(table, table.entity.properties[key]);
 
-  final String order;
+  final String order = order == QuerySortOrder.ascending ? "ASC" : "DESC";
 
   String get sqlOrderBy => "${sqlColumnName(withTableNamespace: true)} $order";
 }
 
 class ColumnSortPredicateBuilder extends ColumnSortBuilder {
-  ColumnSortPredicateBuilder(super.table, super.key, super.order) : _key = key;
+  new(super.table, super.key, super.order) : _key = key;
 
   final String _key;
 

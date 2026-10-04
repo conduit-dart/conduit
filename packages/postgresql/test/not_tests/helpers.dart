@@ -23,9 +23,9 @@ class TestUser extends ResourceOwner {
 }
 
 class TestToken implements AuthToken, AuthCode {
-  TestToken();
+  new();
 
-  TestToken.from(dynamic t) {
+  new from(dynamic t) {
     if (t is TestToken) {
       this
         ..issueDate = t.issueDate
@@ -109,8 +109,8 @@ class TestToken implements AuthToken, AuthCode {
   }
 }
 
-class InMemoryAuthStorage extends AuthServerDelegate {
-  InMemoryAuthStorage() {
+class InMemoryAuthStorage() extends AuthServerDelegate {
+  this {
     reset();
   }
 
@@ -443,9 +443,9 @@ class DefaultPersistentStore extends PersistentStore {
 class _MockQuery<InstanceType extends ManagedObject> extends Object
     with QueryMixin<InstanceType>
     implements Query<InstanceType> {
-  _MockQuery(this.context);
+  new(this.context);
 
-  _MockQuery.withEntity(this.context, this._entity);
+  new withEntity(this.context, this._entity);
 
   @override
   ManagedContext context;

@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 // ---------------------------------------------------------------------------
 
 class User extends GraphNode<User> {
-  User({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
+  new({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
     if (name != null) this['name'] = name;
     if (age != null) this['age'] = age;
   }
@@ -18,8 +18,8 @@ class User extends GraphNode<User> {
   set age(int? v) => this['age'] = v;
 }
 
-class Post extends GraphNode<Post> {
-  Post({String? title}) : super(labels: [GraphLabel('Post')]) {
+class Post({String? title}) extends GraphNode<Post> {
+  this : super(labels: [GraphLabel('Post')]) {
     if (title != null) this['title'] = title;
   }
 
@@ -28,7 +28,7 @@ class Post extends GraphNode<Post> {
 }
 
 class Friend extends GraphEdge<User, User> {
-  Friend({required super.from, required super.to, DateTime? since})
+  new({required super.from, required super.to, DateTime? since})
     : super(label: const GraphLabel.unchecked('Friend')) {
     if (since != null) this['since'] = since;
   }
@@ -37,9 +37,9 @@ class Friend extends GraphEdge<User, User> {
   set since(DateTime? v) => this['since'] = v;
 }
 
-class Authored extends GraphEdge<User, Post> {
-  Authored({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Authored'));
+class Authored({required super.from, required super.to})
+    extends GraphEdge<User, Post> {
+  this : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 // ---------------------------------------------------------------------------
@@ -436,5 +436,5 @@ void main() {
 
 // Helper for the "no labels" test — bypasses `User` constructor's defaulting.
 class _NoLabelNode extends GraphNode<_NoLabelNode> {
-  _NoLabelNode() : super(labels: const []);
+  new() : super(labels: const []);
 }

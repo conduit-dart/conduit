@@ -47,7 +47,7 @@ import 'postgres_sql_dialect.dart';
 /// caveats not expressible at the dialect layer (transaction retry,
 /// SERIAL semantics, schema-introspection differences).
 class CockroachSqlDialect extends PostgresSqlDialect {
-  const CockroachSqlDialect();
+  const new();
 
   @override
   String get name => 'cockroach';

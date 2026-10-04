@@ -16,7 +16,7 @@ void main() {
 }
 
 class MultiUniqueFailureNoElement
-    extends ManagedObject<_MultiUniqueFailureNoElement> {}
+    extends ManagedObject<_MultiUniqueFailureNoElement>;
 
 @Table.unique([])
 class _MultiUniqueFailureNoElement {

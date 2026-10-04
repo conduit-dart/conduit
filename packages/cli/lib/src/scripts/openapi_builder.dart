@@ -10,7 +10,7 @@ import 'package:conduit_runtime/dev.dart';
 import 'package:yaml/yaml.dart';
 
 class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
-  OpenAPIBuilder(super.message)
+  new(super.message)
     : pubspecContents = message["pubspec"] as String?,
       configPath = message["configPath"] as String?,
       title = message["title"] as String?,
@@ -35,7 +35,7 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
           [],
       resolveRelativeUrls = message["resolveRelativeUrls"] as bool?;
 
-  OpenAPIBuilder.input(super.variables);
+  new input(super.variables);
 
   String? pubspecContents;
   String? configPath;

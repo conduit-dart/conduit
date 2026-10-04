@@ -47,9 +47,7 @@ import 'package:conduit_core/conduit_core.dart';
 /// `information_schema.tables`, etc.). The persistent store records a
 /// `bool mariadb` flag at connect time for callers that need to
 /// branch.
-class MysqlSqlDialect extends SqlDialect {
-  const MysqlSqlDialect();
-
+class const MysqlSqlDialect() extends SqlDialect {
   @override
   String get name => 'mysql';
 

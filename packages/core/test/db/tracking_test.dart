@@ -214,7 +214,7 @@ void main() {
   });
 }
 
-class Parent extends ManagedObject<_Parent> implements _Parent {}
+class Parent extends ManagedObject<_Parent> implements _Parent;
 
 class _Parent {
   @primaryKey
@@ -227,7 +227,7 @@ class _Parent {
   ManagedSet<Child>? children;
 }
 
-class Child extends ManagedObject<_Child> implements _Child {}
+class Child extends ManagedObject<_Child> implements _Child;
 
 class _Child {
   @primaryKey
@@ -243,7 +243,7 @@ class _Child {
   Grandchild? grandchild;
 }
 
-class Grandchild extends ManagedObject<_Grandchild> implements _Grandchild {}
+class Grandchild extends ManagedObject<_Grandchild> implements _Grandchild;
 
 class _Grandchild {
   @primaryKey

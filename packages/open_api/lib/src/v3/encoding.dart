@@ -5,7 +5,7 @@ import 'package:conduit_open_api/src/v3/parameter.dart';
 
 /// A single encoding definition applied to a single schema property.
 class APIEncoding extends APIObject {
-  APIEncoding({
+  new({
     this.contentType,
     this.headers,
     this.style,
@@ -13,7 +13,7 @@ class APIEncoding extends APIObject {
     this.explode = false,
   });
 
-  APIEncoding.empty() : allowReserved = false, explode = false;
+  new empty() : allowReserved = false, explode = false;
 
   /// The Content-Type for encoding a specific property.
   ///

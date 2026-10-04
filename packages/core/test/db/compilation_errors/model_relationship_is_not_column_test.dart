@@ -14,7 +14,7 @@ void main() {
   });
 }
 
-class InvalidMetadata extends ManagedObject<_InvalidMetadata> {}
+class InvalidMetadata extends ManagedObject<_InvalidMetadata>;
 
 class _InvalidMetadata {
   @Column(primaryKey: true)
@@ -25,7 +25,7 @@ class _InvalidMetadata {
   InvalidMetadata1? bar;
 }
 
-class InvalidMetadata1 extends ManagedObject<_InvalidMetadata1> {}
+class InvalidMetadata1 extends ManagedObject<_InvalidMetadata1>;
 
 class _InvalidMetadata1 {
   @primaryKey

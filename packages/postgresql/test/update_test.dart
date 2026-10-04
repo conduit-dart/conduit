@@ -360,7 +360,7 @@ void main() {
   });
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey
@@ -372,7 +372,7 @@ class _TestModel {
   String? emailAddress;
 }
 
-class Child extends ManagedObject<_Child> implements _Child {}
+class Child extends ManagedObject<_Child> implements _Child;
 
 class _Child {
   @primaryKey
@@ -384,7 +384,7 @@ class _Child {
   Parent? parent;
 }
 
-class Parent extends ManagedObject<_Parent> implements _Child {}
+class Parent extends ManagedObject<_Parent> implements _Child;
 
 class _Parent {
   @primaryKey
@@ -395,7 +395,7 @@ class _Parent {
   Child? child;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey

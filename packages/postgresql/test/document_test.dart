@@ -226,7 +226,7 @@ void main() {
   });
 }
 
-class Obj extends ManagedObject<_Obj> implements _Obj {}
+class Obj extends ManagedObject<_Obj> implements _Obj;
 
 class _Obj {
   @Column(primaryKey: true)

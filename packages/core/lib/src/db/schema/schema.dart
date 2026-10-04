@@ -17,32 +17,32 @@ class Schema {
   /// Creates an instance of this type with a specific set of [tables].
   ///
   /// Prefer to use [Schema.fromDataModel].
-  Schema(List<SchemaTable> tables) : _tableStorage = tables;
+  new(List<SchemaTable> tables) : _tableStorage = tables;
 
   /// Creates an instance of this type from [dataModel].
   ///
   /// This is preferred method of creating an instance of this type. Each [ManagedEntity]
   /// in [dataModel] will correspond to a [SchemaTable] in [tables].
-  Schema.fromDataModel(ManagedDataModel dataModel) {
+  new fromDataModel(ManagedDataModel dataModel) {
     _tables = dataModel.entities.map(SchemaTable.fromEntity).toList();
   }
 
   /// Creates a deep copy of [otherSchema].
-  Schema.from(Schema otherSchema) {
+  new from(Schema otherSchema) {
     _tables = otherSchema.tables.map(SchemaTable.from).toList();
   }
 
   /// Creates a instance of this type from [map].
   ///
   /// [map] is typically created from [asMap].
-  Schema.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     _tables = (map["tables"] as List<Map<String, dynamic>>)
         .map(SchemaTable.fromMap)
         .toList();
   }
 
   /// Creates an empty schema.
-  Schema.empty() {
+  new empty() {
     _tables = [];
   }
 
@@ -152,10 +152,16 @@ class Schema {
 /// The difference between two compared [Schema]s.
 ///
 /// This class is used for comparing schemas for validation and migration.
-class SchemaDifference {
+class SchemaDifference(
+  /// The 'expected' schema.
+  final Schema expectedSchema,
+
+  /// The 'actual' schema.
+  final Schema actualSchema,
+) {
   /// Creates a new instance that represents the difference between [expectedSchema] and [actualSchema].
   ///
-  SchemaDifference(this.expectedSchema, this.actualSchema) {
+  this {
     for (final expectedTable in expectedSchema.tables) {
       final actualTable = actualSchema[expectedTable.name!];
       if (actualTable == null) {
@@ -176,12 +182,6 @@ class SchemaDifference {
       }),
     );
   }
-
-  /// The 'expected' schema.
-  final Schema expectedSchema;
-
-  /// The 'actual' schema.
-  final Schema actualSchema;
 
   /// Whether or not [expectedSchema] and [actualSchema] have differences.
   ///
@@ -222,7 +222,7 @@ class SchemaDifference {
 
 /// Thrown when a [Schema] encounters an error.
 class SchemaException implements Exception {
-  SchemaException(this.message);
+  new(this.message);
 
   String message;
 

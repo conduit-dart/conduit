@@ -38,7 +38,7 @@ typedef PersistenceFactory = PersistentStore Function();
 /// Or scoped via a setter on the harness subclass — see the helper
 /// methods on `TestHarnessORMMixin` for the recommended shape.
 class PersistenceConfig {
-  PersistenceConfig._();
+  new _();
 
   /// The currently registered factory, or `null` to use the channel's
   /// own store. Reset between test files in CI by setting back to

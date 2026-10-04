@@ -27,17 +27,15 @@ enum WatchedServerEventKind {
 }
 
 /// A single notification emitted by [WatchedServer.events].
-class WatchedServerEvent {
-  WatchedServerEvent(this.kind, {this.changedPaths = const [], this.error});
-
-  final WatchedServerEventKind kind;
+class WatchedServerEvent(
+  final WatchedServerEventKind kind, {
 
   /// Paths that triggered this restart, in the order they were observed.
-  final List<String> changedPaths;
+  final List<String> changedPaths = const [],
 
   /// Populated for [WatchedServerEventKind.restartFailed].
-  final Object? error;
-}
+  final Object? error,
+});
 
 /// Owns a child server process plus a file watcher, and restarts the child
 /// whenever a `.dart`/`pubspec.yaml`/`analysis_options.yaml` change is seen
@@ -46,7 +44,7 @@ class WatchedServerEvent {
 /// The class is deliberately decoupled from `CLIServer` so it is unit-testable
 /// against any [ServerStarter].
 class WatchedServer {
-  WatchedServer({
+  new({
     required this.starter,
     required this.projectDirectory,
     required this.watchPaths,

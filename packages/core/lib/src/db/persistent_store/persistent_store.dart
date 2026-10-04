@@ -116,9 +116,7 @@ abstract class PersistentStore {
 /// any specific spelling — the only call sites that hit this default
 /// are non-SQL backends that don't consult the dialect, so the
 /// `tableExistsQuery` body is never reached in practice.
-class _DefaultSqlDialect extends SqlDialect {
-  const _DefaultSqlDialect();
-
+class const _DefaultSqlDialect() extends SqlDialect {
   @override
   String get name => 'default';
 

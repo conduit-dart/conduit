@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class FailingDateTime extends ManagedObject<_FDT> {}
+class FailingDateTime extends ManagedObject<_FDT>;
 
 class _FDT {
   @primaryKey

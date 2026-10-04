@@ -24,7 +24,7 @@ class SchemaBuilder {
   ///
   /// If [store] is null, this builder will emit [commands] that are Dart statements that replicate the methods invoked on this object.
   /// Otherwise, [commands] are SQL commands (for the database represented by [store]) that are equivalent to the method invoked on this object.
-  SchemaBuilder(this.store, this.inputSchema, {this.isTemporary = false}) {
+  new(this.store, this.inputSchema, {this.isTemporary = false}) {
     schema = Schema.from(inputSchema);
   }
 
@@ -32,7 +32,7 @@ class SchemaBuilder {
   ///
   /// If [store] is null, this builder will emit [commands] that are Dart statements that replicate the methods invoked on this object.
   ///  Otherwise, [commands] are SQL commands (for the database represented by [store]) that are equivalent to the method invoked on this object.
-  SchemaBuilder.toSchema(
+  new toSchema(
     PersistentStore? store,
     Schema targetSchema, {
     bool isTemporary = false,
@@ -45,7 +45,7 @@ class SchemaBuilder {
        );
 
   // Creates a builder
-  SchemaBuilder.fromDifference(
+  new fromDifference(
     this.store,
     SchemaDifference difference, {
     this.isTemporary = false,

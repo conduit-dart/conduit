@@ -528,7 +528,7 @@ void main() {
   });
 }
 
-class Game extends ManagedObject<_Game> implements _Game {}
+class Game extends ManagedObject<_Game> implements _Game;
 
 class _Game {
   @primaryKey
@@ -544,7 +544,7 @@ class _Game {
   Team? awayTeam;
 }
 
-class Team extends ManagedObject<_Team> implements _Team {}
+class Team extends ManagedObject<_Team> implements _Team;
 
 class _Team {
   @primaryKey

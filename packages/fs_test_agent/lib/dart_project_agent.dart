@@ -16,7 +16,7 @@ class DartProjectAgent extends WorkingDirectoryAgent {
   ///
   /// Both [dependencies] and [devDependencies] are a valid dependency map,
   /// e.g. `{'aqueduct': '^2.0.0'}` or `{'relative' : {'path' : '../'}}`
-  DartProjectAgent(
+  new(
     this.name, {
     Map<String, dynamic> dependencies = const {},
     Map<String, dynamic> devDependencies = const {},
@@ -43,7 +43,7 @@ class DartProjectAgent extends WorkingDirectoryAgent {
     addOrReplaceFile("lib/$name.dart", "");
   }
 
-  DartProjectAgent.existing(Uri uri) : super(Directory.fromUri(uri)) {
+  new existing(Uri uri) : super(Directory.fromUri(uri)) {
     final pubspecFile = File(join(workingDirectory.path, "pubspec.yaml"));
     if (!pubspecFile.existsSync()) {
       throw ArgumentError(

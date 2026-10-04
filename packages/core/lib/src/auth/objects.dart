@@ -15,7 +15,7 @@ class AuthClient {
   ///
   /// If this client supports scopes, [allowedScopes] must contain a list of scopes that tokens may request when authorized
   /// by this client.
-  AuthClient(
+  new(
     String id,
     String? hashedSecret,
     String? salt, {
@@ -29,22 +29,19 @@ class AuthClient {
        );
 
   /// Creates an instance of a public [AuthClient].
-  AuthClient.public(
-    String id, {
-    List<AuthScope>? allowedScopes,
-    String? redirectURI,
-  }) : this.withRedirectURI(
-         id,
-         null,
-         null,
-         redirectURI,
-         allowedScopes: allowedScopes,
-       );
+  new public(String id, {List<AuthScope>? allowedScopes, String? redirectURI})
+    : this.withRedirectURI(
+        id,
+        null,
+        null,
+        redirectURI,
+        allowedScopes: allowedScopes,
+      );
 
   /// Creates an instance of [AuthClient] that uses the authorization code grant flow.
   ///
   /// All values must be non-null. This is confidential client.
-  AuthClient.withRedirectURI(
+  new withRedirectURI(
     this.id,
     this.hashedSecret,
     this.salt,
@@ -230,7 +227,7 @@ class AuthCode {
 /// about the validity of the credentials in a request.
 class Authorization {
   /// Creates an instance of a [Authorization].
-  Authorization(
+  new(
     this.clientID,
     this.ownerID,
     this.validator, {
@@ -313,7 +310,7 @@ class AuthScope {
   /// list of valid characters. A modifier adds an additional restriction to a scope, without having to make up a new segment.
   /// An example is the 'readonly' modifier above. A route that requires `user:posts.readonly` would allow passage when the token
   /// has `user`, `user:posts` or `user:posts.readonly`. A route that required `user:posts` would not allow `user:posts.readonly`.
-  factory AuthScope(String scopeString) {
+  factory(String scopeString) {
     final cached = _cache[scopeString];
     if (cached != null) {
       return cached;
@@ -324,7 +321,7 @@ class AuthScope {
     return scope;
   }
 
-  factory AuthScope._parse(String scopeString) {
+  factory _parse(String scopeString) {
     if (scopeString.isEmpty) {
       throw FormatException(
         "Invalid AuthScope. May not an empty string.",
@@ -349,7 +346,7 @@ class AuthScope {
     return AuthScope._(scopeString, segments, lastModifier);
   }
 
-  const AuthScope._(this._scopeString, this._segments, this._lastModifier);
+  const new _(this._scopeString, this._segments, this._lastModifier);
 
   /// Signifies 'any' scope in [AuthServerDelegate.getAllowedScopes].
   ///
@@ -521,8 +518,8 @@ class AuthScope {
   String toString() => _scopeString;
 }
 
-class _AuthScopeSegment {
-  _AuthScopeSegment(String segment) {
+class _AuthScopeSegment(String segment) {
+  this {
     final split = segment.split(".");
     if (split.length == 2) {
       name = split.first;

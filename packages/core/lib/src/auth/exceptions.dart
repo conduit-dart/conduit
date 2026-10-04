@@ -2,7 +2,7 @@ import 'package:conduit_core/src/auth/auth.dart';
 
 /// An exception thrown by [AuthServer].
 class AuthServerException implements Exception {
-  AuthServerException(this.reason, this.client);
+  new(this.reason, this.client);
 
   /// Returns a string suitable to be included in a query string or JSON response body
   /// to indicate the error during processing an OAuth 2.0 request.

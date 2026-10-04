@@ -42,13 +42,13 @@ class ManagedContext implements APIComponentDocumenter {
   ///
   /// A [Query] is sent to the database described by [persistentStore]. A [Query] may only be executed
   /// on this context if its type is in [dataModel].
-  ManagedContext(this.dataModel, this.persistentStore) {
+  new(this.dataModel, this.persistentStore) {
     mm.add(dataModel!);
     _finalizer.attach(this, persistentStore, detach: this);
   }
 
   /// Creates a child context from [parentContext].
-  ManagedContext.childOf(ManagedContext parentContext)
+  new childOf(ManagedContext parentContext)
     : persistentStore = parentContext.persistentStore,
       dataModel = parentContext.dataModel;
 
@@ -166,16 +166,16 @@ class ManagedContext implements APIComponentDocumenter {
 ///
 /// When thrown in a transaction, it will cancel an in-progress transaction and rollback
 /// any changes it has made.
-class Rollback {
-  /// Default constructor, takes a [reason] object that can be anything.
-  ///
-  /// The parameter [reason] is made available on the [Rollback] rethrown by
-  /// [ManagedContext.transaction] when this instance is thrown.
-  Rollback(this.reason);
-
+class Rollback(
   /// The reason this rollback occurred.
   ///
   /// This value is available on the [Rollback] rethrown from [ManagedContext.transaction]
   /// when this instance is thrown.
-  final String reason;
+  final String reason,
+) {
+  /// Default constructor, takes a [reason] object that can be anything.
+  ///
+  /// The parameter [reason] is made available on the [Rollback] rethrown by
+  /// [ManagedContext.transaction] when this instance is thrown.
+  this;
 }

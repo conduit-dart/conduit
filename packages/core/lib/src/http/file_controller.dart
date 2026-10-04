@@ -42,7 +42,7 @@ class FileController extends Controller {
   /// according to [CodecRegistry].
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
-  FileController(String pathOfDirectoryToServe, {this._onFileNotFound})
+  new(String pathOfDirectoryToServe, {this._onFileNotFound})
     : _servingDirectory = Uri.directory(pathOfDirectoryToServe);
 
   static final Map<String, ContentType> _defaultExtensionMap = {
@@ -229,9 +229,7 @@ class FileController extends Controller {
   CachePolicy? _policyForFile(File file) => cachePolicyForPath(file.path);
 }
 
-class _PolicyPair {
-  _PolicyPair(this.policy, this.shouldApplyToPath);
-
-  final bool Function(String) shouldApplyToPath;
-  final CachePolicy policy;
-}
+class _PolicyPair(
+  final CachePolicy policy,
+  final bool Function(String) shouldApplyToPath,
+);

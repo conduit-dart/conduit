@@ -218,4 +218,4 @@ void main() {
 
 /// Bare adapter so test cases can call mixin methods without instantiating
 /// a full SqlitePersistentStore.
-class _Gen with SqliteSchemaGenerator {}
+class _Gen with SqliteSchemaGenerator;

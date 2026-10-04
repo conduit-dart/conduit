@@ -38,10 +38,10 @@ Dialect resolveActiveDialect({Dialect? override}) {
 /// [Dialect]. `null` means "run normally"; a non-null value is the
 /// reason string to pass to `package:test`'s `skip:` parameter.
 class DialectSkipDecision {
-  const DialectSkipDecision._(this.skipReason);
+  const new _(this.skipReason);
 
   /// Skip with the given reason.
-  factory DialectSkipDecision.skip(String reason) = DialectSkipDecision._;
+  factory skip(String reason) = DialectSkipDecision._;
 
   /// Run the test.
   static const DialectSkipDecision run = DialectSkipDecision._(null);
@@ -132,10 +132,7 @@ void skipIfDialectMismatch({
 /// Implementing as a real `Error` keeps the stack-trace reporting
 /// honest — the test will appear as "skipped" with a clear reason
 /// rather than as a passing-but-no-tests-ran group.
-class TestSkipped implements Exception {
-  TestSkipped(this.reason);
-  final String reason;
-
+class TestSkipped(final String reason) implements Exception {
   @override
   String toString() => 'TestSkipped: $reason';
 }

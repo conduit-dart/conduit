@@ -804,8 +804,8 @@ class CORSChannel extends ApplicationChannel with AuthValidator {
   }
 }
 
-class NoPolicyController extends ResourceController {
-  NoPolicyController() {
+class NoPolicyController() extends ResourceController {
+  this {
     policy = null;
   }
 
@@ -821,7 +821,7 @@ class NoPolicyController extends ResourceController {
 }
 
 class DefaultPolicyController extends ResourceController {
-  DefaultPolicyController() {
+  new() {
     // The framework default is now `allowCredentials = false` (the dangerous
     // wildcard+credentials combo no longer ships out of the box). These
     // tests exercise the credentialed-CORS path, so opt in with a concrete
@@ -846,8 +846,8 @@ class DefaultPolicyController extends ResourceController {
   }
 }
 
-class RestrictiveNoCredsOriginController extends ResourceController {
-  RestrictiveNoCredsOriginController() {
+class RestrictiveNoCredsOriginController() extends ResourceController {
+  this {
     policy!.allowedOrigins = ["http://exclusive.com"];
     policy!.allowCredentials = false;
     policy!.exposedResponseHeaders = ["foobar"];
@@ -865,7 +865,7 @@ class RestrictiveNoCredsOriginController extends ResourceController {
 }
 
 class RestrictiveOriginController extends ResourceController {
-  RestrictiveOriginController() {
+  new() {
     policy!.allowedOrigins = ["http://exclusive.com"];
     // Concrete origin list, so credentialed CORS is safe to opt into.
     policy!.allowCredentials = true;
@@ -883,8 +883,8 @@ class RestrictiveOriginController extends ResourceController {
   }
 }
 
-class OptionsController extends ResourceController {
-  OptionsController() {
+class OptionsController() extends ResourceController {
+  this {
     policy = null;
   }
 
@@ -895,7 +895,7 @@ class OptionsController extends ResourceController {
 }
 
 class SingleMethodController extends ResourceController {
-  SingleMethodController() {
+  new() {
     policy!.allowedMethods = ["GET"];
     // The preflight assertions below expect credentialed CORS. Match the
     // suite's pattern: opt into credentials explicitly with a concrete
@@ -910,8 +910,8 @@ class SingleMethodController extends ResourceController {
   }
 }
 
-class AdditiveController extends ResourceController {
-  AdditiveController() {
+class AdditiveController() extends ResourceController {
+  this {
     policy!.exposedResponseHeaders.add("X-Header");
   }
 

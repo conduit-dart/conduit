@@ -21,7 +21,7 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
   /// To register a class as a managed object within this data model, you must include its type in the list. Example:
   ///
   ///       new DataModel([User, Token, Post]);
-  ManagedDataModel(List<Type> instanceTypes) {
+  new(List<Type> instanceTypes) {
     final runtimes = RuntimeContext.current.runtimes.iterable
         .whereType<ManagedEntityRuntime>()
         .toList();
@@ -85,7 +85,7 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
   /// Standard Dart libraries (prefixed with 'dart:') and URL-encoded libraries (prefixed with 'data:') are not searched.
   ///
   /// This is the preferred method of instantiating this type.
-  ManagedDataModel.fromCurrentMirrorSystem() {
+  new fromCurrentMirrorSystem() {
     final runtimes = RuntimeContext.current.runtimes.iterable
         .whereType<ManagedEntityRuntime>();
 
@@ -139,11 +139,7 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
 }
 
 /// Thrown when a [ManagedDataModel] encounters an error.
-class ManagedDataModelError extends Error {
-  ManagedDataModelError(this.message);
-
-  final String message;
-
+class ManagedDataModelError(final String message) extends Error {
   @override
   String toString() {
     return "Data Model Error: $message";

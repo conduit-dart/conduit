@@ -29,7 +29,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   /// For insert or update queries, you may provide [values] through this constructor
   /// or set the field of the same name later. If set in the constructor,
   /// [InstanceType] is inferred.
-  factory Query(ManagedContext context, {InstanceType? values}) {
+  factory(ManagedContext context, {InstanceType? values}) {
     final entity = context.dataModel!.tryEntityForType(InstanceType);
     if (entity == null) {
       throw ArgumentError(
@@ -50,7 +50,7 @@ abstract class Query<InstanceType extends ManagedObject> {
   /// where the static type argument cannot be defined. Behaves just like the unnamed constructor.
   ///
   /// If [entity] is not in [context]'s [ManagedContext.dataModel], throws a internal failure [QueryException].
-  factory Query.forEntity(ManagedEntity entity, ManagedContext context) {
+  factory forEntity(ManagedEntity entity, ManagedContext context) {
     if (!context.dataModel!.entities.any((e) => identical(entity, e))) {
       throw StateError(
         "Invalid query construction. Entity for '${entity.tableName}' is from different context than specified for query.",

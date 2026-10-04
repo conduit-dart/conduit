@@ -13,11 +13,10 @@ class ListArchive extends Object
     implements Referencable {
   final List<dynamic> _inner;
 
-  ListArchive() : _inner = [];
+  new() : _inner = [];
 
   /// Replaces all instances of [Map] and [List] in this object with [KeyedArchive] and [ListArchive]s.
-  ListArchive.from(List<dynamic> raw)
-    : _inner = raw.map(_toAtchiveType).toList();
+  new from(List<dynamic> raw) : _inner = raw.map(_toAtchiveType).toList();
 
   @override
   dynamic operator [](int index) => _inner[index];

@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class FailingHeterogenous extends ManagedObject<_FH> {}
+class FailingHeterogenous extends ManagedObject<_FH>;
 
 class _FH {
   @primaryKey

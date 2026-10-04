@@ -287,7 +287,7 @@ void main() {
   });
 }
 
-class Container extends ManagedObject<_Container> implements _Container {}
+class Container extends ManagedObject<_Container> implements _Container;
 
 class _Container {
   @primaryKey
@@ -297,7 +297,7 @@ class _Container {
   ManagedSet<LoadedItem>? loadedItems;
 }
 
-class DefaultItem extends ManagedObject<_DefaultItem> implements _DefaultItem {}
+class DefaultItem extends ManagedObject<_DefaultItem> implements _DefaultItem;
 
 class _DefaultItem {
   @primaryKey
@@ -307,7 +307,7 @@ class _DefaultItem {
   Container? container;
 }
 
-class LoadedItem extends ManagedObject<_LoadedItem> {}
+class LoadedItem extends ManagedObject<_LoadedItem>;
 
 class _LoadedItem {
   @primaryKey
@@ -322,7 +322,7 @@ class _LoadedItem {
   LoadedSingleItem? loadedSingleItem;
 }
 
-class LoadedSingleItem extends ManagedObject<_LoadedSingleItem> {}
+class LoadedSingleItem extends ManagedObject<_LoadedSingleItem>;
 
 class _LoadedSingleItem {
   @primaryKey
@@ -336,7 +336,7 @@ class _LoadedSingleItem {
   LoadedItem? loadedItem;
 }
 
-class SimpleModel extends ManagedObject<_SimpleModel> implements _SimpleModel {}
+class SimpleModel extends ManagedObject<_SimpleModel> implements _SimpleModel;
 
 class _SimpleModel {
   @primaryKey

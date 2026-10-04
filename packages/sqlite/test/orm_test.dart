@@ -316,7 +316,7 @@ void main() {
   });
 }
 
-class Simple extends ManagedObject<_Simple> implements _Simple {}
+class Simple extends ManagedObject<_Simple> implements _Simple;
 
 class _Simple {
   @primaryKey
@@ -329,7 +329,7 @@ class _Simple {
   String? note;
 }
 
-class Owner extends ManagedObject<_Owner> implements _Owner {}
+class Owner extends ManagedObject<_Owner> implements _Owner;
 
 class _Owner {
   @primaryKey
@@ -341,7 +341,7 @@ class _Owner {
   ManagedSet<Pet>? pets;
 }
 
-class Pet extends ManagedObject<_Pet> implements _Pet {}
+class Pet extends ManagedObject<_Pet> implements _Pet;
 
 class _Pet {
   @primaryKey
@@ -354,7 +354,7 @@ class _Pet {
   Owner? owner;
 }
 
-class Note extends ManagedObject<_Note> implements _Note {}
+class Note extends ManagedObject<_Note> implements _Note;
 
 class _Note {
   @primaryKey

@@ -14,11 +14,11 @@ import 'graph_data_model.dart';
 /// and edge types. Lives on `ApplicationChannel` alongside
 /// `ManagedContext` for apps that use both SQL and graph storage.
 class GraphContext {
-  GraphContext(this.dataModel, this.persistentStore);
+  new(this.dataModel, this.persistentStore);
 
   /// Convenience constructor — registers types via [registerNodes] /
   /// [registerEdges] callbacks instead of pre-built [GraphDataModel].
-  factory GraphContext.withTypes({
+  factory withTypes({
     required GraphPersistentStore persistentStore,
     void Function(GraphDataModel model)? registerNodes,
     void Function(GraphDataModel model)? registerEdges,
@@ -72,7 +72,7 @@ class GraphContext {
 /// Lets callers write `context.graph.match<User>(…)` (mirrors how
 /// `Query<User>(context)` reads in the SQL ORM).
 final class GraphQueryEntry {
-  GraphQueryEntry._(this._context);
+  new _(this._context);
 
   final GraphContext _context;
 

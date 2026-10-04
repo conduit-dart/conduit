@@ -2,7 +2,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 class NoPrimaryKey extends ManagedObject<_NoPrimaryKey>
-    implements _NoPrimaryKey {}
+    implements _NoPrimaryKey;
 
 class _NoPrimaryKey {
   String? foo;

@@ -320,8 +320,7 @@ class ByteCodec extends Codec<dynamic, List<int>> {
   Converter<List<int>, dynamic> get decoder => throw UnimplementedError();
 }
 
-class ByteEncoder extends Converter<String, List<int>> {
-  const ByteEncoder();
+class const ByteEncoder() extends Converter<String, List<int>> {
   @override
   List<int> convert(String object) => utf8.encode(object);
 }
@@ -334,7 +333,7 @@ class CrashingCodec extends Codec {
 }
 
 class CrashingEncoder extends Converter<String, List<int>> {
-  const CrashingEncoder();
+  const new();
   @override
   List<int> convert(String object) => throw Exception("uhoh");
 }
@@ -346,8 +345,7 @@ class BadDataCodec extends Codec {
   Converter get decoder => throw UnimplementedError();
 }
 
-class BadDataEncoder extends Converter<String, int> {
-  const BadDataEncoder();
+class const BadDataEncoder() extends Converter<String, int> {
   @override
   int convert(String object) => 1;
 }

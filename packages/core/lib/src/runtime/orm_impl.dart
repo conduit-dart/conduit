@@ -4,7 +4,7 @@ import 'package:conduit_core/src/db/managed/managed.dart';
 import 'package:conduit_runtime/dev.dart';
 
 class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
-  ManagedEntityRuntimeImpl(this.instanceType, this.entity);
+  new(this.instanceType, this.entity);
 
   final ClassMirror instanceType;
 

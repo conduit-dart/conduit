@@ -10,7 +10,7 @@ import 'package:logging/logging.dart';
 /// You should not use this class directly.
 class ApplicationIsolateSupervisor {
   /// Create an instance of [ApplicationIsolateSupervisor].
-  ApplicationIsolateSupervisor(
+  new(
     this.supervisingApplication,
     this.isolate,
     this.receivePort,

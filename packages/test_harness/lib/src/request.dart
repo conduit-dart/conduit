@@ -8,7 +8,7 @@ part of 'agent.dart';
 ///
 /// Use [Agent.request] to create instances of this type.
 class TestRequest {
-  TestRequest._(this._client);
+  new _(this._client);
 
   final HttpClient _client;
   late Uri _baseUrl;

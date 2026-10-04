@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:mirrors';
 
-abstract class Executable<T extends Object?> {
-  Executable(this.message) : _sendPort = message["_sendPort"];
-
+abstract class Executable<T extends Object?>(
+  final Map<String, dynamic> message,
+) {
   Future<T> execute();
 
-  final Map<String, dynamic> message;
-  final SendPort? _sendPort;
+  final SendPort? _sendPort = message["_sendPort"];
 
   U instanceOf<U>(
     String typeName, {

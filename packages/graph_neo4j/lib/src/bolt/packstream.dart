@@ -35,12 +35,8 @@ import 'dart:typed_data';
 /// Bolt messages are themselves Structures (tagged with the message
 /// kind, e.g. 0x01 for HELLO). Server-side responses for nodes,
 /// relationships, paths and temporal types arrive as Structures too.
-class BoltStructure {
-  BoltStructure(this.tag, List<Object?> fields)
-    : fields = List.unmodifiable(fields);
-
-  final int tag;
-  final List<Object?> fields;
+class BoltStructure(final int tag, List<Object?> fields) {
+  final List<Object?> fields = List.unmodifiable(fields);
 
   @override
   String toString() =>
@@ -243,7 +239,7 @@ class PackStreamEncoder {
 /// happens in `BoltConnection`; this decoder works on the assembled
 /// message body.
 class PackStreamDecoder {
-  PackStreamDecoder(this._bytes);
+  new(this._bytes);
 
   final Uint8List _bytes;
   int _pos = 0;

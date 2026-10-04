@@ -8,27 +8,20 @@ import '../types/graph_node.dart';
 /// Mirrors the role conduit core's `ManagedEntity` plays in the SQL
 /// ORM, but graph-flavored: a label and a Dart [Type], no column
 /// definitions, no schema enforcement.
-class GraphNodeEntity {
-  GraphNodeEntity({required this.type, required this.label});
-
+class GraphNodeEntity({
   /// The Dart node subclass.
-  final Type type;
+  required final Type type,
 
   /// The default label used when matching this type in a pattern.
-  final GraphLabel label;
-
+  required final GraphLabel label,
+}) {
   @override
   String toString() => 'GraphNodeEntity($type, label=${label.name})';
 }
 
 /// Description of a registered edge type.
 class GraphEdgeEntity {
-  GraphEdgeEntity({
-    required this.type,
-    required this.label,
-    this.fromType,
-    this.toType,
-  });
+  new({required this.type, required this.label, this.fromType, this.toType});
 
   /// The Dart edge subclass.
   final Type type;
@@ -51,9 +44,7 @@ class GraphEdgeEntity {
 ///
 /// Mirrors `ManagedDataModel` — the collection of entities the context
 /// can resolve.
-class GraphDataModel {
-  GraphDataModel();
-
+class GraphDataModel() {
   final Map<Type, GraphNodeEntity> _nodes = {};
   final Map<Type, GraphEdgeEntity> _edges = {};
 

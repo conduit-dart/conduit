@@ -6,13 +6,13 @@ import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
 
 class SchemaBuilderExecutable extends Executable<Map<String, dynamic>> {
-  SchemaBuilderExecutable(super.message)
+  new(super.message)
     : inputSchema = Schema.fromMap(message["schema"] as Map<String, dynamic>),
       sources = (message["sources"] as List<Map>)
           .map((m) => MigrationSource.fromMap(m as Map<String, dynamic>))
           .toList();
 
-  SchemaBuilderExecutable.input(this.sources, this.inputSchema)
+  new input(this.sources, this.inputSchema)
     : super({
         "schema": inputSchema.asMap(),
         "sources": sources.map((source) => source.asMap()).toList(),

@@ -139,7 +139,7 @@ class TestChannel extends ApplicationChannel {
   }
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey
@@ -149,9 +149,7 @@ class _TestModel {
   late DateTime createdAt;
 }
 
-class Subclass extends ManagedObjectController<TestModel> {
-  Subclass(super.context);
-
+class Subclass(super.context) extends ManagedObjectController<TestModel> {
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(
     Query<TestModel>? query,

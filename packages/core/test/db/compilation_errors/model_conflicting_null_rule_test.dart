@@ -18,7 +18,7 @@ void main() {
   );
 }
 
-class Owner extends ManagedObject<_Owner> implements _Owner {}
+class Owner extends ManagedObject<_Owner> implements _Owner;
 
 class _Owner {
   @primaryKey
@@ -28,7 +28,7 @@ class _Owner {
 }
 
 class FailingChild extends ManagedObject<_FailingChild>
-    implements _FailingChild {}
+    implements _FailingChild;
 
 class _FailingChild {
   @primaryKey

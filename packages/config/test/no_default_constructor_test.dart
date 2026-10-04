@@ -18,6 +18,6 @@ class ParentConfig extends Configuration {
 }
 
 class BadConfig extends Configuration {
-  BadConfig.from(this.id);
+  new from(this.id);
   String id;
 }

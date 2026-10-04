@@ -208,7 +208,7 @@ class _Root {
   Child? child;
 }
 
-class Root extends ManagedObject<_Root> implements _Root {}
+class Root extends ManagedObject<_Root> implements _Root;
 
 class _Child {
   @primaryKey
@@ -223,7 +223,7 @@ class _Child {
   Root? parentHasOne;
 }
 
-class Child extends ManagedObject<_Child> implements _Child {}
+class Child extends ManagedObject<_Child> implements _Child;
 
 class _Constructor {
   @primaryKey
@@ -232,13 +232,15 @@ class _Constructor {
   String? name;
 }
 
-class Constructor extends ManagedObject<_Constructor> implements _Constructor {
-  Constructor() {
+class Constructor()
+    extends ManagedObject<_Constructor>
+    implements _Constructor {
+  this {
     name = "Bob";
   }
 }
 
-class Missing extends ManagedObject<_Missing> {}
+class Missing extends ManagedObject<_Missing>;
 
 class _Missing {
   @primaryKey

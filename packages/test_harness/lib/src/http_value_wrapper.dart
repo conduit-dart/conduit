@@ -4,11 +4,7 @@ import 'dart:io';
 
 import 'package:matcher/matcher.dart';
 
-class HTTPValueMatcherWrapper extends Matcher {
-  HTTPValueMatcherWrapper(this._matcher);
-
-  final Matcher _matcher;
-
+class HTTPValueMatcherWrapper(final Matcher _matcher) extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     // Try as just a String first. If that fails, see if we can parse it as anything

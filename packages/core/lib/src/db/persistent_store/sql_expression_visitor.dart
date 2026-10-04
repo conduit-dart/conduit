@@ -34,7 +34,7 @@ import 'package:conduit_core/src/db/query/expression_ast.dart';
 /// `:name` for SQLite). Subclasses override [renderPlaceholder] to
 /// produce the dialect-specific prefix.
 class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
-  NamedSqlExpressionVisitor(this.dialect);
+  new(this.dialect);
 
   final SqlDialect dialect;
 
@@ -147,11 +147,8 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
 /// Visitor base for positional-parameter dialects (`?` for MySQL).
 /// Each [ParameterExpression] appends to [positionalParameters] in
 /// SQL-string order; placeholders all render as `?`.
-class PositionalSqlExpressionVisitor extends SqlExpressionVisitor<String> {
-  PositionalSqlExpressionVisitor(this.dialect);
-
-  final SqlDialect dialect;
-
+class PositionalSqlExpressionVisitor(final SqlDialect dialect)
+    extends SqlExpressionVisitor<String> {
   /// Bound values, in the order they appear in the rendered SQL.
   final List<Object?> _positional = [];
 

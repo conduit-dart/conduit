@@ -198,9 +198,10 @@ class Migration1 extends Migration {
   Future seed() async {}
 }
 
-class MockMigratable extends CLICommand
+class MockMigratable(@override var Directory projectDirectory)
+    extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
-  MockMigratable(this.projectDirectory) {
+  this {
     migrationDirectory = Directory.fromUri(
       projectDirectory.uri.resolve("migrations"),
     );
@@ -208,9 +209,6 @@ class MockMigratable extends CLICommand
 
   @override
   Directory? migrationDirectory;
-
-  @override
-  Directory projectDirectory;
 
   @override
   Future<int> handle() async => 0;

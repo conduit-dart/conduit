@@ -96,7 +96,7 @@ class CrashingTestHandlerException implements HandlerException {
 typedef ClosureHandler = FutureOr<RequestOrResponse> Function(Request request);
 
 class ClosureController extends Controller {
-  ClosureController(this.handler);
+  new(this.handler);
   final ClosureHandler handler;
 
   @override

@@ -21,7 +21,7 @@ import 'package:conduit_core/conduit_core.dart';
 // overrides.
 
 class _NamedDialect extends SqlDialect {
-  const _NamedDialect();
+  const new();
   @override
   String get name => 'named-bench';
   @override
@@ -33,8 +33,7 @@ class _NamedDialect extends SqlDialect {
   String tableExistsQuery() => 'SELECT 1';
 }
 
-class _PositionalDialect extends SqlDialect {
-  const _PositionalDialect();
+class const _PositionalDialect() extends SqlDialect {
   @override
   String get name => 'positional-bench';
   @override
@@ -65,7 +64,7 @@ SqlExpression _buildAndChain(int terms) {
 }
 
 class _RenderBench extends BenchmarkBase {
-  _RenderBench(this.dialect, this.expr, String label) : super(label);
+  new(this.dialect, this.expr, String label) : super(label);
   final SqlDialect dialect;
   final SqlExpression expr;
 

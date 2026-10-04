@@ -28,29 +28,23 @@ class MultipartFormFile {
   /// [contentType] is the value of the part's `Content-Type` header. When
   /// omitted, no `Content-Type` header is emitted for the part, and the
   /// server is free to interpret the bytes per RFC 7578.
-  MultipartFormFile.fromBytes(
-    List<int> bytes, {
-    this.filename,
-    this.contentType,
-  }) : bytes = List<int>.unmodifiable(bytes);
+  new fromBytes(List<int> bytes, {this.filename, this.contentType})
+    : bytes = List<int>.unmodifiable(bytes);
 
   /// Creates a multipart file part from a [String].
   ///
   /// The string is encoded as UTF-8 unless [contentType] specifies a
   /// different charset. See [MultipartFormFile.fromBytes] for details on
   /// [filename] and [contentType].
-  MultipartFormFile.fromString(
-    String value, {
-    this.filename,
-    ContentType? contentType,
-  }) : bytes = List<int>.unmodifiable(
-         (contentType?.charset != null
-                 ? Encoding.getByName(contentType!.charset) ?? utf8
-                 : utf8)
-             .encode(value),
-       ),
-       contentType =
-           contentType ?? ContentType("text", "plain", charset: "utf-8");
+  new fromString(String value, {this.filename, ContentType? contentType})
+    : bytes = List<int>.unmodifiable(
+        (contentType?.charset != null
+                ? Encoding.getByName(contentType!.charset) ?? utf8
+                : utf8)
+            .encode(value),
+      ),
+      contentType =
+          contentType ?? ContentType("text", "plain", charset: "utf-8");
 
   /// The raw bytes of this part's body.
   final List<int> bytes;

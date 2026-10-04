@@ -17,10 +17,9 @@ import 'package:conduit_core/src/db/query/builders/table.dart';
 import 'package:conduit_core/src/db/query/builders/value.dart';
 import 'package:conduit_core/src/db/query/mixin.dart';
 
-class QueryBuilder extends TableBuilder {
-  QueryBuilder(QueryMixin query, [String prefixIndex = ""])
-    : valueKeyPrefix = "v${prefixIndex}_",
-      super(query) {
+class QueryBuilder(QueryMixin query, [String prefixIndex = ""])
+    extends TableBuilder {
+  this : super(query) {
     (query.valueMap ?? query.values.backing.contents).forEach(
       addColumnValueBuilder,
     );
@@ -30,7 +29,7 @@ class QueryBuilder extends TableBuilder {
   /// Prefix used when generating parameter binding keys (the keys
   /// that appear in the parameter map). Stays the same across
   /// dialects — the dialect's `parameterPlaceholder` is what varies.
-  final String valueKeyPrefix;
+  final String valueKeyPrefix = "v${prefixIndex}_";
 
   final Map<String, dynamic> variables = {};
 

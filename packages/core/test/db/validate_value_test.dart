@@ -392,7 +392,7 @@ void main() {
   });
 }
 
-class T extends ManagedObject<_T> implements _T {}
+class T extends ManagedObject<_T> implements _T;
 
 class _T {
   @primaryKey
@@ -460,7 +460,7 @@ class _T {
   String? mustByXYZ;
 }
 
-class U extends ManagedObject<_U> implements _U {}
+class U extends ManagedObject<_U> implements _U;
 
 class _U {
   @primaryKey
@@ -474,7 +474,7 @@ class _U {
 }
 
 class CustomValidate extends Validate {
-  const CustomValidate({super.onUpdate, super.onInsert});
+  const new({super.onUpdate, super.onInsert});
 
   @override
   void validate(ValidationContext context, dynamic input) {
@@ -497,7 +497,7 @@ class V extends ManagedObject<_V> implements _V {
   }
 }
 
-class Constant extends ManagedObject<_Constant> implements _Constant {}
+class Constant extends ManagedObject<_Constant> implements _Constant;
 
 class _Constant {
   @primaryKey
@@ -511,7 +511,7 @@ class _Constant {
   ConstantRef? constantRef;
 }
 
-class ConstantRef extends ManagedObject<_ConstantRef> implements _ConstantRef {}
+class ConstantRef extends ManagedObject<_ConstantRef> implements _ConstantRef;
 
 class _ConstantRef {
   @primaryKey
@@ -528,7 +528,7 @@ class _V {
   String? aOrbButReallyOnlyA;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey
@@ -539,7 +539,7 @@ class _EnumObject {
 
 enum EnumValues { abcd, efgh, other18 }
 
-class FK extends ManagedObject<_FK> implements _FK {}
+class FK extends ManagedObject<_FK> implements _FK;
 
 class _FK {
   @primaryKey
@@ -550,7 +550,7 @@ class _FK {
   late Parent parent;
 }
 
-class Parent extends ManagedObject<_Parent> implements _Parent {}
+class Parent extends ManagedObject<_Parent> implements _Parent;
 
 class _Parent {
   @Validate.compare(greaterThan: 100)
@@ -560,7 +560,7 @@ class _Parent {
   FK? fk;
 }
 
-class PresenceHas extends ManagedObject<_PresenceHas> implements _PresenceHas {}
+class PresenceHas extends ManagedObject<_PresenceHas> implements _PresenceHas;
 
 class _PresenceHas {
   @primaryKey
@@ -570,7 +570,7 @@ class _PresenceHas {
 }
 
 class PresenceBelongsTo extends ManagedObject<_PresenceBelongsTo>
-    implements _PresenceBelongsTo {}
+    implements _PresenceBelongsTo;
 
 class _PresenceBelongsTo {
   @primaryKey
@@ -581,7 +581,7 @@ class _PresenceBelongsTo {
   PresenceHas? present;
 }
 
-class AbsenceHas extends ManagedObject<_AbsenceHas> implements _AbsenceHas {}
+class AbsenceHas extends ManagedObject<_AbsenceHas> implements _AbsenceHas;
 
 class _AbsenceHas {
   @primaryKey
@@ -591,7 +591,7 @@ class _AbsenceHas {
 }
 
 class AbsenceBelongsTo extends ManagedObject<_AbsenceBelongsTo>
-    implements _AbsenceBelongsTo {}
+    implements _AbsenceBelongsTo;
 
 class _AbsenceBelongsTo {
   @primaryKey
@@ -603,7 +603,7 @@ class _AbsenceBelongsTo {
 }
 
 class NonDefaultPK extends ManagedObject<_NonDefaultPK>
-    implements _NonDefaultPK {}
+    implements _NonDefaultPK;
 
 class _NonDefaultPK {
   @Column(
@@ -617,7 +617,7 @@ class _NonDefaultPK {
 }
 
 class MultiValidate extends ManagedObject<_MultiValidate>
-    implements _MultiValidate {}
+    implements _MultiValidate;
 
 const validateReference = Validate.compare(lessThan: 100);
 

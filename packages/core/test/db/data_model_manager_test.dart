@@ -86,4 +86,4 @@ class _T {
   int? id;
 }
 
-class T extends ManagedObject<_T> implements _T {}
+class T extends ManagedObject<_T> implements _T;

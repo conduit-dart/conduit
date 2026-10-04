@@ -6,13 +6,13 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
-  MigrationBuilderExecutable(super.message)
+  new(super.message)
     : inputSchema = Schema.fromMap(
         message["inputSchema"] as Map<String, dynamic>,
       ),
       versionTag = message["versionTag"] as int?;
 
-  MigrationBuilderExecutable.input(this.inputSchema, this.versionTag)
+  new input(this.inputSchema, this.versionTag)
     : super({"inputSchema": inputSchema.asMap(), "versionTag": versionTag});
 
   final int? versionTag;
@@ -51,7 +51,7 @@ class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
 }
 
 class MigrationBuilderResult {
-  MigrationBuilderResult.fromMap(Map<String, dynamic> result)
+  new fromMap(Map<String, dynamic> result)
     : source = result["source"] as String?,
       tablesEvaluated = result["tablesEvaluated"] as List<String>?,
       changeList = result["changeList"] as List<String>?;

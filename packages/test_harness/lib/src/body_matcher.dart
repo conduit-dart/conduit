@@ -5,8 +5,8 @@ import 'matchers.dart';
 /// A test matcher that matches an HTTP response body.
 ///
 /// See [hasBody] or [hasResponse] for more details.
-class HTTPBodyMatcher extends Matcher {
-  HTTPBodyMatcher(dynamic matcher) {
+class HTTPBodyMatcher(dynamic matcher) extends Matcher {
+  this {
     if (matcher is Matcher) {
       contentMatcher = matcher;
     } else {

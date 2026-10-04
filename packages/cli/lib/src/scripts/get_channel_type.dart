@@ -5,9 +5,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:conduit_runtime/dev.dart';
 
-class GetChannelExecutable extends Executable<String> {
-  GetChannelExecutable(super.message);
-
+class GetChannelExecutable(super.message) extends Executable<String> {
   @override
   Future<String> execute() async {
     final channels = RuntimeContext.current.runtimes.iterable

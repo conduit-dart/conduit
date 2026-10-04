@@ -71,7 +71,7 @@ import 'package:conduit_core/conduit_core.dart';
 /// callers.
 class FieldAuthorize {
   /// Creates a field-auth declaration.
-  const FieldAuthorize({this.scopes = const [], this.allowOwner});
+  const new({this.scopes = const [], this.allowOwner});
 
   /// OAuth scopes accepted on this field, any-of semantics.
   final List<String> scopes;
@@ -110,15 +110,13 @@ abstract class FieldAuthPolicy {
 /// is itself a unique handle. On the graph side we have no such object,
 /// so we synthesize one — the type and the property name together are
 /// unique within a single [GraphSchemaConfig].
-class GraphPropertyAuthKey {
-  const GraphPropertyAuthKey(this.declaringType, this.propertyName);
-
+class const GraphPropertyAuthKey(
   /// Either a `GraphNode` or `GraphEdge` Dart [Type].
-  final Type declaringType;
+  final Type declaringType,
 
   /// Property name as declared in the [GraphSchemaConfig] entry.
-  final String propertyName;
-
+  final String propertyName,
+) {
   @override
   bool operator ==(Object other) =>
       other is GraphPropertyAuthKey &&
@@ -147,7 +145,7 @@ class MapFieldAuthPolicy implements FieldAuthPolicy {
   /// Lookups by reference identity for the SQL descriptors (the same
   /// descriptor instance is used at both build time and execution time);
   /// by structural equality for graph keys (see [GraphPropertyAuthKey]).
-  const MapFieldAuthPolicy(this._entries);
+  const new(this._entries);
 
   final Map<Object, FieldAuthorize> _entries;
 

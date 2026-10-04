@@ -7,7 +7,7 @@ import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:path/path.dart';
 
 class CodeAnalyzer {
-  CodeAnalyzer(this.uri) {
+  new(this.uri) {
     if (!uri.isAbsolute) {
       throw ArgumentError("'uri' must be absolute for CodeAnalyzer");
     }

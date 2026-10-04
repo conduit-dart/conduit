@@ -103,61 +103,61 @@ abstract class APIOperationDocumenter {
 ///
 /// Component registries for each type of component - e.g. [schema], [responses] - are used to
 /// register and reference those types.
-class APIDocumentContext {
+class APIDocumentContext(
+  /// The document being created.
+  final APIDocument document,
+) {
   /// Creates a new context.
-  APIDocumentContext(this.document)
-    : schema = APIComponentCollection<APISchemaObject>._(
+  this;
+
+  /// Reusable [APISchemaObject] components.
+  final APIComponentCollection<APISchemaObject> schema =
+      APIComponentCollection<APISchemaObject>._(
         "schemas",
         document.components!.schemas,
-      ),
-      responses = APIComponentCollection<APIResponse>._(
+      );
+
+  /// Reusable [APIResponse] components.
+  final APIComponentCollection<APIResponse> responses =
+      APIComponentCollection<APIResponse>._(
         "responses",
         document.components!.responses,
-      ),
-      parameters = APIComponentCollection<APIParameter>._(
+      );
+
+  /// Reusable [APIParameter] components.
+  final APIComponentCollection<APIParameter> parameters =
+      APIComponentCollection<APIParameter>._(
         "parameters",
         document.components!.parameters,
-      ),
-      requestBodies = APIComponentCollection<APIRequestBody>._(
+      );
+
+  /// Reusable [APIRequestBody] components.
+  final APIComponentCollection<APIRequestBody> requestBodies =
+      APIComponentCollection<APIRequestBody>._(
         "requestBodies",
         document.components!.requestBodies,
-      ),
-      headers = APIComponentCollection<APIHeader>._(
+      );
+
+  /// Reusable [APIHeader] components.
+  final APIComponentCollection<APIHeader> headers =
+      APIComponentCollection<APIHeader>._(
         "headers",
         document.components!.headers,
-      ),
-      securitySchemes = APIComponentCollection<APISecurityScheme>._(
+      );
+
+  /// Reusable [APISecurityScheme] components.
+  final APIComponentCollection<APISecurityScheme> securitySchemes =
+      APIComponentCollection<APISecurityScheme>._(
         "securitySchemes",
         document.components!.securitySchemes,
-      ),
-      callbacks = APIComponentCollection<APICallback>._(
+      );
+
+  /// Reusable [APICallback] components.
+  final APIComponentCollection<APICallback> callbacks =
+      APIComponentCollection<APICallback>._(
         "callbacks",
         document.components!.callbacks,
       );
-
-  /// The document being created.
-  final APIDocument document;
-
-  /// Reusable [APISchemaObject] components.
-  final APIComponentCollection<APISchemaObject> schema;
-
-  /// Reusable [APIResponse] components.
-  final APIComponentCollection<APIResponse> responses;
-
-  /// Reusable [APIParameter] components.
-  final APIComponentCollection<APIParameter> parameters;
-
-  /// Reusable [APIRequestBody] components.
-  final APIComponentCollection<APIRequestBody> requestBodies;
-
-  /// Reusable [APIHeader] components.
-  final APIComponentCollection<APIHeader> headers;
-
-  /// Reusable [APISecurityScheme] components.
-  final APIComponentCollection<APISecurityScheme> securitySchemes;
-
-  /// Reusable [APICallback] components.
-  final APIComponentCollection<APICallback> callbacks;
 
   List<Function> _deferredOperations = [];
 
@@ -206,7 +206,7 @@ class APIDocumentContext {
 ///
 /// Components of type [T] may be registered and referenced through this object.
 class APIComponentCollection<T extends APIObject> {
-  APIComponentCollection._(this._typeName, this._componentMap);
+  new _(this._typeName, this._componentMap);
 
   final String _typeName;
   final Map<String, T> _componentMap;

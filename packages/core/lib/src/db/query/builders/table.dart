@@ -22,7 +22,7 @@ import 'package:conduit_core/src/db/query/builders/sort.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
 class TableBuilder implements Returnable {
-  TableBuilder(QueryMixin query, {this.parent, this.joinedBy})
+  new(QueryMixin query, {this.parent, this.joinedBy})
     : entity = query.entity,
       dialect = parent?.dialect ?? query.context.persistentStore.dialect,
       _manualPredicate = query.predicate {
@@ -80,10 +80,8 @@ class TableBuilder implements Returnable {
     addColumnExpressions(query.expressions);
   }
 
-  TableBuilder.implicit(
-    this.parent,
-    ManagedRelationshipDescription this.joinedBy,
-  ) : entity = joinedBy.inverse!.entity,
+  new implicit(this.parent, ManagedRelationshipDescription this.joinedBy)
+    : entity = joinedBy.inverse!.entity,
       dialect = parent!.dialect,
       _manualPredicate = QueryPredicate.empty() {
     tableAlias = createTableAlias();

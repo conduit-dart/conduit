@@ -59,12 +59,8 @@ class App extends ApplicationChannel {
   }
 }
 
-class UserController extends ResourceController {
-  UserController(this.context, this.authServer);
-
-  final ManagedContext? context;
-  final AuthServer authServer;
-
+class UserController(final ManagedContext? context, final AuthServer authServer)
+    extends ResourceController {
   @Operation.get()
   Future<Response> getUsers() async {
     final query = Query<User>(context!);
@@ -113,7 +109,7 @@ class UserController extends ResourceController {
 }
 
 class AppConfiguration extends Configuration {
-  AppConfiguration.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
   late DatabaseConfiguration database;
 }

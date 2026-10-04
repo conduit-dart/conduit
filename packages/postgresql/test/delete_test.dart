@@ -217,7 +217,7 @@ void main() {
   });
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 @Table(name: "simple")
 class _TestModel {
@@ -237,7 +237,7 @@ class _TestModel {
   }
 }
 
-class RefModel extends ManagedObject<_RefModel> implements _RefModel {}
+class RefModel extends ManagedObject<_RefModel> implements _RefModel;
 
 class _RefModel {
   @primaryKey
@@ -248,7 +248,7 @@ class _RefModel {
 }
 
 class GRestrictInverse extends ManagedObject<_GRestrictInverse>
-    implements _GRestrictInverse {}
+    implements _GRestrictInverse;
 
 class _GRestrictInverse {
   @primaryKey
@@ -259,7 +259,7 @@ class _GRestrictInverse {
   ManagedSet<GRestrict>? test;
 }
 
-class GRestrict extends ManagedObject<_GRestrict> implements _GRestrict {}
+class GRestrict extends ManagedObject<_GRestrict> implements _GRestrict;
 
 class _GRestrict {
   @primaryKey
@@ -270,7 +270,7 @@ class _GRestrict {
 }
 
 class GCascadeInverse extends ManagedObject<_GCascadeInverse>
-    implements _GCascadeInverse {}
+    implements _GCascadeInverse;
 
 class _GCascadeInverse {
   @primaryKey
@@ -281,7 +281,7 @@ class _GCascadeInverse {
   ManagedSet<GCascade>? test;
 }
 
-class GCascade extends ManagedObject<_GCascade> implements _GCascade {}
+class GCascade extends ManagedObject<_GCascade> implements _GCascade;
 
 class _GCascade {
   @primaryKey

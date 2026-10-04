@@ -10,7 +10,7 @@ class RequestPath {
   /// Default constructor for [RequestPath].
   ///
   /// There is no need to invoke this constructor manually.
-  RequestPath(this.segments);
+  new(this.segments);
 
   void setSpecification(RouteSpecification spec, {int segmentOffset = 0}) {
     final requestIterator = segments.iterator;

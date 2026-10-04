@@ -13,7 +13,7 @@ import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 import 'package:conduit_runtime/dev.dart' hide firstMetadataOfType;
 
 class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
-  ResourceControllerRuntimeImpl(this.type) {
+  new(this.type) {
     final allDeclarations = type.declarations;
 
     ivarParameters = allDeclarations.values

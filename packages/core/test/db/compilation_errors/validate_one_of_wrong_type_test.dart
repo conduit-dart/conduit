@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class FailingOneOf extends ManagedObject<_FOO> {}
+class FailingOneOf extends ManagedObject<_FOO>;
 
 class _FOO {
   @primaryKey

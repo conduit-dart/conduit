@@ -23,10 +23,10 @@ import 'package:conduit_graph/conduit_graph.dart';
 
 /// The result of lowering a [GraphQuery] (or [GraphPattern]) to
 /// Cypher: the query text plus the parameter map to bind on the wire.
-class CypherStatement {
-  CypherStatement(this.cypher, this.parameters);
-  final String cypher;
-  final Map<String, Object?> parameters;
+class CypherStatement(
+  final String cypher,
+  final Map<String, Object?> parameters,
+) {
   @override
   String toString() => 'CypherStatement($cypher, $parameters)';
 }
@@ -34,7 +34,7 @@ class CypherStatement {
 /// Stateful emitter — accumulates parameter bindings as it walks the
 /// AST so each `$pN` placeholder gets a unique key.
 class CypherEmitter {
-  CypherEmitter();
+  new();
 
   final Map<String, Object?> _params = <String, Object?>{};
   int _paramCounter = 0;

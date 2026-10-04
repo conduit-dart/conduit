@@ -8,12 +8,9 @@ import 'postgresql_query.dart';
 
 enum _Reducer { avg, count, max, min, sum }
 
-class PostgresQueryReduce<T extends ManagedObject>
+class PostgresQueryReduce<T extends ManagedObject>(final PostgresQuery<T> query)
     extends QueryReduceOperation<T> {
-  PostgresQueryReduce(this.query) : builder = QueryBuilder(query);
-
-  final PostgresQuery<T> query;
-  final QueryBuilder builder;
+  final QueryBuilder builder = QueryBuilder(query);
 
   @override
   Future<double?> average(num? Function(T object) selector) {

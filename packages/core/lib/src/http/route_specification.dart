@@ -4,11 +4,11 @@ import 'package:conduit_core/src/http/route_node.dart';
 /// Specifies a matchable route path.
 ///
 /// Contains [RouteSegment]s for each path segment. This class is used internally by [Router].
-class RouteSpecification {
+class RouteSpecification(String patternString) {
   /// Creates a [RouteSpecification] from a [String].
   ///
   /// The [patternString] must be stripped of any optionals.
-  RouteSpecification(String patternString) {
+  this {
     segments = _splitPathSegments(patternString);
     variableNames = segments
         .where((e) => e.isVariable)

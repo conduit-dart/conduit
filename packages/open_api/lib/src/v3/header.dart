@@ -7,8 +7,8 @@ import 'package:conduit_open_api/src/v3/parameter.dart';
 /// in MUST NOT be specified, it is implicitly in header.
 /// All traits that are affected by the location MUST be applicable to a location of header (for example, style).
 class APIHeader extends APIParameter {
-  APIHeader({super.schema}) : super.header(null);
-  APIHeader.empty() : super.header(null);
+  new({super.schema}) : super.header(null);
+  new empty() : super.header(null);
 
   @override
   void encode(KeyedArchive object) {

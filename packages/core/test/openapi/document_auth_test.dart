@@ -332,11 +332,7 @@ class TestChannel extends ApplicationChannel {
   }
 }
 
-class DocumentedController extends Controller {
-  DocumentedController({this.tag});
-
-  final String? tag;
-
+class DocumentedController({final String? tag}) extends Controller {
   @override
   Map<String, APIOperation> documentOperations(
     APIDocumentContext components,

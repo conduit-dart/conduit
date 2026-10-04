@@ -21,7 +21,7 @@ import 'mysql_schema_generator.dart';
 /// emits positional `?` directly when called via
 /// `SqlDialect.renderExpression`.
 class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
-  MysqlPersistentStore(
+  new(
     this.username,
     this.password,
     this.host,
@@ -34,7 +34,7 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
   /// Same shape as the Postgres store's `fromConnectionInfo` — kept
   /// for API parity / future migrations of code that switches
   /// backends.
-  MysqlPersistentStore.fromConnectionInfo(
+  new fromConnectionInfo(
     this.username,
     this.password,
     this.host,
@@ -399,7 +399,7 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     bool temporary = false,
   }) async {
     final conn = await _ensureConnected();
-    Schema schema = fromSchema;
+    var schema = fromSchema;
 
     await conn.execute('START TRANSACTION');
     try {

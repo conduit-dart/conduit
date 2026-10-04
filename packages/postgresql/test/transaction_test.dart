@@ -153,4 +153,4 @@ class _Model {
   String? name;
 }
 
-class Model extends ManagedObject<_Model> implements _Model {}
+class Model extends ManagedObject<_Model> implements _Model;

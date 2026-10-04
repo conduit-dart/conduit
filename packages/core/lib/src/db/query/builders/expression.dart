@@ -16,7 +16,7 @@ import 'package:conduit_core/src/db/query/expression_ast.dart';
 import 'package:conduit_core/src/db/query/predicate.dart';
 
 class ColumnExpressionBuilder extends ColumnBuilder {
-  ColumnExpressionBuilder(
+  new(
     TableBuilder super.table,
     super.property,
     this.expression, {

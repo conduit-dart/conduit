@@ -95,7 +95,7 @@ abstract class Serializable {
 }
 
 class SerializableException implements HandlerException {
-  SerializableException(this.reasons);
+  new(this.reasons);
 
   final List<String> reasons;
 

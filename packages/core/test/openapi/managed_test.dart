@@ -327,7 +327,7 @@ class _Model1 {
   Model3? model3;
 }
 
-class Model2 extends ManagedObject<_Model2> implements _Model2 {}
+class Model2 extends ManagedObject<_Model2> implements _Model2;
 
 class _Model2 {
   @primaryKey
@@ -337,7 +337,7 @@ class _Model2 {
   Model1? model1;
 }
 
-class Model3 extends ManagedObject<_Model3> implements _Model3 {}
+class Model3 extends ManagedObject<_Model3> implements _Model3;
 
 @Table(uniquePropertySet: [Symbol('matches'), Symbol('lessThan')])
 class _Model3 {
@@ -387,7 +387,7 @@ class _Model3 {
 }
 
 class CustomValidate extends Validate {
-  const CustomValidate();
+  const new();
 
   @override
   void validate(ValidationContext context, dynamic input) {
@@ -410,8 +410,6 @@ class BindManagedObjectController extends ResourceController {
   }
 }
 
-class MOCSubclass extends ManagedObjectController<Model1> {
-  MOCSubclass(super.ctx);
-}
+class MOCSubclass(super.ctx) extends ManagedObjectController<Model1>;
 
 enum MOEnum { case1, case2 }

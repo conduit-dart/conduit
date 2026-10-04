@@ -7,9 +7,9 @@ import 'postgresql_query_reduce.dart';
 class PostgresQuery<InstanceType extends ManagedObject> extends Object
     with QueryMixin<InstanceType>
     implements Query<InstanceType> {
-  PostgresQuery(this.context);
+  new(this.context);
 
-  PostgresQuery.withEntity(this.context, this._entity);
+  new withEntity(this.context, this._entity);
 
   @override
   ManagedContext context;

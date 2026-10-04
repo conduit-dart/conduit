@@ -598,7 +598,7 @@ ${symbolMapEntries.toString().trimRight()}
 }
 
 class _EntityAnalysis {
-  _EntityAnalysis({
+  new({
     required this.instanceClassName,
     required this.tableDefinitionClassName,
     required this.tableName,
@@ -618,41 +618,25 @@ class _EntityAnalysis {
   final Set<String> requiredImportUris;
 }
 
-class _PropertyAnalysis {
-  _PropertyAnalysis({
-    required this.name,
-    required this.propertyName,
-    required this.declaredTypeSource,
-    required this.managedTypeKind,
-    required this.managedTypeArgs,
-    required this.primaryKey,
-    required this.autoincrement,
-    required this.nullable,
-    required this.unique,
-    required this.indexed,
-    required this.includedInDefaultResultSet,
-    required this.defaultValueLiteral,
-    required this.validatorSources,
-    required this.responseKeyLiteral,
-  });
-  final String name;
-  final String propertyName;
-  final String declaredTypeSource;
-  final String managedTypeKind;
-  final List<String> managedTypeArgs;
-  final bool primaryKey;
-  final bool autoincrement;
-  final bool nullable;
-  final bool unique;
-  final bool indexed;
-  final bool includedInDefaultResultSet;
-  final String? defaultValueLiteral;
-  final List<String> validatorSources;
-  final String? responseKeyLiteral;
-}
+class _PropertyAnalysis({
+  required final String name,
+  required final String propertyName,
+  required final String declaredTypeSource,
+  required final String managedTypeKind,
+  required final List<String> managedTypeArgs,
+  required final bool primaryKey,
+  required final bool autoincrement,
+  required final bool nullable,
+  required final bool unique,
+  required final bool indexed,
+  required final bool includedInDefaultResultSet,
+  required final String? defaultValueLiteral,
+  required final List<String> validatorSources,
+  required final String? responseKeyLiteral,
+});
 
 class _ColumnAnnotation {
-  _ColumnAnnotation({
+  new({
     required this.isPrimaryKey,
     required this.autoincrement,
     required this.isNullable,
@@ -676,21 +660,15 @@ class _ColumnAnnotation {
   final String? explicitName;
 }
 
-class _TableAnnotation {
-  _TableAnnotation({
-    required this.name,
-    required this.useSnakeCaseName,
-    required this.useSnakeCaseColumnName,
-    required this.uniquePropertySet,
-  });
-  final String? name;
-  final bool useSnakeCaseName;
-  final bool useSnakeCaseColumnName;
-  final List<String>? uniquePropertySet;
-}
+class _TableAnnotation({
+  required final String? name,
+  required final bool useSnakeCaseName,
+  required final bool useSnakeCaseColumnName,
+  required final List<String>? uniquePropertySet,
+});
 
 class _ManagedTypeInfo {
-  _ManagedTypeInfo(this.kind, this.dartName, {this.typeArguments = const []});
+  new(this.kind, this.dartName, {this.typeArguments = const []});
   final String kind;
   final String dartName;
   final List<String> typeArguments;

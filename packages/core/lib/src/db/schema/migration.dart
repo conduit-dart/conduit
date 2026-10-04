@@ -4,10 +4,7 @@ import 'package:conduit_core/src/db/persistent_store/persistent_store.dart';
 import 'package:conduit_core/src/db/schema/schema.dart';
 
 /// Thrown when [Migration] encounters an error.
-class MigrationException implements Exception {
-  MigrationException(this.message);
-  String message;
-
+class MigrationException(var String message) implements Exception {
   @override
   String toString() => message;
 }

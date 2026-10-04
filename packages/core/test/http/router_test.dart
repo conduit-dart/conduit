@@ -384,7 +384,7 @@ class Handler extends Controller {
 }
 
 class NumberEmitter extends Controller {
-  NumberEmitter(this.number);
+  new(this.number);
 
   final int number;
 
@@ -394,11 +394,7 @@ class NumberEmitter extends Controller {
   }
 }
 
-class PrepareTailController extends Controller {
-  PrepareTailController(this.completer);
-
-  final Completer completer;
-
+class PrepareTailController(final Completer completer) extends Controller {
   @override
   void didAddToChannel() {
     completer.complete();

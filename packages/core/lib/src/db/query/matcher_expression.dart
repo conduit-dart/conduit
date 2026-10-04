@@ -3,7 +3,7 @@ import 'package:conduit_core/src/db/query/query.dart';
 
 /// Contains binary logic operations to be applied to a [QueryExpression].
 class QueryExpressionJunction<T, InstanceType> {
-  QueryExpressionJunction._(this.lhs);
+  new _(this.lhs);
 
   final QueryExpression<T, InstanceType> lhs;
 }
@@ -18,9 +18,9 @@ class QueryExpressionJunction<T, InstanceType> {
 ///           ..where((e) => e.name).equalTo("Bob");
 ///
 class QueryExpression<T, InstanceType> {
-  QueryExpression(this.keyPath);
+  new(this.keyPath);
 
-  QueryExpression.byAddingKey(
+  new byAddingKey(
     QueryExpression<T, InstanceType> original,
     ManagedPropertyDescription byAdding,
   ) : keyPath = KeyPath.byAddingKey(original.keyPath, byAdding),

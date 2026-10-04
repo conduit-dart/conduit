@@ -43,18 +43,16 @@ class APISecuritySchemeTypeCodec {
 ///
 /// Supported schemes are HTTP authentication, an API key (either as a header or as a query parameter), OAuth2's common flows (implicit, password, application and access code) as defined in RFC6749, and OpenID Connect Discovery.
 class APISecurityScheme extends APIObject {
-  APISecurityScheme();
-  APISecurityScheme.empty();
+  new();
+  new empty();
 
-  APISecurityScheme.http(this.scheme) : type = APISecuritySchemeType.http;
+  new http(this.scheme) : type = APISecuritySchemeType.http;
 
-  APISecurityScheme.apiKey(this.name, this.location)
-    : type = APISecuritySchemeType.apiKey;
+  new apiKey(this.name, this.location) : type = APISecuritySchemeType.apiKey;
 
-  APISecurityScheme.oauth2(this.flows) : type = APISecuritySchemeType.oauth2;
+  new oauth2(this.flows) : type = APISecuritySchemeType.oauth2;
 
-  APISecurityScheme.openID(this.connectURL)
-    : type = APISecuritySchemeType.openID;
+  new openID(this.connectURL) : type = APISecuritySchemeType.openID;
 
   /// The type of the security scheme.
   ///
@@ -212,28 +210,11 @@ class APISecurityScheme extends APIObject {
 
 /// Allows configuration of the supported OAuth Flows.
 class APISecuritySchemeOAuth2Flow extends APIObject {
-  APISecuritySchemeOAuth2Flow.empty();
-  APISecuritySchemeOAuth2Flow.code(
-    this.authorizationURL,
-    this.tokenURL,
-    this.refreshURL,
-    this.scopes,
-  );
-  APISecuritySchemeOAuth2Flow.implicit(
-    this.authorizationURL,
-    this.refreshURL,
-    this.scopes,
-  );
-  APISecuritySchemeOAuth2Flow.password(
-    this.tokenURL,
-    this.refreshURL,
-    this.scopes,
-  );
-  APISecuritySchemeOAuth2Flow.client(
-    this.tokenURL,
-    this.refreshURL,
-    this.scopes,
-  );
+  new empty();
+  new code(this.authorizationURL, this.tokenURL, this.refreshURL, this.scopes);
+  new implicit(this.authorizationURL, this.refreshURL, this.scopes);
+  new password(this.tokenURL, this.refreshURL, this.scopes);
+  new client(this.tokenURL, this.refreshURL, this.scopes);
 
   /// The authorization URL to be used for this flow.
   ///
@@ -285,8 +266,8 @@ class APISecuritySchemeOAuth2Flow extends APIObject {
 
 /// When a list of [APISecurityRequirement] is defined on the [APIDocument] or [APIOperation], only one of [APISecurityRequirement] in the list needs to be satisfied to authorize the request.
 class APISecurityRequirement extends APIObject {
-  APISecurityRequirement(this.requirements);
-  APISecurityRequirement.empty();
+  new(this.requirements);
+  new empty();
 
   /// Each name MUST correspond to a security scheme which is declared in [APIComponents.securitySchemes].
   ///

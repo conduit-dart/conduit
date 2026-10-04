@@ -108,11 +108,7 @@ final GraphQLScalarType<String, String> graphQLJSON =
 /// delegate validate/serialize/deserialize/coerce, and override only
 /// the metadata fields that affect SDL output.
 class _RenamedScalarType<V, S> extends GraphQLScalarType<V, S> {
-  _RenamedScalarType(
-    this._inner, {
-    required this.name,
-    required this.description,
-  });
+  new(this._inner, {required this.name, required this.description});
 
   final GraphQLScalarType<V, S> _inner;
 

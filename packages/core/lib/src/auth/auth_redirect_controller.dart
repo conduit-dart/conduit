@@ -50,15 +50,20 @@ abstract class AuthRedirectControllerDelegate {
 ///         .route("/auth/code")
 ///         .link(() => new AuthRedirectController(authServer));
 ///
-class AuthRedirectController extends ResourceController {
+class AuthRedirectController(
+  /// A reference to the [AuthServer] used to grant authorization codes and access tokens.
+  final AuthServer authServer, {
+
+  /// Renders an HTML login form.
+  final AuthRedirectControllerDelegate? delegate,
+
+  /// When true, the controller allows for the Implicit Grant Flow
+  final bool allowsImplicit = true,
+}) extends ResourceController {
   /// Creates a new instance of an [AuthRedirectController].
   ///
   /// [authServer] is the required authorization server. If [delegate] is provided, this controller will return a login page for all GET requests.
-  AuthRedirectController(
-    this.authServer, {
-    this.delegate,
-    this.allowsImplicit = true,
-  }) {
+  this {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];
@@ -67,12 +72,6 @@ class AuthRedirectController extends ResourceController {
   static final Response _unsupportedResponseTypeResponse = Response.badRequest(
     body: "<h1>Error</h1><p>unsupported_response_type</p>",
   )..contentType = ContentType.html;
-
-  /// A reference to the [AuthServer] used to grant authorization codes and access tokens.
-  late final AuthServer authServer;
-
-  /// When true, the controller allows for the Implicit Grant Flow
-  final bool allowsImplicit;
 
   /// A randomly generated value the client can use to verify the origin of the redirect.
   ///
@@ -91,9 +90,6 @@ class AuthRedirectController extends ResourceController {
   /// This must be a valid client ID according to [authServer].\
   @Bind.query("client_id")
   String? clientID;
-
-  /// Renders an HTML login form.
-  final AuthRedirectControllerDelegate? delegate;
 
   /// Returns an HTML login form.
   ///

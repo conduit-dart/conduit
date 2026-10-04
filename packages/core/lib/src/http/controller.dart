@@ -10,7 +10,7 @@ import 'package:logging/logging.dart';
 /// The unifying protocol for [Request] and [Response] classes.
 ///
 /// A [Controller] must return an instance of this type from its [Controller.handle] method.
-abstract class RequestOrResponse {}
+abstract class RequestOrResponse;
 
 /// An interface that [Controller] subclasses implement to generate a controller for each request.
 ///
@@ -351,7 +351,7 @@ abstract class Controller
 
 @PreventCompilation()
 class _ControllerRecycler<T> extends Controller {
-  _ControllerRecycler(this.generator, Recyclable<T> instance) {
+  new(this.generator, Recyclable<T> instance) {
     recycleState = instance.recycledState;
     nextInstanceToReceive = instance;
   }
@@ -435,11 +435,9 @@ class _ControllerRecycler<T> extends Controller {
 }
 
 @PreventCompilation()
-class _FunctionController extends Controller {
-  _FunctionController(this._handler);
-
-  final FutureOr<RequestOrResponse?> Function(Request) _handler;
-
+class _FunctionController(
+  final FutureOr<RequestOrResponse?> Function(Request) _handler,
+) extends Controller {
   @override
   FutureOr<RequestOrResponse?> handle(Request request) {
     return _handler(request);

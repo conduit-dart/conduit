@@ -10,7 +10,7 @@ import 'package:conduit_core/src/runtime/orm/validator_builder.dart';
 import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 
 class PropertyBuilder {
-  PropertyBuilder(this.parent, this.declaration)
+  new(this.parent, this.declaration)
     : relate = firstMetadataOfType(declaration),
       column = firstMetadataOfType(declaration),
       responseKey = firstMetadataOfType(declaration),

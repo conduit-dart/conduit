@@ -51,7 +51,7 @@ abstract class ResourceControllerDocumenter {
 }
 
 class ResourceControllerOperation {
-  ResourceControllerOperation({
+  new({
     required this.scopes,
     required this.pathVariables,
     required this.httpMethod,
@@ -95,21 +95,21 @@ class ResourceControllerOperation {
   }
 }
 
-class ResourceControllerParameter {
-  ResourceControllerParameter({
-    required this.symbolName,
-    required this.name,
-    required this.location,
-    required this.isRequired,
-    required this._decoder,
-    required this.type,
-    required this.defaultValue,
-    required this.acceptFilter,
-    required this.ignoreFilter,
-    required this.requireFilter,
-    required this.rejectFilter,
-  });
+class ResourceControllerParameter({
+  required final String symbolName,
+  required final String? name,
 
+  /// The location in the request that this parameter is bound to
+  required final BindingType location,
+  required final bool isRequired,
+  required final dynamic Function(dynamic input)? _decoder,
+  required final Type type,
+  required final dynamic defaultValue,
+  required final List<String>? acceptFilter,
+  required final List<String>? ignoreFilter,
+  required final List<String>? requireFilter,
+  required final List<String>? rejectFilter,
+}) {
   static ResourceControllerParameter make<T>({
     required String symbolName,
     required String? name,
@@ -136,22 +136,6 @@ class ResourceControllerParameter {
       rejectFilter: rejectFilter,
     );
   }
-
-  final String symbolName;
-  final String? name;
-  final Type type;
-  final dynamic defaultValue;
-  final List<String>? acceptFilter;
-  final List<String>? ignoreFilter;
-  final List<String>? requireFilter;
-  final List<String>? rejectFilter;
-
-  /// The location in the request that this parameter is bound to
-  final BindingType location;
-
-  final bool isRequired;
-
-  final dynamic Function(dynamic input)? _decoder;
 
   APIParameterLocation get apiLocation {
     switch (location) {

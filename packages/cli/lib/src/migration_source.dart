@@ -4,20 +4,20 @@ import 'package:conduit_runtime/dev.dart';
 import 'package:crypto/crypto.dart';
 
 class MigrationSource {
-  MigrationSource(this.source, this.uri, int nameStartIndex, int nameEndIndex) {
+  new(this.source, this.uri, int nameStartIndex, int nameEndIndex) {
     originalName = source!.substring(nameStartIndex, nameEndIndex);
     name = "M${md5.convert(source!.codeUnits)}";
     source = source!.replaceRange(nameStartIndex, nameEndIndex, name);
   }
 
-  MigrationSource.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     originalName = map["originalName"] as String;
     source = map["source"] as String?;
     name = map["name"] as String;
     uri = map["uri"] as String?;
   }
 
-  factory MigrationSource.fromFile(Uri uri) {
+  factory fromFile(Uri uri) {
     final analyzer = CodeAnalyzer(uri);
     final migrationTypes = analyzer.getSubclassesFromFile("Migration", uri);
     if (migrationTypes.length != 1) {

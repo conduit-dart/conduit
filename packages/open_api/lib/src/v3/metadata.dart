@@ -6,7 +6,7 @@ import 'package:conduit_open_api/src/object.dart';
 /// The metadata MAY be used by the clients if needed, and MAY be presented in editing or documentation generation tools for convenience.
 class APIInfo extends APIObject {
   /// Creates empty metadata for specification.
-  APIInfo(
+  new(
     this.title,
     this.version, {
     this.description,
@@ -15,7 +15,7 @@ class APIInfo extends APIObject {
     this.contact,
   });
 
-  APIInfo.empty();
+  new empty();
 
   /// The title of the application.
   ///
@@ -78,8 +78,8 @@ class APIInfo extends APIObject {
 
 /// Contact information for the exposed API.
 class APIContact extends APIObject {
-  APIContact({this.name, this.url, this.email});
-  APIContact.empty();
+  new({this.name, this.url, this.email});
+  new empty();
 
   /// The identifying name of the contact person/organization.
   String? name;
@@ -115,8 +115,8 @@ class APIContact extends APIObject {
 
 /// License information for the exposed API.
 class APILicense extends APIObject {
-  APILicense(this.name, {this.url});
-  APILicense.empty();
+  new(this.name, {this.url});
+  new empty();
 
   /// The license name used for the API.
   ///
@@ -153,9 +153,9 @@ class APILicense extends APIObject {
 ///
 /// It is not mandatory to have a [APITag] per tag defined in the [APIOperation] instances.
 class APITag extends APIObject {
-  APITag(this.name, {this.description});
+  new(this.name, {this.description});
 
-  APITag.empty();
+  new empty();
 
   /// The name of the tag.
   ///

@@ -12,10 +12,10 @@ import 'package:conduit_open_api/src/v2/security.dart';
 /// Represents an OpenAPI 2.0 specification.
 class APIDocument extends APIObject {
   /// Creates an empty specification.
-  APIDocument();
+  new();
 
   /// Creates a specification from decoded JSON or YAML document object.
-  APIDocument.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     decode(KeyedArchive.unarchive(map, allowReferences: true));
   }
 

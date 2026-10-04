@@ -16,7 +16,7 @@ void main() {
 }
 
 class MultiUniqueFailureRelationship
-    extends ManagedObject<_MultiUniqueFailureRelationship> {}
+    extends ManagedObject<_MultiUniqueFailureRelationship>;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _MultiUniqueFailureRelationship {
@@ -28,7 +28,7 @@ class _MultiUniqueFailureRelationship {
 }
 
 class MultiUniqueFailureRelationshipInverse
-    extends ManagedObject<_MultiUniqueFailureRelationshipInverse> {}
+    extends ManagedObject<_MultiUniqueFailureRelationshipInverse>;
 
 class _MultiUniqueFailureRelationshipInverse {
   @primaryKey

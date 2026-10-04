@@ -29,7 +29,7 @@ class KeyedArchive extends Object
     with MapBase<String, dynamic>
     implements Referencable {
   /// Use [unarchive] instead.
-  KeyedArchive(this._map) {
+  new(this._map) {
     _recode();
   }
 
@@ -41,7 +41,7 @@ class KeyedArchive extends Object
   ///
   /// If [allowReferences] is true, JSON Schema references will be traversed and decoded objects
   /// will contain values from the referenced object. This flag defaults to false.
-  KeyedArchive.unarchive(this._map, {bool allowReferences = false}) {
+  new unarchive(this._map, {bool allowReferences = false}) {
     _recode();
     if (allowReferences) {
       resolveOrThrow(ReferenceResolver(this));
@@ -68,7 +68,7 @@ class KeyedArchive extends Object
     return archive.toPrimitive();
   }
 
-  KeyedArchive._empty() : _map = <String, dynamic>{};
+  new _empty() : _map = <String, dynamic>{};
 
   /// A reference to another object in the same document.
   ///

@@ -8,13 +8,11 @@ import 'matchers.dart';
 /// A test matcher that matches a response from an HTTP server.
 ///
 /// See [hasStatus] or [hasResponse] for more details. Use [hasResponse] to create instances of this type.
-class HTTPResponseMatcher extends Matcher {
-  HTTPResponseMatcher(this.statusCode, this.headers, this.body);
-
-  final int? statusCode;
-  final HTTPHeaderMatcher? headers;
-  final HTTPBodyMatcher? body;
-
+class HTTPResponseMatcher(
+  final int? statusCode,
+  final HTTPHeaderMatcher? headers,
+  final HTTPBodyMatcher? body,
+) extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! TestResponse) {

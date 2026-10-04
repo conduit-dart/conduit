@@ -21,7 +21,7 @@ import 'package:conduit_core/conduit_core.dart';
 // ---------------------------------------------------------------------------
 
 class _SingleEqBench extends BenchmarkBase {
-  _SingleEqBench() : super('predicate: single eq');
+  new() : super('predicate: single eq');
 
   @override
   void run() {
@@ -41,10 +41,8 @@ class _SingleEqBench extends BenchmarkBase {
 // and `.and(...)` wraps the children in a `LogicalExpression('AND', ...)`.
 // ---------------------------------------------------------------------------
 
-class _AndChainBench extends BenchmarkBase {
-  _AndChainBench(this.terms) : super('predicate: $terms-term AND');
-  final int terms;
-
+class _AndChainBench(final int terms) extends BenchmarkBase {
+  this : super('predicate: $terms-term AND');
   @override
   void run() {
     final preds = <QueryPredicate>[];
@@ -69,7 +67,7 @@ class _AndChainBench extends BenchmarkBase {
 // ---------------------------------------------------------------------------
 
 class _MixedAndOrBench extends BenchmarkBase {
-  _MixedAndOrBench() : super('predicate: mixed AND/OR');
+  new() : super('predicate: mixed AND/OR');
 
   @override
   void run() {
@@ -104,10 +102,8 @@ class _MixedAndOrBench extends BenchmarkBase {
 // `ParameterExpression`s laid out under a single `InExpression`.
 // ---------------------------------------------------------------------------
 
-class _InListBench extends BenchmarkBase {
-  _InListBench(this.size) : super('predicate: IN($size)');
-  final int size;
-
+class _InListBench(final int size) extends BenchmarkBase {
+  this : super('predicate: IN($size)');
   @override
   void run() {
     final values = <SqlExpression>[];

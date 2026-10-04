@@ -12,7 +12,7 @@ import 'package:conduit_open_api/src/v3/server.dart';
 
 /// Describes a single API operation on a path.
 class APIOperation extends APIObject {
-  APIOperation(
+  new(
     this.id,
     this.responses, {
     this.tags,
@@ -25,7 +25,7 @@ class APIOperation extends APIObject {
     this.deprecated,
   });
 
-  APIOperation.empty();
+  new empty();
 
   /// A list of tags for API documentation control.
   ///

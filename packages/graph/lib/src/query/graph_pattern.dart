@@ -7,11 +7,7 @@ import '../types/graph_relationship_direction.dart';
 /// Wraps the user's anchor variable and any chained relationship
 /// hops emitted by [GraphPatternNode.connectedTo].
 class GraphPatternNode<N extends GraphNode<N>> {
-  GraphPatternNode({
-    required this.variable,
-    required this.label,
-    this.nodeType,
-  });
+  new({required this.variable, required this.label, this.nodeType});
 
   /// The query-binding variable name (e.g. `u` in `(u:User)`).
   final String variable;
@@ -63,34 +59,25 @@ class GraphPatternNode<N extends GraphNode<N>> {
 }
 
 /// A relationship hop captured inside a [GraphPatternNode].
-class GraphPatternRelationship {
-  const GraphPatternRelationship({
-    required this.edgeLabel,
-    required this.direction,
-    this.edgeType,
-    this.toLabel,
-    this.toType,
-    this.toVariable,
-  });
-
+class const GraphPatternRelationship({
   /// Edge label (e.g. `Friend`).
-  final GraphLabel edgeLabel;
-
-  /// The Dart edge [Type], when known.
-  final Type? edgeType;
+  required final GraphLabel edgeLabel,
 
   /// Direction of this hop.
-  final GraphRelationshipDirection direction;
+  required final GraphRelationshipDirection direction,
+
+  /// The Dart edge [Type], when known.
+  final Type? edgeType,
 
   /// Terminal node label, when the user pinned one.
-  final GraphLabel? toLabel;
+  final GraphLabel? toLabel,
 
   /// Terminal node Dart type, when the user pinned one.
-  final Type? toType;
+  final Type? toType,
 
   /// Terminal node binding variable, when the user pinned one.
-  final String? toVariable;
-
+  final String? toVariable,
+}) {
   @override
   String toString() {
     return 'GraphPatternRelationship'
@@ -109,11 +96,11 @@ class GraphPatternRelationship {
 /// This type is the **only** public surface for building a pattern
 /// from a closure; backends consume its [root].
 class GraphPattern<N extends GraphNode<N>> {
-  GraphPattern._(this.root);
+  new _(this.root);
 
   /// Build a pattern by calling [builder] with a fresh
   /// [GraphPatternNode] anchored on label [label] (or `T.toString()`).
-  factory GraphPattern.build(
+  factory build(
     void Function(GraphPatternNode<N>) builder, {
     String variable = 'n',
     GraphLabel? label,

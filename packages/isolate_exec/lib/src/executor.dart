@@ -6,11 +6,7 @@ import 'package:conduit_isolate_exec/src/executable.dart';
 import 'package:conduit_isolate_exec/src/source_generator.dart';
 
 class IsolateExecutor<U> {
-  IsolateExecutor(
-    this.generator, {
-    this.packageConfigURI,
-    this.message = const {},
-  });
+  new(this.generator, {this.packageConfigURI, this.message = const {}});
 
   final SourceGenerator generator;
   final Map<String, dynamic> message;

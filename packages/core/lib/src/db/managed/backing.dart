@@ -33,11 +33,8 @@ class ManagedValueBacking extends ManagedBacking {
 }
 
 class ManagedForeignKeyBuilderBacking extends ManagedBacking {
-  ManagedForeignKeyBuilderBacking();
-  ManagedForeignKeyBuilderBacking.from(
-    ManagedEntity entity,
-    ManagedBacking backing,
-  ) {
+  new();
+  new from(ManagedEntity entity, ManagedBacking backing) {
     if (backing.contents.containsKey(entity.primaryKey)) {
       contents[entity.primaryKey] = backing.contents[entity.primaryKey];
     }
@@ -67,8 +64,8 @@ class ManagedForeignKeyBuilderBacking extends ManagedBacking {
 }
 
 class ManagedBuilderBacking extends ManagedBacking {
-  ManagedBuilderBacking();
-  ManagedBuilderBacking.from(ManagedEntity entity, ManagedBacking original) {
+  new();
+  new from(ManagedEntity entity, ManagedBacking original) {
     if (original is! ManagedValueBacking) {
       throw ArgumentError(
         "Invalid 'ManagedObject' assignment to 'Query.values'. Object must be created through default constructor.",
@@ -182,11 +179,7 @@ class ManagedAccessTrackingBacking extends ManagedBacking {
   }
 }
 
-class DocumentAccessTracker extends Document {
-  DocumentAccessTracker(this.owner);
-
-  final KeyPath? owner;
-
+class DocumentAccessTracker(final KeyPath? owner) extends Document {
   @override
   dynamic operator [](dynamic keyOrIndex) {
     owner!.addDynamicElement(keyOrIndex);

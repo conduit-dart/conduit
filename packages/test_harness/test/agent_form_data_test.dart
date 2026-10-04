@@ -250,15 +250,11 @@ void main() {
   });
 }
 
-class _RawCapture {
-  _RawCapture(this.headers, this.body);
-  final HttpHeaders headers;
-  final List<int> body;
-}
+class _RawCapture(final HttpHeaders headers, final List<int> body);
 
 /// Minimal multipart parser used only by these tests.
 class _ParsedPart {
-  _ParsedPart(this.body, this.filename, this.contentType);
+  new(this.body, this.filename, this.contentType);
   final List<int> body;
   final String? filename;
   final String? contentType;

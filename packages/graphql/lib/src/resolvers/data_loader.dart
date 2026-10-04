@@ -34,7 +34,9 @@ import 'dart:async';
 /// keep the dependency surface tight and the semantics directly under
 /// our control (e.g. propagating a thrown batch error to every waiting
 /// caller, which the JS reference does but some Dart ports omit).
-class DataLoader<K, V> {
+class DataLoader<K, V>(
+  final Future<List<V?>> Function(List<K> keys) _batchLoadFn,
+) {
   /// Builds a loader that flushes accumulated keys through [batchLoadFn].
   ///
   /// The contract on [batchLoadFn] (mirrored from the JS reference):
@@ -51,9 +53,7 @@ class DataLoader<K, V> {
   /// Violating the length invariant produces a [StateError] that
   /// propagates to every awaiting caller — early, loud failure beats
   /// silent corruption of the result map.
-  DataLoader(this._batchLoadFn);
-
-  final Future<List<V?>> Function(List<K> keys) _batchLoadFn;
+  this;
 
   /// Cache of resolved (and in-flight) futures, keyed by user key.
   ///
@@ -164,7 +164,7 @@ class DataLoader<K, V> {
 /// allocating a `MapEntry` (which would force `K` and `V` covariance
 /// games we don't need).
 class _PendingLoad<K, V> {
-  _PendingLoad(this.key, this.completer);
+  new(this.key, this.completer);
   final K key;
   final Completer<V?> completer;
 }

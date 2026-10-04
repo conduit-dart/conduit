@@ -288,19 +288,14 @@ ${validateBody.toString().trimRight()}
   }
 }
 
-class _ConfigAnalysis {
-  _ConfigAnalysis({
-    required this.className,
-    required this.properties,
-    required this.requiredImportUris,
-  });
-  final String className;
-  final List<_ConfigProperty> properties;
-  final Set<String> requiredImportUris;
-}
+class _ConfigAnalysis({
+  required final String className,
+  required final List<_ConfigProperty> properties,
+  required final Set<String> requiredImportUris,
+});
 
 class _ConfigProperty {
-  _ConfigProperty({
+  new({
     required this.name,
     required this.isRequired,
     required this.typeSource,
@@ -313,16 +308,15 @@ class _ConfigProperty {
 }
 
 class _Codec {
-  _Codec._(this.expectedType, this.body);
-  factory _Codec.simple(String type, String body) => _Codec._(type, body);
-  factory _Codec.passthrough(String type) =>
-      _Codec._(type, 'return v as $type;');
-  factory _Codec.config(String type) => _Codec._(type, '''
+  new _(this.expectedType, this.body);
+  factory simple(String type, String body) => _Codec._(type, body);
+  factory passthrough(String type) => _Codec._(type, 'return v as $type;');
+  factory config(String type) => _Codec._(type, '''
         final item = $type();
         item.decode(v);
         return item;
         ''');
-  factory _Codec.list(String dartName, _Codec inner) {
+  factory list(String dartName, _Codec inner) {
     final body =
         '''
 final out = <${inner.expectedType}>[];
@@ -341,7 +335,7 @@ return out;
     ''';
     return _Codec._(dartName, body);
   }
-  factory _Codec.map(String dartName, _Codec inner) {
+  factory map(String dartName, _Codec inner) {
     final body =
         '''
 final map = <String, ${inner.expectedType}>{};

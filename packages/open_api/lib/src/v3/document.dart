@@ -9,10 +9,10 @@ import 'package:conduit_open_api/src/v3/server.dart';
 /// This is the root document object of the OpenAPI document.
 class APIDocument extends APIObject {
   /// Creates an empty specification.
-  APIDocument();
+  new();
 
   /// Creates a specification from decoded JSON or YAML document object.
-  APIDocument.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     decode(KeyedArchive.unarchive(map, allowReferences: true));
   }
 

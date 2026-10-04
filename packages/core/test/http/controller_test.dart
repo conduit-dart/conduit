@@ -418,7 +418,7 @@ class SomeObject extends Serializable {
 }
 
 class Always200Controller extends Controller {
-  Always200Controller() {
+  new() {
     policy!.allowedOrigins = ["http://somewhere.com"];
   }
 
@@ -491,11 +491,7 @@ class OutlierChannel extends ApplicationChannel {
   }
 }
 
-class PrepareTailController extends Controller {
-  PrepareTailController(this.completer);
-
-  final Completer completer;
-
+class PrepareTailController(final Completer completer) extends Controller {
   @override
   void didAddToChannel() {
     completer.complete();

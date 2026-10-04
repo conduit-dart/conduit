@@ -6,7 +6,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class GetSchemaExecutable extends Executable<Map<String, dynamic>> {
-  GetSchemaExecutable(super.message);
+  new(super.message);
 
   @override
   Future<Map<String, dynamic>> execute() async {
