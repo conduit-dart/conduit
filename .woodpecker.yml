@@ -72,6 +72,7 @@ steps:
       - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - melos run analyze
+      - dart format --output=none --set-exit-if-changed .
 
   build-runner-tests:
     when:

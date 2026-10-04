@@ -30,6 +30,11 @@ jobs:
         dart pub global activate -spath packages/cli
         melos bootstrap
         melos cache-source --no-select
+    - name: Format check
+      # Gate on stable only: the formatter's output can shift between SDK
+      # releases, so beta/main would flap on unrelated formatter changes.
+      if: matrix.sdk == 'stable'
+      run: dart format --output=none --set-exit-if-changed .
     - name: Template AOT smoke
       run: bash ci/template-aot-smoke.sh
   unit:
