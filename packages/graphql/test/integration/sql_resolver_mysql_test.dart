@@ -2,7 +2,7 @@
 //
 // Tagged `integration` so the default `dart test` run skips it; the
 // CI matrix that has MySQL available runs it via
-// `CONDUIT_TEST_DIALECT=mysql dart test -t integration`. Locally:
+// `CONDUIT_TEST_DIALECT=mysql dart test -P integration`. Locally:
 //
 //   docker run --rm -d --name conduit-mysql-test \
 //     -e MYSQL_ROOT_PASSWORD=conduit! \
@@ -11,7 +11,7 @@
 //     -e MYSQL_PASSWORD=conduit! \
 //     -p 13306:3306 mysql:8
 //   CONDUIT_TEST_DIALECT=mysql MYSQL_PORT=13306 \
-//     dart test -t integration test/integration/sql_resolver_mysql_test.dart
+//     dart test -P integration test/integration/sql_resolver_mysql_test.dart
 //
 // **Status: gated to skip on the active matrix.** As of the v0
 // `package:conduit_mysql` rollout, the MySQL store ships schema +

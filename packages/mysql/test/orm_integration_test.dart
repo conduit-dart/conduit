@@ -2,7 +2,7 @@
 /// query builders against a live MySQL/MariaDB instance.
 ///
 /// **Tagged `integration`** — skipped by default (`dart test` will
-/// not run them unless you pass `--tags=integration`). They expect a
+/// not run them unless you pass `-P integration`). They expect a
 /// running MySQL on `MYSQL_HOST` / `MYSQL_PORT` (defaults below).
 ///
 /// Run locally:
@@ -15,7 +15,7 @@
 ///   -e MYSQL_PASSWORD=conduit! \
 ///   -p 13306:3306 mysql:8
 ///
-/// dart test --tags=integration packages/mysql/test/orm_integration_test.dart
+/// dart test -P integration packages/mysql/test/orm_integration_test.dart
 /// ```
 @Tags(['integration'])
 library;
