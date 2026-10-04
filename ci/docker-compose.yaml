@@ -9,8 +9,12 @@ services:
       POSTGRES_PASSWORD: conduit!
       POSTGRES_DB: conduit_test_db
       POSTGRES_PORT: 15432
+    # Loopback only: this is a throwaway test database with a well-known
+    # password. Binding 0.0.0.0 publishes it on every interface, including
+    # a public one on hosts without a firewall. Tests reach it via
+    # localhost:15432, or as conduit_postgres:5432 on the ci_default network.
     ports:
-      - 0.0.0.0:15432:5432
+      - 127.0.0.1:15432:5432
     volumes:
       - ./ssl/server.crt:/var/lib/postgresql/server.crt:ro
       - ./ssl/server.key:/var/lib/postgresql/server.key:ro
