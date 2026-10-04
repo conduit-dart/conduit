@@ -21,23 +21,19 @@
 /// [SqlDialect] base class provides a `render(...)` convenience that
 /// constructs the appropriate visitor based on its
 /// [SqlDialect.parameterStyle] and walks the AST in one shot.
+///
+/// Each `visit*` method returns the rendered SQL fragment for its node
+/// as a plain `String`; bound values accumulate on the visitor instance
+/// and are only surfaced by [render]. Visitors are therefore single-use.
 library;
 
 import 'package:conduit_core/src/db/persistent_store/sql_dialect.dart';
 import 'package:conduit_core/src/db/query/expression_ast.dart';
 
-/// Token class returned by visitor methods. Keeps `(sql, params)`
-/// glued together as a single value so visit methods compose without
-/// the caller having to remember to thread an accumulator.
-class _RenderToken {
-  _RenderToken(this.sql);
-  final String sql;
-}
-
 /// Visitor base for named-parameter dialects (`@name` for Postgres,
 /// `:name` for SQLite). Subclasses override [renderPlaceholder] to
 /// produce the dialect-specific prefix.
-class NamedSqlExpressionVisitor extends SqlExpressionVisitor<_RenderToken> {
+class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
   NamedSqlExpressionVisitor(this.dialect);
 
   final SqlDialect dialect;
@@ -55,55 +51,55 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<_RenderToken> {
 
   /// Walk [expr] and produce a fully rendered `(sql, params)` pair.
   RenderedExpression render(SqlExpression expr) {
-    final token = expr.accept(this);
-    return RenderedExpression(token.sql, parameters: Map.of(_parameters));
+    final sql = expr.accept(this);
+    return RenderedExpression(sql, parameters: Map.of(_parameters));
   }
 
   @override
-  _RenderToken visitColumn(ColumnExpression node) => _RenderToken(node.render());
+  String visitColumn(ColumnExpression node) => node.render();
 
   @override
-  _RenderToken visitLiteral(LiteralExpression node) => _RenderToken(node.sql);
+  String visitLiteral(LiteralExpression node) => node.sql;
 
   @override
-  _RenderToken visitParameter(ParameterExpression node) {
+  String visitParameter(ParameterExpression node) {
     var name = node.name;
     while (_parameters.containsKey(name)) {
       name = '${node.name}_${_collisionCounter++}';
     }
     _parameters[name] = node.value;
-    return _RenderToken(dialect.parameterPlaceholder(name));
+    return dialect.parameterPlaceholder(name);
   }
 
   @override
-  _RenderToken visitBinaryOp(BinaryOpExpression node) {
+  String visitBinaryOp(BinaryOpExpression node) {
     final left = node.left.accept(this);
     final right = node.right.accept(this);
-    return _RenderToken('${left.sql} ${node.op} ${right.sql}');
+    return '$left ${node.op} $right';
   }
 
   @override
-  _RenderToken visitUnaryOp(UnaryOpExpression node) {
+  String visitUnaryOp(UnaryOpExpression node) {
     final operand = node.operand.accept(this);
-    return _RenderToken('${node.op} ${operand.sql}');
+    return '${node.op} $operand';
   }
 
   @override
-  _RenderToken visitLogical(LogicalExpression node) {
-    final parts = node.children.map((c) => c.accept(this).sql).toList();
+  String visitLogical(LogicalExpression node) {
+    final parts = node.children.map((c) => c.accept(this)).toList();
     // Match the legacy PG output format exactly: `(a AND b AND c)`.
-    return _RenderToken('(${parts.join(' ${node.op} ')})');
+    return '(${parts.join(' ${node.op} ')})';
   }
 
   @override
-  _RenderToken visitIsNull(IsNullExpression node) {
+  String visitIsNull(IsNullExpression node) {
     final operand = node.operand.accept(this);
     final op = node.negated ? dialect.isNotNullOperator : dialect.isNullOperator;
-    return _RenderToken('${operand.sql} $op');
+    return '$operand $op';
   }
 
   @override
-  _RenderToken visitLike(LikeExpression node) {
+  String visitLike(LikeExpression node) {
     final target = node.target.accept(this);
     final pattern = node.pattern.accept(this);
     var op = node.caseSensitive
@@ -112,28 +108,28 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<_RenderToken> {
     if (node.negated) {
       op = 'NOT $op';
     }
-    return _RenderToken('${target.sql} $op ${pattern.sql}');
+    return '$target $op $pattern';
   }
 
   @override
-  _RenderToken visitIn(InExpression node) {
+  String visitIn(InExpression node) {
     final target = node.target.accept(this);
-    final values = node.values.map((v) => v.accept(this).sql).join(',');
+    final values = node.values.map((v) => v.accept(this)).join(',');
     final keyword = node.negated ? 'NOT IN' : 'IN';
-    return _RenderToken('${target.sql} $keyword ($values)');
+    return '$target $keyword ($values)';
   }
 
   @override
-  _RenderToken visitBetween(BetweenExpression node) {
+  String visitBetween(BetweenExpression node) {
     final target = node.target.accept(this);
     final low = node.low.accept(this);
     final high = node.high.accept(this);
     final op = node.negated ? 'NOT BETWEEN' : 'BETWEEN';
-    return _RenderToken('${target.sql} $op ${low.sql} AND ${high.sql}');
+    return '$target $op $low AND $high';
   }
 
   @override
-  _RenderToken visitRaw(RawExpression node) {
+  String visitRaw(RawExpression node) {
     // Raw fragments are emitted verbatim and their named bindings are
     // merged into the accumulator. The fragment's placeholder syntax
     // must already match the dialect — `RawExpression` exists for
@@ -142,7 +138,7 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<_RenderToken> {
     // SQLite accepts `@name` natively; on MySQL these would have to
     // be rewritten by the positional visitor.
     _parameters.addAll(node.parameters);
-    return _RenderToken(node.sql);
+    return node.sql;
   }
 }
 
@@ -150,7 +146,7 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<_RenderToken> {
 /// Each [ParameterExpression] appends to [positionalParameters] in
 /// SQL-string order; placeholders all render as `?`.
 class PositionalSqlExpressionVisitor
-    extends SqlExpressionVisitor<_RenderToken> {
+    extends SqlExpressionVisitor<String> {
   PositionalSqlExpressionVisitor(this.dialect);
 
   final SqlDialect dialect;
@@ -159,50 +155,50 @@ class PositionalSqlExpressionVisitor
   final List<Object?> _positional = [];
 
   RenderedExpression render(SqlExpression expr) {
-    final token = expr.accept(this);
-    return RenderedExpression(token.sql, positionalParameters: List.of(_positional));
+    final sql = expr.accept(this);
+    return RenderedExpression(sql, positionalParameters: List.of(_positional));
   }
 
   @override
-  _RenderToken visitColumn(ColumnExpression node) => _RenderToken(node.render());
+  String visitColumn(ColumnExpression node) => node.render();
 
   @override
-  _RenderToken visitLiteral(LiteralExpression node) => _RenderToken(node.sql);
+  String visitLiteral(LiteralExpression node) => node.sql;
 
   @override
-  _RenderToken visitParameter(ParameterExpression node) {
+  String visitParameter(ParameterExpression node) {
     _positional.add(node.value);
-    return _RenderToken('?');
+    return '?';
   }
 
   @override
-  _RenderToken visitBinaryOp(BinaryOpExpression node) {
+  String visitBinaryOp(BinaryOpExpression node) {
     final left = node.left.accept(this);
     final right = node.right.accept(this);
-    return _RenderToken('${left.sql} ${node.op} ${right.sql}');
+    return '$left ${node.op} $right';
   }
 
   @override
-  _RenderToken visitUnaryOp(UnaryOpExpression node) {
+  String visitUnaryOp(UnaryOpExpression node) {
     final operand = node.operand.accept(this);
-    return _RenderToken('${node.op} ${operand.sql}');
+    return '${node.op} $operand';
   }
 
   @override
-  _RenderToken visitLogical(LogicalExpression node) {
-    final parts = node.children.map((c) => c.accept(this).sql).toList();
-    return _RenderToken('(${parts.join(' ${node.op} ')})');
+  String visitLogical(LogicalExpression node) {
+    final parts = node.children.map((c) => c.accept(this)).toList();
+    return '(${parts.join(' ${node.op} ')})';
   }
 
   @override
-  _RenderToken visitIsNull(IsNullExpression node) {
+  String visitIsNull(IsNullExpression node) {
     final operand = node.operand.accept(this);
     final op = node.negated ? dialect.isNotNullOperator : dialect.isNullOperator;
-    return _RenderToken('${operand.sql} $op');
+    return '$operand $op';
   }
 
   @override
-  _RenderToken visitLike(LikeExpression node) {
+  String visitLike(LikeExpression node) {
     final target = node.target.accept(this);
     final pattern = node.pattern.accept(this);
     var op = node.caseSensitive
@@ -211,28 +207,28 @@ class PositionalSqlExpressionVisitor
     if (node.negated) {
       op = 'NOT $op';
     }
-    return _RenderToken('${target.sql} $op ${pattern.sql}');
+    return '$target $op $pattern';
   }
 
   @override
-  _RenderToken visitIn(InExpression node) {
+  String visitIn(InExpression node) {
     final target = node.target.accept(this);
-    final values = node.values.map((v) => v.accept(this).sql).join(',');
+    final values = node.values.map((v) => v.accept(this)).join(',');
     final keyword = node.negated ? 'NOT IN' : 'IN';
-    return _RenderToken('${target.sql} $keyword ($values)');
+    return '$target $keyword ($values)';
   }
 
   @override
-  _RenderToken visitBetween(BetweenExpression node) {
+  String visitBetween(BetweenExpression node) {
     final target = node.target.accept(this);
     final low = node.low.accept(this);
     final high = node.high.accept(this);
     final op = node.negated ? 'NOT BETWEEN' : 'BETWEEN';
-    return _RenderToken('${target.sql} $op ${low.sql} AND ${high.sql}');
+    return '$target $op $low AND $high';
   }
 
   @override
-  _RenderToken visitRaw(RawExpression node) {
+  String visitRaw(RawExpression node) {
     // Rewrite `@name` placeholders in the raw SQL into `?` and append
     // the corresponding values to the positional list, in the order
     // the placeholders appear in the SQL. This is a best-effort
@@ -250,6 +246,6 @@ class PositionalSqlExpressionVisitor
       cursor = m.end;
     }
     buffer.write(sql.substring(cursor));
-    return _RenderToken(buffer.toString());
+    return buffer.toString();
   }
 }
