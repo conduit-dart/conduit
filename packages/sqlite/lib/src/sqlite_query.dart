@@ -52,8 +52,11 @@ class SqliteQuery<InstanceType extends ManagedObject>
 
     buffer.write("VALUES (${builder.sqlValuesToInsert})");
 
-    await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     // SQLite has no RETURNING (pre-3.35) — fall back to selecting
     // the just-inserted row by primary key, using
@@ -66,9 +69,11 @@ class SqliteQuery<InstanceType extends ManagedObject>
     if (pkValueBuilder != null && pkValueBuilder.value != null) {
       rawPkValue = pkValueBuilder.value;
     } else {
-      final rows = await context.persistentStore
-              .executeQuery("SELECT last_insert_rowid()", const {},
-                  timeoutInSeconds) as List<List<dynamic>>;
+      final rows = await context.persistentStore.executeQuery(
+        "SELECT last_insert_rowid()",
+        const {},
+        timeoutInSeconds,
+      ) as List<List<dynamic>>;
       rawPkValue = rows.first.first;
     }
 
@@ -85,9 +90,7 @@ class SqliteQuery<InstanceType extends ManagedObject>
       timeoutInSeconds,
     ) as List<List<dynamic>>;
 
-    return selectBuilder
-        .instancesForRows<InstanceType>(results)
-        .first;
+    return selectBuilder.instancesForRows<InstanceType>(results).first;
   }
 
   @override
@@ -287,8 +290,11 @@ class SqliteQuery<InstanceType extends ManagedObject>
     if (offset != 0) {
       buffer.write("OFFSET $offset ");
     }
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 

@@ -14,45 +14,46 @@ void main() {
     document = await c.documentAPI({"name": "x", "version": "1.0.0"});
   });
 
-  test("Bound properties are part of every operation and carry documentation",
-      () {
-    final collectionOperations = document.paths!["/a"]!.operations.values;
-    final idOperations = document.paths!["/a/{id}"]!.operations.values;
-    expect(collectionOperations.length, 3);
-    expect(idOperations.length, 2);
-    for (final op in [collectionOperations, idOperations].expand((i) => i)) {
-      expect(
-        op!.parameterNamed("optionalQueryProperty")!.schema!.type,
-        APIType.integer,
-      );
-      expect(op.parameterNamed("optionalQueryProperty")!.isRequired, false);
-      expect(
-        op.parameterNamed("optionalQueryProperty")!.location,
-        APIParameterLocation.query,
-      );
-
-      expect(
-        op.parameterNamed("requiredHeaderProperty")!.schema!.type,
-        APIType.string,
-      );
-      expect(op.parameterNamed("requiredHeaderProperty")!.isRequired, true);
-      expect(
-        op.parameterNamed("requiredHeaderProperty")!.location,
-        APIParameterLocation.header,
-      );
-    }
-  });
-
   test(
-      "Each operation is accounted for and documented if documentation comment exists",
-      () {
+    "Bound properties are part of every operation and carry documentation",
+    () {
+      final collectionOperations = document.paths!["/a"]!.operations.values;
+      final idOperations = document.paths!["/a/{id}"]!.operations.values;
+      expect(collectionOperations.length, 3);
+      expect(idOperations.length, 2);
+      for (final op in [collectionOperations, idOperations].expand((i) => i)) {
+        expect(
+          op!.parameterNamed("optionalQueryProperty")!.schema!.type,
+          APIType.integer,
+        );
+        expect(op.parameterNamed("optionalQueryProperty")!.isRequired, false);
+        expect(
+          op.parameterNamed("optionalQueryProperty")!.location,
+          APIParameterLocation.query,
+        );
+
+        expect(
+          op.parameterNamed("requiredHeaderProperty")!.schema!.type,
+          APIType.string,
+        );
+        expect(op.parameterNamed("requiredHeaderProperty")!.isRequired, true);
+        expect(
+          op.parameterNamed("requiredHeaderProperty")!.location,
+          APIParameterLocation.header,
+        );
+      }
+    },
+  );
+
+  test("Each operation is accounted for and documented if documentation comment exists", () {
     final collectionOperations = document.paths!["/a"]!.operations;
     final idOperations = document.paths!["/a/{id}"]!.operations;
 
-    expect(
-      collectionOperations,
-      {"get": isNotNull, "post": isNotNull, "put": isNotNull},
-    );
+    expect(collectionOperations, {
+      "get": isNotNull,
+      "post": isNotNull,
+      "put": isNotNull,
+    });
     expect(idOperations, {"get": isNotNull, "put": isNotNull});
 
     expect(collectionOperations["get"]!.id, "getAllAs");
@@ -153,9 +154,7 @@ void main() {
     );
   });
 
-  test(
-      "If request body is bound, shows up in documentation for operation with valid ref",
-      () {
+  test("If request body is bound, shows up in documentation for operation with valid ref", () {
     final collectionOperations = document.paths!["/a"]!.operations;
 
     final comps = document.components!.schemas;
@@ -171,9 +170,7 @@ void main() {
     );
   });
 
-  test(
-      "Binding request body to a list of serializable generates a request body of array[schema]",
-      () {
+  test("Binding request body to a list of serializable generates a request body of array[schema]", () {
     final collectionOperations = document.paths!["/a"]!.operations;
     final putSchema = collectionOperations["put"]!
         .requestBody!
@@ -184,9 +181,7 @@ void main() {
     expect(putSchema.items!.referenceURI!.path, "/components/schemas/AModel");
   });
 
-  test(
-      "If Serializable overrides automatic generation, it is not automatically generated and must be registered",
-      () {
+  test("If Serializable overrides automatic generation, it is not automatically generated and must be registered", () {
     final collectionOperations = document.paths!["/b"]!.operations;
     expect(
       collectionOperations["post"]!

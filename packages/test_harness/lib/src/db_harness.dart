@@ -103,9 +103,10 @@ mixin TestHarnessORMMixin {
     final ctx = context;
     if (ctx == null) {
       throw StateError(
-          'TestHarnessORMMixin.resetData called before context is available; '
-          'override `context` to return the application channel\'s '
-          'ManagedContext.');
+        'TestHarnessORMMixin.resetData called before context is available; '
+        'override `context` to return the application channel\'s '
+        'ManagedContext.',
+      );
     }
     await ctx.persistentStore.close();
 
@@ -125,8 +126,10 @@ mixin TestHarnessORMMixin {
   /// It is invoked by [resetData].
   Future addSchema({Logger? logger}) async {
     final builder = SchemaBuilder.toSchema(
-        context!.persistentStore, Schema.fromDataModel(context!.dataModel!),
-        isTemporary: true);
+      context!.persistentStore,
+      Schema.fromDataModel(context!.dataModel!),
+      isTemporary: true,
+    );
 
     for (var cmd in builder.commands) {
       logger?.info(cmd);

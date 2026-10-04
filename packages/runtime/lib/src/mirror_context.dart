@@ -24,9 +24,7 @@ class MirrorContext extends RuntimeContext {
     runtimes = RuntimeCollection(m);
   }
 
-  final List<ClassMirror> types = currentMirrorSystem()
-      .libraries
-      .values
+  final List<ClassMirror> types = currentMirrorSystem().libraries.values
       .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
       .expand((lib) => lib.declarations.values)
       .whereType<ClassMirror>()
@@ -75,8 +73,9 @@ T? firstMetadataOfType<T>(DeclarationMirror dm, {TypeMirror? dynamicType}) {
   final tMirror = dynamicType ?? reflectType(T);
   try {
     return dm.metadata
-        .firstWhere((im) => im.type.isSubtypeOf(tMirror))
-        .reflectee as T;
+            .firstWhere((im) => im.type.isSubtypeOf(tMirror))
+            .reflectee
+        as T;
   } on StateError {
     return null;
   }

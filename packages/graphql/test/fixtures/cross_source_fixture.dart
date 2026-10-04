@@ -39,7 +39,7 @@ class Profile extends GraphNode<Profile> {
 
 class Friendship extends GraphEdge<Profile, Profile> {
   Friendship({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Friendship'));
+    : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;
@@ -87,38 +87,35 @@ GraphDataModel buildCollisionGraphModel() {
 }
 
 GraphSchemaConfig buildCrossSourceGraphConfig() => GraphSchemaConfig(
-      nodes: {
-        Profile: const GraphNodeSchemaConfig(
-          properties: [
-            GraphPropertyDescriptor(
-              name: 'displayName',
-              type: GraphPropertyType.string,
-            ),
-          ],
+  nodes: {
+    Profile: const GraphNodeSchemaConfig(
+      properties: [
+        GraphPropertyDescriptor(
+          name: 'displayName',
+          type: GraphPropertyType.string,
         ),
-      },
-      edges: {
-        Friendship: const GraphEdgeSchemaConfig(
-          properties: [
-            GraphPropertyDescriptor(
-              name: 'since',
-              type: GraphPropertyType.datetime,
-              isNullable: true,
-            ),
-          ],
+      ],
+    ),
+  },
+  edges: {
+    Friendship: const GraphEdgeSchemaConfig(
+      properties: [
+        GraphPropertyDescriptor(
+          name: 'since',
+          type: GraphPropertyType.datetime,
+          isNullable: true,
         ),
-      },
-    );
+      ],
+    ),
+  },
+);
 
 GraphSchemaConfig buildCollisionGraphConfig() => GraphSchemaConfig(
-      nodes: {
-        GraphAccount: const GraphNodeSchemaConfig(
-          properties: [
-            GraphPropertyDescriptor(
-              name: 'handle',
-              type: GraphPropertyType.string,
-            ),
-          ],
-        ),
-      },
-    );
+  nodes: {
+    GraphAccount: const GraphNodeSchemaConfig(
+      properties: [
+        GraphPropertyDescriptor(name: 'handle', type: GraphPropertyType.string),
+      ],
+    ),
+  },
+);

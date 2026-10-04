@@ -11,6 +11,7 @@
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_core/managed_auth.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
@@ -29,8 +30,9 @@ class App extends ApplicationChannel {
 
   @override
   Future prepare() async {
-    final config =
-        AppConfiguration.fromFile(File(options!.configurationFilePath!));
+    final config = AppConfiguration.fromFile(
+      File(options!.configurationFilePath!),
+    );
     final db = config.database;
     final persistentStore = PostgreSQLPersistentStore.fromConnectionInfo(
       db.username,

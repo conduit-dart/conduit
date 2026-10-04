@@ -67,10 +67,7 @@ class ColumnExpressionBuilder extends ColumnBuilder {
   /// `withTableNamespace: true` call site).
   ColumnExpression _columnNode() {
     final raw = sqlColumnName();
-    return ColumnExpression(
-      raw,
-      tableNamespace: table!.sqlTableReference,
-    );
+    return ColumnExpression(raw, tableNamespace: table!.sqlTableReference);
   }
 
   QueryPredicate comparisonPredicate(
@@ -170,8 +167,9 @@ class ColumnExpressionBuilder extends ColumnBuilder {
     final n = sqlColumnName(withTableNamespace: true);
     final variableName = sqlColumnName(withPrefix: defaultPrefix);
 
-    var matchValue =
-        allowSpecialCharacters ? value : _dialect.escapeLikePattern(value);
+    var matchValue = allowSpecialCharacters
+        ? value
+        : _dialect.escapeLikePattern(value);
 
     var operation = caseSensitive
         ? _dialect.caseSensitiveLikeOperator

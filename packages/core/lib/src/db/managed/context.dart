@@ -49,11 +49,12 @@ class ManagedContext implements APIComponentDocumenter {
 
   /// Creates a child context from [parentContext].
   ManagedContext.childOf(ManagedContext parentContext)
-      : persistentStore = parentContext.persistentStore,
-        dataModel = parentContext.dataModel;
+    : persistentStore = parentContext.persistentStore,
+      dataModel = parentContext.dataModel;
 
-  static final Finalizer<PersistentStore> _finalizer =
-      Finalizer((store) async => store.close());
+  static final Finalizer<PersistentStore> _finalizer = Finalizer(
+    (store) async => store.close(),
+  );
 
   /// The persistent store that [Query]s on this context are executed through.
   PersistentStore persistentStore;
@@ -140,8 +141,10 @@ class ManagedContext implements APIComponentDocumenter {
   ) async {
     final entity = dataModel!.tryEntityForType(T);
     if (entity == null) {
-      throw ArgumentError("Unknown entity '$T' in fetchObjectWithID. "
-          "Provide a type to this method and ensure it is in this context's data model.");
+      throw ArgumentError(
+        "Unknown entity '$T' in fetchObjectWithID. "
+        "Provide a type to this method and ensure it is in this context's data model.",
+      );
     }
 
     final primaryKey = entity.primaryKeyAttribute!;

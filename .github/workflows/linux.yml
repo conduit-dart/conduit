@@ -30,6 +30,37 @@ jobs:
         dart pub global activate -spath packages/cli
         melos bootstrap
         melos cache-source --no-select
+    - name: Format check
+      # Gate on stable only: the formatter's output can shift between SDK
+      # releases, so beta/main would flap on unrelated formatter changes.
+      if: matrix.sdk == 'stable'
+      run: dart format --output=none --set-exit-if-changed .
+    - name: Dependency advisories (informational)
+      # Non-gating. pub has no `outdated --mode=security`; the advisory
+      # signal (GitHub Advisory Database, as surfaced by pub.dev) is the
+      # `isCurrentAffectedByAdvisory` flag in `dart pub outdated --json`.
+      # Also reports discontinued and retracted resolutions. Linux/stable
+      # only: the resolution is platform-independent.
+      if: matrix.sdk == 'stable'
+      continue-on-error: true
+      run: |
+        dart pub outdated --json --show-all > "$RUNNER_TEMP/outdated.json"
+        flagged="$(jq -r '.packages[]
+          | select(.isCurrentAffectedByAdvisory or .isDiscontinued or .isCurrentRetracted)
+          | "\(.package) \(.current.version // "?"): advisory=\(.isCurrentAffectedByAdvisory) discontinued=\(.isDiscontinued) retracted=\(.isCurrentRetracted)"' \
+          "$RUNNER_TEMP/outdated.json")"
+        {
+          echo "### Dependency advisories"
+          if [ -z "$flagged" ]; then
+            echo "No resolved dependency is affected by an advisory, discontinued, or retracted."
+          else
+            echo '```'; echo "$flagged"; echo '```'
+          fi
+        } >> "$GITHUB_STEP_SUMMARY"
+        if [ -n "$flagged" ]; then
+          while IFS= read -r line; do echo "::warning title=pub dependency::$line"; done <<< "$flagged"
+          exit 1
+        fi
     - name: Template AOT smoke
       run: bash ci/template-aot-smoke.sh
   unit:
@@ -81,6 +112,75 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r failures-only
+  coverage:
+    needs: smoke
+    if: |
+      startsWith(github.head_ref, 'feat/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+      || startsWith(github.head_ref, 'claude/')
+    runs-on: ubuntu-latest
+    # Instrument-only: publishes lcov per package and a line-coverage
+    # summary, never gates (no threshold until a baseline exists). Test
+    # failures are gated by the `unit` job, not here. Scoped to the same
+    # Postgres-backed conduit_core suite as `unit` plus the DB-free
+    # packages from `melos run test-fast`, to keep runner minutes bounded.
+    continue-on-error: true
+    env:
+      MELOS_PACKAGES: conduit_core,conduit_build_runner,conduit_open_api,conduit_password_hash,conduit_config
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          PGPASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+          POSTGRES_PORT: 15432
+        ports:
+          - 15432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Get Dependencies
+        run: |
+          export PUB_CACHE="$HOME/.pub-cache"
+          export PATH="$PATH:$PUB_CACHE/bin"
+          echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+          echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+          dart pub global activate -spath packages/cli
+          dart pub global activate melos
+          dart pub global activate coverage
+          melos bootstrap
+          melos cache-source --no-select
+          dart pub get --directory=packages/isolate_exec_test_packages/test_package --offline
+      - name: Run tests with coverage
+        run: . ci/.env && melos run test-with-coverage --no-select
+      - name: Coverage summary
+        if: always()
+        run: |
+          {
+            echo "### Line coverage (instrument-only, not gated)"
+            echo "| package | lines hit | lines found | % |"
+            echo "|---|---:|---:|---:|"
+            for f in packages/*/coverage/lcov.info; do
+              [ -f "$f" ] || continue
+              pkg="$(basename "$(dirname "$(dirname "$f")")")"
+              awk -F: -v pkg="$pkg" '
+                /^LF:/ { lf += $2 } /^LH:/ { lh += $2 }
+                END { printf "| %s | %d | %d | %.1f |\n", pkg, lh, lf, (lf ? 100 * lh / lf : 0) }
+              ' "$f"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload lcov
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov
+          path: packages/*/coverage/lcov.info
+          if-no-files-found: warn
   bench:
     needs: smoke
     runs-on: ubuntu-latest

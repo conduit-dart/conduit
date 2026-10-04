@@ -27,24 +27,28 @@ void main() {
     expect(item.email, "a@a.com");
   });
 
-  test("Query with dynamic entity and mis-matched context throws exception",
-      () async {
-    context = await PostgresTestConfig().contextWithModels([TestModel]);
-    final someOtherContext =
-        ManagedContext(ManagedDataModel([]), DefaultPersistentStore());
-    try {
-      Query.forEntity(
-        context!.dataModel!.entityForType(TestModel),
-        someOtherContext,
+  test(
+    "Query with dynamic entity and mis-matched context throws exception",
+    () async {
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
+      final someOtherContext = ManagedContext(
+        ManagedDataModel([]),
+        DefaultPersistentStore(),
       );
-      expect(true, false);
-    } on StateError catch (e) {
-      expect(
-        e.toString(),
-        allOf([contains("'simple'"), contains("is from different context")]),
-      );
-    }
-  });
+      try {
+        Query.forEntity(
+          context!.dataModel!.entityForType(TestModel),
+          someOtherContext,
+        );
+        expect(true, false);
+      } on StateError catch (e) {
+        expect(
+          e.toString(),
+          allOf([contains("'simple'"), contains("is from different context")]),
+        );
+      }
+    },
+  );
 
   test("Specifying resultProperties works", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
@@ -81,10 +85,7 @@ void main() {
     } on ArgumentError catch (e) {
       expect(
         e.toString(),
-        allOf([
-          contains("'foobar'"),
-          contains("'TestModel'"),
-        ]),
+        allOf([contains("'foobar'"), contains("'TestModel'")]),
       );
     }
   });
@@ -100,8 +101,9 @@ void main() {
 
     var req = Query<TestModel>(context!)
       ..sortBy((t) => t.email, QuerySortOrder.ascending)
-      ..predicate = QueryPredicate(
-          "email like @key", {"key": TypedValue(Type.text, "asc%")});
+      ..predicate = QueryPredicate("email like @key", {
+        "key": TypedValue(Type.text, "asc%"),
+      });
 
     var result = await req.fetch();
 
@@ -134,8 +136,9 @@ void main() {
 
     final req = Query<TestModel>(context!)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
-      ..predicate = QueryPredicate(
-          "email like @key", {"key": TypedValue(Type.text, "desc%")});
+      ..predicate = QueryPredicate("email like @key", {
+        "key": TypedValue(Type.text, "desc%"),
+      });
     final result = await req.fetch();
 
     for (var i = 0; i < 10; i++) {
@@ -156,8 +159,10 @@ void main() {
     }
 
     final req = Query<TestModel>(context!);
-    req.sortPredicate =
-        QuerySortPredicate('random()', QuerySortOrder.ascending);
+    req.sortPredicate = QuerySortPredicate(
+      'random()',
+      QuerySortOrder.ascending,
+    );
     req.predicate = QueryPredicate("email like @key", {"key": "desc%"});
     final result1 = await req.fetch();
     final result2 = await req.fetch();
@@ -214,8 +219,9 @@ void main() {
     final req = Query<TestModel>(context!)
       ..sortBy((t) => t.name, QuerySortOrder.ascending)
       ..sortBy((t) => t.email, QuerySortOrder.descending)
-      ..predicate = QueryPredicate(
-          "email like @key", {"key": TypedValue(Type.text, "multi%")});
+      ..predicate = QueryPredicate("email like @key", {
+        "key": TypedValue(Type.text, "multi%"),
+      });
 
     final result = await req.fetch();
 
@@ -321,8 +327,9 @@ void main() {
 
   test("Fetch object with null reference", () async {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
-    var p1 = await (Query<GenPost>(context!)..values = (GenPost()..text = "1"))
-        .insert();
+    var p1 = await (Query<GenPost>(
+      context!,
+    )..values = (GenPost()..text = "1")).insert();
 
     final req = Query<GenPost>(context!);
     p1 = (await req.fetchOne())!;
@@ -347,9 +354,7 @@ void main() {
     expect(fResult.backing.contents["text"], isNull);
   });
 
-  test(
-      "Throw exception when fetchOne returns more than one because the fetchLimit can't be applied to joins",
-      () async {
+  test("Throw exception when fetchOne returns more than one because the fetchLimit can't be applied to joins", () async {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     final objects = [GenUser()..name = "Joe", GenUser()..name = "Bob"];
@@ -373,9 +378,7 @@ void main() {
     }
   });
 
-  test(
-      "Including RelationshipInverse property can only be done by using name of property",
-      () async {
+  test("Including RelationshipInverse property can only be done by using name of property", () async {
     context = await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
 
     final u1 = await (Query<GenUser>(context!)..values.name = "Joe").insert();
@@ -413,9 +416,7 @@ void main() {
     expect(result.public, "x");
   });
 
-  test(
-      "When fetching valid enum value from db, is available as enum value and in where",
-      () async {
+  test("When fetching valid enum value from db, is available as enum value and in where", () async {
     context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
     var q = Query<EnumObject>(context!)..values.enumValues = EnumValues.abcd;
@@ -453,8 +454,9 @@ void main() {
   test("When fetching invalid enum value from db, throws error", () async {
     context = await PostgresTestConfig().contextWithModels([EnumObject]);
 
-    await context!.persistentStore
-        .execute("INSERT INTO _enumobject (enumValues) VALUES ('foobar')");
+    await context!.persistentStore.execute(
+      "INSERT INTO _enumobject (enumValues) VALUES ('foobar')",
+    );
 
     try {
       final q = Query<EnumObject>(context!);
@@ -475,9 +477,7 @@ void main() {
     } on ArgumentError catch (e) {
       expect(
         e.toString(),
-        contains(
-          "Cannot select has-many or has-one relationship properties",
-        ),
+        contains("Cannot select has-many or has-one relationship properties"),
       );
     }
   });
@@ -495,11 +495,13 @@ void main() {
       expect(o!.name, "bob");
     });
 
-    test("If object does not exist and type is specified, return null",
-        () async {
-      final o = await context!.fetchObjectWithID<TestModel>(id! + 1);
-      expect(o, isNull);
-    });
+    test(
+      "If object does not exist and type is specified, return null",
+      () async {
+        final o = await context!.fetchObjectWithID<TestModel>(id! + 1);
+        expect(o, isNull);
+      },
+    );
 
     test("If type is not specified, throw error", () async {
       try {
@@ -519,9 +521,7 @@ void main() {
       }
     });
 
-    test(
-        "If identifier type is not the same type as return type, throw exception with 404",
-        () async {
+    test("If identifier type is not the same type as return type, throw exception with 404", () async {
       final o = await context!.fetchObjectWithID<TestModel>("not-an-int");
       expect(o, isNull);
     });

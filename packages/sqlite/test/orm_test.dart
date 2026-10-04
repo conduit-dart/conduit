@@ -56,8 +56,9 @@ void main() {
   group('SqlitePersistentStore.newQuery — basic CRUD', () {
     test('insert + fetch round-trips a row', () async {
       context = await _bootstrap([Simple]);
-      final inserted = await (Query<Simple>(context!)..values.name = 'alice')
-          .insert();
+      final inserted = await (Query<Simple>(
+        context!,
+      )..values.name = 'alice').insert();
       expect(inserted.name, 'alice');
       expect(inserted.id, isNotNull);
 
@@ -86,22 +87,25 @@ void main() {
       context = await _bootstrap([Simple]);
       await (Query<Simple>(context!)..values.name = 'old').insert();
 
-      final updated = await (Query<Simple>(context!)
-            ..values.name = 'new'
-            ..where((s) => s.name).equalTo('old'))
-          .update();
+      final updated =
+          await (Query<Simple>(context!)
+                ..values.name = 'new'
+                ..where((s) => s.name).equalTo('old'))
+              .update();
       expect(updated, hasLength(1));
       expect(updated.first.name, 'new');
     });
 
     test('updateOne returns the single updated row', () async {
       context = await _bootstrap([Simple]);
-      final inserted =
-          await (Query<Simple>(context!)..values.name = 'first').insert();
-      final updated = await (Query<Simple>(context!)
-            ..values.name = 'second'
-            ..where((s) => s.id).equalTo(inserted.id))
-          .updateOne();
+      final inserted = await (Query<Simple>(
+        context!,
+      )..values.name = 'first').insert();
+      final updated =
+          await (Query<Simple>(context!)
+                ..values.name = 'second'
+                ..where((s) => s.id).equalTo(inserted.id))
+              .updateOne();
       expect(updated, isNotNull);
       expect(updated!.name, 'second');
     });
@@ -111,9 +115,9 @@ void main() {
       await (Query<Simple>(context!)..values.name = 'doomed').insert();
       await (Query<Simple>(context!)..values.name = 'survives').insert();
 
-      final n = await (Query<Simple>(context!)
-            ..where((s) => s.name).equalTo('doomed'))
-          .delete();
+      final n = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).equalTo('doomed')).delete();
       expect(n, 1);
 
       final remaining = await Query<Simple>(context!).fetch();
@@ -128,14 +132,14 @@ void main() {
       for (final n in ['a', 'b', 'c']) {
         await (Query<Simple>(context!)..values.name = n).insert();
       }
-      final eq = await (Query<Simple>(context!)
-            ..where((s) => s.name).equalTo('b'))
-          .fetch();
+      final eq = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).equalTo('b')).fetch();
       expect(eq.map((r) => r.name).toList(), ['b']);
 
-      final neq = await (Query<Simple>(context!)
-            ..where((s) => s.name).notEqualTo('b'))
-          .fetch();
+      final neq = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).notEqualTo('b')).fetch();
       expect(neq.map((r) => r.name).toSet(), {'a', 'c'});
     });
 
@@ -146,13 +150,13 @@ void main() {
       }
       final all = await Query<Simple>(context!).fetch();
       final mid = all[1].id!;
-      final lt = await (Query<Simple>(context!)
-            ..where((s) => s.id).lessThan(mid))
-          .fetch();
+      final lt = await (Query<Simple>(
+        context!,
+      )..where((s) => s.id).lessThan(mid)).fetch();
       expect(lt, hasLength(1));
-      final gt = await (Query<Simple>(context!)
-            ..where((s) => s.id).greaterThan(mid))
-          .fetch();
+      final gt = await (Query<Simple>(
+        context!,
+      )..where((s) => s.id).greaterThan(mid)).fetch();
       expect(gt, hasLength(2));
     });
 
@@ -161,9 +165,9 @@ void main() {
       for (final n in ['a', 'b', 'c']) {
         await (Query<Simple>(context!)..values.name = n).insert();
       }
-      final res = await (Query<Simple>(context!)
-            ..where((s) => s.name).oneOf(['a', 'c']))
-          .fetch();
+      final res = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).oneOf(['a', 'c'])).fetch();
       expect(res.map((r) => r.name).toSet(), {'a', 'c'});
     });
 
@@ -174,13 +178,13 @@ void main() {
             ..values.name = 'also'
             ..values.note = 'present')
           .insert();
-      final missing = await (Query<Simple>(context!)
-            ..where((s) => s.note).isNull())
-          .fetch();
+      final missing = await (Query<Simple>(
+        context!,
+      )..where((s) => s.note).isNull()).fetch();
       expect(missing.map((r) => r.name).toList(), ['has']);
-      final present = await (Query<Simple>(context!)
-            ..where((s) => s.note).isNotNull())
-          .fetch();
+      final present = await (Query<Simple>(
+        context!,
+      )..where((s) => s.note).isNotNull()).fetch();
       expect(present.map((r) => r.name).toList(), ['also']);
     });
 
@@ -189,9 +193,9 @@ void main() {
       for (final n in ['alpha', 'beta', 'gamma']) {
         await (Query<Simple>(context!)..values.name = n).insert();
       }
-      final res = await (Query<Simple>(context!)
-            ..where((s) => s.name).contains('a'))
-          .fetch();
+      final res = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).contains('a')).fetch();
       // SQLite's default LIKE is ASCII-case-insensitive — both alpha
       // and gamma contain 'a', and beta contains 'a' too.
       expect(res.map((r) => r.name).toSet(), {'alpha', 'beta', 'gamma'});
@@ -204,9 +208,9 @@ void main() {
       for (final n in ['c', 'a', 'b']) {
         await (Query<Simple>(context!)..values.name = n).insert();
       }
-      final res = await (Query<Simple>(context!)
-            ..sortBy((s) => s.name, QuerySortOrder.ascending))
-          .fetch();
+      final res = await (Query<Simple>(
+        context!,
+      )..sortBy((s) => s.name, QuerySortOrder.ascending)).fetch();
       expect(res.map((r) => r.name).toList(), ['a', 'b', 'c']);
     });
 
@@ -215,11 +219,12 @@ void main() {
       for (final n in ['a', 'b', 'c', 'd', 'e']) {
         await (Query<Simple>(context!)..values.name = n).insert();
       }
-      final page = await (Query<Simple>(context!)
-            ..sortBy((s) => s.name, QuerySortOrder.ascending)
-            ..fetchLimit = 2
-            ..offset = 1)
-          .fetch();
+      final page =
+          await (Query<Simple>(context!)
+                ..sortBy((s) => s.name, QuerySortOrder.ascending)
+                ..fetchLimit = 2
+                ..offset = 1)
+              .fetch();
       expect(page.map((r) => r.name).toList(), ['b', 'c']);
     });
   });
@@ -227,15 +232,17 @@ void main() {
   group('SqlitePersistentStore.newQuery — relationships', () {
     test('belongsTo insert + join', () async {
       context = await _bootstrap([Owner, Pet]);
-      final owner =
-          await (Query<Owner>(context!)..values.name = 'Bob').insert();
+      final owner = await (Query<Owner>(
+        context!,
+      )..values.name = 'Bob').insert();
       await (Query<Pet>(context!)
             ..values.name = 'Rex'
             ..values.owner = (Owner()..id = owner.id))
           .insert();
 
-      final pet = await (Query<Pet>(context!)..join(object: (p) => p.owner))
-          .fetchOne();
+      final pet = await (Query<Pet>(
+        context!,
+      )..join(object: (p) => p.owner)).fetchOne();
       expect(pet, isNotNull);
       expect(pet!.name, 'Rex');
       expect(pet.owner!.name, 'Bob');
@@ -243,8 +250,9 @@ void main() {
 
     test('hasMany ManagedSet eager-fetch via join(set:)', () async {
       context = await _bootstrap([Owner, Pet]);
-      final owner =
-          await (Query<Owner>(context!)..values.name = 'Bob').insert();
+      final owner = await (Query<Owner>(
+        context!,
+      )..values.name = 'Bob').insert();
       for (final name in ['Rex', 'Fido']) {
         await (Query<Pet>(context!)
               ..values.name = name
@@ -252,13 +260,11 @@ void main() {
             .insert();
       }
 
-      final owners =
-          await (Query<Owner>(context!)..join(set: (o) => o.pets)).fetch();
+      final owners = await (Query<Owner>(
+        context!,
+      )..join(set: (o) => o.pets)).fetch();
       expect(owners, hasLength(1));
-      expect(
-        owners.first.pets!.map((p) => p.name).toSet(),
-        {'Rex', 'Fido'},
-      );
+      expect(owners.first.pets!.map((p) => p.name).toSet(), {'Rex', 'Fido'});
     });
   });
 
@@ -266,12 +272,20 @@ void main() {
     test('round-trips a Map document', () async {
       context = await _bootstrap([Note]);
       await (Query<Note>(context!)
-            ..values.body = Document({'k': 'v', 'n': 1, 'nested': {'a': true}}))
+            ..values.body = Document({
+              'k': 'v',
+              'n': 1,
+              'nested': {'a': true},
+            }))
           .insert();
 
       final got = await Query<Note>(context!).fetchOne();
       expect(got, isNotNull);
-      expect(got!.body!.data, {'k': 'v', 'n': 1, 'nested': {'a': true}});
+      expect(got!.body!.data, {
+        'k': 'v',
+        'n': 1,
+        'nested': {'a': true},
+      });
     });
 
     test('round-trips a List document', () async {

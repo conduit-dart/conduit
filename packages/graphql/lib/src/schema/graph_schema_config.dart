@@ -115,9 +115,7 @@ class GraphNodeSchemaConfig {
 
 /// Per-edge-type schema configuration.
 class GraphEdgeSchemaConfig {
-  const GraphEdgeSchemaConfig({
-    this.properties = const [],
-  });
+  const GraphEdgeSchemaConfig({this.properties = const []});
 
   /// Typed declared edge properties. Edge-property-as-connection
   /// fields surface one GraphQL field per entry alongside the
@@ -135,8 +133,8 @@ class GraphSchemaConfig {
     Map<Type, GraphNodeSchemaConfig> nodes = const {},
     Map<Type, GraphEdgeSchemaConfig> edges = const {},
     this.exposeGraphEdgesAsConnections = false,
-  })  : _nodes = Map.unmodifiable(nodes),
-        _edges = Map.unmodifiable(edges);
+  }) : _nodes = Map.unmodifiable(nodes),
+       _edges = Map.unmodifiable(edges);
 
   final Map<Type, GraphNodeSchemaConfig> _nodes;
   final Map<Type, GraphEdgeSchemaConfig> _edges;

@@ -9,16 +9,16 @@ import 'not_tests/postgres_test_config.dart';
 void main() {
   final harness = HarnessSubclass()..install();
 
-  test("afterStart that invokes resetData sets up database and invokes seed",
-      () async {
-    final q = Query<Model>(harness.channel!.context!);
-    final results = await q.fetch();
-    expect(results.map((m) => m.name).toList(), ["bob"]);
-  });
-
   test(
-      "Calling resetData clears persistent data but retains schema and seeded data",
-      () async {
+    "afterStart that invokes resetData sets up database and invokes seed",
+    () async {
+      final q = Query<Model>(harness.channel!.context!);
+      final results = await q.fetch();
+      expect(results.map((m) => m.name).toList(), ["bob"]);
+    },
+  );
+
+  test("Calling resetData clears persistent data but retains schema and seeded data", () async {
     final q = Query<Model>(harness.channel!.context!)
       ..sortBy((o) => o.name, QuerySortOrder.ascending);
 
@@ -36,7 +36,9 @@ class Channel extends ApplicationChannel {
   @override
   Future prepare() async {
     context = ManagedContext(
-        ManagedDataModel([Model]), PostgresTestConfig().persistentStore());
+      ManagedDataModel([Model]),
+      PostgresTestConfig().persistentStore(),
+    );
   }
 
   @override

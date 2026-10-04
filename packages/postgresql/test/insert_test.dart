@@ -12,34 +12,37 @@ void main() {
     context = null;
   });
 
-  test("Accessing values to a `Query` automatically creates an instance.",
-      () async {
-    context = await PostgresTestConfig().contextWithModels([TestModel]);
+  test(
+    "Accessing values to a `Query` automatically creates an instance.",
+    () async {
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    final q = Query<TestModel>(context!)..values.id = 1;
+      final q = Query<TestModel>(context!)..values.id = 1;
 
-    expect(q.values.id, 1);
-  });
+      expect(q.values.id, 1);
+    },
+  );
 
   group("Method insert() in `Query`", () {
     test(
-        "fails when values is set to `null` and the model has required fields.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
+      "fails when values is set to `null` and the model has required fields.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      final q = Query<TestModel>(context!);
+        final q = Query<TestModel>(context!);
 
-      /// code use to set q.values = null which is no longer permitted
-      /// I think this test will still pass as I'm guessing that
-      /// a value for simple.name hasn't been set.
+        /// code use to set q.values = null which is no longer permitted
+        /// I think this test will still pass as I'm guessing that
+        /// a value for simple.name hasn't been set.
 
-      try {
-        await q.insert();
-        fail('should not be reached');
-      } on QueryException catch (e) {
-        expectNullViolation(e, columnName: "simple.name");
-      }
-    });
+        try {
+          await q.insert();
+          fail('should not be reached');
+        } on QueryException catch (e) {
+          expectNullViolation(e, columnName: "simple.name");
+        }
+      },
+    );
 
     test("fails when no value is set for a required field.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
@@ -80,7 +83,7 @@ void main() {
         ..valueMap = {
           "name": "bob",
           "emailAddress": "bk@a.com",
-          "bad_key": "doesntmatter"
+          "bad_key": "doesntmatter",
         };
 
       try {
@@ -94,61 +97,64 @@ void main() {
       }
     });
 
-    test("fails when an object that violated a unique constraint is inserted.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
+    test(
+      "fails when an object that violated a unique constraint is inserted.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      final m = TestModel()
-        ..name = "bob"
-        ..emailAddress = "dup@a.com";
+        final m = TestModel()
+          ..name = "bob"
+          ..emailAddress = "dup@a.com";
 
-      final insertReq = Query<TestModel>(context!)..values = m;
-      await insertReq.insert();
+        final insertReq = Query<TestModel>(context!)..values = m;
+        await insertReq.insert();
 
-      final insertReqDup = Query<TestModel>(context!)..values = m;
+        final insertReqDup = Query<TestModel>(context!)..values = m;
 
-      try {
-        await insertReqDup.insert();
-        fail('should not be reached');
-      } on QueryException catch (e) {
-        expectUniqueViolation(e);
-      }
+        try {
+          await insertReqDup.insert();
+          fail('should not be reached');
+        } on QueryException catch (e) {
+          expectUniqueViolation(e);
+        }
 
-      m.emailAddress = "dup1@a.com";
-      final insertReqFollowup = Query<TestModel>(context!)..values = m;
+        m.emailAddress = "dup1@a.com";
+        final insertReqFollowup = Query<TestModel>(context!)..values = m;
 
-      final result = await insertReqFollowup.insert();
+        final result = await insertReqFollowup.insert();
 
-      expect(result.emailAddress, "dup1@a.com");
-    });
+        expect(result.emailAddress, "dup1@a.com");
+      },
+    );
 
     test(
-        "fails when an object that violates a unique set constraint is inserted.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([MultiUnique]);
+      "fails when an object that violates a unique set constraint is inserted.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([MultiUnique]);
 
-      var q = Query<MultiUnique>(context!)
-        ..values.a = "a"
-        ..values.b = "b";
+        var q = Query<MultiUnique>(context!)
+          ..values.a = "a"
+          ..values.b = "b";
 
-      await q.insert();
-
-      q = Query<MultiUnique>(context!)
-        ..values.a = "a"
-        ..values.b = "a";
-
-      await q.insert();
-
-      q = Query<MultiUnique>(context!)
-        ..values.a = "a"
-        ..values.b = "b";
-      try {
         await q.insert();
-        fail('should not be reached');
-      } on QueryException catch (e) {
-        expectUniqueViolation(e);
-      }
-    });
+
+        q = Query<MultiUnique>(context!)
+          ..values.a = "a"
+          ..values.b = "a";
+
+        await q.insert();
+
+        q = Query<MultiUnique>(context!)
+          ..values.a = "a"
+          ..values.b = "b";
+        try {
+          await q.insert();
+          fail('should not be reached');
+        } on QueryException catch (e) {
+          expectUniqueViolation(e);
+        }
+      },
+    );
 
     test("works given an object and returns is as a result.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
@@ -179,8 +185,9 @@ void main() {
       await insertReq.insert();
 
       final readReq = Query<TestModel>(context!)
-        ..predicate = QueryPredicate("emailAddress = @email",
-            {"email": TypedValue(Type.text, "2@a.com")});
+        ..predicate = QueryPredicate("emailAddress = @email", {
+          "email": TypedValue(Type.text, "2@a.com"),
+        });
 
       final checkInsert = await readReq.fetchOne();
       expect(checkInsert, isNotNull);
@@ -211,41 +218,46 @@ void main() {
     });
 
     test(
-        "works when given object with relationship and returns embedded object.",
-        () async {
-      context =
-          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+      "works when given object with relationship and returns embedded object.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([
+          GenUser,
+          GenPost,
+        ]);
 
-      var u = GenUser()..name = "Joe";
-      final q = Query<GenUser>(context!)..values = u;
-      u = await q.insert();
+        var u = GenUser()..name = "Joe";
+        final q = Query<GenUser>(context!)..values = u;
+        u = await q.insert();
 
-      var p = GenPost()
-        ..owner = u
-        ..text = "1";
-      final pq = Query<GenPost>(context!)..values = p;
-      p = await pq.insert();
+        var p = GenPost()
+          ..owner = u
+          ..text = "1";
+        final pq = Query<GenPost>(context!)..values = p;
+        p = await pq.insert();
 
-      expect(p.id, greaterThan(0));
-      expect(p.owner.id, greaterThan(0));
-    });
+        expect(p.id, greaterThan(0));
+        expect(p.owner.id, greaterThan(0));
+      },
+    );
 
-    test("works correctly on an object with a default value for timestamp.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([GenTime]);
+    test(
+      "works correctly on an object with a default value for timestamp.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([GenTime]);
 
-      final t = GenTime()..text = "hey";
+        final t = GenTime()..text = "hey";
 
-      final q = Query<GenTime>(context!)..values = t;
+        final q = Query<GenTime>(context!)..values = t;
 
-      final result = await q.insert();
+        final result = await q.insert();
 
-      expect(result.dateCreated, isA<DateTime>());
-      expect(
-        result.dateCreated!.difference(DateTime.now()).inMilliseconds,
-        closeTo(0, 1000),
-      );
-    });
+        expect(result.dateCreated, isA<DateTime>());
+        expect(
+          result.dateCreated!.difference(DateTime.now()).inMilliseconds,
+          closeTo(0, 1000),
+        );
+      },
+    );
 
     test("works when timestamp is set manually.", () async {
       context = await PostgresTestConfig().contextWithModels([GenTime]);
@@ -273,30 +285,34 @@ void main() {
       expect(result.transientValue, isNull);
     });
 
-    test("works when values are read from JSON and does not insert relations.",
-        () async {
-      context =
-          await PostgresTestConfig().contextWithModels([GenUser, GenPost]);
+    test(
+      "works when values are read from JSON and does not insert relations.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([
+          GenUser,
+          GenPost,
+        ]);
 
-      final json = {
-        "name": "Bob",
-        "posts": [
-          {"text": "Post"}
-        ]
-      };
+        final json = {
+          "name": "Bob",
+          "posts": [
+            {"text": "Post"},
+          ],
+        };
 
-      final u = GenUser()..readFromMap(json);
+        final u = GenUser()..readFromMap(json);
 
-      final q = Query<GenUser>(context!)..values = u;
+        final q = Query<GenUser>(context!)..values = u;
 
-      final result = await q.insert();
-      expect(result.id, greaterThan(0));
-      expect(result.name, "Bob");
-      expect(result.posts, isNull);
+        final result = await q.insert();
+        expect(result.id, greaterThan(0));
+        expect(result.name, "Bob");
+        expect(result.posts, isNull);
 
-      final pq = Query<GenPost>(context!);
-      expect(await pq.fetch(), hasLength(0));
-    });
+        final pq = Query<GenPost>(context!);
+        expect(await pq.fetch(), hasLength(0));
+      },
+    );
 
     test("works given an object with no keys.", () async {
       context = await PostgresTestConfig().contextWithModels([BoringObject]);
@@ -334,18 +350,20 @@ void main() {
       expect(result.enumValues, isNull);
     });
 
-    test("can infer query generic parameter from values in constructor.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
+    test(
+      "can infer query generic parameter from values in constructor.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-      final tm = TestModel()
-        ..id = 1
-        ..name = "Fred";
-      final q = Query(context!, values: tm);
-      final t = await q.insert();
-      expect(t.id, 1);
-      expect(t.name, "Fred");
-    });
+        final tm = TestModel()
+          ..id = 1
+          ..name = "Fred";
+        final q = Query(context!, values: tm);
+        final t = await q.insert();
+        expect(t.id, 1);
+        expect(t.name, "Fred");
+      },
+    );
   });
 
   group("Static method insertObject(..) in `Query`", () {
@@ -358,36 +376,36 @@ void main() {
   });
 
   group("Static method insertObjects(..) in `Query`", () {
-    test("works given multiple objects and returns the them as a result.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([TestModel]);
-
-      final m = TestModel()
-        ..name = "bob"
-        ..emailAddress = "1@a.com";
-
-      final n = TestModel()
-        ..name = "jay"
-        ..emailAddress = "2@a.com";
-
-      final models = await Query.insertObjects(context!, [m, n]);
-      final bob = models[0];
-      final jay = models[1];
-
-      expect(bob, isA<TestModel>());
-      expect(bob.id, greaterThan(0));
-      expect(bob.name, "bob");
-      expect(bob.emailAddress, "1@a.com");
-
-      expect(jay, isA<TestModel>());
-      expect(jay.id, greaterThan(0));
-      expect(jay.name, "jay");
-      expect(jay.emailAddress, "2@a.com");
-    });
-
     test(
-        "fails when at least one bad object is give and does not insert any objects into the database.",
-        () async {
+      "works given multiple objects and returns the them as a result.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([TestModel]);
+
+        final m = TestModel()
+          ..name = "bob"
+          ..emailAddress = "1@a.com";
+
+        final n = TestModel()
+          ..name = "jay"
+          ..emailAddress = "2@a.com";
+
+        final models = await Query.insertObjects(context!, [m, n]);
+        final bob = models[0];
+        final jay = models[1];
+
+        expect(bob, isA<TestModel>());
+        expect(bob.id, greaterThan(0));
+        expect(bob.name, "bob");
+        expect(bob.emailAddress, "1@a.com");
+
+        expect(jay, isA<TestModel>());
+        expect(jay.id, greaterThan(0));
+        expect(jay.name, "jay");
+        expect(jay.emailAddress, "2@a.com");
+      },
+    );
+
+    test("fails when at least one bad object is give and does not insert any objects into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
       final goodModel = TestModel()
@@ -462,51 +480,55 @@ void main() {
       expect(modelsInDb.last.emailAddress, "b@a.com");
     });
 
-    test("works given a list with two elements with different fields filled.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([NullableObject]);
+    test(
+      "works given a list with two elements with different fields filled.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([
+          NullableObject,
+        ]);
 
-      await Query<NullableObject>(context!).insertMany([
-        NullableObject()..a = "a",
-        NullableObject()..b = "b",
-        NullableObject(),
-      ]);
+        await Query<NullableObject>(context!).insertMany([
+          NullableObject()..a = "a",
+          NullableObject()..b = "b",
+          NullableObject(),
+        ]);
 
-      final query = Query<NullableObject>(context!)
-        ..sortBy((tm) => tm.id, QuerySortOrder.ascending);
+        final query = Query<NullableObject>(context!)
+          ..sortBy((tm) => tm.id, QuerySortOrder.ascending);
 
-      final modelsInDb = await query.fetch();
+        final modelsInDb = await query.fetch();
 
-      expect(modelsInDb, hasLength(3));
-      expect(modelsInDb[0].a, "a");
-      expect(modelsInDb[0].b, isNull);
-      expect(modelsInDb[1].a, isNull);
-      expect(modelsInDb[1].b, "b");
-      expect(modelsInDb[2].a, isNull);
-      expect(modelsInDb[2].b, isNull);
-    });
-
-    test("works given a list with one element and no values set to it.",
-        () async {
-      context = await PostgresTestConfig().contextWithModels([NullableObject]);
-
-      await Query<NullableObject>(context!).insertMany([
-        NullableObject(),
-      ]);
-
-      final query = Query<NullableObject>(context!)
-        ..sortBy((tm) => tm.id, QuerySortOrder.ascending);
-
-      final modelsInDb = await query.fetch();
-
-      expect(modelsInDb, hasLength(1));
-      expect(modelsInDb[0].a, isNull);
-      expect(modelsInDb[0].b, isNull);
-    });
+        expect(modelsInDb, hasLength(3));
+        expect(modelsInDb[0].a, "a");
+        expect(modelsInDb[0].b, isNull);
+        expect(modelsInDb[1].a, isNull);
+        expect(modelsInDb[1].b, "b");
+        expect(modelsInDb[2].a, isNull);
+        expect(modelsInDb[2].b, isNull);
+      },
+    );
 
     test(
-        "fails when at least one bad object is give and does not insert any objects into the database.",
-        () async {
+      "works given a list with one element and no values set to it.",
+      () async {
+        context = await PostgresTestConfig().contextWithModels([
+          NullableObject,
+        ]);
+
+        await Query<NullableObject>(context!).insertMany([NullableObject()]);
+
+        final query = Query<NullableObject>(context!)
+          ..sortBy((tm) => tm.id, QuerySortOrder.ascending);
+
+        final modelsInDb = await query.fetch();
+
+        expect(modelsInDb, hasLength(1));
+        expect(modelsInDb[0].a, isNull);
+        expect(modelsInDb[0].b, isNull);
+      },
+    );
+
+    test("fails when at least one bad object is give and does not insert any objects into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
       final goodModel = TestModel()
@@ -528,8 +550,7 @@ void main() {
       expect(modelsInDb, isEmpty);
     });
 
-    test(
-        "fails when two of the records given conflict on a unique field "
+    test("fails when two of the records given conflict on a unique field "
         "and does not insert any objects into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
@@ -552,8 +573,7 @@ void main() {
       expect(modelsInDb, isEmpty);
     });
 
-    test(
-        "can be given returning prop "
+    test("can be given returning prop "
         "and does not insert any objects into the database.", () async {
       context = await PostgresTestConfig().contextWithModels([TestModel]);
 
@@ -563,7 +583,7 @@ void main() {
       final result = await query.insertMany([
         TestModel()
           ..name = "alice"
-          ..emailAddress = "a@a.com"
+          ..emailAddress = "a@a.com",
       ]);
 
       expect(result, hasLength(1));

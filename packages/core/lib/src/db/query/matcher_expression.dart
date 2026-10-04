@@ -23,8 +23,8 @@ class QueryExpression<T, InstanceType> {
   QueryExpression.byAddingKey(
     QueryExpression<T, InstanceType> original,
     ManagedPropertyDescription byAdding,
-  )   : keyPath = KeyPath.byAddingKey(original.keyPath, byAdding),
-        _expression = original.expression;
+  ) : keyPath = KeyPath.byAddingKey(original.keyPath, byAdding),
+      _expression = original.expression;
 
   final KeyPath keyPath;
 
@@ -211,8 +211,10 @@ class QueryExpression<T, InstanceType> {
   ///       var query = new Query<Employee>()
   ///         ..where((e) => e.salary).greaterThanEqualTo(60000);
   QueryExpressionJunction<T, InstanceType> greaterThanEqualTo(T value) {
-    expression =
-        ComparisonExpression(value, PredicateOperator.greaterThanEqualTo);
+    expression = ComparisonExpression(
+      value,
+      PredicateOperator.greaterThanEqualTo,
+    );
 
     return _createJunction();
   }

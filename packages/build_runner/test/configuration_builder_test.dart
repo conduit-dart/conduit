@@ -60,18 +60,14 @@ class IntermediateException implements Exception {
 ''';
 
 Future<({String? dart, String? json})> _runBuilder(String source) async {
-  final result = await testBuilder(
-    configurationBuilder(BuilderOptions.empty),
-    {
-      'a|lib/configs.dart': source,
-      'conduit_config|lib/conduit_config.dart': _conduitConfigStub,
-      'conduit_config|lib/aot.dart': _conduitConfigStub,
-      'conduit_config|lib/src/configuration.dart': _conduitConfigStub,
-      'conduit_config|lib/src/intermediate_exception.dart':
-          _intermediateExceptionStub,
-    },
-    flattenOutput: true,
-  );
+  final result = await testBuilder(configurationBuilder(BuilderOptions.empty), {
+    'a|lib/configs.dart': source,
+    'conduit_config|lib/conduit_config.dart': _conduitConfigStub,
+    'conduit_config|lib/aot.dart': _conduitConfigStub,
+    'conduit_config|lib/src/configuration.dart': _conduitConfigStub,
+    'conduit_config|lib/src/intermediate_exception.dart':
+        _intermediateExceptionStub,
+  }, flattenOutput: true);
   final dartId = AssetId.parse('a|lib/configs.config.conduit.dart');
   final jsonId = AssetId.parse('a|lib/configs.config.conduit.json');
   return (

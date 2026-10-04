@@ -117,5 +117,5 @@ enum AuthRequestError {
   /// Indicates that the token is invalid.
   ///
   /// This particular error reason is not part of the OAuth 2.0 spec.
-  invalidToken
+  invalidToken,
 }

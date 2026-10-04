@@ -6,6 +6,7 @@ library;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -187,8 +188,7 @@ class TestController extends ResourceController {
     _stopwatch.start();
     final httpRequest = request!.raw;
     WebSocketTransformer.upgrade(httpRequest).then(_processConnection);
-    return Future
-        .value(); //upgrade the HTTP connection to WebSocket by returning null
+    return Future.value(); //upgrade the HTTP connection to WebSocket by returning null
   }
 }
 
@@ -214,7 +214,6 @@ class ChatController extends ResourceController {
     _socket[user] = await WebSocketTransformer.upgrade(httpRequest);
     _socket[user]!.listen((event) => handleEvent(event as String, user));
 
-    return Future
-        .value(); //upgrade the HTTP connection to WebSocket by returning null
+    return Future.value(); //upgrade the HTTP connection to WebSocket by returning null
   }
 }

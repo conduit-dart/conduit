@@ -110,37 +110,27 @@ void main() {
     expect(scope.allows("user.readonly"), false);
   });
 
-  test(
-      "Single element scope does not allow more restrictive multiple element scope",
-      () {
+  test("Single element scope does not allow more restrictive multiple element scope", () {
     final scope = AuthScope("user");
     expect(scope.allows("user:location"), false);
   });
 
-  test(
-      "Single element scope with modifier does not allow more restrictive multiple element scope even though it has same modifier",
-      () {
+  test("Single element scope with modifier does not allow more restrictive multiple element scope even though it has same modifier", () {
     final scope = AuthScope("user.readonly");
     expect(scope.allows("user:location.readonly"), false);
   });
 
-  test(
-      "Multiple element scope does not allow multiple element, even if root is same",
-      () {
+  test("Multiple element scope does not allow multiple element, even if root is same", () {
     final scope = AuthScope("user:location");
     expect(scope.allows("user:posts"), false);
   });
 
-  test(
-      "Multiple element scope does not allow modifier restricted, even though elements are the same",
-      () {
+  test("Multiple element scope does not allow modifier restricted, even though elements are the same", () {
     final scope = AuthScope("user:location");
     expect(scope.allows("user:location.readonly"), false);
   });
 
-  test(
-      "Multiple element scope does not allow different modifier, even though elements are the same",
-      () {
+  test("Multiple element scope does not allow different modifier, even though elements are the same", () {
     final scope = AuthScope("user:location.something");
     expect(scope.allows("user:location.readonly"), false);
   });
@@ -203,65 +193,61 @@ void main() {
 
     test("Single scope that is not fulfilled subset", () {
       final requiredScopes = ["scope"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope:bar", "scope.readonly"].map(AuthScope.new).toList();
+      final providedScopes = [
+        "scope:bar",
+        "scope.readonly",
+      ].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), false);
     });
 
     test("Single scope that is fulfilled by one of scope", () {
       final requiredScopes = ["scope"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope1", "scope"].map(AuthScope.new).toList();
+      final providedScopes = ["scope1", "scope"].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), true);
     });
 
     test("Multiple scope that is fulfilled by exact matches", () {
-      final requiredScopes =
-          ["scope1", "scope2"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope1", "scope2"].map(AuthScope.new).toList();
+      final requiredScopes = ["scope1", "scope2"].map(AuthScope.new).toList();
+      final providedScopes = ["scope1", "scope2"].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), true);
     });
 
-    test("Multiple scope that is fulfilled by exact matches, in diff order",
-        () {
-      final requiredScopes =
-          ["scope1", "scope2"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope2", "scope1"].map(AuthScope.new).toList();
-      expect(AuthScope.verify(requiredScopes, providedScopes), true);
-    });
+    test(
+      "Multiple scope that is fulfilled by exact matches, in diff order",
+      () {
+        final requiredScopes = ["scope1", "scope2"].map(AuthScope.new).toList();
+        final providedScopes = ["scope2", "scope1"].map(AuthScope.new).toList();
+        expect(AuthScope.verify(requiredScopes, providedScopes), true);
+      },
+    );
 
     test("Multiple scope where only one is fulfilled is false", () {
-      final requiredScopes =
-          ["scope1", "scope2"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope2", "scope3"].map(AuthScope.new).toList();
+      final requiredScopes = ["scope1", "scope2"].map(AuthScope.new).toList();
+      final providedScopes = ["scope2", "scope3"].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), false);
     });
 
     test("Multiple scope where one scope is a subset is false", () {
-      final requiredScopes =
-          ["scope1", "scope2"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope2", "scope1:next"].map(AuthScope.new).toList();
+      final requiredScopes = ["scope1", "scope2"].map(AuthScope.new).toList();
+      final providedScopes = [
+        "scope2",
+        "scope1:next",
+      ].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), false);
     });
 
     test("Multiple scope that is fulfilled by superscopes", () {
-      final requiredScopes =
-          ["scope1:next", "scope2.readonly"].map(AuthScope.new).toList();
-      final providedScopes =
-          ["scope2", "scope1"].map(AuthScope.new).toList();
+      final requiredScopes = [
+        "scope1:next",
+        "scope2.readonly",
+      ].map(AuthScope.new).toList();
+      final providedScopes = ["scope2", "scope1"].map(AuthScope.new).toList();
       expect(AuthScope.verify(requiredScopes, providedScopes), true);
     });
 
     test("Empty required always yields true", () {
       expect(
-        AuthScope.verify(
-          [],
-          ["scope2", "scope1"].map(AuthScope.new).toList(),
-        ),
+        AuthScope.verify([], ["scope2", "scope1"].map(AuthScope.new).toList()),
         true,
       );
       expect(
@@ -313,7 +299,7 @@ void main() {
           AuthScope("abc:def"),
           AuthScope("abc:def:xyz"),
           AuthScope("cba"),
-          AuthScope("cba:foo")
+          AuthScope("cba:foo"),
         ],
       );
       expect(c.allowedScopes!.length, 2);
@@ -330,7 +316,7 @@ void main() {
           AuthScope("abc"),
           AuthScope("abc:def"),
           AuthScope("abc.readonly"),
-          AuthScope("abc:def.readonly")
+          AuthScope("abc:def.readonly"),
         ],
       );
       expect(c.allowedScopes!.length, 1);
@@ -345,7 +331,7 @@ void main() {
           AuthScope("abc:def"),
           AuthScope("abc:def:xyz.readonly"),
           AuthScope("cba"),
-          AuthScope("cba:foo.readonly")
+          AuthScope("cba:foo.readonly"),
         ],
       );
       expect(c.allowedScopes!.length, 2);

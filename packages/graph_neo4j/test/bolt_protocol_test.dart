@@ -95,12 +95,18 @@ void main() {
 
     test('TINY_MAP with string keys', () {
       // {'a': 1} -> A1 81 61 01
-      expect(hexOf(packStream({'a': 1})), 'a181' '6101');
+      expect(
+        hexOf(packStream({'a': 1})),
+        'a181'
+        '6101',
+      );
     });
 
     test('TINY_STRUCT round-trip', () {
       final s = BoltStructure(0x70, [
-        {'fields': ['n']},
+        {
+          'fields': ['n'],
+        },
       ]);
       final encoded = packStream(s);
       // First byte: TINY_STRUCT marker 0xB1 (one field).
@@ -134,9 +140,11 @@ void main() {
         'b1' // TINY_STRUCT 1
         '70' // tag SUCCESS
         'a1' // TINY_MAP 1
-        '86' '6669656c6473' // "fields" (tiny string len 6)
+        '86'
+        '6669656c6473' // "fields" (tiny string len 6)
         '91' // TINY_LIST 1
-        '81' '6e', // "n"
+        '81'
+        '6e', // "n"
       );
       final decoded = unpackStream(bytes);
       expect(decoded, isA<BoltStructure>());
@@ -144,23 +152,25 @@ void main() {
       expect(s.tag, 0x70);
       expect(s.fields.length, 1);
       expect(s.fields.first, {
-        'fields': ['n']
+        'fields': ['n'],
       });
     });
   });
 
   group('Bolt message constructors', () {
     test('HELLO with basic auth', () {
-      final s = unpackStream(packStream(
-        BoltStructure(0x01, [
-          {
-            'user_agent': 'test/0.1',
-            'scheme': 'basic',
-            'principal': 'neo4j',
-            'credentials': 'pw',
-          }
-        ]),
-      ));
+      final s = unpackStream(
+        packStream(
+          BoltStructure(0x01, [
+            {
+              'user_agent': 'test/0.1',
+              'scheme': 'basic',
+              'principal': 'neo4j',
+              'credentials': 'pw',
+            },
+          ]),
+        ),
+      );
       expect(s, isA<BoltStructure>());
       expect((s as BoltStructure).tag, 0x01);
     });
@@ -211,34 +221,22 @@ void main() {
 
   group('PackStream error paths', () {
     test('encoder rejects non-string map keys', () {
-      expect(
-        () => packStream({1: 'a'}),
-        throwsArgumentError,
-      );
+      expect(() => packStream({1: 'a'}), throwsArgumentError);
     });
 
     test('encoder rejects unsupported runtime types', () {
-      expect(
-        () => packStream(const Symbol('x')),
-        throwsArgumentError,
-      );
+      expect(() => packStream(const Symbol('x')), throwsArgumentError);
     });
 
     test('decoder surfaces truncated buffers', () {
       // 0xC9 says "INT_16, 2 bytes follow", but we give only 1.
       final bytes = Uint8List.fromList([0xC9, 0x00]);
-      expect(
-        () => unpackStream(bytes),
-        throwsA(isA<FormatException>()),
-      );
+      expect(() => unpackStream(bytes), throwsA(isA<FormatException>()));
     });
 
     test('decoder rejects unknown markers', () {
       final bytes = Uint8List.fromList([0xCE]);
-      expect(
-        () => unpackStream(bytes),
-        throwsA(isA<FormatException>()),
-      );
+      expect(() => unpackStream(bytes), throwsA(isA<FormatException>()));
     });
   });
 }

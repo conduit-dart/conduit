@@ -53,10 +53,16 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
   ///
   /// NOTE: This method adds rows to a database table managed by your test application and [TestHarnessORMMixin.resetData]
   /// will delete those rows. To ensure clients exist for all tests, add clients in [TestHarnessORMMixin.seed].
-  Future<Agent> addClient(String id,
-      {String? secret, String? redirectUri, List<String>? allowedScope}) async {
-    final client = AuthClient.public(id,
-        allowedScopes: allowedScope?.map(AuthScope.new).toList());
+  Future<Agent> addClient(
+    String id, {
+    String? secret,
+    String? redirectUri,
+    List<String>? allowedScope,
+  }) async {
+    final client = AuthClient.public(
+      id,
+      allowedScopes: allowedScope?.map(AuthScope.new).toList(),
+    );
 
     if (secret != null) {
       client
@@ -79,20 +85,29 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
   ///
   /// [fromAgent] must be a client authenticated agent, typically created by [addClient]. If [scopes] is non-null,
   /// the access token will have the included scope if valid.
-  Future<Agent> loginUser(Agent fromAgent, String? username, String password,
-      {List<String>? scopes}) async {
+  Future<Agent> loginUser(
+    Agent fromAgent,
+    String? username,
+    String password, {
+    List<String>? scopes,
+  }) async {
     final authorizationHeader = fromAgent.headers["authorization"];
     if (authorizationHeader is! String) {
       throw ArgumentError(
-          "expected header 'Authorization' to have String type");
+        "expected header 'Authorization' to have String type",
+      );
     }
     const parser = AuthorizationBasicParser();
     final credentials = parser.parse(authorizationHeader);
 
     try {
       final token = await authServer.authenticate(
-          username, password, credentials.username, credentials.password,
-          requestedScopes: scopes?.map(AuthScope.new).toList());
+        username,
+        password,
+        credentials.username,
+        credentials.password,
+        requestedScopes: scopes?.map(AuthScope.new).toList(),
+      );
       return Agent.from(fromAgent)
         ..headers["authorization"] = "Bearer ${token.accessToken}";
     } on AuthServerException catch (e) {
@@ -100,7 +115,8 @@ mixin TestHarnessAuthMixin<T extends ApplicationChannel>
         throw ArgumentError("Invalid username/password.");
       } else if (e.reason == AuthRequestError.invalidScope) {
         throw ArgumentError(
-            "Scope not permitted for client identifier and/or user.");
+          "Scope not permitted for client identifier and/or user.",
+        );
       }
 
       rethrow;

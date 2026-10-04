@@ -6,8 +6,11 @@ import '../not_tests/postgres_test_config.dart';
 void main() {
   ManagedContext? context;
   setUp(() async {
-    context = await PostgresTestConfig()
-        .contextWithModels([Parent, Child, Grandchild]);
+    context = await PostgresTestConfig().contextWithModels([
+      Parent,
+      Child,
+      Grandchild,
+    ]);
   });
 
   tearDown(() async {
@@ -59,9 +62,7 @@ void main() {
       } on ArgumentError catch (e) {
         expect(
           e.toString(),
-          contains(
-            "Cannot access more than one property for this operation",
-          ),
+          contains("Cannot access more than one property for this operation"),
         );
       }
     });
@@ -145,9 +146,7 @@ void main() {
       } on ArgumentError catch (e) {
         expect(
           e.toString(),
-          contains(
-            "Cannot access more than one property for this operation",
-          ),
+          contains("Cannot access more than one property for this operation"),
         );
       }
     });
@@ -155,7 +154,9 @@ void main() {
 
   group("KeyPath identification", () {
     test("Identify multiple properties", () {
-      final props = context!.entityForType(Parent).identifyProperties(
+      final props = context!
+          .entityForType(Parent)
+          .identifyProperties(
             (Parent? x) => [x!.document, x.field, x.children],
           );
       expect(props.length, 3);

@@ -30,14 +30,14 @@ class User extends GraphNode<User> {
 
 class Friend extends GraphEdge<User, User> {
   Friend({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Friend'));
+    : super(label: const GraphLabel.unchecked('Friend'));
 }
 
 void main() {
   final available = Platform.environment['CONDUIT_NEO4J_AVAILABLE'];
   final skip = (available == null || available.isEmpty)
       ? 'Set CONDUIT_NEO4J_AVAILABLE=1 to run; needs a Bolt-reachable Neo4j '
-          'on bolt://localhost:7687.'
+            'on bolt://localhost:7687.'
       : null;
 
   late Neo4jPersistentStore store;

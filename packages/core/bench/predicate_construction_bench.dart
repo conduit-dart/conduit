@@ -54,11 +54,11 @@ class _AndChainBench extends BenchmarkBase {
         ColumnExpression('c$i', tableNamespace: 't0'),
         ParameterExpression('t0_c${i}_v', i),
       );
-      preds.add(QueryPredicate.withExpression(
-        ast,
-        't0.c$i = @t0_c${i}_v',
-        {'t0_c${i}_v': i},
-      ));
+      preds.add(
+        QueryPredicate.withExpression(ast, 't0.c$i = @t0_c${i}_v', {
+          't0_c${i}_v': i,
+        }),
+      );
     }
     QueryPredicate.and(preds);
   }

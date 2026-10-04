@@ -38,11 +38,11 @@ class SchemaBuilder {
     bool isTemporary = false,
     List<String>? changeList,
   }) : this.fromDifference(
-          store,
-          SchemaDifference(Schema.empty(), targetSchema),
-          isTemporary: isTemporary,
-          changeList: changeList,
-        );
+         store,
+         SchemaDifference(Schema.empty(), targetSchema),
+         isTemporary: isTemporary,
+         changeList: changeList,
+       );
 
   // Creates a builder
   SchemaBuilder.fromDifference(
@@ -136,9 +136,11 @@ class SchemaBuilder {
     modify(newTable);
     schema.replaceTable(existingTable, newTable);
 
-    final shouldAddUnique = existingTable.uniqueColumnSet == null &&
+    final shouldAddUnique =
+        existingTable.uniqueColumnSet == null &&
         newTable.uniqueColumnSet != null;
-    final shouldRemoveUnique = existingTable.uniqueColumnSet != null &&
+    final shouldRemoveUnique =
+        existingTable.uniqueColumnSet != null &&
         newTable.uniqueColumnSet == null;
 
     final innerCommands = <String>[];
@@ -157,10 +159,12 @@ class SchemaBuilder {
         innerCommands.add("t.uniqueColumnSet = null");
       }
     } else {
-      final haveSameLength = existingTable.uniqueColumnSet!.length ==
+      final haveSameLength =
+          existingTable.uniqueColumnSet!.length ==
           newTable.uniqueColumnSet!.length;
-      final haveSameKeys = existingTable.uniqueColumnSet!
-          .every((s) => newTable.uniqueColumnSet!.contains(s));
+      final haveSameKeys = existingTable.uniqueColumnSet!.every(
+        (s) => newTable.uniqueColumnSet!.contains(s),
+      );
 
       if (!haveSameKeys || !haveSameLength) {
         if (store != null) {
@@ -354,8 +358,11 @@ class SchemaBuilder {
     if (existingColumn.isNullable != newColumn.isNullable) {
       if (store != null) {
         commands.addAll(
-          store!
-              .alterColumnNullability(table, newColumn, unencodedInitialValue),
+          store!.alterColumnNullability(
+            table,
+            newColumn,
+            unencodedInitialValue,
+          ),
         );
       } else {
         innerCommands.add('c.isNullable = ${newColumn.isNullable}');
@@ -428,9 +435,10 @@ class SchemaBuilder {
 
       if (!c.isNullable! && c.defaultValue == null) {
         changeList?.add(
-            "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
-            "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
-            "SchemaColumn(\"${c.name}\", ...)'.");
+          "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
+          "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
+          "SchemaColumn(\"${c.name}\", ...)'.",
+        );
       }
     }
 
@@ -445,22 +453,26 @@ class SchemaBuilder {
       changeList?.add(
         "Modifying column '${columnDiff.actualColumn!.name}' in '${difference.actualTable!.name}'",
       );
-      alterColumn(difference.actualTable!.name!, columnDiff.actualColumn!.name,
-          (c) {
-        c.isIndexed = columnDiff.actualColumn!.isIndexed;
-        c.defaultValue = columnDiff.actualColumn!.defaultValue;
-        c.isUnique = columnDiff.actualColumn!.isUnique;
-        c.isNullable = columnDiff.actualColumn!.isNullable;
-        c.deleteRule = columnDiff.actualColumn!.deleteRule;
-      });
+      alterColumn(
+        difference.actualTable!.name!,
+        columnDiff.actualColumn!.name,
+        (c) {
+          c.isIndexed = columnDiff.actualColumn!.isIndexed;
+          c.defaultValue = columnDiff.actualColumn!.defaultValue;
+          c.isUnique = columnDiff.actualColumn!.isUnique;
+          c.isNullable = columnDiff.actualColumn!.isNullable;
+          c.deleteRule = columnDiff.actualColumn!.deleteRule;
+        },
+      );
 
       if (columnDiff.expectedColumn!.isNullable! &&
           !columnDiff.actualColumn!.isNullable! &&
           columnDiff.actualColumn!.defaultValue == null) {
         changeList?.add(
-            "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
-            "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
-            "SchemaColumn(\"${columnDiff.actualColumn!.name}\", ...)'.");
+          "WARNING: This migration may fail if table '${difference.actualTable!.name}' already has rows. "
+          "Add an 'unencodedInitialValue' to the statement 'database.addColumn(\"${difference.actualTable!.name}\", "
+          "SchemaColumn(\"${columnDiff.actualColumn!.name}\", ...)'.",
+        );
       }
     }
 
@@ -496,8 +508,9 @@ class SchemaBuilder {
   static String _getNewColumnExpression(SchemaColumn column) {
     final builder = StringBuffer();
     if (column.relatedTableName != null) {
-      builder
-          .write('SchemaColumn.relationship("${column.name}", ${column.type}');
+      builder.write(
+        'SchemaColumn.relationship("${column.name}", ${column.type}',
+      );
       builder.write(', relatedTableName: "${column.relatedTableName}"');
       builder.write(', relatedColumnName: "${column.relatedColumnName}"');
       builder.write(", rule: ${column.deleteRule}");

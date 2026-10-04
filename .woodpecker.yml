@@ -41,7 +41,12 @@ when:
   - event: manual
 
 variables:
-  - &dart_image dart:beta
+  # Pinned to the stable minor that matches the workspace SDK floor
+  # (`>=3.13.0`). `dart:beta` was used while the floor was the
+  # pre-release `>=3.12.0-0`; nothing here needs beta any more, and a
+  # moving beta image made the lint/format gates drift from the GitHub
+  # Actions `stable` legs. Bump this alongside the floor in pubspec.yaml.
+  - &dart_image dart:3.13
 
 steps:
   bootstrap:
@@ -56,7 +61,7 @@ steps:
     when:
       - event: [pull_request, push]
     # Reproducible Nix devShell smoke: proves flake.nix materializes the
-    # pinned Dart toolchain. Independent of the dart:beta bootstrap chain.
+    # pinned Dart toolchain. Independent of the dart_image bootstrap chain.
     image: nixos/nix:2.24.9
     environment:
       NIX_CONFIG: "experimental-features = nix-command flakes"
@@ -72,6 +77,7 @@ steps:
       - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - melos run analyze
+      - dart format --output=none --set-exit-if-changed .
 
   build-runner-tests:
     when:

@@ -63,9 +63,7 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
           }
         }
       }
-      throw ManagedDataModelError(
-        "Data model types were not found!",
-      );
+      throw ManagedDataModelError("Data model types were not found!");
     }
 
     for (final runtime in expectedRuntimes) {

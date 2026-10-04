@@ -41,8 +41,7 @@ void main() {
       expect(doc!.paths!.length, greaterThan(0));
       expect(doc!.paths!.length, original!["paths"].length);
 
-      final originalPaths =
-          original!["paths"] as Map<String, dynamic>;
+      final originalPaths = original!["paths"] as Map<String, dynamic>;
       doc!.paths!.forEach((k, v) {
         expect(originalPaths.keys.contains(k), true);
       });
@@ -87,8 +86,11 @@ void main() {
       expect(schema!.description, contains("APIVersions lists the"));
       expect(schema.isRequired, ["versions", "serverAddressByClientCIDRs"]);
       expect(
-        schema.properties!["serverAddressByClientCIDRs"]!.items!
-            .properties!["clientCIDR"]!.description,
+        schema
+            .properties!["serverAddressByClientCIDRs"]!
+            .items!
+            .properties!["clientCIDR"]!
+            .description,
         contains("The CIDR"),
       );
     });

@@ -75,31 +75,24 @@ void main() {
     expect(await columnsOfTable(store!, "_testobject"), ["id", "foo"]);
   });
 
-  test(
-    "Database already up to date returns 0 status code, does not change version",
-    () async {
-      expect(await runMigrationCases(["Case2"]), isZero);
+  test("Database already up to date returns 0 status code, does not change version", () async {
+    expect(await runMigrationCases(["Case2"]), isZero);
 
-      var versionRow =
-          await store!.execute(
-                "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
-              )
-              as List<List<dynamic>>;
-      expect(versionRow.first.first, 1);
-      final updateDate = versionRow.first.last;
+    var versionRow = await store!.execute(
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+    ) as List<List<dynamic>>;
+    expect(versionRow.first.first, 1);
+    final updateDate = versionRow.first.last;
 
-      cli.clearOutput();
-      expect(await runMigrationCases(["Case2"]), isZero);
-      versionRow =
-          await store!.execute(
-                "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
-              )
-              as List<List>;
-      expect(versionRow.length, 1);
-      expect(versionRow.first.last, equals(updateDate));
-      expect(cli.output, contains("already current (version: 1)"));
-    },
-  );
+    cli.clearOutput();
+    expect(await runMigrationCases(["Case2"]), isZero);
+    versionRow = await store!.execute(
+      "SELECT versionNumber, dateOfUpgrade FROM _conduit_version_pgsql",
+    ) as List<List>;
+    expect(versionRow.length, 1);
+    expect(versionRow.first.last, equals(updateDate));
+    expect(cli.output, contains("already current (version: 1)"));
+  });
 
   test("Multiple migration files are ran", () async {
     expect(await runMigrationCases(["Case31", "Case32"]), isZero);
@@ -148,62 +141,50 @@ void main() {
     expect(await tableExists(store!, "_testobject"), isFalse);
   });
 
-  test(
-    "Ensure that the following tests would succeed if the invalid migration were not applied",
-    () async {
-      expect(await runMigrationCases(["Case61", "Case63"]), isZero);
-    },
-  );
+  test("Ensure that the following tests would succeed if the invalid migration were not applied", () async {
+    expect(await runMigrationCases(["Case61", "Case63"]), isZero);
+  });
 
-  test(
-    "If migration fails and more migrations are pending, the pending migrations are cancelled",
-    () async {
-      expect(
-        await runMigrationCases(["Case61", "Case62", "Case63"]),
-        isNonZero,
-      );
+  test("If migration fails and more migrations are pending, the pending migrations are cancelled", () async {
+    expect(await runMigrationCases(["Case61", "Case62", "Case63"]), isNonZero);
 
-      expect(
-        cli.output.contains("Applied schema version 1 successfully"),
-        isTrue,
-      );
-      expect(cli.output, contains('relation "_unknowntable" does not exist'));
+    expect(
+      cli.output.contains("Applied schema version 1 successfully"),
+      isTrue,
+    );
+    expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
-      expect(await tableExists(store!, store!.versionTable.name), isFalse);
-      expect(await tableExists(store!, "_testobject"), isFalse);
-      expect(await tableExists(store!, "_foo"), isFalse);
-    },
-  );
+    expect(await tableExists(store!, store!.versionTable.name), isFalse);
+    expect(await tableExists(store!, "_testobject"), isFalse);
+    expect(await tableExists(store!, "_foo"), isFalse);
+  });
 
-  test(
-    "If migrations have already been applied, and new migrations occur where the first fails, those pending migrations are cancelled",
-    () async {
-      expect(await runMigrationCases(["Case61"]), isZero);
-      expect(
-        cli.output.contains("Applied schema version 1 successfully"),
-        isTrue,
-      );
-      cli.clearOutput();
+  test("If migrations have already been applied, and new migrations occur where the first fails, those pending migrations are cancelled", () async {
+    expect(await runMigrationCases(["Case61"]), isZero);
+    expect(
+      cli.output.contains("Applied schema version 1 successfully"),
+      isTrue,
+    );
+    cli.clearOutput();
 
-      expect(
-        await runMigrationCases(["Case62", "Case63"], fromVersion: 1),
-        isNonZero,
-      );
+    expect(
+      await runMigrationCases(["Case62", "Case63"], fromVersion: 1),
+      isNonZero,
+    );
 
-      expect(cli.output, contains('relation "_unknowntable" does not exist'));
+    expect(cli.output, contains('relation "_unknowntable" does not exist'));
 
-      final version = await store!.execute(
-        "SELECT versionNumber FROM _conduit_version_pgsql",
-      );
-      expect(version, [
-        [1],
-      ]);
+    final version = await store!.execute(
+      "SELECT versionNumber FROM _conduit_version_pgsql",
+    );
+    expect(version, [
+      [1],
+    ]);
 
-      expect(await tableExists(store!, store!.versionTable.name), isTrue);
-      expect(await tableExists(store!, "_testobject"), isTrue);
-      expect(await tableExists(store!, "_foo"), isFalse);
-    },
-  );
+    expect(await tableExists(store!, store!.versionTable.name), isTrue);
+    expect(await tableExists(store!, "_testobject"), isTrue);
+    expect(await tableExists(store!, "_foo"), isFalse);
+  });
 
   test("If seed fails, all schema changes are rolled back", () async {
     expect(await runMigrationCases(["Case7"]), isNonZero);
@@ -212,42 +193,32 @@ void main() {
     expect(await tableExists(store!, "_testobject"), isFalse);
   });
 
-  test(
-    "If migration fails because adding a new non-nullable column to an table, a friendly error is emitted",
-    () async {
-      final buf = StringBuffer();
-      expect(
-        await runMigrationCases(["Case81", "Case82"], log: buf),
-        isNonZero,
-      );
-      expect(buf.toString(), contains("adding or altering"));
-      expect(buf.toString(), contains("_testobject.name"));
-      expect(buf.toString(), contains("unencodedInitialValue"));
-    },
-  );
+  test("If migration fails because adding a new non-nullable column to an table, a friendly error is emitted", () async {
+    final buf = StringBuffer();
+    expect(await runMigrationCases(["Case81", "Case82"], log: buf), isNonZero);
+    expect(buf.toString(), contains("adding or altering"));
+    expect(buf.toString(), contains("_testobject.name"));
+    expect(buf.toString(), contains("unencodedInitialValue"));
+  });
 }
 
 Future<List<String>> columnsOfTable(
   PersistentStore persistentStore,
   String tableName,
 ) async {
-  final results =
-      await persistentStore.execute(
-            "select column_name from information_schema.columns "
-            "where table_name='$tableName'",
-          )
-          as List<List<dynamic>>;
+  final results = await persistentStore.execute(
+    "select column_name from information_schema.columns "
+    "where table_name='$tableName'",
+  ) as List<List<dynamic>>;
 
   return results.map((rows) => rows.first as String).toList();
 }
 
 Future<bool> tableExists(PersistentStore store, String? tableName) async {
-  final exists =
-      await store.execute(
-            "SELECT to_regclass(@tableName:text)",
-            substitutionValues: {"tableName": tableName},
-          )
-          as List<List<dynamic>>;
+  final exists = await store.execute(
+    "SELECT to_regclass(@tableName:text)",
+    substitutionValues: {"tableName": tableName},
+  ) as List<List<dynamic>>;
 
   return exists.first.first != null;
 }

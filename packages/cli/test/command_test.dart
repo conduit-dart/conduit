@@ -183,11 +183,7 @@ void main() {
   test('Decodes multiple string args of the same key', () {
     final cmd = TestCLICommand();
 
-    final args = [
-      '--define=foo',
-      '--define=bar',
-      '--define=baz',
-    ];
+    final args = ['--define=foo', '--define=bar', '--define=baz'];
 
     final results = cmd.options.parse(args);
     cmd.process(results);
@@ -211,8 +207,7 @@ class TestCLICommand extends CLICommand {
   @Option(
     "connect",
     abbr: "c",
-    help:
-        "A database connection URI string. If this option is set, database-config is ignored.",
+    help: "A database connection URI string. If this option is set, database-config is ignored.",
     valueHelp: "postgres://user:password@localhost:port/databaseName",
   )
   String? get databaseConnectionString => decode("connect");
@@ -249,8 +244,7 @@ class TestCLICommand extends CLICommand {
 
   @Option(
     "scopes",
-    help:
-        "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
+    help: "A space-delimited list of allowed scopes. Omit if application does not support scopes.",
     defaultsTo: "",
   )
   List<String>? get scopes {

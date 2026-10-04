@@ -21,15 +21,13 @@ class CLIServer extends CLICommand with CLIProject {
 
   @Option(
     "ssl-key-path",
-    help:
-        "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+    help: "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
   )
   String? get keyPath => decodeOptional("ssl-key-path");
 
   @Option(
     "ssl-certificate-path",
-    help:
-        "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+    help: "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
   )
   String? get certificatePath => decodeOptional("ssl-certificate-path");
 
@@ -230,9 +228,8 @@ class CLIServer extends CLICommand with CLIProject {
       [],
       localMessagePort.sendPort,
       onError: localErrorPort.sendPort,
-      packageConfig: fileInProjectDirectory(
-        ".dart_tool/package_config.json",
-      ).uri,
+      packageConfig: fileInProjectDirectory(".dart_tool/package_config.json")
+          .uri,
       paused: true,
     );
 
@@ -289,8 +286,7 @@ class CLIServer extends CLICommand with CLIProject {
         // Wait briefly for the child to acknowledge the stop, then close the
         // per-child receive ports so they don't leak across restarts.
         try {
-          await stoppedCompleter.future
-              .timeout(const Duration(seconds: 5));
+          await stoppedCompleter.future.timeout(const Duration(seconds: 5));
         } catch (_) {
           // Best-effort: even if the isolate didn't acknowledge, drop ports.
         }

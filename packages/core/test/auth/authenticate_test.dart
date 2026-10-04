@@ -15,11 +15,13 @@ void main() {
 
   test("isTokenExpired works correctly", () {
     final oldToken = AuthToken()
-      ..expirationDate =
-          DateTime.now().toUtc().subtract(const Duration(seconds: 1));
+      ..expirationDate = DateTime.now().toUtc().subtract(
+        const Duration(seconds: 1),
+      );
     final futureToken = AuthToken()
-      ..expirationDate =
-          DateTime.now().toUtc().add(const Duration(seconds: 10));
+      ..expirationDate = DateTime.now().toUtc().add(
+        const Duration(seconds: 10),
+      );
 
     expect(oldToken.isExpired, true);
     expect(futureToken.isExpired, false);
@@ -27,11 +29,13 @@ void main() {
 
   test("isAuthCodeExpired works correctly", () {
     final oldCode = AuthCode()
-      ..expirationDate =
-          DateTime.now().toUtc().subtract(const Duration(seconds: 1));
+      ..expirationDate = DateTime.now().toUtc().subtract(
+        const Duration(seconds: 1),
+      );
     final futureCode = AuthCode()
-      ..expirationDate =
-          DateTime.now().toUtc().add(const Duration(seconds: 10));
+      ..expirationDate = DateTime.now().toUtc().add(
+        const Duration(seconds: 10),
+      );
 
     expect(oldCode.isExpired, true);
     expect(futureCode.isExpired, false);
@@ -73,9 +77,7 @@ void main() {
       createdUser = delegate.users[1];
     });
 
-    test(
-        "Can create token with all information + refresh token if client is confidential",
-        () async {
+    test("Can create token with all information + refresh token if client is confidential", () async {
       final token = await auth.authenticate(
         createdUser!.username,
         InMemoryAuthStorage.defaultPassword,
@@ -107,9 +109,7 @@ void main() {
       );
     });
 
-    test(
-        "Can create token with all information minus refresh token if client is public",
-        () async {
+    test("Can create token with all information minus refresh token if client is public", () async {
       var token = await auth.authenticate(
         createdUser!.username,
         InMemoryAuthStorage.defaultPassword,
@@ -204,44 +204,47 @@ void main() {
     });
 
     test(
-        "Create token fails if client ID is confidential and secret is omitted",
-        () async {
-      try {
-        await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.app1",
-          null,
-        );
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
+      "Create token fails if client ID is confidential and secret is omitted",
+      () async {
+        try {
+          await auth.authenticate(
+            createdUser!.username,
+            InMemoryAuthStorage.defaultPassword,
+            "com.stablekernel.app1",
+            null,
+          );
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
 
-      try {
-        await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.app1",
-          "",
-        );
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
-    });
+        try {
+          await auth.authenticate(
+            createdUser!.username,
+            InMemoryAuthStorage.defaultPassword,
+            "com.stablekernel.app1",
+            "",
+          );
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
+      },
+    );
 
-    test("Create token fails if client secret provided for public client",
-        () async {
-      try {
-        await auth.authenticate(
-          createdUser!.username,
-          InMemoryAuthStorage.defaultPassword,
-          "com.stablekernel.public",
-          "nonsense",
-        );
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
-    });
+    test(
+      "Create token fails if client secret provided for public client",
+      () async {
+        try {
+          await auth.authenticate(
+            createdUser!.username,
+            InMemoryAuthStorage.defaultPassword,
+            "com.stablekernel.public",
+            "nonsense",
+          );
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
+      },
+    );
 
     test("Can create token that is verifiable", () async {
       final token = await auth.authenticate(
@@ -294,9 +297,7 @@ void main() {
       }
     });
 
-    test(
-        "Don't grant requested scope if it exceeds allowed scope of ResourceOwner",
-        () async {
+    test("Don't grant requested scope if it exceeds allowed scope of ResourceOwner", () async {
       delegate.allowedScopes = [AuthScope("user.self")];
       try {
         await auth.authenticate(
@@ -358,9 +359,7 @@ void main() {
       );
     });
 
-    test(
-        "Can refresh token with all information + refresh token if token had refresh token",
-        () async {
+    test("Can refresh token with all information + refresh token if token had refresh token", () async {
       final token = await auth.refresh(
         initialToken.refreshToken,
         "com.stablekernel.app1",
@@ -440,18 +439,20 @@ void main() {
       } on AuthServerException {}
     });
 
-    test("Cannot refresh token if client id does not match issuing client",
-        () async {
-      try {
-        await auth.refresh(
-          initialToken.refreshToken,
-          "com.stablekernel.app2",
-          "fuji",
-        );
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
-    });
+    test(
+      "Cannot refresh token if client id does not match issuing client",
+      () async {
+        try {
+          await auth.refresh(
+            initialToken.refreshToken,
+            "com.stablekernel.app2",
+            "fuji",
+          );
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
+      },
+    );
 
     test("Cannot refresh token if client secret is missing", () async {
       try {
@@ -673,33 +674,37 @@ void main() {
       } on AuthServerException {}
     });
 
-    test("Code that has been exchanged already fails, issued token is revoked",
-        () async {
-      final issuedToken = await auth.exchange(
-        code.code,
-        "com.stablekernel.redirect",
-        "mckinley",
-      );
-
-      try {
-        await auth.exchange(code.code, "com.stablekernel.redirect", "mckinley");
-
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
-
-      // Can no longer use issued token
-      try {
-        await auth.verify(issuedToken.accessToken);
-        fail("unreachable");
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidGrant);
-      }
-    });
-
     test(
-        "Code that has been exchanged already fails, issued and refreshed token is revoked",
-        () async {
+      "Code that has been exchanged already fails, issued token is revoked",
+      () async {
+        final issuedToken = await auth.exchange(
+          code.code,
+          "com.stablekernel.redirect",
+          "mckinley",
+        );
+
+        try {
+          await auth.exchange(
+            code.code,
+            "com.stablekernel.redirect",
+            "mckinley",
+          );
+
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
+
+        // Can no longer use issued token
+        try {
+          await auth.verify(issuedToken.accessToken);
+          fail("unreachable");
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidGrant);
+        }
+      },
+    );
+
+    test("Code that has been exchanged already fails, issued and refreshed token is revoked", () async {
       final issuedToken = await auth.exchange(
         code.code,
         "com.stablekernel.redirect",
@@ -752,19 +757,21 @@ void main() {
       } on AuthServerException {}
     });
 
-    test("Different client ID than the one that generated code fials",
-        () async {
-      try {
-        await auth.exchange(
-          code.code,
-          "com.stablekernel.redirect2",
-          "gibraltar",
-        );
+    test(
+      "Different client ID than the one that generated code fials",
+      () async {
+        try {
+          await auth.exchange(
+            code.code,
+            "com.stablekernel.redirect2",
+            "gibraltar",
+          );
 
-        expect(true, false);
-        // ignore: empty_catches
-      } on AuthServerException {}
-    });
+          expect(true, false);
+          // ignore: empty_catches
+        } on AuthServerException {}
+      },
+    );
 
     test("No client secret fails", () async {
       try {

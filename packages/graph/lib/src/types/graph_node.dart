@@ -33,12 +33,9 @@ import 'graph_label.dart';
 /// concrete node type through builder calls, the same way
 /// `ManagedObject<T>` flows through `Query<T>`.
 abstract class GraphNode<T extends GraphNode<T>> {
-  GraphNode({
-    required List<GraphLabel> labels,
-    GraphBacking? backing,
-    this.id,
-  })  : labels = List.unmodifiable(labels),
-        backing = backing ?? GraphMapBacking() {
+  GraphNode({required List<GraphLabel> labels, GraphBacking? backing, this.id})
+    : labels = List.unmodifiable(labels),
+      backing = backing ?? GraphMapBacking() {
     if (labels.isEmpty) {
       throw ArgumentError.value(
         labels,
@@ -73,8 +70,7 @@ abstract class GraphNode<T extends GraphNode<T>> {
   Object? removeProperty(String name) => backing.removeProperty(name);
 
   /// A read-only view of all properties.
-  Map<String, Object?> get properties =>
-      Map.unmodifiable(backing.contents);
+  Map<String, Object?> get properties => Map.unmodifiable(backing.contents);
 
   /// Replaces all properties with [values]. Existing keys not present
   /// in [values] are removed.
@@ -89,10 +85,10 @@ abstract class GraphNode<T extends GraphNode<T>> {
   /// Snapshot of this node as a plain map: `{ id, labels, properties
   /// }`. Convenience for serialization / debugging.
   Map<String, Object?> asMap() => <String, Object?>{
-        if (id != null) 'id': id,
-        'labels': labels.map((l) => l.name).toList(growable: false),
-        'properties': Map<String, Object?>.from(backing.contents),
-      };
+    if (id != null) 'id': id,
+    'labels': labels.map((l) => l.name).toList(growable: false),
+    'properties': Map<String, Object?>.from(backing.contents),
+  };
 
   @override
   String toString() {

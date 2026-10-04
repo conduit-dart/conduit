@@ -44,7 +44,10 @@ abstract class SqlDialect {
   ///
   /// Returning `null` signals "not a supported type for this dialect" —
   /// callers handle by raising a clear schema error.
-  String? columnDefinitionType(String typeString, {required bool autoincrement});
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  });
 
   // -- Value encoding ---------------------------------------------------------
 
@@ -168,9 +171,6 @@ abstract class SqlDialect {
   /// backslash, which is the Postgres / SQLite / MySQL convention when
   /// the default ESCAPE character is in effect.
   String escapeLikePattern(String input) {
-    return input.replaceAllMapped(
-      RegExp(r'(\\|%|_)'),
-      (m) => '\\${m[0]}',
-    );
+    return input.replaceAllMapped(RegExp(r'(\\|%|_)'), (m) => '\\${m[0]}');
   }
 }

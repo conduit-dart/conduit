@@ -24,7 +24,7 @@ void main() {
       Top,
       Middle,
       Bottom,
-      OverrideField
+      OverrideField,
     ]);
     context = ManagedContext(dm, ps);
   });
@@ -138,7 +138,7 @@ void main() {
 
     final postMap = [
       {"text": "hey", "id": 1},
-      {"text": "ho", "id": 2}
+      {"text": "ho", "id": 2},
     ];
 
     final user = User();
@@ -199,15 +199,9 @@ void main() {
     }
   });
 
-  test(
-      "Handles input of type num for double precision float properties of the model",
-      () {
+  test("Handles input of type num for double precision float properties of the model", () {
     final m = TransientTypeTest()
-      ..readFromMap(
-        washMap({
-          "transientDouble": 30,
-        }),
-      );
+      ..readFromMap(washMap({"transientDouble": 30}));
 
     expect(m.transientDouble, 30.0);
   });
@@ -216,7 +210,7 @@ void main() {
     final postMap = {
       "text": "hey",
       "id": 1,
-      "owner": {"name": "Alex", "id": 18}
+      "owner": {"name": "Alex", "id": 18},
     };
 
     final post = Post()..readFromMap(washMap(postMap));
@@ -253,8 +247,7 @@ void main() {
     final u = User();
     u.name = "Bob";
     u.dateCreated = null;
-    u.name =
-        null; // I previously set this to a value on purpose and then reset it to null
+    u.name = null; // I previously set this to a value on purpose and then reset it to null
 
     expect(u.name, isNull);
     expect(u.dateCreated, isNull);
@@ -361,10 +354,11 @@ void main() {
   });
 
   test("mappableOutput properties that are null are not emitted in asMap", () {
-    final m = (TransientTest()
-          ..id = 1
-          ..text = null)
-        .asMap();
+    final m =
+        (TransientTest()
+              ..id = 1
+              ..text = null)
+            .asMap();
 
     expect(m.length, 3);
     expect(m["id"], 1);
@@ -373,11 +367,12 @@ void main() {
   });
 
   test("Properties that aren't mappableOutput are not emitted in asMap", () {
-    final m = (TransientTest()
-          ..id = 1
-          ..text = "foo"
-          ..inputInt = 2)
-        .asMap();
+    final m =
+        (TransientTest()
+              ..id = 1
+              ..text = "foo"
+              ..inputInt = 2)
+            .asMap();
 
     expect(m.length, 6);
     expect(m["id"], 1);
@@ -389,11 +384,12 @@ void main() {
   });
 
   test("Can remove single property from backing map", () {
-    final u = (User()
-      ..id = 1
-      ..name = "Bob"
-      ..dateCreated = DateTime(2018, 1, 30))
-      ..removePropertyFromBackingMap("name");
+    final u =
+        (User()
+            ..id = 1
+            ..name = "Bob"
+            ..dateCreated = DateTime(2018, 1, 30))
+          ..removePropertyFromBackingMap("name");
 
     final m = u.asMap();
 
@@ -402,27 +398,31 @@ void main() {
     expect(m.containsKey("dateCreated"), true);
   });
 
-  test("Removing single non-existent property from backing map has no effect",
-      () {
-    final u = (User()
-      ..id = 1
-      ..name = "Bob"
-      ..dateCreated = DateTime(2018, 1, 30))
-      ..removePropertyFromBackingMap("dummy");
+  test(
+    "Removing single non-existent property from backing map has no effect",
+    () {
+      final u =
+          (User()
+              ..id = 1
+              ..name = "Bob"
+              ..dateCreated = DateTime(2018, 1, 30))
+            ..removePropertyFromBackingMap("dummy");
 
-    final m = u.asMap();
+      final m = u.asMap();
 
-    expect(m.containsKey("id"), true);
-    expect(m.containsKey("name"), true);
-    expect(m.containsKey("dateCreated"), true);
-  });
+      expect(m.containsKey("id"), true);
+      expect(m.containsKey("name"), true);
+      expect(m.containsKey("dateCreated"), true);
+    },
+  );
 
   test("Can remove multiple properties from backing map", () {
-    final u = (User()
-      ..id = 1
-      ..name = "Bob"
-      ..dateCreated = DateTime(2018, 1, 30))
-      ..removePropertiesFromBackingMap(["name", "dateCreated"]);
+    final u =
+        (User()
+            ..id = 1
+            ..name = "Bob"
+            ..dateCreated = DateTime(2018, 1, 30))
+          ..removePropertiesFromBackingMap(["name", "dateCreated"]);
 
     final m = u.asMap();
 
@@ -431,52 +431,57 @@ void main() {
     expect(m.containsKey("dateCreated"), false);
   });
 
-  test("Can remove single property from backing map with multi-property method",
-      () {
-    final u = (User()
-      ..id = 1
-      ..name = "Bob"
-      ..dateCreated = DateTime(2018, 1, 30))
-      ..removePropertiesFromBackingMap(["name"]);
+  test(
+    "Can remove single property from backing map with multi-property method",
+    () {
+      final u =
+          (User()
+              ..id = 1
+              ..name = "Bob"
+              ..dateCreated = DateTime(2018, 1, 30))
+            ..removePropertiesFromBackingMap(["name"]);
 
-    final m = u.asMap();
+      final m = u.asMap();
 
-    expect(m.containsKey("id"), true);
-    expect(m.containsKey("name"), false);
-    expect(m.containsKey("dateCreated"), true);
-  });
+      expect(m.containsKey("id"), true);
+      expect(m.containsKey("name"), false);
+      expect(m.containsKey("dateCreated"), true);
+    },
+  );
 
   test(
-      "Removing multiple non-existent properties from backing map has no effect",
-      () {
-    final u = (User()
-      ..id = 1
-      ..name = "Bob"
-      ..dateCreated = DateTime(2018, 1, 30))
-      ..removePropertiesFromBackingMap(["dummy1", "dummy2"]);
+    "Removing multiple non-existent properties from backing map has no effect",
+    () {
+      final u =
+          (User()
+              ..id = 1
+              ..name = "Bob"
+              ..dateCreated = DateTime(2018, 1, 30))
+            ..removePropertiesFromBackingMap(["dummy1", "dummy2"]);
 
-    final m = u.asMap();
+      final m = u.asMap();
 
-    expect(m.containsKey("id"), true);
-    expect(m.containsKey("name"), true);
-    expect(m.containsKey("dateCreated"), true);
-  });
+      expect(m.containsKey("id"), true);
+      expect(m.containsKey("name"), true);
+      expect(m.containsKey("dateCreated"), true);
+    },
+  );
 
   test(
     "DeepMap Transient Properties of all types can be read and returned",
     () {
-      final m = (TransientTypeTest()
-            ..readFromMap(
-              washMap({
-                "deepMap": {
-                  "ok": {"ik1": 1, "ik2": 2}
-                }
-              }),
-            ))
-          .asMap();
+      final m =
+          (TransientTypeTest()..readFromMap(
+                washMap({
+                  "deepMap": {
+                    "ok": {"ik1": 1, "ik2": 2},
+                  },
+                }),
+              ))
+              .asMap();
 
       expect(m["deepMap"], {
-        "ok": {"ik1": 1, "ik2": 2}
+        "ok": {"ik1": 1, "ik2": 2},
       });
     },
     skip: "NYI in AOT",
@@ -484,26 +489,26 @@ void main() {
 
   test("Transient Properties of all types can be read and returned", () {
     const dateString = "2016-10-31T15:40:45+00:00";
-    final m = (TransientTypeTest()
-          ..readFromMap(
-            washMap({
-              "transientInt": 5,
-              "transientBigInt": 123456789,
-              "transientString": "lowercase string",
-              "transientDate": dateString,
-              "transientBool": true,
-              "transientDouble": 30.5,
-              "transientMap": {"key": "value", "anotherKey": "anotherValue"},
-              "transientList": [1, 2, 3, 4, 5],
-              "defaultList": [1, "foo"],
-              "defaultMap": {"key": "value"},
-              "deepList": [
-                {"str": "val"},
-                {"other": "otherval"}
-              ]
-            }),
-          ))
-        .asMap();
+    final m =
+        (TransientTypeTest()..readFromMap(
+              washMap({
+                "transientInt": 5,
+                "transientBigInt": 123456789,
+                "transientString": "lowercase string",
+                "transientDate": dateString,
+                "transientBool": true,
+                "transientDouble": 30.5,
+                "transientMap": {"key": "value", "anotherKey": "anotherValue"},
+                "transientList": [1, 2, 3, 4, 5],
+                "defaultList": [1, "foo"],
+                "defaultMap": {"key": "value"},
+                "deepList": [
+                  {"str": "val"},
+                  {"other": "otherval"},
+                ],
+              }),
+            ))
+            .asMap();
 
     expect(m["transientInt"], 5);
     expect(m["transientBigInt"], 123456789);
@@ -519,7 +524,7 @@ void main() {
     expect(m["defaultList"], [1, "foo"]);
     expect(m["deepList"], [
       {"str": "val"},
-      {"other": "otherval"}
+      {"other": "otherval"},
     ]);
 
     final tm = m["transientMap"];
@@ -528,9 +533,7 @@ void main() {
     expect(tm["anotherKey"], "anotherValue");
   });
 
-  test(
-      "If primitive type cannot be parsed into correct type, it fails with validation exception",
-      () {
+  test("If primitive type cannot be parsed into correct type, it fails with validation exception", () {
     try {
       TransientTypeTest().readFromMap({"transientInt": "a string"});
       fail('unreachable');
@@ -538,12 +541,10 @@ void main() {
     } on ValidationException {}
   });
 
-  test(
-      "If map type cannot be parsed into exact type, it fails with validation exception",
-      () {
+  test("If map type cannot be parsed into exact type, it fails with validation exception", () {
     try {
       TransientTypeTest().readFromMap({
-        "deepMap": wash({"str": 1})
+        "deepMap": wash({"str": 1}),
       });
       fail('unreachable');
       // ignore: empty_catches
@@ -552,8 +553,8 @@ void main() {
     try {
       TransientTypeTest().readFromMap({
         "deepMap": wash({
-          "key": {"str": "val", "int": 2}
-        })
+          "key": {"str": "val", "int": 2},
+        }),
       });
       fail('unreachable');
       // ignore: empty_catches
@@ -566,12 +567,10 @@ void main() {
     } on ValidationException {}
   });
 
-  test(
-      "If complex type cannot be parsed into exact type, it fails with validation exception",
-      () {
+  test("If complex type cannot be parsed into exact type, it fails with validation exception", () {
     try {
       TransientTypeTest().readFromMap({
-        "deepList": wash(["string"])
+        "deepList": wash(["string"]),
       });
       fail('unreachable');
       // ignore: empty_catches
@@ -581,8 +580,8 @@ void main() {
       TransientTypeTest().readFromMap({
         "deepList": wash([
           {"str": "val"},
-          "string"
-        ])
+          "string",
+        ]),
       });
       fail('unreachable');
       // ignore: empty_catches
@@ -596,8 +595,8 @@ void main() {
         "name": "Bob",
         "id": 1,
         "posts": [
-          {"text": "Hi", "id": 1}
-        ]
+          {"text": "Hi", "id": 1},
+        ],
       }),
     );
     expect(u.posts!.length, 1);
@@ -605,9 +604,7 @@ void main() {
     expect(u.posts![0].text, "Hi");
   });
 
-  test(
-      "Reading/writing instance property that isn't marked as transient shows up nowhere",
-      () {
+  test("Reading/writing instance property that isn't marked as transient shows up nowhere", () {
     final t = TransientTest();
     try {
       t.readFromMap(washMap({"notAnAttribute": true}));
@@ -620,16 +617,17 @@ void main() {
   });
 
   test(
-      "Omit transient properties in asMap when object is a foreign key reference",
-      () {
-    final b = TransientBelongsTo()
-      ..id = 1
-      ..owner = (TransientOwner()..id = 1);
-    expect(b.asMap(), {
-      "id": 1,
-      "owner": {"id": 1}
-    });
-  });
+    "Omit transient properties in asMap when object is a foreign key reference",
+    () {
+      final b = TransientBelongsTo()
+        ..id = 1
+        ..owner = (TransientOwner()..id = 1);
+      expect(b.asMap(), {
+        "id": 1,
+        "owner": {"id": 1},
+      });
+    },
+  );
 
   test("readFromMap correctly invoked for relationships of relationships", () {
     final t = Top()
@@ -642,10 +640,10 @@ void main() {
               "bottom": {"id": 3},
               "bottoms": [
                 {"id": 4},
-                {"id": 5}
-              ]
-            }
-          ]
+                {"id": 5},
+              ],
+            },
+          ],
         }),
       );
 
@@ -673,9 +671,7 @@ void main() {
       expect(e.asMap()["enumValues"], "other18");
     });
 
-    test(
-        "Cannot assign value via backingMap or readMap that isn't a valid enum case",
-        () {
+    test("Cannot assign value via backingMap or readMap that isn't a valid enum case", () {
       final e = EnumObject();
       try {
         e.readFromMap(washMap({"enumValues": "foobar"}));
@@ -737,7 +733,7 @@ void main() {
       final o = DocumentTest();
       o.readFromMap(
         washMap({
-          "document": {"key": "value"}
+          "document": {"key": "value"},
         }),
       );
 
@@ -750,21 +746,21 @@ void main() {
         washMap({
           "document": [
             {"key": "value"},
-            1
-          ]
+            1,
+          ],
         }),
       );
 
       expect(o.document.data, [
         {"key": "value"},
-        1
+        1,
       ]);
     });
 
     test("Can emit object into map from object document data type", () {
       final o = DocumentTest()..document = Document({"key": "value"});
       expect(o.asMap(), {
-        "document": {"key": "value"}
+        "document": {"key": "value"},
       });
     });
 
@@ -772,13 +768,13 @@ void main() {
       final o = DocumentTest()
         ..document = Document([
           {"key": "value"},
-          1
+          1,
         ]);
       expect(o.asMap(), {
         "document": [
           {"key": "value"},
-          1
-        ]
+          1,
+        ],
       });
     });
   });
@@ -786,8 +782,9 @@ void main() {
   test("Can have constructor with only optional args", () {
     final dm = ManagedDataModel([DefaultConstructorHasOptionalArgs]);
     final _ = ManagedContext(dm, DefaultPersistentStore());
-    final instance =
-        dm.entityForType(DefaultConstructorHasOptionalArgs).instanceOf();
+    final instance = dm
+        .entityForType(DefaultConstructorHasOptionalArgs)
+        .instanceOf();
     expect(instance is DefaultConstructorHasOptionalArgs, true);
   });
 }

@@ -37,7 +37,7 @@ import 'dart:typed_data';
 /// relationships, paths and temporal types arrive as Structures too.
 class BoltStructure {
   BoltStructure(this.tag, List<Object?> fields)
-      : fields = List.unmodifiable(fields);
+    : fields = List.unmodifiable(fields);
 
   final int tag;
   final List<Object?> fields;
@@ -225,8 +225,10 @@ class PackStreamEncoder {
       );
     }
     if (s.tag < 0 || s.tag > 0x7F) {
-      throw ArgumentError('Structure tag must be in 0..0x7F, got 0x'
-          '${s.tag.toRadixString(16)}');
+      throw ArgumentError(
+        'Structure tag must be in 0..0x7F, got 0x'
+        '${s.tag.toRadixString(16)}',
+      );
     }
     _out.addByte(s.tag);
     for (final f in s.fields) {

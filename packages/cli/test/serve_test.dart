@@ -11,18 +11,18 @@ import 'package:yaml/yaml.dart' as yaml;
 import 'not_tests/cli_helpers.dart';
 
 File get certificateFile => File.fromUri(
-      Directory.current.uri
-          .resolve("../../")
-          .resolve("ci/")
-          .resolve("conduit.cert.pem"),
-    );
+  Directory.current.uri
+      .resolve("../../")
+      .resolve("ci/")
+      .resolve("conduit.cert.pem"),
+);
 
 File get keyFile => File.fromUri(
-      Directory.current.uri
-          .resolve("../../")
-          .resolve("ci/")
-          .resolve("conduit.key.pem"),
-    );
+  Directory.current.uri
+      .resolve("../../")
+      .resolve("ci/")
+      .resolve("conduit.key.pem"),
+);
 
 void main() {
   late CLIClient templateCli;
@@ -60,10 +60,12 @@ void main() {
     expect(projectUnderTestCli.output, contains("CLI Version: $thisVersion"));
 
     final coreVersion = Version.parse(
-        ((thisPubspec["dependencies"] as yaml.YamlMap)
-                .entries
-                .firstWhere((p) => p.key == "conduit_core").value as String)
-            .replaceAll('^', ''));
+      ((thisPubspec["dependencies"] as yaml.YamlMap).entries
+                  .firstWhere((p) => p.key == "conduit_core")
+                  .value
+              as String)
+          .replaceAll('^', ''),
+    );
     expect(
       projectUnderTestCli.output,
       contains("Conduit project version: $coreVersion"),
@@ -134,7 +136,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       "--ssl-certificate-path",
       "server.crt",
       "-n",
-      "1"
+      "1",
     ]);
     await task.hasStarted;
 
@@ -166,14 +168,22 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
           .toFilePath(windows: Platform.isWindows),
     );
 
-    task = projectUnderTestCli
-        .start("serve", ["--ssl-key-path", "server.key", "-n", "1"]);
+    task = projectUnderTestCli.start("serve", [
+      "--ssl-key-path",
+      "server.key",
+      "-n",
+      "1",
+    ]);
 
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
 
-    task = projectUnderTestCli
-        .start("serve", ["--ssl-certificate-path", "server.crt", "-n", "1"]);
+    task = projectUnderTestCli.start("serve", [
+      "--ssl-certificate-path",
+      "server.crt",
+      "-n",
+      "1",
+    ]);
 
     task.hasStarted.catchError((e) => e);
     expect(await task.exitCode, isNot(0));
@@ -197,7 +207,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       "--ssl-certificate-path",
       "server.crt",
       "-n",
-      "1"
+      "1",
     ]);
 
     task.hasStarted.catchError((e) => e);
@@ -217,7 +227,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       "--ssl-certificate-path",
       "server.crt",
       "-n",
-      "1"
+      "1",
     ]);
 
     task.hasStarted.catchError((e) => e);
@@ -250,8 +260,12 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
       return "import 'dart:io';\n$newContents";
     });
 
-    task = projectUnderTestCli
-        .start("serve", ["--config-path", "foobar.yaml", "-n", "1"]);
+    task = projectUnderTestCli.start("serve", [
+      "--config-path",
+      "foobar.yaml",
+      "-n",
+      "1",
+    ]);
     await task.hasStarted;
 
     final result = await http.get(Uri.parse("http://localhost:8888/example"));
@@ -274,7 +288,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
           .resolve("foobar.yaml")
           .toFilePath(windows: Platform.isWindows),
       "-n",
-      "1"
+      "1",
     ]);
     await task.hasStarted;
 
@@ -287,8 +301,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     await task.hasStarted;
 
     // The first request must succeed before we touch any source.
-    final initial =
-        await http.get(Uri.parse("http://localhost:8888/example"));
+    final initial = await http.get(Uri.parse("http://localhost:8888/example"));
     expect(initial.statusCode, 200);
 
     // Watch the running CLI's output buffer for the restart marker. Polling
@@ -297,12 +310,12 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     final restartLogged = Completer<void>();
     final outputWatcher = Stream.periodic(const Duration(milliseconds: 100))
         .listen((_) {
-      if (projectUnderTestCli.output.contains("Restart complete")) {
-        if (!restartLogged.isCompleted) {
-          restartLogged.complete();
-        }
-      }
-    });
+          if (projectUnderTestCli.output.contains("Restart complete")) {
+            if (!restartLogged.isCompleted) {
+              restartLogged.complete();
+            }
+          }
+        });
 
     // Touch the channel to trigger the watcher. The exact contents don't
     // matter — any .dart change under lib/ qualifies.
@@ -311,8 +324,7 @@ static Future initializeApplication(ApplicationOptions x) async { throw Exceptio
     });
 
     try {
-      await restartLogged.future
-          .timeout(const Duration(seconds: 30));
+      await restartLogged.future.timeout(const Duration(seconds: 30));
     } finally {
       await outputWatcher.cancel();
     }

@@ -6,7 +6,7 @@ description: Minimal Conduit app used as the k6 load-testing target.
 publish_to: none
 
 environment:
-  sdk: ">=3.12.0 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
 resolution: workspace
 
 dependencies:

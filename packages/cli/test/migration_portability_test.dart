@@ -44,8 +44,11 @@ void main() {
       'NOT NULL',
     ];
     for (final tok in dialectTokens) {
-      expect(source.toUpperCase(), isNot(contains(tok.toUpperCase())),
-          reason: 'unexpected dialect token "$tok" in generated migration');
+      expect(
+        source.toUpperCase(),
+        isNot(contains(tok.toUpperCase())),
+        reason: 'unexpected dialect token "$tok" in generated migration',
+      );
     }
 
     // Sanity: the generated migration is actually invoking the

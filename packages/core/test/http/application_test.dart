@@ -14,17 +14,18 @@ void main() {
     });
 
     test(
-        "didFinishLaunching is false before launch, true after, false after stop",
-        () async {
-      app = Application<TestChannel>();
-      expect(app.isRunning, false);
+      "didFinishLaunching is false before launch, true after, false after stop",
+      () async {
+        app = Application<TestChannel>();
+        expect(app.isRunning, false);
 
-      await app.startOnCurrentIsolate();
-      expect(app.isRunning, true);
+        await app.startOnCurrentIsolate();
+        expect(app.isRunning, true);
 
-      await app.stop();
-      expect(app.isRunning, false);
-    });
+        await app.stop();
+        expect(app.isRunning, false);
+      },
+    );
   });
 
   group("Application lifecycle", () {
@@ -83,22 +84,22 @@ void main() {
     });
 
     test(
-        "Application runs app startup function once, regardless of isolate count",
-        () async {
-      var sum = 0;
-      for (var i = 0; i < 10; i++) {
-        final result =
-            await http.get(Uri.parse("http://localhost:8888/startup"));
-        sum += int.parse(json.decode(result.body) as String);
-      }
-      expect(sum, 10);
-    });
+      "Application runs app startup function once, regardless of isolate count",
+      () async {
+        var sum = 0;
+        for (var i = 0; i < 10; i++) {
+          final result = await http.get(
+            Uri.parse("http://localhost:8888/startup"),
+          );
+          sum += int.parse(json.decode(result.body) as String);
+        }
+        expect(sum, 10);
+      },
+    );
   });
 
   group("Failure", () {
-    test(
-        "Application (on main thread) start fails and logs appropriate message if request stream doesn't open",
-        () async {
+    test("Application (on main thread) start fails and logs appropriate message if request stream doesn't open", () async {
       final crashingApp = Application<CrashingTestChannel>();
 
       try {

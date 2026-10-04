@@ -73,9 +73,7 @@ void main() {
       expect(t2.length, 0);
     });
 
-    test(
-        "Cannot create query on context whose data model doesn't contain query type",
-        () async {
+    test("Cannot create query on context whose data model doesn't contain query type", () async {
       try {
         Query<T>(ctx2);
         fail('unreachable');
@@ -113,8 +111,10 @@ class U extends ManagedObject<_U> implements _U {}
 Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
   final persistentStore = PostgresTestConfig().persistentStore();
 
-  final commands =
-      PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
+  final commands = PostgresTestConfig().commandsFromDataModel(
+    dataModel,
+    temporary: true,
+  );
   final context = ManagedContext(dataModel, persistentStore);
 
   for (final cmd in commands) {

@@ -59,10 +59,7 @@ class LoadChannel extends ApplicationChannel {
       maxConnectionCount: _envInt("POOL_SIZE", 1),
     );
 
-    context = ManagedContext(
-      ManagedDataModel.fromCurrentMirrorSystem(),
-      store,
-    );
+    context = ManagedContext(ManagedDataModel.fromCurrentMirrorSystem(), store);
 
     // Idempotent so every isolate can run it. Unquoted identifiers match
     // what the ORM emits for the _Item table definition.

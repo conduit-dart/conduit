@@ -81,8 +81,9 @@ class RouteNode {
   RouteNode(List<RouteSpecification?> specs, {int depth = 0, RegExp? matcher}) {
     patternMatcher = matcher;
 
-    final terminatedAtThisDepth =
-        specs.where((spec) => spec?.segments.length == depth).toList();
+    final terminatedAtThisDepth = specs
+        .where((spec) => spec?.segments.length == depth)
+        .toList();
     if (terminatedAtThisDepth.length > 1) {
       throw ArgumentError(
         "Router compilation failed. Cannot disambiguate from the following routes: $terminatedAtThisDepth.",
@@ -105,10 +106,13 @@ class RouteNode {
       final childrenBeginningWithThisSegment = remainingSpecifications
           .where((spec) => spec?.segments[depth].literal == childSegment)
           .toList();
-      equalityChildren[childSegment] =
-          RouteNode(childrenBeginningWithThisSegment, depth: depth + 1);
-      remainingSpecifications
-          .removeWhere(childrenBeginningWithThisSegment.contains);
+      equalityChildren[childSegment] = RouteNode(
+        childrenBeginningWithThisSegment,
+        depth: depth + 1,
+      );
+      remainingSpecifications.removeWhere(
+        childrenBeginningWithThisSegment.contains,
+      );
     }
 
     final takeAllSegment = remainingSpecifications.firstWhere(
@@ -123,8 +127,9 @@ class RouteNode {
     }
 
     final Set<String?> childPatternedSegments = Set.from(
-      remainingSpecifications
-          .map((spec) => spec?.segments[depth].matcher?.pattern),
+      remainingSpecifications.map(
+        (spec) => spec?.segments[depth].matcher?.pattern,
+      ),
     );
 
     patternedChildren = childPatternedSegments.map((pattern) {
@@ -132,10 +137,12 @@ class RouteNode {
           .where((spec) => spec?.segments[depth].matcher?.pattern == pattern)
           .toList();
 
-      if (childrenWithThisPattern
-              .any((spec) => spec?.segments[depth].matcher == null) &&
-          childrenWithThisPattern
-              .any((spec) => spec?.segments[depth].matcher != null)) {
+      if (childrenWithThisPattern.any(
+            (spec) => spec?.segments[depth].matcher == null,
+          ) &&
+          childrenWithThisPattern.any(
+            (spec) => spec?.segments[depth].matcher != null,
+          )) {
         throw ArgumentError(
           "Router compilation failed. Cannot disambiguate from the following routes, as one of them will match anything: $childrenWithThisPattern.",
         );
@@ -176,8 +183,10 @@ class RouteNode {
     final nextSegment = requestSegments.current;
 
     if (equalityChildren.containsKey(nextSegment)) {
-      return equalityChildren[nextSegment]!
-          .nodeForPathSegments(requestSegments, path);
+      return equalityChildren[nextSegment]!.nodeForPathSegments(
+        requestSegments,
+        path,
+      );
     }
 
     for (final node in patternedChildren) {

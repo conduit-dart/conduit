@@ -77,8 +77,9 @@ void main() {
       );
 
       await ws.start();
-      final restarted =
-          ws.events.firstWhere((e) => e.kind == WatchedServerEventKind.restarted);
+      final restarted = ws.events.firstWhere(
+        (e) => e.kind == WatchedServerEventKind.restarted,
+      );
 
       ws.simulateChange(p.join(tmp.path, 'lib', 'app.dart'));
 
@@ -92,33 +93,35 @@ void main() {
     });
 
     test(
-        'multiple changes within the debounce window collapse into one restart',
-        () async {
-      final f = fakeStarter();
-      final ws = WatchedServer(
-        starter: f.starter,
-        projectDirectory: tmp,
-        watchPaths: const ['lib'],
-        debounce: const Duration(milliseconds: 80),
-        watcherFactory: (_) => _NoopWatcher(),
-      );
+      'multiple changes within the debounce window collapse into one restart',
+      () async {
+        final f = fakeStarter();
+        final ws = WatchedServer(
+          starter: f.starter,
+          projectDirectory: tmp,
+          watchPaths: const ['lib'],
+          debounce: const Duration(milliseconds: 80),
+          watcherFactory: (_) => _NoopWatcher(),
+        );
 
-      await ws.start();
-      final restarted =
-          ws.events.firstWhere((e) => e.kind == WatchedServerEventKind.restarted);
+        await ws.start();
+        final restarted = ws.events.firstWhere(
+          (e) => e.kind == WatchedServerEventKind.restarted,
+        );
 
-      // Simulate an IDE multi-file save burst.
-      ws.simulateChange(p.join(tmp.path, 'lib', 'a.dart'));
-      ws.simulateChange(p.join(tmp.path, 'lib', 'b.dart'));
-      ws.simulateChange(p.join(tmp.path, 'lib', 'c.dart'));
+        // Simulate an IDE multi-file save burst.
+        ws.simulateChange(p.join(tmp.path, 'lib', 'a.dart'));
+        ws.simulateChange(p.join(tmp.path, 'lib', 'b.dart'));
+        ws.simulateChange(p.join(tmp.path, 'lib', 'c.dart'));
 
-      final ev = await restarted.timeout(const Duration(seconds: 2));
-      expect(ev.changedPaths, hasLength(3));
-      expect(ws.restartCount, 1);
-      expect(f.probe.startCount, 2);
+        final ev = await restarted.timeout(const Duration(seconds: 2));
+        expect(ev.changedPaths, hasLength(3));
+        expect(ws.restartCount, 1);
+        expect(f.probe.startCount, 2);
 
-      await ws.stop();
-    });
+        await ws.stop();
+      },
+    );
 
     test('non-Dart, non-pubspec changes are ignored', () async {
       final f = fakeStarter();
@@ -157,8 +160,9 @@ void main() {
       );
 
       await ws.start();
-      final restarted =
-          ws.events.firstWhere((e) => e.kind == WatchedServerEventKind.restarted);
+      final restarted = ws.events.firstWhere(
+        (e) => e.kind == WatchedServerEventKind.restarted,
+      );
 
       ws.simulateChange(p.join(tmp.path, 'pubspec.yaml'));
       final ev = await restarted.timeout(const Duration(seconds: 2));
@@ -185,45 +189,48 @@ void main() {
       expect(f.probe.stopCount, 1);
     });
 
-    test('a starter that throws yields restartFailed but keeps watching',
-        () async {
-      var first = true;
-      var startedCount = 0;
-      final probe = _Probe();
-      Future<StoppableProcess> starter() async {
-        startedCount++;
-        if (!first) {
-          throw StateError('boom');
+    test(
+      'a starter that throws yields restartFailed but keeps watching',
+      () async {
+        var first = true;
+        var startedCount = 0;
+        final probe = _Probe();
+        Future<StoppableProcess> starter() async {
+          startedCount++;
+          if (!first) {
+            throw StateError('boom');
+          }
+          first = false;
+          late StoppableProcess sp;
+          sp = StoppableProcess((reason) async {
+            probe.stopCount++;
+          });
+          return sp;
         }
-        first = false;
-        late StoppableProcess sp;
-        sp = StoppableProcess((reason) async {
-          probe.stopCount++;
-        });
-        return sp;
-      }
 
-      final ws = WatchedServer(
-        starter: starter,
-        projectDirectory: tmp,
-        watchPaths: const ['lib'],
-        debounce: const Duration(milliseconds: 20),
-        watcherFactory: (_) => _NoopWatcher(),
-      );
+        final ws = WatchedServer(
+          starter: starter,
+          projectDirectory: tmp,
+          watchPaths: const ['lib'],
+          debounce: const Duration(milliseconds: 20),
+          watcherFactory: (_) => _NoopWatcher(),
+        );
 
-      await ws.start();
-      final failed =
-          ws.events.firstWhere((e) => e.kind == WatchedServerEventKind.restartFailed);
+        await ws.start();
+        final failed = ws.events.firstWhere(
+          (e) => e.kind == WatchedServerEventKind.restartFailed,
+        );
 
-      ws.simulateChange(p.join(tmp.path, 'lib', 'broken.dart'));
-      final ev = await failed.timeout(const Duration(seconds: 2));
-      expect(ev.error, isA<StateError>());
-      expect(ws.restartCount, 0); // failed restart must not bump the counter
-      expect(startedCount, 2);
-      expect(ws.isShuttingDown, isFalse);
+        ws.simulateChange(p.join(tmp.path, 'lib', 'broken.dart'));
+        final ev = await failed.timeout(const Duration(seconds: 2));
+        expect(ev.error, isA<StateError>());
+        expect(ws.restartCount, 0); // failed restart must not bump the counter
+        expect(startedCount, 2);
+        expect(ws.isShuttingDown, isFalse);
 
-      await ws.stop();
-    });
+        await ws.stop();
+      },
+    );
   });
 }
 

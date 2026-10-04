@@ -65,8 +65,9 @@ class ApplicationIsolateSupervisor {
           "ApplicationIsolateSupervisor($identifier).resume timed out waiting for isolate start",
         );
         throw TimeoutException(
-            "Isolate ($identifier) failed to launch in $startupTimeout seconds. "
-            "There may be an error with your application or Application.isolateStartupTimeout needs to be increased.");
+          "Isolate ($identifier) failed to launch in $startupTimeout seconds. "
+          "There may be an error with your application or Application.isolateStartupTimeout needs to be increased.",
+        );
       },
     );
   }
@@ -130,9 +131,9 @@ class ApplicationIsolateSupervisor {
   }
 
   void _sendMessageToOtherSupervisors(MessageHubMessage message) {
-    supervisingApplication.supervisors
-        .where((sup) => sup != this)
-        .forEach((supervisor) {
+    supervisingApplication.supervisors.where((sup) => sup != this).forEach((
+      supervisor,
+    ) {
       supervisor._serverSendPort.send(message);
     });
   }

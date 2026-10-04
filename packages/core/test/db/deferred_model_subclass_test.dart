@@ -5,8 +5,10 @@ import 'package:test/test.dart';
 
 void main() {
   test("Can override property in partial and modify attrs/validators", () {
-    final dataModel =
-        ManagedDataModel([OverriddenTotalModel, PartialReferenceModel]);
+    final dataModel = ManagedDataModel([
+      OverriddenTotalModel,
+      PartialReferenceModel,
+    ]);
 
     final entity = dataModel.entityForType(OverriddenTotalModel);
     final field = entity.attributes["field"]!;

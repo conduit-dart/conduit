@@ -29,9 +29,9 @@ void main() {
       await Query.insertObject(t, Model()..name = "Fred");
     });
 
-    final objects = await (Query<Model>(context)
-          ..sortBy((o) => o.name, QuerySortOrder.ascending))
-        .fetch();
+    final objects = await (Query<Model>(
+      context,
+    )..sortBy((o) => o.name, QuerySortOrder.ascending)).fetch();
     expect(objects.length, 2);
     expect(objects.first.name, "Bob");
     expect(objects.last.name, "Fred");
@@ -45,9 +45,7 @@ void main() {
     expect(result, isNull);
   });
 
-  test(
-      "Queries outside of transaction block while transaction block is running are queued until transaction is complete",
-      () async {
+  test("Queries outside of transaction block while transaction block is running are queued until transaction is complete", () async {
     context.transaction((t) async {
       await Query.insertObject(t, Model()..name = "1");
       await Query.insertObject(t, Model()..name = "2");
@@ -58,9 +56,7 @@ void main() {
     expect(results.length, 3);
   });
 
-  test(
-      "Error thrown from query rolls back transaction and is thrown by transaction method",
-      () async {
+  test("Error thrown from query rolls back transaction and is thrown by transaction method", () async {
     try {
       await context.transaction((t) async {
         await Query.insertObject(t, Model()..name = "1");
@@ -75,9 +71,7 @@ void main() {
     expect((await Query<Model>(context).fetch()).length, 0);
   });
 
-  test(
-      "Error thrown from non-query code in transaction rolls back transaction and thrown by transaction method",
-      () async {
+  test("Error thrown from non-query code in transaction rolls back transaction and thrown by transaction method", () async {
     try {
       await context.transaction((t) async {
         await Query.insertObject(t, Model()..name = "1");
@@ -90,41 +84,44 @@ void main() {
     expect((await Query<Model>(context).fetch()).length, 0);
   });
 
-  test("A thrown rollback rolls back transaction and throws rollback",
-      () async {
-    try {
+  test(
+    "A thrown rollback rolls back transaction and throws rollback",
+    () async {
+      try {
+        await context.transaction((t) async {
+          final res = await Query.insertObject(t, Model()..name = "1");
+
+          if (res.name == "1") {
+            throw Rollback("hello");
+          }
+
+          await Query.insertObject(t, Model()..name = "2");
+        });
+        fail('unreachable');
+      } on Rollback catch (e) {
+        expect(e.reason, "hello");
+      }
+
+      expect((await Query<Model>(context).fetch()).length, 0);
+    },
+  );
+
+  test(
+    "Queries executed through persistentStore.execute use transaction context",
+    () async {
       await context.transaction((t) async {
-        final res = await Query.insertObject(t, Model()..name = "1");
-
-        if (res.name == "1") {
-          throw Rollback("hello");
-        }
-
-        await Query.insertObject(t, Model()..name = "2");
+        await Query.insertObject(t, Model()..name = "1");
+        await t.persistentStore.execute(
+          "INSERT INTO _Model (name) VALUES ('2')",
+        );
+        await Query.insertObject(t, Model()..name = "3");
       });
-      fail('unreachable');
-    } on Rollback catch (e) {
-      expect(e.reason, "hello");
-    }
 
-    expect((await Query<Model>(context).fetch()).length, 0);
-  });
+      expect((await Query<Model>(context).fetch()).length, 3);
+    },
+  );
 
-  test(
-      "Queries executed through persistentStore.execute use transaction context",
-      () async {
-    await context.transaction((t) async {
-      await Query.insertObject(t, Model()..name = "1");
-      await t.persistentStore.execute("INSERT INTO _Model (name) VALUES ('2')");
-      await Query.insertObject(t, Model()..name = "3");
-    });
-
-    expect((await Query<Model>(context).fetch()).length, 3);
-  });
-
-  test(
-      "Query on original context within transaction block times out and cancels transaction",
-      () async {
+  test("Query on original context within transaction block times out and cancels transaction", () async {
     try {
       await context.transaction((t) async {
         await Query.insertObject(t, Model()..name = "1");
@@ -137,9 +134,11 @@ void main() {
       fail('unreachable');
     } on QueryException catch (e) {
       expect(
-          e.toString(),
-          contains(
-              "Attempting to execute query on connection while inside a `runTx` call."));
+        e.toString(),
+        contains(
+          "Attempting to execute query on connection while inside a `runTx` call.",
+        ),
+      );
     }
 
     final q = Query<Model>(context);

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:conduit_core/conduit_core.dart';
 
@@ -95,8 +96,9 @@ class TestToken implements AuthToken, AuthCode {
     final map = {
       "access_token": accessToken,
       "token_type": type,
-      "expires_in":
-          expirationDate!.difference(DateTime.now().toUtc()).inSeconds,
+      "expires_in": expirationDate!
+          .difference(DateTime.now().toUtc())
+          .inSeconds,
     };
 
     if (refreshToken != null) {
@@ -151,8 +153,11 @@ class InMemoryAuthStorage extends AuthServerDelegate {
         salt,
         "http://stablekernel.com/auth/redirect",
       ),
-      "com.stablekernel.public":
-          AuthClient("com.stablekernel.public", null, salt),
+      "com.stablekernel.public": AuthClient(
+        "com.stablekernel.public",
+        null,
+        salt,
+      ),
       "com.stablekernel.redirect2": AuthClient.withRedirectURI(
         "com.stablekernel.redirect2",
         generatePasswordHash("gibraltar", salt),
@@ -192,8 +197,9 @@ class InMemoryAuthStorage extends AuthServerDelegate {
 
   @override
   void removeTokens(AuthServer server, dynamic resourceOwnerID) {
-    return tokens
-        .removeWhere((t) => t.resourceOwnerIdentifier == resourceOwnerID);
+    return tokens.removeWhere(
+      (t) => t.resourceOwnerIdentifier == resourceOwnerID,
+    );
   }
 
   @override
@@ -206,8 +212,9 @@ class InMemoryAuthStorage extends AuthServerDelegate {
     if (byAccessToken != null) {
       existing = tokens.firstWhereOrNull((t) => t.accessToken == byAccessToken);
     } else if (byRefreshToken != null) {
-      existing =
-          tokens.firstWhereOrNull((t) => t.refreshToken == byRefreshToken);
+      existing = tokens.firstWhereOrNull(
+        (t) => t.refreshToken == byRefreshToken,
+      );
     } else {
       throw ArgumentError(
         "byAccessToken and byRefreshToken are mutually exclusive",
@@ -236,8 +243,9 @@ class InMemoryAuthStorage extends AuthServerDelegate {
     AuthCode? issuedFrom,
   }) {
     if (issuedFrom != null) {
-      final existingIssued =
-          tokens.firstWhereOrNull((t) => t.code == issuedFrom.code);
+      final existingIssued = tokens.firstWhereOrNull(
+        (t) => t.code == issuedFrom.code,
+      );
       final replacement = TestToken.from(token);
       replacement.code = issuedFrom.code;
       replacement.scopes = issuedFrom.requestedScopes;
@@ -259,8 +267,9 @@ class InMemoryAuthStorage extends AuthServerDelegate {
     DateTime? newIssueDate,
     DateTime? newExpirationDate,
   ) {
-    final existing =
-        tokens.firstWhereOrNull((e) => e.accessToken == oldAccessToken);
+    final existing = tokens.firstWhereOrNull(
+      (e) => e.accessToken == oldAccessToken,
+    );
     if (existing != null) {
       final replacement = TestToken.from(existing)
         ..expirationDate = newExpirationDate
@@ -325,8 +334,7 @@ class DefaultPersistentStore extends PersistentStore {
   Future<dynamic> execute(
     String sql, {
     Map<String, dynamic>? substitutionValues,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future<dynamic> executeQuery(
@@ -334,8 +342,7 @@ class DefaultPersistentStore extends PersistentStore {
     Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future close() async {}
@@ -344,8 +351,7 @@ class DefaultPersistentStore extends PersistentStore {
   Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T?> Function(ManagedContext transaction) transactionBlock,
-  ) async =>
-      throw Exception("Transaciton not supported on mock");
+  ) async => throw Exception("Transaciton not supported on mock");
 
   @override
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) => [];
@@ -367,8 +373,7 @@ class DefaultPersistentStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column, {
     String? unencodedInitialValue,
-  }) =>
-      [];
+  }) => [];
 
   @override
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) => [];
@@ -378,16 +383,14 @@ class DefaultPersistentStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String? name,
-  ) =>
-      [];
+  ) => [];
 
   @override
   List<String> alterColumnNullability(
     SchemaTable table,
     SchemaColumn column,
     String? unencodedInitialValue,
-  ) =>
-      [];
+  ) => [];
 
   @override
   List<String> alterColumnUniqueness(SchemaTable table, SchemaColumn column) =>
@@ -397,8 +400,7 @@ class DefaultPersistentStore extends PersistentStore {
   List<String> alterColumnDefaultValue(
     SchemaTable table,
     SchemaColumn column,
-  ) =>
-      [];
+  ) => [];
 
   @override
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) =>
@@ -412,8 +414,7 @@ class DefaultPersistentStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String newIndexName,
-  ) =>
-      [];
+  ) => [];
 
   @override
   List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) =>

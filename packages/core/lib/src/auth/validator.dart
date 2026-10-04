@@ -36,6 +36,5 @@ mixin AuthValidator {
     APIDocumentContext context,
     Authorizer authorizer, {
     List<AuthScope>? scopes,
-  }) =>
-      [];
+  }) => [];
 }

@@ -19,9 +19,7 @@ void main() {
       await app.stop();
     });
 
-    test(
-        "A message sent to the hub is received by other channels, but not by sender",
-        () async {
+    test("A message sent to the hub is received by other channels, but not by sender", () async {
       final started = await startWithFreePort(
         Application<HubChannel>.new,
         numberOfInstances: 3,
@@ -40,50 +38,48 @@ void main() {
       }
 
       expect(
-        waitForMessages(
-          port,
-          {
-            id1: [
-              {"isolateID": postingIsolateID, "message": "msg1"}
-            ],
-            id2: [
-              {"isolateID": postingIsolateID, "message": "msg1"}
-            ],
-          },
-          butNeverReceiveIn: postingIsolateID,
-        ),
-        completes,
-      );
-    });
-
-    test("A message sent in prepare is received by all channels eventually",
-        () async {
-      final started = await startWithFreePort(
-        () => Application<HubChannel>()
-          ..options.context["sendIn"] = "prepare",
-        numberOfInstances: 3,
-      );
-      app = started.app;
-      port = started.port;
-
-      expect(
         waitForMessages(port, {
-          1: [
-            {"isolateID": 2, "message": "init"},
-            {"isolateID": 3, "message": "init"}
+          id1: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
           ],
-          2: [
-            {"isolateID": 1, "message": "init"},
-            {"isolateID": 3, "message": "init"}
+          id2: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
           ],
-          3: [
-            {"isolateID": 2, "message": "init"},
-            {"isolateID": 1, "message": "init"}
-          ],
-        }),
+        }, butNeverReceiveIn: postingIsolateID),
         completes,
       );
     });
+
+    test(
+      "A message sent in prepare is received by all channels eventually",
+      () async {
+        final started = await startWithFreePort(
+          () =>
+              Application<HubChannel>()..options.context["sendIn"] = "prepare",
+          numberOfInstances: 3,
+        );
+        app = started.app;
+        port = started.port;
+
+        expect(
+          waitForMessages(port, {
+            1: [
+              {"isolateID": 2, "message": "init"},
+              {"isolateID": 3, "message": "init"},
+            ],
+            2: [
+              {"isolateID": 1, "message": "init"},
+              {"isolateID": 3, "message": "init"},
+            ],
+            3: [
+              {"isolateID": 2, "message": "init"},
+              {"isolateID": 1, "message": "init"},
+            ],
+          }),
+          completes,
+        );
+      },
+    );
   });
 
   group("Multiple listeners", () {
@@ -96,8 +92,9 @@ void main() {
 
     test("Message hub stream can have multiple listeners", () async {
       final started = await startWithFreePort(
-        () => Application<HubChannel>()
-          ..options.context["multipleListeners"] = true,
+        () =>
+            Application<HubChannel>()
+              ..options.context["multipleListeners"] = true,
         numberOfInstances: 3,
       );
       app = started.app;
@@ -115,20 +112,16 @@ void main() {
       }
 
       expect(
-        waitForMessages(
-          port,
-          {
-            id1: [
-              {"isolateID": postingIsolateID, "message": "msg1"},
-              {"isolateID": postingIsolateID, "message": "msg1"}
-            ],
-            id2: [
-              {"isolateID": postingIsolateID, "message": "msg1"},
-              {"isolateID": postingIsolateID, "message": "msg1"}
-            ],
-          },
-          butNeverReceiveIn: postingIsolateID,
-        ),
+        waitForMessages(port, {
+          id1: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
+            {"isolateID": postingIsolateID, "message": "msg1"},
+          ],
+          id2: [
+            {"isolateID": postingIsolateID, "message": "msg1"},
+            {"isolateID": postingIsolateID, "message": "msg1"},
+          ],
+        }, butNeverReceiveIn: postingIsolateID),
         completes,
       );
     });
@@ -170,8 +163,8 @@ void main() {
       expect(
         waitForMessages(port, {
           expectedReceiverID: [
-            {"isolateID": serverID, "message": "ok"}
-          ]
+            {"isolateID": serverID, "message": "ok"},
+          ],
         }),
         completes,
       );
@@ -200,11 +193,11 @@ Future waitForMessages(
     final remainingMessagesExpectedForIsolateID =
         expectedMessages[respondingIsolateID];
     for (final message in messages!) {
-      final firstMatchedMessage =
-          remainingMessagesExpectedForIsolateID!.firstWhereOrNull((msg) {
-        return msg["isolateID"] == message["isolateID"] &&
-            msg["message"] == message["message"];
-      });
+      final firstMatchedMessage = remainingMessagesExpectedForIsolateID!
+          .firstWhereOrNull((msg) {
+            return msg["isolateID"] == message["isolateID"] &&
+                msg["message"] == message["message"];
+          });
 
       if (firstMatchedMessage != null) {
         remainingMessagesExpectedForIsolateID.remove(firstMatchedMessage);

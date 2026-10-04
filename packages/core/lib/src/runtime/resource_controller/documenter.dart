@@ -51,13 +51,13 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
           .expand((b) => b)
           .where((b) => b.location == BindingType.body)
           .forEach((b) {
-        final boundType = reflectType(b.type);
-        if (isSerializable(b.type)) {
-          _registerType(context, boundType);
-        } else if (isListSerializable(b.type)) {
-          _registerType(context, boundType.typeArguments.first);
-        }
-      });
+            final boundType = reflectType(b.type);
+            if (isSerializable(b.type)) {
+              _registerType(context, boundType);
+            } else if (isListSerializable(b.type)) {
+              _registerType(context, boundType.typeArguments.first);
+            }
+          });
     }
   }
 
@@ -67,7 +67,8 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
     APIDocumentContext context,
     Operation? operation,
   ) {
-    final bool usesFormEncodedData = operation!.method == "POST" &&
+    final bool usesFormEncodedData =
+        operation!.method == "POST" &&
         rc.acceptedContentTypes.any(
           (ct) =>
               ct.primaryType == "application" &&
@@ -99,24 +100,29 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
       operation!.method,
       operation.pathVariables,
     )!;
-    final usesFormEncodedData = operation.method == "POST" &&
+    final usesFormEncodedData =
+        operation.method == "POST" &&
         rc.acceptedContentTypes.any(
           (ct) =>
               ct.primaryType == "application" &&
               ct.subType == "x-www-form-urlencoded",
         );
-    final boundBody = op.positionalParameters
-            .firstWhereOrNull((p) => p.location == BindingType.body) ??
-        op.namedParameters
-            .firstWhereOrNull((p) => p.location == BindingType.body);
+    final boundBody =
+        op.positionalParameters.firstWhereOrNull(
+          (p) => p.location == BindingType.body,
+        ) ??
+        op.namedParameters.firstWhereOrNull(
+          (p) => p.location == BindingType.body,
+        );
 
     if (boundBody != null) {
       final ref = getSchemaObjectReference(context, boundBody.type);
       if (ref != null) {
         return APIRequestBody.schema(
           ref,
-          contentTypes: rc.acceptedContentTypes
-              .map((ct) => "${ct.primaryType}/${ct.subType}"),
+          contentTypes: rc.acceptedContentTypes.map(
+            (ct) => "${ct.primaryType}/${ct.subType}",
+          ),
           isRequired: boundBody.isRequired,
         );
       }
@@ -126,9 +132,9 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
               .where((p) => p.location == BindingType.query)
               .map((param) => _documentParameter(context, operation, param))
               .fold(<String, APISchemaObject?>{}, (prev, elem) {
-        prev[elem.name!] = elem.schema;
-        return prev;
-      });
+                prev[elem.name!] = elem.schema;
+                return prev;
+              });
 
       return APIRequestBody.schema(
         APISchemaObject.object(props),
@@ -153,8 +159,9 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
 
     return opsForPath.fold(<String, APIOperation>{}, (prev, opObj) {
       final instanceMembers = reflect(rc).type.instanceMembers;
-      final Operation metadata =
-          firstMetadataOfType(instanceMembers[Symbol(opObj.dartMethodName)]!);
+      final Operation metadata = firstMetadataOfType(
+        instanceMembers[Symbol(opObj.dartMethodName)]!,
+      );
 
       final operationDoc = APIOperation(
         opObj.dartMethodName,
@@ -198,7 +205,7 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
     return [
       runtime.ivarParameters,
       operation.positionalParameters,
-      operation.namedParameters
+      operation.namedParameters,
     ].expand((i) => i!).toList();
   }
 
@@ -224,8 +231,10 @@ class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
     Operation? operation,
     ResourceControllerParameter param,
   ) {
-    final schema =
-        SerializableRuntimeImpl.documentType(context, reflectType(param.type));
+    final schema = SerializableRuntimeImpl.documentType(
+      context,
+      reflectType(param.type),
+    );
     final documentedParameter = APIParameter(
       param.name,
       param.apiLocation,

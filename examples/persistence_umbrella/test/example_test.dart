@@ -39,38 +39,43 @@ void main() {
       expect(channel.persistence!.graphContext, isNotNull);
     });
 
-    test('GET /me/1 returns user from SQL augmented with graph friends',
-        () async {
-      final port = app.server.server.port;
-      final req =
-          await client.getUrl(Uri.parse('http://localhost:$port/me/1'));
-      final resp = await req.close();
-      expect(resp.statusCode, 200);
+    test(
+      'GET /me/1 returns user from SQL augmented with graph friends',
+      () async {
+        final port = app.server.server.port;
+        final req = await client.getUrl(
+          Uri.parse('http://localhost:$port/me/1'),
+        );
+        final resp = await req.close();
+        expect(resp.statusCode, 200);
 
-      final body = jsonDecode(await resp.transform(utf8.decoder).join())
-          as Map<String, dynamic>;
-      expect(body['user'], isNotNull);
-      expect(body['user']['name'], 'Ada Lovelace');
-      expect(body['friends'], [2]);
-    });
+        final body = jsonDecode(
+          await resp.transform(utf8.decoder).join(),
+        ) as Map<String, dynamic>;
+        expect(body['user'], isNotNull);
+        expect(body['user']['name'], 'Ada Lovelace');
+        expect(body['friends'], [2]);
+      },
+    );
 
     test('GET /me/2 returns the other seeded user', () async {
       final port = app.server.server.port;
-      final req =
-          await client.getUrl(Uri.parse('http://localhost:$port/me/2'));
+      final req = await client.getUrl(Uri.parse('http://localhost:$port/me/2'));
       final resp = await req.close();
       expect(resp.statusCode, 200);
 
-      final body = jsonDecode(await resp.transform(utf8.decoder).join())
-          as Map<String, dynamic>;
+      final body = jsonDecode(
+        await resp.transform(utf8.decoder).join(),
+      ) as Map<String, dynamic>;
       expect(body['user']['name'], 'Grace Hopper');
       expect(body['friends'], [1]);
     });
 
     test('GET /me/999 returns 404 for an unknown user', () async {
       final port = app.server.server.port;
-      final req =
-          await client.getUrl(Uri.parse('http://localhost:$port/me/999'));
+      final req = await client.getUrl(
+        Uri.parse('http://localhost:$port/me/999'),
+      );
       final resp = await req.close();
       expect(resp.statusCode, 404);
       // Drain the body so the connection can close cleanly.

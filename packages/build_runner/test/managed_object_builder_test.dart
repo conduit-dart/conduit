@@ -174,15 +174,11 @@ class Document {}
 ''';
 
 Future<({String? dart, String? json})> _runBuilder(String source) async {
-  final result = await testBuilder(
-    managedObjectBuilder(BuilderOptions.empty),
-    {
-      'a|lib/models.dart': source,
-      'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
-      'conduit_core|lib/aot.dart': _conduitCoreStub,
-    },
-    flattenOutput: true,
-  );
+  final result = await testBuilder(managedObjectBuilder(BuilderOptions.empty), {
+    'a|lib/models.dart': source,
+    'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
+    'conduit_core|lib/aot.dart': _conduitCoreStub,
+  }, flattenOutput: true);
   final dartId = AssetId.parse('a|lib/models.managed.conduit.dart');
   final jsonId = AssetId.parse('a|lib/models.managed.conduit.json');
   return (

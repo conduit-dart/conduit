@@ -50,8 +50,11 @@ class MysqlQuery<InstanceType extends ManagedObject>
     }
     buffer.write("VALUES (${builder.sqlValuesToInsert})");
 
-    await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     final pkColumn = entity.primaryKey;
     final pkValueBuilder = builder.columnValueBuildersByKey[pkColumn];
@@ -86,9 +89,7 @@ class MysqlQuery<InstanceType extends ManagedObject>
       timeoutInSeconds,
     ) as List<List<dynamic>>;
 
-    return selectBuilder
-        .instancesForRows<InstanceType>(results)
-        .first;
+    return selectBuilder.instancesForRows<InstanceType>(results).first;
   }
 
   @override
@@ -235,8 +236,11 @@ class MysqlQuery<InstanceType extends ManagedObject>
     buffer.write("${builder.sqlOrderBy} ");
     if (fetchLimit != 0) buffer.write("LIMIT $fetchLimit ");
     if (offset != 0) buffer.write("OFFSET $offset ");
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 

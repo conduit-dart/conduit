@@ -94,15 +94,15 @@ class Validate {
   ///            }
   ///         }
   const Validate({bool onUpdate = true, bool onInsert = true})
-      : runOnUpdate = onUpdate,
-        runOnInsert = onInsert,
-        _value = null,
-        _lessThan = null,
-        _lessThanEqualTo = null,
-        _greaterThan = null,
-        _greaterThanEqualTo = null,
-        _equalTo = null,
-        type = null;
+    : runOnUpdate = onUpdate,
+      runOnInsert = onInsert,
+      _value = null,
+      _lessThan = null,
+      _lessThanEqualTo = null,
+      _greaterThan = null,
+      _greaterThanEqualTo = null,
+      _equalTo = null,
+      type = null;
 
   const Validate._({
     bool onUpdate = true,
@@ -114,9 +114,9 @@ class Validate {
     this._equalTo,
     this._lessThan,
     this._lessThanEqualTo,
-  })  : runOnUpdate = onUpdate,
-        runOnInsert = onInsert,
-        type = validator;
+  }) : runOnUpdate = onUpdate,
+       runOnInsert = onInsert,
+       type = validator;
 
   /// A validator for matching an input String against a regular expression.
   ///
@@ -132,11 +132,11 @@ class Validate {
     bool onUpdate = true,
     bool onInsert = true,
   }) : this._(
-          value: pattern,
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.regex,
-        );
+         value: pattern,
+         onUpdate: onUpdate,
+         onInsert: onInsert,
+         validator: ValidateType.regex,
+       );
 
   /// A validator for comparing a value.
   ///
@@ -175,15 +175,15 @@ class Validate {
     bool onUpdate = true,
     bool onInsert = true,
   }) : this._(
-          lessThan: lessThan,
-          lessThanEqualTo: lessThanEqualTo,
-          greaterThan: greaterThan,
-          greaterThanEqualTo: greaterThanEqualTo,
-          equalTo: equalTo,
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.comparison,
-        );
+         lessThan: lessThan,
+         lessThanEqualTo: lessThanEqualTo,
+         greaterThan: greaterThan,
+         greaterThanEqualTo: greaterThanEqualTo,
+         equalTo: equalTo,
+         onUpdate: onUpdate,
+         onInsert: onInsert,
+         validator: ValidateType.comparison,
+       );
 
   /// A validator for validating the length of a [String].
   ///
@@ -214,15 +214,15 @@ class Validate {
     bool onUpdate = true,
     bool onInsert = true,
   }) : this._(
-          lessThan: lessThan,
-          lessThanEqualTo: lessThanEqualTo,
-          greaterThan: greaterThan,
-          greaterThanEqualTo: greaterThanEqualTo,
-          equalTo: equalTo,
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.length,
-        );
+         lessThan: lessThan,
+         lessThanEqualTo: lessThanEqualTo,
+         greaterThan: greaterThan,
+         greaterThanEqualTo: greaterThanEqualTo,
+         equalTo: equalTo,
+         onUpdate: onUpdate,
+         onInsert: onInsert,
+         validator: ValidateType.length,
+       );
 
   /// A validator for ensuring a property always has a value when being inserted or updated.
   ///
@@ -232,11 +232,11 @@ class Validate {
   /// If [onUpdate] is true (the default), this validation requires a property to be present for update queries.
   /// If [onInsert] is true (the default), this validation requires a property to be present for insert queries.
   const Validate.present({bool onUpdate = true, bool onInsert = true})
-      : this._(
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.present,
-        );
+    : this._(
+        onUpdate: onUpdate,
+        onInsert: onInsert,
+        validator: ValidateType.present,
+      );
 
   /// A validator for ensuring a property does not have a value when being inserted or updated.
   ///
@@ -252,11 +252,11 @@ class Validate {
   /// If [onUpdate] is true (the default), this validation requires a property to be absent for update queries.
   /// If [onInsert] is true (the default), this validation requires a property to be absent for insert queries.
   const Validate.absent({bool onUpdate = true, bool onInsert = true})
-      : this._(
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.absent,
-        );
+    : this._(
+        onUpdate: onUpdate,
+        onInsert: onInsert,
+        validator: ValidateType.absent,
+      );
 
   /// A validator for ensuring a value is one of a set of values.
   ///
@@ -278,11 +278,11 @@ class Validate {
     bool onUpdate = true,
     bool onInsert = true,
   }) : this._(
-          value: values,
-          onUpdate: onUpdate,
-          onInsert: onInsert,
-          validator: ValidateType.oneOf,
-        );
+         value: values,
+         onUpdate: onUpdate,
+         onInsert: onInsert,
+         validator: ValidateType.oneOf,
+       );
 
   /// A validator that ensures a value cannot be modified after insertion.
   ///
@@ -483,7 +483,7 @@ class Validate {
     final supportedOneOfTypes = [
       ManagedPropertyType.string,
       ManagedPropertyType.integer,
-      ManagedPropertyType.bigInteger
+      ManagedPropertyType.bigInteger,
     ];
     if (!supportedOneOfTypes.contains(typeBeingValidated.kind) ||
         relationshipInverseType != null) {
@@ -510,12 +510,14 @@ class Validate {
   List<ValidationExpression> get _expressions {
     final comparisons = <ValidationExpression>[];
     if (_equalTo != null) {
-      comparisons
-          .add(ValidationExpression(ValidationOperator.equalTo, _equalTo));
+      comparisons.add(
+        ValidationExpression(ValidationOperator.equalTo, _equalTo),
+      );
     }
     if (_lessThan != null) {
-      comparisons
-          .add(ValidationExpression(ValidationOperator.lessThan, _lessThan));
+      comparisons.add(
+        ValidationExpression(ValidationOperator.lessThan, _lessThan),
+      );
     }
     if (_lessThanEqualTo != null) {
       comparisons.add(

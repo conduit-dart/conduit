@@ -137,9 +137,7 @@ void main() {
       expect(await Query<PoolModel>(context).fetch(), isEmpty);
     });
 
-    test(
-        "outer-context query proceeds on another connection while a transaction is open",
-        () async {
+    test("outer-context query proceeds on another connection while a transaction is open", () async {
       // On a single-connection store this pattern deadlocks (and issuing the
       // outer query from inside the block throws a runTx error). On a pooled
       // store the transaction holds one pooled connection while the outer

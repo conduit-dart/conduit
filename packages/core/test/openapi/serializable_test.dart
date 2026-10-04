@@ -41,9 +41,7 @@ void main() {
     expect(doc.properties!["b"]!.properties!["y"]!.type, APIType.string);
   });
 
-  test(
-      "If Serializable cannot be documented, it still allows doc generation but shows error in document",
-      () async {
+  test("If Serializable cannot be documented, it still allows doc generation but shows error in document", () async {
     final doc = FailsToDocument().documentSchema(ctx);
     await ctx.finalize();
 
@@ -62,9 +60,7 @@ void main() {
     expect(doc.properties!["k"], isNotNull);
   });
 
-  test(
-      "Can bind a Serializable implementor to a resource controller method and it auto-documents",
-      () async {
+  test("Can bind a Serializable implementor to a resource controller method and it auto-documents", () async {
     final c = BoundBodyController();
     c.didAddToChannel();
     c.restore(c.recycledState);

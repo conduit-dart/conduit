@@ -46,12 +46,13 @@ import 'package:test/test.dart';
 void main() {
   final pgAvailable = Platform.environment['CONDUIT_POSTGRES_AVAILABLE'];
   final neoAvailable = Platform.environment['CONDUIT_NEO4J_AVAILABLE'];
-  final skip = (pgAvailable == null ||
+  final skip =
+      (pgAvailable == null ||
           pgAvailable.isEmpty ||
           neoAvailable == null ||
           neoAvailable.isEmpty)
       ? 'Set both CONDUIT_POSTGRES_AVAILABLE=1 and '
-          'CONDUIT_NEO4J_AVAILABLE=1 to run; needs reachable Postgres + Neo4j.'
+            'CONDUIT_NEO4J_AVAILABLE=1 to run; needs reachable Postgres + Neo4j.'
       : null;
 
   test(
@@ -85,7 +86,8 @@ void main() {
         'CI.',
       );
     },
-    skip: skip ??
+    skip:
+        skip ??
         'Cross-source PG+Neo4j fixture is documentation-driven; '
             'see docs/persistence/graphql-cross-source.md for the worked '
             'example. The gate currently skips even with both DBs '

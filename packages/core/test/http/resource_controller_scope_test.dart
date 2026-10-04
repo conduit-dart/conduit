@@ -34,35 +34,34 @@ void main() {
     DELETE: ["level1", "level2"]
  */
 
-  test(
-      "If method has no scope restrictions (but Authorizer does), allow request if passes authorizer",
-      () async {
+  test("If method has no scope restrictions (but Authorizer does), allow request if passes authorizer", () async {
     client.headers["authorization"] = "Bearer level1";
     expectResponse(await client.request("/level1-authorizer").get(), 200);
   });
 
-  test("When no Authorizer and method has scope, a 500 error is thrown",
-      () async {
-    // Log warning
-    client.headers["authorization"] = "Bearer level1";
-    expectResponse(await client.request("/no-authorizer").put(), 500);
-  });
+  test(
+    "When no Authorizer and method has scope, a 500 error is thrown",
+    () async {
+      // Log warning
+      client.headers["authorization"] = "Bearer level1";
+      expectResponse(await client.request("/no-authorizer").put(), 500);
+    },
+  );
 
   test(
-      "When no Authorizer and method does not have scope, request is successful",
-      () async {
-    client.headers["authorization"] = "Bearer level1";
-    expectResponse(await client.request("/no-authorizer").get(), 200);
-  });
+    "When no Authorizer and method does not have scope, request is successful",
+    () async {
+      client.headers["authorization"] = "Bearer level1";
+      expectResponse(await client.request("/no-authorizer").get(), 200);
+    },
+  );
 
   test("If token has sufficient scope for method, allow it", () async {
     client.headers["authorization"] = "Bearer level1";
     expectResponse(await client.request("/level1-authorizer").put(), 200);
   });
 
-  test(
-      "If token does not have sufficient scope for method, return 403 and include required scope in body",
-      () async {
+  test("If token does not have sufficient scope for method, return 403 and include required scope in body", () async {
     client.headers["authorization"] = "Bearer level1";
     expectResponse(
       await client.request("/level1-authorizer").post(),
@@ -71,16 +70,12 @@ void main() {
     );
   });
 
-  test(
-      "If token has sufficient scope for method requiring multiple scopes, allow it",
-      () async {
+  test("If token has sufficient scope for method requiring multiple scopes, allow it", () async {
     client.headers["authorization"] = "Bearer level1 level2";
     expectResponse(await client.request("/level1-authorizer").delete(), 200);
   });
 
-  test(
-      "If token has sufficient scope for only ONE of required scopes, do not allow it",
-      () async {
+  test("If token has sufficient scope for only ONE of required scopes, do not allow it", () async {
     client.headers["authorization"] = "Bearer level1";
     expectResponse(
       await client.request("/level1-authorizer").delete(),
@@ -89,9 +84,7 @@ void main() {
     );
   });
 
-  test(
-      "If token does not have any sufficient scopes for method requiring multiple scopes, do not allow it",
-      () async {
+  test("If token does not have any sufficient scopes for method requiring multiple scopes, do not allow it", () async {
     client.headers["authorization"] = "Bearer no-scope";
     expectResponse(
       await client.request("/authorizer").delete(),
@@ -155,7 +148,7 @@ class Channel extends ApplicationChannel {
         ..clientID = "whocares"
         ..type = "bearer"
         ..accessToken = "level1 level2"
-        ..scopes = [AuthScope("level1"), AuthScope("level2")]
+        ..scopes = [AuthScope("level1"), AuthScope("level2")],
     ];
     authServer = AuthServer(storage);
   }

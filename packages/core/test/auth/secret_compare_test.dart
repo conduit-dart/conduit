@@ -51,8 +51,11 @@ void main() {
       ];
       for (final a in samples) {
         for (final b in samples) {
-          expect(secretsEqual(a, b), a == b,
-              reason: 'mismatch on (${a.length}, ${b.length})');
+          expect(
+            secretsEqual(a, b),
+            a == b,
+            reason: 'mismatch on (${a.length}, ${b.length})',
+          );
         }
       }
     });

@@ -17,14 +17,15 @@ class Response implements RequestOrResponse {
   Response(int this.statusCode, Map<String, dynamic>? headers, dynamic body) {
     this.body = body;
     this.headers = LinkedHashMap<String, dynamic>(
-        equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-        hashCode: (key) => key.toLowerCase().hashCode);
+      equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+      hashCode: (key) => key.toLowerCase().hashCode,
+    );
     this.headers.addAll(headers ?? {});
   }
 
   /// Represents a 200 response.
   Response.ok(dynamic body, {Map<String, dynamic>? headers})
-      : this(HttpStatus.ok, headers, body);
+    : this(HttpStatus.ok, headers, body);
 
   /// Represents a 201 response.
   ///
@@ -34,18 +35,18 @@ class Response implements RequestOrResponse {
     dynamic body,
     Map<String, dynamic>? headers,
   }) : this(
-          HttpStatus.created,
-          _headersWith(headers, {HttpHeaders.locationHeader: location}),
-          body,
-        );
+         HttpStatus.created,
+         _headersWith(headers, {HttpHeaders.locationHeader: location}),
+         body,
+       );
 
   /// Represents a 202 response.
   Response.accepted({Map<String, dynamic>? headers})
-      : this(HttpStatus.accepted, headers, null);
+    : this(HttpStatus.accepted, headers, null);
 
   /// Represents a 204 response.
   Response.noContent({Map<String, dynamic>? headers})
-      : this(HttpStatus.noContent, headers, null);
+    : this(HttpStatus.noContent, headers, null);
 
   /// Represents a 304 response.
   ///
@@ -58,31 +59,31 @@ class Response implements RequestOrResponse {
 
   /// Represents a 400 response.
   Response.badRequest({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.badRequest, headers, body);
+    : this(HttpStatus.badRequest, headers, body);
 
   /// Represents a 401 response.
   Response.unauthorized({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.unauthorized, headers, body);
+    : this(HttpStatus.unauthorized, headers, body);
 
   /// Represents a 403 response.
   Response.forbidden({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.forbidden, headers, body);
+    : this(HttpStatus.forbidden, headers, body);
 
   /// Represents a 404 response.
   Response.notFound({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.notFound, headers, body);
+    : this(HttpStatus.notFound, headers, body);
 
   /// Represents a 409 response.
   Response.conflict({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.conflict, headers, body);
+    : this(HttpStatus.conflict, headers, body);
 
   /// Represents a 410 response.
   Response.gone({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.gone, headers, body);
+    : this(HttpStatus.gone, headers, body);
 
   /// Represents a 500 response.
   Response.serverError({Map<String, dynamic>? headers, dynamic body})
-      : this(HttpStatus.internalServerError, headers, body);
+    : this(HttpStatus.internalServerError, headers, body);
 
   /// The default value of a [contentType].
   ///
@@ -105,8 +106,9 @@ class Response implements RequestOrResponse {
     if (initialResponseBody is Serializable) {
       serializedBody = initialResponseBody.asMap();
     } else if (initialResponseBody is List<Serializable>) {
-      serializedBody =
-          initialResponseBody.map((value) => value.asMap()).toList();
+      serializedBody = initialResponseBody
+          .map((value) => value.asMap())
+          .toList();
     }
 
     _body = serializedBody ?? initialResponseBody;
@@ -141,8 +143,9 @@ class Response implements RequestOrResponse {
   }
 
   final Map<String, dynamic> _headers = LinkedHashMap<String, Object?>(
-      equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-      hashCode: (key) => key.toLowerCase().hashCode);
+    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+    hashCode: (key) => key.toLowerCase().hashCode,
+  );
 
   /// The HTTP status code of this response.
   int? statusCode;
@@ -214,8 +217,9 @@ class Response implements RequestOrResponse {
     Map<String, dynamic> otherHeaders,
   ) {
     final m = LinkedHashMap<String, Object?>(
-        equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-        hashCode: (key) => key.toLowerCase().hashCode);
+      equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+      hashCode: (key) => key.toLowerCase().hashCode,
+    );
     if (inputHeaders != null) {
       m.addAll(inputHeaders);
     }

@@ -22,8 +22,7 @@ abstract class RuntimeContext {
   /// 2. Whatever was registered via [registerDefaultContextFactory].
   /// 3. The mirror-based `MirrorContext` if `dart:mirrors` is available
   ///    (JIT execution); otherwise a `StateError` (AOT execution).
-  static RuntimeContext get current =>
-      _installed ??= _resolveDefaultContext();
+  static RuntimeContext get current => _installed ??= _resolveDefaultContext();
 
   /// Installs a pre-populated [RuntimeContext]. Intended to be called from
   /// generated code at the top of `main()` so that no mirror code is ever

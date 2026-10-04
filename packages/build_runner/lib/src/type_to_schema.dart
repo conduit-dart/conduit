@@ -24,9 +24,7 @@ String schemaExpressionFor(DartType type) {
   }
 
   if (type is InterfaceType && type.isDartCoreList) {
-    final inner = type.typeArguments.isEmpty
-        ? null
-        : type.typeArguments.first;
+    final inner = type.typeArguments.isEmpty ? null : type.typeArguments.first;
     if (inner == null) {
       throw InvalidGenerationSourceError(
         "List property is missing a type argument; "
@@ -39,9 +37,7 @@ String schemaExpressionFor(DartType type) {
   if (type is InterfaceType && type.isDartCoreMap) {
     if (type.typeArguments.length < 2 ||
         !type.typeArguments.first.isDartCoreString) {
-      throw InvalidGenerationSourceError(
-        "Map property must use String keys.",
-      );
+      throw InvalidGenerationSourceError("Map property must use String keys.");
     }
     final value = type.typeArguments.last;
     return '(APISchemaObject()'

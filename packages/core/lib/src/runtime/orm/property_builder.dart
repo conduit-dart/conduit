@@ -11,10 +11,10 @@ import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)
-      : relate = firstMetadataOfType(declaration),
-        column = firstMetadataOfType(declaration),
-        responseKey = firstMetadataOfType(declaration),
-        serialize = _getTransienceForProperty(declaration) {
+    : relate = firstMetadataOfType(declaration),
+      column = firstMetadataOfType(declaration),
+      responseKey = firstMetadataOfType(declaration),
+      serialize = _getTransienceForProperty(declaration) {
     propertyName = _getPropertyName();
     name = _getName();
     type = _getType();
@@ -28,8 +28,9 @@ class PropertyBuilder {
         .toList();
 
     if (column?.validators.isNotEmpty ?? false) {
-      _validators!
-          .addAll(column!.validators.map((v) => ValidatorBuilder(this, v)));
+      _validators!.addAll(
+        column!.validators.map((v) => ValidatorBuilder(this, v)),
+      );
     }
 
     if (type?.isEnumerated ?? false) {
@@ -72,11 +73,11 @@ class PropertyBuilder {
   DeleteRule? deleteRule;
   List<ValidatorBuilder>? _validators;
 
-  void compile(final List<EntityBuilder> entityBuilders) {
+  void compile(List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (relate != null) {
-        relatedProperty =
-            _getRelatedEntityBuilderFrom(entityBuilders).getInverseOf(this);
+        relatedProperty = _getRelatedEntityBuilderFrom(entityBuilders)
+            .getInverseOf(this);
         type = relatedProperty!.parent.primaryKeyProperty.type;
         relationshipType = ManagedRelationshipType.belongsTo;
         includeInDefaultResultSet = true;
@@ -102,7 +103,7 @@ class PropertyBuilder {
     }
   }
 
-  void validate(final List<EntityBuilder> entityBuilders) {
+  void validate(List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (!isRelationship ||
           relationshipType == ManagedRelationshipType.belongsTo) {
@@ -131,8 +132,9 @@ class PropertyBuilder {
     } else {
       if (defaultValue != null && autoincrement) {
         throw ManagedDataModelError(
-            "Property '${parent.name}.$name' is invalid. "
-            "A property cannot have a default value and be autoincrementing. ");
+          "Property '${parent.name}.$name' is invalid. "
+          "A property cannot have a default value and be autoincrementing. ",
+        );
       }
     }
 
@@ -154,8 +156,9 @@ class PropertyBuilder {
       v.link(others);
     }
     if (isRelationship) {
-      final destinationEntity =
-          others.firstWhere((e) => e == relatedProperty!.parent.entity);
+      final destinationEntity = others.firstWhere(
+        (e) => e == relatedProperty!.parent.entity,
+      );
 
       final dartType =
           ((declaration as VariableMirror).type as ClassMirror).reflectedType;
@@ -224,8 +227,9 @@ class PropertyBuilder {
 
     if (type is! ClassMirror) {
       throw ManagedDataModelError(
-          "Invalid type for field '${MirrorSystem.getName(declaration.simpleName)}' "
-          "in table definition '${parent.tableDefinitionTypeName}'.");
+        "Invalid type for field '${MirrorSystem.getName(declaration.simpleName)}' "
+        "in table definition '${parent.tableDefinitionTypeName}'.",
+      );
     }
 
     return type;
@@ -262,8 +266,9 @@ class PropertyBuilder {
     }
 
     throw ManagedDataModelError(
-        "Tried getting property type description from non-property. This is an internal error, "
-        "as this method shouldn't be invoked on non-property or non-accessors.");
+      "Tried getting property type description from non-property. This is an internal error, "
+      "as this method shouldn't be invoked on non-property or non-accessors.",
+    );
   }
 
   String _getName() {
@@ -283,8 +288,7 @@ class PropertyBuilder {
         : name;
   }
 
-  EntityBuilder _getRelatedEntityBuilderFrom(
-      final List<EntityBuilder> builders) {
+  EntityBuilder _getRelatedEntityBuilderFrom(List<EntityBuilder> builders) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
       return builders.firstWhere(

@@ -30,9 +30,7 @@ void main() {
       expect(operations, {"post": isNotNull});
     });
 
-    test(
-        "POST has body parameteters for username, password, refresh_token, scope, code, grant_type",
-        () {
+    test("POST has body parameteters for username, password, refresh_token, scope, code, grant_type", () {
       final op = operations!["post"]!;
       expect(op.parameters!.length, 0);
       expect(op.requestBody!.isRequired, true);
@@ -59,10 +57,9 @@ void main() {
 
     test("POST requires client authorization", () {
       expect(operations!["post"]!.security!.length, 1);
-      expect(
-        operations!["post"]!.security!.first.requirements,
-        {"oauth2-client-authentication": []},
-      );
+      expect(operations!["post"]!.security!.first.requirements, {
+        "oauth2-client-authentication": [],
+      });
     });
 
     test("Responses", () {
@@ -151,8 +148,7 @@ void main() {
           ..paths = {}
           ..components = APIComponents(),
       );
-      final ac =
-          AuthRedirectController(AuthServer(InMemoryAuthStorage()));
+      final ac = AuthRedirectController(AuthServer(InMemoryAuthStorage()));
       ac.restore(ac.recycledState);
       ac.didAddToChannel();
       operations = ac.documentOperations(context, "/", APIPath());
@@ -175,28 +171,31 @@ void main() {
       );
     });
 
-    test("GET has parameters for client_id, state, response_type and scope",
-        () {
-      final op = operations!["get"]!;
-      expect(op.parameters!.length, 4);
-      expect(
-        op.parameters!.every((p) => p.location == APIParameterLocation.query),
-        true,
-      );
-      expect(op.parameterNamed("client_id")!.schema!.type, APIType.string);
-      expect(op.parameterNamed("scope")!.schema!.type, APIType.string);
-      expect(op.parameterNamed("response_type")!.schema!.type, APIType.string);
-      expect(op.parameterNamed("state")!.schema!.type, APIType.string);
-
-      expect(op.parameterNamed("client_id")!.isRequired, true);
-      expect(op.parameterNamed("scope")!.isRequired, false);
-      expect(op.parameterNamed("response_type")!.isRequired, true);
-      expect(op.parameterNamed("state")!.isRequired, true);
-    });
-
     test(
-        "POST has body parameteters for client_id, state, response_type, scope, username and password",
-        () {
+      "GET has parameters for client_id, state, response_type and scope",
+      () {
+        final op = operations!["get"]!;
+        expect(op.parameters!.length, 4);
+        expect(
+          op.parameters!.every((p) => p.location == APIParameterLocation.query),
+          true,
+        );
+        expect(op.parameterNamed("client_id")!.schema!.type, APIType.string);
+        expect(op.parameterNamed("scope")!.schema!.type, APIType.string);
+        expect(
+          op.parameterNamed("response_type")!.schema!.type,
+          APIType.string,
+        );
+        expect(op.parameterNamed("state")!.schema!.type, APIType.string);
+
+        expect(op.parameterNamed("client_id")!.isRequired, true);
+        expect(op.parameterNamed("scope")!.isRequired, false);
+        expect(op.parameterNamed("response_type")!.isRequired, true);
+        expect(op.parameterNamed("state")!.isRequired, true);
+      },
+    );
+
+    test("POST has body parameteters for client_id, state, response_type, scope, username and password", () {
       final op = operations!["post"]!;
       expect(op.parameters!.length, 0);
       expect(op.requestBody!.isRequired, true);
@@ -217,10 +216,13 @@ void main() {
       expect(content.schema!.properties!["username"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.type, APIType.string);
       expect(content.schema!.properties!["password"]!.format, "password");
-      expect(
-        content.schema!.isRequired,
-        ["client_id", "state", "response_type", "username", "password"],
-      );
+      expect(content.schema!.isRequired, [
+        "client_id",
+        "state",
+        "response_type",
+        "username",
+        "password",
+      ]);
     });
 
     test("POST response can be redirect or bad request", () {

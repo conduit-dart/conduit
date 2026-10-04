@@ -16,8 +16,9 @@ class CLIDatabaseValidate extends CLICommand
     }
 
     final currentSchema = await getProjectSchema(this);
-    final schemaFromMigrationFiles =
-        await schemaByApplyingMigrationSources(migrations);
+    final schemaFromMigrationFiles = await schemaByApplyingMigrationSources(
+      migrations,
+    );
 
     final differences = currentSchema.differenceFrom(schemaFromMigrationFiles);
 

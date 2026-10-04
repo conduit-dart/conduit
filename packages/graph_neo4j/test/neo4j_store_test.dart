@@ -29,8 +29,7 @@ void main() {
     });
 
     test('accepts a bolt:// URI without auth', () {
-      final store =
-          Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
+      final store = Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
       expect(store.username, isNull);
       expect(store.password, isNull);
       expect(store.database, 'neo4j');
@@ -51,8 +50,7 @@ void main() {
 
   group('Neo4jPersistentStore — data-model binding', () {
     test('bindDataModel attaches a model', () {
-      final store =
-          Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
+      final store = Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
       expect(store.dataModel, isNull);
       final model = GraphDataModel();
       store.bindDataModel(model);
@@ -74,17 +72,13 @@ void main() {
         Uri.parse('bolt://localhost:7687'),
         dataModel: GraphDataModel(),
       );
-      expect(
-        () => store.bindDataModel(GraphDataModel()),
-        throwsStateError,
-      );
+      expect(() => store.bindDataModel(GraphDataModel()), throwsStateError);
     });
   });
 
   group('Neo4jPersistentStore — factory registry', () {
     test('registerNodeFactory accepts a typed factory', () {
-      final store =
-          Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
+      final store = Neo4jPersistentStore(Uri.parse('bolt://localhost:7687'));
       // Just exercise the registration call — the read path that
       // would *use* the factory needs a live Bolt connection, which
       // is covered by the integration tests.

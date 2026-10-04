@@ -40,8 +40,8 @@ class ControllerBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': ['.controller.conduit.dart', '.controller.conduit.json'],
-      };
+    '.dart': ['.controller.conduit.dart', '.controller.conduit.json'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -55,9 +55,7 @@ class ControllerBuilder implements Builder {
 
     if (controllers.isEmpty) return;
 
-    final manifest = {
-      'controllers': controllers.map((c) => c.name).toList(),
-    };
+    final manifest = {'controllers': controllers.map((c) => c.name).toList()};
     await buildStep.writeAsString(
       input.changeExtension('.controller.conduit.json'),
       json.encode(manifest),
@@ -109,21 +107,18 @@ class ControllerBuilder implements Builder {
   static bool _isSerializable(DartType type) {
     if (type is! InterfaceType) return false;
     if (type.element.name == _serializableTypeName &&
-        type.element.library.identifier
-            .startsWith(_conduitCorePackagePrefix)) {
+        type.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
       return true;
     }
     return type.element.allSupertypes.any(
       (t) =>
           t.element.name == _serializableTypeName &&
-          t.element.library.identifier
-              .startsWith(_conduitCorePackagePrefix),
+          t.element.library.identifier.startsWith(_conduitCorePackagePrefix),
     );
   }
 
   String _emitController(ClassElement klass) {
-    final isResource =
-        klass.allSupertypes.any(_isResourceController);
+    final isResource = klass.allSupertypes.any(_isResourceController);
     final isMutable = _classIsMutable(klass);
 
     final buf = StringBuffer();
@@ -134,7 +129,7 @@ class ControllerBuilder implements Builder {
 
     final resourceField = isResource
         ? '\$${klass.name}ResourceControllerRuntime _rc = '
-            '\$${klass.name}ResourceControllerRuntime();'
+              '\$${klass.name}ResourceControllerRuntime();'
         : '';
     final resourceGetter = isResource
         ? 'ResourceControllerRuntime? get resourceController => _rc;'
@@ -171,10 +166,10 @@ class \$${klass.name}ControllerRuntime extends ControllerRuntime {
     final ivars = _ivarBindings(klass).toList();
     final operations = _operationMethods(klass).toList();
 
-    final ivarSrc = ivars
-        .map(_emitParameterLiteral)
+    final ivarSrc = ivars.map(_emitParameterLiteral).join(',\n      ');
+    final opsSrc = operations
+        .map((op) => _emitOperationLiteral(klass, op))
         .join(',\n      ');
-    final opsSrc = operations.map((op) => _emitOperationLiteral(klass, op)).join(',\n      ');
 
     final applySrc = StringBuffer();
     for (final b in ivars) {
@@ -277,14 +272,16 @@ ${applySrc.toString().trimRight()}
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (t.element.name != 'Bind') continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
 
-      final bindingType = value.getField('bindingType')?.getField('_name')?.toStringValue() ??
+      final bindingType =
+          value.getField('bindingType')?.getField('_name')?.toStringValue() ??
           // Older analyzer revs expose enum index instead of _name.
-          _bindingTypeFromIndex(value.getField('bindingType')?.getField('index')?.toIntValue());
+          _bindingTypeFromIndex(
+            value.getField('bindingType')?.getField('index')?.toIntValue(),
+          );
       final name = value.getField('name')?.toStringValue();
       return _BindMeta(bindingType: bindingType ?? 'query', name: name);
     }
@@ -305,8 +302,7 @@ ${applySrc.toString().trimRight()}
       final t = value.type;
       if (t is! InterfaceType) continue;
       if (t.element.name != 'Operation') continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
 
@@ -321,7 +317,10 @@ ${applySrc.toString().trimRight()}
         final pv = value.getField(f)?.toStringValue();
         if (pv != null) pathVars.add(pv);
       }
-      return _OperationMeta(httpMethod: method.toUpperCase(), pathVariables: pathVars);
+      return _OperationMeta(
+        httpMethod: method.toUpperCase(),
+        pathVariables: pathVars,
+      );
     }
     return null;
   }
@@ -344,8 +343,7 @@ ${applySrc.toString().trimRight()}
   }
 
   String _emitOperationLiteral(ClassElement klass, _OperationMethod op) {
-    final pathVars =
-        op.operation.pathVariables.map((v) => "'$v'").join(', ');
+    final pathVars = op.operation.pathVariables.map((v) => "'$v'").join(', ');
     final positionals = op.positional
         .map(_emitParameterLiteral)
         .join(',\n          ');
@@ -431,8 +429,16 @@ ${applySrc.toString().trimRight()}
     if (raw.startsWith('List<') && raw.endsWith('>')) {
       final inner = raw.substring(5, raw.length - 1);
       const primitives = {
-        'int', 'num', 'double', 'String', 'bool',
-        'int?', 'num?', 'double?', 'String?', 'bool?',
+        'int',
+        'num',
+        'double',
+        'String',
+        'bool',
+        'int?',
+        'num?',
+        'double?',
+        'String?',
+        'bool?',
         'Map<String, dynamic>',
       };
       if (primitives.contains(inner)) {
@@ -451,8 +457,16 @@ ${applySrc.toString().trimRight()}
     if (raw.startsWith('Map<String, ') && raw.endsWith('>')) {
       final inner = raw.substring(12, raw.length - 1);
       const primitives = {
-        'int', 'num', 'double', 'String', 'bool',
-        'int?', 'num?', 'double?', 'String?', 'bool?',
+        'int',
+        'num',
+        'double',
+        'String',
+        'bool',
+        'int?',
+        'num?',
+        'double?',
+        'String?',
+        'bool?',
       };
       if (primitives.contains(inner)) {
         return '''(v) {

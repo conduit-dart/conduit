@@ -49,18 +49,14 @@ class APIComponentDocumenter {}
 ''';
 
 Future<({String? dart, String? json})> _runBuilder(String inputSource) async {
-  final result = await testBuilder(
-    channelBuilder(BuilderOptions.empty),
-    {
-      'a|lib/channel.dart': inputSource,
-      'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
-      'conduit_core|lib/aot.dart': _conduitCoreStub,
-      'conduit_core|lib/src/application/isolate_application_server.dart':
-          _isolateApplicationServerStub,
-      'conduit_common|lib/conduit_common.dart': _conduitCommonStub,
-    },
-    flattenOutput: true,
-  );
+  final result = await testBuilder(channelBuilder(BuilderOptions.empty), {
+    'a|lib/channel.dart': inputSource,
+    'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
+    'conduit_core|lib/aot.dart': _conduitCoreStub,
+    'conduit_core|lib/src/application/isolate_application_server.dart':
+        _isolateApplicationServerStub,
+    'conduit_common|lib/conduit_common.dart': _conduitCommonStub,
+  }, flattenOutput: true);
   final dartId = AssetId.parse('a|lib/channel.channel.conduit.dart');
   final jsonId = AssetId.parse('a|lib/channel.channel.conduit.json');
   return (
@@ -74,8 +70,7 @@ Future<({String? dart, String? json})> _runBuilder(String inputSource) async {
 }
 
 void main() {
-  test('emits a runtime + manifest per ApplicationChannel subclass',
-      () async {
+  test('emits a runtime + manifest per ApplicationChannel subclass', () async {
     final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';
 
@@ -101,10 +96,7 @@ class WithInit extends ApplicationChannel {
   static Future<void> initializeApplication(ApplicationOptions options) async {}
 }
 ''');
-    expect(
-      out.dart,
-      contains('await WithInit.initializeApplication(config);'),
-    );
+    expect(out.dart, contains('await WithInit.initializeApplication(config);'));
   });
 
   test('skips abstract subclasses', () async {
@@ -117,12 +109,14 @@ abstract class Base extends ApplicationChannel {}
     expect(out.json, isNull);
   });
 
-  test('emits nothing when no ApplicationChannel subclasses are present',
-      () async {
-    final out = await _runBuilder('''
+  test(
+    'emits nothing when no ApplicationChannel subclasses are present',
+    () async {
+      final out = await _runBuilder('''
 class Plain {}
 ''');
-    expect(out.dart, isNull);
-    expect(out.json, isNull);
-  });
+      expect(out.dart, isNull);
+      expect(out.json, isNull);
+    },
+  );
 }

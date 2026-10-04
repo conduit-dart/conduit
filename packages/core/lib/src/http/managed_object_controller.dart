@@ -95,8 +95,10 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   @Operation.get("id")
   Future<Response> getObject(@Bind.path("id") String id) async {
     final primaryKey = _query!.entity.primaryKey;
-    final parsedIdentifier =
-        _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
+    final parsedIdentifier = _getIdentifierFromPath(
+      id,
+      _query!.entity.properties[primaryKey],
+    );
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
 
     _query = await willFindObjectWithQuery(_query);
@@ -168,8 +170,10 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   @Operation.delete("id")
   Future<Response> deleteObject(@Bind.path("id") String id) async {
     final primaryKey = _query!.entity.primaryKey;
-    final parsedIdentifier =
-        _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
+    final parsedIdentifier = _getIdentifierFromPath(
+      id,
+      _query!.entity.properties[primaryKey],
+    );
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
 
     _query = await willDeleteObjectWithQuery(_query);
@@ -211,8 +215,10 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   @Operation.put("id")
   Future<Response> updateObject(@Bind.path("id") String id) async {
     final primaryKey = _query!.entity.primaryKey;
-    final parsedIdentifier =
-        _getIdentifierFromPath(id, _query!.entity.properties[primaryKey]);
+    final parsedIdentifier = _getIdentifierFromPath(
+      id,
+      _query!.entity.properties[primaryKey],
+    );
     _query!.where((o) => o[primaryKey]).equalTo(parsedIdentifier);
 
     final instance = _query!.entity.instanceOf() as InstanceType;
@@ -302,8 +308,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
       } else {
         return Response.badRequest(
           body: {
-            "error":
-                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given"
+            "error": "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
           },
         );
       }
@@ -327,8 +332,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
         if (split.length != 2) {
           throw Response.badRequest(
             body: {
-              "error":
-                  "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'."
+              "error": "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'.",
             },
           );
         }
@@ -341,7 +345,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
           throw Response.badRequest(
             body: {
               "error":
-                  "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'."
+                  "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'.",
             },
           );
         }
@@ -393,7 +397,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
             "400": APIResponse.schema(
               "Invalid request.",
               APISchemaObject.object({"error": APISchemaObject.string()}),
-            )
+            ),
           };
         }
 
@@ -402,7 +406,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
             "Returns a single object.",
             context.schema.getObjectWithType(InstanceType),
           ),
-          "404": APIResponse("No object found.")
+          "404": APIResponse("No object found."),
         };
       case "PUT":
         return {
@@ -433,7 +437,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
           "409": APIResponse.schema(
             "Object already exists",
             APISchemaObject.object({"error": APISchemaObject.string()}),
-          )
+          ),
         };
       case "DELETE":
         return {

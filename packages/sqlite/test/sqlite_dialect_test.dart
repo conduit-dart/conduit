@@ -11,15 +11,27 @@ void main() {
     });
 
     test('column types map to SQLite storage classes', () {
-      expect(d.columnDefinitionType('integer', autoincrement: false), 'INTEGER');
+      expect(
+        d.columnDefinitionType('integer', autoincrement: false),
+        'INTEGER',
+      );
       expect(d.columnDefinitionType('integer', autoincrement: true), 'INTEGER');
-      expect(d.columnDefinitionType('bigInteger', autoincrement: false), 'INTEGER');
+      expect(
+        d.columnDefinitionType('bigInteger', autoincrement: false),
+        'INTEGER',
+      );
       expect(d.columnDefinitionType('string', autoincrement: false), 'TEXT');
       expect(d.columnDefinitionType('datetime', autoincrement: false), 'TEXT');
-      expect(d.columnDefinitionType('boolean', autoincrement: false), 'INTEGER');
+      expect(
+        d.columnDefinitionType('boolean', autoincrement: false),
+        'INTEGER',
+      );
       expect(d.columnDefinitionType('double', autoincrement: false), 'REAL');
       expect(d.columnDefinitionType('document', autoincrement: false), 'TEXT');
-      expect(d.columnDefinitionType('unknownType', autoincrement: false), isNull);
+      expect(
+        d.columnDefinitionType('unknownType', autoincrement: false),
+        isNull,
+      );
     });
 
     test('LIKE is the only matching operator', () {
@@ -89,7 +101,10 @@ void main() {
       expect(cmds.first, contains('email TEXT NOT NULL UNIQUE'));
       // Index command emitted separately (only non-PK indexed columns).
       expect(cmds.length, 2);
-      expect(cmds.last, contains('CREATE INDEX users_email_idx ON users (email)'));
+      expect(
+        cmds.last,
+        contains('CREATE INDEX users_email_idx ON users (email)'),
+      );
     });
 
     test('alterColumnNullability throws (table-rebuild not implemented)', () {
@@ -183,16 +198,15 @@ void main() {
     test('transaction rolls back on Rollback', () async {
       await store.execute('CREATE TABLE t (n INTEGER)');
       await expectLater(
-        store.transaction(
-          ManagedContext(ManagedDataModel(const []), store),
-          (txn) async {
-            await store.execute(
-              'INSERT INTO t (n) VALUES (:n)',
-              substitutionValues: {'n': 1},
-            );
-            throw Rollback('user-triggered');
-          },
-        ),
+        store.transaction(ManagedContext(ManagedDataModel(const []), store), (
+          txn,
+        ) async {
+          await store.execute(
+            'INSERT INTO t (n) VALUES (:n)',
+            substitutionValues: {'n': 1},
+          );
+          throw Rollback('user-triggered');
+        }),
         throwsA(isA<Rollback>()),
       );
       final rollbackRows =

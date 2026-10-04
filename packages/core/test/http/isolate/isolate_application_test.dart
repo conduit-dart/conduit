@@ -91,16 +91,18 @@ void main() {
     });
 
     test(
-        "Application runs app startup function once, regardless of isolate count",
-        () async {
-      var sum = 0;
-      for (var i = 0; i < 10; i++) {
-        final result =
-            await http.get(Uri.parse("http://localhost:$port/startup"));
-        sum += int.parse(json.decode(result.body) as String);
-      }
-      expect(sum, 10);
-    });
+      "Application runs app startup function once, regardless of isolate count",
+      () async {
+        var sum = 0;
+        for (var i = 0; i < 10; i++) {
+          final result = await http.get(
+            Uri.parse("http://localhost:$port/startup"),
+          );
+          sum += int.parse(json.decode(result.body) as String);
+        }
+        expect(sum, 10);
+      },
+    );
   });
 
   group("App launch status", () {
@@ -111,19 +113,20 @@ void main() {
     });
 
     test(
-        "didFinishLaunching is false before launch, true after, false after stop",
-        () async {
-      app = Application<TestChannel>();
-      expect(app.isRunning, false);
+      "didFinishLaunching is false before launch, true after, false after stop",
+      () async {
+        app = Application<TestChannel>();
+        expect(app.isRunning, false);
 
-      final future = app.start(numberOfInstances: 2, consoleLogging: true);
-      expect(app.isRunning, false);
-      await future;
-      expect(app.isRunning, true);
+        final future = app.start(numberOfInstances: 2, consoleLogging: true);
+        expect(app.isRunning, false);
+        await future;
+        expect(app.isRunning, true);
 
-      await app.stop();
-      expect(app.isRunning, false);
-    });
+        await app.stop();
+        expect(app.isRunning, false);
+      },
+    );
   });
 }
 

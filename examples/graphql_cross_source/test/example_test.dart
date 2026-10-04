@@ -29,23 +29,20 @@ void main() {
     expect(friendField.type, isA<GraphQLNonNullableType<dynamic, dynamic>>());
   });
 
-  test(
-      'Stitching resolver yields friend rows when the parent ManagedObject '
+  test('Stitching resolver yields friend rows when the parent ManagedObject '
       'carries an id Map (resolver path used by graphql_server2)', () async {
     final channel = CrossSourceChannel();
     await channel.prepare();
     addTearDown(() => channel.typedPersistence.close());
 
     final userType = channel.persistenceSchema.sqlObjectTypes['User']!;
-    final friendField =
-        userType.fields.firstWhere((f) => f.name == 'friends');
+    final friendField = userType.fields.firstWhere((f) => f.name == 'friends');
     final resolver = friendField.resolve!;
     // Simulate the executor's parent-Map shortcut: handing a Map with
     // an `id` to the resolver.
-    final result = await resolver(
-      <String, Object?>{'id': 1},
-      const <String, dynamic>{},
-    );
+    final result = await resolver(<String, Object?>{
+      'id': 1,
+    }, const <String, dynamic>{});
     expect(result, isA<List>());
     final list = result! as List;
     // user 1 is friends with users 2 and 3 in the fixture.

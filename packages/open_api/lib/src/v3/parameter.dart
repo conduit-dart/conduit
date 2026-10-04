@@ -27,7 +27,7 @@ enum APIParameterLocation {
   path,
 
   /// Used to pass a specific cookie value to the API.
-  cookie
+  cookie,
 }
 
 class APIParameterLocationCodec {
@@ -113,9 +113,9 @@ class APIParameter extends APIObject {
   }
 
   APIParameter.path(this.name)
-      : location = APIParameterLocation.path,
-        schema = APISchemaObject.string(),
-        _required = true;
+    : location = APIParameterLocation.path,
+      schema = APISchemaObject.string(),
+      _required = true;
 
   APIParameter.cookie(
     this.name, {

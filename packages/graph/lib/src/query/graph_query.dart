@@ -23,8 +23,9 @@ class GraphOrderBy {
 /// [GraphPersistentStore] so this file does not have to depend on the
 /// store layer — the store layer already depends on this file. The
 /// real signature lines up with [GraphPersistentStore.executeQuery].
-typedef GraphQueryExecutor = Future<List<N>>
-    Function<N extends GraphNode<N>>(GraphQuery<N> query);
+typedef GraphQueryExecutor = Future<List<N>> Function<N extends GraphNode<N>>(
+  GraphQuery<N> query,
+);
 
 /// A chainable, dialect-agnostic graph query.
 ///

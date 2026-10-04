@@ -114,15 +114,9 @@ void main() {
 
     test('primary keys are always non-null', () {
       // bigInteger pk -> String!
-      expect(
-        _fieldType(schema, 'User', 'id'),
-        equals('String!'),
-      );
+      expect(_fieldType(schema, 'User', 'id'), equals('String!'));
       // String pk -> String!
-      expect(
-        _fieldType(schema, 'Tag', 'name'),
-        equals('String!'),
-      );
+      expect(_fieldType(schema, 'Tag', 'name'), equals('String!'));
     });
   });
 
@@ -160,21 +154,26 @@ void main() {
       expect(_fieldType(schema, 'Tag', 'posts'), equals('[PostTag!]!'));
     });
 
-    test('the same Type instance is shared across both ends of a relationship', () {
-      // Deferred-ref correctness: `User.posts` and the `posts` Query
-      // root field must point at the *same* Post object-type instance
-      // (not a fresh stub). The most direct check is identity equality.
-      final postType = _objectByName(schema, 'Post');
-      final userPostsField =
-          _objectByName(schema, 'User').fields.firstWhere((f) => f.name == 'posts');
-      // userPostsField.type is GraphQLNonNullableType(GraphQLListType(GraphQLNonNullableType(Post)))
-      final innerListElement =
-          ((userPostsField.type as GraphQLNonNullableType).ofType
-              as GraphQLListType).ofType;
-      final innerEntity =
-          (innerListElement as GraphQLNonNullableType).ofType;
-      expect(identical(innerEntity, postType), isTrue);
-    });
+    test(
+      'the same Type instance is shared across both ends of a relationship',
+      () {
+        // Deferred-ref correctness: `User.posts` and the `posts` Query
+        // root field must point at the *same* Post object-type instance
+        // (not a fresh stub). The most direct check is identity equality.
+        final postType = _objectByName(schema, 'Post');
+        final userPostsField = _objectByName(
+          schema,
+          'User',
+        ).fields.firstWhere((f) => f.name == 'posts');
+        // userPostsField.type is GraphQLNonNullableType(GraphQLListType(GraphQLNonNullableType(Post)))
+        final innerListElement =
+            ((userPostsField.type as GraphQLNonNullableType).ofType
+                    as GraphQLListType)
+                .ofType;
+        final innerEntity = (innerListElement as GraphQLNonNullableType).ofType;
+        expect(identical(innerEntity, postType), isTrue);
+      },
+    );
   });
 
   group('transient properties', () {
@@ -218,8 +217,8 @@ void main() {
 
   group('SchemaBuilder configuration', () {
     test('bigIntegerAsString=false lowers bigInteger to Int', () {
-      final intSchema =
-          SchemaBuilder(bigIntegerAsString: false).fromManagedDataModel(dataModel);
+      final intSchema = SchemaBuilder(bigIntegerAsString: false)
+          .fromManagedDataModel(dataModel);
       // Now User.id is Int!.
       expect(_fieldType(intSchema, 'User', 'id'), equals('Int!'));
       // viewCount has no `nullable: true`, so it's non-null -> Int!
@@ -286,9 +285,8 @@ GraphQLObjectType? _unwrapObjectType(GraphQLType type) {
 GraphQLObjectType _objectByName(GraphQLSchema schema, String name) {
   final found = _reachableObjectTypes(schema).firstWhere(
     (t) => t.name == name,
-    orElse: () => throw StateError(
-      'Type $name not reachable from schema.queryType',
-    ),
+    orElse: () =>
+        throw StateError('Type $name not reachable from schema.queryType'),
   );
   return found;
 }
@@ -297,9 +295,8 @@ String _fieldType(GraphQLSchema schema, String typeName, String fieldName) {
   final t = _objectByName(schema, typeName);
   final f = t.fields.firstWhere(
     (f) => f.name == fieldName,
-    orElse: () => throw StateError(
-      'Field $typeName.$fieldName not present in schema',
-    ),
+    orElse: () =>
+        throw StateError('Field $typeName.$fieldName not present in schema'),
   );
   return f.type.toString();
 }

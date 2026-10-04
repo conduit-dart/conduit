@@ -74,8 +74,12 @@ class PartialMapMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription,
-      Map matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
     if (matchState["PartialMatcher.runtimeType"] != null) {
       mismatchDescription.add("is not a map");
       return mismatchDescription;
@@ -84,14 +88,19 @@ class PartialMapMatcher extends Matcher {
     final mismatches =
         matchState["PartialMatcher.mismatches"] as List<String>? ?? <String>[];
     if (mismatches.isNotEmpty) {
-      mismatchDescription
-          .add("the following keys differ from partial matcher: \n");
+      mismatchDescription.add(
+        "the following keys differ from partial matcher: \n",
+      );
       for (final s in mismatches) {
         final matcher = _matcherMap[s]!;
         final value = item[s];
         mismatchDescription.add("  - '$s' ");
         matcher.describeMismatch(
-            value, mismatchDescription, matchState, verbose);
+          value,
+          mismatchDescription,
+          matchState,
+          verbose,
+        );
         mismatchDescription.add("\n");
       }
     }

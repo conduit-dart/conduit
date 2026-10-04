@@ -45,8 +45,12 @@ void main() {
 
       expect(op.responses!["404"], isNotNull);
       expect(
-        op.responses!["200"]!.content!["application/json"]!.schema!
-            .referenceURI!.path,
+        op
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
+            .path,
         "/components/schemas/TestModel",
       );
     });
@@ -60,12 +64,20 @@ void main() {
       expect(op.responses!["409"], isNotNull);
       expect(op.responses!["400"], isNotNull);
       expect(
-        op.responses!["200"]!.content!["application/json"]!.schema!
-            .referenceURI!.path,
+        op
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
+            .path,
         "/components/schemas/TestModel",
       );
       expect(
-        op.requestBody!.content!["application/json"]!.schema!.referenceURI!
+        op
+            .requestBody!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
             .path,
         "/components/schemas/TestModel",
       );
@@ -81,12 +93,20 @@ void main() {
       expect(op.responses!["409"], isNotNull);
       expect(op.responses!["400"], isNotNull);
       expect(
-        op.responses!["200"]!.content!["application/json"]!.schema!
-            .referenceURI!.path,
+        op
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
+            .path,
         "/components/schemas/TestModel",
       );
       expect(
-        op.requestBody!.content!["application/json"]!.schema!.referenceURI!
+        op
+            .requestBody!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
             .path,
         "/components/schemas/TestModel",
       );
@@ -116,8 +136,13 @@ void main() {
         APIType.array,
       );
       expect(
-        op.responses!["200"]!.content!["application/json"]!.schema!.items!
-            .referenceURI!.path,
+        op
+            .responses!["200"]!
+            .content!["application/json"]!
+            .schema!
+            .items!
+            .referenceURI!
+            .path,
         "/components/schemas/TestModel",
       );
     });
@@ -153,7 +178,9 @@ class TestChannel extends ApplicationChannel {
         .route("/controller/[:id]")
         .link(() => ManagedObjectController<TestModel>(context!));
 
-    router.route("/dynamic/[:id]").link(
+    router
+        .route("/dynamic/[:id]")
+        .link(
           () => ManagedObjectController.forEntity(
             context!.dataModel!.entityForType(TestModel),
             context!,

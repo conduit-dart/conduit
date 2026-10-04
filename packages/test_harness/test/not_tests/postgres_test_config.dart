@@ -31,12 +31,13 @@ class PostgresTestConfig {
   /// using the  db settings configured via .settings.yaml
   /// You can override all of some of these settings by passing
   /// in a non-null value to any of the named arguments.
-  PostgreSQLPersistentStore persistentStore(
-      {String? username,
-      String? password,
-      String? host,
-      int? port,
-      String? dbName}) {
+  PostgreSQLPersistentStore persistentStore({
+    String? username,
+    String? password,
+    String? host,
+    int? port,
+    String? dbName,
+  }) {
     username ??= this.username;
     password ??= this.password;
     host ??= this.host;
@@ -48,11 +49,21 @@ class PostgresTestConfig {
 
   DatabaseConfiguration databaseConfiguration() =>
       DatabaseConfiguration.withConnectionInfo(
-          username, password, host, port, dbName);
+        username,
+        password,
+        host,
+        port,
+        dbName,
+      );
 
   Future<ManagedContext> contextWithModels(List<Type> instanceTypes) async {
-    final persistentStore =
-        PostgreSQLPersistentStore(username, password, host, port, dbName);
+    final persistentStore = PostgreSQLPersistentStore(
+      username,
+      password,
+      host,
+      port,
+      dbName,
+    );
 
     final dataModel = ManagedDataModel(instanceTypes);
     final commands = commandsFromDataModel(dataModel, temporary: true);
@@ -65,17 +76,23 @@ class PostgresTestConfig {
     return context;
   }
 
-  List<String> commandsFromDataModel(ManagedDataModel dataModel,
-      {bool temporary = false}) {
+  List<String> commandsFromDataModel(
+    ManagedDataModel dataModel, {
+    bool temporary = false,
+  }) {
     final targetSchema = Schema.fromDataModel(dataModel);
     final builder = SchemaBuilder.toSchema(
-        PostgreSQLPersistentStore(null, null, null, port, null), targetSchema,
-        isTemporary: temporary);
+      PostgreSQLPersistentStore(null, null, null, port, null),
+      targetSchema,
+      isTemporary: temporary,
+    );
     return builder.commands;
   }
 
-  List<String> commandsForModelInstanceTypes(List<Type> instanceTypes,
-      {bool temporary = false}) {
+  List<String> commandsForModelInstanceTypes(
+    List<Type> instanceTypes, {
+    bool temporary = false,
+  }) {
     final dataModel = ManagedDataModel(instanceTypes);
     return commandsFromDataModel(dataModel, temporary: temporary);
   }
@@ -99,8 +116,7 @@ class PostgresTestConfig {
     if (raw == null || raw.isEmpty) return _port = _defaultPort;
     final parsed = int.tryParse(raw);
     if (parsed == null) {
-      throw ArgumentError(
-          'POSTGRES_PORT must be an integer; got "$raw"');
+      throw ArgumentError('POSTGRES_PORT must be an integer; got "$raw"');
     }
     return _port = parsed;
   }

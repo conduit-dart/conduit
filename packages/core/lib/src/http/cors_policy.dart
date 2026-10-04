@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:conduit_core/src/http/http.dart';
 
 /// Describes a CORS policy for a [Controller].
@@ -42,7 +43,7 @@ class CORSPolicy {
       "authorization",
       "x-requested-with",
       "x-forwarded-for",
-      "content-type"
+      "content-type",
     ];
     cacheInSeconds = 86400;
   }
@@ -65,7 +66,7 @@ class CORSPolicy {
     "accept",
     "accept-language",
     "content-language",
-    "content-type"
+    "content-type",
   ];
 
   /// List of 'Simple' CORS Response headers.
@@ -78,7 +79,7 @@ class CORSPolicy {
     "content-type",
     "expires",
     "last-modified",
-    "pragma"
+    "pragma",
   ];
 
   /// The list of case-sensitive allowed origins.
@@ -124,8 +125,9 @@ class CORSPolicy {
     headers["Access-Control-Allow-Origin"] = origin;
 
     if (exposedResponseHeaders.isNotEmpty) {
-      headers["Access-Control-Expose-Headers"] =
-          exposedResponseHeaders.join(", ");
+      headers["Access-Control-Expose-Headers"] = exposedResponseHeaders.join(
+        ", ",
+      );
     }
 
     if (allowCredentials) {
@@ -195,8 +197,9 @@ class CORSPolicy {
         .map((str) => str.trim().toLowerCase())
         .toList();
     if (requestedHeaders?.isNotEmpty ?? false) {
-      final nonSimpleHeaders =
-          requestedHeaders!.where((str) => !simpleRequestHeaders.contains(str));
+      final nonSimpleHeaders = requestedHeaders!.where(
+        (str) => !simpleRequestHeaders.contains(str),
+      );
       if (nonSimpleHeaders.any((h) => !allowedRequestHeaders.contains(h))) {
         return false;
       }
@@ -215,7 +218,7 @@ class CORSPolicy {
     final headers = {
       "Access-Control-Allow-Origin": req.raw.headers.value("origin"),
       "Access-Control-Allow-Methods": allowedMethods.join(", "),
-      "Access-Control-Allow-Headers": allowedRequestHeaders.join(", ")
+      "Access-Control-Allow-Headers": allowedRequestHeaders.join(", "),
     };
 
     if (allowCredentials) {

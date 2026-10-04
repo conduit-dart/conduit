@@ -22,16 +22,14 @@ class CLIDatabaseRebuild extends CLICommand
   @Flag(
     "yes",
     abbr: "y",
-    help:
-        "Skip the interactive confirmation prompt. Required for non-interactive use.",
+    help: "Skip the interactive confirmation prompt. Required for non-interactive use.",
     negatable: false,
   )
   bool get skipConfirmation => decode<bool>("yes");
 
   @Option(
     "name",
-    help:
-        "Name of the regenerated migration. Automatically lower- and snake-cased.",
+    help: "Name of the regenerated migration. Automatically lower- and snake-cased.",
     defaultsTo: "initial",
   )
   String get migrationName => decode<String>("name");
@@ -101,14 +99,12 @@ class CLIDatabaseRebuild extends CLICommand
     if (databaseConnectionString != null) {
       upgradeArgs.addAll(["--connect", databaseConnectionString!]);
     } else {
-      upgradeArgs.addAll([
-        "--database-config",
-        databaseConfigurationFile.path,
-      ]);
+      upgradeArgs.addAll(["--database-config", databaseConfigurationFile.path]);
     }
     final upgrade = CLIDatabaseUpgrade()..outputSink = outputSink;
-    final upgradeResult =
-        await upgrade.process(upgrade.options.parse(upgradeArgs));
+    final upgradeResult = await upgrade.process(
+      upgrade.options.parse(upgradeArgs),
+    );
     if (upgradeResult != 0) {
       displayError("`db upgrade` failed during rebuild.");
       return upgradeResult;

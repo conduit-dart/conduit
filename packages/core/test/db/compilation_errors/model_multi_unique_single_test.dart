@@ -2,9 +2,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-      "Add Table to table definition with only single element in unique list throws exception, warns to use Table",
-      () {
+  test("Add Table to table definition with only single element in unique list throws exception, warns to use Table", () {
     try {
       ManagedDataModel([MultiUniqueFailureSingleElement]);
       expect(true, false);

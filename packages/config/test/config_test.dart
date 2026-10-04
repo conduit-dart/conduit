@@ -5,7 +5,8 @@ import 'package:test/test.dart';
 
 void main() {
   test("Success case", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "name: foobar\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -31,8 +32,8 @@ void main() {
         "username": "bob",
         "password": "fred",
         "databaseName": "dbname",
-        "port": 5000
-      }
+        "port": 5000,
+      },
     };
     t = TopLevelConfiguration.fromMap(asMap);
     expect(t.port, 80);
@@ -45,7 +46,8 @@ void main() {
   });
 
   test("Configuration subclasses success case", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "extraValue: 2\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -74,8 +76,8 @@ void main() {
         "password": "fred",
         "databaseName": "dbname",
         "port": 5000,
-        "extraDatabaseValue": 3
-      }
+        "extraDatabaseValue": 3,
+      },
     };
     t = ConfigurationSubclass.fromMap(asMap);
     expect(t.port, 80);
@@ -90,7 +92,8 @@ void main() {
 
   test("Extra property", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n"
           "extraKey: 2\n"
           "database:\n"
@@ -108,7 +111,7 @@ void main() {
         allOf([
           contains("TopLevelConfiguration"),
           contains("unexpected keys found"),
-          contains("'extraKey'")
+          contains("'extraKey'"),
         ]),
       );
     }
@@ -123,8 +126,8 @@ void main() {
           "username": "bob",
           "password": "fred",
           "databaseName": "dbname",
-          "port": 5000
-        }
+          "port": 5000,
+        },
       };
       final _ = TopLevelConfiguration.fromMap(asMap);
       fail('unreachable');
@@ -134,7 +137,7 @@ void main() {
         allOf([
           contains("TopLevelConfiguration"),
           contains("unexpected keys found"),
-          contains("'extraKey'")
+          contains("'extraKey'"),
         ]),
       );
     }
@@ -142,7 +145,8 @@ void main() {
 
   test("Missing required top-level (annotated property)", () {
     try {
-      const yamlString = "name: foobar\n"
+      const yamlString =
+          "name: foobar\n"
           "database:\n"
           "  host: stablekernel.com\n"
           "  username: bob\n"
@@ -158,7 +162,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("TopLevelConfiguration"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -171,8 +175,8 @@ void main() {
           "username": "bob",
           "password": "fred",
           "databaseName": "dbname",
-          "port": 5000
-        }
+          "port": 5000,
+        },
       };
       final _ = TopLevelConfiguration.fromMap(asMap);
       fail("Should not succeed");
@@ -182,7 +186,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("TopLevelConfiguration"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -190,7 +194,8 @@ void main() {
 
   test("Missing required top-level (default unannotated property)", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n";
       final _ = TopLevelConfiguration.fromString(yamlString);
       fail("Should not succeed");
@@ -200,7 +205,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("TopLevelConfiguration"),
-          contains("'database'")
+          contains("'database'"),
         ]),
       );
     }
@@ -215,7 +220,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("TopLevelConfiguration"),
-          contains("'database'")
+          contains("'database'"),
         ]),
       );
     }
@@ -223,7 +228,8 @@ void main() {
 
   test("Invalid value for top-level property", () {
     try {
-      const yamlString = "name: foobar\n"
+      const yamlString =
+          "name: foobar\n"
           "port: 65536\n";
 
       final _ = TopLevelConfigurationWithValidation.fromString(yamlString);
@@ -247,7 +253,8 @@ void main() {
 
   test("Missing required top-level from superclass", () {
     try {
-      const yamlString = "name: foobar\n"
+      const yamlString =
+          "name: foobar\n"
           "extraValue: 2\n"
           "database:\n"
           "  host: stablekernel.com\n"
@@ -265,7 +272,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -280,8 +287,8 @@ void main() {
           "password": "fred",
           "databaseName": "dbname",
           "port": 5000,
-          "extraDatabaseValue": 3
-        }
+          "extraDatabaseValue": 3,
+        },
       };
       final _ = ConfigurationSubclass.fromMap(asMap);
       fail("Should not succeed");
@@ -291,7 +298,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -299,7 +306,8 @@ void main() {
 
   test("Missing required top-level from subclass", () {
     try {
-      const yamlString = "name: foobar\n"
+      const yamlString =
+          "name: foobar\n"
           "port: 80\n"
           "database:\n"
           "  host: stablekernel.com\n"
@@ -317,7 +325,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'extraValue'")
+          contains("'extraValue'"),
         ]),
       );
     }
@@ -332,8 +340,8 @@ void main() {
           "password": "fred",
           "databaseName": "dbname",
           "port": 5000,
-          "extraDatabaseValue": 3
-        }
+          "extraDatabaseValue": 3,
+        },
       };
       final _ = ConfigurationSubclass.fromMap(asMap);
       fail("Should not succeed");
@@ -343,7 +351,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'extraValue'")
+          contains("'extraValue'"),
         ]),
       );
     }
@@ -351,7 +359,8 @@ void main() {
 
   test("Missing required nested property from superclass", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n"
           "extraValue: 2\n"
           "database:\n"
@@ -369,7 +378,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -384,8 +393,8 @@ void main() {
           "username": "bob",
           "password": "fred",
           "databaseName": "dbname",
-          "extraDatabaseValue": 3
-        }
+          "extraDatabaseValue": 3,
+        },
       };
       final _ = ConfigurationSubclass.fromMap(asMap);
       fail("Should not succeed");
@@ -395,7 +404,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'port'")
+          contains("'port'"),
         ]),
       );
     }
@@ -403,7 +412,8 @@ void main() {
 
   test("Missing required nested property from subclass", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n"
           "extraValue: 2\n"
           "database:\n"
@@ -421,7 +431,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'extraDatabaseValue'")
+          contains("'extraDatabaseValue'"),
         ]),
       );
     }
@@ -437,7 +447,7 @@ void main() {
           "password": "fred",
           "databaseName": "dbname",
           "port": 5000,
-        }
+        },
       };
       final _ = ConfigurationSubclass.fromMap(asMap);
       fail("Should not succeed");
@@ -447,7 +457,7 @@ void main() {
         allOf([
           contains("missing required"),
           contains("ConfigurationSubclass"),
-          contains("'extraDatabaseValue'")
+          contains("'extraDatabaseValue'"),
         ]),
       );
     }
@@ -455,7 +465,8 @@ void main() {
 
   test("Validation of the value of property from subclass", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n"
           "database:\n"
           "  host: not a host.com\n"
@@ -471,7 +482,7 @@ void main() {
         e.toString(),
         allOf([
           contains("ConfigurationSubclassWithValidation"),
-          contains("not a host.com")
+          contains("not a host.com"),
         ]),
       );
     }
@@ -486,7 +497,7 @@ void main() {
           "password": "fred",
           "databaseName": "dbname",
           "port": 5000,
-        }
+        },
       };
       final _ = ConfigurationSubclassWithValidation.fromMap(asMap);
       fail("Should not succeed");
@@ -495,14 +506,15 @@ void main() {
         e.toString(),
         allOf([
           contains("ConfigurationSubclassWithValidation"),
-          contains("not a host.com")
+          contains("not a host.com"),
         ]),
       );
     }
   });
 
   test("Optional can be missing", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "database:\n"
         "  host: stablekernel.com\n"
         "  username: bob\n"
@@ -526,8 +538,8 @@ void main() {
         "username": "bob",
         "password": "fred",
         "databaseName": "dbname",
-        "port": 5000
-      }
+        "port": 5000,
+      },
     };
     t = TopLevelConfiguration.fromMap(asMap);
     expect(t.port, 80);
@@ -540,7 +552,8 @@ void main() {
   });
 
   test("Nested optional can be missing", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "name: foobar\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -564,8 +577,8 @@ void main() {
         "host": "stablekernel.com",
         "password": "fred",
         "databaseName": "dbname",
-        "port": 5000
-      }
+        "port": 5000,
+      },
     };
     t = TopLevelConfiguration.fromMap(asMap);
     expect(t.port, 80);
@@ -579,7 +592,8 @@ void main() {
 
   test("Nested required cannot be missing", () {
     try {
-      const yamlString = "port: 80\n"
+      const yamlString =
+          "port: 80\n"
           "name: foobar\n"
           "database:\n"
           "  host: stablekernel.com\n"
@@ -594,7 +608,7 @@ void main() {
         allOf([
           contains("missing"),
           contains("TopLevelConfiguration"),
-          contains("'databaseName'")
+          contains("'databaseName'"),
         ]),
       );
     }
@@ -606,8 +620,8 @@ void main() {
         "database": {
           "host": "stablekernel.com",
           "password": "fred",
-          "port": 5000
-        }
+          "port": 5000,
+        },
       };
       final _ = TopLevelConfiguration.fromMap(asMap);
       fail("Should not succeed");
@@ -617,14 +631,15 @@ void main() {
         allOf([
           contains("missing"),
           contains("TopLevelConfiguration"),
-          contains("'databaseName'")
+          contains("'databaseName'"),
         ]),
       );
     }
   });
 
   test("Map and list cases", () {
-    const yamlString = "strings:\n"
+    const yamlString =
+        "strings:\n"
         "-  abcd\n"
         "-  efgh\n"
         "databaseRecords:\n"
@@ -672,7 +687,8 @@ void main() {
   });
 
   test("From file works the same", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "name: foobar\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -703,7 +719,8 @@ void main() {
     expect(config.port, 80);
     expect(config.database, isNull);
 
-    yamlString = "port: 80\n"
+    yamlString =
+        "port: 80\n"
         "database:\n"
         "  host: here\n"
         "  port: 90\n"
@@ -718,7 +735,8 @@ void main() {
 
   test("Optional nested ConfigurationItem obeys required items", () {
     // Missing host intentionally
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "database:\n"
         "  port: 90\n"
         "  databaseName: db";
@@ -726,11 +744,14 @@ void main() {
     try {
       final _ = OptionalEmbeddedContainer.fromString(yamlString);
       fail('unreachable');
-    } on ConfigurationException {}
+    } on ConfigurationException {
+      // Expected: the nested item is missing its required `host`.
+    }
   });
 
   test("Database configuration can come from string", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "database: 'postgres://dart:pw@host:5432/dbname'\n";
 
     final values = OptionalEmbeddedContainer.fromString(yamlString);
@@ -741,10 +762,9 @@ void main() {
     expect(values.database!.databaseName, "dbname");
   });
 
-  test(
-      "Database configuration as a string can contain an URL-encoded authority",
-      () {
-    const yamlString = "port: 80\n"
+  test("Database configuration as a string can contain an URL-encoded authority", () {
+    const yamlString =
+        "port: 80\n"
         "database: 'postgres://dart%40google.com:pass%23word@host:5432/dbname'\n";
 
     final values = OptionalEmbeddedContainer.fromString(yamlString);
@@ -752,38 +772,44 @@ void main() {
     expect(values.database!.password, "pass#word");
   });
 
-  test("Omitting optional values in a 'decoded' config still returns succees",
-      () {
-    const yamlString = "port: 80\n"
-        "database: 'postgres://host:5432/dbname'\n";
+  test(
+    "Omitting optional values in a 'decoded' config still returns succees",
+    () {
+      const yamlString =
+          "port: 80\n"
+          "database: 'postgres://host:5432/dbname'\n";
 
-    final values = OptionalEmbeddedContainer.fromString(yamlString);
-    expect(values.port, 80);
-    expect(values.database!.username, isNull);
-    expect(values.database!.password, isNull);
-    expect(values.database!.port, 5432);
-    expect(values.database!.databaseName, "dbname");
-  });
+      final values = OptionalEmbeddedContainer.fromString(yamlString);
+      expect(values.port, 80);
+      expect(values.database!.username, isNull);
+      expect(values.database!.password, isNull);
+      expect(values.database!.port, 5432);
+      expect(values.database!.databaseName, "dbname");
+    },
+  );
 
-  test("Not including required values in a 'decoded' config still yields error",
-      () {
-    const yamlString = "port: 80\n"
-        "database: 'postgres://dart:pw@host:5432'\n";
+  test(
+    "Not including required values in a 'decoded' config still yields error",
+    () {
+      const yamlString =
+          "port: 80\n"
+          "database: 'postgres://dart:pw@host:5432'\n";
 
-    try {
-      final _ = OptionalEmbeddedContainer.fromString(yamlString);
-      expect(true, false);
-    } on ConfigurationException catch (e) {
-      expect(
-        e.toString(),
-        allOf([
-          contains("missing"),
-          contains("OptionalEmbeddedContainer"),
-          contains("'databaseName'")
-        ]),
-      );
-    }
-  });
+      try {
+        final _ = OptionalEmbeddedContainer.fromString(yamlString);
+        expect(true, false);
+      } on ConfigurationException catch (e) {
+        expect(
+          e.toString(),
+          allOf([
+            contains("missing"),
+            contains("OptionalEmbeddedContainer"),
+            contains("'databaseName'"),
+          ]),
+        );
+      }
+    },
+  );
 
   test("Environment variable escape values read from Environment", () {
     if (Platform.environment["TEST_BOOL"] == null ||
@@ -794,7 +820,8 @@ void main() {
       );
     }
 
-    const yamlString = "path: \$PATH\n"
+    const yamlString =
+        "path: \$PATH\n"
         "optionalDooDad: \$XYZ123\n"
         "testValue: \$TEST_VALUE\n"
         "testBoolean: \$TEST_BOOL";
@@ -850,7 +877,8 @@ void main() {
   });
 
   test("DatabaseConfiguration.maxConnectionCount defaults to 1", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "database:\n"
         "  host: stablekernel.com\n"
         "  port: 5432\n"
@@ -860,7 +888,8 @@ void main() {
   });
 
   test("DatabaseConfiguration.maxConnectionCount is read when present", () {
-    const yamlString = "port: 80\n"
+    const yamlString =
+        "port: 80\n"
         "database:\n"
         "  host: stablekernel.com\n"
         "  port: 5432\n"
@@ -870,10 +899,9 @@ void main() {
     expect(dbConfig.maxConnectionCount, 8);
   });
 
-  test(
-      "Assigning value of incorrect type to parsed integer emits error and field name",
-      () {
-    const yamlString = "port: foobar\n"
+  test("Assigning value of incorrect type to parsed integer emits error and field name", () {
+    const yamlString =
+        "port: foobar\n"
         "name: foobar\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -892,10 +920,9 @@ void main() {
     }
   });
 
-  test(
-      "Assigning value of incorrect type to nested field emits error and field name",
-      () {
-    const yamlString = "port: 1000\n"
+  test("Assigning value of incorrect type to nested field emits error and field name", () {
+    const yamlString =
+        "port: 1000\n"
         "name: foobar\n"
         "database:\n"
         "  host: stablekernel.com\n"
@@ -959,7 +986,7 @@ class TopLevelConfigurationWithValidation extends Configuration {
   TopLevelConfigurationWithValidation();
 
   TopLevelConfigurationWithValidation.fromString(super.contents)
-      : super.fromString();
+    : super.fromString();
 
   TopLevelConfigurationWithValidation.fromFile(super.file) : super.fromFile();
 
@@ -1016,7 +1043,7 @@ class ConfigurationSubclassWithValidation extends ConfigurationSuperclass {
   ConfigurationSubclassWithValidation();
 
   ConfigurationSubclassWithValidation.fromString(super.contents)
-      : super.fromString();
+    : super.fromString();
 
   ConfigurationSubclassWithValidation.fromFile(super.file) : super.fromFile();
 

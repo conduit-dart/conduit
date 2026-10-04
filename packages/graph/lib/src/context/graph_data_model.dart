@@ -58,9 +58,7 @@ class GraphDataModel {
   final Map<Type, GraphEdgeEntity> _edges = {};
 
   /// Register a node type. The [label] defaults to the type's name.
-  GraphNodeEntity registerNode<T extends GraphNode<T>>({
-    GraphLabel? label,
-  }) {
+  GraphNodeEntity registerNode<T extends GraphNode<T>>({GraphLabel? label}) {
     final entity = GraphNodeEntity(
       type: T,
       label: label ?? GraphLabel(T.toString()),
@@ -71,11 +69,10 @@ class GraphDataModel {
 
   /// Register an edge type. The [label] defaults to the type's name.
   GraphEdgeEntity registerEdge<
-      E extends GraphEdge<From, To>,
-      From extends GraphNode<From>,
-      To extends GraphNode<To>>({
-    GraphLabel? label,
-  }) {
+    E extends GraphEdge<From, To>,
+    From extends GraphNode<From>,
+    To extends GraphNode<To>
+  >({GraphLabel? label}) {
     final entity = GraphEdgeEntity(
       type: E,
       label: label ?? GraphLabel(E.toString()),

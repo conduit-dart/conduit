@@ -60,7 +60,7 @@ class AuthCodeController extends ResourceController {
   @Deprecated('Use AuthRedirectController instead.')
   AuthCodeController(this.authServer, {this.delegate}) {
     acceptedContentTypes = [
-      ContentType("application", "x-www-form-urlencoded")
+      ContentType("application", "x-www-form-urlencoded"),
     ];
   }
 
@@ -109,8 +109,14 @@ class AuthCodeController extends ResourceController {
       return Response(405, {}, null);
     }
 
-    final renderedPage = await delegate!
-        .render(this, request!.raw.uri, responseType, clientID!, state, scope);
+    final renderedPage = await delegate!.render(
+      this,
+      request!.raw.uri,
+      responseType,
+      clientID!,
+      state,
+      scope,
+    );
 
     return Response.ok(renderedPage)..contentType = ContentType.html;
   }
@@ -183,14 +189,18 @@ class AuthCodeController extends ResourceController {
   ) {
     final body = super.documentOperationRequestBody(context, operation);
     if (operation!.method == "POST") {
-      body!.content!["application/x-www-form-urlencoded"]!.schema!
-          .properties!["password"]!.format = "password";
+      body!
+              .content!["application/x-www-form-urlencoded"]!
+              .schema!
+              .properties!["password"]!
+              .format =
+          "password";
       body.content!["application/x-www-form-urlencoded"]!.schema!.isRequired = [
         "client_id",
         "state",
         "response_type",
         "username",
-        "password"
+        "password",
       ];
     }
     return body;
@@ -219,7 +229,7 @@ class AuthCodeController extends ResourceController {
           "Serves a login form.",
           APISchemaObject.string(),
           contentTypes: ["text/html"],
-        )
+        ),
       };
     } else if (operation.method == "POST") {
       return {
@@ -228,14 +238,14 @@ class AuthCodeController extends ResourceController {
           "Otherwise, the query parameter 'error' is present and contains a error string.",
           headers: {
             "Location": APIHeader()
-              ..schema = APISchemaObject.string(format: "uri")
+              ..schema = APISchemaObject.string(format: "uri"),
           },
         ),
         "${HttpStatus.badRequest}": APIResponse.schema(
           "If 'client_id' is invalid, the redirect URI cannot be verified and this response is sent.",
           APISchemaObject.object({"error": APISchemaObject.string()}),
           contentTypes: ["application/json"],
-        )
+        ),
       };
     }
 
@@ -249,8 +259,9 @@ class AuthCodeController extends ResourceController {
     APIPath path,
   ) {
     final ops = super.documentOperations(context, route, path);
-    authServer.documentedAuthorizationCodeFlow.authorizationURL =
-        Uri(path: route.substring(1));
+    authServer.documentedAuthorizationCodeFlow.authorizationURL = Uri(
+      path: route.substring(1),
+    );
     return ops;
   }
 
@@ -266,8 +277,9 @@ class AuthCodeController extends ResourceController {
     }
 
     final redirectURI = Uri.parse(uriString);
-    final queryParameters =
-        Map<String, String?>.from(redirectURI.queryParameters);
+    final queryParameters = Map<String, String?>.from(
+      redirectURI.queryParameters,
+    );
 
     if (code != null) {
       queryParameters["code"] = code;
@@ -287,14 +299,10 @@ class AuthCodeController extends ResourceController {
       path: redirectURI.path,
       queryParameters: queryParameters,
     );
-    return Response(
-      HttpStatus.movedTemporarily,
-      {
-        HttpHeaders.locationHeader: responseURI.toString(),
-        HttpHeaders.cacheControlHeader: "no-store",
-        HttpHeaders.pragmaHeader: "no-cache"
-      },
-      null,
-    );
+    return Response(HttpStatus.movedTemporarily, {
+      HttpHeaders.locationHeader: responseURI.toString(),
+      HttpHeaders.cacheControlHeader: "no-store",
+      HttpHeaders.pragmaHeader: "no-cache",
+    }, null);
   }
 }

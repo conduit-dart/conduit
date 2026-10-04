@@ -16,7 +16,7 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 
 class _EncodeListBench extends BenchmarkBase {
   _EncodeListBench(this.payload)
-      : super('json.encode List[${(payload as List).length} maps]');
+    : super('json.encode List[${(payload as List).length} maps]');
   final Object payload;
 
   @override
@@ -58,12 +58,7 @@ class _DecodeMapBench extends BenchmarkBase {
 void main() {
   final listPayload = List<Map<String, dynamic>>.generate(
     1000,
-    (i) => {
-      'id': i,
-      'name': 'item-$i',
-      'active': i.isEven,
-      'score': i * 0.5,
-    },
+    (i) => {'id': i, 'name': 'item-$i', 'active': i.isEven, 'score': i * 0.5},
   );
   final encodedList = json.encode(listPayload);
 

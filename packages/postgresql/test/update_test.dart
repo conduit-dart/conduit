@@ -27,8 +27,9 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate =
-          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "Bob"),
+      })
       ..values = m;
 
     final response = await req.update();
@@ -38,9 +39,7 @@ void main() {
     expect(result.emailAddress, "2@a.com");
   });
 
-  test(
-      "Updating non-nullable property to null gives error that specifies the offending property",
-      () async {
+  test("Updating non-nullable property to null gives error that specifies the offending property", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     final m = TestModel()
@@ -55,8 +54,9 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate =
-          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "Bob"),
+      })
       ..values = m;
 
     try {
@@ -127,8 +127,9 @@ void main() {
       ..emailAddress = "2@a.com";
 
     req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate(
-          "name = @name", {"name": TypedValue(Type.text, "John")})
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "John"),
+      })
       ..values = m;
 
     final response = await req.update();
@@ -207,8 +208,9 @@ void main() {
     await req.insert();
 
     req = Query<TestModel>(context!)
-      ..predicate =
-          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "Bob"),
+      })
       ..values.name = "John";
 
     var response = await req.updateOne();
@@ -217,44 +219,47 @@ void main() {
     expect(response.emailAddress, "1@a.com");
 
     req = Query<TestModel>(context!)
-      ..predicate =
-          QueryPredicate("name = @name", {"name": TypedValue(Type.text, "Bob")})
+      ..predicate = QueryPredicate("name = @name", {
+        "name": TypedValue(Type.text, "Bob"),
+      })
       ..values.name = "John";
 
     response = await req.updateOne();
     expect(response, isNull);
   });
 
-  test("updateOne throws exception if it updated more than one object",
-      () async {
-    context = await PostgresTestConfig().contextWithModels([TestModel]);
+  test(
+    "updateOne throws exception if it updated more than one object",
+    () async {
+      context = await PostgresTestConfig().contextWithModels([TestModel]);
 
-    final m = TestModel()
-      ..name = "Bob"
-      ..emailAddress = "1@a.com";
-    final fred = TestModel()
-      ..name = "Fred"
-      ..emailAddress = "2@a.com";
+      final m = TestModel()
+        ..name = "Bob"
+        ..emailAddress = "1@a.com";
+      final fred = TestModel()
+        ..name = "Fred"
+        ..emailAddress = "2@a.com";
 
-    var req = Query<TestModel>(context!)..values = m;
-    await req.insert();
-    req = Query<TestModel>(context!)..values = fred;
-    await req.insert();
+      var req = Query<TestModel>(context!)..values = m;
+      await req.insert();
+      req = Query<TestModel>(context!)..values = fred;
+      await req.insert();
 
-    req = Query<TestModel>(context!)
-      ..predicate = QueryPredicate("name is not null")
-      ..values.name = "Joe";
+      req = Query<TestModel>(context!)
+        ..predicate = QueryPredicate("name is not null")
+        ..values.name = "Joe";
 
-    try {
-      final _ = await req.updateOne();
-      expect(true, false);
-    } on StateError catch (e) {
-      expect(
-        e.toString(),
-        contains("'updateOne' modified more than one row in '_TestModel'"),
-      );
-    }
-  });
+      try {
+        final _ = await req.updateOne();
+        expect(true, false);
+      } on StateError catch (e) {
+        expect(
+          e.toString(),
+          contains("'updateOne' modified more than one row in '_TestModel'"),
+        );
+      }
+    },
+  );
 
   test("Update all without safeguard fails", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
@@ -279,9 +284,7 @@ void main() {
     } on StateError catch (e) {
       expect(
         e.message,
-        contains(
-          "Query is either update or delete query with no WHERE clause",
-        ),
+        contains("Query is either update or delete query with no WHERE clause"),
       );
     }
   });
@@ -309,9 +312,7 @@ void main() {
     expect(res.map((tm) => tm.name), everyElement("Fred"));
   });
 
-  test(
-      "Attempted update that will cause conflict throws appropriate QueryException",
-      () async {
+  test("Attempted update that will cause conflict throws appropriate QueryException", () async {
     context = await PostgresTestConfig().contextWithModels([TestModel]);
 
     final objects = [
@@ -320,7 +321,7 @@ void main() {
         ..emailAddress = "1@a.com",
       TestModel()
         ..name = "Fred"
-        ..emailAddress = "2@a.com"
+        ..emailAddress = "2@a.com",
     ];
     for (final o in objects) {
       final req = Query<TestModel>(context!)..values = o;

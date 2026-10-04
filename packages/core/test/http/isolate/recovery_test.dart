@@ -26,8 +26,9 @@ void main() {
       await app.start();
 
       // This request will generate an uncaught exception
-      final failFuture =
-          http.get(Uri.parse("http://localhost:8888/?crash=true"));
+      final failFuture = http.get(
+        Uri.parse("http://localhost:8888/?crash=true"),
+      );
 
       // This request will come in right after the failure but should succeed
       final successFuture = http.get(Uri.parse("http://localhost:8888/"));
@@ -54,39 +55,46 @@ void main() {
       print("succeeded in final request");
     });
 
-    test("Application with multiple isolates reports uncaught error, recovers",
-        () async {
-      final contents = <String>[];
-      var counter = 0;
-      final completer = Completer();
-      app.logger.onRecord.listen((rec) {
-        print("got msg");
-        contents.add(rec.message);
-        counter++;
-        if (counter == 5) {
-          completer.complete();
-        }
-      });
+    test(
+      "Application with multiple isolates reports uncaught error, recovers",
+      () async {
+        final contents = <String>[];
+        var counter = 0;
+        final completer = Completer();
+        app.logger.onRecord.listen((rec) {
+          print("got msg");
+          contents.add(rec.message);
+          counter++;
+          if (counter == 5) {
+            completer.complete();
+          }
+        });
 
-      await app.start(numberOfInstances: 2);
+        await app.start(numberOfInstances: 2);
 
-      // Throw some deferred crashers then some success messages at the server
-      final failFutures = Iterable.generate(5)
-          .map((_) => http.get(Uri.parse("http://localhost:8888/?crash=true")));
+        // Throw some deferred crashers then some success messages at the server
+        final failFutures = Iterable.generate(
+          5,
+        ).map((_) => http.get(Uri.parse("http://localhost:8888/?crash=true")));
 
-      final successResponse =
-          await http.get(Uri.parse("http://localhost:8888/"));
-      expect(successResponse.statusCode, 200);
-      expect(
-        (await Future.wait(failFutures)).map((r) => r.statusCode),
-        everyElement(200),
-      );
+        final successResponse = await http.get(
+          Uri.parse("http://localhost:8888/"),
+        );
+        expect(successResponse.statusCode, 200);
+        expect(
+          (await Future.wait(failFutures)).map((r) => r.statusCode),
+          everyElement(200),
+        );
 
-      print("wait on completion");
-      await completer.future;
-      print("completed");
-      expect(contents.where((c) => c.contains("Uncaught exception")).length, 5);
-    });
+        print("wait on completion");
+        await completer.future;
+        print("completed");
+        expect(
+          contents.where((c) => c.contains("Uncaught exception")).length,
+          5,
+        );
+      },
+    );
   });
 }
 

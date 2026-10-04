@@ -21,66 +21,80 @@ void main() {
       persistentStore = PostgresTestConfig().persistentStore();
       var result = await persistentStore!.execute("select 1");
       expect(result, [
-        [1]
+        [1],
       ]);
 
       await persistentStore!.close();
 
       result = await persistentStore!.execute("select 1");
       expect(result, [
-        [1]
+        [1],
       ]);
     });
 
     test(
-        "Ask for multiple connections at once, yield one successful connection",
-        () async {
-      persistentStore = PostgresTestConfig().persistentStore();
-      final connections = await Future.wait(
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-            .map((_) => persistentStore!.getDatabaseConnection()),
-      );
-      final first = connections.first;
-      expect(connections, everyElement(first));
-    });
-
-    test("Make multiple requests at once, yield one successful connection",
-        () async {
-      persistentStore = PostgresTestConfig().persistentStore();
-      final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      final values = await Future.wait(
-        expectedValues.map((i) => persistentStore!.execute("select $i")),
-      );
-
-      expect(
-        values,
-        expectedValues
-            .map(
-              (v) => [
-                [v]
-              ],
-            )
-            .toList(),
-      );
-    });
-
-    test("Make multiple requests at once, all fail because db connect fails",
-        () async {
-      persistentStore =
-          PostgresTestConfig().persistentStore(dbName: 'xyzxyznotadb');
-
-      final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      final values = await Future.wait(
-        expectedValues.map(
-          (i) => persistentStore!.execute("select $i").catchError((e) => e),
-        ),
-      );
-      expect(values, everyElement(const TypeMatcher<QueryException>()));
-    });
+      "Ask for multiple connections at once, yield one successful connection",
+      () async {
+        persistentStore = PostgresTestConfig().persistentStore();
+        final connections = await Future.wait(
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+          ].map((_) => persistentStore!.getDatabaseConnection()),
+        );
+        final first = connections.first;
+        expect(connections, everyElement(first));
+      },
+    );
 
     test(
-        "Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)",
-        () async {
+      "Make multiple requests at once, yield one successful connection",
+      () async {
+        persistentStore = PostgresTestConfig().persistentStore();
+        final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        final values = await Future.wait(
+          expectedValues.map((i) => persistentStore!.execute("select $i")),
+        );
+
+        expect(
+          values,
+          expectedValues
+              .map(
+                (v) => [
+                  [v],
+                ],
+              )
+              .toList(),
+        );
+      },
+    );
+
+    test(
+      "Make multiple requests at once, all fail because db connect fails",
+      () async {
+        persistentStore = PostgresTestConfig().persistentStore(
+          dbName: 'xyzxyznotadb',
+        );
+
+        final expectedValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        final values = await Future.wait(
+          expectedValues.map(
+            (i) => persistentStore!.execute("select $i").catchError((e) => e),
+          ),
+        );
+        expect(values, everyElement(const TypeMatcher<QueryException>()));
+      },
+    );
+
+    test("Make multiple requests at once, first few fails because db connect fails (but eventually succeeds)", () async {
       persistentStore = PostgresTestConfig().persistentStore(port: 15434);
 
       var expectedValues = [1, 2, 3, 4, 5];
@@ -91,8 +105,7 @@ void main() {
       );
       expect(values, everyElement(const TypeMatcher<QueryException>()));
 
-      proxy =
-          SocketProxy(15434, PostgresTestConfig().port);
+      proxy = SocketProxy(15434, PostgresTestConfig().port);
       await proxy?.open();
 
       expectedValues = [5, 6, 7, 8, 9];
@@ -104,47 +117,50 @@ void main() {
         expectedValues
             .map(
               (v) => [
-                [v]
+                [v],
               ],
             )
             .toList(),
       );
     });
 
-    test("Connect to bad db fails gracefully, can then be used again",
-        () async {
-      persistentStore = PostgresTestConfig().persistentStore(port: 15433);
+    test(
+      "Connect to bad db fails gracefully, can then be used again",
+      () async {
+        persistentStore = PostgresTestConfig().persistentStore(port: 15433);
 
-      try {
-        await persistentStore!.executeQuery("SELECT 1", null, 20);
-        expect(true, false);
-      } on QueryException {
-        //empty
-      }
+        try {
+          await persistentStore!.executeQuery("SELECT 1", null, 20);
+          expect(true, false);
+        } on QueryException {
+          //empty
+        }
 
-      proxy =
-          SocketProxy(15433, PostgresTestConfig().port);
-      await proxy!.open();
+        proxy = SocketProxy(15433, PostgresTestConfig().port);
+        await proxy!.open();
 
-      final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
-      expect(x, [
-        [1]
-      ]);
-    });
+        final x = await persistentStore!.executeQuery("SELECT 1", null, 20);
+        expect(x, [
+          [1],
+        ]);
+      },
+    );
   });
 
   group("Registration", () {
-    test("Create with default constructor registers and handles shutdown",
-        () async {
-      final store = PostgresTestConfig().persistentStore();
+    test(
+      "Create with default constructor registers and handles shutdown",
+      () async {
+        final store = PostgresTestConfig().persistentStore();
 
-      await store.execute("SELECT 1");
-      expect(store.isConnected, true);
+        await store.execute("SELECT 1");
+        expect(store.isConnected, true);
 
-      await store.close();
+        await store.close();
 
-      expect(store.isConnected, false);
-    });
+        expect(store.isConnected, false);
+      },
+    );
   });
 }
 

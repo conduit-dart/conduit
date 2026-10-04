@@ -313,8 +313,9 @@ class SqlResolverFactory {
 
       final registry = _registryFromArgs(args);
       if (registry == null) {
-        final grouped =
-            await _fetchHasMany(destEntity, inverse, [parentPkValue]);
+        final grouped = await _fetchHasMany(destEntity, inverse, [
+          parentPkValue,
+        ]);
         return grouped[parentPkValue] ?? const <ManagedObject>[];
       }
       final loader = registry.getOrAdd<Object, List<ManagedObject>>(
@@ -427,8 +428,7 @@ class SqlResolverFactory {
     Query query,
     ManagedEntity entity,
     Map<String, dynamic> args,
-  ) =>
-      _applyListArgs(query, entity, args);
+  ) => _applyListArgs(query, entity, args);
 
   void _applyListArgs(
     Query query,
@@ -758,7 +758,9 @@ class _LoaderKey {
 
   @override
   bool operator ==(Object other) =>
-      other is _LoaderKey && other._kind == _kind && identical(other._rel, _rel);
+      other is _LoaderKey &&
+      other._kind == _kind &&
+      identical(other._rel, _rel);
 
   @override
   int get hashCode => Object.hash(_kind, identityHashCode(_rel));

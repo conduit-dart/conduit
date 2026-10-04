@@ -3,8 +3,10 @@ import 'dart:mirrors';
 import 'package:conduit_runtime/src/exceptions.dart';
 
 Object runtimeCast(Object object, TypeMirror intoType) {
-  final exceptionToThrow =
-      TypeCoercionException(intoType.reflectedType, object.runtimeType);
+  final exceptionToThrow = TypeCoercionException(
+    intoType.reflectedType,
+    object.runtimeType,
+  );
 
   try {
     final objectType = reflect(object).type;
@@ -25,8 +27,9 @@ Object runtimeCast(Object object, TypeMirror intoType) {
         throw exceptionToThrow;
       }
 
-      final output = (intoType as ClassMirror)
-          .newInstance(Symbol.empty, []).reflectee as Map<String, dynamic>;
+      final output =
+          (intoType as ClassMirror).newInstance(Symbol.empty, []).reflectee
+              as Map<String, dynamic>;
       final valueType = intoType.typeArguments.last;
       object.forEach((key, val) {
         output[key] = runtimeCast(val, valueType);

@@ -106,34 +106,34 @@ abstract class APIOperationDocumenter {
 class APIDocumentContext {
   /// Creates a new context.
   APIDocumentContext(this.document)
-      : schema = APIComponentCollection<APISchemaObject>._(
-          "schemas",
-          document.components!.schemas,
-        ),
-        responses = APIComponentCollection<APIResponse>._(
-          "responses",
-          document.components!.responses,
-        ),
-        parameters = APIComponentCollection<APIParameter>._(
-          "parameters",
-          document.components!.parameters,
-        ),
-        requestBodies = APIComponentCollection<APIRequestBody>._(
-          "requestBodies",
-          document.components!.requestBodies,
-        ),
-        headers = APIComponentCollection<APIHeader>._(
-          "headers",
-          document.components!.headers,
-        ),
-        securitySchemes = APIComponentCollection<APISecurityScheme>._(
-          "securitySchemes",
-          document.components!.securitySchemes,
-        ),
-        callbacks = APIComponentCollection<APICallback>._(
-          "callbacks",
-          document.components!.callbacks,
-        );
+    : schema = APIComponentCollection<APISchemaObject>._(
+        "schemas",
+        document.components!.schemas,
+      ),
+      responses = APIComponentCollection<APIResponse>._(
+        "responses",
+        document.components!.responses,
+      ),
+      parameters = APIComponentCollection<APIParameter>._(
+        "parameters",
+        document.components!.parameters,
+      ),
+      requestBodies = APIComponentCollection<APIRequestBody>._(
+        "requestBodies",
+        document.components!.requestBodies,
+      ),
+      headers = APIComponentCollection<APIHeader>._(
+        "headers",
+        document.components!.headers,
+      ),
+      securitySchemes = APIComponentCollection<APISecurityScheme>._(
+        "securitySchemes",
+        document.components!.securitySchemes,
+      ),
+      callbacks = APIComponentCollection<APICallback>._(
+        "callbacks",
+        document.components!.callbacks,
+      );
 
   /// The document being created.
   final APIDocument document;
@@ -184,19 +184,19 @@ class APIDocumentContext {
         .where((op) => op!.security != null)
         .expand((op) => op!.security!)
         .forEach((req) {
-      req.requirements!.forEach((schemeName, scopes) {
-        final scheme = document.components!.securitySchemes[schemeName];
-        if (scheme!.type == APISecuritySchemeType.oauth2) {
-          for (final flow in scheme.flows!.values) {
-            for (final scope in scopes) {
-              if (!flow!.scopes!.containsKey(scope)) {
-                flow.scopes![scope] = "";
+          req.requirements!.forEach((schemeName, scopes) {
+            final scheme = document.components!.securitySchemes[schemeName];
+            if (scheme!.type == APISecuritySchemeType.oauth2) {
+              for (final flow in scheme.flows!.values) {
+                for (final scope in scopes) {
+                  if (!flow!.scopes!.containsKey(scope)) {
+                    flow.scopes![scope] = "";
+                  }
+                }
               }
             }
-          }
-        }
-      });
-    });
+          });
+        });
 
     return document.asMap();
   }
@@ -272,14 +272,14 @@ class APIComponentCollection<T extends APIObject> {
   /// has been registered for [type], an error is thrown.
   T getObjectWithType(Type type) {
     final obj = _getInstanceOf();
-    obj.referenceURI =
-        Uri(path: "/components/$_typeName/conduit-typeref:$type");
+    obj.referenceURI = Uri(
+      path: "/components/$_typeName/conduit-typeref:$type",
+    );
 
     if (_typeReferenceMap.containsKey(type)) {
       obj.referenceURI = _typeReferenceMap[type]!.referenceURI;
     } else {
-      final completer =
-          _resolutionMap.putIfAbsent(type, Completer<T>.sync);
+      final completer = _resolutionMap.putIfAbsent(type, Completer<T>.sync);
 
       completer.future.then((refObject) {
         obj.referenceURI = refObject.referenceURI;

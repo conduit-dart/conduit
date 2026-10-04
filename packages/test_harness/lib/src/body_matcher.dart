@@ -1,4 +1,5 @@
 import 'package:matcher/matcher.dart';
+
 import 'matchers.dart';
 
 /// A test matcher that matches an HTTP response body.
@@ -33,12 +34,20 @@ class HTTPBodyMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription,
-      Map matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
     mismatchDescription.add("the body differs for the following reasons:\n");
 
-    contentMatcher!
-        .describeMismatch(item, mismatchDescription, matchState, verbose);
+    contentMatcher!.describeMismatch(
+      item,
+      mismatchDescription,
+      matchState,
+      verbose,
+    );
 
     return mismatchDescription;
   }

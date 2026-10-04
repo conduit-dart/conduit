@@ -24,15 +24,13 @@ class FakeSqlStore extends PersistentStore {
     ManagedContext context,
     ManagedEntity entity, {
     T? values,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> execute(
     String sql, {
     Map<String, dynamic>? substitutionValues,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> executeQuery(
@@ -40,15 +38,13 @@ class FakeSqlStore extends PersistentStore {
     Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T> Function(ManagedContext transaction) transactionBlock,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
 
   @override
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) =>
@@ -69,8 +65,7 @@ class FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column, {
     String? unencodedInitialValue,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -79,15 +74,13 @@ class FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String name,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnNullability(
     SchemaTable table,
     SchemaColumn column,
     String? unencodedInitialValue,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnUniqueness(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -95,8 +88,7 @@ class FakeSqlStore extends PersistentStore {
   List<String> alterColumnDefaultValue(
     SchemaTable table,
     SchemaColumn column,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -108,13 +100,9 @@ class FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String newIndexName,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  List<String> deleteIndexFromColumn(
-    SchemaTable table,
-    SchemaColumn column,
-  ) =>
+  List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
 
   @override
@@ -125,8 +113,7 @@ class FakeSqlStore extends PersistentStore {
     Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }
 
 /// Minimal [GraphPersistentStore] stub. Throws on every operation
@@ -160,17 +147,14 @@ class FakeGraphStore implements GraphPersistentStore {
   Future<List<N>> traverse<N extends GraphNode<N>>(
     GraphNode<dynamic> from,
     Type edgeKind, {
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
-  }) =>
-      throw UnimplementedError();
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
+  }) => throw UnimplementedError();
 
   @override
   Future<List<Map<String, Object?>>> cypher(
     String rawQuery, {
     Map<String, Object?> params = const {},
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }
 
 /// Builds a [Persistence] umbrella with both halves wired to
@@ -181,10 +165,7 @@ Persistence<GraphPersistentStore> buildFakePersistence({
 }) {
   final sqlStore = sqlModel != null ? FakeSqlStore() : null;
   final graphStore = graphModel != null ? FakeGraphStore() : null;
-  final p = Persistence<GraphPersistentStore>(
-    sql: sqlStore,
-    graph: graphStore,
-  );
+  final p = Persistence<GraphPersistentStore>(sql: sqlStore, graph: graphStore);
   if (sqlStore != null && sqlModel != null) {
     p.sqlContext = ManagedContext(sqlModel, sqlStore);
   }

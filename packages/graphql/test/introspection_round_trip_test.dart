@@ -28,12 +28,8 @@ Future<HttpServer> _startServer(GraphQLSchema schema) async {
   return server;
 }
 
-Uri _u(HttpServer s) => Uri(
-      scheme: 'http',
-      host: 'localhost',
-      port: s.port,
-      path: '/graphql',
-    );
+Uri _u(HttpServer s) =>
+    Uri(scheme: 'http', host: 'localhost', port: s.port, path: '/graphql');
 
 void main() {
   late HttpServer server;
@@ -52,23 +48,29 @@ void main() {
     final response = await http.post(
       _u(server),
       headers: {'content-type': 'application/json'},
-      body: json.encode({
-        'query': '{ __schema { types { name kind } } }',
-      }),
+      body: json.encode({'query': '{ __schema { types { name kind } } }'}),
     );
 
     expect(response.statusCode, 200);
     final body = json.decode(response.body) as Map<String, dynamic>;
-    expect(body.containsKey('errors'), isFalse,
-        reason: 'unexpected errors: ${body['errors']}');
+    expect(
+      body.containsKey('errors'),
+      isFalse,
+      reason: 'unexpected errors: ${body['errors']}',
+    );
 
     final types = (body['data'] as Map)['__schema']['types'] as List;
-    final names = types.map<String>((t) => (t as Map)['name'] as String).toSet();
+    final names = types
+        .map<String>((t) => (t as Map)['name'] as String)
+        .toSet();
 
     // Every derived entity type must be present.
     for (final entity in ['User', 'Post', 'Comment', 'Tag', 'PostTag']) {
-      expect(names, contains(entity),
-          reason: 'derived ObjectType $entity missing from introspection');
+      expect(
+        names,
+        contains(entity),
+        reason: 'derived ObjectType $entity missing from introspection',
+      );
     }
 
     // Query root.
@@ -87,21 +89,23 @@ void main() {
     expect(userType['kind'], equals('OBJECT'));
   });
 
-  test('custom DateTime scalar is visible via field-level introspection', () async {
-    // graphql_server2 v6.5.0 has a known limitation where bare custom
-    // scalars are not added to `__schema { types }` (see
-    // CollectTypes._fetchAllTypesFromType — the scalar branch falls
-    // through without adding to the traversed set). Custom scalars
-    // ARE still attached to fields that reference them, though, so
-    // `__type(name: "User") { fields { type { ofType { name } } } }`
-    // will surface "DateTime" correctly. This test pins that behavior
-    // so we know exactly what introspection contract clients can rely
-    // on today.
-    final response = await http.post(
-      _u(server),
-      headers: {'content-type': 'application/json'},
-      body: json.encode({
-        'query': r'''
+  test(
+    'custom DateTime scalar is visible via field-level introspection',
+    () async {
+      // graphql_server2 v6.5.0 has a known limitation where bare custom
+      // scalars are not added to `__schema { types }` (see
+      // CollectTypes._fetchAllTypesFromType — the scalar branch falls
+      // through without adding to the traversed set). Custom scalars
+      // ARE still attached to fields that reference them, though, so
+      // `__type(name: "User") { fields { type { ofType { name } } } }`
+      // will surface "DateTime" correctly. This test pins that behavior
+      // so we know exactly what introspection contract clients can rely
+      // on today.
+      final response = await http.post(
+        _u(server),
+        headers: {'content-type': 'application/json'},
+        body: json.encode({
+          'query': r'''
           {
             __type(name: "User") {
               fields {
@@ -114,21 +118,23 @@ void main() {
             }
           }
         ''',
-      }),
-    );
-    expect(response.statusCode, 200);
-    final body = json.decode(response.body) as Map<String, dynamic>;
-    expect(body['errors'], isNull);
-    final fields = ((body['data'] as Map)['__type'] as Map)['fields'] as List;
-    final createdAt =
-        fields.map((f) => f as Map).firstWhere((f) => f['name'] == 'createdAt');
-    final type = createdAt['type'] as Map;
-    // createdAt is nullable in our model (defaultValue 'now()' makes
-    // it nullable in the schema), so type.kind should be SCALAR with
-    // name "DateTime" directly.
-    expect(type['kind'], equals('SCALAR'));
-    expect(type['name'], equals('DateTime'));
-  });
+        }),
+      );
+      expect(response.statusCode, 200);
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      expect(body['errors'], isNull);
+      final fields = ((body['data'] as Map)['__type'] as Map)['fields'] as List;
+      final createdAt = fields
+          .map((f) => f as Map)
+          .firstWhere((f) => f['name'] == 'createdAt');
+      final type = createdAt['type'] as Map;
+      // createdAt is nullable in our model (defaultValue 'now()' makes
+      // it nullable in the schema), so type.kind should be SCALAR with
+      // name "DateTime" directly.
+      expect(type['kind'], equals('SCALAR'));
+      expect(type['name'], equals('DateTime'));
+    },
+  );
 
   test('field-level introspection on User exposes derived fields', () async {
     final response = await http.post(

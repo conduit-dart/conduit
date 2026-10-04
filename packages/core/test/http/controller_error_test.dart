@@ -47,17 +47,19 @@ void main() {
     expect(r.statusCode, 200);
   });
 
-  test("Throw exception when sending HandlerException response sends 500",
-      () async {
-    server = await enableController(
-      ClosureController((req) {
-        throw CrashingTestHandlerException();
-      }),
-    );
+  test(
+    "Throw exception when sending HandlerException response sends 500",
+    () async {
+      server = await enableController(
+        ClosureController((req) {
+          throw CrashingTestHandlerException();
+        }),
+      );
 
-    final r = await http.get(Uri.parse("http://localhost:4040"));
-    expect(r.statusCode, 500);
-  });
+      final r = await http.get(Uri.parse("http://localhost:4040"));
+      expect(r.statusCode, 500);
+    },
+  );
 
   test("Throw exception when sending thrown Response sends 500", () async {
     server = await enableController(

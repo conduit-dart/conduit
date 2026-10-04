@@ -58,35 +58,36 @@ void main() {
       final expectedMap = {
         "id": 2,
         "name": "Mr. Fred",
-        "createdAt": allObjects[1].createdAt.toIso8601String()
+        "createdAt": allObjects[1].createdAt.toIso8601String(),
       };
 
-      final resp = await (client.request("/controller/2")
-            ..body = {"name": "Fred"})
-          .put();
+      final resp = await (client.request(
+        "/controller/2",
+      )..body = {"name": "Fred"}).put();
       expect(resp, hasResponse(200, body: {"data": expectedMap}));
     });
 
     test("Missing object for update returns overridden status code", () async {
-      final resp = await (client.request("/controller/25")
-            ..body = {"name": "Fred"})
-          .put();
+      final resp = await (client.request(
+        "/controller/25",
+      )..body = {"name": "Fred"}).put();
 
       expect(resp, hasStatus(403));
     });
 
     test("Can create an object", () async {
-      final resp = await (client.request("/controller")
-            ..body = {
-              "name": "John",
-              "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
-            })
-          .post();
+      final resp =
+          await (client.request("/controller")
+                ..body = {
+                  "name": "John",
+                  "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String(),
+                })
+              .post();
 
       final expectedMap = {
         "id": allObjects.length + 1,
         "name": "Mr. John",
-        "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
+        "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String(),
       };
       expect(resp, hasResponse(200, body: {"data": expectedMap}));
     });

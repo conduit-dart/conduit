@@ -51,9 +51,9 @@ class CodeAnalyzer {
         return _resolvedAsts[path]! as ResolvedLibraryResult;
       }
 
-      final output =
-          await ctx.currentSession.getResolvedLibrary(path)
-              as ResolvedLibraryResult;
+      final output = await ctx.currentSession.getResolvedLibrary(
+        path,
+      ) as ResolvedLibraryResult;
       return _resolvedAsts[path] = output;
     }
 

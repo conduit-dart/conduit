@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run any subset of the deployable-state gates locally against the same
-# dart:beta image Woodpecker uses. Mirrors .woodpecker.yml step-for-step
+# dart:3.13 image Woodpecker uses. Mirrors .woodpecker.yml step-for-step
 # so a green local run is a strong predictor of a green CI run.
 #
 # Usage:
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 WORKSPACE="$(cd "$(dirname "$0")/.." && pwd)"
-DART_IMAGE="dart:beta"
+DART_IMAGE="dart:3.13"
 PG_IMAGE="postgres:18.0"
 PUB_VOL="conduit-pub-cache"
 PG_VOL="conduit-pgdata"

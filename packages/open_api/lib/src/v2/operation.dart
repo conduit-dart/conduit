@@ -10,13 +10,12 @@ class APIOperation extends APIObject {
 
   @override
   Map<String, cast.Cast> get castMap => {
-        "tags": const cast.List(cast.string),
-        "consumes": const cast.List(cast.string),
-        "produces": const cast.List(cast.string),
-        "schemes": const cast.List(cast.string),
-        "security":
-            const cast.List(cast.Map(cast.string, cast.List(cast.string))),
-      };
+    "tags": const cast.List(cast.string),
+    "consumes": const cast.List(cast.string),
+    "produces": const cast.List(cast.string),
+    "schemes": const cast.List(cast.string),
+    "security": const cast.List(cast.Map(cast.string, cast.List(cast.string))),
+  };
 
   String? summary = "";
   String? description = "";

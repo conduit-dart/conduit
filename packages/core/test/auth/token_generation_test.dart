@@ -6,20 +6,24 @@ const _alphabet =
 
 void main() {
   group('randomStringOfLength', () {
-    test('produces strings of the requested length over the OAuth alphabet',
-        () {
-      for (final len in [1, 16, 32, 64, 256]) {
-        final s = randomStringOfLength(len);
-        expect(s.length, len);
-        for (final cu in s.codeUnits) {
-          expect(_alphabet.codeUnits.contains(cu), isTrue,
-              reason: 'unexpected char ${String.fromCharCode(cu)}');
-        }
-      }
-    });
-
     test(
-        'character distribution is approximately uniform '
+      'produces strings of the requested length over the OAuth alphabet',
+      () {
+        for (final len in [1, 16, 32, 64, 256]) {
+          final s = randomStringOfLength(len);
+          expect(s.length, len);
+          for (final cu in s.codeUnits) {
+            expect(
+              _alphabet.codeUnits.contains(cu),
+              isTrue,
+              reason: 'unexpected char ${String.fromCharCode(cu)}',
+            );
+          }
+        }
+      },
+    );
+
+    test('character distribution is approximately uniform '
         '(no modulo bias)', () {
       // The previous form `r.nextInt(1000) % 62` biased the first 12
       // characters of the alphabet (1000 mod 62 == 12). Detect that with
@@ -53,8 +57,11 @@ void main() {
       // For df = 61 and α = 0.001, the critical value is ~99.6.
       // The biased version reliably trips this; the fixed version
       // hovers around 60-70 with occasional excursions to 90.
-      expect(chi2, lessThan(99.6),
-          reason: 'character distribution not uniform: chi2=$chi2');
+      expect(
+        chi2,
+        lessThan(99.6),
+        reason: 'character distribution not uniform: chi2=$chi2',
+      );
     });
   });
 }

@@ -315,7 +315,7 @@ class KeyedArchive extends Object
     }
 
     return {
-      for (var k in v.keys) k: _decodedObject(v[k] as KeyedArchive?, inflate)
+      for (var k in v.keys) k: _decodedObject(v[k] as KeyedArchive?, inflate),
     };
   }
 

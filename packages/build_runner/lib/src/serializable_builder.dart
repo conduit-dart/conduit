@@ -21,11 +21,8 @@ class SerializableBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': [
-          '.serializable.conduit.dart',
-          '.serializable.conduit.json',
-        ],
-      };
+    '.dart': ['.serializable.conduit.dart', '.serializable.conduit.json'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -44,9 +41,7 @@ class SerializableBuilder implements Builder {
 
     if (classes.isEmpty) return;
 
-    final manifest = {
-      'serializables': classes.map((c) => c.name).toList(),
-    };
+    final manifest = {'serializables': classes.map((c) => c.name).toList()};
     await buildStep.writeAsString(
       input.changeExtension('.serializable.conduit.json'),
       json.encode(manifest),

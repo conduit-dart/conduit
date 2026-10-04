@@ -213,13 +213,15 @@ class ManagedEntity implements APIComponentDocumenter {
     if (attribute == null) {
       if (relationships.containsKey(propertyName)) {
         throw ArgumentError(
-            "Invalid property selection. Property '$propertyName' on "
-            "'$name' "
-            "is a relationship and cannot be selected for this operation.");
+          "Invalid property selection. Property '$propertyName' on "
+          "'$name' "
+          "is a relationship and cannot be selected for this operation.",
+        );
       } else {
         throw ArgumentError(
-            "Invalid property selection. Column '$propertyName' does not "
-            "exist on table '$tableName'.");
+          "Invalid property selection. Column '$propertyName' does not "
+          "exist on table '$tableName'.",
+        );
       }
     }
 
@@ -230,10 +232,10 @@ class ManagedEntity implements APIComponentDocumenter {
   ///
   /// Invokes [identifyProperties] with [propertyIdentifier], and ensures that a single relationship
   /// on this entity was selected. Returns that relationship.
-  ManagedRelationshipDescription
-      identifyRelationship<T, U extends ManagedObject>(
-    T Function(U x) propertyIdentifier,
-  ) {
+  ManagedRelationshipDescription identifyRelationship<
+    T,
+    U extends ManagedObject
+  >(T Function(U x) propertyIdentifier) {
     final keyPaths = identifyProperties(propertyIdentifier);
     if (keyPaths.length != 1) {
       throw ArgumentError(
@@ -303,8 +305,9 @@ class ManagedEntity implements APIComponentDocumenter {
 
     final buffer = StringBuffer();
     if (uniquePropertySet != null) {
-      final propString =
-          uniquePropertySet!.map((s) => "'${s.name}'").join(", ");
+      final propString = uniquePropertySet!
+          .map((s) => "'${s.name}'")
+          .join(", ");
       buffer.writeln(
         "No two objects may have the same value for all of: $propString.",
       );

@@ -102,8 +102,11 @@ mixin QueryMixin<InstanceType extends ManagedObject>
     T? boundingValue,
   }) {
     final attribute = entity.identifyAttribute(propertyIdentifier);
-    pageDescriptor =
-        QueryPage(order, attribute.name, boundingValue: boundingValue);
+    pageDescriptor = QueryPage(
+      order,
+      attribute.name,
+      boundingValue: boundingValue,
+    );
   }
 
   @override
@@ -171,12 +174,13 @@ mixin QueryMixin<InstanceType extends ManagedObject>
             .join(", ");
 
         throw StateError(
-            "Invalid query construction. This query joins '${fromRelationship.entity.tableName}' "
-            "with '${fromRelationship.inverse!.entity.tableName}' on property '${fromRelationship.name}'. "
-            "However, '${fromRelationship.inverse!.entity.tableName}' "
-            "has also joined '${fromRelationship.entity.tableName}' on this property's inverse "
-            "'${fromRelationship.inverse!.name}' earlier in the 'Query'. "
-            "Perhaps you meant to join on another property, such as: $validJoins?");
+          "Invalid query construction. This query joins '${fromRelationship.entity.tableName}' "
+          "with '${fromRelationship.inverse!.entity.tableName}' on property '${fromRelationship.name}'. "
+          "However, '${fromRelationship.inverse!.entity.tableName}' "
+          "has also joined '${fromRelationship.entity.tableName}' on this property's inverse "
+          "'${fromRelationship.inverse!.name}' earlier in the 'Query'. "
+          "Perhaps you meant to join on another property, such as: $validJoins?",
+        );
       }
 
       parent = parent._parentQuery;

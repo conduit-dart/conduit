@@ -62,15 +62,19 @@ class _TestObject {
     var res = await projectUnderTestCli.run("db", ["generate"]);
     expect(res, 0);
 
-    projectUnderTestCli.agent
-        .modifyFile("migrations/00000001_initial.migration.dart", (contents) {
-      const upgradeLocation = "upgrade()";
-      final nextLine =
-          contents.indexOf("\n", contents.indexOf(upgradeLocation));
-      return contents.replaceRange(nextLine, nextLine + 1, """
+    projectUnderTestCli.agent.modifyFile(
+      "migrations/00000001_initial.migration.dart",
+      (contents) {
+        const upgradeLocation = "upgrade()";
+        final nextLine = contents.indexOf(
+          "\n",
+          contents.indexOf(upgradeLocation),
+        );
+        return contents.replaceRange(nextLine, nextLine + 1, """
         database.createTable(SchemaTable("foo", []));
         """);
-    });
+      },
+    );
 
     res = await projectUnderTestCli.run("db", ["validate"]);
     expect(res, isNot(0));
@@ -87,8 +91,10 @@ class _TestObject {
         "migrations/00000001_initial.migration.dart",
         (contents) {
           const upgradeLocation = "upgrade()";
-          final nextLine =
-              contents.indexOf("\n", contents.indexOf(upgradeLocation));
+          final nextLine = contents.indexOf(
+            "\n",
+            contents.indexOf(upgradeLocation),
+          );
           return contents.replaceRange(
             nextLine,
             nextLine + 1,
@@ -105,8 +111,9 @@ class _TestObject {
       expect(res, 0);
 
       final secondMigrationFile = File.fromUri(
-        projectUnderTestCli.defaultMigrationDirectory.uri
-            .resolve("00000002_unnamed.migration.dart"),
+        projectUnderTestCli.defaultMigrationDirectory.uri.resolve(
+          "00000002_unnamed.migration.dart",
+        ),
       );
       expect(
         secondMigrationFile.readAsStringSync(),

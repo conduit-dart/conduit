@@ -87,7 +87,7 @@ when:
 
 steps:
   outdated-scan:
-    image: dart:3.12
+    image: dart:3.13
     commands:
       - dart pub global activate melos
       - melos bootstrap

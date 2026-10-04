@@ -7,12 +7,13 @@ import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 
 class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
   MigrationBuilderExecutable(super.message)
-      : inputSchema =
-            Schema.fromMap(message["inputSchema"] as Map<String, dynamic>),
-        versionTag = message["versionTag"] as int?;
+    : inputSchema = Schema.fromMap(
+        message["inputSchema"] as Map<String, dynamic>,
+      ),
+      versionTag = message["versionTag"] as int?;
 
   MigrationBuilderExecutable.input(this.inputSchema, this.versionTag)
-      : super({"inputSchema": inputSchema.asMap(), "versionTag": versionTag});
+    : super({"inputSchema": inputSchema.asMap(), "versionTag": versionTag});
 
   final int? versionTag;
   final Schema inputSchema;
@@ -33,7 +34,7 @@ class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
       return {
         "source": source,
         "tablesEvaluated": dataModel.entities.map((e) => e.name).toList(),
-        "changeList": changeList
+        "changeList": changeList,
       };
     } on SchemaException catch (e) {
       return {"error": e.message};
@@ -43,17 +44,17 @@ class MigrationBuilderExecutable extends Executable<Map<String, dynamic>> {
   }
 
   static List<String> importsForPackage(String? packageName) => [
-        "package:conduit_core/conduit_core.dart",
-        "package:$packageName/$packageName.dart",
-        "package:conduit_runtime/dev.dart"
-      ];
+    "package:conduit_core/conduit_core.dart",
+    "package:$packageName/$packageName.dart",
+    "package:conduit_runtime/dev.dart",
+  ];
 }
 
 class MigrationBuilderResult {
   MigrationBuilderResult.fromMap(Map<String, dynamic> result)
-      : source = result["source"] as String?,
-        tablesEvaluated = result["tablesEvaluated"] as List<String>?,
-        changeList = result["changeList"] as List<String>?;
+    : source = result["source"] as String?,
+      tablesEvaluated = result["tablesEvaluated"] as List<String>?,
+      changeList = result["changeList"] as List<String>?;
 
   final String? source;
   final List<String>? tablesEvaluated;

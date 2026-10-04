@@ -48,7 +48,9 @@ void main() {
     test("Create table with indices", () {
       final dm = ManagedDataModel([GeneratorModel2]);
       final schema = Schema.fromDataModel(dm);
-      schema.tableForName("_GeneratorModel2")!.addColumn(
+      schema
+          .tableForName("_GeneratorModel2")!
+          .addColumn(
             SchemaColumn("a", ManagedPropertyType.integer, isIndexed: true),
           );
       final commands = schema.tables
@@ -421,8 +423,9 @@ void main() {
     test("Alter column change nullabiity", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final originalColumn =
-          schema.tables.first.columns.firstWhere((sc) => sc.name == "name");
+      final originalColumn = schema.tables.first.columns.firstWhere(
+        (sc) => sc.name == "name",
+      );
       expect(originalColumn.isNullable, false);
 
       final col = SchemaColumn.from(originalColumn);
@@ -447,8 +450,9 @@ void main() {
     test("Alter column change uniqueness", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final originalColumn =
-          schema.tables.first.columns.firstWhere((sc) => sc.name == "name");
+      final originalColumn = schema.tables.first.columns.firstWhere(
+        (sc) => sc.name == "name",
+      );
       expect(originalColumn.isUnique, false);
 
       final col = SchemaColumn.from(originalColumn);
@@ -470,8 +474,9 @@ void main() {
     test("Alter column change default value", () {
       final dm = ManagedDataModel([GeneratorModel1]);
       final schema = Schema.fromDataModel(dm);
-      final originalColumn =
-          schema.tables.first.columns.firstWhere((sc) => sc.name == "name");
+      final originalColumn = schema.tables.first.columns.firstWhere(
+        (sc) => sc.name == "name",
+      );
       expect(originalColumn.defaultValue, isNull);
 
       final col = SchemaColumn.from(originalColumn);
@@ -497,8 +502,9 @@ void main() {
       final dm = ManagedDataModel([GenUser, GenPost]);
       final schema = Schema.fromDataModel(dm);
       final postTable = schema.tables.firstWhere((t) => t.name == "_GenPost");
-      final originalColumn =
-          postTable.columns.firstWhere((sc) => sc.name == "owner");
+      final originalColumn = postTable.columns.firstWhere(
+        (sc) => sc.name == "owner",
+      );
       expect(originalColumn.deleteRule, DeleteRule.restrict);
 
       final col = SchemaColumn.from(originalColumn);
@@ -539,8 +545,9 @@ void main() {
       final schema = Schema.fromDataModel(dm);
       schema.tableForName("_Unique")!.uniqueColumnSet = null;
 
-      final cmds =
-          psc.deleteTableUniqueColumnSet(schema.tableForName("_Unique")!);
+      final cmds = psc.deleteTableUniqueColumnSet(
+        schema.tableForName("_Unique")!,
+      );
       expect(cmds.first, "DROP INDEX IF EXISTS _Unique_unique_idx");
     });
 
@@ -548,8 +555,9 @@ void main() {
       final dm = ManagedDataModel([UniqueContainer, UniqueBelongsTo]);
       final schema = Schema.fromDataModel(dm);
 
-      final cmds =
-          psc.addTableUniqueColumnSet(schema.tableForName("_UniqueBelongsTo")!);
+      final cmds = psc.addTableUniqueColumnSet(
+        schema.tableForName("_UniqueBelongsTo")!,
+      );
       expect(
         cmds.first,
         "CREATE UNIQUE INDEX _UniqueBelongsTo_unique_idx ON _UniqueBelongsTo (a,container_id)",

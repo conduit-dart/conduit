@@ -11,9 +11,10 @@ class _NamedDialect extends SqlDialect {
   @override
   String get name => 'named-test';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -28,9 +29,10 @@ class _PositionalDialect extends SqlDialect {
   @override
   String parameterPlaceholder(String name) => '?';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -98,14 +100,11 @@ void main() {
 
     test('IN list renders comma-separated placeholders', () {
       final r = d.renderExpression(
-        const InExpression(
-          ColumnExpression('id', tableNamespace: 't0'),
-          [
-            ParameterExpression('id_0', 1),
-            ParameterExpression('id_1', 2),
-            ParameterExpression('id_2', 3),
-          ],
-        ),
+        const InExpression(ColumnExpression('id', tableNamespace: 't0'), [
+          ParameterExpression('id_0', 1),
+          ParameterExpression('id_1', 2),
+          ParameterExpression('id_2', 3),
+        ]),
       );
       expect(r.sql, 't0.id IN (@id_0,@id_1,@id_2)');
       expect(r.parameters, {'id_0': 1, 'id_1': 2, 'id_2': 3});
@@ -113,11 +112,9 @@ void main() {
 
     test('NOT IN via negated', () {
       final r = d.renderExpression(
-        const InExpression(
-          ColumnExpression('id', tableNamespace: 't0'),
-          [ParameterExpression('id_0', 1)],
-          negated: true,
-        ),
+        const InExpression(ColumnExpression('id', tableNamespace: 't0'), [
+          ParameterExpression('id_0', 1),
+        ], negated: true),
       );
       expect(r.sql, 't0.id NOT IN (@id_0)');
     });
@@ -199,12 +196,21 @@ void main() {
     test('AND with three children appends in left-to-right order', () {
       final r = d.renderExpression(
         const LogicalExpression('AND', [
-          BinaryOpExpression('=', ColumnExpression('a'),
-              ParameterExpression('av', 1)),
-          BinaryOpExpression('=', ColumnExpression('b'),
-              ParameterExpression('bv', 2)),
-          BinaryOpExpression('=', ColumnExpression('c'),
-              ParameterExpression('cv', 3)),
+          BinaryOpExpression(
+            '=',
+            ColumnExpression('a'),
+            ParameterExpression('av', 1),
+          ),
+          BinaryOpExpression(
+            '=',
+            ColumnExpression('b'),
+            ParameterExpression('bv', 2),
+          ),
+          BinaryOpExpression(
+            '=',
+            ColumnExpression('c'),
+            ParameterExpression('cv', 3),
+          ),
         ]),
       );
       expect(r.sql, '(a = ? AND b = ? AND c = ?)');
@@ -213,14 +219,11 @@ void main() {
 
     test('IN list expands to ?,?,? with values in order', () {
       final r = d.renderExpression(
-        const InExpression(
-          ColumnExpression('id'),
-          [
-            ParameterExpression('a', 1),
-            ParameterExpression('b', 2),
-            ParameterExpression('c', 3),
-          ],
-        ),
+        const InExpression(ColumnExpression('id'), [
+          ParameterExpression('a', 1),
+          ParameterExpression('b', 2),
+          ParameterExpression('c', 3),
+        ]),
       );
       expect(r.sql, 'id IN (?,?,?)');
       expect(r.positionalParameters, [1, 2, 3]);
@@ -246,16 +249,16 @@ void main() {
       expect(r.positionalParameters, isEmpty);
     });
 
-    test('Raw expression rewrites @name placeholders into ? + ordered values', () {
-      final r = d.renderExpression(
-        const RawExpression(
-          'a = @x AND b = @y',
-          {'x': 100, 'y': 200},
-        ),
-      );
-      expect(r.sql, 'a = ? AND b = ?');
-      expect(r.positionalParameters, [100, 200]);
-    });
+    test(
+      'Raw expression rewrites @name placeholders into ? + ordered values',
+      () {
+        final r = d.renderExpression(
+          const RawExpression('a = @x AND b = @y', {'x': 100, 'y': 200}),
+        );
+        expect(r.sql, 'a = ? AND b = ?');
+        expect(r.positionalParameters, [100, 200]);
+      },
+    );
   });
 
   group('QueryPredicate AST integration', () {
@@ -281,10 +284,7 @@ void main() {
 
       final combined = QueryPredicate.and([p1, p2]);
       expect(combined.expression, isA<LogicalExpression>());
-      expect(
-        (combined.expression as LogicalExpression).children,
-        hasLength(2),
-      );
+      expect((combined.expression as LogicalExpression).children, hasLength(2));
       expect(combined.format, '(a = @av AND b = @bv)');
     });
 

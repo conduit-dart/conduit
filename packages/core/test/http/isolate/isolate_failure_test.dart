@@ -11,9 +11,7 @@ void main() {
   tearDownAll(Logger("conduit").clearListeners);
 
   group("Failures", () {
-    test(
-        "Application start fails and logs appropriate message if request stream doesn't open",
-        () async {
+    test("Application start fails and logs appropriate message if request stream doesn't open", () async {
       final crashingApp = Application<CrashChannel>();
 
       try {
@@ -40,44 +38,45 @@ void main() {
     });
 
     test(
-        "Application that fails to open because port is bound fails gracefully",
-        () async {
-      final server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
-      server.listen((req) {});
+      "Application that fails to open because port is bound fails gracefully",
+      () async {
+        final server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
+        server.listen((req) {});
 
-      final conflictingApp = Application<TestChannel>();
-      conflictingApp.options.port = 8888;
+        final conflictingApp = Application<TestChannel>();
+        conflictingApp.options.port = 8888;
 
-      try {
-        await conflictingApp.start(consoleLogging: true);
-        expect(true, false);
-      } on ApplicationStartupException catch (e) {
-        expect(e.toString(), contains("Failed to create server socket"));
-      }
+        try {
+          await conflictingApp.start(consoleLogging: true);
+          expect(true, false);
+        } on ApplicationStartupException catch (e) {
+          expect(e.toString(), contains("Failed to create server socket"));
+        }
 
-      await server.close(force: true);
-    });
-
-    test("Isolate timeout kills application when first isolate fails",
-        () async {
-      final timeoutApp = Application<TimeoutChannel>()
-        ..isolateStartupTimeout = const Duration(seconds: 4)
-        ..options.context["timeout1"] = 10;
-
-      try {
-        await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
-        expect(true, false);
-      } on TimeoutException catch (e) {
-        expect(e.toString(), contains("Isolate (1) failed to launch"));
-      }
-
-      expect(timeoutApp.supervisors.length, 0);
-      print("-- test completes");
-    });
+        await server.close(force: true);
+      },
+    );
 
     test(
-        "Isolate timeout kills application when first isolate succeeds, but next fails",
-        () async {
+      "Isolate timeout kills application when first isolate fails",
+      () async {
+        final timeoutApp = Application<TimeoutChannel>()
+          ..isolateStartupTimeout = const Duration(seconds: 4)
+          ..options.context["timeout1"] = 10;
+
+        try {
+          await timeoutApp.start(numberOfInstances: 2, consoleLogging: true);
+          expect(true, false);
+        } on TimeoutException catch (e) {
+          expect(e.toString(), contains("Isolate (1) failed to launch"));
+        }
+
+        expect(timeoutApp.supervisors.length, 0);
+        print("-- test completes");
+      },
+    );
+
+    test("Isolate timeout kills application when first isolate succeeds, but next fails", () async {
       final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
         ..options.context["timeout2"] = 10;

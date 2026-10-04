@@ -28,8 +28,10 @@ import 'graph_node.dart';
 /// An edge carries a single label (graph DBs typically don't allow
 /// multi-label edges, in contrast to nodes) and a [GraphBacking] for
 /// its properties.
-abstract class GraphEdge<From extends GraphNode<From>,
-    To extends GraphNode<To>> {
+abstract class GraphEdge<
+  From extends GraphNode<From>,
+  To extends GraphNode<To>
+> {
   GraphEdge({
     required this.label,
     required this.from,
@@ -70,21 +72,21 @@ abstract class GraphEdge<From extends GraphNode<From>,
   Object? removeProperty(String name) => backing.removeProperty(name);
 
   /// A read-only view of all properties.
-  Map<String, Object?> get properties =>
-      Map.unmodifiable(backing.contents);
+  Map<String, Object?> get properties => Map.unmodifiable(backing.contents);
 
   /// Snapshot of this edge as a plain map: `{ id, label, from, to,
   /// properties }`. Convenience for serialization / debugging.
   Map<String, Object?> asMap() => <String, Object?>{
-        if (id != null) 'id': id,
-        'label': label.name,
-        'from': from.id,
-        'to': to.id,
-        'properties': Map<String, Object?>.from(backing.contents),
-      };
+    if (id != null) 'id': id,
+    'label': label.name,
+    'from': from.id,
+    'to': to.id,
+    'properties': Map<String, Object?>.from(backing.contents),
+  };
 
   @override
-  String toString() => '$runtimeType(${from.runtimeType}'
+  String toString() =>
+      '$runtimeType(${from.runtimeType}'
       '-[:${label.name}]->${to.runtimeType}, id=$id, '
       'properties=${backing.contents})';
 }

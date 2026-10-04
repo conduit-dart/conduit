@@ -11,8 +11,9 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final t =
-        CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
+    final t = CLIClient(
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+    );
     terminal = await t.createTestProject(template: "db_and_auth");
   });
 
@@ -33,10 +34,13 @@ void main() {
   });
 
   test("Can override title/version/etc.", () async {
-    await terminal.run(
-      "document",
-      ["--machine", "--title", "foobar", "--api-version", "2.0.0"],
-    );
+    await terminal.run("document", [
+      "--machine",
+      "--title",
+      "foobar",
+      "--api-version",
+      "2.0.0",
+    ]);
 
     final map = json.decode(terminal.output);
     expect(map["info"]["title"], "foobar");
@@ -44,18 +48,15 @@ void main() {
   });
 
   test("Can set license, contact", () async {
-    await terminal.run(
-      "document",
-      [
-        "--machine",
-        "--license-url",
-        "http://whatever.com",
-        "--license-name",
-        "bsd",
-        "--contact-email",
-        "a@b.com"
-      ],
-    );
+    await terminal.run("document", [
+      "--machine",
+      "--license-url",
+      "http://whatever.com",
+      "--license-name",
+      "bsd",
+      "--contact-email",
+      "a@b.com",
+    ]);
 
     final map = json.decode(terminal.output);
     expect(map["info"]["license"]["name"], "bsd");
@@ -64,8 +65,9 @@ void main() {
   });
 
   test("Can view error stacktrace when failing to doc", () async {
-    terminal.agent.modifyFile("lib/controller/identity_controller.dart",
-        (contents) {
+    terminal.agent.modifyFile("lib/controller/identity_controller.dart", (
+      contents,
+    ) {
       final lastCurly = contents.lastIndexOf("}");
       return contents.replaceRange(lastCurly, lastCurly, """
         @override
@@ -75,8 +77,10 @@ void main() {
       """);
     });
 
-    final exitCode =
-        await terminal.run("document", ["--machine", "--stacktrace"]);
+    final exitCode = await terminal.run("document", [
+      "--machine",
+      "--stacktrace",
+    ]);
     expect(exitCode, isNot(0));
     expect(terminal.output, contains("IdentityController.documentComponents"));
     expect(terminal.output, contains("Exception: Hello!"));

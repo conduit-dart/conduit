@@ -25,9 +25,10 @@ class _NamedDialect extends SqlDialect {
   @override
   String get name => 'named-bench';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -41,9 +42,10 @@ class _PositionalDialect extends SqlDialect {
   @override
   String parameterPlaceholder(String name) => '?';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -51,11 +53,13 @@ class _PositionalDialect extends SqlDialect {
 SqlExpression _buildAndChain(int terms) {
   final children = <SqlExpression>[];
   for (var i = 0; i < terms; i++) {
-    children.add(BinaryOpExpression(
-      '=',
-      ColumnExpression('c$i', tableNamespace: 't0'),
-      ParameterExpression('t0_c${i}_v', i),
-    ));
+    children.add(
+      BinaryOpExpression(
+        '=',
+        ColumnExpression('c$i', tableNamespace: 't0'),
+        ParameterExpression('t0_c${i}_v', i),
+      ),
+    );
   }
   return LogicalExpression('AND', children);
 }
@@ -80,10 +84,14 @@ void main() {
 
   _RenderBench(named, and5, 'ast render: 5-term AND (named)').report();
   _RenderBench(named, and10, 'ast render: 10-term AND (named)').report();
-  _RenderBench(positional, and5,
-          'ast render: 5-term AND (positional)')
-      .report();
-  _RenderBench(positional, and10,
-          'ast render: 10-term AND (positional)')
-      .report();
+  _RenderBench(
+    positional,
+    and5,
+    'ast render: 5-term AND (positional)',
+  ).report();
+  _RenderBench(
+    positional,
+    and10,
+    'ast render: 10-term AND (positional)',
+  ).report();
 }

@@ -22,8 +22,9 @@ class ApplicationIsolateServer extends ApplicationServer {
     supervisingReceivePort = ReceivePort();
     supervisingReceivePort.listen(listener);
 
-    logger
-        .fine("ApplicationIsolateServer($identifier) listening, sending port");
+    logger.fine(
+      "ApplicationIsolateServer($identifier) listening, sending port",
+    );
     supervisingApplicationPort.send(supervisingReceivePort.sendPort);
   }
 
@@ -36,8 +37,9 @@ class ApplicationIsolateServer extends ApplicationServer {
     logger.fine(
       "ApplicationIsolateServer($identifier) started, sending listen message",
     );
-    supervisingApplicationPort
-        .send(ApplicationIsolateSupervisor.messageKeyListening);
+    supervisingApplicationPort.send(
+      ApplicationIsolateSupervisor.messageKeyListening,
+    );
 
     return result;
   }
@@ -68,8 +70,9 @@ class ApplicationIsolateServer extends ApplicationServer {
     logger.fine(
       "ApplicationIsolateServer($identifier) sending stop acknowledgement",
     );
-    supervisingApplicationPort
-        .send(ApplicationIsolateSupervisor.messageKeyStop);
+    supervisingApplicationPort.send(
+      ApplicationIsolateSupervisor.messageKeyStop,
+    );
   }
 }
 

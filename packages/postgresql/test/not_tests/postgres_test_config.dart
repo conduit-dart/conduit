@@ -116,9 +116,7 @@ class PostgresTestConfig {
     if (raw == null || raw.isEmpty) return _port = _defaultPort;
     final parsed = int.tryParse(raw);
     if (parsed == null) {
-      throw ArgumentError(
-        'POSTGRES_PORT must be an integer; got "$raw"',
-      );
+      throw ArgumentError('POSTGRES_PORT must be an integer; got "$raw"');
     }
     return _port = parsed;
   }

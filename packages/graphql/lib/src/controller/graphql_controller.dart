@@ -30,8 +30,10 @@ final _applicationJson = ContentType.json;
 /// The newer GraphQL-over-HTTP response media type. We answer `Accept:
 /// application/graphql-response+json` with this exact content type so
 /// negotiating clients see the spec-aligned envelope.
-final _applicationGraphQLResponseJson =
-    ContentType('application', 'graphql-response+json');
+final _applicationGraphQLResponseJson = ContentType(
+  'application',
+  'graphql-response+json',
+);
 
 /// Registers the `application/graphql-response+json` codec with
 /// Conduit's [CodecRegistry] exactly once. The spec defines this media
@@ -107,7 +109,7 @@ class GraphQLController extends ResourceController {
   /// resolvers fall back to per-call SQL fetches with no batching —
   /// safe but quadratic for nested queries.
   GraphQLController(this.schema, {this.dataLoaderRegistry})
-      : _graphql = GraphQL(schema) {
+    : _graphql = GraphQL(schema) {
     _ensureCodecRegistered();
     acceptedContentTypes = [_applicationJson, _applicationGraphQL];
   }
@@ -150,53 +152,45 @@ class GraphQLController extends ResourceController {
       } else if (decoded is List<int>) {
         query = utf8.decode(decoded);
       } else {
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [_GqlError('Invalid application/graphql body: expected a string.')],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError('Invalid application/graphql body: expected a string.'),
+        ], request);
       }
     } else {
       // application/json envelope.
       final dynamic body = request.body.as<dynamic>();
       if (body is! Map<String, dynamic>) {
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [
-            _GqlError(
-              'Invalid GraphQL request: body must be a JSON object with a '
-              '"query" field.',
-            )
-          ],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError(
+            'Invalid GraphQL request: body must be a JSON object with a '
+            '"query" field.',
+          ),
+        ], request);
       }
       final dynamic q = body[_kQuery];
       if (q is! String) {
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [_GqlError('Invalid GraphQL request: missing "query" field.')],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError('Invalid GraphQL request: missing "query" field.'),
+        ], request);
       }
       query = q;
       final dynamic name = body[_kOperationName];
       if (name != null && name is! String) {
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [_GqlError('Invalid GraphQL request: "operationName" must be a string.')],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError(
+            'Invalid GraphQL request: "operationName" must be a string.',
+          ),
+        ], request);
       }
       operationName = name as String?;
       final dynamic vars = body[_kVariables];
       if (vars != null) {
         if (vars is! Map) {
-          return _httpErrorResponse(
-            HttpStatus.badRequest,
-            [_GqlError('Invalid GraphQL request: "variables" must be an object.')],
-            request,
-          );
+          return _httpErrorResponse(HttpStatus.badRequest, [
+            _GqlError(
+              'Invalid GraphQL request: "variables" must be an object.',
+            ),
+          ], request);
         }
         variables = Map<String, dynamic>.from(vars);
       }
@@ -228,23 +222,17 @@ class GraphQLController extends ResourceController {
       try {
         final dynamic parsed = json.decode(variablesJson);
         if (parsed is! Map) {
-          return _httpErrorResponse(
-            HttpStatus.badRequest,
-            [
-              _GqlError(
-                'Invalid "variables" query parameter: expected a JSON object.',
-              )
-            ],
-            request,
-          );
+          return _httpErrorResponse(HttpStatus.badRequest, [
+            _GqlError(
+              'Invalid "variables" query parameter: expected a JSON object.',
+            ),
+          ], request);
         }
         variables = Map<String, dynamic>.from(parsed);
       } on FormatException catch (e) {
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [_GqlError('Invalid "variables" query parameter: ${e.message}')],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError('Invalid "variables" query parameter: ${e.message}'),
+        ], request);
       }
     }
 
@@ -293,7 +281,7 @@ class GraphQLController extends ResourceController {
                           _GqlLocation(
                             e.span!.start.line + 1,
                             e.span!.start.column + 1,
-                          )
+                          ),
                         ],
                 ),
               )
@@ -302,11 +290,9 @@ class GraphQLController extends ResourceController {
         );
       }
     } on Object catch (e) {
-      return _httpErrorResponse(
-        HttpStatus.badRequest,
-        [_GqlError('Syntax error: $e')],
-        request,
-      );
+      return _httpErrorResponse(HttpStatus.badRequest, [
+        _GqlError('Syntax error: $e'),
+      ], request);
     }
 
     // Step 2: enforce GET = query-only.
@@ -318,7 +304,8 @@ class GraphQLController extends ResourceController {
       } else if (ops.length == 1) {
         selected = ops.first;
       }
-      if (selected != null && (selected.isMutation || selected.isSubscription)) {
+      if (selected != null &&
+          (selected.isMutation || selected.isSubscription)) {
         return Response(
           HttpStatus.methodNotAllowed,
           {HttpHeaders.allowHeader: 'POST'},
@@ -328,8 +315,8 @@ class GraphQLController extends ResourceController {
                 'message':
                     'GraphQL ${selected.isMutation ? "mutations" : "subscriptions"} '
                     'must use HTTP POST.',
-              }
-            ]
+              },
+            ],
           },
         )..contentType = _negotiatedJsonContentType(request);
       }
@@ -399,18 +386,12 @@ class GraphQLController extends ResourceController {
         // Subscriptions are out of scope; if someone hand-rolls a
         // subscription type, the spec says reject with an explicit
         // error rather than streaming.
-        return _httpErrorResponse(
-          HttpStatus.badRequest,
-          [_GqlError('Subscriptions are not supported over HTTP.')],
-          request,
-        );
+        return _httpErrorResponse(HttpStatus.badRequest, [
+          _GqlError('Subscriptions are not supported over HTTP.'),
+        ], request);
       }
 
-      return _jsonResponse(
-        HttpStatus.ok,
-        {'data': data},
-        request,
-      );
+      return _jsonResponse(HttpStatus.ok, {'data': data}, request);
     } on GraphQLException catch (e) {
       // graphql_server2 throws GraphQLException for all server-side
       // failures it can attribute (variable coercion, missing required
@@ -434,16 +415,10 @@ class GraphQLController extends ResourceController {
         e,
         st,
       );
-      return _jsonResponse(
-        HttpStatus.ok,
-        {
-          'data': null,
-          'errors': [
-            _GqlError(e.toString()).toJson(),
-          ],
-        },
-        request,
-      );
+      return _jsonResponse(HttpStatus.ok, {
+        'data': null,
+        'errors': [_GqlError(e.toString()).toJson()],
+      }, request);
     }
   }
 
@@ -454,11 +429,9 @@ class GraphQLController extends ResourceController {
     List<_GqlError> errors,
     Request request,
   ) {
-    return Response(
-      status,
-      null,
-      {'errors': errors.map((e) => e.toJson()).toList()},
-    )..contentType = _negotiatedJsonContentType(request);
+    return Response(status, null, {
+      'errors': errors.map((e) => e.toJson()).toList(),
+    })..contentType = _negotiatedJsonContentType(request);
   }
 
   /// JSON-envelope response builder that honors the negotiated GraphQL
@@ -565,7 +538,8 @@ List<_GqlError> _validateFieldExistence(
   GraphQLSchema schema,
 ) {
   final errors = <_GqlError>[];
-  for (final op in document.definitions.whereType<OperationDefinitionContext>()) {
+  for (final op
+      in document.definitions.whereType<OperationDefinitionContext>()) {
     GraphQLObjectType? root;
     if (op.isMutation) {
       root = schema.mutationType;

@@ -53,7 +53,7 @@ Two helper scripts close the loop between "CI failed" and "I have a
 reproducer in front of me":
 
 - **`ci/run-local.sh [gate ...]`** runs any subset of the deployable
-  gates against the same `dart:beta` image Woodpecker uses. State
+  gates against the same `dart:3.13` image Woodpecker uses. State
   persists in two docker volumes (`conduit-pub-cache`, `conduit-pgdata`)
   so subsequent runs are fast. With no args, runs every gate.
 

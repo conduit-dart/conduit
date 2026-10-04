@@ -1,4 +1,4 @@
-analyzer:
-  errors:
-    empty_catches: ignore
+# `empty_catches` is enforced (no `ignore` override): a catch that
+# intentionally swallows must explain itself in a comment inside the block.
+# See packages/core/analysis_options.yaml for the history.
 include: ../../analysis_options.shared.yaml

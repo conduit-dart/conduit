@@ -108,24 +108,15 @@ void main() {
       });
 
       test("int", () {
-        expect(
-          coerce<List<int>>(wash([2, 4])),
-          [2, 4],
-        );
+        expect(coerce<List<int>>(wash([2, 4])), [2, 4]);
       });
 
       test("String", () {
-        expect(
-          coerce<List<String>>(wash(["a", "b", "c"])),
-          ["a", "b", "c"],
-        );
+        expect(coerce<List<String>>(wash(["a", "b", "c"])), ["a", "b", "c"]);
       });
 
       test("num", () {
-        expect(
-          coerce<List<num>>(wash([3.0, 2])),
-          [3.0, 2],
-        );
+        expect(coerce<List<num>>(wash([3.0, 2])), [3.0, 2]);
       });
 
       test("bool", () {
@@ -182,7 +173,7 @@ void main() {
           coerce<List<List<String>>>(
             wash([
               ["foo", 3],
-              ["baz"]
+              ["baz"],
             ]),
           );
           fail('unreachable');
@@ -197,7 +188,7 @@ void main() {
           coerce<List<Map<String, int>>>(
             wash([
               {"a": 1},
-              {"a": "b"}
+              {"a": "b"},
             ]),
           );
           fail('unreachable');
@@ -210,38 +201,35 @@ void main() {
 
     group("($suiteName) Map types (success)", () {
       test("null", () {
-        expect(
-          coerce<Map<String, dynamic>?>(null),
-          null,
-        );
+        expect(coerce<Map<String, dynamic>?>(null), null);
       });
 
       test("string->dynamic", () {
-        expect(
-          coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"})),
-          {"a": 1, "b": "c"},
-        );
+        expect(coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"})), {
+          "a": 1,
+          "b": "c",
+        });
       });
 
       test("string->int", () {
-        expect(
-          coerce<Map<String, int>>(wash({"a": 1, "b": 2})),
-          {"a": 1, "b": 2},
-        );
+        expect(coerce<Map<String, int>>(wash({"a": 1, "b": 2})), {
+          "a": 1,
+          "b": 2,
+        });
       });
 
       test("string->num", () {
-        expect(
-          coerce<Map<String, num>>(wash({"a": 1, "b": 2.0})),
-          {"a": 1, "b": 2.0},
-        );
+        expect(coerce<Map<String, num>>(wash({"a": 1, "b": 2.0})), {
+          "a": 1,
+          "b": 2.0,
+        });
       });
 
       test("string->string", () {
-        expect(
-          coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"})),
-          {"a": "1", "b": "2.0"},
-        );
+        expect(coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"})), {
+          "a": "1",
+          "b": "2.0",
+        });
       });
     });
 
@@ -272,7 +260,7 @@ void main() {
         try {
           coerce<Map<String, List<String>>>(
             wash({
-              "a": [2]
+              "a": [2],
             }),
           );
           fail('unreachable');
@@ -294,7 +282,7 @@ void main() {
         try {
           coerce<Map<String, Map<String, int>>>(
             wash({
-              "a": {"b": "foo"}
+              "a": {"b": "foo"},
             }),
           );
           fail('unreachable');

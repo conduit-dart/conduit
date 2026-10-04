@@ -9,23 +9,19 @@ void main() {
       redirectURI: "http://a.com",
     );
     expect(client.id, "a");
-    expect(
-      client.hashedSecret,
-      generatePasswordHash("b", client.salt!),
-    );
+    expect(client.hashedSecret, generatePasswordHash("b", client.salt!));
     expect(client.redirectURI, "http://a.com");
   });
 
-  test("Generated confidential, non-redirectable API client has valid values",
-      () {
-    final client = generateAPICredentialPair("a", "b");
-    expect(client.id, "a");
-    expect(
-      client.hashedSecret,
-      generatePasswordHash("b", client.salt!),
-    );
-    expect(client.redirectURI, isNull);
-  });
+  test(
+    "Generated confidential, non-redirectable API client has valid values",
+    () {
+      final client = generateAPICredentialPair("a", "b");
+      expect(client.id, "a");
+      expect(client.hashedSecret, generatePasswordHash("b", client.salt!));
+      expect(client.redirectURI, isNull);
+    },
+  );
 
   test("Generated public API client has valid values", () {
     final client = generateAPICredentialPair("a", null);

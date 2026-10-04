@@ -26,7 +26,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(
@@ -58,7 +58,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(columns.firstWhere((c) => c.name == "startDate").asMap(), {
@@ -72,7 +72,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(columns.firstWhere((c) => c.name == "indexedValue").asMap(), {
@@ -86,23 +86,25 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": true
+        "indexed": true,
       });
 
       expect(
-          columns.firstWhere((c) => c.name == "autoincrementValue").asMap(), {
-        "name": "autoincrementValue",
-        "type": "integer",
-        "nullable": false,
-        "autoincrement": true,
-        "unique": false,
-        "defaultValue": null,
-        "primaryKey": false,
-        "relatedTableName": null,
-        "relatedColumnName": null,
-        "deleteRule": null,
-        "indexed": false
-      });
+        columns.firstWhere((c) => c.name == "autoincrementValue").asMap(),
+        {
+          "name": "autoincrementValue",
+          "type": "integer",
+          "nullable": false,
+          "autoincrement": true,
+          "unique": false,
+          "defaultValue": null,
+          "primaryKey": false,
+          "relatedTableName": null,
+          "relatedColumnName": null,
+          "deleteRule": null,
+          "indexed": false,
+        },
+      );
 
       expect(columns.firstWhere((c) => c.name == "uniqueValue").asMap(), {
         "name": "uniqueValue",
@@ -115,7 +117,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(columns.firstWhere((c) => c.name == "defaultItem").asMap(), {
@@ -129,7 +131,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(columns.firstWhere((c) => c.name == "nullableValue").asMap(), {
@@ -143,7 +145,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
       expect(columns.firstWhere((c) => c.name == "loadedValue").asMap(), {
@@ -157,7 +159,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": true
+        "indexed": true,
       });
 
       expect(
@@ -171,7 +173,7 @@ void main() {
         LoadedSingleItem,
         DefaultItem,
         LoadedItem,
-        Container
+        Container,
       ];
       final dataModel = ManagedDataModel(intentionallyUnorderedModelTypes);
       final schema = Schema.fromDataModel(dataModel);
@@ -183,8 +185,9 @@ void main() {
         ["_Container", "_DefaultItem", "_LoadedItem", "_LoadedSingleItem"],
       );
 
-      final containerTable =
-          schema.tables.firstWhere((t) => t.name == "_Container");
+      final containerTable = schema.tables.firstWhere(
+        (t) => t.name == "_Container",
+      );
       expect(containerTable.name, "_Container");
       expect(containerTable.uniqueColumnSet, isNull);
       final containerColumns = containerTable.columns;
@@ -200,11 +203,12 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
 
-      final defaultItemTable =
-          schema.tables.firstWhere((t) => t.name == "_DefaultItem");
+      final defaultItemTable = schema.tables.firstWhere(
+        (t) => t.name == "_DefaultItem",
+      );
       expect(defaultItemTable.name, "_DefaultItem");
       expect(defaultItemTable.uniqueColumnSet, isNull);
       final defaultItemColumns = defaultItemTable.columns;
@@ -220,7 +224,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
       expect(defaultItemColumns.last.asMap(), {
         "name": "container",
@@ -233,11 +237,12 @@ void main() {
         "relatedTableName": "_Container",
         "relatedColumnName": "id",
         "deleteRule": "nullify",
-        "indexed": true
+        "indexed": true,
       });
 
-      final loadedItemTable =
-          schema.tables.firstWhere((t) => t.name == "_LoadedItem");
+      final loadedItemTable = schema.tables.firstWhere(
+        (t) => t.name == "_LoadedItem",
+      );
       expect(loadedItemTable.uniqueColumnSet, isNull);
       expect(loadedItemTable.name, "_LoadedItem");
       final loadedColumns = loadedItemTable.columns;
@@ -253,7 +258,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
       expect(loadedColumns[1].asMap(), {
         "name": "someIndexedThing",
@@ -266,7 +271,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": true
+        "indexed": true,
       });
       expect(loadedColumns[2].asMap(), {
         "name": "container",
@@ -279,11 +284,12 @@ void main() {
         "relatedTableName": "_Container",
         "relatedColumnName": "id",
         "deleteRule": "restrict",
-        "indexed": true
+        "indexed": true,
       });
 
-      final loadedSingleItemTable =
-          schema.tables.firstWhere((t) => t.name == "_LoadedSingleItem");
+      final loadedSingleItemTable = schema.tables.firstWhere(
+        (t) => t.name == "_LoadedSingleItem",
+      );
       expect(loadedSingleItemTable.uniqueColumnSet, isNull);
       expect(loadedSingleItemTable.name, "_LoadedSingleItem");
       final loadedSingleColumns = loadedSingleItemTable.columns;
@@ -299,7 +305,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
       expect(loadedSingleColumns[1].asMap(), {
         "name": "loadedItem",
@@ -312,7 +318,7 @@ void main() {
         "relatedTableName": "_LoadedItem",
         "relatedColumnName": "id",
         "deleteRule": "cascade",
-        "indexed": true
+        "indexed": true,
       });
 
       expect(
@@ -356,7 +362,7 @@ void main() {
         'relatedTableName': '_SelfRef',
         'relatedColumnName': 'id',
         'deleteRule': 'nullify',
-        'indexed': true
+        'indexed': true,
       });
     });
 
@@ -365,48 +371,53 @@ void main() {
       final schema = Schema.fromDataModel(dataModel);
       final map = schema.asMap();
       expect(
-          map["tables"]
-              .firstWhere((t) => t["name"] == "_Left")["columns"]
-              .firstWhere((c) => c["name"] == "belongsToRight"),
-          {
-            'name': 'belongsToRight',
-            'type': 'bigInteger',
-            'nullable': true,
-            'autoincrement': false,
-            'unique': true,
-            'defaultValue': null,
-            'primaryKey': false,
-            'relatedTableName': '_Right',
-            'relatedColumnName': 'id',
-            'deleteRule': 'nullify',
-            'indexed': true
-          });
+        map["tables"]
+            .firstWhere((t) => t["name"] == "_Left")["columns"]
+            .firstWhere((c) => c["name"] == "belongsToRight"),
+        {
+          'name': 'belongsToRight',
+          'type': 'bigInteger',
+          'nullable': true,
+          'autoincrement': false,
+          'unique': true,
+          'defaultValue': null,
+          'primaryKey': false,
+          'relatedTableName': '_Right',
+          'relatedColumnName': 'id',
+          'deleteRule': 'nullify',
+          'indexed': true,
+        },
+      );
 
       expect(
-          map["tables"]
-              .firstWhere((t) => t["name"] == "_Right")["columns"]
-              .firstWhere((c) => c["name"] == "belongsToLeft"),
-          {
-            'name': 'belongsToLeft',
-            'type': 'bigInteger',
-            'nullable': true,
-            'autoincrement': false,
-            'unique': true,
-            'defaultValue': null,
-            'primaryKey': false,
-            'relatedTableName': '_Left',
-            'relatedColumnName': 'id',
-            'deleteRule': 'nullify',
-            'indexed': true
-          });
+        map["tables"]
+            .firstWhere((t) => t["name"] == "_Right")["columns"]
+            .firstWhere((c) => c["name"] == "belongsToLeft"),
+        {
+          'name': 'belongsToLeft',
+          'type': 'bigInteger',
+          'nullable': true,
+          'autoincrement': false,
+          'unique': true,
+          'defaultValue': null,
+          'primaryKey': false,
+          'relatedTableName': '_Left',
+          'relatedColumnName': 'id',
+          'deleteRule': 'nullify',
+          'indexed': true,
+        },
+      );
     });
   });
 
   group("Constructors work appropriately", () {
     test("Encoding/decoding is pristine", () {
-      final dataModel = ManagedDataModel(
-        [LoadedSingleItem, DefaultItem, LoadedItem, Container],
-      );
+      final dataModel = ManagedDataModel([
+        LoadedSingleItem,
+        DefaultItem,
+        LoadedItem,
+        Container,
+      ]);
       final baseSchema = Schema.fromDataModel(dataModel);
       final newSchema = Schema.fromMap(baseSchema.asMap());
       expect(newSchema.differenceFrom(baseSchema).hasDifferences, false);
@@ -414,9 +425,12 @@ void main() {
     });
 
     test("Copying is pristine", () {
-      final dataModel = ManagedDataModel(
-        [LoadedSingleItem, DefaultItem, LoadedItem, Container],
-      );
+      final dataModel = ManagedDataModel([
+        LoadedSingleItem,
+        DefaultItem,
+        LoadedItem,
+        Container,
+      ]);
       final baseSchema = Schema.fromDataModel(dataModel);
       final newSchema = Schema.from(baseSchema);
       expect(newSchema.differenceFrom(baseSchema).hasDifferences, false);
@@ -427,9 +441,13 @@ void main() {
   group("Matching", () {
     late Schema baseSchema;
     setUp(() {
-      final dataModel = ManagedDataModel(
-        [LoadedSingleItem, DefaultItem, LoadedItem, Container, Unique],
-      );
+      final dataModel = ManagedDataModel([
+        LoadedSingleItem,
+        DefaultItem,
+        LoadedItem,
+        Container,
+        Unique,
+      ]);
       baseSchema = Schema.fromDataModel(dataModel);
     });
 
@@ -512,9 +530,7 @@ void main() {
       );
       expect(
         diff.errorMessages,
-        contains(
-          contains("Multi-column unique constraint on table '_Unique'"),
-        ),
+        contains(contains("Multi-column unique constraint on table '_Unique'")),
       );
 
       final nextSchema = Schema.from(newSchema);
@@ -527,9 +543,7 @@ void main() {
       );
       expect(
         diff.errorMessages,
-        contains(
-          contains("Multi-column unique constraint on table '_Unique'"),
-        ),
+        contains(contains("Multi-column unique constraint on table '_Unique'")),
       );
     });
 
@@ -566,26 +580,23 @@ void main() {
     test("Same column but with wrong name shows up as error", () {
       final newSchema = Schema.from(baseSchema);
       newSchema.tables
-          .firstWhere((t) => t.name == "_DefaultItem")
-          .columns
-          .firstWhere((c) => c.name == "id")
-          .name = "idd";
+              .firstWhere((t) => t.name == "_DefaultItem")
+              .columns
+              .firstWhere((c) => c.name == "id")
+              .name =
+          "idd";
 
       final diff = baseSchema.differenceFrom(newSchema);
       expect(diff.hasDifferences, true);
       expect(diff.errorMessages.length, 2);
       expect(
         diff.errorMessages,
-        contains(
-          contains("Column 'id' in table '_DefaultItem' should exist"),
-        ),
+        contains(contains("Column 'id' in table '_DefaultItem' should exist")),
       );
       expect(
         diff.errorMessages,
         contains(
-          contains(
-            "Column 'idd' in table '_DefaultItem' should NOT exist",
-          ),
+          contains("Column 'idd' in table '_DefaultItem' should NOT exist"),
         ),
       );
     });
@@ -664,10 +675,11 @@ void main() {
       final df = newSchema.tables.firstWhere((t) => t.name == "_DefaultItem");
       df.addColumn(SchemaColumn("foobar", ManagedPropertyType.integer));
       newSchema
-          .tableForName("_LoadedItem")!
-          .columns
-          .firstWhere((sc) => sc.name == "someIndexedThing")
-          .isIndexed = false;
+              .tableForName("_LoadedItem")!
+              .columns
+              .firstWhere((sc) => sc.name == "someIndexedThing")
+              .isIndexed =
+          false;
 
       final diff = baseSchema.differenceFrom(newSchema);
       expect(diff.hasDifferences, true);
@@ -694,17 +706,15 @@ void main() {
 
     test("Tables and columns are case-insensitive", () {
       final lowercaseSchema = Schema([
-        SchemaTable(
-          "table",
-          [SchemaColumn("column", ManagedPropertyType.bigInteger)],
-        )
+        SchemaTable("table", [
+          SchemaColumn("column", ManagedPropertyType.bigInteger),
+        ]),
       ]);
 
       final uppercaseSchema = Schema([
-        SchemaTable(
-          "TABLE",
-          [SchemaColumn("COLUMN", ManagedPropertyType.bigInteger)],
-        )
+        SchemaTable("TABLE", [
+          SchemaColumn("COLUMN", ManagedPropertyType.bigInteger),
+        ]),
       ]);
 
       expect(
@@ -733,7 +743,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": false
+        "indexed": false,
       });
       expect(tableColumns.firstWhere((sc) => sc.name == "field").asMap(), {
         "name": "field",
@@ -746,7 +756,7 @@ void main() {
         "relatedTableName": null,
         "relatedColumnName": null,
         "deleteRule": null,
-        "indexed": true
+        "indexed": true,
       });
     });
   });
@@ -781,10 +791,7 @@ class _LoadedItem {
   @Column(indexed: true)
   String? someIndexedThing;
 
-  @Relate(
-    Symbol('loadedItems'),
-    onDelete: DeleteRule.restrict,
-  )
+  @Relate(Symbol('loadedItems'), onDelete: DeleteRule.restrict)
   Container? container;
 
   LoadedSingleItem? loadedSingleItem;

@@ -60,18 +60,19 @@ class ChannelRuntimeImpl extends ChannelRuntime {
               !member.isStatic && member.type.isAssignableTo(documenter),
         )
         .map((dm) {
-      return reflect(channel).getField(dm.simpleName).reflectee
-          as APIComponentDocumenter?;
-    }).whereType<APIComponentDocumenter>();
+          return reflect(channel).getField(dm.simpleName).reflectee
+              as APIComponentDocumenter?;
+        })
+        .whereType<APIComponentDocumenter>();
   }
-
 }
 
 void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
   final channelSourceLibrary =
       currentMirrorSystem().libraries[params.streamLibraryURI]!;
-  final channelType = channelSourceLibrary
-      .declarations[Symbol(params.streamTypeName)]! as ClassMirror;
+  final channelType =
+      channelSourceLibrary.declarations[Symbol(params.streamTypeName)]!
+          as ClassMirror;
 
   final runtime = ChannelRuntimeImpl(channelType);
 
@@ -94,8 +95,9 @@ class ControllerRuntimeImpl extends ControllerRuntime {
 
     if (isMutable && !type.isAssignableTo(reflectType(Recyclable))) {
       throw StateError(
-          "Invalid controller '${MirrorSystem.getName(type.simpleName)}'. "
-          "Controllers must not have setters and all fields must be marked as final, or it must implement 'Recyclable'.");
+        "Invalid controller '${MirrorSystem.getName(type.simpleName)}'. "
+        "Controllers must not have setters and all fields must be marked as final, or it must implement 'Recyclable'.",
+      );
     }
   }
 
@@ -109,11 +111,11 @@ class ControllerRuntimeImpl extends ControllerRuntime {
     // We have a whitelist for a few things declared in controller that can't be final.
     final whitelist = ['policy=', '_nextController='];
     final members = type.instanceMembers;
-    final fieldKeys = type.instanceMembers.keys
-        .where((sym) => !whitelist.contains(MirrorSystem.getName(sym)));
+    final fieldKeys = type.instanceMembers.keys.where(
+      (sym) => !whitelist.contains(MirrorSystem.getName(sym)),
+    );
     return fieldKeys.any((key) => members[key]!.isSetter);
   }
-
 }
 
 class SerializableRuntimeImpl extends SerializableRuntime {
@@ -176,16 +178,20 @@ class SerializableRuntimeImpl extends SerializableRuntime {
       }
       return APISchemaObject()
         ..type = APIType.object
-        ..additionalPropertySchema =
-            documentType(context, type.typeArguments.last);
+        ..additionalPropertySchema = documentType(
+          context,
+          type.typeArguments.last,
+        );
     } else if (type.isAssignableTo(reflectType(Serializable))) {
-      final instance = (type as ClassMirror)
-          .newInstance(Symbol.empty, []).reflectee as Serializable;
+      final instance =
+          (type as ClassMirror).newInstance(Symbol.empty, []).reflectee
+              as Serializable;
       return instance.documentSchema(context);
     }
 
     throw ArgumentError(
-        "Unsupported type '${MirrorSystem.getName(type.simpleName)}' "
-        "for 'APIComponentDocumenter.documentType'.");
+      "Unsupported type '${MirrorSystem.getName(type.simpleName)}' "
+      "for 'APIComponentDocumenter.documentType'.",
+    );
   }
 }

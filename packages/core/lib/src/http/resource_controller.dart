@@ -161,8 +161,11 @@ abstract class ResourceController extends Controller
     APIDocumentContext context,
     Operation? operation,
   ) {
-    return _runtime!.documenter
-        ?.documentOperationParameters(this, context, operation);
+    return _runtime!.documenter?.documentOperationParameters(
+      this,
+      context,
+      operation,
+    );
   }
 
   /// Returns a documented summary for [operation].
@@ -196,8 +199,11 @@ abstract class ResourceController extends Controller
     APIDocumentContext context,
     Operation? operation,
   ) {
-    return _runtime!.documenter
-        ?.documentOperationRequestBody(this, context, operation);
+    return _runtime!.documenter?.documentOperationRequestBody(
+      this,
+      context,
+      operation,
+    );
   }
 
   /// Returns a map of possible responses for [operation].
@@ -270,22 +276,19 @@ abstract class ResourceController extends Controller
       request!.path.variables.keys.toList(),
     );
     if (operation == null) {
-      throw Response(
-        405,
-        {
-          "Allow": _allowedMethodsForPathVariables(request!.path.variables.keys)
-              .join(", ")
-        },
-        null,
-      );
+      throw Response(405, {
+        "Allow": _allowedMethodsForPathVariables(request!.path.variables.keys)
+            .join(", "),
+      }, null);
     }
 
     if (operation.scopes != null) {
       if (request!.authorization == null) {
         // todo: this should be done compile-time
         Logger("conduit").warning(
-            "'$runtimeType' must be linked to channel that contains an 'Authorizer', because "
-            "it uses 'Scope' annotation for one or more of its operation methods.");
+          "'$runtimeType' must be linked to channel that contains an 'Authorizer', because "
+          "it uses 'Scope' annotation for one or more of its operation methods.",
+        );
         throw Response.serverError();
       }
 
@@ -293,7 +296,7 @@ abstract class ResourceController extends Controller
         throw Response.forbidden(
           body: {
             "error": "insufficient_scope",
-            "scope": operation.scopes!.map((s) => s.toString()).join(" ")
+            "scope": operation.scopes!.map((s) => s.toString()).join(" "),
           },
         );
       }

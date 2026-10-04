@@ -13,8 +13,12 @@ List<Employee> employees = [];
 
 void main() {
   setUpAll(() async {
-    ctx = await PostgresTestConfig()
-        .contextWithModels([Company, Employee, Record, Report]);
+    ctx = await PostgresTestConfig().contextWithModels([
+      Company,
+      Employee,
+      Record,
+      Report,
+    ]);
     await populate();
 
     /* Note that objects are sorted by id, and therefore all values are in sorted order */
@@ -147,15 +151,17 @@ Future populate() async {
 
   Future addEmployees(Company company) async {
     for (var i = 1; i <= 10; ++i) {
-      final employee = await (Query<Employee>(ctx)
-            ..values.salary = i * 100
-            ..values.worksIn = company)
-          .insert();
+      final employee =
+          await (Query<Employee>(ctx)
+                ..values.salary = i * 100
+                ..values.worksIn = company)
+              .insert();
       employees.add(employee);
-      final record = await (Query<Record>(ctx)
-            ..values.payedLeaveLeft = 20 - 2 * i
-            ..values.employee = employee)
-          .insert();
+      final record =
+          await (Query<Record>(ctx)
+                ..values.payedLeaveLeft = 20 - 2 * i
+                ..values.employee = employee)
+              .insert();
 
       employee.personalRecord = record;
     }

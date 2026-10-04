@@ -23,7 +23,9 @@ Map<String, dynamic> _metrics(String path) {
 
 void main(List<String> args) {
   if (args.length != 2) {
-    stderr.writeln("usage: compare_summaries.dart <baseline.json> <pooled.json>");
+    stderr.writeln(
+      "usage: compare_summaries.dart <baseline.json> <pooled.json>",
+    );
     exit(64);
   }
 
@@ -31,10 +33,12 @@ void main(List<String> args) {
   final pooled = _metrics(args[1]);
 
   print("");
-  print("metric".padRight(45) +
-      "pool=1 p95".padLeft(14) +
-      "pool=8 p95".padLeft(14) +
-      "  delta");
+  print(
+    "metric".padRight(45) +
+        "pool=1 p95".padLeft(14) +
+        "pool=8 p95".padLeft(14) +
+        "  delta",
+  );
   print("-" * 85);
 
   double? p95(Map<String, dynamic> m, String key) {
@@ -57,10 +61,12 @@ void main(List<String> args) {
       slowMissing = false;
     }
     final delta = a == 0 ? 0.0 : ((b - a) / a) * 100.0;
-    print(key.padRight(45) +
-        a.toStringAsFixed(1).padLeft(14) +
-        b.toStringAsFixed(1).padLeft(14) +
-        "  ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(1)}%");
+    print(
+      key.padRight(45) +
+          a.toStringAsFixed(1).padLeft(14) +
+          b.toStringAsFixed(1).padLeft(14) +
+          "  ${delta >= 0 ? '+' : ''}${delta.toStringAsFixed(1)}%",
+    );
     if (key.contains("endpoint:slow") && b >= a) {
       slowRegressed = true;
     }
@@ -68,15 +74,21 @@ void main(List<String> args) {
 
   print("");
   if (slowMissing) {
-    print("WARN: slow-query submetric absent from one or both summaries — "
-        "no pooling verdict. (k6 only exports submetrics that have "
-        "thresholds; check the script's thresholds block.)");
+    print(
+      "WARN: slow-query submetric absent from one or both summaries — "
+      "no pooling verdict. (k6 only exports submetrics that have "
+      "thresholds; check the script's thresholds block.)",
+    );
   } else if (slowRegressed) {
-    print("WARN: pooled slow-query p95 is not better than single-connection "
-        "baseline. Expected pooling to raise slow-query capacity — check "
-        "target logs and heap samples before trusting this run.");
+    print(
+      "WARN: pooled slow-query p95 is not better than single-connection "
+      "baseline. Expected pooling to raise slow-query capacity — check "
+      "target logs and heap samples before trusting this run.",
+    );
   } else {
-    print("OK: pooled slow-query p95 improved over the single-connection "
-        "baseline.");
+    print(
+      "OK: pooled slow-query p95 improved over the single-connection "
+      "baseline.",
+    );
   }
 }

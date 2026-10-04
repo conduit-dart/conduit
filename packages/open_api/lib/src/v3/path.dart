@@ -17,8 +17,8 @@ class APIPath extends APIObject {
     this.operations = operations ?? {};
   }
   APIPath.empty()
-      : parameters = <APIParameter?>[],
-        operations = <String, APIOperation?>{};
+    : parameters = <APIParameter?>[],
+      operations = <String, APIOperation?>{};
 
   /// An optional, string summary, intended to apply to all operations in this path.
   String? summary;
@@ -64,7 +64,7 @@ class APIPath extends APIObject {
     description = object.decode("description");
     parameters =
         object.decodeObjects("parameters", APIParameter.empty) ??
-            <APIParameter?>[];
+        <APIParameter?>[];
 
     final methodNames = [
       "get",
@@ -74,12 +74,14 @@ class APIPath extends APIObject {
       "options",
       "head",
       "patch",
-      "trace"
+      "trace",
     ];
     for (final methodName in methodNames) {
       if (object.containsKey(methodName)) {
-        operations[methodName] =
-            object.decodeObject(methodName, APIOperation.empty);
+        operations[methodName] = object.decodeObject(
+          methodName,
+          APIOperation.empty,
+        );
       }
     }
   }

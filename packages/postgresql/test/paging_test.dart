@@ -8,8 +8,9 @@ void main() {
     ManagedContext? context;
 
     setUpAll(() async {
-      context =
-          await PostgresTestConfig().contextWithModels([PageableTestModel]);
+      context = await PostgresTestConfig().contextWithModels([
+        PageableTestModel,
+      ]);
       for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -65,8 +66,9 @@ void main() {
     }
 
     setUpAll(() async {
-      context =
-          await PostgresTestConfig().contextWithModels([PageableTestModel]);
+      context = await PostgresTestConfig().contextWithModels([
+        PageableTestModel,
+      ]);
       for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -104,15 +106,17 @@ void main() {
      ---------------------
      */
 
-    test("Ascending from known data set edge, limited to inside data set",
-        () async {
-      // select * from t where id > 0 order by id asc limit 5;
-      final req = Query<PageableTestModel>(context!)
-        ..pageBy((p) => p.id, QuerySortOrder.ascending, boundingValue: 0)
-        ..fetchLimit = 5;
-      final res = await req.fetch();
-      check([1, 2, 3, 4, 5], res);
-    });
+    test(
+      "Ascending from known data set edge, limited to inside data set",
+      () async {
+        // select * from t where id > 0 order by id asc limit 5;
+        final req = Query<PageableTestModel>(context!)
+          ..pageBy((p) => p.id, QuerySortOrder.ascending, boundingValue: 0)
+          ..fetchLimit = 5;
+        final res = await req.fetch();
+        check([1, 2, 3, 4, 5], res);
+      },
+    );
 
     test("Ascending from first element, limited to inside data set", () async {
       // select * from t where id > 1 order by id asc limit 5;
@@ -195,15 +199,17 @@ void main() {
       expect(res.length, 0);
     });
 
-    test("Descending from first element in data set to before data set",
-        () async {
-      // select * from t where id < 1 order by id desc limit 10;
-      final req = Query<PageableTestModel>(context!)
-        ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 1)
-        ..fetchLimit = 10;
-      final res = await req.fetch();
-      expect(res.length, 0);
-    });
+    test(
+      "Descending from first element in data set to before data set",
+      () async {
+        // select * from t where id < 1 order by id desc limit 10;
+        final req = Query<PageableTestModel>(context!)
+          ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 1)
+          ..fetchLimit = 10;
+        final res = await req.fetch();
+        expect(res.length, 0);
+      },
+    );
 
     test("Descending from middle of data set to before data set", () async {
       // select * from t where id < 4 order by id desc limit 10;
@@ -224,35 +230,40 @@ void main() {
     });
 
     test(
-        "Descending from outside end of data set to beginning edge of data set",
-        () async {
-      // select * from t where id < 11 order by id desc limit 10;
-      final req = Query<PageableTestModel>(context!)
-        ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 11)
-        ..fetchLimit = 10;
-      final res = await req.fetch();
-      check([10, 9, 8, 7, 6, 5, 4, 3, 2, 1], res);
-    });
+      "Descending from outside end of data set to beginning edge of data set",
+      () async {
+        // select * from t where id < 11 order by id desc limit 10;
+        final req = Query<PageableTestModel>(context!)
+          ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 11)
+          ..fetchLimit = 10;
+        final res = await req.fetch();
+        check([10, 9, 8, 7, 6, 5, 4, 3, 2, 1], res);
+      },
+    );
 
-    test("Descending from last element in data set to middle of data set",
-        () async {
-      // select * from t where id < 10 order by id desc limit 5;
-      final req = Query<PageableTestModel>(context!)
-        ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 10)
-        ..fetchLimit = 5;
-      final res = await req.fetch();
-      check([9, 8, 7, 6, 5], res);
-    });
+    test(
+      "Descending from last element in data set to middle of data set",
+      () async {
+        // select * from t where id < 10 order by id desc limit 5;
+        final req = Query<PageableTestModel>(context!)
+          ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 10)
+          ..fetchLimit = 5;
+        final res = await req.fetch();
+        check([9, 8, 7, 6, 5], res);
+      },
+    );
 
-    test("Descending from outside end of data set to middle of data set",
-        () async {
-      // select * from t where id < 11 order by id desc limit 5
-      final req = Query<PageableTestModel>(context!)
-        ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 11)
-        ..fetchLimit = 5;
-      final res = await req.fetch();
-      check([10, 9, 8, 7, 6], res);
-    });
+    test(
+      "Descending from outside end of data set to middle of data set",
+      () async {
+        // select * from t where id < 11 order by id desc limit 5
+        final req = Query<PageableTestModel>(context!)
+          ..pageBy((p) => p.id, QuerySortOrder.descending, boundingValue: 11)
+          ..fetchLimit = 5;
+        final res = await req.fetch();
+        check([10, 9, 8, 7, 6], res);
+      },
+    );
 
     test("Descending from null to beginning of data set", () async {
       // select * from t order by id desc limit 10
@@ -284,8 +295,11 @@ void main() {
     }
 
     setUpAll(() async {
-      context = await PostgresTestConfig()
-          .contextWithModels([PageableTestModel, HasMany, BelongsTo]);
+      context = await PostgresTestConfig().contextWithModels([
+        PageableTestModel,
+        HasMany,
+        BelongsTo,
+      ]);
       for (var i = 0; i < 10; i++) {
         final p = PageableTestModel()..value = "$i";
         await (Query<PageableTestModel>(context!)..values = p).insert();
@@ -325,9 +339,7 @@ void main() {
       } on ArgumentError catch (e) {
         expect(
           e.toString(),
-          contains(
-            "Property 'foobar' does not exist on 'PageableTestModel'",
-          ),
+          contains("Property 'foobar' does not exist on 'PageableTestModel'"),
         );
       }
     });

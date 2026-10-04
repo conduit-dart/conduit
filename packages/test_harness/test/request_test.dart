@@ -25,8 +25,10 @@ void main() async {
     await req.post();
 
     final Request received = await server.next();
-    expect(received.raw.headers.value("content-type"),
-        "application/json; charset=utf-8");
+    expect(
+      received.raw.headers.value("content-type"),
+      "application/json; charset=utf-8",
+    );
     expect(received.body.as<Map>(), {"k": "v"});
 
     final req2 = agent.request("/")
@@ -39,18 +41,22 @@ void main() async {
     expect(rec2.body.as<String>(), "foobar");
   });
 
-  test("If opting out of body encoding, bytes can be set directly on request",
-      () async {
-    final req = agent.request("/")
-      ..encodeBody = false
-      ..body = utf8.encode(json.encode({"k": "v"}));
-    await req.post();
+  test(
+    "If opting out of body encoding, bytes can be set directly on request",
+    () async {
+      final req = agent.request("/")
+        ..encodeBody = false
+        ..body = utf8.encode(json.encode({"k": "v"}));
+      await req.post();
 
-    final Request received = await server.next();
-    expect(received.raw.headers.value("content-type"),
-        "application/json; charset=utf-8");
-    expect(received.body.as<Map>(), {"k": "v"});
-  });
+      final Request received = await server.next();
+      expect(
+        received.raw.headers.value("content-type"),
+        "application/json; charset=utf-8",
+      );
+      expect(received.body.as<Map>(), {"k": "v"});
+    },
+  );
 
   test("Query parameters get URI encoded", () async {
     final req = agent.request("/")..query = {"k": "v v"};
@@ -63,7 +69,7 @@ void main() async {
   test("List query parameters are encoded as separate keys", () async {
     final req = agent.request("/")
       ..query = {
-        "k": ["v", "w"]
+        "k": ["v", "w"],
       };
     await req.get();
 

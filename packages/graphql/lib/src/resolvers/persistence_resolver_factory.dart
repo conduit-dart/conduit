@@ -75,22 +75,22 @@ class ResolverHookSet {
   /// Mirrors [SqlResolverFactory.attributeResolverFor]'s signature.
   final GraphQLFieldResolver<Object?, Object?>? Function(
     ManagedAttributeDescription attr,
-  ) attributeResolver;
+  )
+  attributeResolver;
 
   /// Hook for a relationship field on a SQL projection.
   final GraphQLFieldResolver<Object?, Object?>? Function(
     ManagedRelationshipDescription rel,
-  ) relationshipResolver;
+  )
+  relationshipResolver;
 
   /// Hook for a Query-root list-all field for a SQL entity.
-  final GraphQLFieldResolver<Object?, Object?>? Function(
-    ManagedEntity entity,
-  ) queryListResolver;
+  final GraphQLFieldResolver<Object?, Object?>? Function(ManagedEntity entity)
+  queryListResolver;
 
   /// Hook for a Query-root by-pk field for a SQL entity.
-  final GraphQLFieldResolver<Object?, Object?>? Function(
-    ManagedEntity entity,
-  ) queryByPkResolver;
+  final GraphQLFieldResolver<Object?, Object?>? Function(ManagedEntity entity)
+  queryByPkResolver;
 
   /// Direct handle to the graph factory, exposed because
   /// [SchemaBuilder.fromGraphDataModel] inline-invokes graph resolvers
@@ -192,8 +192,7 @@ class PersistenceResolverFactory<G extends Object> {
 GraphQLFieldResolver<Object?, Object?> wrapResolverWithAuth(
   GraphQLFieldResolver<Object?, Object?> inner,
   FieldAuthorize auth,
-) =>
-    _wrapWithAuth(inner, auth);
+) => _wrapWithAuth(inner, auth);
 
 /// Key for the per-resolver-call [Authorization] override. Tests (and
 /// non-Conduit hosts) can write an [Authorization] under this key in
@@ -234,11 +233,13 @@ GraphQLFieldResolver<Object?, Object?> _wrapWithAuth(
       );
     }
 
-    final hasScope = authorization != null &&
+    final hasScope =
+        authorization != null &&
         auth.scopes.any(authorization.isAuthorizedForScope);
     if (!hasScope) {
       final allowOwner = auth.allowOwner;
-      final ownerOk = allowOwner != null &&
+      final ownerOk =
+          allowOwner != null &&
           parent != null &&
           request != null &&
           allowOwner(parent, request);
@@ -247,7 +248,7 @@ GraphQLFieldResolver<Object?, Object?> _wrapWithAuth(
           auth.scopes.isEmpty
               ? 'Field is not authorized for this caller.'
               : 'Field requires one of the following scopes: '
-                  '${auth.scopes.join(", ")}.',
+                    '${auth.scopes.join(", ")}.',
         );
       }
     }

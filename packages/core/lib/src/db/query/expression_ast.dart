@@ -60,8 +60,7 @@ class ColumnExpression extends SqlExpression {
       tableNamespace == null ? columnName : '$tableNamespace.$columnName';
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitColumn(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitColumn(this);
 }
 
 /// A literal SQL token. Only a small number of safe constants are
@@ -74,8 +73,7 @@ class LiteralExpression extends SqlExpression {
   final String sql;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitLiteral(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLiteral(this);
 }
 
 /// A bind-parameter slot. The visitor renders this as a
@@ -97,8 +95,7 @@ class ParameterExpression extends SqlExpression {
   final Object? value;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitParameter(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitParameter(this);
 }
 
 /// Binary infix expression: `<left> <op> <right>`.
@@ -115,8 +112,7 @@ class BinaryOpExpression extends SqlExpression {
   final SqlExpression right;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitBinaryOp(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitBinaryOp(this);
 }
 
 /// Unary prefix expression: `<op> <operand>`. Currently used only for
@@ -129,8 +125,7 @@ class UnaryOpExpression extends SqlExpression {
   final SqlExpression operand;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitUnaryOp(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitUnaryOp(this);
 }
 
 /// Logical combinator: AND / OR over an arbitrary number of children.
@@ -149,8 +144,7 @@ class LogicalExpression extends SqlExpression {
   final List<SqlExpression> children;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitLogical(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLogical(this);
 }
 
 /// Null-check expression: `<operand> IS NULL` or `<operand> IS NOT NULL`.
@@ -167,8 +161,7 @@ class IsNullExpression extends SqlExpression {
   final bool negated;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitIsNull(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitIsNull(this);
 }
 
 /// Pattern-match expression: `<target> LIKE <pattern>` (case-sensitive)
@@ -193,8 +186,7 @@ class LikeExpression extends SqlExpression {
   final bool negated;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitLike(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLike(this);
 }
 
 /// Set-membership expression: `<target> IN (<v1>, <v2>, ...)` or
@@ -212,8 +204,7 @@ class InExpression extends SqlExpression {
   final bool negated;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitIn(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitIn(this);
 }
 
 /// Range expression: `<target> BETWEEN <low> AND <high>` or `NOT BETWEEN`.
@@ -236,8 +227,7 @@ class BetweenExpression extends SqlExpression {
   final bool negated;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitBetween(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitBetween(this);
 }
 
 /// Escape hatch — emit a raw SQL fragment with named-parameter
@@ -253,8 +243,7 @@ class RawExpression extends SqlExpression {
   final Map<String, Object?> parameters;
 
   @override
-  T accept<T>(SqlExpressionVisitor<T> visitor) =>
-      visitor.visitRaw(this);
+  T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitRaw(this);
 }
 
 /// Visitor pattern entry point for predicate AST traversal.
@@ -291,7 +280,8 @@ abstract class SqlExpressionVisitor<T> {
 /// This is intentionally a value class without machinery — callers
 /// pass it straight to their persistent store's execute path.
 class RenderedExpression {
-  const RenderedExpression(this.sql, {
+  const RenderedExpression(
+    this.sql, {
     this.parameters = const {},
     this.positionalParameters = const [],
   });

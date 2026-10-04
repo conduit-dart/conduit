@@ -106,23 +106,20 @@ class AdditionalContents { int get id => 10; }
     expect(result, 10);
   });
 
-  test(
-    "If error is thrown, it is made available to consumer and the stack trace has been trimmed of script source",
-    () async {
-      try {
-        await IsolateExecutor.run(
-          Thrower({}),
-          packageConfigURI: Uri.file(
-            join(projDir, ".dart_tool/package_config.json"),
-          ),
-        );
-        fail('unreachable');
-      } on StateError catch (e, st) {
-        expect(e.toString(), contains("thrower-error"));
-        expect(st.toString().contains("import"), false);
-      }
-    },
-  );
+  test("If error is thrown, it is made available to consumer and the stack trace has been trimmed of script source", () async {
+    try {
+      await IsolateExecutor.run(
+        Thrower({}),
+        packageConfigURI: Uri.file(
+          join(projDir, ".dart_tool/package_config.json"),
+        ),
+      );
+      fail('unreachable');
+    } on StateError catch (e, st) {
+      expect(e.toString(), contains("thrower-error"));
+      expect(st.toString().contains("import"), false);
+    }
+  });
 }
 
 class SimpleReturner extends Executable {
@@ -168,9 +165,10 @@ class InPackage extends Executable<Map<String, String>> {
       "NamedArgumentsObject",
       namedArguments: {#id: "namedArgs"},
     );
-    final con =
-        instanceOf("NamedConstructorObject", constructorName: #fromID)
-            as SomeObjectBaseClass;
+    final con = instanceOf(
+      "NamedConstructorObject",
+      constructorName: #fromID,
+    ) as SomeObjectBaseClass;
     return {"def": def.id, "pos": pos.id, "nam": nam.id, "con": con.id};
   }
 }

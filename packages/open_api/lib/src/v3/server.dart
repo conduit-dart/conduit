@@ -28,8 +28,7 @@ class APIServerDescription extends APIObject {
 
     url = object.decode("url");
     description = object.decode("description");
-    variables =
-        object.decodeObjectMap("variables", APIServerVariable.empty);
+    variables = object.decodeObjectMap("variables", APIServerVariable.empty);
   }
 
   @override

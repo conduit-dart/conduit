@@ -18,11 +18,13 @@ void main() {
   final jsFile = File.fromUri(fileDirectory.uri.resolve("file.js"));
   final htmlFile = File.fromUri(fileDirectory.uri.resolve("file.html"));
   final indexFile = File.fromUri(fileDirectory.uri.resolve("index.html"));
-  final unknownFileExtension =
-      File.fromUri(fileDirectory.uri.resolve("file.unk"));
+  final unknownFileExtension = File.fromUri(
+    fileDirectory.uri.resolve("file.unk"),
+  );
   final noFileExtension = File.fromUri(fileDirectory.uri.resolve("file"));
-  final sillyFileExtension =
-      File.fromUri(fileDirectory.uri.resolve("file.silly"));
+  final sillyFileExtension = File.fromUri(
+    fileDirectory.uri.resolve("file.silly"),
+  );
   final subdir = Directory.fromUri(fileDirectory.uri.resolve("subdir/"));
   final subdirFile = File.fromUri(subdir.uri.resolve("index.html"));
 
@@ -58,7 +60,7 @@ void main() {
           ".ttf",
           ".eot",
           ".woff",
-          ".otf"
+          ".otf",
         ].any((suffix) => path.endsWith(suffix)),
       );
 
@@ -124,9 +126,7 @@ void main() {
     expect(response.body, contains("<html>"));
   });
 
-  test(
-      "If 404 response to request without Accept: text/html, do not include HTML body",
-      () async {
+  test("If 404 response to request without Accept: text/html, do not include HTML body", () async {
     final response = await getFile(
       "/file.foobar",
       headers: {HttpHeaders.acceptHeader: "text/plain"},
@@ -213,8 +213,9 @@ void main() {
   });
 
   test("Can add extension", () async {
-    final response =
-        await http.get(Uri.parse("http://localhost:8888/silly/file.silly"));
+    final response = await http.get(
+      Uri.parse("http://localhost:8888/silly/file.silly"),
+    );
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
     expect(response.headers["content-encoding"], "gzip");
@@ -224,8 +225,7 @@ void main() {
     expect(response.body, htmlContents);
   });
 
-  test("Client connection closed before data is sent still shuts down stream",
-      () async {
+  test("Client connection closed before data is sent still shuts down stream", () async {
     final socket = await Socket.connect("localhost", 8888);
     const request =
         "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
@@ -241,8 +241,9 @@ void main() {
   });
 
   test("Provide onFileNotFound provides another response", () async {
-    final response = await http
-        .get(Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"));
+    final response = await http.get(
+      Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"),
+    );
     expect(response.statusCode, 200);
     expect(json.decode(response.body), {"k": "v"});
   });
@@ -273,11 +274,11 @@ void main() {
       expect(response.body, htmlContents);
     });
 
-    test(
-        "Fetch file with If-Modified-Since before last modified date, returns file",
-        () async {
-      final response =
-          await getCacheableFile("/file.html", ifModifiedSince: DateTime(2000));
+    test("Fetch file with If-Modified-Since before last modified date, returns file", () async {
+      final response = await getCacheableFile(
+        "/file.html",
+        ifModifiedSince: DateTime(2000),
+      );
       expect(response.statusCode, 200);
       expect(response.headers["content-type"], "text/html; charset=utf-8");
       expect(response.headers["content-encoding"], "gzip");
@@ -287,9 +288,7 @@ void main() {
       expect(response.body, htmlContents);
     });
 
-    test(
-        "Fetch file with If-Modified-Since after last modified date, returns 304 with no body",
-        () async {
+    test("Fetch file with If-Modified-Since after last modified date, returns 304 with no body", () async {
       final response = await getCacheableFile(
         "/file.html",
         ifModifiedSince: DateTime.now().add(const Duration(hours: 1)),
@@ -351,7 +350,7 @@ Future<http.Response> getCacheableFile(
   return http.get(
     Uri.parse("http://localhost:8888/cache$path"),
     headers: {
-      HttpHeaders.ifModifiedSinceHeader: HttpDate.format(ifModifiedSince)
+      HttpHeaders.ifModifiedSinceHeader: HttpDate.format(ifModifiedSince),
     },
   );
 }

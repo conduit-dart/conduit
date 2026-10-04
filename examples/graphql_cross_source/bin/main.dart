@@ -6,6 +6,8 @@ Future<void> main() async {
     ..options.port = 8888
     ..options.address = '127.0.0.1';
   await app.startOnCurrentIsolate();
-  print('Cross-source GraphQL example listening on '
-      'http://${app.options.address}:${app.options.port}/graphql');
+  print(
+    'Cross-source GraphQL example listening on '
+    'http://${app.options.address}:${app.options.port}/graphql',
+  );
 }

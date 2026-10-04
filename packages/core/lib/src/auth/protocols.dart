@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:conduit_core/src/auth/auth.dart';
 
 /// The properties of an OAuth 2.0 Resource Owner.

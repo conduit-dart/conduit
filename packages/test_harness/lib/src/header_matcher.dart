@@ -6,8 +6,10 @@ import 'http_value_wrapper.dart';
 import 'partial_matcher.dart';
 
 class HTTPHeaderMatcher extends Matcher {
-  HTTPHeaderMatcher(Map<String, dynamic> headerMatchSpecifications,
-      {this.shouldFailIfOthersPresent = false}) {
+  HTTPHeaderMatcher(
+    Map<String, dynamic> headerMatchSpecifications, {
+    this.shouldFailIfOthersPresent = false,
+  }) {
     headerMatchSpecifications.forEach((k, v) {
       if (v is Matcher) {
         if (v is! NotPresentMatcher) {
@@ -32,7 +34,8 @@ class HTTPHeaderMatcher extends Matcher {
   bool matches(dynamic item, Map matchState) {
     if (item is! HttpHeaders) {
       throw ArgumentError(
-          "Invalid input to HTTPHeaderMatcher.matches. Value is not HttpHeaders.");
+        "Invalid input to HTTPHeaderMatcher.matches. Value is not HttpHeaders.",
+      );
     }
 
     final HttpHeaders input = item;
@@ -97,8 +100,12 @@ class HTTPHeaderMatcher extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription,
-      Map matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
     final extraKeys =
         matchState["HTTPHeaderMatcher.extra"] as List<String>? ?? <String>[];
     if (extraKeys.isNotEmpty) {
@@ -110,10 +117,12 @@ class HTTPHeaderMatcher extends Matcher {
 
     final mismatches =
         matchState["HTTPHeaderMatcher.mismatches"] as List<String>? ??
-            <String>[];
+        <String>[];
     if (mismatches.isNotEmpty) {
-      mismatchDescription.add("the following headers differ: "
-          "${mismatches.map((s) => "'$s'").join(", ")}");
+      mismatchDescription.add(
+        "the following headers differ: "
+        "${mismatches.map((s) => "'$s'").join(", ")}",
+      );
     }
 
     return mismatchDescription;

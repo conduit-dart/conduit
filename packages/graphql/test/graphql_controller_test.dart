@@ -24,12 +24,12 @@ Future<HttpServer> _startServer(GraphQLSchema schema) async {
 }
 
 Uri _u(HttpServer s, [Map<String, String>? q]) => Uri(
-      scheme: 'http',
-      host: 'localhost',
-      port: s.port,
-      path: '/graphql',
-      queryParameters: q,
-    );
+  scheme: 'http',
+  host: 'localhost',
+  port: s.port,
+  path: '/graphql',
+  queryParameters: q,
+);
 
 Future<http.Response> _post(
   HttpServer s,
@@ -52,7 +52,9 @@ void main() {
       ..level = Level.ALL
       ..onRecord.listen((r) {
         // ignore: avoid_print
-        print('[conduit] ${r.level.name}: ${r.message} ${r.error ?? ''}\n${r.stackTrace ?? ''}');
+        print(
+          '[conduit] ${r.level.name}: ${r.message} ${r.error ?? ''}\n${r.stackTrace ?? ''}',
+        );
       });
   });
 
@@ -69,7 +71,7 @@ void main() {
     expect(res.statusCode, 200);
     final body = json.decode(res.body);
     expect(body, {
-      'data': {'hello': 'world'}
+      'data': {'hello': 'world'},
     });
   });
 
@@ -81,7 +83,7 @@ void main() {
     expect(res.statusCode, 200);
     final body = json.decode(res.body);
     expect(body, {
-      'data': {'echo': 'hi'}
+      'data': {'echo': 'hi'},
     });
   });
 
@@ -90,8 +92,7 @@ void main() {
     expect(res.statusCode, 400);
   });
 
-  test('POST query with parse error returns 400 with Syntax message',
-      () async {
+  test('POST query with parse error returns 400 with Syntax message', () async {
     final res = await _post(server, {'query': '{ hello'});
     expect(res.statusCode, 400);
     final body = json.decode(res.body) as Map<String, dynamic>;
@@ -100,9 +101,7 @@ void main() {
     expect(errors.first['message'] as String, contains('Syntax'));
   });
 
-  test(
-      'POST query referencing undefined field returns 400 with field name in error',
-      () async {
+  test('POST query referencing undefined field returns 400 with field name in error', () async {
     final res = await _post(server, {'query': '{ nonexistentField }'});
     expect(res.statusCode, 400);
     final body = json.decode(res.body) as Map<String, dynamic>;
@@ -112,32 +111,34 @@ void main() {
   });
 
   test(
-      'POST mutation that throws returns 200 with errors array (per spec)',
-      () async {
-    final res = await _post(server, {'query': '{ boom }'});
-    // Per the GraphQL-over-HTTP spec, a resolver that throws is still
-    // a *processed* request — the result map carries `errors` and the
-    // failed field is null. HTTP status stays 200.
-    expect(res.statusCode, 200);
-    final body = json.decode(res.body) as Map<String, dynamic>;
-    final errors = body['errors'] as List;
-    expect(errors, isNotEmpty);
-    expect((errors.first as Map)['message'], isNotEmpty);
-    expect((body['data'] as Map?)?['boom'], isNull);
-  });
+    'POST mutation that throws returns 200 with errors array (per spec)',
+    () async {
+      final res = await _post(server, {'query': '{ boom }'});
+      // Per the GraphQL-over-HTTP spec, a resolver that throws is still
+      // a *processed* request — the result map carries `errors` and the
+      // failed field is null. HTTP status stays 200.
+      expect(res.statusCode, 200);
+      final body = json.decode(res.body) as Map<String, dynamic>;
+      final errors = body['errors'] as List;
+      expect(errors, isNotEmpty);
+      expect((errors.first as Map)['message'], isNotEmpty);
+      expect((body['data'] as Map?)?['boom'], isNull);
+    },
+  );
 
   test('GET ?query={hello} returns 200 with data.hello', () async {
     final res = await http.get(_u(server, {'query': '{ hello }'}));
     expect(res.statusCode, 200);
     final body = json.decode(res.body);
     expect(body, {
-      'data': {'hello': 'world'}
+      'data': {'hello': 'world'},
     });
   });
 
   test('GET attempting a mutation returns 405', () async {
-    final res =
-        await http.get(_u(server, {'query': 'mutation { shout(message: "hi") }'}));
+    final res = await http.get(
+      _u(server, {'query': 'mutation { shout(message: "hi") }'}),
+    );
     expect(res.statusCode, 405);
     expect(res.headers['allow'], contains('POST'));
     final body = json.decode(res.body) as Map<String, dynamic>;
@@ -145,17 +146,15 @@ void main() {
   });
 
   test('GET ?variables=invalid-json returns 400', () async {
-    final res = await http.get(_u(server, {
-      'query': '{ hello }',
-      'variables': 'not-json',
-    }));
+    final res = await http.get(
+      _u(server, {'query': '{ hello }', 'variables': 'not-json'}),
+    );
     expect(res.statusCode, 400);
     final body = json.decode(res.body) as Map<String, dynamic>;
     expect(body['errors'], isNotEmpty);
   });
 
-  test('Content-Type application/graphql raw body parses correctly',
-      () async {
+  test('Content-Type application/graphql raw body parses correctly', () async {
     final res = await _post(
       server,
       '{ hello }',
@@ -164,22 +163,24 @@ void main() {
     expect(res.statusCode, 200);
     final body = json.decode(res.body);
     expect(body, {
-      'data': {'hello': 'world'}
+      'data': {'hello': 'world'},
     });
   });
 
-  test('Introspection: { __schema { queryType { name } } } returns "Query"',
-      () async {
-    final res = await _post(server, {
-      'query': '{ __schema { queryType { name } } }',
-    });
-    expect(res.statusCode, 200);
-    final body = json.decode(res.body) as Map<String, dynamic>;
-    final data = body['data'] as Map<String, dynamic>;
-    final schemaField = data['__schema'] as Map<String, dynamic>;
-    final queryType = schemaField['queryType'] as Map<String, dynamic>;
-    expect(queryType['name'], 'Query');
-  });
+  test(
+    'Introspection: { __schema { queryType { name } } } returns "Query"',
+    () async {
+      final res = await _post(server, {
+        'query': '{ __schema { queryType { name } } }',
+      });
+      expect(res.statusCode, 200);
+      final body = json.decode(res.body) as Map<String, dynamic>;
+      final data = body['data'] as Map<String, dynamic>;
+      final schemaField = data['__schema'] as Map<String, dynamic>;
+      final queryType = schemaField['queryType'] as Map<String, dynamic>;
+      expect(queryType['name'], 'Query');
+    },
+  );
 
   test('POST mutation succeeds (POST allows mutations)', () async {
     final res = await _post(server, {
@@ -189,7 +190,7 @@ void main() {
     expect(res.statusCode, 200);
     final body = json.decode(res.body);
     expect(body, {
-      'data': {'shout': 'HELLO'}
+      'data': {'shout': 'HELLO'},
     });
   });
 
@@ -211,35 +212,39 @@ void main() {
   });
 
   test(
-      'Accept: application/graphql-response+json returns matching content type',
-      () async {
-    final res = await http.post(
-      _u(server),
-      headers: {
-        'content-type': 'application/json',
-        'accept': 'application/graphql-response+json',
-      },
-      body: json.encode({'query': '{ hello }'}),
-    );
-    expect(res.statusCode, 200);
-    expect(res.headers['content-type'],
-        contains('application/graphql-response+json'));
-  });
+    'Accept: application/graphql-response+json returns matching content type',
+    () async {
+      final res = await http.post(
+        _u(server),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/graphql-response+json',
+        },
+        body: json.encode({'query': '{ hello }'}),
+      );
+      expect(res.statusCode, 200);
+      expect(
+        res.headers['content-type'],
+        contains('application/graphql-response+json'),
+      );
+    },
+  );
 
   test(
-      'Operation selection: operationName picks the right operation',
-      () async {
-    final res = await _post(server, {
-      'query': '''
+    'Operation selection: operationName picks the right operation',
+    () async {
+      final res = await _post(server, {
+        'query': '''
 query A { hello }
 query B { echo(message: "from-B") }
 ''',
-      'operationName': 'B',
-    });
-    expect(res.statusCode, 200);
-    final body = json.decode(res.body);
-    expect(body, {
-      'data': {'echo': 'from-B'}
-    });
-  });
+        'operationName': 'B',
+      });
+      expect(res.statusCode, 200);
+      final body = json.decode(res.body);
+      expect(body, {
+        'data': {'echo': 'from-B'},
+      });
+    },
+  );
 }

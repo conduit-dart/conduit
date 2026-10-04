@@ -21,7 +21,8 @@ import 'package:test_core/src/util/io.dart' show getUnsafeUnusedPort;
 /// `start` throws a [SocketException] with EADDRINUSE (errno 48 on macOS
 /// or 98 on Linux), the failed app is stopped and the loop retries with a
 /// new port. Other failures propagate.
-Future<({Application<T> app, int port})> startWithFreePort<T extends ApplicationChannel>(
+Future<({Application<T> app, int port})>
+startWithFreePort<T extends ApplicationChannel>(
   Application<T> Function() build, {
   int numberOfInstances = 1,
   int maxAttempts = 10,

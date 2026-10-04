@@ -21,28 +21,27 @@ void main() {
       await store.close();
     });
 
-    test(
-        "Migration subclasses can be executed and commands are generated and executed on the DB, schema is udpated",
-        () async {
+    test("Migration subclasses can be executed and commands are generated and executed on the DB, schema is udpated", () async {
       // Note that the permutations of operations are covered in different tests, this is just to ensure that
       // executing a migration/upgrade all work together.
       final schema = Schema([
         SchemaTable("tableToKeep", [
           SchemaColumn("columnToEdit", ManagedPropertyType.string),
-          SchemaColumn("columnToDelete", ManagedPropertyType.integer)
+          SchemaColumn("columnToDelete", ManagedPropertyType.integer),
         ]),
-        SchemaTable(
-          "tableToDelete",
-          [SchemaColumn("whocares", ManagedPropertyType.integer)],
-        ),
-        SchemaTable(
-          "tableToRename",
-          [SchemaColumn("whocares", ManagedPropertyType.integer)],
-        )
+        SchemaTable("tableToDelete", [
+          SchemaColumn("whocares", ManagedPropertyType.integer),
+        ]),
+        SchemaTable("tableToRename", [
+          SchemaColumn("whocares", ManagedPropertyType.integer),
+        ]),
       ]);
 
-      final initialBuilder =
-          SchemaBuilder.toSchema(store, schema, isTemporary: true);
+      final initialBuilder = SchemaBuilder.toSchema(
+        store,
+        schema,
+        isTemporary: true,
+      );
       for (final cmd in initialBuilder.commands) {
         await store.execute(cmd);
       }
@@ -69,7 +68,7 @@ void main() {
 
       schema.addTable(
         SchemaTable("foo", [
-          SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
+          SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true),
         ]),
       );
 
@@ -79,15 +78,16 @@ void main() {
         "INSERT INTO tableToKeep (columnToEdit) VALUES ('1') RETURNING columnToEdit, addedColumn",
       );
       expect(insertResults, [
-        ['1', 2]
+        ['1', 2],
       ]);
     });
   });
 
   group("Scanning for migration files", () {
     final temporaryDirectory = Directory("migration_tmp");
-    final migrationsDirectory =
-        Directory.fromUri(temporaryDirectory.uri.resolve("migrations"));
+    final migrationsDirectory = Directory.fromUri(
+      temporaryDirectory.uri.resolve("migrations"),
+    );
     addFiles(List<String> filenames) {
       for (final name in filenames) {
         File.fromUri(migrationsDirectory.uri.resolve(name))
@@ -114,9 +114,10 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
     });
 
     test("Ignores not .migration.dart files", () async {
-      addValidMigrationFile(
-        ["00000001.migration.dart", "a_foo.migration.dart"],
-      );
+      addValidMigrationFile([
+        "00000001.migration.dart",
+        "a_foo.migration.dart",
+      ]);
       addFiles(["foobar.txt", ".DS_Store", "a.dart", "migration.dart"]);
       expect(migrationsDirectory.listSync().length, 6);
 
@@ -135,7 +136,7 @@ class Migration1 extends Migration { @override Future upgrade() async {} @overri
         "2.migration.dart",
         "03_Foo.migration.dart",
         "10001_.migration.dart",
-        "000001001.migration.dart"
+        "000001001.migration.dart",
       ]);
       expect(migrationsDirectory.listSync().length, 5);
 
@@ -168,7 +169,7 @@ class Migration1 extends Migration {
   Future upgrade() async {
     database.createTable(
       SchemaTable("foo", [
-        SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true)
+        SchemaColumn("foobar", ManagedPropertyType.integer, isIndexed: true),
       ]),
     );
 
@@ -200,8 +201,9 @@ class Migration1 extends Migration {
 class MockMigratable extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
   MockMigratable(this.projectDirectory) {
-    migrationDirectory =
-        Directory.fromUri(projectDirectory.uri.resolve("migrations"));
+    migrationDirectory = Directory.fromUri(
+      projectDirectory.uri.resolve("migrations"),
+    );
   }
 
   @override

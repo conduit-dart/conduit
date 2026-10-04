@@ -17,12 +17,12 @@ class Post extends GraphNode<Post> {
 
 class Friend extends GraphEdge<User, User> {
   Friend({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Friend'));
+    : super(label: const GraphLabel.unchecked('Friend'));
 }
 
 class Authored extends GraphEdge<User, Post> {
   Authored({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Authored'));
+    : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 void main() {
@@ -40,10 +40,7 @@ void main() {
         variable: 'u',
       );
       final stmt = emitPattern(pattern);
-      expect(
-        stmt.cypher,
-        'MATCH (u:User)-[r0:Friend]->(m0:User) RETURN u',
-      );
+      expect(stmt.cypher, 'MATCH (u:User)-[r0:Friend]->(m0:User) RETURN u');
     });
 
     test('outgoing hop without terminal label leaves the far side bare', () {
@@ -62,10 +59,7 @@ void main() {
           toLabel: GraphLabel('User'),
         ),
       );
-      expect(
-        emitPattern(pattern).cypher,
-        contains('<-[r0:Friend]-'),
-      );
+      expect(emitPattern(pattern).cypher, contains('<-[r0:Friend]-'));
     });
 
     test('undirected direction emits no arrow heads', () {
@@ -75,10 +69,7 @@ void main() {
           toLabel: GraphLabel('User'),
         ),
       );
-      expect(
-        emitPattern(pattern).cypher,
-        contains('-[r0:Friend]-(m0:User)'),
-      );
+      expect(emitPattern(pattern).cypher, contains('-[r0:Friend]-(m0:User)'));
     });
 
     test('multi-hop chain numbers each hop deterministically', () {
@@ -103,10 +94,7 @@ void main() {
           toVariable: 'p',
         ),
       );
-      expect(
-        emitPattern(pattern).cypher,
-        contains('-[r0:Authored]->(p:Post)'),
-      );
+      expect(emitPattern(pattern).cypher, contains('-[r0:Authored]->(p:Post)'));
     });
   });
 
@@ -140,68 +128,79 @@ void main() {
         GraphFilterOperator.lessThanOrEqual: '<=',
       };
       cases.forEach((op, sym) {
-        final f = GraphPropertyFilter(
-          property: 'age',
-          operator: op,
-          value: 21,
+        final f = GraphPropertyFilter(property: 'age', operator: op, value: 21);
+        expect(
+          renderFilter(f),
+          'n.age $sym \$p0',
+          reason: 'operator $op should render as $sym',
         );
-        expect(renderFilter(f), 'n.age $sym \$p0',
-            reason: 'operator $op should render as $sym');
       });
     });
 
     test('string ops map to CONTAINS / STARTS WITH / ENDS WITH', () {
       expect(
-        renderFilter(const GraphPropertyFilter(
-          property: 'name',
-          operator: GraphFilterOperator.contains,
-          value: 'al',
-        )),
+        renderFilter(
+          const GraphPropertyFilter(
+            property: 'name',
+            operator: GraphFilterOperator.contains,
+            value: 'al',
+          ),
+        ),
         'n.name CONTAINS \$p0',
       );
       expect(
-        renderFilter(const GraphPropertyFilter(
-          property: 'name',
-          operator: GraphFilterOperator.startsWith,
-          value: 'a',
-        )),
+        renderFilter(
+          const GraphPropertyFilter(
+            property: 'name',
+            operator: GraphFilterOperator.startsWith,
+            value: 'a',
+          ),
+        ),
         'n.name STARTS WITH \$p0',
       );
       expect(
-        renderFilter(const GraphPropertyFilter(
-          property: 'name',
-          operator: GraphFilterOperator.endsWith,
-          value: 'e',
-        )),
+        renderFilter(
+          const GraphPropertyFilter(
+            property: 'name',
+            operator: GraphFilterOperator.endsWith,
+            value: 'e',
+          ),
+        ),
         'n.name ENDS WITH \$p0',
       );
     });
 
     test('IN renders with the bound list value', () {
       final emitter = CypherEmitter();
-      final cypher = emitter.emitFilter(const GraphPropertyFilter(
-        property: 'role',
-        operator: GraphFilterOperator.inList,
-        value: ['admin', 'staff'],
-      ));
+      final cypher = emitter.emitFilter(
+        const GraphPropertyFilter(
+          property: 'role',
+          operator: GraphFilterOperator.inList,
+          value: ['admin', 'staff'],
+        ),
+      );
       expect(cypher, 'n.role IN \$p0');
       expect(emitter.parameters['p0'], ['admin', 'staff']);
     });
 
     test('isNull / isNotNull do not bind a parameter', () {
       final e1 = CypherEmitter();
-      final s1 = e1.emitFilter(const GraphPropertyFilter(
-        property: 'deleted_at',
-        operator: GraphFilterOperator.isNull,
-      ));
+      final s1 = e1.emitFilter(
+        const GraphPropertyFilter(
+          property: 'deleted_at',
+          operator: GraphFilterOperator.isNull,
+        ),
+      );
       expect(s1, 'n.deleted_at IS NULL');
       expect(e1.parameters, isEmpty);
 
       final e2 = CypherEmitter();
-      final s2 = e2.emitFilter(const GraphPropertyFilter(
-        property: 'email',
-        operator: GraphFilterOperator.isNotNull,
-      ));
+      final s2 = e2.emitFilter(
+        const GraphPropertyFilter(
+          property: 'email',
+          operator: GraphFilterOperator.isNotNull,
+        ),
+      );
       expect(s2, 'n.email IS NOT NULL');
       expect(e2.parameters, isEmpty);
     });
@@ -237,25 +236,28 @@ void main() {
     });
 
     test('NOT renders with parens', () {
-      const f = GraphNotFilter(GraphPropertyFilter(
-        property: 'deleted',
-        operator: GraphFilterOperator.equal,
-        value: true,
-      ));
+      const f = GraphNotFilter(
+        GraphPropertyFilter(
+          property: 'deleted',
+          operator: GraphFilterOperator.equal,
+          value: true,
+        ),
+      );
       expect(renderFilter(f), 'NOT (n.deleted = \$p0)');
     });
   });
 
   group('CypherEmitter — full query', () {
     test('pattern + WHERE + ORDER BY + SKIP / LIMIT', () {
-      final query = GraphQuery<User>(
-        pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
-      )
-          .where((u) => u['age'].greaterThan(21))
-          .orderByProperty('name')
-          .orderByProperty('age', direction: GraphSortDirection.descending)
-          .offsetBy(10)
-          .limitTo(5);
+      final query =
+          GraphQuery<User>(
+                pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
+              )
+              .where((u) => u['age'].greaterThan(21))
+              .orderByProperty('name')
+              .orderByProperty('age', direction: GraphSortDirection.descending)
+              .offsetBy(10)
+              .limitTo(5);
 
       final stmt = emitQuery(query);
       expect(
@@ -263,24 +265,18 @@ void main() {
         'MATCH (u:User) WHERE u.age > \$p0 RETURN u '
         'ORDER BY u.name ASC, u.age DESC SKIP \$p1 LIMIT \$p2',
       );
-      expect(stmt.parameters, {
-        'p0': 21,
-        'p1': 10,
-        'p2': 5,
-      });
+      expect(stmt.parameters, {'p0': 21, 'p1': 10, 'p2': 5});
     });
 
     test('chained where clauses AND together', () {
-      final query = GraphQuery<User>(
-        pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
-      )
-          .where((u) => u['age'].greaterThan(21))
-          .where((u) => u['name'].equalTo('alice'));
+      final query =
+          GraphQuery<User>(
+                pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
+              )
+              .where((u) => u['age'].greaterThan(21))
+              .where((u) => u['name'].equalTo('alice'));
       final stmt = emitQuery(query);
-      expect(
-        stmt.cypher,
-        contains('WHERE (u.age > \$p0 AND u.name = \$p1)'),
-      );
+      expect(stmt.cypher, contains('WHERE (u.age > \$p0 AND u.name = \$p1)'));
       expect(stmt.parameters, {'p0': 21, 'p1': 'alice'});
     });
 
@@ -292,14 +288,15 @@ void main() {
     });
 
     test('parameter binding survives nested compound filters', () {
-      final query = GraphQuery<User>(
-        pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
-      ).where(
-        (u) => u['age']
-            .lessThan(18)
-            .or(u['age'].greaterThan(65))
-            .and(u['name'].notEqualTo('admin')),
-      );
+      final query =
+          GraphQuery<User>(
+            pattern: GraphPattern<User>.build((_) {}, variable: 'u'),
+          ).where(
+            (u) => u['age']
+                .lessThan(18)
+                .or(u['age'].greaterThan(65))
+                .and(u['name'].notEqualTo('admin')),
+          );
       final stmt = emitQuery(query);
       // Distinct param keys for each value.
       expect(stmt.parameters.keys.toList(), ['p0', 'p1', 'p2']);
@@ -327,10 +324,7 @@ void main() {
         operator: GraphFilterOperator.equal,
         value: true,
       );
-      expect(
-        CypherEmitter().emitFilter(f),
-        'n.`meta.legacy` = \$p0',
-      );
+      expect(CypherEmitter().emitFilter(f), 'n.`meta.legacy` = \$p0');
     });
   });
 }

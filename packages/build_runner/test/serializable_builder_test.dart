@@ -36,26 +36,22 @@ class APIDocumentContext {}
 ''';
 
 Future<String?> _runBuilder(String inputSource) async {
-  final result = await testBuilder(
-    serializableBuilder(BuilderOptions.empty),
-    {
-      'a|lib/model.dart': inputSource,
-      'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
-      'conduit_core|lib/aot.dart': _conduitCoreStub,
-      'conduit_open_api|lib/v3.dart': _conduitOpenApiStub,
-    },
-    flattenOutput: true,
-  );
-  final outputId =
-      AssetId.parse('a|lib/model.serializable.conduit.dart');
+  final result = await testBuilder(serializableBuilder(BuilderOptions.empty), {
+    'a|lib/model.dart': inputSource,
+    'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
+    'conduit_core|lib/aot.dart': _conduitCoreStub,
+    'conduit_open_api|lib/v3.dart': _conduitOpenApiStub,
+  }, flattenOutput: true);
+  final outputId = AssetId.parse('a|lib/model.serializable.conduit.dart');
   if (!result.outputs.contains(outputId)) return null;
   return result.readerWriter.testing.readString(outputId);
 }
 
 void main() {
-  test('emits a generated runtime per concrete Serializable subclass',
-      () async {
-    final out = await _runBuilder('''
+  test(
+    'emits a generated runtime per concrete Serializable subclass',
+    () async {
+      final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';
 
 class User implements Serializable {
@@ -72,17 +68,18 @@ class User implements Serializable {
 }
 ''');
 
-    expect(out, isNotNull);
-    expect(out, contains(r'class $UserSerializableRuntime'));
-    expect(out, contains("'id': APISchemaObject.integer()"));
-    expect(out, contains("'name': APISchemaObject.string()"));
-    expect(out, contains("'active': APISchemaObject.boolean()"));
-    expect(
-      out,
-      contains("'createdAt': APISchemaObject.string(format: 'date-time')"),
-    );
-    expect(out, contains("..title = 'User'"));
-  });
+      expect(out, isNotNull);
+      expect(out, contains(r'class $UserSerializableRuntime'));
+      expect(out, contains("'id': APISchemaObject.integer()"));
+      expect(out, contains("'name': APISchemaObject.string()"));
+      expect(out, contains("'active': APISchemaObject.boolean()"));
+      expect(
+        out,
+        contains("'createdAt': APISchemaObject.string(format: 'date-time')"),
+      );
+      expect(out, contains("..title = 'User'"));
+    },
+  );
 
   test('skips abstract classes', () async {
     final out = await _runBuilder('''
@@ -99,8 +96,7 @@ abstract class Base implements Serializable {
     expect(out, isNull);
   });
 
-  test('emits no output when no Serializable subclasses are present',
-      () async {
+  test('emits no output when no Serializable subclasses are present', () async {
     final out = await _runBuilder('''
 class Plain {
   int id = 0;
@@ -126,6 +122,9 @@ class Bag implements Serializable {
     expect(out, contains("APISchemaObject.array("));
     expect(out, contains("ofSchema: APISchemaObject.integer()"));
     expect(out, contains("..type = APIType.object"));
-    expect(out, contains("additionalPropertySchema = APISchemaObject.string()"));
+    expect(
+      out,
+      contains("additionalPropertySchema = APISchemaObject.string()"),
+    );
   });
 }

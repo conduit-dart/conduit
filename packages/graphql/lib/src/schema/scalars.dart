@@ -43,11 +43,12 @@ import 'package:graphql_schema2/graphql_schema2.dart';
 /// matching the broader GraphQL community convention.
 final GraphQLScalarType<DateTime, String> graphQLDateTime =
     _RenamedScalarType<DateTime, String>(
-  graphQLDate,
-  name: 'DateTime',
-  description: 'A point in time, serialized as an ISO-8601 string '
-      '(e.g. "2026-05-06T12:34:56.789Z").',
-);
+      graphQLDate,
+      name: 'DateTime',
+      description:
+          'A point in time, serialized as an ISO-8601 string '
+          '(e.g. "2026-05-06T12:34:56.789Z").',
+    );
 
 /// A UUID scalar (named `UUID`).
 ///
@@ -61,12 +62,13 @@ final GraphQLScalarType<DateTime, String> graphQLDateTime =
 /// document the limitation in the README.)
 final GraphQLScalarType<String, String> graphQLUUID =
     _RenamedScalarType<String, String>(
-  graphQLString,
-  name: 'UUID',
-  description: 'A UUID (RFC-4122) serialized as a canonical '
-      '36-character string '
-      '(e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479").',
-);
+      graphQLString,
+      name: 'UUID',
+      description:
+          'A UUID (RFC-4122) serialized as a canonical '
+          '36-character string '
+          '(e.g. "f47ac10b-58cc-4372-a567-0e02b2c3d479").',
+    );
 
 /// A `JSON` scalar — opaque, JSON-encoded string payload.
 ///
@@ -88,12 +90,13 @@ final GraphQLScalarType<String, String> graphQLUUID =
 /// has no notion of).
 final GraphQLScalarType<String, String> graphQLJSON =
     _RenamedScalarType<String, String>(
-  graphQLString,
-  name: 'JSON',
-  description: 'A JSON-encoded string payload. Used to surface '
-      'schemaless property bags from graph nodes; clients decode the '
-      'string with their JSON parser of choice.',
-);
+      graphQLString,
+      name: 'JSON',
+      description:
+          'A JSON-encoded string payload. Used to surface '
+          'schemaless property bags from graph nodes; clients decode the '
+          'string with their JSON parser of choice.',
+    );
 
 /// Decorator that delegates every operation to [_inner] but reports a
 /// caller-supplied [name] and [description] to GraphQL introspection.
@@ -105,7 +108,11 @@ final GraphQLScalarType<String, String> graphQLJSON =
 /// delegate validate/serialize/deserialize/coerce, and override only
 /// the metadata fields that affect SDL output.
 class _RenamedScalarType<V, S> extends GraphQLScalarType<V, S> {
-  _RenamedScalarType(this._inner, {required this.name, required this.description});
+  _RenamedScalarType(
+    this._inner, {
+    required this.name,
+    required this.description,
+  });
 
   final GraphQLScalarType<V, S> _inner;
 

@@ -18,10 +18,11 @@ class ApplicationServer {
   ///
   /// You should not need to invoke this method directly.
   ApplicationServer(this.channelType, this.options, this.identifier) {
-    channel = (RuntimeContext.current[channelType] as ChannelRuntime)
-        .instantiateChannel()
-      ..server = this
-      ..options = options;
+    channel =
+        (RuntimeContext.current[channelType] as ChannelRuntime)
+            .instantiateChannel()
+          ..server = this
+          ..options = options;
   }
 
   /// The configuration this instance used to start its [channel].

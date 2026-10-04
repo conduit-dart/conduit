@@ -4,10 +4,10 @@ class KeyPath {
   KeyPath(ManagedPropertyDescription? root) : path = [root];
 
   KeyPath.byRemovingFirstNKeys(KeyPath original, int offset)
-      : path = original.path.sublist(offset);
+    : path = original.path.sublist(offset);
 
   KeyPath.byAddingKey(KeyPath original, ManagedPropertyDescription key)
-      : path = List.from(original.path)..add(key);
+    : path = List.from(original.path)..add(key);
 
   final List<ManagedPropertyDescription?> path;
   List<dynamic>? dynamicElements;

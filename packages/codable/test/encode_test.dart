@@ -20,7 +20,7 @@ void main() {
       });
 
       expect(out, {
-        "key": [1, "2"]
+        "key": [1, "2"],
       });
     });
 
@@ -30,7 +30,7 @@ void main() {
       });
 
       expect(out, {
-        "key": {"1": 1, "2": "2"}
+        "key": {"1": 1, "2": "2"},
       });
     });
 
@@ -66,7 +66,7 @@ void main() {
       });
 
       expect(out, {
-        "key": {"name": "Bob"}
+        "key": {"name": "Bob"},
       });
     });
 
@@ -84,9 +84,9 @@ void main() {
           "children": [
             {"name": "Fred"},
             null,
-            {"name": "Sally"}
-          ]
-        }
+            {"name": "Sally"},
+          ],
+        },
       });
     });
 
@@ -99,7 +99,7 @@ void main() {
             childMap: {
               "fred": Child("Fred"),
               "null": null,
-              "sally": Child("Sally")
+              "sally": Child("Sally"),
             },
           ),
         );
@@ -111,9 +111,9 @@ void main() {
           "childMap": {
             "fred": {"name": "Fred"},
             "null": null,
-            "sally": {"name": "Sally"}
-          }
-        }
+            "sally": {"name": "Sally"},
+          },
+        },
       });
     });
   });
@@ -131,42 +131,41 @@ void main() {
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
         "definitions": {
-          "child": {"name": "Sally"}
+          "child": {"name": "Sally"},
         },
         "root": {
           "name": "Bob",
-          "child": {"\$ref": "#/definitions/child"}
-        }
+          "child": {"\$ref": "#/definitions/child"},
+        },
       });
     });
 
     test(
-        "If reference doesn't exist, an error is thrown when creating document",
-        () {
-      final container = Container(
-        Parent(
-          "Bob",
-          child: Child._()..referenceURI = Uri(path: "/definitions/child"),
-        ),
-        {},
-      );
+      "If reference doesn't exist, an error is thrown when creating document",
+      () {
+        final container = Container(
+          Parent(
+            "Bob",
+            child: Child._()..referenceURI = Uri(path: "/definitions/child"),
+          ),
+          {},
+        );
 
-      try {
-        KeyedArchive.archive(container, allowReferences: true);
-        fail('unreachable');
-      } on ArgumentError catch (e) {
-        expect(e.toString(), contains("#/definitions/child"));
-      }
-    });
+        try {
+          KeyedArchive.archive(container, allowReferences: true);
+          fail('unreachable');
+        } on ArgumentError catch (e) {
+          expect(e.toString(), contains("#/definitions/child"));
+        }
+      },
+    );
 
-    test(
-        "If reference doesn't exist in objectMap, an error is thrown when creating document",
-        () {
+    test("If reference doesn't exist in objectMap, an error is thrown when creating document", () {
       final container = Container(
         Parent(
           "Bob",
           childMap: {
-            "c": Child._()..referenceURI = Uri(path: "/definitions/child")
+            "c": Child._()..referenceURI = Uri(path: "/definitions/child"),
           },
         ),
         {},
@@ -180,9 +179,7 @@ void main() {
       }
     });
 
-    test(
-        "If reference doesn't exist in objectList, an error is thrown when creating document",
-        () {
+    test("If reference doesn't exist in objectList, an error is thrown when creating document", () {
       final container = Container(
         Parent(
           "Bob",
@@ -205,7 +202,7 @@ void main() {
           "Bob",
           children: [
             Child("Sally"),
-            Child._()..referenceURI = Uri(path: "/definitions/child")
+            Child._()..referenceURI = Uri(path: "/definitions/child"),
           ],
         ),
         {"child": Child("Fred")},
@@ -214,15 +211,15 @@ void main() {
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
         "definitions": {
-          "child": {"name": "Fred"}
+          "child": {"name": "Fred"},
         },
         "root": {
           "name": "Bob",
           "children": [
             {"name": "Sally"},
-            {"\$ref": "#/definitions/child"}
-          ]
-        }
+            {"\$ref": "#/definitions/child"},
+          ],
+        },
       });
     });
 
@@ -232,7 +229,7 @@ void main() {
           "Bob",
           childMap: {
             "sally": Child("Sally"),
-            "ref": Child._()..referenceURI = Uri(path: "/definitions/child")
+            "ref": Child._()..referenceURI = Uri(path: "/definitions/child"),
           },
         ),
         {"child": Child("Fred")},
@@ -241,49 +238,50 @@ void main() {
       final out = KeyedArchive.archive(container, allowReferences: true);
       expect(out, {
         "definitions": {
-          "child": {"name": "Fred"}
+          "child": {"name": "Fred"},
         },
         "root": {
           "name": "Bob",
           "childMap": {
             "sally": {"name": "Sally"},
-            "ref": {"\$ref": "#/definitions/child"}
-          }
-        }
+            "ref": {"\$ref": "#/definitions/child"},
+          },
+        },
       });
     });
 
     test("Cyclical references are resolved", () {
       final container = Container(
-          Parent(
-            "Bob",
-            children: [
-              Child("Sally"),
-              Child._()..referenceURI = Uri(path: "/definitions/child")
-            ],
+        Parent(
+          "Bob",
+          children: [
+            Child("Sally"),
+            Child._()..referenceURI = Uri(path: "/definitions/child"),
+          ],
+        ),
+        {
+          "child": Child(
+            "Fred",
+            parent: Parent._()..referenceURI = Uri(path: "/root"),
           ),
-          {
-            "child": Child(
-              "Fred",
-              parent: Parent._()..referenceURI = Uri(path: "/root"),
-            )
-          });
+        },
+      );
 
       final out = KeyedArchive.archive(container, allowReferences: true);
       final expected = {
         "definitions": {
           "child": {
             "name": "Fred",
-            "parent": {"\$ref": "#/root"}
-          }
+            "parent": {"\$ref": "#/root"},
+          },
         },
         "root": {
           "name": "Bob",
           "children": [
             {"name": "Sally"},
             {"\$ref": "#/definitions/child"},
-          ]
-        }
+          ],
+        },
       };
       expect(out, expected);
 
@@ -306,8 +304,8 @@ void main() {
       "list": [
         "value",
         {"key": "value"},
-        ["value"]
-      ]
+        ["value"],
+      ],
     });
 
     final encoded = archive.toPrimitive();

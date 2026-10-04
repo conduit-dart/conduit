@@ -47,7 +47,7 @@ class Authorizer extends Controller {
   ///
   ///         Authorization: Basic base64(username:password)
   Authorizer.basic(AuthValidator? validator)
-      : this(validator, parser: const AuthorizationBasicParser());
+    : this(validator, parser: const AuthorizationBasicParser());
 
   /// Creates an instance of [Authorizer] with Bearer token parsing.
   ///
@@ -57,11 +57,11 @@ class Authorizer extends Controller {
   ///
   /// If [scopes] is provided, the bearer token must have access to *all* scopes according to [validator].
   Authorizer.bearer(AuthValidator? validator, {List<String>? scopes})
-      : this(
-          validator,
-          parser: const AuthorizationBearerParser(),
-          scopes: scopes,
-        );
+    : this(
+        validator,
+        parser: const AuthorizationBearerParser(),
+        scopes: scopes,
+      );
 
   /// The validating authorization object.
   ///
@@ -96,8 +96,11 @@ class Authorizer extends Controller {
 
     try {
       final value = parser.parse(authData);
-      request.authorization =
-          await validator!.validate(parser, value, requiredScope: scopes);
+      request.authorization = await validator!.validate(
+        parser,
+        value,
+        requiredScope: scopes,
+      );
       if (request.authorization == null) {
         return Response.unauthorized();
       }
@@ -110,7 +113,7 @@ class Authorizer extends Controller {
         return Response.forbidden(
           body: {
             "error": "insufficient_scope",
-            "scope": scopes!.map((s) => s.toString()).join(" ")
+            "scope": scopes!.map((s) => s.toString()).join(" "),
           },
         );
       }
@@ -144,8 +147,10 @@ class Authorizer extends Controller {
             final scopesToAdd = scopes!
                 .map((s) => s.toString())
                 .where((s) => !declaredScopes.contains(s));
-            body["scope"] =
-                [scopesToAdd, declaredScopes].expand((i) => i).join(" ");
+            body["scope"] = [
+              scopesToAdd,
+              declaredScopes,
+            ].expand((i) => i).join(" ");
           }
         }
       });
@@ -165,9 +170,9 @@ class Authorizer extends Controller {
             schema: APISchemaObject.object({
               "error": APISchemaObject.string(),
               "scope": APISchemaObject.string()
-                ..description = "The required scope for this operation."
+                ..description = "The required scope for this operation.",
             }),
-          )
+          ),
         },
       ),
     );
@@ -178,10 +183,8 @@ class Authorizer extends Controller {
         "The provided credentials or bearer token are not authorized for this request.",
         content: {
           "application/json": APIMediaType(
-            schema: APISchemaObject.object(
-              {"error": APISchemaObject.string()},
-            ),
-          )
+            schema: APISchemaObject.object({"error": APISchemaObject.string()}),
+          ),
         },
       ),
     );
@@ -192,10 +195,8 @@ class Authorizer extends Controller {
         "The provided Authorization header was malformed.",
         content: {
           "application/json": APIMediaType(
-            schema: APISchemaObject.object(
-              {"error": APISchemaObject.string()},
-            ),
-          )
+            schema: APISchemaObject.object({"error": APISchemaObject.string()}),
+          ),
         },
       ),
     );
@@ -214,8 +215,11 @@ class Authorizer extends Controller {
       op.addResponse(401, context.responses["InsufficientAccess"]);
       op.addResponse(403, context.responses["InsufficientScope"]);
 
-      final requirements = validator!
-          .documentRequirementsForAuthorizer(context, this, scopes: scopes);
+      final requirements = validator!.documentRequirementsForAuthorizer(
+        context,
+        this,
+        scopes: scopes,
+      );
       for (final req in requirements) {
         op.addSecurityRequirement(req);
       }

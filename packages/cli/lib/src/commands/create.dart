@@ -64,8 +64,10 @@ class CLITemplateCreator extends CLICommand {
           "conduit_core": _packageUri(conduitLocation, 'core'),
           "conduit_isolate_exec": _packageUri(conduitLocation, 'isolate_exec'),
           "conduit_open_api": _packageUri(conduitLocation, 'open_api'),
-          "conduit_password_hash":
-              _packageUri(conduitLocation, 'password_hash'),
+          "conduit_password_hash": _packageUri(
+            conduitLocation,
+            'password_hash',
+          ),
           "conduit_postgresql": _packageUri(conduitLocation, 'postgresql'),
           "conduit_runtime": _packageUri(conduitLocation, 'runtime'),
           "conduit_test": _packageUri(conduitLocation, 'test_harness'),
@@ -84,7 +86,9 @@ class CLITemplateCreator extends CLICommand {
     }
 
     final resolvedTemplate = await getTemplateLocation(
-        templateName, (await toolVersion).toString());
+      templateName,
+      (await toolVersion).toString(),
+    );
     if (resolvedTemplate == null) {
       displayError(
         "Could not locate the conduit templates directory. Tried:\n"
@@ -150,7 +154,7 @@ class CLITemplateCreator extends CLICommand {
     final hiddenFilesToKeep = [
       ".gitignore",
       ".travis.yml",
-      "analysis_options.yaml"
+      "analysis_options.yaml",
     ];
 
     var lastComponent = entity.uri.pathSegments.last;
@@ -191,7 +195,8 @@ class CLITemplateCreator extends CLICommand {
     Directory sourceDirectory,
   ) {
     final sourceDirectoryName = sourceDirectory
-        .uri.pathSegments[sourceDirectory.uri.pathSegments.length - 2];
+        .uri
+        .pathSegments[sourceDirectory.uri.pathSegments.length - 2];
     final destDir = Directory(
       path_lib.join(destinationParentDirectory.path, sourceDirectoryName),
     );
@@ -215,8 +220,10 @@ class CLITemplateCreator extends CLICommand {
     var contents = sourceFile.readAsStringSync();
 
     contents = contents.replaceAll("wildfire", projectName);
-    contents =
-        contents.replaceAll("Wildfire", camelCaseFromSnakeCase(projectName));
+    contents = contents.replaceAll(
+      "Wildfire",
+      camelCaseFromSnakeCase(projectName),
+    );
 
     final outputFile = File(path);
     outputFile.createSync();
@@ -224,8 +231,10 @@ class CLITemplateCreator extends CLICommand {
   }
 
   String fileNameForFile(String projectName, File sourceFile) {
-    return sourceFile.uri.pathSegments.last
-        .replaceFirst("wildfire", projectName);
+    return sourceFile.uri.pathSegments.last.replaceFirst(
+      "wildfire",
+      projectName,
+    );
   }
 
   Directory destinationDirectoryFromPath(String pathString) {
@@ -240,16 +249,18 @@ class CLITemplateCreator extends CLICommand {
   void createProjectSpecificFiles(String directoryPath) {
     displayProgress("Generating config.yaml from config.src.yaml.");
     final configSrcPath = File(path_lib.join(directoryPath, "config.src.yaml"));
-    configSrcPath
-        .copySync(File(path_lib.join(directoryPath, "config.yaml")).path);
+    configSrcPath.copySync(
+      File(path_lib.join(directoryPath, "config.yaml")).path,
+    );
   }
 
   bool addDependencyOverridesToPackage(
     String packageDirectoryPath,
     Map<String, Uri> overrides,
   ) {
-    final overridesFile =
-        File(path_lib.join(packageDirectoryPath, "pubspec_overrides.yaml"));
+    final overridesFile = File(
+      path_lib.join(packageDirectoryPath, "pubspec_overrides.yaml"),
+    );
 
     var valid = true;
 
@@ -259,9 +270,7 @@ class CLITemplateCreator extends CLICommand {
       final path = location.toFilePath(windows: Platform.isWindows);
       valid &= _testPackagePath(path, packageName);
       overrideBuffer.writeln("  $packageName:");
-      overrideBuffer.writeln(
-        "    path:  ${_truepath(path)}",
-      );
+      overrideBuffer.writeln("    path:  ${_truepath(path)}");
     });
 
     overridesFile.writeAsStringSync("$overrideBuffer");
@@ -397,15 +406,17 @@ class CLITemplateCreator extends CLICommand {
 class CLITemplateList extends CLICommand {
   @override
   Future<int> handle() async {
-    final templateRootDirectory =
-        (await templateDirectory((await toolVersion).toString()))!;
+    final templateRootDirectory = (await templateDirectory(
+      (await toolVersion).toString(),
+    ))!;
     final templateDirectories = await templateRootDirectory
         .list()
         .where((fse) => fse is Directory)
         .map((fse) => fse as Directory)
         .toList();
-    final templateDescriptions =
-        await Future.wait(templateDirectories.map(_templateDescription));
+    final templateDescriptions = await Future.wait(
+      templateDirectories.map(_templateDescription),
+    );
     displayInfo("Available templates:");
     displayProgress("");
 
@@ -426,10 +437,11 @@ class CLITemplateList extends CLICommand {
 
   Future<String> _templateDescription(Directory templateDirectory) async {
     final name = templateDirectory
-        .uri.pathSegments[templateDirectory.uri.pathSegments.length - 2];
-    final pubspecContents =
-        await File.fromUri(templateDirectory.uri.resolve("pubspec.yaml"))
-            .readAsString();
+        .uri
+        .pathSegments[templateDirectory.uri.pathSegments.length - 2];
+    final pubspecContents = await File.fromUri(
+      templateDirectory.uri.resolve("pubspec.yaml"),
+    ).readAsString();
     final pubspecDefinition = loadYaml(pubspecContents);
 
     return "$name | ${pubspecDefinition["description"]}";
@@ -460,18 +472,17 @@ Future<Directory?> templateDirectory(String toolVersion) async {
 
 Future<Directory?> _templateDirectoryFromPubCache(String toolVersion) async {
   try {
-    final res = await Process.run(
-      "dart",
-      ["pub", "cache", "list"],
-      runInShell: true,
-    );
+    final res = await Process.run("dart", [
+      "pub",
+      "cache",
+      "list",
+    ], runInShell: true);
     final pkgPath =
         jsonDecode(res.stdout)['packages']['conduit'][toolVersion]['location']
             as String?;
     if (pkgPath == null) return null;
     final packageDir = Uri.directory(pkgPath, windows: Platform.isWindows);
-    final templates =
-        Directory.fromUri(packageDir.resolve('templates'));
+    final templates = Directory.fromUri(packageDir.resolve('templates'));
     return templates.existsSync() ? templates : null;
   } catch (_) {
     return null;
@@ -480,8 +491,9 @@ Future<Directory?> _templateDirectoryFromPubCache(String toolVersion) async {
 
 Future<Directory?> _templateDirectoryFromIsolate() async {
   try {
-    final libUri =
-        await Isolate.resolvePackageUri(Uri.parse('package:conduit/'));
+    final libUri = await Isolate.resolvePackageUri(
+      Uri.parse('package:conduit/'),
+    );
     if (libUri == null) return null;
     // libUri points at `<package>/lib/`; the templates dir is its sibling.
     final templates = Directory.fromUri(libUri.resolve('../templates/'));
@@ -492,7 +504,9 @@ Future<Directory?> _templateDirectoryFromIsolate() async {
 }
 
 Future<Uri?> getTemplateLocation(
-    String templateName, String toolVersion) async {
+  String templateName,
+  String toolVersion,
+) async {
   final dirUri = await templateDirectory(toolVersion);
   return dirUri?.uri.resolve("$templateName/");
 }

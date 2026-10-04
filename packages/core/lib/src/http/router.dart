@@ -19,9 +19,9 @@ import 'package:conduit_open_api/v3.dart';
 class Router extends Controller {
   /// Creates a new [Router].
   Router({String? basePath, Future Function(Request)? notFoundHandler})
-      : _unmatchedController = notFoundHandler,
-        _basePathSegments =
-            basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
+    : _unmatchedController = notFoundHandler,
+      _basePathSegments =
+          basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
     policy?.allowCredentials = false;
   }
 
@@ -79,8 +79,9 @@ class Router extends Controller {
 
   @override
   void didAddToChannel() {
-    _root.node =
-        RouteNode(_routeControllers.expand((rh) => rh.specifications).toList());
+    _root.node = RouteNode(
+      _routeControllers.expand((rh) => rh.specifications).toList(),
+    );
 
     for (final c in _routeControllers) {
       c.didAddToChannel();
@@ -123,8 +124,10 @@ class Router extends Controller {
         }
       }
 
-      final node =
-          _root.node!.nodeForPathSegments(requestURISegmentIterator, req.path);
+      final node = _root.node!.nodeForPathSegments(
+        requestURISegmentIterator,
+        req.path,
+      );
       if (node?.specification == null) {
         await _handleUnhandledRequest(req);
         return null;
@@ -202,22 +205,22 @@ class _RouteController extends Controller {
   @override
   Map<String, APIPath> documentPaths(APIDocumentContext components) {
     return specifications.fold(<String, APIPath>{}, (pathMap, spec) {
-      final elements = spec.segments.map((rs) {
-        if (rs.isLiteralMatcher) {
-          return rs.literal;
-        } else if (rs.isVariable) {
-          return "{${rs.variableName}}";
-        } else if (rs.isRemainingMatcher) {
-          return "{path}";
-        }
-        throw StateError("unknown specification");
-      }).join("/");
+      final elements = spec.segments
+          .map((rs) {
+            if (rs.isLiteralMatcher) {
+              return rs.literal;
+            } else if (rs.isVariable) {
+              return "{${rs.variableName}}";
+            } else if (rs.isRemainingMatcher) {
+              return "{path}";
+            }
+            throw StateError("unknown specification");
+          })
+          .join("/");
       final pathKey = "/$elements";
 
       final path = APIPath()
-        ..parameters = spec.variableNames
-            .map(APIParameter.path)
-            .toList();
+        ..parameters = spec.variableNames.map(APIParameter.path).toList();
 
       if (spec.segments.any((seg) => seg.isRemainingMatcher)) {
         path.parameters.add(
@@ -227,8 +230,11 @@ class _RouteController extends Controller {
         );
       }
 
-      path.operations =
-          spec.controller!.documentOperations(components, pathKey, path);
+      path.operations = spec.controller!.documentOperations(
+        components,
+        pathKey,
+        path,
+      );
 
       pathMap[pathKey] = path;
 

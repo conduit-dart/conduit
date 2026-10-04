@@ -2,7 +2,7 @@
 
 Type-system foundation for an Object-Graph Mapper (OGM) on top of [Conduit](https://github.com/conduit-dart/conduit).
 
-This package ships **only the type system + abstract store contract**. The Neo4j backend that consumes it is the follow-up phase (P6b) and is not part of this release.
+This package ships **only the type system + abstract store contract**. The Neo4j backend that implements it is the separate [`conduit_graph_neo4j`](https://pub.dev/packages/conduit_graph_neo4j) package.
 
 ## Why a parallel hierarchy, not a generalization of the SQL ORM
 
@@ -90,8 +90,30 @@ This is a deliberate design choice — surfacing the escape hatch immediately ke
 
 - **No migration system.** Graph migrations are out of scope; users run raw Cypher scripts.
 - **No `Schema*` enforcement.** `GraphPropertyType` labels properties for serialization but does not validate them.
-- **No backend.** This package is the abstraction; bring your own `GraphPersistentStore` or wait for P6b.
+- **No backend.** This package is the abstraction; bring your own `GraphPersistentStore` or use `conduit_graph_neo4j`.
 
-## What's next
+## Testing
 
-P6b — `conduit_neo4j`, a `GraphPersistentStore` backed by the Bolt protocol. It will consume the AST that `GraphQuery.fetch()` emits and round-trip results back into typed `GraphNode<T>` subclasses.
+`test/conduit_graph_test.dart` covers the type system in isolation:
+labels, property bags, edge endpoints, `GraphPattern`, the `GraphQuery`
+filter AST, and `GraphContext` / `GraphDataModel` dispatch. Its store is
+an in-test fake that only checks delegation -- this package ships the
+`GraphPersistentStore` *contract*, not an implementation, so a single
+test file is expected here.
+
+The contract is exercised end-to-end through the Neo4j backend in
+`packages/graph_neo4j/test/`:
+
+- `neo4j_store_test.dart` -- the store's side of the contract without a
+  live server: constructor validation, node/edge factory registration
+  and lookup error paths, data-model binding.
+- `bolt_protocol_test.dart` -- the Bolt wire layer the store sits on:
+  PackStream encode/decode of scalars, strings, lists, maps and
+  structures, Bolt message construction, and malformed-input error
+  paths.
+- `cypher_emitter_test.dart` -- `GraphQuery` AST -> Cypher compilation.
+- `integration_test.dart` -- `create` / `match` / `traverse` round-trips
+  against a real Neo4j, gated on `CONDUIT_NEO4J_AVAILABLE`.
+
+A change to the abstract contract here should be validated against
+those tests, not just this package's own suite.

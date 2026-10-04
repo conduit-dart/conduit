@@ -123,12 +123,13 @@ class _DefaultSqlDialect extends SqlDialect {
   String get name => 'default';
 
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
 
   @override
-  String tableExistsQuery() =>
-      throw UnsupportedError(
-          'PersistentStore did not override .dialect; cannot generate SQL.');
+  String tableExistsQuery() => throw UnsupportedError(
+    'PersistentStore did not override .dialect; cannot generate SQL.',
+  );
 }

@@ -11,8 +11,8 @@ import 'package:build/build.dart';
 class StampBuilder implements Builder {
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': ['.conduit.stamp.dart'],
-      };
+    '.dart': ['.conduit.stamp.dart'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {

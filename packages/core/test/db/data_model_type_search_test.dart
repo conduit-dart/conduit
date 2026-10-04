@@ -4,9 +4,7 @@ import 'package:test/test.dart';
 import '../not_tests/helpers.dart';
 
 void main() {
-  test(
-      "Mixed in properties with @Serialize() are transient properties fromCurrentMirrorSystem",
-      () {
+  test("Mixed in properties with @Serialize() are transient properties fromCurrentMirrorSystem", () {
     final dm = ManagedDataModel.fromCurrentMirrorSystem();
     final ctx = ManagedContext(dm, DefaultPersistentStore());
     final m = ctx.dataModel!.entityForType(Mixin);
@@ -20,9 +18,7 @@ void main() {
     expect(o.asMap(), {"serialized": "b"});
   });
 
-  test(
-      "Mixed in properties with @Serialize() are transient properties from list of types",
-      () {
+  test("Mixed in properties with @Serialize() are transient properties from list of types", () {
     final dm = ManagedDataModel([Mixin]);
     final ctx = ManagedContext(dm, DefaultPersistentStore());
     final m = ctx.dataModel!.entityForType(Mixin);

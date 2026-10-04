@@ -115,13 +115,11 @@ class ApplicationOptions {
     )
     ..addOption(
       "ssl-certificate-path",
-      help:
-          "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+      help: "The path to an SSL certicate file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
     )
     ..addOption(
       "ssl-key-path",
-      help:
-          "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
+      help: "The path to an SSL private key file. If provided along with --ssl-certificate-path, the application will be HTTPS-enabled.",
     )
     ..addOption(
       "timeout",

@@ -119,8 +119,9 @@ class TestRequest {
 
   /// Sets the Accept header of this request.
   set accept(List<ContentType> contentTypes) {
-    headers[HttpHeaders.acceptHeader] =
-        contentTypes.map((ct) => ct.toString()).join(",");
+    headers[HttpHeaders.acceptHeader] = contentTypes
+        .map((ct) => ct.toString())
+        .join(",");
   }
 
   /// Executes this request with HTTP POST.
@@ -170,7 +171,8 @@ class TestRequest {
     if (body != null &&
         (lowercasedMethod == "get" || lowercasedMethod == "head")) {
       throw StateError(
-          "Cannot set 'body' when using HTTP '${method.toUpperCase()}'.");
+        "Cannot set 'body' when using HTTP '${method.toUpperCase()}'.",
+      );
     }
 
     final request = await _client.openUrl(method.toUpperCase(), uri);
@@ -239,8 +241,9 @@ class TestRequest {
       return _encodeMultipartFormData(body as Map<String, dynamic>, boundary);
     }
 
-    final codec =
-        CodecRegistry.defaultInstance.codecForContentType(contentType);
+    final codec = CodecRegistry.defaultInstance.codecForContentType(
+      contentType,
+    );
 
     if (codec == null) {
       // this check doesn't truly work, but if its a list, it's probably a list of bytes.

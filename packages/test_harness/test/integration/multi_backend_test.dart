@@ -89,8 +89,8 @@ Future<void> _exerciseStore(PersistentStore store) async {
   );
 
   final rows = await store.execute(
-        "SELECT name, weight FROM widgets ORDER BY weight ASC",
-      ) as List;
+    "SELECT name, weight FROM widgets ORDER BY weight ASC",
+  ) as List;
   expect(rows.length, 2);
   // SQLite returns Map-like rows; postgres returns List rows. Both
   // expose values by index, which is the lowest-common shape.

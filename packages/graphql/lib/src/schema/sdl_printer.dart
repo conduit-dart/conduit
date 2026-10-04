@@ -35,10 +35,9 @@ String printSchema(GraphQLSchema schema) {
 
   // Custom (non-built-in) scalars first, alphabetical.
   final builtInScalarNames = {'Int', 'Float', 'String', 'Boolean', 'ID'};
-  final customScalars = scalarTypes
-      .where((s) => !builtInScalarNames.contains(s.name))
-      .toList()
-    ..sort((a, b) => a.name!.compareTo(b.name!));
+  final customScalars =
+      scalarTypes.where((s) => !builtInScalarNames.contains(s.name)).toList()
+        ..sort((a, b) => a.name!.compareTo(b.name!));
   for (final s in customScalars) {
     if (s.description?.isNotEmpty == true) {
       buf.writeln('"""${s.description}"""');

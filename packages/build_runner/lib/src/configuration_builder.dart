@@ -30,8 +30,8 @@ class ConfigurationBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': ['.config.conduit.dart', '.config.conduit.json'],
-      };
+    '.dart': ['.config.conduit.dart', '.config.conduit.json'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -135,10 +135,7 @@ class ConfigurationBuilder implements Builder {
     });
   }
 
-  _ConfigProperty? _analyzeField(
-    FieldElement field,
-    Set<String> imports,
-  ) {
+  _ConfigProperty? _analyzeField(FieldElement field, Set<String> imports) {
     final type = field.type;
     if (type is! InterfaceType) return null;
 
@@ -173,7 +170,8 @@ class ConfigurationBuilder implements Builder {
       if (n == 'required') return true;
     }
     // Fallback: late + non-nullable → effectively required.
-    if (field.isLate && field.type.nullabilitySuffix.toString().contains('none')) {
+    if (field.isLate &&
+        field.type.nullabilitySuffix.toString().contains('none')) {
       return true;
     }
     return false;
@@ -186,9 +184,11 @@ class ConfigurationBuilder implements Builder {
     final dartName = _typeSourceWithoutNullable(type);
 
     // Nested Configuration subclass
-    final isConfigSubclass = el.allSupertypes.any((t) =>
-        t.element.name == _configurationTypeName &&
-        t.element.library.identifier.startsWith(_configPackagePrefix));
+    final isConfigSubclass = el.allSupertypes.any(
+      (t) =>
+          t.element.name == _configurationTypeName &&
+          t.element.library.identifier.startsWith(_configPackagePrefix),
+    );
     if (isConfigSubclass) {
       imports.add(libUri);
       return _Codec.config(dartName);
@@ -229,9 +229,7 @@ class ConfigurationBuilder implements Builder {
       decodeBody.writeln(
         "    final decodedValue = tryDecode(configuration, '${p.name}', () { ${p.codec.body} });",
       );
-      decodeBody.writeln(
-        '    if (decodedValue is! ${p.codec.expectedType}) {',
-      );
+      decodeBody.writeln('    if (decodedValue is! ${p.codec.expectedType}) {');
       decodeBody.writeln(
         "      throw ConfigurationException(configuration, 'input is wrong type', keyPath: ['${p.name}']);",
       );
@@ -255,9 +253,7 @@ class ConfigurationBuilder implements Builder {
       validateBody.writeln(
         '  final ${p.name} = (configuration as ${c.className}).${p.name};',
       );
-      validateBody.writeln(
-        '  if (${p.isRequired} && ${p.name} == null) {',
-      );
+      validateBody.writeln('  if (${p.isRequired} && ${p.name} == null) {');
       validateBody.writeln("    missingKeys.add('${p.name}');");
       validateBody.writeln('  }');
       validateBody.writeln('} on Error catch (_) {');
@@ -321,16 +317,14 @@ class _Codec {
   factory _Codec.simple(String type, String body) => _Codec._(type, body);
   factory _Codec.passthrough(String type) =>
       _Codec._(type, 'return v as $type;');
-  factory _Codec.config(String type) => _Codec._(
-        type,
-        '''
+  factory _Codec.config(String type) => _Codec._(type, '''
         final item = $type();
         item.decode(v);
         return item;
-        ''',
-      );
+        ''');
   factory _Codec.list(String dartName, _Codec inner) {
-    final body = '''
+    final body =
+        '''
 final out = <${inner.expectedType}>[];
 final decoder = (v) { ${inner.body} };
 for (var i = 0; i < (v as List).length; i++) {
@@ -348,7 +342,8 @@ return out;
     return _Codec._(dartName, body);
   }
   factory _Codec.map(String dartName, _Codec inner) {
-    final body = '''
+    final body =
+        '''
 final map = <String, ${inner.expectedType}>{};
 final decoder = (v) { ${inner.body} };
 (v as Map).forEach((key, val) {
@@ -411,5 +406,4 @@ if (v is String) {
 return v as DateTime;
 ''';
 
-Builder configurationBuilder(BuilderOptions options) =>
-    ConfigurationBuilder();
+Builder configurationBuilder(BuilderOptions options) => ConfigurationBuilder();

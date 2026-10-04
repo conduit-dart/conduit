@@ -12,8 +12,7 @@ import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 mixin CLIDatabaseManagingCommand implements CLICommand, CLIProject {
   @Option(
     "migration-directory",
-    help:
-        "The directory where migration files are stored. Relative paths are relative to the application-directory.",
+    help: "The directory where migration files are stored. Relative paths are relative to the application-directory.",
     defaultsTo: "migrations",
   )
   Directory? get migrationDirectory {

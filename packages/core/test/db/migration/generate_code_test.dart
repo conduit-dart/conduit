@@ -27,7 +27,7 @@ final List<SchemaColumn> columnsWithAllAttributeOptions = [
 
 final List<String> dartExpressionForColumnsWithAllAttributeOptions = [
   'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: true, autoincrement: true, isIndexed: true, isNullable: false, isUnique: false)',
-  "SchemaColumn(\"t\", ManagedPropertyType.string, isPrimaryKey: false, autoincrement: false, defaultValue: \"'x'\", isIndexed: false, isNullable: true, isUnique: true)"
+  "SchemaColumn(\"t\", ManagedPropertyType.string, isPrimaryKey: false, autoincrement: false, defaultValue: \"'x'\", isIndexed: false, isNullable: true, isUnique: true)",
 ];
 
 void main() {
@@ -43,9 +43,10 @@ void main() {
 
       expect(builder.commands.length, 1);
       expect(
-          builder.commands.first,
-          'database.createTable(SchemaTable("foo", ['
-          "${dartExpressionForColumnsWithAllAttributeOptions[0]},${dartExpressionForColumnsWithAllAttributeOptions[1]}]));");
+        builder.commands.first,
+        'database.createTable(SchemaTable("foo", ['
+        "${dartExpressionForColumnsWithAllAttributeOptions[0]},${dartExpressionForColumnsWithAllAttributeOptions[1]}]));",
+      );
     });
 
     test("Create table with unique constraints", () {
@@ -54,7 +55,7 @@ void main() {
           "foo",
           [
             SchemaColumn("id", ManagedPropertyType.integer),
-            SchemaColumn("x", ManagedPropertyType.integer)
+            SchemaColumn("x", ManagedPropertyType.integer),
           ],
           uniqueColumnSetNames: ["id", "x"],
         ),
@@ -62,11 +63,12 @@ void main() {
 
       expect(builder.commands.length, 1);
       expect(
-          builder.commands.first,
-          'database.createTable(SchemaTable("foo", ['
-          'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false),'
-          'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false)'
-          '], uniqueColumnSetNames: ["id","x"]));');
+        builder.commands.first,
+        'database.createTable(SchemaTable("foo", ['
+        'SchemaColumn("id", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false),'
+        'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, isIndexed: false, isNullable: false, isUnique: false)'
+        '], uniqueColumnSetNames: ["id","x"]));',
+      );
     });
   });
 
@@ -79,18 +81,14 @@ void main() {
     expect(builder.commands.last, 'database.deleteTable("foo");');
   });
 
-  test(
-    "Rename table",
-    () {
-      builder.createTable(
-        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
-      );
-      builder.renameTable("foo", "bar");
-      expect(builder.commands.length, 2);
-      expect(builder.commands.last, 'database.renameTable("foo", "bar");');
-    },
-    skip: "not yet implemented",
-  );
+  test("Rename table", () {
+    builder.createTable(
+      SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
+    );
+    builder.renameTable("foo", "bar");
+    expect(builder.commands.length, 2);
+    expect(builder.commands.last, 'database.renameTable("foo", "bar");');
+  }, skip: "not yet implemented");
 
   group("Alter table", () {
     test("Alter table; change unique", () {
@@ -100,7 +98,7 @@ void main() {
           [
             SchemaColumn("id", ManagedPropertyType.integer),
             SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn("y", ManagedPropertyType.integer)
+            SchemaColumn("y", ManagedPropertyType.integer),
           ],
           uniqueColumnSetNames: ["id", "x"],
         ),
@@ -120,7 +118,7 @@ void main() {
         SchemaTable("foo", [
           SchemaColumn("id", ManagedPropertyType.integer),
           SchemaColumn("x", ManagedPropertyType.integer),
-          SchemaColumn("y", ManagedPropertyType.integer)
+          SchemaColumn("y", ManagedPropertyType.integer),
         ]),
       );
       builder.alterTable("foo", (t) {
@@ -140,7 +138,7 @@ void main() {
           [
             SchemaColumn("id", ManagedPropertyType.integer),
             SchemaColumn("x", ManagedPropertyType.integer),
-            SchemaColumn("y", ManagedPropertyType.integer)
+            SchemaColumn("y", ManagedPropertyType.integer),
           ],
           uniqueColumnSetNames: ["id", "x"],
         ),
@@ -159,10 +157,7 @@ void main() {
   group("Add column", () {
     test("Add column", () {
       builder.createTable(
-        SchemaTable(
-          "foo",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.addColumn(
         "foo",
@@ -170,18 +165,16 @@ void main() {
       );
       expect(builder.commands.length, 2);
       expect(
-          builder.commands.last,
-          'database.addColumn("foo", '
-          'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
-          "isIndexed: false, isNullable: true, isUnique: false));");
+        builder.commands.last,
+        'database.addColumn("foo", '
+        'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
+        "isIndexed: false, isNullable: true, isUnique: false));",
+      );
     });
 
     test("Add multiple columns", () {
       builder.createTable(
-        SchemaTable(
-          "foo",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.addColumn("foo", SchemaColumn("x", ManagedPropertyType.integer));
       builder.addColumn(
@@ -190,29 +183,25 @@ void main() {
       );
       expect(builder.commands.length, 3);
       expect(
-          builder.commands[1],
-          'database.addColumn("foo", '
-          'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
-          "isIndexed: false, isNullable: false, isUnique: false));");
+        builder.commands[1],
+        'database.addColumn("foo", '
+        'SchemaColumn("x", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
+        "isIndexed: false, isNullable: false, isUnique: false));",
+      );
       expect(
-          builder.commands[2],
-          'database.addColumn("foo", '
-          'SchemaColumn("y", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
-          'defaultValue: "2", isIndexed: false, isNullable: false, isUnique: false));');
+        builder.commands[2],
+        'database.addColumn("foo", '
+        'SchemaColumn("y", ManagedPropertyType.integer, isPrimaryKey: false, autoincrement: false, '
+        'defaultValue: "2", isIndexed: false, isNullable: false, isUnique: false));',
+      );
     });
 
     test("Add relationship column", () {
       builder.createTable(
-        SchemaTable(
-          "foo",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.createTable(
-        SchemaTable(
-          "bar",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("bar", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.addColumn(
         "bar",
@@ -225,9 +214,10 @@ void main() {
       );
       expect(builder.commands.length, 3);
       expect(
-          builder.commands.last,
-          'database.addColumn("bar", '
-          'SchemaColumn.relationship("foo_id", ManagedPropertyType.integer, relatedTableName: "foo", relatedColumnName: "id", rule: DeleteRule.nullify, isNullable: true, isUnique: false));');
+        builder.commands.last,
+        'database.addColumn("bar", '
+        'SchemaColumn.relationship("foo_id", ManagedPropertyType.integer, relatedTableName: "foo", relatedColumnName: "id", rule: DeleteRule.nullify, isNullable: true, isUnique: false));',
+      );
     });
   });
 
@@ -246,10 +236,7 @@ void main() {
   group("Alter column", () {
     test("isIndexed", () {
       builder.createTable(
-        SchemaTable(
-          "foo",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.alterColumn("foo", "id", (c) {
         c.isIndexed = true;
@@ -310,10 +297,7 @@ void main() {
 
     test("isUnique", () {
       builder.createTable(
-        SchemaTable(
-          "foo",
-          [SchemaColumn("id", ManagedPropertyType.integer)],
-        ),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.alterColumn("foo", "id", (c) {
         c.isUnique = true;
@@ -380,7 +364,7 @@ void main() {
             isNullable: false,
             relatedTableName: "foo",
             relatedColumnName: "id",
-          )
+          ),
         ]),
       );
       builder.alterColumn("bar", "foo_id", (c) {
@@ -420,7 +404,7 @@ void main() {
             relatedTableName: "foo",
             relatedColumnName: "id",
             rule: DeleteRule.cascade,
-          )
+          ),
         ]),
       );
       builder.alterColumn("bar", "foo_id", (c) {
@@ -449,12 +433,7 @@ void main() {
 
     test("Multiple statements", () {
       builder.createTable(
-        SchemaTable("foo", [
-          SchemaColumn(
-            "id",
-            ManagedPropertyType.integer,
-          )
-        ]),
+        SchemaTable("foo", [SchemaColumn("id", ManagedPropertyType.integer)]),
       );
       builder.alterColumn("foo", "id", (c) {
         c.isIndexed = true;

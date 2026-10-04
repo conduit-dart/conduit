@@ -40,7 +40,8 @@ class CLIDatabaseGenerate extends CLICommand
 
       sb.write(char);
 
-      final isEndOfWord = nextChar == null ||
+      final isEndOfWord =
+          nextChar == null ||
           (upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
           symbolRegex.hasMatch(nextChar);
 
@@ -71,8 +72,11 @@ class CLIDatabaseGenerate extends CLICommand
       );
     }
     final schema = await schemaByApplyingMigrationSources(projectMigrations);
-    final result =
-        await generateMigrationFileForProject(this, schema, versionNumber);
+    final result = await generateMigrationFileForProject(
+      this,
+      schema,
+      versionNumber,
+    );
 
     displayInfo("The following ManagedObject<T> subclasses were found:");
     displayProgress(result.tablesEvaluated!.join(", "));

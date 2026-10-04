@@ -19,37 +19,48 @@ void main() {
       await server.close();
     });
 
-    test("Map body is sent as url-encoded and decodes back to the same map",
-        () async {
-      final agent = Agent.onPort(server.port)
-        ..contentType = ContentType("application", "x-www-form-urlencoded",
-            charset: "utf-8");
+    test(
+      "Map body is sent as url-encoded and decodes back to the same map",
+      () async {
+        final agent = Agent.onPort(server.port)
+          ..contentType = ContentType(
+            "application",
+            "x-www-form-urlencoded",
+            charset: "utf-8",
+          );
 
-      await agent.post("/login", body: {
-        "username": "alice",
-        "password": "p@ss w/special&chars",
-      });
+        await agent.post(
+          "/login",
+          body: {"username": "alice", "password": "p@ss w/special&chars"},
+        );
 
-      final req = await server.next();
-      expect(req.method, "POST");
-      expect(req.raw.headers.contentType?.primaryType, "application");
-      expect(req.raw.headers.contentType?.subType, "x-www-form-urlencoded");
+        final req = await server.next();
+        expect(req.method, "POST");
+        expect(req.raw.headers.contentType?.primaryType, "application");
+        expect(req.raw.headers.contentType?.subType, "x-www-form-urlencoded");
 
-      // Server-side decoding via the existing _FormDecoder produces a
-      // Map<String, List<String>>.
-      final decoded = req.body.as<Map<String, dynamic>>();
-      expect(decoded["username"], ["alice"]);
-      expect(decoded["password"], ["p@ss w/special&chars"]);
-    });
+        // Server-side decoding via the existing _FormDecoder produces a
+        // Map<String, List<String>>.
+        final decoded = req.body.as<Map<String, dynamic>>();
+        expect(decoded["username"], ["alice"]);
+        expect(decoded["password"], ["p@ss w/special&chars"]);
+      },
+    );
 
     test("List values produce repeated key=value pairs", () async {
       final agent = Agent.onPort(server.port)
-        ..contentType = ContentType("application", "x-www-form-urlencoded",
-            charset: "utf-8");
+        ..contentType = ContentType(
+          "application",
+          "x-www-form-urlencoded",
+          charset: "utf-8",
+        );
 
-      await agent.post("/q", body: {
-        "tag": ["a", "b", "c"],
-      });
+      await agent.post(
+        "/q",
+        body: {
+          "tag": ["a", "b", "c"],
+        },
+      );
 
       final req = await server.next();
       final decoded = req.body.as<Map<String, dynamic>>();
@@ -70,8 +81,7 @@ void main() {
       await server.close(force: true);
     });
 
-    test(
-        "Text fields and a binary file produce a body the server can parse, "
+    test("Text fields and a binary file produce a body the server can parse, "
         "Content-Type carries the boundary parameter", () async {
       final received = Completer<_RawCapture>();
       server.listen((req) async {
@@ -88,22 +98,40 @@ void main() {
         ..contentType = ContentType.parse("multipart/form-data");
 
       final pngBytes = <int>[
-        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-        0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
+        0x89,
+        0x50,
+        0x4e,
+        0x47,
+        0x0d,
+        0x0a,
+        0x1a,
+        0x0a,
+        0x00,
+        0x00,
+        0x00,
+        0x0d,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
       ];
 
-      await agent.post("/upload", body: {
-        "name": "alice",
-        "note": "hello, world",
-        "avatar": MultipartFormFile.fromBytes(
-          pngBytes,
-          filename: "a.png",
-          contentType: ContentType("image", "png"),
-        ),
-      });
+      await agent.post(
+        "/upload",
+        body: {
+          "name": "alice",
+          "note": "hello, world",
+          "avatar": MultipartFormFile.fromBytes(
+            pngBytes,
+            filename: "a.png",
+            contentType: ContentType("image", "png"),
+          ),
+        },
+      );
 
-      final captured = await received.future
-          .timeout(const Duration(seconds: 5));
+      final captured = await received.future.timeout(
+        const Duration(seconds: 5),
+      );
 
       // Boundary is on the Content-Type header.
       final ct = captured.headers.contentType!;
@@ -169,16 +197,22 @@ void main() {
       final agent = Agent.onPort(port)
         ..contentType = ContentType.parse("multipart/form-data");
 
-      await agent.post("/q", body: {
-        "tag": ["a", "b"],
-      });
+      await agent.post(
+        "/q",
+        body: {
+          "tag": ["a", "b"],
+        },
+      );
 
-      final captured = await received.future
-          .timeout(const Duration(seconds: 5));
+      final captured = await received.future.timeout(
+        const Duration(seconds: 5),
+      );
       final boundary = captured.headers.contentType!.parameters["boundary"]!;
       final repeated = _parseMultipartRepeated(captured.body, boundary);
-      expect(repeated["tag"]?.map((p) => utf8.decode(p.body)).toList(),
-          ["a", "b"]);
+      expect(repeated["tag"]?.map((p) => utf8.decode(p.body)).toList(), [
+        "a",
+        "b",
+      ]);
     });
 
     test("Body that is not a Map throws StateError", () async {
@@ -239,7 +273,9 @@ Map<String, _ParsedPart> _parseMultipart(List<int> body, String boundary) {
 }
 
 Map<String, List<_ParsedPart>> _parseMultipartRepeated(
-    List<int> body, String boundary) {
+  List<int> body,
+  String boundary,
+) {
   final result = <String, List<_ParsedPart>>{};
   for (final entry in _parseMultipartEntries(body, boundary)) {
     result.putIfAbsent(entry.key, () => []).add(entry.value);
@@ -248,7 +284,9 @@ Map<String, List<_ParsedPart>> _parseMultipartRepeated(
 }
 
 Iterable<MapEntry<String, _ParsedPart>> _parseMultipartEntries(
-    List<int> body, String boundary) sync* {
+  List<int> body,
+  String boundary,
+) sync* {
   final delim = utf8.encode("--$boundary");
   final closing = utf8.encode("--$boundary--");
   // Find each delimiter.

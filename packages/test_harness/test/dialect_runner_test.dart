@@ -6,8 +6,11 @@ void main() {
     test('no annotations runs by default on every dialect', () {
       for (final d in Dialect.values) {
         final decision = evaluateAnnotations(active: d);
-        expect(decision.shouldSkip, isFalse,
-            reason: 'no annotations should never skip on ${d.name}');
+        expect(
+          decision.shouldSkip,
+          isFalse,
+          reason: 'no annotations should never skip on ${d.name}',
+        );
         expect(decision.skipReason, isNull);
       }
     });
@@ -33,8 +36,9 @@ void main() {
     test('OnlyOn uses caller-supplied reason if present', () {
       final decision = evaluateAnnotations(
         active: Dialect.sqlite,
-        onlyOn: const OnlyOn([Dialect.postgres],
-            reason: 'jsonb is postgres-only'),
+        onlyOn: const OnlyOn([
+          Dialect.postgres,
+        ], reason: 'jsonb is postgres-only'),
       );
       expect(decision.skipReason, equals('jsonb is postgres-only'));
     });
@@ -68,14 +72,20 @@ void main() {
       expect(decision.skipReason, isNot(contains('should not show up')));
     });
 
-    test('PostgresOnly shorthand behaves identically to OnlyOn([postgres])',
-        () {
-      final shorthand =
-          evaluateAnnotations(active: Dialect.sqlite, onlyOn: const PostgresOnly());
-      final longhand = evaluateAnnotations(
-          active: Dialect.sqlite, onlyOn: const OnlyOn([Dialect.postgres]));
-      expect(shorthand.shouldSkip, equals(longhand.shouldSkip));
-    });
+    test(
+      'PostgresOnly shorthand behaves identically to OnlyOn([postgres])',
+      () {
+        final shorthand = evaluateAnnotations(
+          active: Dialect.sqlite,
+          onlyOn: const PostgresOnly(),
+        );
+        final longhand = evaluateAnnotations(
+          active: Dialect.sqlite,
+          onlyOn: const OnlyOn([Dialect.postgres]),
+        );
+        expect(shorthand.shouldSkip, equals(longhand.shouldSkip));
+      },
+    );
   });
 
   group('resolveActiveDialect', () {
@@ -130,8 +140,11 @@ void main() {
         onlyOn: onlyOn,
         skipOn: skipOn,
       );
-      expect(decision.shouldSkip, expectSkip,
-          reason: 'active=${active.name} onlyOn=$onlyOn skipOn=$skipOn');
+      expect(
+        decision.shouldSkip,
+        expectSkip,
+        reason: 'active=${active.name} onlyOn=$onlyOn skipOn=$skipOn',
+      );
     }
 
     test('cockroach treated independently from postgres', () {

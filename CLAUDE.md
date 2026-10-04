@@ -42,7 +42,7 @@ melos run fix                    # dart fix --apply across packages
 melos exec --scope="conduit_core" -- dart test test/http/router_test.dart   # one package/file
 ```
 
-- SDK floor is `>=3.12.0` (see root `pubspec.yaml`). Don't lower it.
+- SDK floor is `>=3.13.0` (see root `pubspec.yaml`). Don't lower it.
 - Lints are centralized in `analysis_options.shared.yaml`; per-package
   `analysis_options.yaml` files include it. Add rules there, not per-package.
 - CI: GitHub Actions (`.github/workflows/`) + Woodpecker (`.woodpecker.yml`).

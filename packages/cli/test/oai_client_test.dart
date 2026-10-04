@@ -10,8 +10,9 @@ void main() {
 
   setUpAll(() async {
     await CLIClient.activateCLI();
-    final t =
-        CLIClient(WorkingDirectoryAgent(DartProjectAgent.projectsDirectory));
+    final t = CLIClient(
+      WorkingDirectoryAgent(DartProjectAgent.projectsDirectory),
+    );
     templateCli = await t.createTestProject(template: "db_and_auth");
     await templateCli.agent.getDependencies();
   });
@@ -24,13 +25,12 @@ void main() {
     DartProjectAgent.tearDownAll();
   });
 
-  test(
-      "command with default args creates client page from current project dir pointing at localhost:8888",
-      () async {
+  test("command with default args creates client page from current project dir pointing at localhost:8888", () async {
     await projectUnderTestCli.run("document", ["client"]);
 
-    final clientContents =
-        projectUnderTestCli.agent.getFile("client.html")?.readAsStringSync();
+    final clientContents = projectUnderTestCli.agent
+        .getFile("client.html")
+        ?.readAsStringSync();
     expect(clientContents, contains('spec: {"openapi":"3.0.0"'));
     expect(
       clientContents,
@@ -55,11 +55,15 @@ void main() {
   });
 
   test("Replace relative urls with provided server", () async {
-    await projectUnderTestCli
-        .run("document", ["client", "--host", "https://server.com/v1/"]);
+    await projectUnderTestCli.run("document", [
+      "client",
+      "--host",
+      "https://server.com/v1/",
+    ]);
 
-    final clientContents =
-        projectUnderTestCli.agent.getFile("client.html")?.readAsStringSync();
+    final clientContents = projectUnderTestCli.agent
+        .getFile("client.html")
+        ?.readAsStringSync();
     expect(clientContents, contains('spec: {"openapi":"3.0.0"'));
     expect(
       clientContents,

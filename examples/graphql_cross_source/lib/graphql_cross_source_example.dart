@@ -59,7 +59,7 @@ class Profile extends GraphNode<Profile> {
 
 class Friendship extends GraphEdge<Profile, Profile> {
   Friendship({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Friendship'));
+    : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;
@@ -79,8 +79,16 @@ class CrossSourceChannel extends ApplicationChannel {
   Future<void> prepare() async {
     final sqlStore = _FakeSqlStore()
       ..rows[1] = {'id': 1, 'email': 'ada@example.com', 'displayName': 'Ada'}
-      ..rows[2] = {'id': 2, 'email': 'grace@example.com', 'displayName': 'Grace'}
-      ..rows[3] = {'id': 3, 'email': 'fei@example.com', 'displayName': 'Fei-Fei'};
+      ..rows[2] = {
+        'id': 2,
+        'email': 'grace@example.com',
+        'displayName': 'Grace',
+      }
+      ..rows[3] = {
+        'id': 3,
+        'email': 'fei@example.com',
+        'displayName': 'Fei-Fei',
+      };
     final graphStore = _FakeGraphStore()
       ..addFriendship(1, 2)
       ..addFriendship(1, 3)
@@ -126,8 +134,8 @@ class CrossSourceChannel extends ApplicationChannel {
         final userId = parent is ManagedObject
             ? parent['id'] as int?
             : parent is Map
-                ? parent['id'] as int?
-                : null;
+            ? parent['id'] as int?
+            : null;
         if (userId == null) return const <Object>[];
 
         // Step 2: walk graph friendships from this user's profile.
@@ -143,7 +151,8 @@ class CrossSourceChannel extends ApplicationChannel {
             if (sqlStore.rows[id] != null) sqlStore.rows[id]!,
         ];
       },
-      description: 'Friends of this user, stitched from the graph store '
+      description:
+          'Friends of this user, stitched from the graph store '
           'into the SQL user table.',
     );
     userType.fields.add(stitched);
@@ -152,9 +161,9 @@ class CrossSourceChannel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     final router = Router();
-    router.route('/graphql').link(
-          () => GraphQLController(persistenceSchema.schema),
-        );
+    router
+        .route('/graphql')
+        .link(() => GraphQLController(persistenceSchema.schema));
     return router;
   }
 
@@ -183,15 +192,13 @@ class _FakeSqlStore extends PersistentStore {
     ManagedContext context,
     ManagedEntity entity, {
     T? values,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> execute(
     String sql, {
     Map<String, dynamic>? substitutionValues,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> executeQuery(
@@ -199,15 +206,13 @@ class _FakeSqlStore extends PersistentStore {
     Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T> Function(ManagedContext transaction) transactionBlock,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
 
   @override
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) =>
@@ -228,8 +233,7 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column, {
     String? unencodedInitialValue,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -238,15 +242,13 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String name,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnNullability(
     SchemaTable table,
     SchemaColumn column,
     String? unencodedInitialValue,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnUniqueness(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -254,8 +256,7 @@ class _FakeSqlStore extends PersistentStore {
   List<String> alterColumnDefaultValue(
     SchemaTable table,
     SchemaColumn column,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -267,13 +268,9 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String newIndexName,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  List<String> deleteIndexFromColumn(
-    SchemaTable table,
-    SchemaColumn column,
-  ) =>
+  List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
 
   @override
@@ -284,8 +281,7 @@ class _FakeSqlStore extends PersistentStore {
     Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }
 
 class _FakeGraphStore implements GraphPersistentStore {
@@ -324,15 +320,12 @@ class _FakeGraphStore implements GraphPersistentStore {
   Future<List<N>> traverse<N extends GraphNode<N>>(
     GraphNode<dynamic> from,
     Type edgeKind, {
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
-  }) =>
-      throw UnimplementedError();
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
+  }) => throw UnimplementedError();
 
   @override
   Future<List<Map<String, Object?>>> cypher(
     String rawQuery, {
     Map<String, Object?> params = const {},
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }

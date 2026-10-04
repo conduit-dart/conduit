@@ -16,32 +16,31 @@ abstract class Executable<T extends Object?> {
     Map<Symbol, dynamic> namedArguments = const {},
     Symbol constructorName = Symbol.empty,
   }) {
-    var typeMirror = currentMirrorSystem()
-        .isolate
-        .rootLibrary
-        .declarations[Symbol(typeName)] as ClassMirror?;
+    var typeMirror =
+        currentMirrorSystem().isolate.rootLibrary.declarations[Symbol(typeName)]
+            as ClassMirror?;
 
-    typeMirror ??= currentMirrorSystem()
-        .libraries
-        .values
-        .where((lib) => lib.uri.scheme == "package" || lib.uri.scheme == "file")
-        .expand((lib) => lib.declarations.values)
-        .firstWhere(
-          (decl) =>
-              decl is ClassMirror &&
-              MirrorSystem.getName(decl.simpleName) == typeName,
-          orElse: () => throw ArgumentError(
-            "Unknown type '$typeName'. Did you forget to import it?",
-          ),
-        ) as ClassMirror?;
+    typeMirror ??=
+        currentMirrorSystem().libraries.values
+                .where(
+                  (lib) =>
+                      lib.uri.scheme == "package" || lib.uri.scheme == "file",
+                )
+                .expand((lib) => lib.declarations.values)
+                .firstWhere(
+                  (decl) =>
+                      decl is ClassMirror &&
+                      MirrorSystem.getName(decl.simpleName) == typeName,
+                  orElse: () => throw ArgumentError(
+                    "Unknown type '$typeName'. Did you forget to import it?",
+                  ),
+                )
+            as ClassMirror?;
 
     return typeMirror!
-        .newInstance(
-          constructorName,
-          positionalArguments,
-          namedArguments,
-        )
-        .reflectee as U;
+            .newInstance(constructorName, positionalArguments, namedArguments)
+            .reflectee
+        as U;
   }
 
   void send(dynamic message) {

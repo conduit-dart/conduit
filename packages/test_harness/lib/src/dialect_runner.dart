@@ -41,8 +41,7 @@ class DialectSkipDecision {
   const DialectSkipDecision._(this.skipReason);
 
   /// Skip with the given reason.
-  factory DialectSkipDecision.skip(String reason) =
-      DialectSkipDecision._;
+  factory DialectSkipDecision.skip(String reason) = DialectSkipDecision._;
 
   /// Run the test.
   static const DialectSkipDecision run = DialectSkipDecision._(null);
@@ -74,14 +73,16 @@ DialectSkipDecision evaluateAnnotations({
 }) {
   if (onlyOn != null && !onlyOn.dialects.contains(active)) {
     final allowed = onlyOn.dialects.map((d) => d.name).join(', ');
-    final reason = onlyOn.reason ??
+    final reason =
+        onlyOn.reason ??
         '@OnlyOn restricts this test to [$allowed]; '
             'active dialect is ${active.name}.';
     return DialectSkipDecision.skip(reason);
   }
 
   if (skipOn != null && skipOn.dialects.contains(active)) {
-    final reason = skipOn.reason ??
+    final reason =
+        skipOn.reason ??
         '@SkipOn excludes this test on dialect ${active.name}.';
     return DialectSkipDecision.skip(reason);
   }

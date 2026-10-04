@@ -14,9 +14,9 @@ List<AuthScope>? getMethodScopes(DeclarationMirror m) {
   }
 
   final method = m as MethodMirror;
-  final metadata = method.metadata
-      .firstWhereOrNull((im) => im.reflectee is Scope)
-      ?.reflectee as Scope?;
+  final metadata =
+      method.metadata.firstWhereOrNull((im) => im.reflectee is Scope)?.reflectee
+          as Scope?;
 
   return metadata?.scopes.map(AuthScope.new).toList();
 }
@@ -31,9 +31,11 @@ Operation? getMethodOperationMetadata(DeclarationMirror m) {
     return null;
   }
 
-  final metadata = method.metadata
-      .firstWhereOrNull((im) => im.reflectee is Operation)
-      ?.reflectee as Operation?;
+  final metadata =
+      method.metadata
+              .firstWhereOrNull((im) => im.reflectee is Operation)
+              ?.reflectee
+          as Operation?;
 
   return metadata;
 }

@@ -11,7 +11,7 @@ void main() {
         DefaultItem,
         LoadedItem,
         Container,
-        ExtensiveModel
+        ExtensiveModel,
       ]);
       final baseSchema = Schema.fromDataModel(dataModel);
       builder = SchemaBuilder(null, baseSchema);
@@ -49,8 +49,9 @@ void main() {
 
       builder.deleteTable("_DefaultItem");
       expect(
-        builder.schema.tables
-            .firstWhereOrNull((st) => st.name == "_DefaultItem"),
+        builder.schema.tables.firstWhereOrNull(
+          (st) => st.name == "_DefaultItem",
+        ),
         isNull,
       );
 
@@ -66,10 +67,10 @@ void main() {
         t.uniqueColumnSet = ["startDate", "indexedValue"];
       });
 
-      expect(
-        builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-        ["indexedValue", "startDate"],
-      );
+      expect(builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet, [
+        "indexedValue",
+        "startDate",
+      ]);
     });
 
     test("Removing a unique set", () {
@@ -94,19 +95,20 @@ void main() {
         t.uniqueColumnSet = ["startDate", "autoincrementValue"];
       });
 
-      expect(
-        builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-        ["autoincrementValue", "startDate"],
-      );
+      expect(builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet, [
+        "autoincrementValue",
+        "startDate",
+      ]);
 
       builder.alterTable("_ExtensiveModel", (t) {
         t.uniqueColumnSet = ["startDate", "autoincrementValue", "indexedValue"];
       });
 
-      expect(
-        builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet,
-        ["autoincrementValue", "indexedValue", "startDate"],
-      );
+      expect(builder.schema.tableForName("_ExtensiveModel")!.uniqueColumnSet, [
+        "autoincrementValue",
+        "indexedValue",
+        "startDate",
+      ]);
     });
 
     test("Adding column", () {
@@ -238,18 +240,13 @@ void main() {
         expect(e.message, contains("May not change"));
       }
 
-      builder.alterColumn(
-        "_LoadedItem",
-        "someIndexedThing",
-        (c) {
-          c.isIndexed = false;
-          c.isNullable = true;
-          c.isUnique = true;
-          c.defaultValue = "'bar'";
-          c.deleteRule = DeleteRule.setDefault;
-        },
-        unencodedInitialValue: "'foo'",
-      );
+      builder.alterColumn("_LoadedItem", "someIndexedThing", (c) {
+        c.isIndexed = false;
+        c.isNullable = true;
+        c.isUnique = true;
+        c.defaultValue = "'bar'";
+        c.deleteRule = DeleteRule.setDefault;
+      }, unencodedInitialValue: "'foo'");
 
       expect(
         builder.schema
@@ -319,10 +316,7 @@ class _LoadedItem {
   @Column(indexed: true)
   String? someIndexedThing;
 
-  @Relate(
-    Symbol('loadedItems'),
-    onDelete: DeleteRule.restrict,
-  )
+  @Relate(Symbol('loadedItems'), onDelete: DeleteRule.restrict)
   Container? container;
 
   LoadedSingleItem? loadedSingleItem;
