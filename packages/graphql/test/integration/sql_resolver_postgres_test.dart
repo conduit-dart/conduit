@@ -2,12 +2,12 @@
 //
 // Tagged `integration` so the default `dart test` run skips it; the
 // CI matrix that has Postgres available runs it via
-// `dart test -t integration`. Locally:
+// `dart test -P integration`. Locally:
 //
 //   docker compose -f ../../ci/docker-compose.yaml up -d
 //   POSTGRES_HOST=localhost POSTGRES_PORT=15432 \
 //     POSTGRES_USER=conduit_test_user POSTGRES_PASSWORD=conduit! \
-//     POSTGRES_DB=conduit_test_db dart test -t integration
+//     POSTGRES_DB=conduit_test_db dart test -P integration
 //
 // Per the dialect-annotation contract from #267, this file is gated
 // to the postgres dialect — running it under SQLite or MySQL would
