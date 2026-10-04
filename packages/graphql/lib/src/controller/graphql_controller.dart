@@ -97,7 +97,17 @@ void _ensureCodecRegistered() {
 ///     errored).
 ///   * GET-of-mutation is HTTP 405.
 ///   * Malformed JSON body or malformed `?variables=` is HTTP 400.
-class GraphQLController extends ResourceController {
+class GraphQLController(
+  /// The schema served at this endpoint.
+  ///
+  /// In G1 this is hand-written by the caller. G2 will introduce a
+  /// derivation path that walks `ManagedDataModel` and emits a schema
+  /// directly.
+  final GraphQLSchema schema, {
+
+  /// Per-request DataLoaderRegistry factory. See ctor docs.
+  final DataLoaderRegistry Function()? dataLoaderRegistry,
+}) extends ResourceController {
   /// Builds a controller that serves [schema] over GraphQL-over-HTTP.
   ///
   /// [dataLoaderRegistry] is an optional zero-arg factory invoked once
@@ -108,24 +118,14 @@ class GraphQLController extends ResourceController {
   /// so its loader caches don't leak across requests. When null,
   /// resolvers fall back to per-call SQL fetches with no batching —
   /// safe but quadratic for nested queries.
-  new(this.schema, {this.dataLoaderRegistry}) : _graphql = GraphQL(schema) {
+  this {
     _ensureCodecRegistered();
     acceptedContentTypes = [_applicationJson, _applicationGraphQL];
   }
 
-  /// The schema served at this endpoint.
-  ///
-  /// In G1 this is hand-written by the caller. G2 will introduce a
-  /// derivation path that walks `ManagedDataModel` and emits a schema
-  /// directly.
-  final GraphQLSchema schema;
-
-  /// Per-request DataLoaderRegistry factory. See ctor docs.
-  final DataLoaderRegistry Function()? dataLoaderRegistry;
-
   /// The execution engine. Constructed once per controller-runtime so
   /// schema introspection caches survive across requests.
-  final GraphQL _graphql;
+  final GraphQL _graphql = GraphQL(schema);
 
   // -- POST --------------------------------------------------------------
 
@@ -503,10 +503,7 @@ class _GqlError {
   }
 }
 
-class _GqlLocation {
-  new(this.line, this.column);
-  final int line;
-  final int column;
+class _GqlLocation(final int line, final int column) {
   Map<String, int> toJson() => {'line': line, 'column': column};
 }
 

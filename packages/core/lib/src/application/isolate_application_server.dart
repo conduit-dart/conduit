@@ -5,14 +5,14 @@ import 'package:conduit_core/src/application/application.dart';
 import 'package:conduit_core/src/application/isolate_supervisor.dart';
 import 'package:logging/logging.dart';
 
-class ApplicationIsolateServer extends ApplicationServer {
-  new(
-    Type channelType,
-    ApplicationOptions configuration,
-    int identifier,
-    this.supervisingApplicationPort, {
-    bool logToConsole = false,
-  }) : super(channelType, configuration, identifier) {
+class ApplicationIsolateServer(
+  Type channelType,
+  ApplicationOptions configuration,
+  int identifier,
+  var SendPort supervisingApplicationPort, {
+  bool logToConsole = false,
+}) extends ApplicationServer {
+  this : super(channelType, configuration, identifier) {
     if (logToConsole) {
       hierarchicalLoggingEnabled = true;
       logger.level = Level.ALL;
@@ -28,7 +28,6 @@ class ApplicationIsolateServer extends ApplicationServer {
     supervisingApplicationPort.send(supervisingReceivePort.sendPort);
   }
 
-  SendPort supervisingApplicationPort;
   late ReceivePort supervisingReceivePort;
 
   @override
@@ -98,8 +97,4 @@ class ApplicationInitialServerMessage {
   bool logToConsole = false;
 }
 
-class MessageHubMessage {
-  new(this.payload);
-
-  dynamic payload;
-}
+class MessageHubMessage(var dynamic payload);

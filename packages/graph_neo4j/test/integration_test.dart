@@ -28,9 +28,9 @@ class User extends GraphNode<User> {
   }
 }
 
-class Friend extends GraphEdge<User, User> {
-  new({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Friend'));
+class Friend({required super.from, required super.to})
+    extends GraphEdge<User, User> {
+  this : super(label: const GraphLabel.unchecked('Friend'));
 }
 
 void main() {

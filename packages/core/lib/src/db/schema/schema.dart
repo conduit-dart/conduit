@@ -152,10 +152,16 @@ class Schema {
 /// The difference between two compared [Schema]s.
 ///
 /// This class is used for comparing schemas for validation and migration.
-class SchemaDifference {
+class SchemaDifference(
+  /// The 'expected' schema.
+  final Schema expectedSchema,
+
+  /// The 'actual' schema.
+  final Schema actualSchema,
+) {
   /// Creates a new instance that represents the difference between [expectedSchema] and [actualSchema].
   ///
-  new(this.expectedSchema, this.actualSchema) {
+  this {
     for (final expectedTable in expectedSchema.tables) {
       final actualTable = actualSchema[expectedTable.name!];
       if (actualTable == null) {
@@ -176,12 +182,6 @@ class SchemaDifference {
       }),
     );
   }
-
-  /// The 'expected' schema.
-  final Schema expectedSchema;
-
-  /// The 'actual' schema.
-  final Schema actualSchema;
 
   /// Whether or not [expectedSchema] and [actualSchema] have differences.
   ///

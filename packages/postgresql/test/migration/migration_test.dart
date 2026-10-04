@@ -1308,9 +1308,7 @@ Future<List<String>> applyDifference(
   return commands;
 }
 
-class TableDefinition {
-  new(this.name);
-
+class TableDefinition(final String name) {
   static Future<Map<String, TableDefinition>> get(
     PostgreSQLPersistentStore store,
     List<String> tableNames,
@@ -1385,7 +1383,6 @@ class TableDefinition {
     expect(col.deleteRule, deleteRule, reason: "$name delete rule");
   }
 
-  final String name;
   late List<ColumnDefinition> columns;
   late bool isValid;
 

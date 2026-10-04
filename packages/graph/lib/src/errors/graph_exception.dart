@@ -23,9 +23,8 @@ sealed class GraphException implements Exception {
 
 /// Connectivity / handshake / transport-level failure talking to the
 /// graph backend.
-final class GraphConnectionError extends GraphException {
-  new(super.message, {super.cause});
-}
+final class GraphConnectionError(super.message, {super.cause})
+    extends GraphException;
 
 /// A backend-level constraint was violated (uniqueness, required-key,
 /// etc). Note that conduit_graph itself does not enforce a schema —
@@ -36,9 +35,8 @@ final class GraphConstraintViolation extends GraphException {
 
 /// A node, edge, or relationship endpoint referenced by a query was
 /// not found.
-final class GraphNotFoundError extends GraphException {
-  new(super.message, {super.cause});
-}
+final class GraphNotFoundError(super.message, {super.cause})
+    extends GraphException;
 
 /// The query was malformed or referenced a node/edge type that the
 /// context does not know about.

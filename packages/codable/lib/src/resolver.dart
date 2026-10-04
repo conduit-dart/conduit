@@ -1,10 +1,6 @@
 import 'package:conduit_codable/src/keyed_archive.dart';
 
-class ReferenceResolver {
-  new(this.document);
-
-  final KeyedArchive document;
-
+class ReferenceResolver(final KeyedArchive document) {
   /// resolves a reference of the form '#/yyy/xxx'
   /// To the value stored in a document
   ///

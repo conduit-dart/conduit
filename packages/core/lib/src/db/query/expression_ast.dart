@@ -36,9 +36,7 @@ import 'package:conduit_core/src/db/query/predicate.dart';
 /// keep the visitor open for downstream extensions that may want to
 /// add custom expression types without forking the framework. The
 /// visitor exposes a fallback hook for unknown node kinds.
-abstract class SqlExpression {
-  const new();
-
+abstract class const SqlExpression() {
   /// Dispatch to a visitor. Concrete subclasses call the visitor's
   /// matching `visitX` method.
   T accept<T>(SqlExpressionVisitor<T> visitor);
@@ -67,11 +65,7 @@ class ColumnExpression extends SqlExpression {
 /// emitted via this node (e.g., the numeric literal bounds for
 /// page-cursor predicates) — any user-supplied value goes through
 /// [ParameterExpression] instead so the dialect can bind it safely.
-class LiteralExpression extends SqlExpression {
-  const new(this.sql);
-
-  final String sql;
-
+class const LiteralExpression(final String sql) extends SqlExpression {
   @override
   T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLiteral(this);
 }
@@ -104,13 +98,11 @@ class ParameterExpression extends SqlExpression {
 /// `<=`, `>=`, `!=`. Pattern-match operators (`LIKE`, `ILIKE`) live
 /// on [LikeExpression] so the dialect can swap operator + escape
 /// behavior in one place.
-class BinaryOpExpression extends SqlExpression {
-  const new(this.op, this.left, this.right);
-
-  final String op;
-  final SqlExpression left;
-  final SqlExpression right;
-
+class const BinaryOpExpression(
+  final String op,
+  final SqlExpression left,
+  final SqlExpression right,
+) extends SqlExpression {
   @override
   T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitBinaryOp(this);
 }
@@ -135,14 +127,12 @@ class UnaryOpExpression extends SqlExpression {
 /// (Postgres tolerates redundant parens; SQLite and MySQL do too —
 /// but the visitor still emits explicit parens so it stays correct
 /// when a future dialect doesn't).
-class LogicalExpression extends SqlExpression {
-  const new(this.op, this.children);
-
+class const LogicalExpression(
   /// One of `AND` / `OR`. Stored as the literal SQL token so dialects
   /// don't have to translate.
-  final String op;
-  final List<SqlExpression> children;
-
+  final String op,
+  final List<SqlExpression> children,
+) extends SqlExpression {
   @override
   T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLogical(this);
 }
@@ -168,23 +158,16 @@ class IsNullExpression extends SqlExpression {
 /// or its case-insensitive sibling. The dialect chooses the operator
 /// (`LIKE` / `ILIKE` / `LIKE BINARY`) and applies escape rules to
 /// `pattern` if needed.
-class LikeExpression extends SqlExpression {
-  const new(
-    this.target,
-    this.pattern, {
-    required this.caseSensitive,
-    this.negated = false,
-  });
-
-  final SqlExpression target;
+class const LikeExpression(
+  final SqlExpression target,
 
   /// Should already be a [ParameterExpression] (or [LiteralExpression]
   /// for very specific tests). Wildcard escaping is the caller's
   /// responsibility — done before the AST is built.
-  final SqlExpression pattern;
-  final bool caseSensitive;
-  final bool negated;
-
+  final SqlExpression pattern, {
+  required final bool caseSensitive,
+  final bool negated = false,
+}) extends SqlExpression {
   @override
   T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitLike(this);
 }
@@ -213,14 +196,12 @@ class InExpression extends SqlExpression {
 /// high)`) because (a) `BETWEEN` is shorter and matches the existing
 /// PG output byte-for-byte, and (b) some dialects optimize it
 /// independently of the equivalent compound predicate.
-class BetweenExpression extends SqlExpression {
-  const new(this.target, this.low, this.high, {this.negated = false});
-
-  final SqlExpression target;
-  final SqlExpression low;
-  final SqlExpression high;
-  final bool negated;
-
+class const BetweenExpression(
+  final SqlExpression target,
+  final SqlExpression low,
+  final SqlExpression high, {
+  final bool negated = false,
+}) extends SqlExpression {
   @override
   T accept<T>(SqlExpressionVisitor<T> visitor) => visitor.visitBetween(this);
 }
@@ -274,17 +255,11 @@ abstract class SqlExpressionVisitor<T> {
 ///
 /// This is intentionally a value class without machinery — callers
 /// pass it straight to their persistent store's execute path.
-class RenderedExpression {
-  const new(
-    this.sql, {
-    this.parameters = const {},
-    this.positionalParameters = const [],
-  });
-
-  final String sql;
-  final Map<String, Object?> parameters;
-  final List<Object?> positionalParameters;
-
+class const RenderedExpression(
+  final String sql, {
+  final Map<String, Object?> parameters = const {},
+  final List<Object?> positionalParameters = const [],
+}) {
   /// Convert a [RenderedExpression] back into a legacy [QueryPredicate]
   /// for back-compat with the existing `sqlWhereClause`, `sqlJoin`,
   /// and friends. Named dialects round-trip cleanly; positional

@@ -13,11 +13,7 @@ import 'package:conduit_core/src/http/serializable.dart';
 import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_open_api/v3.dart';
 
-class ChannelRuntimeImpl extends ChannelRuntime {
-  new(this.type);
-
-  final ClassMirror type;
-
+class ChannelRuntimeImpl(final ClassMirror type) extends ChannelRuntime {
   static const _globalStartSymbol = #initializeApplication;
 
   @override
@@ -118,11 +114,8 @@ class ControllerRuntimeImpl extends ControllerRuntime {
   }
 }
 
-class SerializableRuntimeImpl extends SerializableRuntime {
-  new(this.type);
-
-  final ClassMirror type;
-
+class SerializableRuntimeImpl(final ClassMirror type)
+    extends SerializableRuntime {
   @override
   APISchemaObject documentSchema(APIDocumentContext context) {
     final mirror = type;

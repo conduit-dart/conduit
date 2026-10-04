@@ -1085,10 +1085,8 @@ class _ConstructorOverride {
   String? value;
 }
 
-class DefaultConstructorHasOptionalArgs
-    extends ManagedObject<_ConstructorTableDef> {
-  new({int? foo});
-}
+class DefaultConstructorHasOptionalArgs({int? foo})
+    extends ManagedObject<_ConstructorTableDef>;
 
 class _ConstructorTableDef {
   @primaryKey

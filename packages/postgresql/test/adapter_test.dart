@@ -164,12 +164,7 @@ void main() {
   });
 }
 
-class SocketProxy {
-  new(this.src, this.dest);
-
-  final int src;
-  final int dest;
-
+class SocketProxy(final int src, final int dest) {
   bool isEnabled = true;
 
   ServerSocket? _server;

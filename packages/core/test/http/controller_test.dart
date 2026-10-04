@@ -475,11 +475,7 @@ class OutlierChannel extends ApplicationChannel {
   }
 }
 
-class PrepareTailController extends Controller {
-  new(this.completer);
-
-  final Completer completer;
-
+class PrepareTailController(final Completer completer) extends Controller {
   @override
   void didAddToChannel() {
     completer.complete();

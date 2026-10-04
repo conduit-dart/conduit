@@ -157,13 +157,8 @@ class _ManifestKind {
   final String libraryExtension;
 }
 
-class _RuntimeBinding {
-  new({
-    required this.className,
-    required this.runtimeSuffix,
-    required this.libraryAssetPath,
-  });
-  final String className;
-  final String runtimeSuffix;
-  final String libraryAssetPath;
-}
+class _RuntimeBinding({
+  required final String className,
+  required final String runtimeSuffix,
+  required final String libraryAssetPath,
+});

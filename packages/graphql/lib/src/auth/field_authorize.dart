@@ -110,15 +110,13 @@ abstract class FieldAuthPolicy {
 /// is itself a unique handle. On the graph side we have no such object,
 /// so we synthesize one — the type and the property name together are
 /// unique within a single [GraphSchemaConfig].
-class GraphPropertyAuthKey {
-  const new(this.declaringType, this.propertyName);
-
+class const GraphPropertyAuthKey(
   /// Either a `GraphNode` or `GraphEdge` Dart [Type].
-  final Type declaringType;
+  final Type declaringType,
 
   /// Property name as declared in the [GraphSchemaConfig] entry.
-  final String propertyName;
-
+  final String propertyName,
+) {
   @override
   bool operator ==(Object other) =>
       other is GraphPropertyAuthKey &&

@@ -127,11 +127,7 @@ void main() {
   });
 }
 
-class TestException implements Exception {
-  new(this.message);
-
-  final String message;
-
+class TestException(final String message) implements Exception {
   @override
   String toString() => message;
 }

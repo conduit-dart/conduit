@@ -62,41 +62,37 @@ import 'sql_resolver_factory.dart';
 /// participate in that path without a deeper schema rewrite. The
 /// graph-side hook is therefore the [graphFactory] handle the
 /// builder pulls directly out of the resolver-hook set's owner.
-class ResolverHookSet {
-  new({
-    required this.attributeResolver,
-    required this.relationshipResolver,
-    required this.queryListResolver,
-    required this.queryByPkResolver,
-    this.graphFactory,
-  });
-
+class ResolverHookSet({
   /// Hook for an attribute field on a SQL `ManagedObject` projection.
   /// Mirrors [SqlResolverFactory.attributeResolverFor]'s signature.
-  final GraphQLFieldResolver<Object?, Object?>? Function(
+  required final GraphQLFieldResolver<Object?, Object?>? Function(
     ManagedAttributeDescription attr,
   )
-  attributeResolver;
+  attributeResolver,
 
   /// Hook for a relationship field on a SQL projection.
-  final GraphQLFieldResolver<Object?, Object?>? Function(
+  required final GraphQLFieldResolver<Object?, Object?>? Function(
     ManagedRelationshipDescription rel,
   )
-  relationshipResolver;
+  relationshipResolver,
 
   /// Hook for a Query-root list-all field for a SQL entity.
-  final GraphQLFieldResolver<Object?, Object?>? Function(ManagedEntity entity)
-  queryListResolver;
+  required final GraphQLFieldResolver<Object?, Object?>? Function(
+    ManagedEntity entity,
+  )
+  queryListResolver,
 
   /// Hook for a Query-root by-pk field for a SQL entity.
-  final GraphQLFieldResolver<Object?, Object?>? Function(ManagedEntity entity)
-  queryByPkResolver;
+  required final GraphQLFieldResolver<Object?, Object?>? Function(
+    ManagedEntity entity,
+  )
+  queryByPkResolver,
 
   /// Direct handle to the graph factory, exposed because
   /// [SchemaBuilder.fromGraphDataModel] inline-invokes graph resolvers
   /// during emission. Null when no graph store is configured.
-  final GraphResolverFactory? graphFactory;
-}
+  final GraphResolverFactory? graphFactory,
+});
 
 /// Umbrella that bundles a [SqlResolverFactory] and a
 /// [GraphResolverFactory], producing the [ResolverHookSet] consumed by

@@ -54,18 +54,19 @@ import 'package:conduit_graph/conduit_graph.dart';
 /// User code never instantiates this directly; the factory wires it
 /// up internally so the schema builder can route resolution by
 /// runtime [Type] alone.
-class _NodeDispatcher {
-  new({required this.list, required this.byId, required this.traverse});
-
-  final Future<List<GraphNode<dynamic>>> Function(Map<String, dynamic> args)
-  list;
-  final Future<GraphNode<dynamic>?> Function(Map<String, dynamic> args) byId;
-  final Future<List<GraphNode<dynamic>>> Function(
+class _NodeDispatcher({
+  required final Future<List<GraphNode<dynamic>>> Function(
+    Map<String, dynamic> args,
+  )
+  list,
+  required final Future<GraphNode<dynamic>?> Function(Map<String, dynamic> args)
+  byId,
+  required final Future<List<GraphNode<dynamic>>> Function(
     GraphNode<dynamic> from,
     Type edgeKind,
   )
-  traverse;
-}
+  traverse,
+});
 
 /// Lowers GraphQL field arguments to [GraphQuery] / traversal calls
 /// against a [GraphContext].

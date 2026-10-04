@@ -48,8 +48,7 @@ class _AtNamedDialect extends SqlDialect {
 }
 
 /// SQLite-shaped: `:name` placeholders, named bindings, default `LIKE`.
-class _ColonNamedDialect extends SqlDialect {
-  const new();
+class const _ColonNamedDialect() extends SqlDialect {
   @override
   String get name => 'named-colon';
   @override
@@ -81,11 +80,8 @@ class _PositionalDialect extends SqlDialect {
   String tableExistsQuery() => 'SELECT 1';
 }
 
-class _DialectStore extends DefaultPersistentStore {
-  new(this.dialect);
-  @override
-  final SqlDialect dialect;
-}
+class _DialectStore(@override final SqlDialect dialect)
+    extends DefaultPersistentStore;
 
 typedef _Shape = void Function(Query<GoldenBook> q);
 

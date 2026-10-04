@@ -79,11 +79,11 @@ abstract class MockServer<T> {
 ///           await nestMockServer.close();
 ///         });
 ///
-class MockHTTPServer extends MockServer<Request> {
-  new(this.port) : super();
-
+class MockHTTPServer(
   /// The port to listen on.
-  int port;
+  var int port,
+) extends MockServer<Request> {
+  this : super();
 
   /// The underlying [HttpServer] listening for requests.
   late HttpServer server;

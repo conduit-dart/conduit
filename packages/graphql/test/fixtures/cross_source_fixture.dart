@@ -37,9 +37,9 @@ class Profile extends GraphNode<Profile> {
   new() : super(labels: const [GraphLabel.unchecked('Profile')]);
 }
 
-class Friendship extends GraphEdge<Profile, Profile> {
-  new({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Friendship'));
+class Friendship({required super.from, required super.to})
+    extends GraphEdge<Profile, Profile> {
+  this : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;

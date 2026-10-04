@@ -11,12 +11,8 @@ import 'package:conduit_runtime/dev.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 /// Exceptions thrown by command line interfaces.
-class CLIException implements Exception {
-  new(this.message, {this.instructions});
-
-  final List<String>? instructions;
-  final String? message;
-
+class CLIException(final String? message, {final List<String>? instructions})
+    implements Exception {
   @override
   String toString() => message!;
 }

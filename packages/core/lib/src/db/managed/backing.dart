@@ -179,11 +179,7 @@ class ManagedAccessTrackingBacking extends ManagedBacking {
   }
 }
 
-class DocumentAccessTracker extends Document {
-  new(this.owner);
-
-  final KeyPath? owner;
-
+class DocumentAccessTracker(final KeyPath? owner) extends Document {
   @override
   dynamic operator [](dynamic keyOrIndex) {
     owner!.addDynamicElement(keyOrIndex);

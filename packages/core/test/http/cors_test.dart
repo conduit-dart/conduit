@@ -803,8 +803,8 @@ class CORSChannel extends ApplicationChannel with AuthValidator {
   }
 }
 
-class NoPolicyController extends ResourceController {
-  new() {
+class NoPolicyController() extends ResourceController {
+  this {
     policy = null;
   }
 
@@ -845,8 +845,8 @@ class DefaultPolicyController extends ResourceController {
   }
 }
 
-class RestrictiveNoCredsOriginController extends ResourceController {
-  new() {
+class RestrictiveNoCredsOriginController() extends ResourceController {
+  this {
     policy!.allowedOrigins = ["http://exclusive.com"];
     policy!.allowCredentials = false;
     policy!.exposedResponseHeaders = ["foobar"];
@@ -882,8 +882,8 @@ class RestrictiveOriginController extends ResourceController {
   }
 }
 
-class OptionsController extends ResourceController {
-  new() {
+class OptionsController() extends ResourceController {
+  this {
     policy = null;
   }
 
@@ -909,8 +909,8 @@ class SingleMethodController extends ResourceController {
   }
 }
 
-class AdditiveController extends ResourceController {
-  new() {
+class AdditiveController() extends ResourceController {
+  this {
     policy!.exposedResponseHeaders.add("X-Header");
   }
 

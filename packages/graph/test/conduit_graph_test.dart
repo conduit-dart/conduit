@@ -18,8 +18,8 @@ class User extends GraphNode<User> {
   set age(int? v) => this['age'] = v;
 }
 
-class Post extends GraphNode<Post> {
-  new({String? title}) : super(labels: [GraphLabel('Post')]) {
+class Post({String? title}) extends GraphNode<Post> {
+  this : super(labels: [GraphLabel('Post')]) {
     if (title != null) this['title'] = title;
   }
 
@@ -37,9 +37,9 @@ class Friend extends GraphEdge<User, User> {
   set since(DateTime? v) => this['since'] = v;
 }
 
-class Authored extends GraphEdge<User, Post> {
-  new({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Authored'));
+class Authored({required super.from, required super.to})
+    extends GraphEdge<User, Post> {
+  this : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 // ---------------------------------------------------------------------------

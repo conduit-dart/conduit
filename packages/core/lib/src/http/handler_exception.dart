@@ -1,9 +1,5 @@
 import 'package:conduit_core/src/http/http.dart';
 
-class HandlerException implements Exception {
-  new(this._response);
-
+class HandlerException(final Response _response) implements Exception {
   Response get response => _response;
-
-  final Response _response;
 }

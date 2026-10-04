@@ -8,9 +8,7 @@ import 'package:conduit_runtime/runtime.dart';
 /// Decodes [bytes] according to [contentType].
 ///
 /// See [RequestBody] for a concrete implementation.
-abstract class BodyDecoder {
-  new(Stream<List<int>> bodyByteStream) : _originalByteStream = bodyByteStream;
-
+abstract class BodyDecoder(Stream<List<int>> bodyByteStream) {
   /// The stream of bytes to decode.
   ///
   /// This stream is consumed during decoding.
@@ -66,7 +64,7 @@ abstract class BodyDecoder {
     return _bytes;
   }
 
-  final Stream<List<int>> _originalByteStream;
+  final Stream<List<int>> _originalByteStream = bodyByteStream;
   dynamic _decodedData;
   List<int>? _bytes;
 

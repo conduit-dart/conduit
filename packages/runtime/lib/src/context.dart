@@ -105,6 +105,4 @@ class RuntimeCollection {
 ///
 /// Annotate a type with the const instance of this type to prevent its
 /// compilation.
-class PreventCompilation {
-  const new();
-}
+class const PreventCompilation();

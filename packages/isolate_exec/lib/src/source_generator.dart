@@ -11,22 +11,14 @@ import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:conduit_isolate_exec/src/executable.dart';
 import 'package:path/path.dart';
 
-class SourceGenerator {
-  new(
-    this.executableType, {
-    this.imports = const [],
-    this.additionalTypes = const [],
-    this.additionalContents,
-  });
-
-  Type executableType;
-
+class SourceGenerator(
+  var Type executableType, {
+  final List<String> imports = const [],
+  final List<Type> additionalTypes = const [],
+  final String? additionalContents,
+}) {
   String get typeName =>
       MirrorSystem.getName(reflectType(executableType).simpleName);
-  final List<String> imports;
-  final String? additionalContents;
-  final List<Type> additionalTypes;
-
   Future<String> get scriptSource async {
     final typeSource = (await _getClass(executableType)).toSource();
     final builder = StringBuffer();

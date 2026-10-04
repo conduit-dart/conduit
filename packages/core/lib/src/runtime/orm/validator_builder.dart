@@ -6,11 +6,10 @@ import 'package:conduit_core/src/db/managed/validation/metadata.dart';
 import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_core/src/runtime/orm/property_builder.dart';
 
-class ValidatorBuilder {
-  new(this.property, this.metadata);
-
-  final PropertyBuilder property;
-  final Validate metadata;
+class ValidatorBuilder(
+  final PropertyBuilder property,
+  final Validate metadata,
+) {
   dynamic _state;
   late ManagedValidator _validator;
 

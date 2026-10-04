@@ -4,23 +4,14 @@ abstract class Argument {
   void addToParser(args.ArgParser parser);
 }
 
-class Flag implements Argument {
-  const new(
-    this.name, {
-    this.abbr,
-    this.help,
-    this.defaultsTo = false,
-    this.negatable = true,
-    this.hide = false,
-  });
-
-  final String name;
-  final String? abbr;
-  final String? help;
-  final bool defaultsTo;
-  final bool negatable;
-  final bool hide;
-
+class const Flag(
+  final String name, {
+  final String? abbr,
+  final String? help,
+  final bool defaultsTo = false,
+  final bool negatable = true,
+  final bool hide = false,
+}) implements Argument {
   @override
   void addToParser(args.ArgParser parser) {
     parser.addFlag(
@@ -70,29 +61,17 @@ class Option implements Argument {
   }
 }
 
-class MultiOption implements Argument {
-  const new(
-    this.name, {
-    this.abbr,
-    this.help,
-    this.valueHelp,
-    this.allowed,
-    this.allowedHelp,
-    this.defaultsTo,
-    this.hide = false,
-    this.splitsCommas = true,
-  });
-
-  final String name;
-  final String? abbr;
-  final String? help;
-  final Iterable<String>? allowed;
-  final String? valueHelp;
-  final Map<String, String>? allowedHelp;
-  final Iterable<String>? defaultsTo;
-  final bool splitsCommas;
-  final bool hide;
-
+class const MultiOption(
+  final String name, {
+  final String? abbr,
+  final String? help,
+  final String? valueHelp,
+  final Iterable<String>? allowed,
+  final Map<String, String>? allowedHelp,
+  final Iterable<String>? defaultsTo,
+  final bool hide = false,
+  final bool splitsCommas = true,
+}) implements Argument {
   @override
   void addToParser(args.ArgParser parser) {
     parser.addMultiOption(

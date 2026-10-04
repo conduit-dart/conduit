@@ -100,11 +100,7 @@ class ItemController extends ResourceController {
 
 /// Exercises transaction checkout: on a pooled store each request's
 /// transaction holds a dedicated connection while it runs.
-class TxController extends ResourceController {
-  new(this.context);
-
-  final ManagedContext context;
-
+class TxController(final ManagedContext context) extends ResourceController {
   @Operation.get()
   Future<Response> insertAndCount() async {
     final int count = await context.transaction((t) async {

@@ -32,10 +32,15 @@ import 'graph_label.dart';
 /// The generic `T` lets the query DSL (`GraphQuery<T>`) carry the
 /// concrete node type through builder calls, the same way
 /// `ManagedObject<T>` flows through `Query<T>`.
-abstract class GraphNode<T extends GraphNode<T>> {
-  new({required List<GraphLabel> labels, GraphBacking? backing, this.id})
-    : labels = List.unmodifiable(labels),
-      backing = backing ?? GraphMapBacking() {
+abstract class GraphNode<T extends GraphNode<T>>({
+  required List<GraphLabel> labels,
+  GraphBacking? backing,
+
+  /// The store-assigned id of this node, or `null` if it has not been
+  /// persisted. Backends are responsible for setting this on `create`.
+  var Object? id,
+}) {
+  this {
     if (labels.isEmpty) {
       throw ArgumentError.value(
         labels,
@@ -46,14 +51,10 @@ abstract class GraphNode<T extends GraphNode<T>> {
   }
 
   /// The labels attached to this node, in declaration order.
-  final List<GraphLabel> labels;
+  final List<GraphLabel> labels = List.unmodifiable(labels);
 
   /// The property backing — read/write goes through this.
-  final GraphBacking backing;
-
-  /// The store-assigned id of this node, or `null` if it has not been
-  /// persisted. Backends are responsible for setting this on `create`.
-  Object? id;
+  final GraphBacking backing = backing ?? GraphMapBacking();
 
   /// Convenience accessor — same as `backing.valueForProperty(name)`.
   Object? operator [](String name) => backing.valueForProperty(name);

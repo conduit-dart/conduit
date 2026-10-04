@@ -187,13 +187,11 @@ abstract class PredicateExpression {
   PredicateExpression get inverse;
 }
 
-class RangeExpression implements PredicateExpression {
-  const new(this.lhs, this.rhs, {this.within = true});
-
-  final bool within;
-  final dynamic lhs;
-  final dynamic rhs;
-
+class const RangeExpression(
+  final dynamic lhs,
+  final dynamic rhs, {
+  final bool within = true,
+}) implements PredicateExpression {
   @override
   PredicateExpression get inverse {
     return RangeExpression(lhs, rhs, within: !within);
@@ -211,12 +209,10 @@ class NullCheckExpression implements PredicateExpression {
   }
 }
 
-class SetMembershipExpression implements PredicateExpression {
-  const new(this.values, {this.within = true});
-
-  final List<dynamic> values;
-  final bool within;
-
+class const SetMembershipExpression(
+  final List<dynamic> values, {
+  final bool within = true,
+}) implements PredicateExpression {
   @override
   PredicateExpression get inverse {
     return SetMembershipExpression(values, within: !within);

@@ -147,11 +147,8 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
 /// Visitor base for positional-parameter dialects (`?` for MySQL).
 /// Each [ParameterExpression] appends to [positionalParameters] in
 /// SQL-string order; placeholders all render as `?`.
-class PositionalSqlExpressionVisitor extends SqlExpressionVisitor<String> {
-  new(this.dialect);
-
-  final SqlDialect dialect;
-
+class PositionalSqlExpressionVisitor(final SqlDialect dialect)
+    extends SqlExpressionVisitor<String> {
   /// Bound values, in the order they appear in the rendered SQL.
   final List<Object?> _positional = [];
 

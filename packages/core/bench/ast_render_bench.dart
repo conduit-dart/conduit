@@ -33,8 +33,7 @@ class _NamedDialect extends SqlDialect {
   String tableExistsQuery() => 'SELECT 1';
 }
 
-class _PositionalDialect extends SqlDialect {
-  const new();
+class const _PositionalDialect() extends SqlDialect {
   @override
   String get name => 'positional-bench';
   @override

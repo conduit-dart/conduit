@@ -11,8 +11,8 @@ import 'package:conduit_graph/conduit_graph.dart';
 import 'package:conduit_graph_neo4j/conduit_graph_neo4j.dart';
 import 'package:test/test.dart';
 
-class User extends GraphNode<User> {
-  new() : super(labels: [GraphLabel('User')]);
+class User() extends GraphNode<User> {
+  this : super(labels: [GraphLabel('User')]);
 }
 
 void main() {

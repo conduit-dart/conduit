@@ -3,8 +3,8 @@ import 'dart:mirrors';
 import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/intermediate_exception.dart';
 
-class MirrorTypeCodec {
-  new(this.type) {
+class MirrorTypeCodec(final TypeMirror type) {
+  this {
     if (type.isSubtypeOf(reflectType(Configuration))) {
       final klass = type as ClassMirror;
       final classHasDefaultConstructor = klass.declarations.values.any((dm) {
@@ -23,8 +23,6 @@ class MirrorTypeCodec {
       }
     }
   }
-
-  final TypeMirror type;
 
   dynamic _decodeValue(dynamic value) {
     if (type.isSubtypeOf(reflectType(int))) {
@@ -211,11 +209,8 @@ return map;
   }
 }
 
-class MirrorConfigurationProperty {
-  new(this.property) : codec = MirrorTypeCodec(property.type);
-
-  final VariableMirror property;
-  final MirrorTypeCodec codec;
+class MirrorConfigurationProperty(final VariableMirror property) {
+  final MirrorTypeCodec codec = MirrorTypeCodec(property.type);
 
   String get key => MirrorSystem.getName(property.simpleName);
   bool get isRequired => _isVariableRequired(property);

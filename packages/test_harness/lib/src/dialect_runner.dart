@@ -132,10 +132,7 @@ void skipIfDialectMismatch({
 /// Implementing as a real `Error` keeps the stack-trace reporting
 /// honest — the test will appear as "skipped" with a clear reason
 /// rather than as a passing-but-no-tests-ran group.
-class TestSkipped implements Exception {
-  new(this.reason);
-  final String reason;
-
+class TestSkipped(final String reason) implements Exception {
   @override
   String toString() => 'TestSkipped: $reason';
 }

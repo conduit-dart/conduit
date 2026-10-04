@@ -30,9 +30,7 @@ import 'package:conduit_core/conduit_core.dart';
 /// `ALTER TABLE` form; backends invoking actual column alterations
 /// against SQLite need to fall back to the "create temp + copy +
 /// rename" pattern, which the schema generator handles separately.
-class SqliteSqlDialect extends SqlDialect {
-  const new();
-
+class const SqliteSqlDialect() extends SqlDialect {
   @override
   String get name => 'sqlite';
 

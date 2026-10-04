@@ -180,9 +180,7 @@ class _TestModel {
   String? email;
 }
 
-class StringController extends QueryController<StringModel> {
-  new(super.context);
-
+class StringController(super.context) extends QueryController<StringModel> {
   @Operation.get("id")
   Future<Response> get(@Bind.path("id") String id) async {
     final comparisonMatcher =

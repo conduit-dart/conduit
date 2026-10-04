@@ -456,12 +456,10 @@ class Request implements RequestOrResponse {
   }
 }
 
-class HTTPStreamingException implements Exception {
-  new(this.underlyingException, this.trace);
-
-  dynamic underlyingException;
-  StackTrace trace;
-}
+class HTTPStreamingException(
+  var dynamic underlyingException,
+  var StackTrace trace,
+) implements Exception;
 
 class _Reference<T> {
   new(this.value);

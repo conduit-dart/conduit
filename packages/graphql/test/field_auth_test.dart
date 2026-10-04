@@ -123,10 +123,7 @@ void main() {
 
 Object? _passThroughResolver(Object? parent, Map<String, dynamic> args) => 'ok';
 
-class _Parent {
-  const new({this.isOwner = false});
-  final bool isOwner;
-}
+class const _Parent({final bool isOwner = false});
 
 class _FakeProfile;
 

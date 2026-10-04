@@ -242,11 +242,8 @@ class Application<T extends ApplicationChannel> {
 /// Thrown when an application encounters an exception during startup.
 ///
 /// Contains the original exception that halted startup.
-class ApplicationStartupException implements Exception {
-  new(this.originalException);
-
-  dynamic originalException;
-
+class ApplicationStartupException(var dynamic originalException)
+    implements Exception {
   @override
   String toString() => originalException.toString();
 }

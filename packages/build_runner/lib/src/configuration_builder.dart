@@ -288,16 +288,11 @@ ${validateBody.toString().trimRight()}
   }
 }
 
-class _ConfigAnalysis {
-  new({
-    required this.className,
-    required this.properties,
-    required this.requiredImportUris,
-  });
-  final String className;
-  final List<_ConfigProperty> properties;
-  final Set<String> requiredImportUris;
-}
+class _ConfigAnalysis({
+  required final String className,
+  required final List<_ConfigProperty> properties,
+  required final Set<String> requiredImportUris,
+});
 
 class _ConfigProperty {
   new({

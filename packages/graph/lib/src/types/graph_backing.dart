@@ -35,11 +35,8 @@ abstract class GraphBacking {
 /// properties in a `LinkedHashMap` so iteration order is stable
 /// (insertion order) — matters for renderers that emit deterministic
 /// query strings.
-class GraphMapBacking implements GraphBacking {
-  new([Map<String, Object?>? initial])
-    : _contents = <String, Object?>{...?initial};
-
-  final Map<String, Object?> _contents;
+class GraphMapBacking([Map<String, Object?>? initial]) implements GraphBacking {
+  final Map<String, Object?> _contents = <String, Object?>{...?initial};
 
   @override
   Map<String, Object?> get contents => _contents;

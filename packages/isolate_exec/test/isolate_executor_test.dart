@@ -122,9 +122,7 @@ class AdditionalContents { int get id => 10; }
   });
 }
 
-class SimpleReturner extends Executable {
-  new(super.message);
-
+class SimpleReturner(super.message) extends Executable {
   @override
   Future<dynamic> execute() async {
     log("hello");
@@ -147,9 +145,7 @@ abstract class SomeObjectBaseClass {
   String get id;
 }
 
-class InPackage extends Executable<Map<String, String>> {
-  new(super.message);
-
+class InPackage(super.message) extends Executable<Map<String, String>> {
   @override
   Future<Map<String, String>> execute() async {
     final SomeObjectBaseClass def = instanceOf(
@@ -185,9 +181,7 @@ class Streamer extends Executable {
   }
 }
 
-class Thrower extends Executable {
-  new(super.message);
-
+class Thrower(super.message) extends Executable {
   @override
   Future<dynamic> execute() async {
     throw StateError('thrower-error');

@@ -232,8 +232,10 @@ class _Constructor {
   String? name;
 }
 
-class Constructor extends ManagedObject<_Constructor> implements _Constructor {
-  new() {
+class Constructor()
+    extends ManagedObject<_Constructor>
+    implements _Constructor {
+  this {
     name = "Bob";
   }
 }

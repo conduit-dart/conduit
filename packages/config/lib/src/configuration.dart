@@ -205,15 +205,13 @@ class ConfigurationException {
 }
 
 /// Thrown when [Configuration] subclass is invalid and requires a change in code.
-class ConfigurationError {
-  new(this.type, this.message);
-
+class ConfigurationError(
   /// The type of [Configuration] in which this error appears in.
-  final Type type;
+  final Type type,
 
   /// The reason for the error.
-  String message;
-
+  var String message,
+) {
   @override
   String toString() {
     return "Invalid configuration type '$type'. $message";

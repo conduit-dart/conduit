@@ -2,9 +2,9 @@ import 'package:conduit_codable/conduit_codable.dart';
 import 'package:conduit_open_api/src/object.dart';
 
 /// Represents a metadata for an API in the OpenAPI specification.
-class APIInfo extends APIObject {
+class APIInfo() extends APIObject {
   /// Creates empty metadata for specification.
-  new();
+  this;
 
   String title = "API";
   String? description = "Description";
@@ -66,9 +66,7 @@ class APIContact extends APIObject {
 }
 
 /// Represents a copyright/open source license in the OpenAPI specification.
-class APILicense extends APIObject {
-  new();
-
+class APILicense() extends APIObject {
   @override
   void decode(KeyedArchive object) {
     super.decode(object);

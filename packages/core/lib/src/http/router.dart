@@ -16,19 +16,18 @@ import 'package:conduit_open_api/v3.dart';
 ///
 /// Unlike most [Controller]s, a [Router] may have multiple controllers it sends requests to. In most applications,
 /// a [Router] is the [ApplicationChannel.entryPoint].
-class Router extends Controller {
+class Router({String? basePath, Future Function(Request)? notFoundHandler})
+    extends Controller {
   /// Creates a new [Router].
-  new({String? basePath, Future Function(Request)? notFoundHandler})
-    : _unmatchedController = notFoundHandler,
-      _basePathSegments =
-          basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
+  this {
     policy?.allowCredentials = false;
   }
 
   final _RootNode _root = _RootNode();
   final List<_RouteController> _routeControllers = [];
-  final List<String> _basePathSegments;
-  final Function(Request)? _unmatchedController;
+  final List<String> _basePathSegments =
+      basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [];
+  final Function(Request)? _unmatchedController = notFoundHandler;
 
   /// A prefix for all routes on this instance.
   ///

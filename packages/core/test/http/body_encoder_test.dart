@@ -304,8 +304,7 @@ class ByteCodec extends Codec<dynamic, List<int>> {
   Converter<List<int>, dynamic> get decoder => throw UnimplementedError();
 }
 
-class ByteEncoder extends Converter<String, List<int>> {
-  const new();
+class const ByteEncoder() extends Converter<String, List<int>> {
   @override
   List<int> convert(String object) => utf8.encode(object);
 }
@@ -330,8 +329,7 @@ class BadDataCodec extends Codec {
   Converter get decoder => throw UnimplementedError();
 }
 
-class BadDataEncoder extends Converter<String, int> {
-  const new();
+class const BadDataEncoder() extends Converter<String, int> {
   @override
   int convert(String object) => 1;
 }

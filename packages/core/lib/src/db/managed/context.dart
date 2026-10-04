@@ -166,16 +166,16 @@ class ManagedContext implements APIComponentDocumenter {
 ///
 /// When thrown in a transaction, it will cancel an in-progress transaction and rollback
 /// any changes it has made.
-class Rollback {
-  /// Default constructor, takes a [reason] object that can be anything.
-  ///
-  /// The parameter [reason] is made available on the [Rollback] rethrown by
-  /// [ManagedContext.transaction] when this instance is thrown.
-  new(this.reason);
-
+class Rollback(
   /// The reason this rollback occurred.
   ///
   /// This value is available on the [Rollback] rethrown from [ManagedContext.transaction]
   /// when this instance is thrown.
-  final String reason;
+  final String reason,
+) {
+  /// Default constructor, takes a [reason] object that can be anything.
+  ///
+  /// The parameter [reason] is made available on the [Rollback] rethrown by
+  /// [ManagedContext.transaction] when this instance is thrown.
+  this;
 }

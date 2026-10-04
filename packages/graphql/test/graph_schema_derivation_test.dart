@@ -261,8 +261,8 @@ void main() {
 
 // -- Helpers ----------------------------------------------------------------
 
-class _NodeA extends GraphNode<_NodeA> {
-  new() : super(labels: const [GraphLabel.unchecked('Thing')]);
+class _NodeA() extends GraphNode<_NodeA> {
+  this : super(labels: const [GraphLabel.unchecked('Thing')]);
 }
 
 class _NodeB extends GraphNode<_NodeB> {

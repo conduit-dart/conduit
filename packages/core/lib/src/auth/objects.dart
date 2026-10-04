@@ -518,8 +518,8 @@ class AuthScope {
   String toString() => _scopeString;
 }
 
-class _AuthScopeSegment {
-  new(String segment) {
+class _AuthScopeSegment(String segment) {
+  this {
     final split = segment.split(".");
     if (split.length == 2) {
       name = split.first;

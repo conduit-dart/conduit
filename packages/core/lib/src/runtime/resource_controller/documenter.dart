@@ -39,11 +39,9 @@ APISchemaObject? getSchemaObjectReference(
   return null;
 }
 
-class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
-  new(this.runtime);
-
-  final ResourceControllerRuntimeImpl runtime;
-
+class ResourceControllerDocumenterImpl(
+  final ResourceControllerRuntimeImpl runtime,
+) extends ResourceControllerDocumenter {
   @override
   void documentComponents(ResourceController rc, APIDocumentContext context) {
     for (final b in runtime.operations) {

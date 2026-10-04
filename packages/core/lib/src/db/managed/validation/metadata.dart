@@ -49,11 +49,7 @@ class ValidationContext {
 ///
 /// If you override [Validate.compile], throw errors of this type if a validator
 /// is applied to an invalid property.
-class ValidateCompilationError extends Error {
-  new(this.reason);
-
-  final String reason;
-}
+class ValidateCompilationError(final String reason) extends Error;
 
 /// Add as metadata to persistent properties to validate their values before insertion or updating.
 ///

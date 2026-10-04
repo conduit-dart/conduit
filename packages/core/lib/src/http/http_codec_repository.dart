@@ -206,9 +206,7 @@ class _FormCodec extends Codec<Map<String, dynamic>?, dynamic> {
   Converter<String, Map<String, dynamic>> get decoder => const _FormDecoder();
 }
 
-class _FormEncoder extends Converter<Map<String, dynamic>, String> {
-  const new();
-
+class const _FormEncoder() extends Converter<Map<String, dynamic>, String> {
   @override
   String convert(Map<String, dynamic> data) {
     return data.keys.map((k) => _encodePair(k, data[k])).join("&");

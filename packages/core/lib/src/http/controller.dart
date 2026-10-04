@@ -435,11 +435,9 @@ class _ControllerRecycler<T> extends Controller {
 }
 
 @PreventCompilation()
-class _FunctionController extends Controller {
-  new(this._handler);
-
-  final FutureOr<RequestOrResponse?> Function(Request) _handler;
-
+class _FunctionController(
+  final FutureOr<RequestOrResponse?> Function(Request) _handler,
+) extends Controller {
   @override
   FutureOr<RequestOrResponse?> handle(Request request) {
     return _handler(request);

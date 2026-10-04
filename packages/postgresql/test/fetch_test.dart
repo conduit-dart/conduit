@@ -528,8 +528,13 @@ void main() {
   });
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {
-  new({String? name, String? email}) {
+// `name`/`email` are ORM-backed properties inherited via `implements
+// _TestModel`; declaring parameters would add real fields that shadow them.
+// ignore: use_declaring_parameters
+class TestModel({String? name, String? email})
+    extends ManagedObject<_TestModel>
+    implements _TestModel {
+  this {
     this.name = name;
     this.email = email;
   }

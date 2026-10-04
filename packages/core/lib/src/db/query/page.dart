@@ -13,19 +13,17 @@ import 'package:conduit_core/src/db/query/query.dart';
 /// [boundingValue]. The rows returned will start at row N + 1, ignoring rows 0 - N.
 ///
 /// A query page should be used in conjunction with [Query.fetchLimit].
-class QueryPage {
-  new(this.order, this.propertyName, {this.boundingValue});
-
+class QueryPage(
   /// The order in which rows should be in before the page of values is searched for.
   ///
   /// The rows of a database table will be sorted according to this order on the column backing [propertyName] prior
   /// to this page being fetched.
-  QuerySortOrder order;
+  var QuerySortOrder order,
 
   /// The property of the model object to page on.
   ///
   /// This property must have an inherent order, such as an [int] or [DateTime]. The database must be able to compare the values of this property using comparison operator '<' and '>'.
-  String propertyName;
+  var String propertyName, {
 
   /// The point within an ordered set of result values in which rows will begin being fetched from.
   ///
@@ -36,5 +34,5 @@ class QueryPage {
   /// Rows with a value equal to this value are not included in the data set. This value may be null. When this value is null,
   /// the [boundingValue] is set to be the just outside the first or last element of the ordered database table, depending on the direction.
   /// This allows for query pages that fetch the first or last page of elements when the starting/ending value is not known.
-  dynamic boundingValue;
-}
+  var dynamic boundingValue,
+});

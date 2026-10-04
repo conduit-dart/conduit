@@ -5,9 +5,11 @@ import 'package:conduit_core/src/db/query/query.dart';
 /// Validates properties of [ManagedObject] before an insert or update [Query].
 ///
 /// Instances of this type are created during [ManagedDataModel] compilation.
-class ManagedValidator {
-  new(this.definition, this.state);
-
+class ManagedValidator(
+  /// The metadata associated with this instance.
+  final Validate definition,
+  final dynamic state,
+) {
   /// Executes all [Validate]s for [object].
   ///
   /// Validates the properties of [object] according to its validator annotations. Validators
@@ -89,11 +91,6 @@ class ManagedValidator {
 
   /// The property being validated.
   ManagedPropertyDescription? property;
-
-  /// The metadata associated with this instance.
-  final Validate definition;
-
-  final dynamic state;
 
   void validate(ValidationContext context, dynamic value) {
     definition.validate(context, value);

@@ -317,10 +317,7 @@ class _FakeSqlStore extends PersistentStore {
 /// Stand-in for `GraphPersistentStore`. Exposes `close()` because the
 /// umbrella invokes it dynamically — that contract is documented on
 /// [Persistence.close].
-class _FakeGraphStore {
-  new({this.throwOnClose = false});
-
-  final bool throwOnClose;
+class _FakeGraphStore({final bool throwOnClose = false}) {
   bool closed = false;
 
   Future<void> close() async {

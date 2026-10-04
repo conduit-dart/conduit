@@ -10,12 +10,12 @@ import 'package:conduit_core/src/db/managed/property_description.dart';
 import 'package:conduit_core/src/db/query/builders/column.dart';
 import 'package:conduit_core/src/db/query/builders/table.dart';
 
-class ColumnValueBuilder extends ColumnBuilder {
-  new(
-    TableBuilder super.table,
-    ManagedPropertyDescription super.property,
-    dynamic value,
-  ) {
+class ColumnValueBuilder(
+  TableBuilder super.table,
+  ManagedPropertyDescription super.property,
+  dynamic value,
+) extends ColumnBuilder {
+  this {
     this.value = table!.dialect.encodeValue(
       convertValueForStorage(value),
       property!.type!.kind,

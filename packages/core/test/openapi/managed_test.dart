@@ -410,8 +410,6 @@ class BindManagedObjectController extends ResourceController {
   }
 }
 
-class MOCSubclass extends ManagedObjectController<Model1> {
-  new(super.ctx);
-}
+class MOCSubclass(super.ctx) extends ManagedObjectController<Model1>;
 
 enum MOEnum { case1, case2 }

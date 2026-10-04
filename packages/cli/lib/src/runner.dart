@@ -8,8 +8,8 @@ import 'package:conduit/src/commands/document.dart';
 import 'package:conduit/src/commands/serve.dart';
 import 'package:conduit/src/commands/setup.dart';
 
-class Runner extends CLICommand {
-  new() {
+class Runner() extends CLICommand {
+  this {
     registerCommand(CLITemplateCreator());
     registerCommand(CLIDatabase());
     registerCommand(CLIServer());

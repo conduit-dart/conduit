@@ -41,10 +41,8 @@ class _SingleEqBench extends BenchmarkBase {
 // and `.and(...)` wraps the children in a `LogicalExpression('AND', ...)`.
 // ---------------------------------------------------------------------------
 
-class _AndChainBench extends BenchmarkBase {
-  new(this.terms) : super('predicate: $terms-term AND');
-  final int terms;
-
+class _AndChainBench(final int terms) extends BenchmarkBase {
+  this : super('predicate: $terms-term AND');
   @override
   void run() {
     final preds = <QueryPredicate>[];
@@ -104,10 +102,8 @@ class _MixedAndOrBench extends BenchmarkBase {
 // `ParameterExpression`s laid out under a single `InExpression`.
 // ---------------------------------------------------------------------------
 
-class _InListBench extends BenchmarkBase {
-  new(this.size) : super('predicate: IN($size)');
-  final int size;
-
+class _InListBench(final int size) extends BenchmarkBase {
+  this : super('predicate: IN($size)');
   @override
   void run() {
     final values = <SqlExpression>[];

@@ -139,11 +139,7 @@ class ManagedDataModel extends Object implements APIComponentDocumenter {
 }
 
 /// Thrown when a [ManagedDataModel] encounters an error.
-class ManagedDataModelError extends Error {
-  new(this.message);
-
-  final String message;
-
+class ManagedDataModelError(final String message) extends Error {
   @override
   String toString() {
     return "Data Model Error: $message";

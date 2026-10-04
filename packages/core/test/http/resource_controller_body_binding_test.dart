@@ -366,8 +366,8 @@ class MapController extends ResourceController {
   }
 }
 
-class ByteListController extends ResourceController {
-  new() {
+class ByteListController() extends ResourceController {
+  this {
     acceptedContentTypes = [ContentType("application", "octet-stream")];
   }
 

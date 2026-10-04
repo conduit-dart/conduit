@@ -1,8 +1,6 @@
 import 'package:matcher/matcher.dart';
 
-class NotPresentMatcher extends Matcher {
-  const new();
-
+class const NotPresentMatcher() extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     // Always returns false, since if it is being evaluated, then the value is present

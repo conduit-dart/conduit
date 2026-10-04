@@ -59,12 +59,8 @@ class App extends ApplicationChannel {
   }
 }
 
-class UserController extends ResourceController {
-  new(this.context, this.authServer);
-
-  final ManagedContext? context;
-  final AuthServer authServer;
-
+class UserController(final ManagedContext? context, final AuthServer authServer)
+    extends ResourceController {
   @Operation.get()
   Future<Response> getUsers() async {
     final query = Query<User>(context!);

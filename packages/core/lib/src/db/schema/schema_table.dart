@@ -303,19 +303,17 @@ class SchemaTableDifference {
 }
 
 /// Difference between two [SchemaTable.uniqueColumnSet]s.
-class SchemaTableUniqueSetDifference {
-  new(SchemaTable expectedTable, SchemaTable actualTable)
-    : expectedColumnNames = expectedTable.uniqueColumnSet ?? [],
-      actualColumnNames = actualTable.uniqueColumnSet ?? [],
-      _tableName = actualTable.name;
-
+class SchemaTableUniqueSetDifference(
+  SchemaTable expectedTable,
+  SchemaTable actualTable,
+) {
   /// The expected set of unique column names.
-  final List<String> expectedColumnNames;
+  final List<String> expectedColumnNames = expectedTable.uniqueColumnSet ?? [];
 
   /// The actual set of unique column names.
-  final List<String> actualColumnNames;
+  final List<String> actualColumnNames = actualTable.uniqueColumnSet ?? [];
 
-  final String? _tableName;
+  final String? _tableName = actualTable.name;
 
   /// Whether or not [expectedColumnNames] and [actualColumnNames] are equivalent.
   bool get hasDifferences {

@@ -109,8 +109,8 @@ class TestToken implements AuthToken, AuthCode {
   }
 }
 
-class InMemoryAuthStorage extends AuthServerDelegate {
-  new() {
+class InMemoryAuthStorage() extends AuthServerDelegate {
+  this {
     reset();
   }
 

@@ -53,19 +53,22 @@ abstract class AuthCodeControllerDelegate {
 ///         .link(() => new AuthCodeController(authServer));
 ///
 @Deprecated('Use AuthRedirectController instead.')
-class AuthCodeController extends ResourceController {
+class AuthCodeController(
+  /// A reference to the [AuthServer] used to grant authorization codes.
+  final AuthServer authServer, {
+
+  /// Renders an HTML login form.
+  final AuthCodeControllerDelegate? delegate,
+}) extends ResourceController {
   /// Creates a new instance of an [AuthCodeController].
   ///
   /// [authServer] is the required authorization server. If [delegate] is provided, this controller will return a login page for all GET requests.
   @Deprecated('Use AuthRedirectController instead.')
-  new(this.authServer, {this.delegate}) {
+  this {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];
   }
-
-  /// A reference to the [AuthServer] used to grant authorization codes.
-  final AuthServer authServer;
 
   /// A randomly generated value the client can use to verify the origin of the redirect.
   ///
@@ -84,9 +87,6 @@ class AuthCodeController extends ResourceController {
   /// This must be a valid client ID according to [authServer].\
   @Bind.query("client_id")
   String? clientID;
-
-  /// Renders an HTML login form.
-  final AuthCodeControllerDelegate? delegate;
 
   /// Returns an HTML login form.
   ///

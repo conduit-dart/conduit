@@ -11,8 +11,8 @@ class User extends GraphNode<User> {
   }
 }
 
-class Post extends GraphNode<Post> {
-  new() : super(labels: [GraphLabel('Post')]);
+class Post() extends GraphNode<Post> {
+  this : super(labels: [GraphLabel('Post')]);
 }
 
 class Friend extends GraphEdge<User, User> {
@@ -20,9 +20,9 @@ class Friend extends GraphEdge<User, User> {
     : super(label: const GraphLabel.unchecked('Friend'));
 }
 
-class Authored extends GraphEdge<User, Post> {
-  new({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Authored'));
+class Authored({required super.from, required super.to})
+    extends GraphEdge<User, Post> {
+  this : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 void main() {

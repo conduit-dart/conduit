@@ -355,11 +355,7 @@ class NumberEmitter extends Controller {
   }
 }
 
-class PrepareTailController extends Controller {
-  new(this.completer);
-
-  final Completer completer;
-
+class PrepareTailController(final Completer completer) extends Controller {
   @override
   void didAddToChannel() {
     completer.complete();

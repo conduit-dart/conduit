@@ -538,11 +538,10 @@ ${applySrc.toString().trimRight()}
   }
 }
 
-class _BindMeta {
-  new({required this.bindingType, required this.name});
-  final String bindingType;
-  final String? name;
-}
+class _BindMeta({
+  required final String bindingType,
+  required final String? name,
+});
 
 class _OperationMeta {
   new({required this.httpMethod, required this.pathVariables});
@@ -550,20 +549,13 @@ class _OperationMeta {
   final List<String> pathVariables;
 }
 
-class _Binding {
-  new({
-    required this.symbolName,
-    required this.bind,
-    required this.type,
-    required this.isRequired,
-    required this.defaultValueSource,
-  });
-  final String symbolName;
-  final _BindMeta bind;
-  final DartType type;
-  final bool isRequired;
-  final String defaultValueSource;
-}
+class _Binding({
+  required final String symbolName,
+  required final _BindMeta bind,
+  required final DartType type,
+  required final bool isRequired,
+  required final String defaultValueSource,
+});
 
 class _OperationMethod {
   new({

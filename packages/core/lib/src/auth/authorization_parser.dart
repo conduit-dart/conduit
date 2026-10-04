@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-abstract class AuthorizationParser<T> {
-  const new();
-
+abstract class const AuthorizationParser<T>() {
   T parse(String authorizationHeader);
 }
 
@@ -50,10 +48,8 @@ class AuthBasicCredentials {
 }
 
 /// Parses a Basic Authorization header.
-class AuthorizationBasicParser
+class const AuthorizationBasicParser()
     extends AuthorizationParser<AuthBasicCredentials> {
-  const new();
-
   /// Returns a [AuthBasicCredentials] containing the username and password
   /// base64 encoded in [authorizationHeader]. For example, if the input to this method
   /// was 'Basic base64String' it would decode the base64String

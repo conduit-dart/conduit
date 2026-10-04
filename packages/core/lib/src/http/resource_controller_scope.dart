@@ -32,12 +32,12 @@ import 'package:conduit_core/src/http/http.dart';
 ///           .route("/notes/[:id]")
 ///           .link(() => Authorizer.bearer(authServer))
 ///           .link(() => NoteController());
-class Scope {
+class const Scope(
+  /// The list of authorization scopes required.
+  final List<String> scopes,
+) {
   /// Add to [ResourceController] operation method to require authorization scope.
   ///
   /// An incoming [Request.authorization] must have sufficient scope for all [scopes].
-  const new(this.scopes);
-
-  /// The list of authorization scopes required.
-  final List<String> scopes;
+  this;
 }

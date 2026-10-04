@@ -6,8 +6,7 @@ import 'package:test/test.dart';
 /// (a) cross-package test deps are awkward, and (b) the visitor's
 /// behavior is the contract we're testing, not the dialect's
 /// per-operator overrides — those live in each backend's dialect tests.
-class _NamedDialect extends SqlDialect {
-  const new();
+class const _NamedDialect() extends SqlDialect {
   @override
   String get name => 'named-test';
   @override

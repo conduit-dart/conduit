@@ -50,16 +50,16 @@ class _User {
 /// off of. The relational `User.id` is stored as a graph property on
 /// the corresponding `Profile` node so the stitching resolver can
 /// re-key.
-class Profile extends GraphNode<Profile> {
-  new() : super(labels: const [GraphLabel.unchecked('Profile')]);
+class Profile() extends GraphNode<Profile> {
+  this : super(labels: const [GraphLabel.unchecked('Profile')]);
 
   int? get userId => this['userId'] as int?;
   set userId(int? v) => this['userId'] = v;
 }
 
-class Friendship extends GraphEdge<Profile, Profile> {
-  new({required super.from, required super.to})
-    : super(label: const GraphLabel.unchecked('Friendship'));
+class Friendship({required super.from, required super.to})
+    extends GraphEdge<Profile, Profile> {
+  this : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;

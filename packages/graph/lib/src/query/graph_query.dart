@@ -42,17 +42,15 @@ typedef GraphQueryExecutor = Future<List<N>> Function<N extends GraphNode<N>>(
 ///
 /// final adults = await q.fetch();
 /// ```
-class GraphQuery<N extends GraphNode<N>> {
-  new({required this.pattern, this.executor});
-
-  final GraphPattern<N> pattern;
+class GraphQuery<N extends GraphNode<N>>({
+  required final GraphPattern<N> pattern,
 
   /// The store-supplied executor that runs this query. `null` for
   /// detached queries — calling [fetch] then throws
   /// [GraphInvalidQuery]. Backends and tests can wire in their own
   /// executor when constructing a [GraphQuery] directly.
-  final GraphQueryExecutor? executor;
-
+  final GraphQueryExecutor? executor,
+}) {
   GraphFilterExpression? _filter;
   int? _limit;
   int? _offset;

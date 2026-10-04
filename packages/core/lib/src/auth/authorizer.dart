@@ -25,7 +25,23 @@ import 'package:conduit_open_api/v3.dart';
 ///           .route("/protected-route")
 ///           .link(() =>new Authorizer.bearer(authServer))
 ///           .link(() => new ProtectedResourceController());
-class Authorizer extends Controller {
+class Authorizer(
+  /// The validating authorization object.
+  ///
+  /// This object will check credentials parsed from the Authorization header and produce an
+  /// [Authorization] object representing the authorization the credentials have. It may also
+  /// reject a request. This is typically an instance of [AuthServer].
+  final AuthValidator? validator, {
+
+  /// Parses the Authorization header.
+  ///
+  /// The parser determines how to interpret the data in the Authorization header. Concrete subclasses
+  /// are [AuthorizationBasicParser] and [AuthorizationBearerParser].
+  ///
+  /// Once parsed, the parsed value is validated by [validator].
+  final AuthorizationParser parser = const AuthorizationBearerParser(),
+  List<String>? scopes,
+}) extends Controller {
   /// Creates an instance of [Authorizer].
   ///
   /// Use this constructor to provide custom [AuthorizationParser]s.
@@ -35,11 +51,7 @@ class Authorizer extends Controller {
   ///         Authorization: Bearer ap9ijlarlkz8jIOa9laweo
   ///
   /// If [scopes] is provided, the authorization granted must have access to *all* scopes according to [validator].
-  new(
-    this.validator, {
-    this.parser = const AuthorizationBearerParser(),
-    List<String>? scopes,
-  }) : scopes = scopes?.map(AuthScope.new).toList();
+  this;
 
   /// Creates an instance of [Authorizer] with Basic Authentication parsing.
   ///
@@ -63,13 +75,6 @@ class Authorizer extends Controller {
         scopes: scopes,
       );
 
-  /// The validating authorization object.
-  ///
-  /// This object will check credentials parsed from the Authorization header and produce an
-  /// [Authorization] object representing the authorization the credentials have. It may also
-  /// reject a request. This is typically an instance of [AuthServer].
-  final AuthValidator? validator;
-
   /// The list of required scopes.
   ///
   /// If [validator] grants scope-limited authorizations (e.g., OAuth2 bearer tokens), the authorization
@@ -77,15 +82,7 @@ class Authorizer extends Controller {
   ///
   /// This property is set with a list of scope strings in a constructor. Each scope string is parsed into
   /// an [AuthScope] and added to this list.
-  final List<AuthScope>? scopes;
-
-  /// Parses the Authorization header.
-  ///
-  /// The parser determines how to interpret the data in the Authorization header. Concrete subclasses
-  /// are [AuthorizationBasicParser] and [AuthorizationBearerParser].
-  ///
-  /// Once parsed, the parsed value is validated by [validator].
-  final AuthorizationParser parser;
+  final List<AuthScope>? scopes = scopes?.map(AuthScope.new).toList();
 
   @override
   FutureOr<RequestOrResponse> handle(Request request) async {

@@ -23,10 +23,10 @@ import 'package:conduit_graph/conduit_graph.dart';
 
 /// The result of lowering a [GraphQuery] (or [GraphPattern]) to
 /// Cypher: the query text plus the parameter map to bind on the wire.
-class CypherStatement {
-  new(this.cypher, this.parameters);
-  final String cypher;
-  final Map<String, Object?> parameters;
+class CypherStatement(
+  final String cypher,
+  final Map<String, Object?> parameters,
+) {
   @override
   String toString() => 'CypherStatement($cypher, $parameters)';
 }

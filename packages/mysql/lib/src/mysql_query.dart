@@ -274,12 +274,9 @@ class MysqlQuery<InstanceType extends ManagedObject>
 
 enum _Reducer { avg, count, max, min, sum }
 
-class _MysqlQueryReduce<T extends ManagedObject>
+class _MysqlQueryReduce<T extends ManagedObject>(final MysqlQuery<T> query)
     extends QueryReduceOperation<T> {
-  new(this.query) : builder = QueryBuilder(query);
-
-  final MysqlQuery<T> query;
-  final QueryBuilder builder;
+  final QueryBuilder builder = QueryBuilder(query);
 
   @override
   Future<double?> average(num? Function(T object) selector) {

@@ -148,9 +148,7 @@ class _TestModel {
   late DateTime createdAt;
 }
 
-class Subclass extends ManagedObjectController<TestModel> {
-  new(super.context);
-
+class Subclass(super.context) extends ManagedObjectController<TestModel> {
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(
     Query<TestModel>? query,

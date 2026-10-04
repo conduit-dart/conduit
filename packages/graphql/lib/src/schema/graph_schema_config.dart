@@ -35,29 +35,21 @@ import '../auth/field_authorize.dart';
 /// Defaults to `false` because typed graph properties are usually
 /// declared precisely *because* the application treats them as
 /// guaranteed-present. Pass `true` for properties that may be absent.
-class GraphPropertyDescriptor {
-  const new({
-    required this.name,
-    required this.type,
-    this.isNullable = false,
-    this.description,
-    this.auth,
-  });
-
+class const GraphPropertyDescriptor({
   /// Property name as it appears in the graph store and in the
   /// emitted GraphQL field.
-  final String name;
+  required final String name,
 
   /// Storage class. Drives the scalar mapping inside the schema
   /// builder.
-  final GraphPropertyType type;
+  required final GraphPropertyType type,
 
   /// True if the property may be absent from the bag at read time.
   /// `false` (the default) emits the GraphQL field as non-null.
-  final bool isNullable;
+  final bool isNullable = false,
 
   /// Optional human-readable description surfaced in the SDL.
-  final String? description;
+  final String? description,
 
   /// Optional G5 field-auth declaration. When non-null, the resolver
   /// emitted for this property is wrapped in a scope-checking closure
@@ -70,8 +62,8 @@ class GraphPropertyDescriptor {
   /// the `ManagedObject` source; on the graph side it lives here
   /// because `GraphNode` does not currently support per-property
   /// annotations.
-  final FieldAuthorize? auth;
-}
+  final FieldAuthorize? auth,
+});
 
 /// Per-node-type schema configuration.
 ///
@@ -114,14 +106,12 @@ class GraphNodeSchemaConfig {
 }
 
 /// Per-edge-type schema configuration.
-class GraphEdgeSchemaConfig {
-  const new({this.properties = const []});
-
+class const GraphEdgeSchemaConfig({
   /// Typed declared edge properties. Edge-property-as-connection
   /// fields surface one GraphQL field per entry alongside the
   /// `from:` / `to:` endpoints.
-  final List<GraphPropertyDescriptor> properties;
-}
+  final List<GraphPropertyDescriptor> properties = const [],
+});
 
 /// Top-level schema-derivation config for the graph side.
 ///

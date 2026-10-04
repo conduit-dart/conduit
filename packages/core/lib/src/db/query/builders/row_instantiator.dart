@@ -15,12 +15,10 @@ import 'package:conduit_core/src/db/managed/set.dart';
 import 'package:conduit_core/src/db/query/builders/column.dart';
 import 'package:conduit_core/src/db/query/builders/table.dart';
 
-class RowInstantiator {
-  new(this.rootTableBuilder, this.returningValues);
-
-  final TableBuilder rootTableBuilder;
-  final List<Returnable>? returningValues;
-
+class RowInstantiator(
+  final TableBuilder rootTableBuilder,
+  final List<Returnable>? returningValues,
+) {
   Map<TableBuilder, Map<dynamic, ManagedObject>> distinctObjects = {};
 
   List<U> instancesForRows<U extends ManagedObject>(List<List<dynamic>> rows) {

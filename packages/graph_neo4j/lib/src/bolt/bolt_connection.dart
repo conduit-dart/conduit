@@ -39,10 +39,8 @@ import 'bolt_messages.dart';
 import 'packstream.dart';
 
 /// Raised by the Bolt client when the wire-level protocol fails.
-class BoltProtocolException implements Exception {
-  new(this.message, {this.cause});
-  final String message;
-  final Object? cause;
+class BoltProtocolException(final String message, {final Object? cause})
+    implements Exception {
   @override
   String toString() {
     final c = cause == null ? '' : ' (cause: $cause)';
@@ -64,9 +62,8 @@ class BoltFailure implements Exception {
 
 /// One row of a query result. The row is positional; pair it with
 /// `BoltResult.fields` for the column names.
-class BoltRecord {
-  new(List<Object?> values) : values = List.unmodifiable(values);
-  final List<Object?> values;
+class BoltRecord(List<Object?> values) {
+  final List<Object?> values = List.unmodifiable(values);
 
   /// Convenience: zip the row against a column-name list into a map.
   Map<String, Object?> asMap(List<String> fields) {
@@ -97,10 +94,7 @@ class BoltResult {
 }
 
 /// The Bolt protocol version a connection negotiated.
-class BoltVersion {
-  const new(this.major, this.minor);
-  final int major;
-  final int minor;
+class const BoltVersion(final int major, final int minor) {
   bool get isUnsupported => major == 0 && minor == 0;
   int get encoded => ((minor & 0xFF) << 8) | (major & 0xFF);
   @override

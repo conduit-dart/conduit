@@ -405,13 +405,11 @@ class SchemaColumnDifference {
   final List<_PropertyDifference> _differingProperties = [];
 }
 
-class _PropertyDifference {
-  new(this.name, this.expectedValue, this.actualValue);
-
-  final String name;
-  final dynamic expectedValue;
-  final dynamic actualValue;
-
+class _PropertyDifference(
+  final String name,
+  final dynamic expectedValue,
+  final dynamic actualValue,
+) {
   String getErrorMessage(String? actualTableName, String? expectedColumnName) {
     return "Column '$expectedColumnName' in table '$actualTableName' expected "
         "'$expectedValue' for '$name', but migration files yield '$actualValue'";

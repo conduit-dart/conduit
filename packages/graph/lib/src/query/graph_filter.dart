@@ -41,13 +41,11 @@ sealed class GraphFilterExpression {
 }
 
 /// A leaf filter: `<property> <op> <value?>`.
-final class GraphPropertyFilter extends GraphFilterExpression {
-  const new({required this.property, required this.operator, this.value});
-
-  final String property;
-  final GraphFilterOperator operator;
-  final Object? value;
-
+final class const GraphPropertyFilter({
+  required final String property,
+  required final GraphFilterOperator operator,
+  final Object? value,
+}) extends GraphFilterExpression {
   @override
   String toString() => 'GraphPropertyFilter($property ${operator.name} $value)';
 }
@@ -69,11 +67,8 @@ final class GraphCompoundFilter extends GraphFilterExpression {
 }
 
 /// A logical NOT.
-final class GraphNotFilter extends GraphFilterExpression {
-  const new(this.child);
-
-  final GraphFilterExpression child;
-
+final class const GraphNotFilter(final GraphFilterExpression child)
+    extends GraphFilterExpression {
   @override
   String toString() => 'GraphNotFilter($child)';
 }
@@ -166,9 +161,7 @@ class GraphFilterTerm {
 
 /// The proxy passed to a `where` closure. Property accesses return
 /// [GraphFilterTerm] objects.
-class GraphWhereProxy {
-  new();
-
+class GraphWhereProxy() {
   /// Look up a property as a filter term.
   ///
   /// Use either `proxy['age']` or `proxy.property('age')` — the second

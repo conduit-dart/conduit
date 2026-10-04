@@ -1004,9 +1004,7 @@ class TopLevelConfigurationWithValidation extends Configuration {
   }
 }
 
-class DatabaseConfigurationSubclass extends DatabaseConfiguration {
-  new();
-
+class DatabaseConfigurationSubclass() extends DatabaseConfiguration {
   late int extraDatabaseValue;
 }
 
@@ -1050,10 +1048,8 @@ class ConfigurationSubclassWithValidation extends ConfigurationSuperclass {
   late DatabaseConfigurationSubclassWithValidation database;
 }
 
-class DatabaseConfigurationSubclassWithValidation
+class DatabaseConfigurationSubclassWithValidation()
     extends DatabaseConfiguration {
-  new();
-
   @override
   void validate() {
     super.validate();

@@ -67,12 +67,7 @@ class OnlyOn {
 /// Skip this test when running against any of the listed dialects.
 /// Use when the test exercises a feature the backend explicitly
 /// doesn't support, or where a known bug is tracked separately.
-class SkipOn {
-  const new(this.dialects, {this.reason});
-
-  final List<Dialect> dialects;
-  final String? reason;
-}
+class const SkipOn(final List<Dialect> dialects, {final String? reason});
 
 /// Convenience: shorthand for the most common case — a test that
 /// only makes sense for Postgres because it touches a Postgres-only

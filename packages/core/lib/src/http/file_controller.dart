@@ -229,9 +229,7 @@ class FileController extends Controller {
   CachePolicy? _policyForFile(File file) => cachePolicyForPath(file.path);
 }
 
-class _PolicyPair {
-  new(this.policy, this.shouldApplyToPath);
-
-  final bool Function(String) shouldApplyToPath;
-  final CachePolicy policy;
-}
+class _PolicyPair(
+  final CachePolicy policy,
+  final bool Function(String) shouldApplyToPath,
+);

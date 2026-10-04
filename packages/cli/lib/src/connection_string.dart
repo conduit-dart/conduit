@@ -24,39 +24,25 @@ enum DbFlavor {
 /// at the boundary where the per-backend package is imported (avoids
 /// pulling sqlite/mysql packages into the CLI proper if the user
 /// never invokes them).
-class ParsedConnection {
-  new({
-    required this.flavor,
-    required this.raw,
-    this.username,
-    this.password,
-    this.host,
-    this.port,
-    this.databaseName,
-    this.sqlitePath,
-    this.sqliteInMemory = false,
-  });
-
+class ParsedConnection({
   /// The dialect family, or `null` if the URL didn't match any known
   /// scheme. `parseConnectionString` raises rather than returning a
   /// null flavor — this is non-null in practice but kept nullable to
   /// keep the data class straightforward to extend.
-  final DbFlavor flavor;
+  required final DbFlavor flavor,
 
   /// Original connection-string input — useful for diagnostics.
-  final String raw;
-
+  required final String raw,
+  final String? username,
+  final String? password,
+  final String? host,
+  final int? port,
+  final String? databaseName,
+  final String? sqlitePath,
+  final bool sqliteInMemory = false,
+}) {
   // Postgres / MySQL fields (nullable; unused for SQLite).
-  final String? username;
-  final String? password;
-  final String? host;
-  final int? port;
-  final String? databaseName;
-
   // SQLite-specific.
-  final String? sqlitePath;
-  final bool sqliteInMemory;
-
   /// `true` when the parsed scheme uses a wire protocol (postgres/
   /// mysql) and thus needs a `host`/`port` to dial. Used by callers to
   /// decide whether to require the host fields.

@@ -43,9 +43,7 @@ class APIParameterLocationCodec {
 }
 
 /// Represents a parameter in the OpenAPI specification.
-class APIParameter extends APIProperty {
-  new();
-
+class APIParameter() extends APIProperty {
   String? name;
   String? description;
   bool isRequired = false;
