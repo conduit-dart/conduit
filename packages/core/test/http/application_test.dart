@@ -5,6 +5,9 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+/// Port of the application under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   group("App launch status", () {
     late Application<TestChannel> app;
@@ -16,7 +19,7 @@ void main() {
     test(
       "didFinishLaunching is false before launch, true after, false after stop",
       () async {
-        app = Application<TestChannel>();
+        app = Application<TestChannel>()..options.port = 0;
         expect(app.isRunning, false);
 
         await app.startOnCurrentIsolate();
@@ -32,8 +35,9 @@ void main() {
     late Application<TestChannel> app;
 
     setUp(() async {
-      app = Application<TestChannel>();
+      app = Application<TestChannel>()..options.port = 0;
       await app.startOnCurrentIsolate();
+      serverPort = app.server.server.port;
     });
 
     tearDown(() async {
@@ -46,13 +50,19 @@ void main() {
     });
 
     test("Application responds to request", () async {
-      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final response = await http.get(
+        Uri.parse("http://localhost:$serverPort/t"),
+      );
       expect(response.statusCode, 200);
     });
 
     test("Application properly routes request", () async {
-      final tResponse = await http.get(Uri.parse("http://localhost:8888/t"));
-      final rResponse = await http.get(Uri.parse("http://localhost:8888/r"));
+      final tResponse = await http.get(
+        Uri.parse("http://localhost:$serverPort/t"),
+      );
+      final rResponse = await http.get(
+        Uri.parse("http://localhost:$serverPort/r"),
+      );
 
       expect(tResponse.body, '"t_ok"');
       expect(rResponse.body, '"r_ok"');
@@ -60,7 +70,7 @@ void main() {
 
     test("Application gzips content", () async {
       final resp = await http.get(
-        Uri.parse("http://localhost:8888/t"),
+        Uri.parse("http://localhost:$serverPort/t"),
         headers: {"Accept-Encoding": "gzip"},
       );
       expect(resp.headers["content-encoding"], "gzip");
@@ -71,7 +81,7 @@ void main() {
 
       var successful = false;
       try {
-        final _ = await http.get(Uri.parse("http://localhost:8888/t"));
+        final _ = await http.get(Uri.parse("http://localhost:$serverPort/t"));
         successful = true;
       } catch (e) {
         expect(e, isNotNull);
@@ -79,7 +89,8 @@ void main() {
       expect(successful, false);
 
       await app.startOnCurrentIsolate();
-      final resp = await http.get(Uri.parse("http://localhost:8888/t"));
+      serverPort = app.server.server.port;
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/t"));
       expect(resp.statusCode, 200);
     });
 
@@ -89,7 +100,7 @@ void main() {
         var sum = 0;
         for (var i = 0; i < 10; i++) {
           final result = await http.get(
-            Uri.parse("http://localhost:8888/startup"),
+            Uri.parse("http://localhost:$serverPort/startup"),
           );
           sum += int.parse(json.decode(result.body) as String);
         }
@@ -100,7 +111,7 @@ void main() {
 
   group("Failure", () {
     test("Application (on main thread) start fails and logs appropriate message if request stream doesn't open", () async {
-      final crashingApp = Application<CrashingTestChannel>();
+      final crashingApp = Application<CrashingTestChannel>()..options.port = 0;
 
       try {
         crashingApp.options.context["crashIn"] = "addRoutes";
@@ -120,7 +131,10 @@ void main() {
 
       crashingApp.options.context["crashIn"] = "dontCrash";
       await crashingApp.startOnCurrentIsolate();
-      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      serverPort = crashingApp.server.server.port;
+      final response = await http.get(
+        Uri.parse("http://localhost:$serverPort/t"),
+      );
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });

@@ -6,6 +6,11 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import '../../_helpers/free_port.dart';
+
+/// Port of the application under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   group("Recovers", () {
     final app = Application<TestChannel>();
@@ -23,15 +28,17 @@ void main() {
           errorMsgCompleter.complete(rec);
         }
       });
-      await app.start();
+      serverPort = (await startWithFreePort(() => app)).port;
 
       // This request will generate an uncaught exception
       final failFuture = http.get(
-        Uri.parse("http://localhost:8888/?crash=true"),
+        Uri.parse("http://localhost:$serverPort/?crash=true"),
       );
 
       // This request will come in right after the failure but should succeed
-      final successFuture = http.get(Uri.parse("http://localhost:8888/"));
+      final successFuture = http.get(
+        Uri.parse("http://localhost:$serverPort/"),
+      );
 
       // Ensure both requests respond with 200, since the failure occurs asynchronously AFTER the response has been generated
       // for the failure case.
@@ -49,7 +56,7 @@ void main() {
 
       // And then we should make sure everything is working just fine.
       expect(
-        (await http.get(Uri.parse("http://localhost:8888/"))).statusCode,
+        (await http.get(Uri.parse("http://localhost:$serverPort/"))).statusCode,
         200,
       );
       print("succeeded in final request");
@@ -70,15 +77,19 @@ void main() {
           }
         });
 
-        await app.start(numberOfInstances: 2);
+        serverPort = (await startWithFreePort(
+          () => app,
+          numberOfInstances: 2,
+        )).port;
 
         // Throw some deferred crashers then some success messages at the server
-        final failFutures = Iterable.generate(
-          5,
-        ).map((_) => http.get(Uri.parse("http://localhost:8888/?crash=true")));
+        final failFutures = Iterable.generate(5).map(
+          (_) =>
+              http.get(Uri.parse("http://localhost:$serverPort/?crash=true")),
+        );
 
         final successResponse = await http.get(
-          Uri.parse("http://localhost:8888/"),
+          Uri.parse("http://localhost:$serverPort/"),
         );
         expect(successResponse.statusCode, 200);
         expect(

@@ -5,9 +5,12 @@ import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
-import 'package:test_core/src/util/io.dart' show getUnusedPort;
 
+import '../_helpers/free_port.dart';
 import '../not_tests/helpers.dart';
+
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
 
 void main() {
   group("Linking", () {
@@ -28,7 +31,8 @@ void main() {
     late Controller root;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4111);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       root = PassthruController();
       server.map(Request.new).listen((req) {
         root.receive(req);
@@ -48,7 +52,7 @@ void main() {
             return Response.ok(null);
           });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(resp.statusCode, 201);
     });
 
@@ -62,7 +66,7 @@ void main() {
             return Response.ok(null, headers: {"x-foo": "foo"});
           });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(resp.headers.containsKey("x-foo"), false);
     });
 
@@ -76,7 +80,7 @@ void main() {
             return Response.ok(null);
           });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -90,7 +94,7 @@ void main() {
             return Response.ok(null, headers: {"x-foo": "foo"});
           });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
@@ -103,7 +107,7 @@ void main() {
             return Response.ok({"x": "a"});
           });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(json.decode(resp.body), {"foo": "y", "x": "a"});
     });
 
@@ -119,7 +123,7 @@ void main() {
               return Response.ok(null);
             });
 
-        final resp = await http.get(Uri.parse("http://localhost:4111/"));
+        final resp = await http.get(Uri.parse("http://localhost:$serverPort/"));
         expect(resp.statusCode, 500);
       },
     );
@@ -130,7 +134,8 @@ void main() {
     late Controller root;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4111);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       root = PassthruController();
 
       server.map(Request.new).listen((req) {
@@ -156,7 +161,9 @@ void main() {
             return null;
           });
 
-      final response = await http.get(Uri.parse("http://localhost:4111"));
+      final response = await http.get(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       expect(response.statusCode, 200);
       expect(set, false);
     });
@@ -167,9 +174,9 @@ void main() {
     late int port;
 
     setUp(() async {
-      port = await getUnusedPort((p) => p);
-      app = Application<OutlierChannel>()..options.port = port;
-      await app.start();
+      final started = await startWithFreePort(Application<OutlierChannel>.new);
+      app = started.app;
+      port = started.port;
     });
 
     tearDown(() async {
@@ -229,7 +236,8 @@ void main() {
     });
 
     test("Request controller's can serialize and encode Serializable objects as JSON by default", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
@@ -239,13 +247,14 @@ void main() {
         await next.receive(req);
       });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"name": "Bob"});
     });
 
     test("Responding to request with no content-type, but does have a body, defaults to application/json", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
@@ -254,13 +263,14 @@ void main() {
         await next.receive(req);
       });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.headers["content-type"], startsWith("application/json"));
       expect(json.decode(resp.body), {"a": "b"});
     });
 
     test("Responding to a request with no explicit content-type and has a body that cannot be encoded to JSON will throw 500", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
@@ -269,14 +279,15 @@ void main() {
         await next.receive(req);
       });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 500);
       expect(resp.headers["content-type"], isNull);
       expect(resp.body.isEmpty, true);
     });
 
     test("Responding to request with no explicit content-type, does not have a body, has no content-type", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((req) async {
@@ -284,7 +295,7 @@ void main() {
         });
         await next.receive(req);
       });
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 200);
       expect(resp.headers["content-length"], "0");
       expect(resp.headers["content-type"], isNull);
@@ -292,7 +303,8 @@ void main() {
     });
 
     test("willSendResponse is always called prior to Response being sent for preflight requests", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.link(Always200Controller.new);
@@ -300,7 +312,7 @@ void main() {
       });
 
       // Invalid preflight
-      var req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
+      var req = await HttpClient().open("OPTIONS", "localhost", serverPort, "");
       req.headers.set("Origin", "http://foobar.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set(
@@ -315,7 +327,7 @@ void main() {
       });
 
       // valid preflight
-      req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
+      req = await HttpClient().open("OPTIONS", "localhost", serverPort, "");
       req.headers.set("Origin", "http://somewhere.com");
       req.headers.set("Access-Control-Request-Method", "POST");
       req.headers.set(
@@ -335,7 +347,8 @@ void main() {
     });
 
     test("willSendResponse is always called prior to Response being sent for normal requests", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.link(Always200Controller.new);
@@ -343,32 +356,35 @@ void main() {
       });
 
       // normal response
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
+      var resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 100});
 
       // httpresponseexception
       resp = await http.get(
-        Uri.parse("http://localhost:8888?q=http_response_exception"),
+        Uri.parse("http://localhost:$serverPort?q=http_response_exception"),
       );
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 400});
 
       // query exception
       resp = await http.get(
-        Uri.parse("http://localhost:8888?q=query_exception"),
+        Uri.parse("http://localhost:$serverPort?q=query_exception"),
       );
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 503});
 
       // any other exception (500)
-      resp = await http.get(Uri.parse("http://localhost:8888?q=server_error"));
+      resp = await http.get(
+        Uri.parse("http://localhost:$serverPort?q=server_error"),
+      );
       expect(resp.statusCode, 200);
       expect(json.decode(resp.body), {"statusCode": 500});
     });
 
     test("Failure to decode request body as appropriate type is 400", () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen((req) async {
         final next = PassthruController();
         next.linkFunction((r) async {
@@ -379,7 +395,7 @@ void main() {
       });
 
       final resp = await http.post(
-        Uri.parse("http://localhost:8888"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"content-type": "application/json"},
         body: json.encode(["a"]),
       );

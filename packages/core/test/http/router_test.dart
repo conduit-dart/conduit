@@ -9,6 +9,9 @@ import "package:test/test.dart";
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   group("Router basics", () {
     HttpServer? server;
@@ -27,7 +30,7 @@ void main() {
       server = await enableRouter(router);
 
       final response = await http.get(
-        Uri.parse("http://localhost:4040/player"),
+        Uri.parse("http://localhost:$serverPort/player"),
       );
       expect(response.statusCode, equals(200));
     });
@@ -42,7 +45,7 @@ void main() {
       server = await enableRouter(router);
 
       final response = await http.get(
-        Uri.parse("http://localhost:4040/notplayer"),
+        Uri.parse("http://localhost:$serverPort/notplayer"),
       );
       expect(response.statusCode, equals(404));
       // No Accept header, so allow HTML
@@ -59,7 +62,7 @@ void main() {
       server = await enableRouter(router);
 
       final response = await http.get(
-        Uri.parse("http://localhost:4040/notplayer"),
+        Uri.parse("http://localhost:$serverPort/notplayer"),
         headers: {HttpHeaders.acceptHeader: "application/json"},
       );
       expect(response.statusCode, equals(404));
@@ -77,7 +80,7 @@ void main() {
       server = await enableRouter(router);
 
       final response = await http.get(
-        Uri.parse("http://localhost:4040/player/foobar"),
+        Uri.parse("http://localhost:$serverPort/player/foobar"),
       );
       expect(response.statusCode, equals(200));
       expect(response.body, equals('"foobar"'));
@@ -90,11 +93,13 @@ void main() {
       server = await enableRouter(router);
 
       var response = await http.get(
-        Uri.parse("http://localhost:4040/api/player"),
+        Uri.parse("http://localhost:$serverPort/api/player"),
       );
       expect(response.statusCode, equals(202));
 
-      response = await http.get(Uri.parse("http://localhost:4040/player"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/player"),
+      );
       expect(response.statusCode, equals(404));
 
       expect(router.basePath, "/api");
@@ -104,7 +109,9 @@ void main() {
       final router = Router(basePath: "/api");
       router.route("/a").link(Handler.new);
       server = await enableRouter(router);
-      final response = await http.get(Uri.parse("http://localhost:4040/api/a"));
+      final response = await http.get(
+        Uri.parse("http://localhost:$serverPort/api/a"),
+      );
       expect(response.statusCode, equals(202));
     });
 
@@ -121,13 +128,17 @@ void main() {
 
       server = await enableRouter(router);
 
-      var response = await http.get(Uri.parse("http://localhost:4040/a"));
+      var response = await http.get(
+        Uri.parse("http://localhost:$serverPort/a"),
+      );
       expect(response.statusCode, equals(200));
 
-      response = await http.get(Uri.parse("http://localhost:4040/a/1"));
+      response = await http.get(Uri.parse("http://localhost:$serverPort/a/1"));
       expect(response.statusCode, equals(200));
 
-      response = await http.get(Uri.parse("http://localhost:4040/a/1/f"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/a/1/f"),
+      );
       expect(response.statusCode, equals(201));
     });
 
@@ -137,11 +148,15 @@ void main() {
             .linkFunction((req) async => Response.ok(req.path.variables));
       server = await enableRouter(router);
 
-      var response = await http.get(Uri.parse("http://localhost:4040/api/a/1"));
+      var response = await http.get(
+        Uri.parse("http://localhost:$serverPort/api/a/1"),
+      );
       expect(response.statusCode, 200);
       expect(json.decode(response.body), {"id": "1"});
 
-      response = await http.get(Uri.parse("http://localhost:4040/api/a"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/api/a"),
+      );
       expect(response.statusCode, 200);
       expect(json.decode(response.body), {});
     });
@@ -192,66 +207,82 @@ void main() {
     });
 
     test("Empty", () async {
-      var response = await http.get(Uri.parse("http://localhost:4040"));
+      var response = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(response.body, '"/"');
-      response = await http.get(Uri.parse("http://localhost:4040/"));
+      response = await http.get(Uri.parse("http://localhost:$serverPort/"));
       expect(response.body, '"/"');
     });
 
     test("Root level items", () async {
-      var response = await http.get(Uri.parse("http://localhost:4040/users"));
+      var response = await http.get(
+        Uri.parse("http://localhost:$serverPort/users"),
+      );
       expect(response.body, '"/users/null"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/locations"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/locations"),
+      );
       expect(response.body, '"/locations/null"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/equipment"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/equipment"),
+      );
       expect(response.body, '"/equipment/null/null"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/file"));
+      response = await http.get(Uri.parse("http://localhost:$serverPort/file"));
       expect(response.statusCode, 404);
     });
 
     test("2nd level items", () async {
-      var response = await http.get(Uri.parse("http://localhost:4040/users/1"));
+      var response = await http.get(
+        Uri.parse("http://localhost:$serverPort/users/1"),
+      );
       expect(response.body, '"/users/1"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/locations/1"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/locations/1"),
+      );
       expect(response.body, '"/locations/1"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/equipment/1"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/equipment/1"),
+      );
       expect(response.body, '"/equipment/1/null"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/file/1"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/file/1"),
+      );
       expect(response.body, '"/file/1"');
 
-      response = await http.get(Uri.parse("http://localhost:4040/file/1/2/3"));
+      response = await http.get(
+        Uri.parse("http://localhost:$serverPort/file/1/2/3"),
+      );
       expect(response.body, '"/file/1/2/3"');
     });
 
     test("3rd level items", () async {
       var response = await http.get(
-        Uri.parse("http://localhost:4040/users/1/vacation"),
+        Uri.parse("http://localhost:$serverPort/users/1/vacation"),
       );
       expect(response.statusCode, 404);
 
       response = await http.get(
-        Uri.parse("http://localhost:4040/locations/1/vacation"),
+        Uri.parse("http://localhost:$serverPort/locations/1/vacation"),
       );
       expect(response.body, '"/locations/1/vacation"');
 
       response = await http.get(
-        Uri.parse("http://localhost:4040/locations/1/alarms"),
+        Uri.parse("http://localhost:$serverPort/locations/1/alarms"),
       );
       expect(response.body, '"/locations/1/alarms/null"');
 
       response = await http.get(
-        Uri.parse("http://localhost:4040/locations/1/alarms/code"),
+        Uri.parse("http://localhost:$serverPort/locations/1/alarms/code"),
       );
       expect(response.body, '"/locations/1/alarms/code"');
 
       response = await http.get(
-        Uri.parse("http://localhost:4040/equipment/1/code"),
+        Uri.parse("http://localhost:$serverPort/equipment/1/code"),
       );
       expect(response.body, '"/equipment/1/code"');
     });
@@ -276,11 +307,11 @@ void main() {
     });
 
     test("Disambiguate *", () async {
-      final r1 = await http.get(Uri.parse("http://localhost:4040/a"));
-      final r2 = await http.get(Uri.parse("http://localhost:4040/b"));
-      final r3 = await http.get(Uri.parse("http://localhost:4040/ab"));
-      final r4 = await http.get(Uri.parse("http://localhost:4040/a/b"));
-      final r5 = await http.get(Uri.parse("http://localhost:4040/"));
+      final r1 = await http.get(Uri.parse("http://localhost:$serverPort/a"));
+      final r2 = await http.get(Uri.parse("http://localhost:$serverPort/b"));
+      final r3 = await http.get(Uri.parse("http://localhost:$serverPort/ab"));
+      final r4 = await http.get(Uri.parse("http://localhost:$serverPort/a/b"));
+      final r5 = await http.get(Uri.parse("http://localhost:$serverPort/"));
 
       expect(r1.body, '"a"');
       expect(r2.body, '"*b"');
@@ -306,11 +337,18 @@ void main() {
       root.link(() => router);
 
       root.didAddToChannel();
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.map(Request.new).listen(root.receive);
 
-      expect((await http.get(Uri.parse("http://localhost:4040/1"))).body, "1");
-      expect((await http.get(Uri.parse("http://localhost:4040/2"))).body, "2");
+      expect(
+        (await http.get(Uri.parse("http://localhost:$serverPort/1"))).body,
+        "1",
+      );
+      expect(
+        (await http.get(Uri.parse("http://localhost:$serverPort/2"))).body,
+        "2",
+      );
     });
 
     test("Router delivers prepare to all controllers", () async {
@@ -332,7 +370,8 @@ void main() {
 
 Future<HttpServer> enableRouter(Router router) async {
   router.didAddToChannel();
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+  serverPort = server.port;
   server.map(Request.new).listen(router.receive);
   return server;
 }

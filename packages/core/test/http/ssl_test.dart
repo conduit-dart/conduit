@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
+import '../_helpers/free_port.dart';
+
 void main() {
   group("SSL", () {
     late Application app;
@@ -15,20 +17,21 @@ void main() {
     test("Start with HTTPS", () async {
       final ciDirUri = getCIDirectoryUri();
 
-      app = Application<TestChannel>()
-        ..options.certificateFilePath = ciDirUri
-            .resolve("conduit.cert.pem")
-            .toFilePath(windows: Platform.isWindows)
-        ..options.privateKeyFilePath = ciDirUri
-            .resolve("conduit.key.pem")
-            .toFilePath(windows: Platform.isWindows);
-
-      await app.start();
+      final started = await startWithFreePort(
+        () => Application<TestChannel>()
+          ..options.certificateFilePath = ciDirUri
+              .resolve("conduit.cert.pem")
+              .toFilePath(windows: Platform.isWindows)
+          ..options.privateKeyFilePath = ciDirUri
+              .resolve("conduit.key.pem")
+              .toFilePath(windows: Platform.isWindows),
+      );
+      app = started.app;
 
       final completer = Completer<List<int>>();
       final socket = await SecureSocket.connect(
         "localhost",
-        8888,
+        started.port,
         onBadCertificate: (_) => true,
       );
       const request =

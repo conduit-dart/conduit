@@ -8,6 +8,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   HttpServer? server;
   late HttpClient client;
@@ -28,7 +31,7 @@ void main() {
         ..contentType = ContentType("foo", "bar");
       server = await bindAndRespondWith(response);
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
 
       expect(resp.statusCode, 500);
       expect(response.headers["content-type"], isNull);
@@ -41,7 +44,7 @@ void main() {
       ..contentType = ContentType("foo", "bar");
     server = await bindAndRespondWith(response);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
+    final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
     final contentType = ContentType.parse(resp.headers["content-type"]!);
     expect(resp.statusCode, 200);
     expect(contentType.primaryType, "foo");
@@ -55,7 +58,7 @@ void main() {
       ..contentType = ContentType("text", "bar");
     server = await bindAndRespondWith(response);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
+    final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
     final contentType = ContentType.parse(resp.headers["content-type"]!);
     expect(resp.statusCode, 200);
     expect(contentType.primaryType, "text");
@@ -73,7 +76,7 @@ void main() {
         ..contentType = ContentType("b", "bar");
       server = await bindAndRespondWith(serverResponse);
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 200);
       expect(resp.headers["content-type"], "b/bar");
       expect(resp.body, "hello");
@@ -93,7 +96,7 @@ void main() {
         ..contentType = ContentType("a", "specific", charset: "utf-8");
       server = await bindAndRespondWith(serverResponse);
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 200);
       expect(resp.headers["content-type"], "a/specific; charset=utf-8");
       expect(json.decode(resp.body), {"key": "value"});
@@ -111,7 +114,7 @@ void main() {
         ..contentType = ContentType("application", "crash");
       server = await bindAndRespondWith(serverResponse);
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(resp.statusCode, 500);
     },
   );
@@ -121,7 +124,7 @@ void main() {
       ..contentType = ContentType("text", "plain", charset: "abcd");
     server = await bindAndRespondWith(serverResponse);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
+    final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(resp.statusCode, 415);
   });
 
@@ -135,7 +138,7 @@ void main() {
       ..contentType = ContentType("application", "baddata");
     server = await bindAndRespondWith(serverResponse);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
+    final resp = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(resp.statusCode, 500);
   });
 
@@ -165,7 +168,9 @@ void main() {
 
       final acceptEncodingHeaders = ["gzip", "gzip, deflate", "deflate,gzip"];
       for (final acceptEncoding in acceptEncodingHeaders) {
-        final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+        final req = await client.getUrl(
+          Uri.parse("http://localhost:$serverPort"),
+        );
         req.headers.clear();
         req.headers.add("accept-encoding", acceptEncoding);
         final resp = await req.close();
@@ -188,7 +193,9 @@ void main() {
     test("Content-Type that can be gzipped but request does not have Accept-Encoding not gzipped", () async {
       server = await bindAndRespondWith(Response.ok({"a": "b"}));
 
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      final req = await client.getUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.clear();
       final resp = await req.close();
 
@@ -206,7 +213,9 @@ void main() {
     test("Content-Type that can be gzipped and request has Accept-Encoding but not gzip", () async {
       server = await bindAndRespondWith(Response.ok({"a": "b"}));
 
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      final req = await client.getUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.clear();
       req.headers.add("accept-encoding", "deflate");
       final resp = await req.close();
@@ -228,7 +237,9 @@ void main() {
         server = await bindAndRespondWith(
           Response.ok([1, 2, 3, 4])..contentType = ct,
         );
-        final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+        final req = await client.getUrl(
+          Uri.parse("http://localhost:$serverPort"),
+        );
         req.headers.clear();
         req.headers.add("accept-encoding", "gzip");
         final resp = await req.close();
@@ -248,7 +259,9 @@ void main() {
       server = await bindAndRespondWith(
         Response.ok(largeBody)..contentType = ct,
       );
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      final req = await client.getUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       final resp = await req.close();
@@ -270,7 +283,9 @@ void main() {
       server = await bindAndRespondWith(
         Response.ok({"a": "b"})..contentType = ct,
       );
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+      final req = await client.getUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
       final resp = await req.close();
@@ -285,7 +300,8 @@ void main() {
 }
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+  serverPort = server.port;
   server.map(Request.new).listen((req) async {
     final next = PassthruController();
     next.linkFunction((req) async {

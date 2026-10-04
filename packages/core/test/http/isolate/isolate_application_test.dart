@@ -115,7 +115,7 @@ void main() {
     test(
       "didFinishLaunching is false before launch, true after, false after stop",
       () async {
-        app = Application<TestChannel>();
+        app = Application<TestChannel>()..options.port = 0;
         expect(app.isRunning, false);
 
         final future = app.start(numberOfInstances: 2, consoleLogging: true);

@@ -8,6 +8,9 @@ import "package:test/test.dart";
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   HttpServer? server;
 
@@ -55,7 +58,7 @@ void main() {
       expect(response.statusCode, 200);
       expect(json.decode(response.body), m);
 
-      response = await http.post(Uri.parse("http://localhost:4040/"));
+      response = await http.post(Uri.parse("http://localhost:$serverPort/"));
       expect(response.statusCode, 200);
       expect(response.headers["content-type"], isNull);
       expect(response.body, "");
@@ -158,7 +161,7 @@ void main() {
       server = await enableController("/", ByteListController.new);
 
       final response = await http.post(
-        Uri.parse("http://localhost:4040"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "application/octet-stream"},
         body: [1, 2, 3],
       );
@@ -245,12 +248,12 @@ void main() {
 Future<http.Response> postJSON(dynamic body) {
   if (body == null) {
     return http.post(
-      Uri.parse("http://localhost:4040"),
+      Uri.parse("http://localhost:$serverPort"),
       headers: {"Content-Type": "application/json"},
     );
   }
   return http.post(
-    Uri.parse("http://localhost:4040"),
+    Uri.parse("http://localhost:$serverPort"),
     headers: {"Content-Type": "application/json"},
     body: json.encode(body),
   );
@@ -386,7 +389,9 @@ Future<HttpServer> enableController(
   router.route(pattern).link(instantiate);
   router.didAddToChannel();
 
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+
+  serverPort = server.port;
   server.map(Request.new).listen(router.receive);
 
   return server;

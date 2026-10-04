@@ -10,6 +10,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/postgres_test_config.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   Controller.letUncaughtExceptionsEscape = true;
   late ManagedContext context;
@@ -21,7 +24,9 @@ void main() {
       StringModel,
     ]);
 
-    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+
+    serverPort = server.port;
     final router = Router();
     router.route("/users/[:id]").link(() => TestModelController(context));
     router.route("/string/:id").link(() => StringController(context));
@@ -38,25 +43,29 @@ void main() {
   });
 
   test("Request with no path parameters OK", () async {
-    final response = await http.get(Uri.parse("http://localhost:8888/users"));
+    final response = await http.get(
+      Uri.parse("http://localhost:$serverPort/users"),
+    );
     expect(response.statusCode, 200);
   });
 
   test("Request with path parameter of type needing parse OK", () async {
-    final response = await http.get(Uri.parse("http://localhost:8888/users/1"));
+    final response = await http.get(
+      Uri.parse("http://localhost:$serverPort/users/1"),
+    );
     expect(response.statusCode, 200);
   });
 
   test("Request with path parameter of wrong type returns 404", () async {
     final response = await http.get(
-      Uri.parse("http://localhost:8888/users/foo"),
+      Uri.parse("http://localhost:$serverPort/users/foo"),
     );
     expect(response.statusCode, 404);
   });
 
   test("Request with path parameter and body", () async {
     final response = await http.put(
-      Uri.parse("http://localhost:8888/users/2"),
+      Uri.parse("http://localhost:$serverPort/users/2"),
       headers: {"Content-Type": "application/json;charset=utf-8"},
       body: json.encode({"name": "joe"}),
     );
@@ -65,7 +74,7 @@ void main() {
 
   test("Request without path parameter and body", () async {
     final response = await http.post(
-      Uri.parse("http://localhost:8888/users"),
+      Uri.parse("http://localhost:$serverPort/users"),
       headers: {"Content-Type": "application/json;charset=utf-8"},
       body: json.encode({"name": "joe"}),
     );
@@ -74,7 +83,7 @@ void main() {
 
   test("Non-integer, oddly named identifier", () async {
     final response = await http.get(
-      Uri.parse("http://localhost:8888/string/bar"),
+      Uri.parse("http://localhost:$serverPort/string/bar"),
     );
     expect(response.body, '"bar"');
   });

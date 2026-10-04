@@ -10,6 +10,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 int port = 8886;
 
 void main() {
@@ -349,7 +352,8 @@ void main() {
 
     setUp(() async {
       client = HttpClient();
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
       server.idleTimeout = const Duration(seconds: 1);
     });
 
@@ -373,7 +377,9 @@ void main() {
           controller.receive(Request(req));
         });
 
-        var req = await client.postUrl(Uri.parse("http://localhost:8123"));
+        var req = await client.postUrl(
+          Uri.parse("http://localhost:$serverPort"),
+        );
         req.headers.add(
           HttpHeaders.contentTypeHeader,
           "application/json; charset=utf-8",
@@ -393,7 +399,7 @@ void main() {
         await serverHasNoMoreConnections(server);
 
         // Make sure we can still send some more requests;
-        req = await client.postUrl(Uri.parse("http://localhost:8123"));
+        req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
         req.headers.add(
           HttpHeaders.contentTypeHeader,
           "application/json; charset=utf-8",
@@ -419,7 +425,9 @@ void main() {
           controller.receive(Request(req));
         });
 
-        var req = await client.postUrl(Uri.parse("http://localhost:8123"));
+        var req = await client.postUrl(
+          Uri.parse("http://localhost:$serverPort"),
+        );
         req.headers.add(
           HttpHeaders.contentTypeHeader,
           "application/octet-stream",
@@ -438,7 +446,7 @@ void main() {
         expect(serverHasNoMoreConnections(server), completes);
 
         // Make sure we can still send some more requests;
-        req = await client.postUrl(Uri.parse("http://localhost:8123"));
+        req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
         req.headers.add(
           HttpHeaders.contentTypeHeader,
           "application/octet-stream",

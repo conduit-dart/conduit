@@ -6,6 +6,9 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   final client = HttpClient();
   final fileDirectory = Directory("temp_files");
@@ -84,7 +87,9 @@ void main() {
       );
     router.didAddToChannel();
 
-    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+
+    serverPort = server.port;
     server.map(Request.new).listen(router.receive);
   });
 
@@ -214,7 +219,7 @@ void main() {
 
   test("Can add extension", () async {
     final response = await http.get(
-      Uri.parse("http://localhost:8888/silly/file.silly"),
+      Uri.parse("http://localhost:$serverPort/silly/file.silly"),
     );
     expect(response.statusCode, 200);
     expect(response.headers["content-type"], "text/html; charset=utf-8");
@@ -226,7 +231,7 @@ void main() {
   });
 
   test("Client connection closed before data is sent still shuts down stream", () async {
-    final socket = await Socket.connect("localhost", 8888);
+    final socket = await Socket.connect("localhost", serverPort);
     const request =
         "GET /files/file.html HTTP/1.1\r\nConnection: keep-alive\r\nHost: localhost\r\n\r\n";
     socket.add(request.codeUnits);
@@ -242,7 +247,7 @@ void main() {
 
   test("Provide onFileNotFound provides another response", () async {
     final response = await http.get(
-      Uri.parse("http://localhost:8888/redirect/jkasdjlkasjdksadj"),
+      Uri.parse("http://localhost:$serverPort/redirect/jkasdjlkasjdksadj"),
     );
     expect(response.statusCode, 200);
     expect(json.decode(response.body), {"k": "v"});
@@ -334,7 +339,7 @@ Future<http.Response> getFile(
   Map<String, String>? headers,
 }) async {
   return http.get(
-    Uri.parse("http://localhost:8888/files$path"),
+    Uri.parse("http://localhost:$serverPort/files$path"),
     headers: headers,
   );
 }
@@ -344,11 +349,11 @@ Future<http.Response> getCacheableFile(
   DateTime? ifModifiedSince,
 }) async {
   if (ifModifiedSince == null) {
-    return http.get(Uri.parse("http://localhost:8888/cache$path"));
+    return http.get(Uri.parse("http://localhost:$serverPort/cache$path"));
   }
 
   return http.get(
-    Uri.parse("http://localhost:8888/cache$path"),
+    Uri.parse("http://localhost:$serverPort/cache$path"),
     headers: {
       HttpHeaders.ifModifiedSinceHeader: HttpDate.format(ifModifiedSince),
     },
