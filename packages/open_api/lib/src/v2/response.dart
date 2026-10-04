@@ -5,7 +5,7 @@ import 'package:conduit_open_api/src/v2/schema.dart';
 
 /// Represents an HTTP response in the OpenAPI specification.
 class APIResponse extends APIObject {
-  APIResponse();
+  new();
 
   String? description = "";
   APISchemaObject? schema;

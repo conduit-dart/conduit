@@ -63,7 +63,7 @@ import 'sql_resolver_factory.dart';
 /// graph-side hook is therefore the [graphFactory] handle the
 /// builder pulls directly out of the resolver-hook set's owner.
 class ResolverHookSet {
-  ResolverHookSet({
+  new({
     required this.attributeResolver,
     required this.relationshipResolver,
     required this.queryListResolver,
@@ -114,7 +114,7 @@ class PersistenceResolverFactory<G extends Object> {
   /// Pass [sql] for relational dispatch, [graph] for graph dispatch, or
   /// both for cross-source schemas. An umbrella with neither configured
   /// is legal but useless — every produced resolver returns `null`.
-  PersistenceResolverFactory({this.sql, this.graph});
+  new({this.sql, this.graph});
 
   /// SQL resolver factory, or null in graph-only deployments.
   final SqlResolverFactory? sql;

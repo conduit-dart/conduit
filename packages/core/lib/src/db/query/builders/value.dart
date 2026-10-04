@@ -11,7 +11,7 @@ import 'package:conduit_core/src/db/query/builders/column.dart';
 import 'package:conduit_core/src/db/query/builders/table.dart';
 
 class ColumnValueBuilder extends ColumnBuilder {
-  ColumnValueBuilder(
+  new(
     TableBuilder super.table,
     ManagedPropertyDescription super.property,
     dynamic value,

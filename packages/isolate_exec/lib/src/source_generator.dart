@@ -12,7 +12,7 @@ import 'package:conduit_isolate_exec/src/executable.dart';
 import 'package:path/path.dart';
 
 class SourceGenerator {
-  SourceGenerator(
+  new(
     this.executableType, {
     this.imports = const [],
     this.additionalTypes = const [],

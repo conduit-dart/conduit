@@ -1309,7 +1309,7 @@ Future<List<String>> applyDifference(
 }
 
 class TableDefinition {
-  TableDefinition(this.name);
+  new(this.name);
 
   static Future<Map<String, TableDefinition>> get(
     PostgreSQLPersistentStore store,
@@ -1471,7 +1471,7 @@ class TableDefinition {
 }
 
 class ColumnDefinition {
-  ColumnDefinition(List<dynamic> row) {
+  new(List<dynamic> row) {
     name = row[0] as String;
     dataType = row[2] as String;
     isNullable = row[3] == "YES";

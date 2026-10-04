@@ -20,7 +20,7 @@ import 'package:conduit_core/src/http/http.dart';
 abstract class QueryController<InstanceType extends ManagedObject>
     extends ResourceController {
   /// Create an instance of [QueryController].
-  QueryController(ManagedContext context) : super() {
+  new(ManagedContext context) : super() {
     query = Query<InstanceType>(context);
   }
 

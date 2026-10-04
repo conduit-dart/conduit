@@ -6,7 +6,7 @@ import 'package:conduit_core/src/application/isolate_supervisor.dart';
 import 'package:logging/logging.dart';
 
 class ApplicationIsolateServer extends ApplicationServer {
-  ApplicationIsolateServer(
+  new(
     Type channelType,
     ApplicationOptions configuration,
     int identifier,
@@ -81,7 +81,7 @@ typedef IsolateEntryFunction = void Function(
 );
 
 class ApplicationInitialServerMessage {
-  ApplicationInitialServerMessage(
+  new(
     this.streamTypeName,
     this.streamLibraryURI,
     this.configuration,
@@ -99,7 +99,7 @@ class ApplicationInitialServerMessage {
 }
 
 class MessageHubMessage {
-  MessageHubMessage(this.payload);
+  new(this.payload);
 
   dynamic payload;
 }

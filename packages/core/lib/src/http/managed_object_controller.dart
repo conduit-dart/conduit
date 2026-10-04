@@ -40,7 +40,7 @@ import 'package:conduit_open_api/v3.dart';
 class ManagedObjectController<InstanceType extends ManagedObject>
     extends ResourceController {
   /// Creates an instance of a [ManagedObjectController].
-  ManagedObjectController(ManagedContext context) : super() {
+  new(ManagedContext context) : super() {
     _query = Query<InstanceType>(context);
   }
 
@@ -49,10 +49,7 @@ class ManagedObjectController<InstanceType extends ManagedObject>
   /// This method is used when generating instances of this type dynamically from runtime values,
   /// where the static type argument cannot be defined. Behaves just like the unnamed constructor.
   ///
-  ManagedObjectController.forEntity(
-    ManagedEntity entity,
-    ManagedContext context,
-  ) : super() {
+  new forEntity(ManagedEntity entity, ManagedContext context) : super() {
     _query = Query.forEntity(entity, context);
   }
 

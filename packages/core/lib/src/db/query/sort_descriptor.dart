@@ -4,7 +4,7 @@ import 'package:conduit_core/src/db/query/query.dart';
 ///
 /// See [Query.sortBy] and [Query.pageBy] for more details.
 class QuerySortDescriptor {
-  QuerySortDescriptor(this.key, this.order);
+  new(this.key, this.order);
 
   /// The name of a property to sort by.
   String key;

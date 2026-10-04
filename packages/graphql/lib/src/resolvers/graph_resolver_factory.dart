@@ -55,11 +55,7 @@ import 'package:conduit_graph/conduit_graph.dart';
 /// up internally so the schema builder can route resolution by
 /// runtime [Type] alone.
 class _NodeDispatcher {
-  _NodeDispatcher({
-    required this.list,
-    required this.byId,
-    required this.traverse,
-  });
+  new({required this.list, required this.byId, required this.traverse});
 
   final Future<List<GraphNode<dynamic>>> Function(Map<String, dynamic> args)
   list;
@@ -85,7 +81,7 @@ class _NodeDispatcher {
 ///    factory)`. The builder will call back into the public methods
 ///    below to populate `resolve` on every emitted field.
 class GraphResolverFactory {
-  GraphResolverFactory(this.context);
+  new(this.context);
 
   /// The context — provides the persistent store + the data-model
   /// registry the resolvers look entity types up in.

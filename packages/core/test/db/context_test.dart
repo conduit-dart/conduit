@@ -98,7 +98,7 @@ class _T {
   String? name;
 }
 
-class T extends ManagedObject<_T> implements _T {}
+class T extends ManagedObject<_T> implements _T;
 
 class _U {
   @primaryKey
@@ -106,7 +106,7 @@ class _U {
   String? name;
 }
 
-class U extends ManagedObject<_U> implements _U {}
+class U extends ManagedObject<_U> implements _U;
 
 Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
   final persistentStore = PostgresTestConfig().persistentStore();

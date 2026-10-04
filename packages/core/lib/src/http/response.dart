@@ -14,7 +14,7 @@ class Response implements RequestOrResponse {
   ///
   /// There exist convenience constructors for common response status codes
   /// and you should prefer to use those.
-  Response(int this.statusCode, Map<String, dynamic>? headers, dynamic body) {
+  new(int this.statusCode, Map<String, dynamic>? headers, dynamic body) {
     this.body = body;
     this.headers = LinkedHashMap<String, dynamic>(
       equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
@@ -24,65 +24,62 @@ class Response implements RequestOrResponse {
   }
 
   /// Represents a 200 response.
-  Response.ok(dynamic body, {Map<String, dynamic>? headers})
+  new ok(dynamic body, {Map<String, dynamic>? headers})
     : this(HttpStatus.ok, headers, body);
 
   /// Represents a 201 response.
   ///
   /// The [location] is a URI that is added as the Location header.
-  Response.created(
-    String location, {
-    dynamic body,
-    Map<String, dynamic>? headers,
-  }) : this(
-         HttpStatus.created,
-         _headersWith(headers, {HttpHeaders.locationHeader: location}),
-         body,
-       );
+  new created(String location, {dynamic body, Map<String, dynamic>? headers})
+    : this(
+        HttpStatus.created,
+        _headersWith(headers, {HttpHeaders.locationHeader: location}),
+        body,
+      );
 
   /// Represents a 202 response.
-  Response.accepted({Map<String, dynamic>? headers})
+  new accepted({Map<String, dynamic>? headers})
     : this(HttpStatus.accepted, headers, null);
 
   /// Represents a 204 response.
-  Response.noContent({Map<String, dynamic>? headers})
+  new noContent({Map<String, dynamic>? headers})
     : this(HttpStatus.noContent, headers, null);
 
   /// Represents a 304 response.
   ///
   /// Where [lastModified] is the last modified date of the resource
   /// and [cachePolicy] is the same policy as applied when this resource was first fetched.
-  Response.notModified(DateTime lastModified, this.cachePolicy) {
+  new notModified(DateTime lastModified, this.cachePolicy) {
     statusCode = HttpStatus.notModified;
     headers = {HttpHeaders.lastModifiedHeader: HttpDate.format(lastModified)};
   }
 
   /// Represents a 400 response.
-  Response.badRequest({Map<String, dynamic>? headers, dynamic body})
+  new badRequest({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.badRequest, headers, body);
 
   /// Represents a 401 response.
-  Response.unauthorized({Map<String, dynamic>? headers, dynamic body})
+  new unauthorized({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.unauthorized, headers, body);
 
   /// Represents a 403 response.
-  Response.forbidden({Map<String, dynamic>? headers, dynamic body})
+  new forbidden({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.forbidden, headers, body);
 
   /// Represents a 404 response.
-  Response.notFound({Map<String, dynamic>? headers, dynamic body})
+  new notFound({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.notFound, headers, body);
 
   /// Represents a 409 response.
-  Response.conflict({Map<String, dynamic>? headers, dynamic body})
+  new conflict({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.conflict, headers, body);
 
   /// Represents a 410 response.
-  Response.gone({Map<String, dynamic>? headers, dynamic body})
+  new gone({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.gone, headers, body);
 
   /// Represents a 500 response.
-  Response.serverError({Map<String, dynamic>? headers, dynamic body})
+  new serverError({Map<String, dynamic>? headers, dynamic body})
     : this(HttpStatus.internalServerError, headers, body);
 
   /// The default value of a [contentType].

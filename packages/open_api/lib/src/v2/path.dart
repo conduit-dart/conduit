@@ -5,7 +5,7 @@ import 'package:conduit_open_api/src/v2/parameter.dart';
 
 /// Represents a path (also known as a route) in the OpenAPI specification.
 class APIPath extends APIObject {
-  APIPath();
+  new();
 
   List<APIParameter?> parameters = [];
   Map<String, APIOperation?> operations = {};

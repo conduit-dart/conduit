@@ -35,7 +35,7 @@ class ManagedType {
   /// Creates a new instance.
   ///
   /// [type] must be representable by [ManagedPropertyType].
-  ManagedType(this.type, this.kind, this.elements, this.enumerationMap);
+  new(this.type, this.kind, this.elements, this.enumerationMap);
 
   static ManagedType make<T>(
     ManagedPropertyType kind,

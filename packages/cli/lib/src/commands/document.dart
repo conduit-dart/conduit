@@ -9,7 +9,7 @@ import 'package:conduit/src/mixins/project.dart';
 import 'package:conduit/src/scripts/openapi_builder.dart';
 
 class CLIDocument extends CLICommand with CLIProject, CLIDocumentOptions {
-  CLIDocument() {
+  new() {
     registerCommand(CLIDocumentServe());
     registerCommand(CLIDocumentClient());
   }

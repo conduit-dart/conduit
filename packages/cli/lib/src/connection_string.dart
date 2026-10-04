@@ -12,7 +12,7 @@ enum DbFlavor {
   sqlite('sqlite'),
   mysql('mysql');
 
-  const DbFlavor(this.canonical);
+  new(this.canonical);
 
   /// Canonical scheme name (the form preferred in CLI help text).
   final String canonical;
@@ -25,7 +25,7 @@ enum DbFlavor {
 /// pulling sqlite/mysql packages into the CLI proper if the user
 /// never invokes them).
 class ParsedConnection {
-  ParsedConnection({
+  new({
     required this.flavor,
     required this.raw,
     this.username,
@@ -67,7 +67,7 @@ class ParsedConnection {
 /// at the command boundary; raising a typed error here keeps the
 /// pure-parsing module independent of the CLI's exception types.
 class ConnectionStringFormatException implements Exception {
-  ConnectionStringFormatException(this.message);
+  new(this.message);
   final String message;
 
   @override

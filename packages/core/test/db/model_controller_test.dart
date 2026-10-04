@@ -81,7 +81,7 @@ void main() {
 }
 
 class TestModelController extends QueryController<TestModel> {
-  TestModelController(super.context);
+  new(super.context);
 
   @Operation.get()
   Future<Response> getAll() async {
@@ -170,7 +170,7 @@ class TestModelController extends QueryController<TestModel> {
   }
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @Column(primaryKey: true)
@@ -181,7 +181,7 @@ class _TestModel {
 }
 
 class StringController extends QueryController<StringModel> {
-  StringController(super.context);
+  new(super.context);
 
   @Operation.get("id")
   Future<Response> get(@Bind.path("id") String id) async {
@@ -194,7 +194,7 @@ class StringController extends QueryController<StringModel> {
   }
 }
 
-class StringModel extends ManagedObject<_StringModel> implements _StringModel {}
+class StringModel extends ManagedObject<_StringModel> implements _StringModel;
 
 class _StringModel {
   @Column(primaryKey: true)

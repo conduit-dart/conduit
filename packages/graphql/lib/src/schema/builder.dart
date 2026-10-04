@@ -82,7 +82,7 @@ class SchemaBuilder {
   /// no arguments. Flipping any of them on grows the schema with a
   /// new generated type per entity (a `<Entity>Filter` input, a
   /// `<Entity>SortInput`, etc.).
-  SchemaBuilder({
+  new({
     GraphQLScalarType<DateTime, String>? dateTimeScalar,
     GraphQLScalarType<String, String>? uuidScalar,
     this.bigIntegerAsString = true,
@@ -2007,7 +2007,7 @@ class SchemaBuilder {
 /// [GraphQLSchema] with the side-channel maps callers need to introspect
 /// which half of the umbrella produced which type.
 class PersistenceSchema {
-  PersistenceSchema._({
+  new _({
     required this.schema,
     required this.sqlObjectTypes,
     required this.graphObjectTypes,

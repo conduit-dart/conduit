@@ -12,7 +12,7 @@ import 'package:conduit_runtime/runtime.dart';
 /// about the property such as its name and type. Those properties are represented by concrete subclasses of this class, [ManagedRelationshipDescription]
 /// and [ManagedAttributeDescription].
 abstract class ManagedPropertyDescription {
-  ManagedPropertyDescription(
+  new(
     this.entity,
     this.name,
     this.type,
@@ -156,7 +156,7 @@ abstract class ManagedPropertyDescription {
 /// Each scalar property [ManagedObject] object persists is described by an instance of [ManagedAttributeDescription]. This class
 /// adds two properties to [ManagedPropertyDescription] that are only valid for non-relationship types, [isPrimaryKey] and [defaultValue].
 class ManagedAttributeDescription extends ManagedPropertyDescription {
-  ManagedAttributeDescription(
+  new(
     super.entity,
     super.name,
     ManagedType super.type,
@@ -174,7 +174,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     super.responseKey,
   }) : isPrimaryKey = primaryKey;
 
-  ManagedAttributeDescription.transient(
+  new transient(
     super.entity,
     super.name,
     ManagedType super.type,
@@ -396,7 +396,7 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
 
 /// Contains information for a relationship property of a [ManagedObject].
 class ManagedRelationshipDescription extends ManagedPropertyDescription {
-  ManagedRelationshipDescription(
+  new(
     super.entity,
     super.name,
     super.type,

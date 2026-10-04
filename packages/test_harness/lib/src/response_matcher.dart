@@ -9,7 +9,7 @@ import 'matchers.dart';
 ///
 /// See [hasStatus] or [hasResponse] for more details. Use [hasResponse] to create instances of this type.
 class HTTPResponseMatcher extends Matcher {
-  HTTPResponseMatcher(this.statusCode, this.headers, this.body);
+  new(this.statusCode, this.headers, this.body);
 
   final int? statusCode;
   final HTTPHeaderMatcher? headers;

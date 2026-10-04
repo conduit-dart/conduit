@@ -29,7 +29,7 @@ enum GraphFilterCombinator { and, or }
 /// `QueryPredicate.format` — it emits a tree that backends render in
 /// their own dialect (Cypher, openCypher, Gremlin, …).
 sealed class GraphFilterExpression {
-  const GraphFilterExpression();
+  const new();
 
   /// Combine this expression with [other] using AND.
   GraphFilterExpression and(GraphFilterExpression other) =>
@@ -42,11 +42,7 @@ sealed class GraphFilterExpression {
 
 /// A leaf filter: `<property> <op> <value?>`.
 final class GraphPropertyFilter extends GraphFilterExpression {
-  const GraphPropertyFilter({
-    required this.property,
-    required this.operator,
-    this.value,
-  });
+  const new({required this.property, required this.operator, this.value});
 
   final String property;
   final GraphFilterOperator operator;
@@ -58,7 +54,7 @@ final class GraphPropertyFilter extends GraphFilterExpression {
 
 /// A compound expression — n-ary AND or OR.
 final class GraphCompoundFilter extends GraphFilterExpression {
-  GraphCompoundFilter(this.combinator, List<GraphFilterExpression> children)
+  new(this.combinator, List<GraphFilterExpression> children)
     : children = List.unmodifiable(children) {
     if (children.isEmpty) {
       throw GraphInvalidQuery('compound filter must have at least one child');
@@ -74,7 +70,7 @@ final class GraphCompoundFilter extends GraphFilterExpression {
 
 /// A logical NOT.
 final class GraphNotFilter extends GraphFilterExpression {
-  const GraphNotFilter(this.child);
+  const new(this.child);
 
   final GraphFilterExpression child;
 
@@ -92,7 +88,7 @@ final class GraphNotFilter extends GraphFilterExpression {
 /// (This mirrors the proxy-based predicate building in conduit core's
 /// `Query<T>.where` — structurally borrowed, graph-shaped output.)
 class GraphFilterTerm {
-  GraphFilterTerm(this._property);
+  new(this._property);
 
   final String _property;
 
@@ -171,7 +167,7 @@ class GraphFilterTerm {
 /// The proxy passed to a `where` closure. Property accesses return
 /// [GraphFilterTerm] objects.
 class GraphWhereProxy {
-  GraphWhereProxy();
+  new();
 
   /// Look up a property as a filter term.
   ///

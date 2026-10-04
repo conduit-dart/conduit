@@ -12,7 +12,7 @@ import 'package:conduit_core/src/http/http.dart';
 /// Additional mappings are added via [add]. This method must be called per-isolate and it is recommended
 /// to add mappings in an application's [ApplicationChannel] subclass constructor.
 class CodecRegistry {
-  CodecRegistry._() {
+  new _() {
     add(
       ContentType("application", "json", charset: "utf-8"),
       const JsonCodec(),
@@ -197,7 +197,7 @@ class CodecRegistry {
 }
 
 class _FormCodec extends Codec<Map<String, dynamic>?, dynamic> {
-  const _FormCodec();
+  const new();
 
   @override
   Converter<Map<String, dynamic>, String> get encoder => const _FormEncoder();
@@ -207,7 +207,7 @@ class _FormCodec extends Codec<Map<String, dynamic>?, dynamic> {
 }
 
 class _FormEncoder extends Converter<Map<String, dynamic>, String> {
-  const _FormEncoder();
+  const new();
 
   @override
   String convert(Map<String, dynamic> data) {
@@ -233,7 +233,7 @@ class _FormDecoder extends Converter<String, Map<String, dynamic>> {
   // then data is List<int> (from CodecRegistry) and will default to being UTF8 decoded first.
   // Otherwise, if String, the request body has been decoded according to charset already.
 
-  const _FormDecoder();
+  const new();
 
   @override
   Map<String, dynamic> convert(String data) {
@@ -247,7 +247,7 @@ class _FormDecoder extends Converter<String, Map<String, dynamic>> {
 }
 
 class _FormSink implements ChunkedConversionSink<String> {
-  _FormSink(this._outSink);
+  new(this._outSink);
 
   final _FormDecoder decoder = const _FormDecoder();
   final Sink<Map<String, dynamic>> _outSink;

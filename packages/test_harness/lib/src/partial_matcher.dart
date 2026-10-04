@@ -1,7 +1,7 @@
 import 'package:matcher/matcher.dart';
 
 class NotPresentMatcher extends Matcher {
-  const NotPresentMatcher();
+  const new();
 
   @override
   bool matches(dynamic item, Map matchState) {
@@ -16,7 +16,7 @@ class NotPresentMatcher extends Matcher {
 }
 
 class PartialMapMatcher extends Matcher {
-  PartialMapMatcher(Map<String, dynamic> m) {
+  new(Map<String, dynamic> m) {
     m.forEach((key, val) {
       if (val is Matcher) {
         _matcherMap[key] = val;

@@ -15,7 +15,7 @@ import 'dart:convert';
 import 'package:benchmark_harness/benchmark_harness.dart';
 
 class _EncodeListBench extends BenchmarkBase {
-  _EncodeListBench(this.payload)
+  new(this.payload)
     : super('json.encode List[${(payload as List).length} maps]');
   final Object payload;
 
@@ -26,7 +26,7 @@ class _EncodeListBench extends BenchmarkBase {
 }
 
 class _DecodeListBench extends BenchmarkBase {
-  _DecodeListBench(this.encoded) : super('json.decode List[1000 maps]');
+  new(this.encoded) : super('json.decode List[1000 maps]');
   final String encoded;
 
   @override
@@ -36,7 +36,7 @@ class _DecodeListBench extends BenchmarkBase {
 }
 
 class _EncodeMapBench extends BenchmarkBase {
-  _EncodeMapBench(this.payload) : super('json.encode Map[20 keys]');
+  new(this.payload) : super('json.encode Map[20 keys]');
   final Object payload;
 
   @override
@@ -46,7 +46,7 @@ class _EncodeMapBench extends BenchmarkBase {
 }
 
 class _DecodeMapBench extends BenchmarkBase {
-  _DecodeMapBench(this.encoded) : super('json.decode Map[20 keys]');
+  new(this.encoded) : super('json.decode Map[20 keys]');
   final String encoded;
 
   @override

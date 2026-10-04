@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class UnsupportedDoubleOneOf extends ManagedObject<_UDOOO> {}
+class UnsupportedDoubleOneOf extends ManagedObject<_UDOOO>;
 
 class _UDOOO {
   @primaryKey

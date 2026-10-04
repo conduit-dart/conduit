@@ -32,7 +32,7 @@ abstract class GraphEdge<
   From extends GraphNode<From>,
   To extends GraphNode<To>
 > {
-  GraphEdge({
+  new({
     required this.label,
     required this.from,
     required this.to,

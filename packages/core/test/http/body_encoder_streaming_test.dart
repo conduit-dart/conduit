@@ -507,7 +507,7 @@ class CrashingEncoder extends Converter<String, List<int>> {
 }
 
 class CrashingSink implements ChunkedConversionSink<String> {
-  CrashingSink(this.sink);
+  new(this.sink);
 
   Sink<List<int>> sink;
   int count = 0;

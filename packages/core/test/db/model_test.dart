@@ -806,7 +806,7 @@ class _User {
   ManagedSet<Post>? posts;
 }
 
-class Post extends ManagedObject<_Post> implements _Post {}
+class Post extends ManagedObject<_Post> implements _Post;
 
 class _Post {
   @primaryKey
@@ -1022,7 +1022,7 @@ class _PrivateField {
   String? _private;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey
@@ -1047,7 +1047,7 @@ class _TransientOwner {
 }
 
 class TransientBelongsTo extends ManagedObject<_TransientBelongsTo>
-    implements _TransientBelongsTo {}
+    implements _TransientBelongsTo;
 
 class _TransientBelongsTo {
   @primaryKey
@@ -1062,7 +1062,7 @@ void expectError(ValidationException exception, Matcher matcher) {
 }
 
 class DocumentTest extends ManagedObject<_DocumentTest>
-    implements _DocumentTest {}
+    implements _DocumentTest;
 
 class _DocumentTest {
   @primaryKey
@@ -1073,7 +1073,7 @@ class _DocumentTest {
 
 class ConstructorOverride extends ManagedObject<_ConstructorOverride>
     implements _ConstructorOverride {
-  ConstructorOverride() {
+  new() {
     value = "foo";
   }
 }
@@ -1087,7 +1087,7 @@ class _ConstructorOverride {
 
 class DefaultConstructorHasOptionalArgs
     extends ManagedObject<_ConstructorTableDef> {
-  DefaultConstructorHasOptionalArgs({int? foo});
+  new({int? foo});
 }
 
 class _ConstructorTableDef {
@@ -1095,7 +1095,7 @@ class _ConstructorTableDef {
   int? id;
 }
 
-class Top extends ManagedObject<_Top> implements _Top {}
+class Top extends ManagedObject<_Top> implements _Top;
 
 class _Top {
   @Column(primaryKey: true)
@@ -1104,7 +1104,7 @@ class _Top {
   late ManagedSet<Middle> middles;
 }
 
-class Middle extends ManagedObject<_Middle> implements _Middle {}
+class Middle extends ManagedObject<_Middle> implements _Middle;
 
 class _Middle {
   @Column(primaryKey: true)
@@ -1117,7 +1117,7 @@ class _Middle {
   late ManagedSet<Bottom> bottoms;
 }
 
-class Bottom extends ManagedObject<_Bottom> implements _Bottom {}
+class Bottom extends ManagedObject<_Bottom> implements _Bottom;
 
 class _Bottom {
   @Column(primaryKey: true)

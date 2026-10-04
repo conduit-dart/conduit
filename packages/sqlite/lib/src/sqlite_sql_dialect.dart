@@ -31,7 +31,7 @@ import 'package:conduit_core/conduit_core.dart';
 /// against SQLite need to fall back to the "create temp + copy +
 /// rename" pattern, which the schema generator handles separately.
 class SqliteSqlDialect extends SqlDialect {
-  const SqliteSqlDialect();
+  const new();
 
   @override
   String get name => 'sqlite';

@@ -40,7 +40,7 @@ import 'packstream.dart';
 
 /// Raised by the Bolt client when the wire-level protocol fails.
 class BoltProtocolException implements Exception {
-  BoltProtocolException(this.message, {this.cause});
+  new(this.message, {this.cause});
   final String message;
   final Object? cause;
   @override
@@ -55,7 +55,7 @@ class BoltProtocolException implements Exception {
 /// Carries the server-supplied `code` (e.g.
 /// `Neo.ClientError.Statement.SyntaxError`) and `message`.
 class BoltFailure implements Exception {
-  BoltFailure(this.code, this.message);
+  new(this.code, this.message);
   final String code;
   final String message;
   @override
@@ -65,7 +65,7 @@ class BoltFailure implements Exception {
 /// One row of a query result. The row is positional; pair it with
 /// `BoltResult.fields` for the column names.
 class BoltRecord {
-  BoltRecord(List<Object?> values) : values = List.unmodifiable(values);
+  new(List<Object?> values) : values = List.unmodifiable(values);
   final List<Object?> values;
 
   /// Convenience: zip the row against a column-name list into a map.
@@ -85,11 +85,7 @@ class BoltRecord {
 /// the RUN SUCCESS, the records returned by PULL, and the trailing
 /// SUCCESS metadata.
 class BoltResult {
-  BoltResult({
-    required this.fields,
-    required this.records,
-    required this.summary,
-  });
+  new({required this.fields, required this.records, required this.summary});
 
   final List<String> fields;
   final List<BoltRecord> records;
@@ -102,7 +98,7 @@ class BoltResult {
 
 /// The Bolt protocol version a connection negotiated.
 class BoltVersion {
-  const BoltVersion(this.major, this.minor);
+  const new(this.major, this.minor);
   final int major;
   final int minor;
   bool get isUnsupported => major == 0 && minor == 0;
@@ -200,7 +196,7 @@ class _ChunkReassembler {
 /// Not safe for concurrent use — calls must be serialized by the
 /// caller (`Neo4jPersistentStore` does this with a per-call lock).
 class BoltConnection {
-  BoltConnection._(this._socket, this.version);
+  new _(this._socket, this.version);
 
   final Socket _socket;
 
@@ -546,7 +542,7 @@ class BoltConnection {
 
 /// Handle for an explicit Bolt transaction.
 class BoltTransaction {
-  BoltTransaction._(this._connection);
+  new _(this._connection);
 
   final BoltConnection _connection;
   bool _settled = false;

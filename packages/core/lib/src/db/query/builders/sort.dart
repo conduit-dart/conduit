@@ -8,7 +8,7 @@ import 'package:conduit_core/src/db/query/builders/table.dart';
 import 'package:conduit_core/src/db/query/query.dart';
 
 class ColumnSortBuilder extends ColumnBuilder {
-  ColumnSortBuilder(TableBuilder table, String key, QuerySortOrder order)
+  new(TableBuilder table, String key, QuerySortOrder order)
     : order = order == QuerySortOrder.ascending ? "ASC" : "DESC",
       super(table, table.entity.properties[key]);
 
@@ -18,7 +18,7 @@ class ColumnSortBuilder extends ColumnBuilder {
 }
 
 class ColumnSortPredicateBuilder extends ColumnSortBuilder {
-  ColumnSortPredicateBuilder(super.table, super.key, super.order) : _key = key;
+  new(super.table, super.key, super.order) : _key = key;
 
   final String _key;
 

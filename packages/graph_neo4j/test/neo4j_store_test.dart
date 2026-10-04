@@ -12,7 +12,7 @@ import 'package:conduit_graph_neo4j/conduit_graph_neo4j.dart';
 import 'package:test/test.dart';
 
 class User extends GraphNode<User> {
-  User() : super(labels: [GraphLabel('User')]);
+  new() : super(labels: [GraphLabel('User')]);
 }
 
 void main() {

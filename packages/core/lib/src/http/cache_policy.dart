@@ -9,7 +9,7 @@ class CachePolicy {
   /// Policies applied to [Response.cachePolicy] will add the appropriate
   /// headers to that response. See properties for definitions of arguments
   /// to this constructor.
-  const CachePolicy({
+  const new({
     this.preventIntermediateProxyCaching = false,
     this.preventCaching = false,
     this.requireConditionalRequest = false,

@@ -3,9 +3,9 @@ import 'package:conduit_open_api/src/object.dart';
 
 /// An object representing a Server.
 class APIServerDescription extends APIObject {
-  APIServerDescription(this.url, {this.description, this.variables});
+  new(this.url, {this.description, this.variables});
 
-  APIServerDescription.empty();
+  new empty();
 
   /// A URL to the target host.
   ///
@@ -49,13 +49,9 @@ class APIServerDescription extends APIObject {
 
 /// An object representing a Server Variable for server URL template substitution.
 class APIServerVariable extends APIObject {
-  APIServerVariable(
-    this.defaultValue, {
-    this.availableValues,
-    this.description,
-  });
+  new(this.defaultValue, {this.availableValues, this.description});
 
-  APIServerVariable.empty();
+  new empty();
 
   /// An enumeration of string values to be used if the substitution options are from a limited set.
   List<String>? availableValues;

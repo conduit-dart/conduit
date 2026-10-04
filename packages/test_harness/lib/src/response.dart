@@ -9,7 +9,7 @@ part of 'agent.dart';
 /// Prefer to use methods like [expectResponse], [hasResponse] and [hasStatus] when
 /// validating response properties.
 class TestResponse {
-  TestResponse._(this._innerResponse) : body = TestResponseBody(_innerResponse);
+  new _(this._innerResponse) : body = TestResponseBody(_innerResponse);
 
   final HttpClientResponse _innerResponse;
 
@@ -68,9 +68,7 @@ class TestResponseBody extends BodyDecoder {
   /// See [CodecRegistry] for more information about how data is decoded.
   ///
   /// Decoded data is cached the after it is decoded.
-  TestResponseBody(HttpClientResponse response)
-    : _response = response,
-      super(response) {
+  new(HttpClientResponse response) : _response = response, super(response) {
     _hasContent =
         (response.headers.contentLength) > 0 ||
         response.headers.chunkedTransferEncoding;

@@ -18,7 +18,7 @@ import 'package:conduit_open_api/v3.dart';
 /// a [Router] is the [ApplicationChannel.entryPoint].
 class Router extends Controller {
   /// Creates a new [Router].
-  Router({String? basePath, Future Function(Request)? notFoundHandler})
+  new({String? basePath, Future Function(Request)? notFoundHandler})
     : _unmatchedController = notFoundHandler,
       _basePathSegments =
           basePath?.split("/").where((str) => str.isNotEmpty).toList() ?? [] {
@@ -193,7 +193,7 @@ class _RootNode {
 }
 
 class _RouteController extends Controller {
-  _RouteController(this.specifications) {
+  new(this.specifications) {
     for (final p in specifications) {
       p.controller = this;
     }

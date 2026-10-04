@@ -5,7 +5,7 @@ abstract class Argument {
 }
 
 class Flag implements Argument {
-  const Flag(
+  const new(
     this.name, {
     this.abbr,
     this.help,
@@ -35,7 +35,7 @@ class Flag implements Argument {
 }
 
 class Option implements Argument {
-  const Option(
+  const new(
     this.name, {
     this.abbr,
     this.help,
@@ -71,7 +71,7 @@ class Option implements Argument {
 }
 
 class MultiOption implements Argument {
-  const MultiOption(
+  const new(
     this.name, {
     this.abbr,
     this.help,

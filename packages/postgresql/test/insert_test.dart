@@ -594,7 +594,7 @@ void main() {
   });
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 @Table(name: "simple")
 class _TestModel {
@@ -611,7 +611,7 @@ class _TestModel {
   }
 }
 
-class GenUser extends ManagedObject<_GenUser> implements _GenUser {}
+class GenUser extends ManagedObject<_GenUser> implements _GenUser;
 
 class _GenUser {
   @primaryKey
@@ -621,7 +621,7 @@ class _GenUser {
   ManagedSet<GenPost>? posts;
 }
 
-class GenPost extends ManagedObject<_GenPost> implements _GenPost {}
+class GenPost extends ManagedObject<_GenPost> implements _GenPost;
 
 class _GenPost {
   @primaryKey
@@ -632,7 +632,7 @@ class _GenPost {
   late GenUser owner;
 }
 
-class GenTime extends ManagedObject<_GenTime> implements _GenTime {}
+class GenTime extends ManagedObject<_GenTime> implements _GenTime;
 
 class _GenTime {
   @primaryKey
@@ -657,7 +657,7 @@ class _Transient {
 }
 
 class BoringObject extends ManagedObject<_BoringObject>
-    implements _BoringObject {}
+    implements _BoringObject;
 
 class _BoringObject {
   @primaryKey
@@ -680,7 +680,7 @@ class _PrivateField {
   String? _private;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey
@@ -690,7 +690,7 @@ class _EnumObject {
   EnumValues? enumValues;
 }
 
-class MultiUnique extends ManagedObject<_MultiUnique> implements _MultiUnique {}
+class MultiUnique extends ManagedObject<_MultiUnique> implements _MultiUnique;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _MultiUnique {
@@ -702,7 +702,7 @@ class _MultiUnique {
 }
 
 class NullableObject extends ManagedObject<_NullableObject>
-    implements _NullableObject {}
+    implements _NullableObject;
 
 class _NullableObject {
   @primaryKey

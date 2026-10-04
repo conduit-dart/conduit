@@ -21,7 +21,7 @@ import 'package:conduit_core/conduit_core.dart';
 // ---------------------------------------------------------------------------
 
 class _SingleEqBench extends BenchmarkBase {
-  _SingleEqBench() : super('predicate: single eq');
+  new() : super('predicate: single eq');
 
   @override
   void run() {
@@ -42,7 +42,7 @@ class _SingleEqBench extends BenchmarkBase {
 // ---------------------------------------------------------------------------
 
 class _AndChainBench extends BenchmarkBase {
-  _AndChainBench(this.terms) : super('predicate: $terms-term AND');
+  new(this.terms) : super('predicate: $terms-term AND');
   final int terms;
 
   @override
@@ -69,7 +69,7 @@ class _AndChainBench extends BenchmarkBase {
 // ---------------------------------------------------------------------------
 
 class _MixedAndOrBench extends BenchmarkBase {
-  _MixedAndOrBench() : super('predicate: mixed AND/OR');
+  new() : super('predicate: mixed AND/OR');
 
   @override
   void run() {
@@ -105,7 +105,7 @@ class _MixedAndOrBench extends BenchmarkBase {
 // ---------------------------------------------------------------------------
 
 class _InListBench extends BenchmarkBase {
-  _InListBench(this.size) : super('predicate: IN($size)');
+  new(this.size) : super('predicate: IN($size)');
   final int size;
 
   @override

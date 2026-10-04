@@ -669,7 +669,7 @@ class QController extends ResourceController {
 }
 
 class IntController extends ResourceController {
-  IntController() {
+  new() {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];
@@ -850,7 +850,7 @@ Future<HttpServer> enableController(
   return server;
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey

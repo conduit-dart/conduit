@@ -22,12 +22,12 @@ import 'sqlite_schema_generator.dart';
 /// * [SqlitePersistentStore.memory] — opens a transient in-memory
 ///   database; gone when the process or the store is closed.
 class SqlitePersistentStore extends PersistentStore with SqliteSchemaGenerator {
-  SqlitePersistentStore._(this._database);
+  new _(this._database);
 
   /// Open or create a SQLite database at [path]. Foreign-key enforcement
   /// is enabled by default (off historically; documented to be the
   /// default in v3.6+).
-  factory SqlitePersistentStore.file(String path) {
+  factory file(String path) {
     final db = s3.sqlite3.open(path);
     db.execute('PRAGMA foreign_keys = ON');
     return SqlitePersistentStore._(db);
@@ -35,7 +35,7 @@ class SqlitePersistentStore extends PersistentStore with SqliteSchemaGenerator {
 
   /// Open a transient in-memory SQLite database. The database lives only
   /// for the lifetime of this store; no disk persistence.
-  factory SqlitePersistentStore.memory() {
+  factory memory() {
     final db = s3.sqlite3.openInMemory();
     db.execute('PRAGMA foreign_keys = ON');
     return SqlitePersistentStore._(db);
@@ -213,7 +213,7 @@ class SqlitePersistentStore extends PersistentStore with SqliteSchemaGenerator {
     bool temporary = false,
   }) async {
     final db = _requireOpen();
-    Schema schema = fromSchema;
+    var schema = fromSchema;
 
     db.execute('BEGIN');
     try {

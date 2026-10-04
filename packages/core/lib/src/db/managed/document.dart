@@ -21,7 +21,7 @@ class Document {
   /// Creates an instance with an optional initial [data].
   ///
   /// If no argument is passed, [data] is null. Otherwise, it is the first argument.
-  Document([this.data]);
+  new([this.data]);
 
   /// The JSON-encodable data contained by this instance.
   ///

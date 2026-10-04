@@ -7,7 +7,7 @@ import 'package:conduit_runtime/src/mirror_coerce.dart';
 RuntimeContext instance = MirrorContext._();
 
 class MirrorContext extends RuntimeContext {
-  MirrorContext._() {
+  new _() {
     final m = <String, Object>{};
 
     for (final c in compilers) {

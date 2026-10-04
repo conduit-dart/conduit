@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:mirrors';
 
 abstract class Executable<T extends Object?> {
-  Executable(this.message) : _sendPort = message["_sendPort"];
+  new(this.message) : _sendPort = message["_sendPort"];
 
   Future<T> execute();
 

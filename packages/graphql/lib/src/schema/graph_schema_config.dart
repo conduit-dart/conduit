@@ -36,7 +36,7 @@ import '../auth/field_authorize.dart';
 /// declared precisely *because* the application treats them as
 /// guaranteed-present. Pass `true` for properties that may be absent.
 class GraphPropertyDescriptor {
-  const GraphPropertyDescriptor({
+  const new({
     required this.name,
     required this.type,
     this.isNullable = false,
@@ -79,7 +79,7 @@ class GraphPropertyDescriptor {
 /// a single node does **not** disturb how the rest of the graph data
 /// model lowers — only the keyed type changes shape.
 class GraphNodeSchemaConfig {
-  const GraphNodeSchemaConfig({
+  const new({
     this.properties = const [],
     this.unionLabels = const [],
     this.hasSchemalessProperties = false,
@@ -115,7 +115,7 @@ class GraphNodeSchemaConfig {
 
 /// Per-edge-type schema configuration.
 class GraphEdgeSchemaConfig {
-  const GraphEdgeSchemaConfig({this.properties = const []});
+  const new({this.properties = const []});
 
   /// Typed declared edge properties. Edge-property-as-connection
   /// fields surface one GraphQL field per entry alongside the
@@ -129,7 +129,7 @@ class GraphEdgeSchemaConfig {
 /// per-node and per-edge property shapes. Construct empty for the
 /// minimum-viable schema (id + labels per node; from/to per edge).
 class GraphSchemaConfig {
-  GraphSchemaConfig({
+  new({
     Map<Type, GraphNodeSchemaConfig> nodes = const {},
     Map<Type, GraphEdgeSchemaConfig> edges = const {},
     this.exposeGraphEdgesAsConnections = false,

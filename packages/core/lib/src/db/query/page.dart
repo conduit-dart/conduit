@@ -14,7 +14,7 @@ import 'package:conduit_core/src/db/query/query.dart';
 ///
 /// A query page should be used in conjunction with [Query.fetchLimit].
 class QueryPage {
-  QueryPage(this.order, this.propertyName, {this.boundingValue});
+  new(this.order, this.propertyName, {this.boundingValue});
 
   /// The order in which rows should be in before the page of values is searched for.
   ///

@@ -145,7 +145,7 @@ class RegistryBuilder implements Builder {
 }
 
 class _ManifestKind {
-  const _ManifestKind({
+  const new({
     required this.manifestKey,
     required this.runtimeSuffix,
     required this.manifestExtension,
@@ -158,7 +158,7 @@ class _ManifestKind {
 }
 
 class _RuntimeBinding {
-  _RuntimeBinding({
+  new({
     required this.className,
     required this.runtimeSuffix,
     required this.libraryAssetPath,

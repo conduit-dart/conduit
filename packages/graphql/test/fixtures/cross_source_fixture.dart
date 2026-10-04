@@ -18,7 +18,7 @@ import 'package:conduit_graphql/conduit_graphql.dart';
 
 // -- SQL side ---------------------------------------------------------------
 
-class User extends ManagedObject<_User> implements _User {}
+class User extends ManagedObject<_User> implements _User;
 
 class _User {
   @primaryKey
@@ -34,11 +34,11 @@ class _User {
 // -- Graph side --------------------------------------------------------------
 
 class Profile extends GraphNode<Profile> {
-  Profile() : super(labels: const [GraphLabel.unchecked('Profile')]);
+  new() : super(labels: const [GraphLabel.unchecked('Profile')]);
 }
 
 class Friendship extends GraphEdge<Profile, Profile> {
-  Friendship({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;
@@ -51,7 +51,7 @@ class Friendship extends GraphEdge<Profile, Profile> {
 /// `accounts`. The graph-side `Account` node intentionally shares the
 /// type name on the graph label below — this collision is the trigger
 /// for [QueryRootCollisionPolicy].
-class Account extends ManagedObject<_Account> implements _Account {}
+class Account extends ManagedObject<_Account> implements _Account;
 
 class _Account {
   @primaryKey
@@ -62,7 +62,7 @@ class _Account {
 }
 
 class GraphAccount extends GraphNode<GraphAccount> {
-  GraphAccount() : super(labels: const [GraphLabel.unchecked('Account')]);
+  new() : super(labels: const [GraphLabel.unchecked('Account')]);
 }
 
 // -- Helpers ----------------------------------------------------------------

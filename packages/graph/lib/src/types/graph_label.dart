@@ -10,7 +10,7 @@
 /// renderer can derive a default label from a [Type].
 final class GraphLabel {
   /// Creates a label. Throws [ArgumentError] if [name] is empty.
-  GraphLabel(this.name) {
+  new(this.name) {
     if (name.isEmpty) {
       throw ArgumentError.value(name, 'name', 'graph label must be non-empty');
     }
@@ -20,7 +20,7 @@ final class GraphLabel {
   /// check. Use only when the literal `name` is known to be valid at
   /// authoring time (e.g. for default labels in subclass
   /// constructors).
-  const GraphLabel.unchecked(this.name);
+  const new unchecked(this.name);
 
   /// The label string as it appears in the underlying graph store.
   final String name;

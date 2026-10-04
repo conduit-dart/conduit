@@ -13,7 +13,7 @@ void main() {
 }
 
 class MultiUniqueFailureUnknown
-    extends ManagedObject<_MultiUniqueFailureUnknown> {}
+    extends ManagedObject<_MultiUniqueFailureUnknown>;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _MultiUniqueFailureUnknown {

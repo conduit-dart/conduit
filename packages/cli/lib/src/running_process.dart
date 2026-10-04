@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 class StoppableProcess {
-  StoppableProcess(Future Function(String reason) onStop) : _stop = onStop {
+  new(Future Function(String reason) onStop) : _stop = onStop {
     final l1 = ProcessSignal.sigint.watch().listen((_) {
       stop(0, reason: "Process interrupted.");
     });

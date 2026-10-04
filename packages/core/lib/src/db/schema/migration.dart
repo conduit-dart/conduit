@@ -5,7 +5,7 @@ import 'package:conduit_core/src/db/schema/schema.dart';
 
 /// Thrown when [Migration] encounters an error.
 class MigrationException implements Exception {
-  MigrationException(this.message);
+  new(this.message);
   String message;
 
   @override

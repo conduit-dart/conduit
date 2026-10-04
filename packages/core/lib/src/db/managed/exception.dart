@@ -4,5 +4,5 @@ import 'package:conduit_core/src/http/serializable.dart';
 ///
 /// Behaves the same as [SerializableException].
 class ValidationException extends SerializableException {
-  ValidationException(super.errors);
+  new(super.errors);
 }

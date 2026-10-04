@@ -1,5 +1,5 @@
 class TypeCoercionException implements Exception {
-  TypeCoercionException(this.expectedType, this.actualType);
+  new(this.expectedType, this.actualType);
 
   final Type expectedType;
   final Type actualType;

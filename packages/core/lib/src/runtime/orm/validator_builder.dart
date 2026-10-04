@@ -7,7 +7,7 @@ import 'package:conduit_core/src/runtime/orm/entity_builder.dart';
 import 'package:conduit_core/src/runtime/orm/property_builder.dart';
 
 class ValidatorBuilder {
-  ValidatorBuilder(this.property, this.metadata);
+  new(this.property, this.metadata);
 
   final PropertyBuilder property;
   final Validate metadata;

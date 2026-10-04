@@ -165,7 +165,7 @@ void main() {
 }
 
 class SocketProxy {
-  SocketProxy(this.src, this.dest);
+  new(this.src, this.dest);
 
   final int src;
   final int dest;
@@ -208,7 +208,7 @@ class SocketProxy {
 }
 
 class SocketPair {
-  SocketPair(this.src, this.dest);
+  new(this.src, this.dest);
 
   final Socket src;
   final Socket dest;

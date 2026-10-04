@@ -200,7 +200,7 @@ class Migration1 extends Migration {
 
 class MockMigratable extends CLICommand
     with CLIDatabaseManagingCommand, CLIProject {
-  MockMigratable(this.projectDirectory) {
+  new(this.projectDirectory) {
     migrationDirectory = Directory.fromUri(
       projectDirectory.uri.resolve("migrations"),
     );

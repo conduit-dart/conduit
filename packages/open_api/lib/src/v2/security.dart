@@ -45,17 +45,17 @@ class APISecuritySchemeFlowCodec {
 
 /// Represents a security scheme in the OpenAPI specification.
 class APISecurityScheme extends APIObject {
-  APISecurityScheme();
+  new();
 
-  APISecurityScheme.basic() {
+  new basic() {
     type = "basic";
   }
 
-  APISecurityScheme.apiKey(this.apiKeyName, this.apiKeyLocation) {
+  new apiKey(this.apiKeyName, this.apiKeyLocation) {
     type = "apiKey";
   }
 
-  APISecurityScheme.oauth2(
+  new oauth2(
     this.oauthFlow, {
     this.authorizationURL,
     this.tokenURL,

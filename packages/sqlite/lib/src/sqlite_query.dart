@@ -21,9 +21,9 @@ import 'sqlite_persistent_store.dart';
 class SqliteQuery<InstanceType extends ManagedObject>
     with QueryMixin<InstanceType>
     implements Query<InstanceType> {
-  SqliteQuery(this.context);
+  new(this.context);
 
-  SqliteQuery.withEntity(this.context, this._entity);
+  new withEntity(this.context, this._entity);
 
   @override
   ManagedContext context;
@@ -323,7 +323,7 @@ enum _Reducer { avg, count, max, min, sum }
 
 class _SqliteQueryReduce<T extends ManagedObject>
     extends QueryReduceOperation<T> {
-  _SqliteQueryReduce(this.query) : builder = QueryBuilder(query);
+  new(this.query) : builder = QueryBuilder(query);
 
   final SqliteQuery<T> query;
   final QueryBuilder builder;

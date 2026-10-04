@@ -24,7 +24,7 @@ class Table {
   /// the name of the underlying table matches the name of the table definition class.
   ///
   /// See also [Table.unique] for the behavior of [uniquePropertySet].
-  const Table({
+  const new({
     this.useSnakeCaseName = false,
     this.name,
     this.uniquePropertySet,
@@ -37,7 +37,7 @@ class Table {
   /// must be unique for the combined properties in [properties]. [properties] must contain symbolic names of
   /// properties declared in the table definition, and those properties must be either attributes
   /// or belongs-to relationship properties. See [Table] for example.
-  const Table.unique(List<Symbol> properties)
+  const new unique(List<Symbol> properties)
     : this(uniquePropertySet: properties);
 
   /// Each instance of the associated table definition is unique for these properties.
@@ -85,13 +85,13 @@ enum DeleteRule {
 /// resolves to a column in the database. The relationship property without this metadata resolves to a row or rows in the database.
 class Relate {
   /// Creates an instance of this type.
-  const Relate(
+  const new(
     this.inversePropertyName, {
     this.onDelete = DeleteRule.nullify,
     this.isRequired = false,
   });
 
-  const Relate.deferred(DeleteRule onDelete, {bool isRequired = false})
+  const new deferred(DeleteRule onDelete, {bool isRequired = false})
     : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
 
   /// The symbol for the property in the related [ManagedObject].
@@ -137,7 +137,7 @@ class Column {
   ///
   /// [defaultValue] is sent as-is to the database, therefore, if the default value is the integer value 2,
   /// pass the string "2". If the default value is a string, it must also be wrapped in single quotes: "'defaultValue'".
-  const Column({
+  const new({
     this.databaseType,
     bool primaryKey = false,
     bool nullable = false,
@@ -231,7 +231,7 @@ class Column {
 /// An annotation used to specify how a Model is serialized in API responses.
 @Target({TargetKind.classType})
 class ResponseModel {
-  const ResponseModel({this.includeIfNullField = true});
+  const new({this.includeIfNullField = true});
 
   /// Whether the serializer should include fields with `null` values in the
   /// serialized Model output.
@@ -247,7 +247,7 @@ class ResponseModel {
 /// An annotation used to specify how a field is serialized in API responses.
 @Target({TargetKind.field, TargetKind.getter, TargetKind.setter})
 class ResponseKey {
-  const ResponseKey({this.name, this.includeIfNull});
+  const new({this.name, this.includeIfNull});
 
   /// The name to be used when serializing this field.
   ///
@@ -281,7 +281,7 @@ class Serialize {
   /// This key is only included if the value is non-null.
   ///
   /// Both [input] and [output] default to true.
-  const Serialize({bool input = true, bool output = true})
+  const new({bool input = true, bool output = true})
     : isAvailableAsInput = input,
       isAvailableAsOutput = output;
 

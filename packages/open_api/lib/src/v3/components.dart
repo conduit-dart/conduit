@@ -13,9 +13,9 @@ import 'package:conduit_open_api/src/v3/security.dart';
 ///
 /// All objects defined within the components object will have no effect on the API unless they are explicitly referenced from properties outside the components object.
 class APIComponents extends APIObject {
-  APIComponents();
+  new();
 
-  APIComponents.empty();
+  new empty();
 
   /// An object to hold reusable [APISchemaObject?].
   Map<String, APISchemaObject> schemas = {};

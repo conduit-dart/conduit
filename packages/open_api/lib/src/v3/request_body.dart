@@ -5,11 +5,11 @@ import 'package:conduit_open_api/src/v3/schema.dart';
 
 /// Describes a single request body.
 class APIRequestBody extends APIObject {
-  APIRequestBody(this.content, {this.description, this.isRequired = false});
+  new(this.content, {this.description, this.isRequired = false});
 
-  APIRequestBody.empty();
+  new empty();
 
-  APIRequestBody.schema(
+  new schema(
     APISchemaObject schema, {
     Iterable<String> contentTypes = const ["application/json"],
     this.description,

@@ -80,7 +80,7 @@ class LoadChannel extends ApplicationChannel {
 }
 
 class ItemController extends ResourceController {
-  ItemController(this.context);
+  new(this.context);
 
   final ManagedContext context;
 
@@ -101,7 +101,7 @@ class ItemController extends ResourceController {
 /// Exercises transaction checkout: on a pooled store each request's
 /// transaction holds a dedicated connection while it runs.
 class TxController extends ResourceController {
-  TxController(this.context);
+  new(this.context);
 
   final ManagedContext context;
 
@@ -121,7 +121,7 @@ class TxController extends ResourceController {
 /// with POOL_SIZE=1 concurrent /slow requests serialize per isolate; with
 /// POOL_SIZE=N they overlap up to N deep.
 class SlowQueryController extends ResourceController {
-  SlowQueryController(this.context);
+  new(this.context);
 
   final ManagedContext context;
 
@@ -134,7 +134,7 @@ class SlowQueryController extends ResourceController {
   }
 }
 
-class Item extends ManagedObject<_Item> implements _Item {}
+class Item extends ManagedObject<_Item> implements _Item;
 
 class _Item {
   @primaryKey

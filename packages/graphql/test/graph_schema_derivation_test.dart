@@ -262,11 +262,11 @@ void main() {
 // -- Helpers ----------------------------------------------------------------
 
 class _NodeA extends GraphNode<_NodeA> {
-  _NodeA() : super(labels: const [GraphLabel.unchecked('Thing')]);
+  new() : super(labels: const [GraphLabel.unchecked('Thing')]);
 }
 
 class _NodeB extends GraphNode<_NodeB> {
-  _NodeB() : super(labels: const [GraphLabel.unchecked('Thing')]);
+  new() : super(labels: const [GraphLabel.unchecked('Thing')]);
 }
 
 Set<GraphQLObjectType> _reachableObjectTypes(GraphQLSchema schema) {

@@ -722,7 +722,7 @@ void main() {
   });
 }
 
-class SelfRef extends ManagedObject<_SelfRef> implements _SelfRef {}
+class SelfRef extends ManagedObject<_SelfRef> implements _SelfRef;
 
 class _SelfRef {
   @primaryKey
@@ -736,7 +736,7 @@ class _SelfRef {
   SelfRef? parent;
 }
 
-class Left extends ManagedObject<_Left> implements _Left {}
+class Left extends ManagedObject<_Left> implements _Left;
 
 class _Left {
   @primaryKey
@@ -750,7 +750,7 @@ class _Left {
   Right? belongsToRight;
 }
 
-class Right extends ManagedObject<_Right> implements _Right {}
+class Right extends ManagedObject<_Right> implements _Right;
 
 class _Right {
   @primaryKey

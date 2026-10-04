@@ -240,7 +240,7 @@ void main() {
   });
 }
 
-class Test extends ManagedObject<_Test> implements _Test {}
+class Test extends ManagedObject<_Test> implements _Test;
 
 class _Test {
   @primaryKey

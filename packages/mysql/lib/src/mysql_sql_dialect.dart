@@ -48,7 +48,7 @@ import 'package:conduit_core/conduit_core.dart';
 /// `bool mariadb` flag at connect time for callers that need to
 /// branch.
 class MysqlSqlDialect extends SqlDialect {
-  const MysqlSqlDialect();
+  const new();
 
   @override
   String get name => 'mysql';

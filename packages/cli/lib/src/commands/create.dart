@@ -12,7 +12,7 @@ import 'package:yaml/yaml.dart';
 
 /// Used internally.
 class CLITemplateCreator extends CLICommand {
-  CLITemplateCreator() {
+  new() {
     registerCommand(CLITemplateList());
   }
 

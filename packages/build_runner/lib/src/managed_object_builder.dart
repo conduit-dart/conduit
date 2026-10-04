@@ -598,7 +598,7 @@ ${symbolMapEntries.toString().trimRight()}
 }
 
 class _EntityAnalysis {
-  _EntityAnalysis({
+  new({
     required this.instanceClassName,
     required this.tableDefinitionClassName,
     required this.tableName,
@@ -619,7 +619,7 @@ class _EntityAnalysis {
 }
 
 class _PropertyAnalysis {
-  _PropertyAnalysis({
+  new({
     required this.name,
     required this.propertyName,
     required this.declaredTypeSource,
@@ -652,7 +652,7 @@ class _PropertyAnalysis {
 }
 
 class _ColumnAnnotation {
-  _ColumnAnnotation({
+  new({
     required this.isPrimaryKey,
     required this.autoincrement,
     required this.isNullable,
@@ -677,7 +677,7 @@ class _ColumnAnnotation {
 }
 
 class _TableAnnotation {
-  _TableAnnotation({
+  new({
     required this.name,
     required this.useSnakeCaseName,
     required this.useSnakeCaseColumnName,
@@ -690,7 +690,7 @@ class _TableAnnotation {
 }
 
 class _ManagedTypeInfo {
-  _ManagedTypeInfo(this.kind, this.dartName, {this.typeArguments = const []});
+  new(this.kind, this.dartName, {this.typeArguments = const []});
   final String kind;
   final String dartName;
   final List<String> typeArguments;

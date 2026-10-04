@@ -18,7 +18,7 @@ import 'package:conduit_core/src/db/query/builders/value.dart';
 import 'package:conduit_core/src/db/query/mixin.dart';
 
 class QueryBuilder extends TableBuilder {
-  QueryBuilder(QueryMixin query, [String prefixIndex = ""])
+  new(QueryMixin query, [String prefixIndex = ""])
     : valueKeyPrefix = "v${prefixIndex}_",
       super(query) {
     (query.valueMap ?? query.values.backing.contents).forEach(

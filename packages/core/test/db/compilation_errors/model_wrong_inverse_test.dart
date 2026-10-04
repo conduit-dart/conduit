@@ -14,7 +14,7 @@ void main() {
   });
 }
 
-class MissingInverse1 extends ManagedObject<_MissingInverse1> {}
+class MissingInverse1 extends ManagedObject<_MissingInverse1>;
 
 class _MissingInverse1 {
   @primaryKey
@@ -24,7 +24,7 @@ class _MissingInverse1 {
 }
 
 class MissingInverseWrongSymbol
-    extends ManagedObject<_MissingInverseWrongSymbol> {}
+    extends ManagedObject<_MissingInverseWrongSymbol>;
 
 class _MissingInverseWrongSymbol {
   @primaryKey

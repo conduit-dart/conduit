@@ -9,7 +9,7 @@ import 'package:conduit/src/commands/serve.dart';
 import 'package:conduit/src/commands/setup.dart';
 
 class Runner extends CLICommand {
-  Runner() {
+  new() {
     registerCommand(CLITemplateCreator());
     registerCommand(CLIDatabase());
     registerCommand(CLIServer());

@@ -26,7 +26,7 @@ class ManagedEntity implements APIComponentDocumenter {
   /// Creates an instance of this type..
   ///
   /// You should never call this method directly, it will be called by [ManagedDataModel].
-  ManagedEntity(this._tableName, this.instanceType, this.tableDefinition);
+  new(this._tableName, this.instanceType, this.tableDefinition);
 
   /// The name of this entity.
   ///

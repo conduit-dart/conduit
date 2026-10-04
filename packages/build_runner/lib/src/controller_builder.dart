@@ -539,19 +539,19 @@ ${applySrc.toString().trimRight()}
 }
 
 class _BindMeta {
-  _BindMeta({required this.bindingType, required this.name});
+  new({required this.bindingType, required this.name});
   final String bindingType;
   final String? name;
 }
 
 class _OperationMeta {
-  _OperationMeta({required this.httpMethod, required this.pathVariables});
+  new({required this.httpMethod, required this.pathVariables});
   final String httpMethod;
   final List<String> pathVariables;
 }
 
 class _Binding {
-  _Binding({
+  new({
     required this.symbolName,
     required this.bind,
     required this.type,
@@ -566,7 +566,7 @@ class _Binding {
 }
 
 class _OperationMethod {
-  _OperationMethod({
+  new({
     required this.dartMethodName,
     required this.operation,
     required this.positional,

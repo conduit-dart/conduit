@@ -322,4 +322,4 @@ class OverrideGeneration extends Serializable {
   }
 }
 
-class PODO {}
+class PODO;

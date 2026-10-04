@@ -513,7 +513,7 @@ void main() {
   });
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey
@@ -527,7 +527,7 @@ class _TestModel {
   InnerModel? inner;
 }
 
-class InnerModel extends ManagedObject<_InnerModel> implements _InnerModel {}
+class InnerModel extends ManagedObject<_InnerModel> implements _InnerModel;
 
 class _InnerModel {
   @primaryKey

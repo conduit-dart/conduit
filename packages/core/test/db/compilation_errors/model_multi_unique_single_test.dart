@@ -16,7 +16,7 @@ void main() {
 }
 
 class MultiUniqueFailureSingleElement
-    extends ManagedObject<_MultiUniqueFailureSingleElement> {}
+    extends ManagedObject<_MultiUniqueFailureSingleElement>;
 
 @Table.unique([Symbol('a')])
 class _MultiUniqueFailureSingleElement {

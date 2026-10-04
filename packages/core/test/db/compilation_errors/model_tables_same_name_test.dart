@@ -14,7 +14,7 @@ void main() {
   });
 }
 
-class SameNameOne extends ManagedObject<_SameNameOne> {}
+class SameNameOne extends ManagedObject<_SameNameOne>;
 
 @Table(name: "fo")
 class _SameNameOne {
@@ -25,7 +25,7 @@ class _SameNameOne {
   static String tableName() => "fo";
 }
 
-class SameNameTwo extends ManagedObject<_SameNameTwo> {}
+class SameNameTwo extends ManagedObject<_SameNameTwo>;
 
 @Table(name: "fo")
 class _SameNameTwo {

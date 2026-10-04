@@ -15,8 +15,7 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:conduit_runtime/slow_coerce.dart' as coerce;
 
 class _CastListIntBench extends BenchmarkBase {
-  _CastListIntBench(this.fixture)
-    : super('cast<List<int>> (n=${fixture.length})');
+  new(this.fixture) : super('cast<List<int>> (n=${fixture.length})');
   final List<dynamic> fixture;
 
   @override
@@ -26,7 +25,7 @@ class _CastListIntBench extends BenchmarkBase {
 }
 
 class _CastListMapBench extends BenchmarkBase {
-  _CastListMapBench(this.fixture)
+  new(this.fixture)
     : super('cast<List<Map<String, dynamic>>> (n=${fixture.length})');
   final List<dynamic> fixture;
 
@@ -37,7 +36,7 @@ class _CastListMapBench extends BenchmarkBase {
 }
 
 class _CastMapStringDynamicBench extends BenchmarkBase {
-  _CastMapStringDynamicBench(this.fixture)
+  new(this.fixture)
     : super('cast<Map<String, dynamic>> (keys=${fixture.length})');
   final Map<String, dynamic> fixture;
 

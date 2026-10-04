@@ -6,7 +6,7 @@ import 'package:conduit_core/src/db/query/query.dart';
 ///
 /// Instances of this type are created during [ManagedDataModel] compilation.
 class ManagedValidator {
-  ManagedValidator(this.definition, this.state);
+  new(this.definition, this.state);
 
   /// Executes all [Validate]s for [object].
   ///

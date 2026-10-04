@@ -138,7 +138,7 @@ class TestChannel extends ApplicationChannel {
   }
 }
 
-class TestModel extends ManagedObject<_TestModel> implements _TestModel {}
+class TestModel extends ManagedObject<_TestModel> implements _TestModel;
 
 class _TestModel {
   @primaryKey
@@ -149,7 +149,7 @@ class _TestModel {
 }
 
 class Subclass extends ManagedObjectController<TestModel> {
-  Subclass(super.context);
+  new(super.context);
 
   @override
   Future<Query<TestModel>?> willFindObjectWithQuery(

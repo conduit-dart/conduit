@@ -64,7 +64,7 @@ class ExampleChannel extends ApplicationChannel {
 
 /// Controller that touches both backends to assemble a single response.
 class MeController extends ResourceController {
-  MeController(this.persistence);
+  new(this.persistence);
 
   /// Typed against the `Object` upper bound of the channel field, but
   /// the controller knows the concrete graph-store type so it casts at
@@ -227,7 +227,7 @@ class _FakeGraphStore {
 /// Stand-in for `GraphContext`. Wraps the fake store and exposes the
 /// domain operations the controller cares about.
 class _FakeGraphContext {
-  _FakeGraphContext(this.store);
+  new(this.store);
 
   final _FakeGraphStore store;
 

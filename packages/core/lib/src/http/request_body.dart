@@ -17,7 +17,7 @@ class RequestBody extends BodyDecoder {
   /// See [CodecRegistry] for more information about how data is decoded.
   ///
   /// Decoded data is cached the after it is decoded.
-  RequestBody(HttpRequest super.request)
+  new(HttpRequest super.request)
     : _request = request,
       _originalByteStream = request;
 

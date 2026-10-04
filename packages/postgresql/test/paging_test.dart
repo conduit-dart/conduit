@@ -369,7 +369,7 @@ void main() {
 }
 
 class PageableTestModel extends ManagedObject<_PageableTestModel>
-    implements _PageableTestModel {}
+    implements _PageableTestModel;
 
 class _PageableTestModel {
   @primaryKey
@@ -378,7 +378,7 @@ class _PageableTestModel {
   String? value;
 }
 
-class HasMany extends ManagedObject<_HasMany> implements _HasMany {}
+class HasMany extends ManagedObject<_HasMany> implements _HasMany;
 
 class _HasMany {
   @primaryKey
@@ -387,7 +387,7 @@ class _HasMany {
   ManagedSet<BelongsTo>? objects;
 }
 
-class BelongsTo extends ManagedObject<_BelongsTo> implements _BelongsTo {}
+class BelongsTo extends ManagedObject<_BelongsTo> implements _BelongsTo;
 
 class _BelongsTo {
   @primaryKey

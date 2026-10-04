@@ -6,26 +6,20 @@ import 'package:conduit_core/src/http/http.dart';
 ///
 /// A suggested HTTP status code based on the type of exception will always be available.
 class QueryException<T> implements HandlerException {
-  QueryException(
+  new(
     this.event, {
     this.message,
     this.underlyingException,
     this.offendingItems,
   });
 
-  QueryException.input(
-    this.message,
-    this.offendingItems, {
-    this.underlyingException,
-  }) : event = QueryExceptionEvent.input;
-  QueryException.transport(this.message, {this.underlyingException})
+  new input(this.message, this.offendingItems, {this.underlyingException})
+    : event = QueryExceptionEvent.input;
+  new transport(this.message, {this.underlyingException})
     : event = QueryExceptionEvent.transport,
       offendingItems = null;
-  QueryException.conflict(
-    this.message,
-    this.offendingItems, {
-    this.underlyingException,
-  }) : event = QueryExceptionEvent.conflict;
+  new conflict(this.message, this.offendingItems, {this.underlyingException})
+    : event = QueryExceptionEvent.conflict;
 
   final String? message;
 

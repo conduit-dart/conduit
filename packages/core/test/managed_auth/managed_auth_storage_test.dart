@@ -2022,7 +2022,7 @@ class User extends ManagedObject<_User>
   static const String defaultPassword = "foobaraxegrind!%12";
 }
 
-class _User extends ResourceOwnerTableDefinition {}
+class _User extends ResourceOwnerTableDefinition;
 
 Future<List<User>> createUsers(ManagedContext? ctx, int count) async {
   final list = <User>[];

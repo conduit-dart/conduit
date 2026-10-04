@@ -684,7 +684,7 @@ void main() {
   });
 }
 
-class Ticket extends ManagedObject<_Ticket> implements _Ticket {}
+class Ticket extends ManagedObject<_Ticket> implements _Ticket;
 
 @Table()
 class _Ticket {
@@ -702,7 +702,7 @@ class _Ticket {
 }
 
 class StadiumVenue extends ManagedObject<_StadiumVenue>
-    implements _StadiumVenue {}
+    implements _StadiumVenue;
 
 @Table(useSnakeCaseName: true, useSnakeCaseColumnName: true)
 class _StadiumVenue {
@@ -807,7 +807,7 @@ class _User {
   Manager? manager;
 }
 
-class Item extends ManagedObject<_Item> implements _Item {}
+class Item extends ManagedObject<_Item> implements _Item;
 
 class _Item {
   @Column(primaryKey: true)
@@ -817,7 +817,7 @@ class _Item {
   User? user;
 }
 
-class Manager extends ManagedObject<_Manager> implements _Manager {}
+class Manager extends ManagedObject<_Manager> implements _Manager;
 
 class _Manager {
   @primaryKey
@@ -919,7 +919,7 @@ class PartialModel {
 }
 
 class PartialReferenceModel extends ManagedObject<_PartialReferenceModel>
-    implements _PartialReferenceModel {}
+    implements _PartialReferenceModel;
 
 class _PartialReferenceModel {
   @primaryKey
@@ -933,7 +933,7 @@ class _PartialReferenceModel {
 
 class DoubleRelationshipForeignKeyModel
     extends ManagedObject<_DoubleRelationshipForeignKeyModel>
-    implements _DoubleRelationshipForeignKeyModel {}
+    implements _DoubleRelationshipForeignKeyModel;
 
 class _DoubleRelationshipForeignKeyModel {
   @primaryKey
@@ -951,7 +951,7 @@ class _DoubleRelationshipForeignKeyModel {
 
 class DoubleRelationshipHasModel
     extends ManagedObject<_DoubleRelationshipHasModel>
-    implements _DoubleRelationshipHasModel {}
+    implements _DoubleRelationshipHasModel;
 
 class _DoubleRelationshipHasModel {
   @primaryKey
@@ -962,7 +962,7 @@ class _DoubleRelationshipHasModel {
 }
 
 class SomeOtherRelationshipModel
-    extends ManagedObject<_SomeOtherRelationshipModel> {}
+    extends ManagedObject<_SomeOtherRelationshipModel>;
 
 class _SomeOtherRelationshipModel extends SomeOtherPartialModel {
   @primaryKey
@@ -973,7 +973,7 @@ class SomeOtherPartialModel {
   DoubleRelationshipForeignKeyModel? deferredRelationship;
 }
 
-class LeftMany extends ManagedObject<_LeftMany> implements _LeftMany {}
+class LeftMany extends ManagedObject<_LeftMany> implements _LeftMany;
 
 class _LeftMany {
   @primaryKey
@@ -982,7 +982,7 @@ class _LeftMany {
   ManagedSet<JoinMany>? join;
 }
 
-class RightMany extends ManagedObject<_RightMany> implements _RightMany {}
+class RightMany extends ManagedObject<_RightMany> implements _RightMany;
 
 class _RightMany {
   @primaryKey
@@ -991,7 +991,7 @@ class _RightMany {
   ManagedSet<JoinMany>? join;
 }
 
-class JoinMany extends ManagedObject<_JoinMany> implements _JoinMany {}
+class JoinMany extends ManagedObject<_JoinMany> implements _JoinMany;
 
 class _JoinMany {
   @primaryKey
@@ -1004,7 +1004,7 @@ class _JoinMany {
   RightMany? right;
 }
 
-class CyclicLeft extends ManagedObject<_CyclicLeft> {}
+class CyclicLeft extends ManagedObject<_CyclicLeft>;
 
 class _CyclicLeft {
   @primaryKey
@@ -1016,7 +1016,7 @@ class _CyclicLeft {
   CyclicRight? from;
 }
 
-class CyclicRight extends ManagedObject<_CyclicRight> {}
+class CyclicRight extends ManagedObject<_CyclicRight>;
 
 class _CyclicRight {
   @primaryKey
@@ -1028,7 +1028,7 @@ class _CyclicRight {
   CyclicLeft? from;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey
@@ -1039,7 +1039,7 @@ class _EnumObject {
 
 enum EnumValues { abcd, efgh, other18 }
 
-class MultiUnique extends ManagedObject<_MultiUnique> {}
+class MultiUnique extends ManagedObject<_MultiUnique>;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _MultiUnique {
@@ -1050,7 +1050,7 @@ class _MultiUnique {
   int? b;
 }
 
-class MultiUniqueBelongsTo extends ManagedObject<_MultiUniqueBelongsTo> {}
+class MultiUniqueBelongsTo extends ManagedObject<_MultiUniqueBelongsTo>;
 
 @Table.unique([Symbol('rel'), Symbol('b')])
 class _MultiUniqueBelongsTo {
@@ -1063,7 +1063,7 @@ class _MultiUniqueBelongsTo {
   String? b;
 }
 
-class MultiUniqueHasA extends ManagedObject<_MultiUniqueHasA> {}
+class MultiUniqueHasA extends ManagedObject<_MultiUniqueHasA>;
 
 class _MultiUniqueHasA {
   @primaryKey
@@ -1072,7 +1072,7 @@ class _MultiUniqueHasA {
   MultiUniqueBelongsTo? a;
 }
 
-class DocumentObject extends ManagedObject<_DocumentObject> {}
+class DocumentObject extends ManagedObject<_DocumentObject>;
 
 class _DocumentObject {
   @primaryKey
@@ -1081,7 +1081,7 @@ class _DocumentObject {
   Document? document;
 }
 
-class AnnotatedTable extends ManagedObject<_AnnotatedTable> {}
+class AnnotatedTable extends ManagedObject<_AnnotatedTable>;
 
 @Table(name: "foobar")
 class _AnnotatedTable {
@@ -1090,7 +1090,7 @@ class _AnnotatedTable {
 }
 
 class SelfReferential extends ManagedObject<_SelfReferential>
-    implements _SelfReferential {}
+    implements _SelfReferential;
 
 class _SelfReferential {
   @primaryKey

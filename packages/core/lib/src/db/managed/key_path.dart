@@ -1,12 +1,12 @@
 import 'package:conduit_core/src/db/managed/managed.dart';
 
 class KeyPath {
-  KeyPath(ManagedPropertyDescription? root) : path = [root];
+  new(ManagedPropertyDescription? root) : path = [root];
 
-  KeyPath.byRemovingFirstNKeys(KeyPath original, int offset)
+  new byRemovingFirstNKeys(KeyPath original, int offset)
     : path = original.path.sublist(offset);
 
-  KeyPath.byAddingKey(KeyPath original, ManagedPropertyDescription key)
+  new byAddingKey(KeyPath original, ManagedPropertyDescription key)
     : path = List.from(original.path)..add(key);
 
   final List<ManagedPropertyDescription?> path;

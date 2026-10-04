@@ -16,7 +16,7 @@ import 'package:conduit_core/src/db/query/builders/column.dart';
 import 'package:conduit_core/src/db/query/builders/table.dart';
 
 class RowInstantiator {
-  RowInstantiator(this.rootTableBuilder, this.returningValues);
+  new(this.rootTableBuilder, this.returningValues);
 
   final TableBuilder rootTableBuilder;
   final List<Returnable>? returningValues;
@@ -183,7 +183,7 @@ class RowInstantiator {
 }
 
 class InstanceWrapper {
-  InstanceWrapper(this.instance, this.isNew);
+  new(this.instance, this.isNew);
 
   bool isNew;
   ManagedObject instance;

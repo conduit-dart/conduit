@@ -14,7 +14,7 @@ void main() {
   });
 }
 
-class DupInverseHas extends ManagedObject<_DupInverseHas> {}
+class DupInverseHas extends ManagedObject<_DupInverseHas>;
 
 class _DupInverseHas {
   @primaryKey
@@ -23,7 +23,7 @@ class _DupInverseHas {
   ManagedSet<DupInverse>? inverse;
 }
 
-class DupInverse extends ManagedObject<_DupInverse> {}
+class DupInverse extends ManagedObject<_DupInverse>;
 
 class _DupInverse {
   @primaryKey

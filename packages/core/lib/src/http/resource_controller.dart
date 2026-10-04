@@ -67,7 +67,7 @@ import 'package:meta/meta.dart';
 /// To access the request directly, use [request]. Note that the [Request.body] of [request] will be decoded prior to invoking an operation method.
 abstract class ResourceController extends Controller
     implements Recyclable<void> {
-  ResourceController() {
+  new() {
     _runtime =
         (RuntimeContext.current.runtimes[runtimeType] as ControllerRuntime?)
             ?.resourceController;

@@ -105,7 +105,7 @@ abstract class APIOperationDocumenter {
 /// register and reference those types.
 class APIDocumentContext {
   /// Creates a new context.
-  APIDocumentContext(this.document)
+  new(this.document)
     : schema = APIComponentCollection<APISchemaObject>._(
         "schemas",
         document.components!.schemas,
@@ -206,7 +206,7 @@ class APIDocumentContext {
 ///
 /// Components of type [T] may be registered and referenced through this object.
 class APIComponentCollection<T extends APIObject> {
-  APIComponentCollection._(this._typeName, this._componentMap);
+  new _(this._typeName, this._componentMap);
 
   final String _typeName;
   final Map<String, T> _componentMap;

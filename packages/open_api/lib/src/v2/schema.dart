@@ -4,7 +4,7 @@ import 'package:conduit_open_api/src/v2/property.dart';
 
 /// Represents a schema object in the OpenAPI specification.
 class APISchemaObject extends APIProperty {
-  APISchemaObject();
+  new();
 
   String? title;
   String? description;

@@ -7,7 +7,7 @@ import 'package:postgres/postgres.dart';
 /// ONLY` for constraint mods, `to_regclass()` for table-existence checks,
 /// the historical `ISNULL`/`NOTNULL` shorthand, and the column-type map).
 class PostgresSqlDialect extends SqlDialect {
-  const PostgresSqlDialect();
+  const new();
 
   @override
   String get name => 'postgres';

@@ -9,7 +9,7 @@ import '../types/graph_node.dart';
 /// ORM, but graph-flavored: a label and a Dart [Type], no column
 /// definitions, no schema enforcement.
 class GraphNodeEntity {
-  GraphNodeEntity({required this.type, required this.label});
+  new({required this.type, required this.label});
 
   /// The Dart node subclass.
   final Type type;
@@ -23,12 +23,7 @@ class GraphNodeEntity {
 
 /// Description of a registered edge type.
 class GraphEdgeEntity {
-  GraphEdgeEntity({
-    required this.type,
-    required this.label,
-    this.fromType,
-    this.toType,
-  });
+  new({required this.type, required this.label, this.fromType, this.toType});
 
   /// The Dart edge subclass.
   final Type type;
@@ -52,7 +47,7 @@ class GraphEdgeEntity {
 /// Mirrors `ManagedDataModel` — the collection of entities the context
 /// can resolve.
 class GraphDataModel {
-  GraphDataModel();
+  new();
 
   final Map<Type, GraphNodeEntity> _nodes = {};
   final Map<Type, GraphEdgeEntity> _edges = {};

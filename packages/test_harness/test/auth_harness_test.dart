@@ -230,6 +230,6 @@ class HarnessSubclass extends TestHarness<Channel>
 }
 
 class User extends ManagedObject<_User>
-    implements _User, ManagedAuthResourceOwner<_User> {}
+    implements _User, ManagedAuthResourceOwner<_User>;
 
-class _User extends ResourceOwnerTableDefinition {}
+class _User extends ResourceOwnerTableDefinition;

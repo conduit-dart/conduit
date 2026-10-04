@@ -12,7 +12,7 @@ import 'package:pub_semver/pub_semver.dart';
 
 /// Exceptions thrown by command line interfaces.
 class CLIException implements Exception {
-  CLIException(this.message, {this.instructions});
+  new(this.message, {this.instructions});
 
   final List<String>? instructions;
   final String? message;
@@ -25,7 +25,7 @@ enum CLIColor { red, green, blue, boldRed, boldGreen, boldBlue, boldNone, none }
 
 /// A command line interface command.
 abstract class CLICommand {
-  CLICommand() {
+  new() {
     final arguments = reflect(this).type.instanceMembers.values.where(
       (m) =>
           m.metadata.any((im) => im.type.isAssignableTo(reflectType(Argument))),

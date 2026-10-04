@@ -37,7 +37,7 @@ import 'package:conduit_core/src/db/query/predicate.dart';
 /// add custom expression types without forking the framework. The
 /// visitor exposes a fallback hook for unknown node kinds.
 abstract class SqlExpression {
-  const SqlExpression();
+  const new();
 
   /// Dispatch to a visitor. Concrete subclasses call the visitor's
   /// matching `visitX` method.
@@ -48,7 +48,7 @@ abstract class SqlExpression {
 /// (the dialect's visitor decides whether to include the namespace
 /// based on context — e.g., when a `JOIN` is present).
 class ColumnExpression extends SqlExpression {
-  const ColumnExpression(this.columnName, {this.tableNamespace});
+  const new(this.columnName, {this.tableNamespace});
 
   final String columnName;
   final String? tableNamespace;
@@ -68,7 +68,7 @@ class ColumnExpression extends SqlExpression {
 /// page-cursor predicates) — any user-supplied value goes through
 /// [ParameterExpression] instead so the dialect can bind it safely.
 class LiteralExpression extends SqlExpression {
-  const LiteralExpression(this.sql);
+  const new(this.sql);
 
   final String sql;
 
@@ -81,7 +81,7 @@ class LiteralExpression extends SqlExpression {
 /// SQLite, `?` for MySQL) and records the bound value in its
 /// accumulating parameter list/map.
 class ParameterExpression extends SqlExpression {
-  const ParameterExpression(this.name, this.value);
+  const new(this.name, this.value);
 
   /// Suggested name for the parameter. Used directly as the binding
   /// key for named-parameter dialects; ignored for positional-only
@@ -105,7 +105,7 @@ class ParameterExpression extends SqlExpression {
 /// on [LikeExpression] so the dialect can swap operator + escape
 /// behavior in one place.
 class BinaryOpExpression extends SqlExpression {
-  const BinaryOpExpression(this.op, this.left, this.right);
+  const new(this.op, this.left, this.right);
 
   final String op;
   final SqlExpression left;
@@ -119,7 +119,7 @@ class BinaryOpExpression extends SqlExpression {
 /// `NOT`; included as a node kind so backends can extend it without
 /// adding a new visitor method.
 class UnaryOpExpression extends SqlExpression {
-  const UnaryOpExpression(this.op, this.operand);
+  const new(this.op, this.operand);
 
   final String op;
   final SqlExpression operand;
@@ -136,7 +136,7 @@ class UnaryOpExpression extends SqlExpression {
 /// but the visitor still emits explicit parens so it stays correct
 /// when a future dialect doesn't).
 class LogicalExpression extends SqlExpression {
-  const LogicalExpression(this.op, this.children);
+  const new(this.op, this.children);
 
   /// One of `AND` / `OR`. Stored as the literal SQL token so dialects
   /// don't have to translate.
@@ -155,7 +155,7 @@ class LogicalExpression extends SqlExpression {
 /// uses `IS NULL`/`IS NOT NULL`. Dialect's visitor reads
 /// [SqlDialect.isNullOperator] / [SqlDialect.isNotNullOperator].
 class IsNullExpression extends SqlExpression {
-  const IsNullExpression(this.operand, {this.negated = false});
+  const new(this.operand, {this.negated = false});
 
   final SqlExpression operand;
   final bool negated;
@@ -169,7 +169,7 @@ class IsNullExpression extends SqlExpression {
 /// (`LIKE` / `ILIKE` / `LIKE BINARY`) and applies escape rules to
 /// `pattern` if needed.
 class LikeExpression extends SqlExpression {
-  const LikeExpression(
+  const new(
     this.target,
     this.pattern, {
     required this.caseSensitive,
@@ -197,7 +197,7 @@ class LikeExpression extends SqlExpression {
 /// the node can be extended with an alternate `subquery` field; the
 /// visitor signature is already flexible enough.
 class InExpression extends SqlExpression {
-  const InExpression(this.target, this.values, {this.negated = false});
+  const new(this.target, this.values, {this.negated = false});
 
   final SqlExpression target;
   final List<SqlExpression> values;
@@ -214,12 +214,7 @@ class InExpression extends SqlExpression {
 /// PG output byte-for-byte, and (b) some dialects optimize it
 /// independently of the equivalent compound predicate.
 class BetweenExpression extends SqlExpression {
-  const BetweenExpression(
-    this.target,
-    this.low,
-    this.high, {
-    this.negated = false,
-  });
+  const new(this.target, this.low, this.high, {this.negated = false});
 
   final SqlExpression target;
   final SqlExpression low;
@@ -237,7 +232,7 @@ class BetweenExpression extends SqlExpression {
 /// named-parameter dialects, and rewrites named placeholders to
 /// positional ones under positional-parameter dialects.
 class RawExpression extends SqlExpression {
-  const RawExpression(this.sql, [this.parameters = const {}]);
+  const new(this.sql, [this.parameters = const {}]);
 
   final String sql;
   final Map<String, Object?> parameters;
@@ -280,7 +275,7 @@ abstract class SqlExpressionVisitor<T> {
 /// This is intentionally a value class without machinery — callers
 /// pass it straight to their persistent store's execute path.
 class RenderedExpression {
-  const RenderedExpression(
+  const new(
     this.sql, {
     this.parameters = const {},
     this.positionalParameters = const [],

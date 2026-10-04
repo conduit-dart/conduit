@@ -12,7 +12,7 @@ import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 import 'package:logging/logging.dart';
 
 class EntityBuilder {
-  EntityBuilder(Type type)
+  new(Type type)
     : instanceType = reflectClass(type),
       tableDefinitionType = getTableDefinitionForType(type),
       metadata = firstMetadataOfType(getTableDefinitionForType(type)),

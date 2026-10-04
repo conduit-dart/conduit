@@ -12,7 +12,7 @@ import 'package:conduit_core/src/http/http.dart';
 /// directly to the [HttpRequest], as [Controller]s take that responsibility.
 class Request implements RequestOrResponse {
   /// Creates an instance of [Request], no need to do so manually.
-  Request(this.raw)
+  new(this.raw)
     : path = RequestPath(raw.uri.pathSegments),
       body = RequestBody(raw);
 
@@ -457,14 +457,14 @@ class Request implements RequestOrResponse {
 }
 
 class HTTPStreamingException implements Exception {
-  HTTPStreamingException(this.underlyingException, this.trace);
+  new(this.underlyingException, this.trace);
 
   dynamic underlyingException;
   StackTrace trace;
 }
 
 class _Reference<T> {
-  _Reference(this.value);
+  new(this.value);
 
   T? value;
 }

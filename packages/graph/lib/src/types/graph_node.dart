@@ -33,7 +33,7 @@ import 'graph_label.dart';
 /// concrete node type through builder calls, the same way
 /// `ManagedObject<T>` flows through `Query<T>`.
 abstract class GraphNode<T extends GraphNode<T>> {
-  GraphNode({required List<GraphLabel> labels, GraphBacking? backing, this.id})
+  new({required List<GraphLabel> labels, GraphBacking? backing, this.id})
     : labels = List.unmodifiable(labels),
       backing = backing ?? GraphMapBacking() {
     if (labels.isEmpty) {

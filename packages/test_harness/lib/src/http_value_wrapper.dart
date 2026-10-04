@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:matcher/matcher.dart';
 
 class HTTPValueMatcherWrapper extends Matcher {
-  HTTPValueMatcherWrapper(this._matcher);
+  new(this._matcher);
 
   final Matcher _matcher;
 

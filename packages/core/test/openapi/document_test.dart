@@ -664,7 +664,7 @@ class Middleware extends Controller {
 }
 
 class Endpoint extends Controller {
-  Endpoint(this.prepared, this.documented);
+  new(this.prepared, this.documented);
 
   final Completer? prepared;
   final Completer? documented;
@@ -742,7 +742,7 @@ class ComponentB extends APIComponentDocumenter {
   }
 }
 
-class ReferencableSchemaObject {}
+class ReferencableSchemaObject;
 
 class UnaccountedForControllerWithComponents extends Controller {
   @override

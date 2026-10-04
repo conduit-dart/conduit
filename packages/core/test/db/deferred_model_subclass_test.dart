@@ -18,7 +18,7 @@ void main() {
 }
 
 class OverriddenTotalModel extends ManagedObject<_OverriddenTotalModel>
-    implements _OverriddenTotalModel {}
+    implements _OverriddenTotalModel;
 
 class _OverriddenTotalModel extends PartialModel {
   @override
@@ -42,7 +42,7 @@ class PartialModel {
 }
 
 class PartialReferenceModel extends ManagedObject<_PartialReferenceModel>
-    implements _PartialReferenceModel {}
+    implements _PartialReferenceModel;
 
 class _PartialReferenceModel {
   @primaryKey

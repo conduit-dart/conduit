@@ -27,12 +27,12 @@ class QueryPredicate {
   /// The [format] and [parameters] of this predicate. [parameters] may be null.
   /// An [expression] AST may also be supplied; backends that understand
   /// the AST render from it instead of the raw format string.
-  QueryPredicate(this.format, [this.parameters = const {}, this.expression]);
+  new(this.format, [this.parameters = const {}, this.expression]);
 
   /// Creates an empty predicate.
   ///
   /// The format string is the empty string and parameters is the empty map.
-  QueryPredicate.empty() : format = "", parameters = {}, expression = null;
+  new empty() : format = "", parameters = {}, expression = null;
 
   /// Creates a predicate with an attached [expression] AST and a
   /// pre-rendered [format] / [parameters] pair (the named-parameter
@@ -40,7 +40,7 @@ class QueryPredicate {
   /// of `predicate.format` keep working byte-for-byte while AST-aware
   /// dialects can render the predicate in their preferred placeholder
   /// style.
-  QueryPredicate.withExpression(this.expression, this.format, this.parameters);
+  new withExpression(this.expression, this.format, this.parameters);
 
   /// Combines [predicates] with 'AND' keyword.
   ///
@@ -53,7 +53,7 @@ class QueryPredicate {
   ///
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
-  factory QueryPredicate.and(Iterable<QueryPredicate> predicates) {
+  factory and(Iterable<QueryPredicate> predicates) {
     final predicateList = predicates.where((p) => p.format.isNotEmpty).toList();
 
     if (predicateList.isEmpty) {
@@ -160,7 +160,7 @@ enum PredicateOperator {
 }
 
 class ComparisonExpression implements PredicateExpression {
-  const ComparisonExpression(this.value, this.operator);
+  const new(this.value, this.operator);
 
   final dynamic value;
   final PredicateOperator operator;
@@ -188,7 +188,7 @@ abstract class PredicateExpression {
 }
 
 class RangeExpression implements PredicateExpression {
-  const RangeExpression(this.lhs, this.rhs, {this.within = true});
+  const new(this.lhs, this.rhs, {this.within = true});
 
   final bool within;
   final dynamic lhs;
@@ -201,7 +201,7 @@ class RangeExpression implements PredicateExpression {
 }
 
 class NullCheckExpression implements PredicateExpression {
-  const NullCheckExpression({this.shouldBeNull = true});
+  const new({this.shouldBeNull = true});
 
   final bool shouldBeNull;
 
@@ -212,7 +212,7 @@ class NullCheckExpression implements PredicateExpression {
 }
 
 class SetMembershipExpression implements PredicateExpression {
-  const SetMembershipExpression(this.values, {this.within = true});
+  const new(this.values, {this.within = true});
 
   final List<dynamic> values;
   final bool within;
@@ -224,7 +224,7 @@ class SetMembershipExpression implements PredicateExpression {
 }
 
 class StringExpression implements PredicateExpression {
-  const StringExpression(
+  const new(
     this.value,
     this.operator, {
     this.caseSensitive = true,

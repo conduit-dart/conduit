@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class MissingInverse2 extends ManagedObject<_MissingInverse2> {}
+class MissingInverse2 extends ManagedObject<_MissingInverse2>;
 
 class _MissingInverse2 {
   @primaryKey
@@ -10,7 +10,7 @@ class _MissingInverse2 {
   ManagedSet<MissingInverseAbsent>? inverseMany;
 }
 
-class MissingInverseAbsent extends ManagedObject<_MissingInverseAbsent> {}
+class MissingInverseAbsent extends ManagedObject<_MissingInverseAbsent>;
 
 class _MissingInverseAbsent {
   @primaryKey

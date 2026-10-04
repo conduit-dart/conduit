@@ -16,7 +16,7 @@ void main() {
 class DefaultConstructorHasRequiredArgs
     extends ManagedObject<_ConstructorTableDef> {
   // ignore: avoid_unused_constructor_parameters
-  DefaultConstructorHasRequiredArgs(int foo);
+  new(int foo);
 }
 
 class _ConstructorTableDef {

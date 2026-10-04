@@ -2,7 +2,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 class InvalidModel extends ManagedObject<_InvalidModel>
-    implements _InvalidModel {}
+    implements _InvalidModel;
 
 class _InvalidModel {
   @primaryKey

@@ -3,7 +3,7 @@ import 'package:conduit_core/src/http/request_path.dart';
 import 'package:conduit_core/src/http/route_specification.dart';
 
 class RouteSegment {
-  RouteSegment(String segment) {
+  new(String segment) {
     if (segment == "*") {
       isRemainingMatcher = true;
       return;
@@ -24,7 +24,7 @@ class RouteSegment {
     }
   }
 
-  RouteSegment.direct({
+  new direct({
     this.literal,
     this.variableName,
     String? expression,
@@ -78,7 +78,7 @@ class RouteSegment {
 }
 
 class RouteNode {
-  RouteNode(List<RouteSpecification?> specs, {int depth = 0, RegExp? matcher}) {
+  new(List<RouteSpecification?> specs, {int depth = 0, RegExp? matcher}) {
     patternMatcher = matcher;
 
     final terminatedAtThisDepth = specs
@@ -156,7 +156,7 @@ class RouteNode {
     }).toList();
   }
 
-  RouteNode.withSpecification(this.specification);
+  new withSpecification(this.specification);
 
   // Regular expression matcher for this node. May be null.
   RegExp? patternMatcher;

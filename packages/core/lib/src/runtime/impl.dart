@@ -14,7 +14,7 @@ import 'package:conduit_core/src/runtime/resource_controller_impl.dart';
 import 'package:conduit_open_api/v3.dart';
 
 class ChannelRuntimeImpl extends ChannelRuntime {
-  ChannelRuntimeImpl(this.type);
+  new(this.type);
 
   final ClassMirror type;
 
@@ -88,7 +88,7 @@ void isolateServerEntryPoint(ApplicationInitialServerMessage params) {
 }
 
 class ControllerRuntimeImpl extends ControllerRuntime {
-  ControllerRuntimeImpl(this.type) {
+  new(this.type) {
     if (type.isSubclassOf(reflectClass(ResourceController))) {
       resourceController = ResourceControllerRuntimeImpl(type);
     }
@@ -119,7 +119,7 @@ class ControllerRuntimeImpl extends ControllerRuntime {
 }
 
 class SerializableRuntimeImpl extends SerializableRuntime {
-  SerializableRuntimeImpl(this.type);
+  new(this.type);
 
   final ClassMirror type;
 

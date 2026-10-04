@@ -8,13 +8,13 @@ import 'dart:io';
 
 /// A utility for manipulating files and directories in [workingDirectory].
 class WorkingDirectoryAgent {
-  WorkingDirectoryAgent(this.workingDirectory, {bool create = true}) {
+  new(this.workingDirectory, {bool create = true}) {
     if (create) {
       workingDirectory.createSync(recursive: true);
     }
   }
 
-  WorkingDirectoryAgent.current() : this(Directory.current);
+  new current() : this(Directory.current);
 
   final Directory workingDirectory;
 

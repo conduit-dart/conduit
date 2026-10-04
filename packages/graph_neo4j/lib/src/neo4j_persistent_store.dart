@@ -41,7 +41,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   /// Username/password are optional — pass `null` for an unauthenticated
   /// connection (Neo4j Aura always requires auth; the dev sandbox
   /// disables it on `dbms.security.auth_enabled=false`).
-  Neo4jPersistentStore(
+  new(
     this.uri, {
     this.username,
     this.password,

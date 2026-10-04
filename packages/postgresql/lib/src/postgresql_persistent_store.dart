@@ -35,7 +35,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// CockroachDB endpoint — Cockroach is Postgres-wire-compatible at
   /// the protocol layer, but its DDL has small divergences (e.g.
   /// no `ISNULL` shorthand) that this dialect smooths over.
-  PostgreSQLPersistentStore(
+  new(
     this.username,
     this.password,
     this.host,
@@ -55,7 +55,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   /// Same constructor as default constructor.
   ///
   /// Kept for backwards compatability.
-  PostgreSQLPersistentStore.fromConnectionInfo(
+  new fromConnectionInfo(
     this.username,
     this.password,
     this.host,
@@ -72,7 +72,7 @@ class PostgreSQLPersistentStore extends PersistentStore
   }) : _dialect = dialect,
        isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
-  PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
+  new _from(PostgreSQLPersistentStore from)
     : _dialect = from._dialect,
       isSSLConnection =
           from.isSSLConnection || from.sslMode.toSslMode() != SslMode.disable,
@@ -85,10 +85,7 @@ class PostgreSQLPersistentStore extends PersistentStore
       sslMode = from.sslMode,
       maxConnectionCount = from.maxConnectionCount;
 
-  factory PostgreSQLPersistentStore._transactionProxy(
-    PostgreSQLPersistentStore parent,
-    TxSession ctx,
-  ) {
+  factory _transactionProxy(PostgreSQLPersistentStore parent, TxSession ctx) {
     return _TransactionProxy(parent, ctx);
   }
 
@@ -594,7 +591,7 @@ class PostgreSQLErrorCode {
 }
 
 class _TransactionProxy extends PostgreSQLPersistentStore {
-  _TransactionProxy(this.parent, this.context) : super._from(parent);
+  new(this.parent, this.context) : super._from(parent);
 
   final PostgreSQLPersistentStore parent;
   final TxSession context;

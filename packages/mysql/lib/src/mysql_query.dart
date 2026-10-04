@@ -20,9 +20,9 @@ import 'package:conduit_core/conduit_core.dart';
 class MysqlQuery<InstanceType extends ManagedObject>
     with QueryMixin<InstanceType>
     implements Query<InstanceType> {
-  MysqlQuery(this.context);
+  new(this.context);
 
-  MysqlQuery.withEntity(this.context, this._entity);
+  new withEntity(this.context, this._entity);
 
   @override
   ManagedContext context;
@@ -276,7 +276,7 @@ enum _Reducer { avg, count, max, min, sum }
 
 class _MysqlQueryReduce<T extends ManagedObject>
     extends QueryReduceOperation<T> {
-  _MysqlQueryReduce(this.query) : builder = QueryBuilder(query);
+  new(this.query) : builder = QueryBuilder(query);
 
   final MysqlQuery<T> query;
   final QueryBuilder builder;

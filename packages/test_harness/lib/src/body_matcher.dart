@@ -6,7 +6,7 @@ import 'matchers.dart';
 ///
 /// See [hasBody] or [hasResponse] for more details.
 class HTTPBodyMatcher extends Matcher {
-  HTTPBodyMatcher(dynamic matcher) {
+  new(dynamic matcher) {
     if (matcher is Matcher) {
       contentMatcher = matcher;
     } else {

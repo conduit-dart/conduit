@@ -11,7 +11,7 @@ class PBKDF2 {
   /// Creates instance capable of generating a key.
   ///
   /// [hashAlgorithm] defaults to [sha256].
-  PBKDF2({Hash? hashAlgorithm}) {
+  new({Hash? hashAlgorithm}) {
     this.hashAlgorithm = hashAlgorithm ?? sha256;
   }
 
@@ -87,7 +87,7 @@ class PBKDF2 {
 
 /// Thrown when [PBKDF2] throws an exception.
 class PBKDF2Exception implements Exception {
-  PBKDF2Exception(this.message);
+  new(this.message);
   String message;
 
   @override
@@ -95,7 +95,7 @@ class PBKDF2Exception implements Exception {
 }
 
 class _XORDigestSink implements Sink<Digest> {
-  _XORDigestSink(ByteData inputBuffer, Hmac hmac) {
+  new(ByteData inputBuffer, Hmac hmac) {
     lastDigest = hmac.convert(inputBuffer.buffer.asUint8List()).bytes;
     bytes = ByteData(lastDigest.length)
       ..buffer.asUint8List().setRange(0, lastDigest.length, lastDigest);

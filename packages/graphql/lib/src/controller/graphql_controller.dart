@@ -108,8 +108,7 @@ class GraphQLController extends ResourceController {
   /// so its loader caches don't leak across requests. When null,
   /// resolvers fall back to per-call SQL fetches with no batching —
   /// safe but quadratic for nested queries.
-  GraphQLController(this.schema, {this.dataLoaderRegistry})
-    : _graphql = GraphQL(schema) {
+  new(this.schema, {this.dataLoaderRegistry}) : _graphql = GraphQL(schema) {
     _ensureCodecRegistered();
     acceptedContentTypes = [_applicationJson, _applicationGraphQL];
   }
@@ -465,7 +464,7 @@ class GraphQLController extends ResourceController {
 /// (`message`, `locations`, `path`, `extensions`) with a `toJson` that
 /// omits empty fields per the spec.
 class _GqlError {
-  _GqlError(
+  new(
     this.message, {
     this.locations = const [],
     // `path` and `extensions` are part of the GraphQL spec error shape
@@ -479,7 +478,7 @@ class _GqlError {
     this.extensions = const {},
   });
 
-  factory _GqlError.fromUpstream(GraphQLExceptionError e) {
+  factory fromUpstream(GraphQLExceptionError e) {
     return _GqlError(
       e.message,
       locations: e.locations
@@ -505,7 +504,7 @@ class _GqlError {
 }
 
 class _GqlLocation {
-  _GqlLocation(this.line, this.column);
+  new(this.line, this.column);
   final int line;
   final int column;
   Map<String, int> toJson() => {'line': line, 'column': column};

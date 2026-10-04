@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class FailingRegex extends ManagedObject<_FRX> {}
+class FailingRegex extends ManagedObject<_FRX>;
 
 class _FRX {
   @primaryKey

@@ -80,7 +80,7 @@ abstract class MockServer<T> {
 ///         });
 ///
 class MockHTTPServer extends MockServer<Request> {
-  MockHTTPServer(this.port) : super();
+  new(this.port) : super();
 
   /// The port to listen on.
   int port;
@@ -194,12 +194,7 @@ class MockHTTPServer extends MockServer<Request> {
 typedef _MockRequestHandler = Response Function(Request request);
 
 class _MockServerResponse {
-  _MockServerResponse({
-    this.object,
-    this.handler,
-    this.delay,
-    this.outageCount = 0,
-  });
+  new({this.object, this.handler, this.delay, this.outageCount = 0});
 
   final Duration? delay;
 

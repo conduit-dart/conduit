@@ -21,7 +21,7 @@ import 'package:benchmark_harness/benchmark_harness.dart';
 import 'package:conduit_core/conduit_core.dart';
 
 class _NamedDialect extends SqlDialect {
-  const _NamedDialect();
+  const new();
   @override
   String get name => 'named-bench';
   @override
@@ -34,7 +34,7 @@ class _NamedDialect extends SqlDialect {
 }
 
 class _PositionalDialect extends SqlDialect {
-  const _PositionalDialect();
+  const new();
   @override
   String get name => 'positional-bench';
   @override
@@ -51,7 +51,7 @@ class _PositionalDialect extends SqlDialect {
 }
 
 class _QueryE2EBench extends BenchmarkBase {
-  _QueryE2EBench(this.dialect, this.terms, String label) : super(label);
+  new(this.dialect, this.terms, String label) : super(label);
   final SqlDialect dialect;
   final int terms;
 

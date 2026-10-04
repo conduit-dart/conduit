@@ -60,7 +60,7 @@ class App extends ApplicationChannel {
 }
 
 class UserController extends ResourceController {
-  UserController(this.context, this.authServer);
+  new(this.context, this.authServer);
 
   final ManagedContext? context;
   final AuthServer authServer;
@@ -113,7 +113,7 @@ class UserController extends ResourceController {
 }
 
 class AppConfiguration extends Configuration {
-  AppConfiguration.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
   late DatabaseConfiguration database;
 }

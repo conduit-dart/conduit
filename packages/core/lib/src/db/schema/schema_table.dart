@@ -8,7 +8,7 @@ import 'package:conduit_core/src/db/schema/schema.dart';
 /// Instances of this type contain the database-only details of a [ManagedEntity]. See also [Schema].
 class SchemaTable {
   /// Creates an instance of this type with a [name], [columns] and [uniqueColumnSetNames].
-  SchemaTable(
+  new(
     this.name,
     List<SchemaColumn> columns, {
     List<String>? uniqueColumnSetNames,
@@ -18,7 +18,7 @@ class SchemaTable {
   }
 
   /// Creates an instance of this type to mirror [entity].
-  SchemaTable.fromEntity(ManagedEntity entity) {
+  new fromEntity(ManagedEntity entity) {
     name = entity.tableName;
 
     final validProperties = entity.properties.values
@@ -38,19 +38,19 @@ class SchemaTable {
   }
 
   /// Creates a deep copy of [otherTable].
-  SchemaTable.from(SchemaTable otherTable) {
+  new from(SchemaTable otherTable) {
     name = otherTable.name;
     _columns = otherTable.columns.map(SchemaColumn.from).toList();
     _uniqueColumnSet = otherTable._uniqueColumnSet;
   }
 
   /// Creates an empty table.
-  SchemaTable.empty();
+  new empty();
 
   /// Creates an instance of this type from [map].
   ///
   /// This [map] is typically generated from [asMap];
-  SchemaTable.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     name = map["name"] as String?;
     _columns = (map["columns"] as List<Map<String, dynamic>>)
         .map(SchemaColumn.fromMap)
@@ -195,7 +195,7 @@ class SchemaTable {
 /// This class is used for comparing schemas for validation and migration.
 class SchemaTableDifference {
   /// Creates a new instance that represents the difference between [expectedTable] and [actualTable].
-  SchemaTableDifference(this.expectedTable, this.actualTable) {
+  new(this.expectedTable, this.actualTable) {
     if (expectedTable != null && actualTable != null) {
       for (final expectedColumn in expectedTable!.columns) {
         final actualColumn = actualTable != null
@@ -304,10 +304,8 @@ class SchemaTableDifference {
 
 /// Difference between two [SchemaTable.uniqueColumnSet]s.
 class SchemaTableUniqueSetDifference {
-  SchemaTableUniqueSetDifference(
-    SchemaTable expectedTable,
-    SchemaTable actualTable,
-  ) : expectedColumnNames = expectedTable.uniqueColumnSet ?? [],
+  new(SchemaTable expectedTable, SchemaTable actualTable)
+    : expectedColumnNames = expectedTable.uniqueColumnSet ?? [],
       actualColumnNames = actualTable.uniqueColumnSet ?? [],
       _tableName = actualTable.name;
 

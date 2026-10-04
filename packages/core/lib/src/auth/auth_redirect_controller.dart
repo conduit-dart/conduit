@@ -54,11 +54,7 @@ class AuthRedirectController extends ResourceController {
   /// Creates a new instance of an [AuthRedirectController].
   ///
   /// [authServer] is the required authorization server. If [delegate] is provided, this controller will return a login page for all GET requests.
-  AuthRedirectController(
-    this.authServer, {
-    this.delegate,
-    this.allowsImplicit = true,
-  }) {
+  new(this.authServer, {this.delegate, this.allowsImplicit = true}) {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];

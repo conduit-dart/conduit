@@ -529,7 +529,7 @@ void main() {
 }
 
 class TestModel extends ManagedObject<_TestModel> implements _TestModel {
-  TestModel({String? name, String? email}) {
+  new({String? name, String? email}) {
     this.name = name;
     this.email = email;
   }
@@ -556,7 +556,7 @@ class _TestModel {
   }
 }
 
-class GenUser extends ManagedObject<_GenUser> implements _GenUser {}
+class GenUser extends ManagedObject<_GenUser> implements _GenUser;
 
 @Table(name: "GenUser")
 class _GenUser {
@@ -573,7 +573,7 @@ class _GenUser {
   }
 }
 
-class GenPost extends ManagedObject<_GenPost> implements _GenPost {}
+class GenPost extends ManagedObject<_GenPost> implements _GenPost;
 
 class _GenPost {
   @primaryKey
@@ -585,7 +585,7 @@ class _GenPost {
   GenUser? owner;
 }
 
-class Omit extends ManagedObject<_Omit> implements _Omit {}
+class Omit extends ManagedObject<_Omit> implements _Omit;
 
 class _Omit {
   @primaryKey
@@ -597,7 +597,7 @@ class _Omit {
 
 class PrivateField extends ManagedObject<_PrivateField>
     implements _PrivateField {
-  PrivateField() : super() {
+  new() : super() {
     _private = "x";
   }
 
@@ -615,7 +615,7 @@ class _PrivateField {
   String? _private;
 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey

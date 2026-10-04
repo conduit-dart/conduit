@@ -35,7 +35,7 @@ class Authorizer extends Controller {
   ///         Authorization: Bearer ap9ijlarlkz8jIOa9laweo
   ///
   /// If [scopes] is provided, the authorization granted must have access to *all* scopes according to [validator].
-  Authorizer(
+  new(
     this.validator, {
     this.parser = const AuthorizationBearerParser(),
     List<String>? scopes,
@@ -46,7 +46,7 @@ class Authorizer extends Controller {
   /// Parses a username and password from the request's Basic Authentication data in the Authorization header, e.g.:
   ///
   ///         Authorization: Basic base64(username:password)
-  Authorizer.basic(AuthValidator? validator)
+  new basic(AuthValidator? validator)
     : this(validator, parser: const AuthorizationBasicParser());
 
   /// Creates an instance of [Authorizer] with Bearer token parsing.
@@ -56,7 +56,7 @@ class Authorizer extends Controller {
   ///         Authorization: Bearer ap9ijlarlkz8jIOa9laweo
   ///
   /// If [scopes] is provided, the bearer token must have access to *all* scopes according to [validator].
-  Authorizer.bearer(AuthValidator? validator, {List<String>? scopes})
+  new bearer(AuthValidator? validator, {List<String>? scopes})
     : this(
         validator,
         parser: const AuthorizationBearerParser(),

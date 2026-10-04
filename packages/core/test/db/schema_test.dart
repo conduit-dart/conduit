@@ -762,7 +762,7 @@ void main() {
   });
 }
 
-class Container extends ManagedObject<_Container> implements _Container {}
+class Container extends ManagedObject<_Container> implements _Container;
 
 class _Container {
   @primaryKey
@@ -772,7 +772,7 @@ class _Container {
   ManagedSet<LoadedItem>? loadedItems;
 }
 
-class DefaultItem extends ManagedObject<_DefaultItem> implements _DefaultItem {}
+class DefaultItem extends ManagedObject<_DefaultItem> implements _DefaultItem;
 
 class _DefaultItem {
   @primaryKey
@@ -782,7 +782,7 @@ class _DefaultItem {
   Container? container;
 }
 
-class LoadedItem extends ManagedObject<_LoadedItem> {}
+class LoadedItem extends ManagedObject<_LoadedItem>;
 
 class _LoadedItem {
   @primaryKey
@@ -797,7 +797,7 @@ class _LoadedItem {
   LoadedSingleItem? loadedSingleItem;
 }
 
-class LoadedSingleItem extends ManagedObject<_LoadedSingleItem> {}
+class LoadedSingleItem extends ManagedObject<_LoadedSingleItem>;
 
 class _LoadedSingleItem {
   @primaryKey
@@ -811,7 +811,7 @@ class _LoadedSingleItem {
   LoadedItem? loadedItem;
 }
 
-class SimpleModel extends ManagedObject<_SimpleModel> implements _SimpleModel {}
+class SimpleModel extends ManagedObject<_SimpleModel> implements _SimpleModel;
 
 class _SimpleModel {
   @primaryKey
@@ -856,7 +856,7 @@ class _ExtensiveModel {
 }
 
 class OverriddenModel extends ManagedObject<_OverriddenModel>
-    implements _OverriddenModel {}
+    implements _OverriddenModel;
 
 class _OverriddenModel extends PartialModel {
   @override
@@ -873,7 +873,7 @@ class PartialModel {
   String? field;
 }
 
-class Unique extends ManagedObject<_Unique> implements _Unique {}
+class Unique extends ManagedObject<_Unique> implements _Unique;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _Unique {
@@ -885,7 +885,7 @@ class _Unique {
   String? c;
 }
 
-class SelfRef extends ManagedObject<_SelfRef> implements _SelfRef {}
+class SelfRef extends ManagedObject<_SelfRef> implements _SelfRef;
 
 class _SelfRef {
   @primaryKey
@@ -899,7 +899,7 @@ class _SelfRef {
   SelfRef? parent;
 }
 
-class Left extends ManagedObject<_Left> implements _Left {}
+class Left extends ManagedObject<_Left> implements _Left;
 
 class _Left {
   @primaryKey
@@ -913,7 +913,7 @@ class _Left {
   Right? belongsToRight;
 }
 
-class Right extends ManagedObject<_Right> implements _Right {}
+class Right extends ManagedObject<_Right> implements _Right;
 
 class _Right {
   @primaryKey

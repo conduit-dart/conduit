@@ -8,7 +8,7 @@ class RouteSpecification {
   /// Creates a [RouteSpecification] from a [String].
   ///
   /// The [patternString] must be stripped of any optionals.
-  RouteSpecification(String patternString) {
+  new(String patternString) {
     segments = _splitPathSegments(patternString);
     variableNames = segments
         .where((e) => e.isVariable)

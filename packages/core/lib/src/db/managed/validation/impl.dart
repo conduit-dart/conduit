@@ -11,7 +11,7 @@ enum ValidationOperator {
 }
 
 class ValidationExpression {
-  ValidationExpression(this.operator, this.value);
+  new(this.operator, this.value);
 
   final ValidationOperator operator;
   dynamic value;

@@ -218,7 +218,7 @@ void main() {
 }
 
 class ServerRoot {
-  ServerRoot();
+  new();
 
   late HttpServer server;
   Controller root = ClosureController((req) => req);
@@ -290,7 +290,7 @@ class MiddlewareRecyclable extends Controller implements Recyclable<String> {
 typedef ClosureHandler = FutureOr<RequestOrResponse> Function(Request request);
 
 class ClosureController extends Controller {
-  ClosureController(this.handler);
+  new(this.handler);
 
   final ClosureHandler handler;
 

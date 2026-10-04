@@ -33,7 +33,7 @@ const _goldenPath = 'test/db/goldens/predicate_render.golden';
 /// distinct spelling, so the golden proves the dialect hook is honoured
 /// by both the format string and the AST render.
 class _AtNamedDialect extends SqlDialect {
-  const _AtNamedDialect();
+  const new();
   @override
   String get name => 'named-at';
   @override
@@ -49,7 +49,7 @@ class _AtNamedDialect extends SqlDialect {
 
 /// SQLite-shaped: `:name` placeholders, named bindings, default `LIKE`.
 class _ColonNamedDialect extends SqlDialect {
-  const _ColonNamedDialect();
+  const new();
   @override
   String get name => 'named-colon';
   @override
@@ -65,7 +65,7 @@ class _ColonNamedDialect extends SqlDialect {
 
 /// MySQL-shaped: `?` placeholders, positional bindings.
 class _PositionalDialect extends SqlDialect {
-  const _PositionalDialect();
+  const new();
   @override
   String get name => 'positional';
   @override
@@ -82,7 +82,7 @@ class _PositionalDialect extends SqlDialect {
 }
 
 class _DialectStore extends DefaultPersistentStore {
-  _DialectStore(this.dialect);
+  new(this.dialect);
   @override
   final SqlDialect dialect;
 }
@@ -277,7 +277,7 @@ class _GoldenAuthor {
 }
 
 class GoldenAuthor extends ManagedObject<_GoldenAuthor>
-    implements _GoldenAuthor {}
+    implements _GoldenAuthor;
 
 class _GoldenBook {
   @primaryKey
@@ -296,4 +296,4 @@ class _GoldenBook {
   GoldenAuthor? author;
 }
 
-class GoldenBook extends ManagedObject<_GoldenBook> implements _GoldenBook {}
+class GoldenBook extends ManagedObject<_GoldenBook> implements _GoldenBook;

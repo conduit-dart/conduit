@@ -334,9 +334,9 @@ Map<String, dynamic>? encode(void Function(KeyedArchive object) encoder) {
 }
 
 class Container extends Coding {
-  Container(this.root, this.definitions);
+  new(this.root, this.definitions);
 
-  Container._();
+  new _();
 
   Parent? root;
   Map<String, Coding?>? definitions;
@@ -357,9 +357,9 @@ class Container extends Coding {
 }
 
 class Parent extends Coding {
-  Parent(this.name, {this.child, this.children, this.childMap, this.things});
+  new(this.name, {this.child, this.children, this.childMap, this.things});
 
-  Parent._();
+  new _();
 
   String? name;
   Child? child;
@@ -388,9 +388,9 @@ class Parent extends Coding {
 }
 
 class Child extends Coding {
-  Child(this.name, {this.parent});
+  new(this.name, {this.parent});
 
-  Child._();
+  new _();
 
   String? name;
   Parent? parent;

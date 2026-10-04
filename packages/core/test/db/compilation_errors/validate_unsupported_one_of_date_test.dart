@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class UnsupportedDateOneOf extends ManagedObject<_UDAOO> {}
+class UnsupportedDateOneOf extends ManagedObject<_UDAOO>;
 
 class _UDAOO {
   @primaryKey

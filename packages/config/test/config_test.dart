@@ -967,13 +967,13 @@ void main() {
 }
 
 class TopLevelConfiguration extends Configuration {
-  TopLevelConfiguration();
+  new();
 
-  TopLevelConfiguration.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
-  TopLevelConfiguration.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
-  TopLevelConfiguration.fromMap(super.map) : super.fromMap();
+  new fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -983,14 +983,13 @@ class TopLevelConfiguration extends Configuration {
 }
 
 class TopLevelConfigurationWithValidation extends Configuration {
-  TopLevelConfigurationWithValidation();
+  new();
 
-  TopLevelConfigurationWithValidation.fromString(super.contents)
-    : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
-  TopLevelConfigurationWithValidation.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
-  TopLevelConfigurationWithValidation.fromMap(super.map) : super.fromMap();
+  new fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -1006,19 +1005,19 @@ class TopLevelConfigurationWithValidation extends Configuration {
 }
 
 class DatabaseConfigurationSubclass extends DatabaseConfiguration {
-  DatabaseConfigurationSubclass();
+  new();
 
   late int extraDatabaseValue;
 }
 
 class ConfigurationSuperclass extends Configuration {
-  ConfigurationSuperclass();
+  new();
 
-  ConfigurationSuperclass.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
-  ConfigurationSuperclass.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
-  ConfigurationSuperclass.fromMap(super.map) : super.fromMap();
+  new fromMap(super.map) : super.fromMap();
 
   late int port;
 
@@ -1026,13 +1025,13 @@ class ConfigurationSuperclass extends Configuration {
 }
 
 class ConfigurationSubclass extends ConfigurationSuperclass {
-  ConfigurationSubclass();
+  new();
 
-  ConfigurationSubclass.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
-  ConfigurationSubclass.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
-  ConfigurationSubclass.fromMap(super.map) : super.fromMap();
+  new fromMap(super.map) : super.fromMap();
 
   late int extraValue;
 
@@ -1040,21 +1039,20 @@ class ConfigurationSubclass extends ConfigurationSuperclass {
 }
 
 class ConfigurationSubclassWithValidation extends ConfigurationSuperclass {
-  ConfigurationSubclassWithValidation();
+  new();
 
-  ConfigurationSubclassWithValidation.fromString(super.contents)
-    : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
-  ConfigurationSubclassWithValidation.fromFile(super.file) : super.fromFile();
+  new fromFile(super.file) : super.fromFile();
 
-  ConfigurationSubclassWithValidation.fromMap(super.map) : super.fromMap();
+  new fromMap(super.map) : super.fromMap();
 
   late DatabaseConfigurationSubclassWithValidation database;
 }
 
 class DatabaseConfigurationSubclassWithValidation
     extends DatabaseConfiguration {
-  DatabaseConfigurationSubclassWithValidation();
+  new();
 
   @override
   void validate() {
@@ -1069,9 +1067,9 @@ class DatabaseConfigurationSubclassWithValidation
 }
 
 class SpecialInfo extends Configuration {
-  SpecialInfo();
+  new();
 
-  SpecialInfo.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   late List<String> strings;
   late List<DatabaseConfiguration> databaseRecords;
@@ -1080,9 +1078,9 @@ class SpecialInfo extends Configuration {
 }
 
 class OptionalEmbeddedContainer extends Configuration {
-  OptionalEmbeddedContainer();
+  new();
 
-  OptionalEmbeddedContainer.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   late int port;
 
@@ -1090,9 +1088,9 @@ class OptionalEmbeddedContainer extends Configuration {
 }
 
 class EnvironmentConfiguration extends Configuration {
-  EnvironmentConfiguration();
+  new();
 
-  EnvironmentConfiguration.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   late String path;
   late int testValue;
@@ -1102,9 +1100,9 @@ class EnvironmentConfiguration extends Configuration {
 }
 
 class StaticVariableConfiguration extends Configuration {
-  StaticVariableConfiguration();
+  new();
 
-  StaticVariableConfiguration.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   static late String staticVariable;
 
@@ -1112,32 +1110,32 @@ class StaticVariableConfiguration extends Configuration {
 }
 
 class PrivateVariableConfiguration extends Configuration {
-  PrivateVariableConfiguration();
+  new();
 
-  PrivateVariableConfiguration.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   String? _privateVariable;
   late int value;
 }
 
 class EnvFail extends Configuration {
-  EnvFail();
+  new();
 
-  EnvFail.fromString(super.contents) : super.fromString();
+  new fromString(super.contents) : super.fromString();
 
   late String value;
 }
 
 class BoolConfig extends Configuration {
-  BoolConfig();
-  BoolConfig.fromString(super.contents) : super.fromString();
+  new();
+  new fromString(super.contents) : super.fromString();
 
   late bool value;
 }
 
 class DefaultValConfig extends Configuration {
-  DefaultValConfig();
-  DefaultValConfig.fromString(super.contents) : super.fromString();
+  new();
+  new fromString(super.contents) : super.fromString();
 
   late String required;
 

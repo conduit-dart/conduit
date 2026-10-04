@@ -58,7 +58,7 @@ class AuthCodeController extends ResourceController {
   ///
   /// [authServer] is the required authorization server. If [delegate] is provided, this controller will return a login page for all GET requests.
   @Deprecated('Use AuthRedirectController instead.')
-  AuthCodeController(this.authServer, {this.delegate}) {
+  new(this.authServer, {this.delegate}) {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];

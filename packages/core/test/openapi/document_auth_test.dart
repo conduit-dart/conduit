@@ -333,7 +333,7 @@ class TestChannel extends ApplicationChannel {
 }
 
 class DocumentedController extends Controller {
-  DocumentedController({this.tag});
+  new({this.tag});
 
   final String? tag;
 

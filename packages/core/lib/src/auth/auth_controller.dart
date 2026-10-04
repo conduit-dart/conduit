@@ -25,7 +25,7 @@ class AuthController extends ResourceController {
   /// Creates a new instance of an [AuthController].
   ///
   /// [authServer] is the isRequired authorization server that grants tokens.
-  AuthController(this.authServer) {
+  new(this.authServer) {
     acceptedContentTypes = [
       ContentType("application", "x-www-form-urlencoded"),
     ];

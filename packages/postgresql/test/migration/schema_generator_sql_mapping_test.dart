@@ -590,7 +590,7 @@ class _GeneratorModel1 {
 }
 
 class GeneratorModel2 extends ManagedObject<_GeneratorModel2>
-    implements _GeneratorModel2 {}
+    implements _GeneratorModel2;
 
 class _GeneratorModel2 {
   @Column(primaryKey: true, indexed: true)
@@ -598,7 +598,7 @@ class _GeneratorModel2 {
 }
 
 class GeneratorModel3 extends ManagedObject<_GeneratorModel3>
-    implements _GeneratorModel3 {}
+    implements _GeneratorModel3;
 
 class _GeneratorModel3 {
   @Column(defaultValue: "(now() at time zone 'utc')")
@@ -620,7 +620,7 @@ class _GeneratorModel3 {
   double? value;
 }
 
-class GenUser extends ManagedObject<_GenUser> implements _GenUser {}
+class GenUser extends ManagedObject<_GenUser> implements _GenUser;
 
 class _GenUser {
   @Column(primaryKey: true)
@@ -631,7 +631,7 @@ class _GenUser {
   ManagedSet<GenPost>? posts;
 }
 
-class GenPost extends ManagedObject<_GenPost> implements _GenPost {}
+class GenPost extends ManagedObject<_GenPost> implements _GenPost;
 
 class _GenPost {
   @Column(primaryKey: true)
@@ -643,7 +643,7 @@ class _GenPost {
   GenUser? owner;
 }
 
-class GenNamed extends ManagedObject<_GenNamed> implements _GenNamed {}
+class GenNamed extends ManagedObject<_GenNamed> implements _GenNamed;
 
 @Table(name: "GenNamed")
 class _GenNamed {
@@ -651,7 +651,7 @@ class _GenNamed {
   int? id;
 }
 
-class GenOwner extends ManagedObject<_GenOwner> implements _GenOwner {}
+class GenOwner extends ManagedObject<_GenOwner> implements _GenOwner;
 
 class _GenOwner {
   @primaryKey
@@ -660,7 +660,7 @@ class _GenOwner {
   GenAuth? auth;
 }
 
-class GenAuth extends ManagedObject<_GenAuth> implements _GenAuth {}
+class GenAuth extends ManagedObject<_GenAuth> implements _GenAuth;
 
 class _GenAuth {
   @Column(primaryKey: true)
@@ -670,7 +670,7 @@ class _GenAuth {
   GenOwner? owner;
 }
 
-class GenLeft extends ManagedObject<_GenLeft> implements _GenLeft {}
+class GenLeft extends ManagedObject<_GenLeft> implements _GenLeft;
 
 class _GenLeft {
   @Column(primaryKey: true)
@@ -679,7 +679,7 @@ class _GenLeft {
   ManagedSet<GenJoin>? join;
 }
 
-class GenRight extends ManagedObject<_GenRight> implements _GenRight {}
+class GenRight extends ManagedObject<_GenRight> implements _GenRight;
 
 class _GenRight {
   @Column(primaryKey: true)
@@ -688,7 +688,7 @@ class _GenRight {
   ManagedSet<GenJoin>? join;
 }
 
-class GenJoin extends ManagedObject<_GenJoin> implements _GenJoin {}
+class GenJoin extends ManagedObject<_GenJoin> implements _GenJoin;
 
 class _GenJoin {
   @primaryKey
@@ -701,7 +701,7 @@ class _GenJoin {
   GenRight? right;
 }
 
-class GenObj extends ManagedObject<_GenObj> implements _GenObj {}
+class GenObj extends ManagedObject<_GenObj> implements _GenObj;
 
 class _GenObj {
   @primaryKey
@@ -711,7 +711,7 @@ class _GenObj {
 }
 
 class GenNotNullable extends ManagedObject<_GenNotNullable>
-    implements _GenNotNullable {}
+    implements _GenNotNullable;
 
 class _GenNotNullable {
   @primaryKey
@@ -739,7 +739,7 @@ class _PrivateField {
 
 enum EnumValues { abcd, efgh, other18 }
 
-class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject {}
+class EnumObject extends ManagedObject<_EnumObject> implements _EnumObject;
 
 class _EnumObject {
   @primaryKey
@@ -748,7 +748,7 @@ class _EnumObject {
   EnumValues? enumValues;
 }
 
-class Unique extends ManagedObject<_Unique> {}
+class Unique extends ManagedObject<_Unique>;
 
 @Table.unique([Symbol('a'), Symbol('b')])
 class _Unique {
@@ -760,7 +760,7 @@ class _Unique {
   String? c;
 }
 
-class UniqueContainer extends ManagedObject<_UniqueContainer> {}
+class UniqueContainer extends ManagedObject<_UniqueContainer>;
 
 class _UniqueContainer {
   @primaryKey
@@ -769,7 +769,7 @@ class _UniqueContainer {
   UniqueBelongsTo? contains;
 }
 
-class UniqueBelongsTo extends ManagedObject<_UniqueBelongsTo> {}
+class UniqueBelongsTo extends ManagedObject<_UniqueBelongsTo>;
 
 @Table.unique([Symbol('a'), Symbol('container')])
 class _UniqueBelongsTo {

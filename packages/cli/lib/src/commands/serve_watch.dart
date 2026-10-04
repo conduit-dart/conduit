@@ -28,7 +28,7 @@ enum WatchedServerEventKind {
 
 /// A single notification emitted by [WatchedServer.events].
 class WatchedServerEvent {
-  WatchedServerEvent(this.kind, {this.changedPaths = const [], this.error});
+  new(this.kind, {this.changedPaths = const [], this.error});
 
   final WatchedServerEventKind kind;
 
@@ -46,7 +46,7 @@ class WatchedServerEvent {
 /// The class is deliberately decoupled from `CLIServer` so it is unit-testable
 /// against any [ServerStarter].
 class WatchedServer {
-  WatchedServer({
+  new({
     required this.starter,
     required this.projectDirectory,
     required this.watchPaths,

@@ -10,7 +10,7 @@ enum _Reducer { avg, count, max, min, sum }
 
 class PostgresQueryReduce<T extends ManagedObject>
     extends QueryReduceOperation<T> {
-  PostgresQueryReduce(this.query) : builder = QueryBuilder(query);
+  new(this.query) : builder = QueryBuilder(query);
 
   final PostgresQuery<T> query;
   final QueryBuilder builder;

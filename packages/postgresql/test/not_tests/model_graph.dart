@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:conduit_core/conduit_core.dart';
 
 class RootObject extends ManagedObject<_RootObject> implements _RootObject {
-  RootObject();
-  RootObject.withCounter() {
+  new();
+  new withCounter() {
     value1 = counter;
     value2 = counter;
     counter++;
@@ -33,8 +33,8 @@ class _RootObject {
 }
 
 class ChildObject extends ManagedObject<_ChildObject> implements _ChildObject {
-  ChildObject();
-  ChildObject.withCounter() {
+  new();
+  new withCounter() {
     value1 = counter;
     value2 = counter;
     counter++;
@@ -67,8 +67,8 @@ class _ChildObject {
 
 class GrandChildObject extends ManagedObject<_GrandChildObject>
     implements _GrandChildObject {
-  GrandChildObject();
-  GrandChildObject.withCounter() {
+  new();
+  new withCounter() {
     value1 = counter;
     value2 = counter;
     counter++;
@@ -99,8 +99,8 @@ class _GrandChildObject {
 
 class OtherRootObject extends ManagedObject<_OtherRootObject>
     implements _OtherRootObject {
-  OtherRootObject();
-  OtherRootObject.withCounter() {
+  new();
+  new withCounter() {
     value1 = counter;
     value2 = counter;
     counter++;

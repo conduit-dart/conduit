@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 abstract class AuthorizationParser<T> {
-  const AuthorizationParser();
+  const new();
 
   T parse(String authorizationHeader);
 }
 
 /// Parses a Bearer token from an Authorization header.
 class AuthorizationBearerParser extends AuthorizationParser<String?> {
-  const AuthorizationBearerParser();
+  const new();
 
   /// Parses a Bearer token from [authorizationHeader]. If the header is malformed or doesn't exist,
   /// throws an [AuthorizationParserException]. Otherwise, returns the [String] representation of the bearer token.
@@ -52,7 +52,7 @@ class AuthBasicCredentials {
 /// Parses a Basic Authorization header.
 class AuthorizationBasicParser
     extends AuthorizationParser<AuthBasicCredentials> {
-  const AuthorizationBasicParser();
+  const new();
 
   /// Returns a [AuthBasicCredentials] containing the username and password
   /// base64 encoded in [authorizationHeader]. For example, if the input to this method
@@ -109,7 +109,7 @@ enum AuthorizationParserExceptionReason { missing, malformed }
 
 /// An exception indicating why Authorization parsing failed.
 class AuthorizationParserException implements Exception {
-  AuthorizationParserException(this.reason);
+  new(this.reason);
 
   AuthorizationParserExceptionReason reason;
 }

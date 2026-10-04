@@ -6,7 +6,7 @@ import 'package:conduit_core/src/db/schema/schema.dart';
 /// Instances of this type contain the database-only details of a [ManagedPropertyDescription].
 class SchemaColumn {
   /// Creates an instance of this type from [name], [type] and other properties.
-  SchemaColumn(
+  new(
     this.name,
     ManagedPropertyType type, {
     this.isIndexed = false,
@@ -20,7 +20,7 @@ class SchemaColumn {
   }
 
   /// A convenience constructor for properties that represent foreign key relationships.
-  SchemaColumn.relationship(
+  new relationship(
     this.name,
     ManagedPropertyType type, {
     this.isNullable = true,
@@ -35,7 +35,7 @@ class SchemaColumn {
   }
 
   /// Creates an instance of this type to mirror [desc].
-  SchemaColumn.fromProperty(ManagedPropertyDescription desc) {
+  new fromProperty(ManagedPropertyDescription desc) {
     name = desc.name;
 
     if (desc is ManagedRelationshipDescription) {
@@ -58,7 +58,7 @@ class SchemaColumn {
   }
 
   /// Creates a copy of [otherColumn].
-  SchemaColumn.from(SchemaColumn otherColumn) {
+  new from(SchemaColumn otherColumn) {
     name = otherColumn.name;
     _type = otherColumn._type;
     isIndexed = otherColumn.isIndexed;
@@ -75,7 +75,7 @@ class SchemaColumn {
   /// Creates an instance of this type from [map].
   ///
   /// Where [map] is typically created by [asMap].
-  SchemaColumn.fromMap(Map<String, dynamic> map) {
+  new fromMap(Map<String, dynamic> map) {
     name = map["name"] as String;
     _type = map["type"] as String?;
     isIndexed = map["indexed"] as bool?;
@@ -90,7 +90,7 @@ class SchemaColumn {
   }
 
   /// Creates an empty instance of this type.
-  SchemaColumn.empty();
+  new empty();
 
   /// The name of this column.
   late String name;
@@ -272,7 +272,7 @@ class SchemaColumn {
 /// This class is used for comparing database columns for validation and migration.
 class SchemaColumnDifference {
   /// Creates a new instance that represents the difference between [expectedColumn] and [actualColumn].
-  SchemaColumnDifference(this.expectedColumn, this.actualColumn) {
+  new(this.expectedColumn, this.actualColumn) {
     if (actualColumn != null && expectedColumn != null) {
       if (actualColumn!.isPrimaryKey != expectedColumn!.isPrimaryKey) {
         throw SchemaException(
@@ -406,7 +406,7 @@ class SchemaColumnDifference {
 }
 
 class _PropertyDifference {
-  _PropertyDifference(this.name, this.expectedValue, this.actualValue);
+  new(this.name, this.expectedValue, this.actualValue);
 
   final String name;
   final dynamic expectedValue;

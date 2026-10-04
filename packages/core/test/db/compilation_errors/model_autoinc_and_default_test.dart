@@ -1,7 +1,7 @@
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
-class AutoincrementAndDefault extends ManagedObject<_AutoincrementAndDefault> {}
+class AutoincrementAndDefault extends ManagedObject<_AutoincrementAndDefault>;
 
 class _AutoincrementAndDefault {
   @primaryKey

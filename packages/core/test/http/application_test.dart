@@ -128,7 +128,7 @@ void main() {
 }
 
 class TestException implements Exception {
-  TestException(this.message);
+  new(this.message);
 
   final String message;
 

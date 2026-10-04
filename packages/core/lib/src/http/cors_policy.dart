@@ -17,7 +17,7 @@ class CORSPolicy {
   /// Create a new instance of [CORSPolicy].
   ///
   /// Values are set to match [defaultPolicy].
-  CORSPolicy() {
+  new() {
     final def = defaultPolicy;
     allowedOrigins = List.from(def.allowedOrigins);
     allowCredentials = def.allowCredentials;
@@ -27,7 +27,7 @@ class CORSPolicy {
     cacheInSeconds = def.cacheInSeconds;
   }
 
-  CORSPolicy._defaults() {
+  new _defaults() {
     allowedOrigins = ["*"];
     // The default is `false` because the dangerous combination
     // `allowCredentials = true` + `allowedOrigins = ["*"]` effectively

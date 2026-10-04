@@ -1,5 +1,5 @@
 class IntermediateException implements Exception {
-  IntermediateException(this.underlying, this.keyPath);
+  new(this.underlying, this.keyPath);
 
   final dynamic underlying;
 

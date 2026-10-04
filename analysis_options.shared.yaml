@@ -23,3 +23,10 @@ linter:
     prefer_spread_collections: true
     use_function_type_syntax_for_parameters: true
     omit_obvious_local_variable_types: true
+    # Dart 3.13 primary-constructor lints (https://dart.dev/blog/announcing-dart-3-13).
+    empty_container_bodies: true
+    initialize_in_field_declaration: true
+    unnecessary_const_in_enum_constructor: true
+    unnecessary_primary_constructor_body: true
+    unnecessary_type_name_in_constructor: true
+    use_declaring_parameters: true

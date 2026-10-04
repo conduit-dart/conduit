@@ -97,7 +97,7 @@ void main() {
 
     test('comparison renders as ? and binds positionally', () {
       final r = d.renderExpression(
-        BinaryOpExpression(
+        const BinaryOpExpression(
           '=',
           ColumnExpression('id', tableNamespace: 'users'),
           ParameterExpression('id_v', 42),
@@ -110,7 +110,7 @@ void main() {
 
     test('AND combinator preserves positional ordering', () {
       final r = d.renderExpression(
-        LogicalExpression('AND', [
+        const LogicalExpression('AND', [
           BinaryOpExpression(
             '=',
             ColumnExpression('a'),
@@ -129,7 +129,7 @@ void main() {
 
     test('IN expands to (?,?,?) and binds in order', () {
       final r = d.renderExpression(
-        InExpression(ColumnExpression('id'), [
+        const InExpression(ColumnExpression('id'), [
           ParameterExpression('a', 10),
           ParameterExpression('b', 20),
           ParameterExpression('c', 30),
@@ -141,7 +141,7 @@ void main() {
 
     test('LIKE BINARY emitted for case-sensitive string match', () {
       final r = d.renderExpression(
-        LikeExpression(
+        const LikeExpression(
           ColumnExpression('name'),
           ParameterExpression('p', 'Foo%'),
           caseSensitive: true,
@@ -153,7 +153,7 @@ void main() {
 
     test('LIKE (no BINARY) for case-insensitive', () {
       final r = d.renderExpression(
-        LikeExpression(
+        const LikeExpression(
           ColumnExpression('name'),
           ParameterExpression('p', 'foo%'),
           caseSensitive: false,
@@ -163,14 +163,16 @@ void main() {
     });
 
     test('IS NULL renders without binding', () {
-      final r = d.renderExpression(IsNullExpression(ColumnExpression('email')));
+      final r = d.renderExpression(
+        const IsNullExpression(ColumnExpression('email')),
+      );
       expect(r.sql, 'email IS NULL');
       expect(r.positionalParameters, isEmpty);
     });
 
     test('BETWEEN binds low then high', () {
       final r = d.renderExpression(
-        BetweenExpression(
+        const BetweenExpression(
           ColumnExpression('n'),
           ParameterExpression('lo', 5),
           ParameterExpression('hi', 10),
@@ -325,4 +327,4 @@ void main() {
 
 /// Bare adapter so tests can call mixin methods without instantiating
 /// a real MysqlPersistentStore (which would attempt a TCP connect).
-class _Gen with MysqlSchemaGenerator {}
+class _Gen with MysqlSchemaGenerator;

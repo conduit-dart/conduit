@@ -61,7 +61,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// Creates a new instance of an [AuthServer] with a [delegate].
   ///
   /// [hashFunction] defaults to [sha256].
-  AuthServer(
+  new(
     this.delegate, {
     this.hashRounds = 1000,
     this.hashLength = 32,

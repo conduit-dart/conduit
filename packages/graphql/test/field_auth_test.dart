@@ -124,13 +124,13 @@ void main() {
 Object? _passThroughResolver(Object? parent, Map<String, dynamic> args) => 'ok';
 
 class _Parent {
-  const _Parent({this.isOwner = false});
+  const new({this.isOwner = false});
   final bool isOwner;
 }
 
-class _FakeProfile {}
+class _FakeProfile;
 
-class _FakeAccount {}
+class _FakeAccount;
 
 Authorization _authWithScopes(List<String> scopeStrings) => Authorization(
   'client',

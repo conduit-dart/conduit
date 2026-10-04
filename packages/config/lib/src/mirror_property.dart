@@ -4,7 +4,7 @@ import 'package:conduit_config/src/configuration.dart';
 import 'package:conduit_config/src/intermediate_exception.dart';
 
 class MirrorTypeCodec {
-  MirrorTypeCodec(this.type) {
+  new(this.type) {
     if (type.isSubtypeOf(reflectType(Configuration))) {
       final klass = type as ClassMirror;
       final classHasDefaultConstructor = klass.declarations.values.any((dm) {
@@ -212,8 +212,7 @@ return map;
 }
 
 class MirrorConfigurationProperty {
-  MirrorConfigurationProperty(this.property)
-    : codec = MirrorTypeCodec(property.type);
+  new(this.property) : codec = MirrorTypeCodec(property.type);
 
   final VariableMirror property;
   final MirrorTypeCodec codec;

@@ -51,7 +51,7 @@ abstract class ResourceControllerDocumenter {
 }
 
 class ResourceControllerOperation {
-  ResourceControllerOperation({
+  new({
     required this.scopes,
     required this.pathVariables,
     required this.httpMethod,
@@ -96,7 +96,7 @@ class ResourceControllerOperation {
 }
 
 class ResourceControllerParameter {
-  ResourceControllerParameter({
+  new({
     required this.symbolName,
     required this.name,
     required this.location,

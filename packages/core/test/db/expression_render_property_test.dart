@@ -25,7 +25,7 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 class _NamedDialect extends SqlDialect {
-  const _NamedDialect();
+  const new();
   @override
   String get name => 'named';
   @override
@@ -38,7 +38,7 @@ class _NamedDialect extends SqlDialect {
 }
 
 class _PositionalDialect extends SqlDialect {
-  const _PositionalDialect();
+  const new();
   @override
   String get name => 'positional';
   @override
@@ -82,7 +82,7 @@ final _placeholder = RegExp(r'@(\w+)');
 /// design (see the visitor docs), so they are out of scope for the
 /// collision property.
 class _Gen {
-  _Gen(int seed, {this.collidingNames = false}) : _r = Random(seed);
+  new(int seed, {this.collidingNames = false}) : _r = Random(seed);
 
   final Random _r;
   final bool collidingNames;

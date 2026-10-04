@@ -243,7 +243,7 @@ class Application<T extends ApplicationChannel> {
 ///
 /// Contains the original exception that halted startup.
 class ApplicationStartupException implements Exception {
-  ApplicationStartupException(this.originalException);
+  new(this.originalException);
 
   dynamic originalException;
 

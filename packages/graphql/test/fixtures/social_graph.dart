@@ -25,7 +25,7 @@ class User extends GraphNode<User> {
   /// Multi-label: `User` carries both `User` and `Account` in the
   /// store. The schema builder surfaces this as a `UserOrAccount`
   /// union of two object types.
-  User()
+  new()
     : super(
         labels: const [
           GraphLabel.unchecked('User'),
@@ -35,13 +35,13 @@ class User extends GraphNode<User> {
 }
 
 class Post extends GraphNode<Post> {
-  Post() : super(labels: const [GraphLabel.unchecked('Post')]);
+  new() : super(labels: const [GraphLabel.unchecked('Post')]);
 }
 
 // -- Edge types --------------------------------------------------------------
 
 class Friend extends GraphEdge<User, User> {
-  Friend({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Friend'));
 
   DateTime? get since => this['since'] as DateTime?;
@@ -49,12 +49,12 @@ class Friend extends GraphEdge<User, User> {
 }
 
 class Authored extends GraphEdge<User, Post> {
-  Authored({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 class Liked extends GraphEdge<User, Post> {
-  Liked({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Liked'));
 
   int? get score => this['score'] as int?;

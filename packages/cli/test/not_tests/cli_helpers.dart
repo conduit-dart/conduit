@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 import 'postgres_test_config.dart';
 
 class CLIClient {
-  CLIClient(this.agent);
+  new(this.agent);
 
   final WorkingDirectoryAgent agent;
 

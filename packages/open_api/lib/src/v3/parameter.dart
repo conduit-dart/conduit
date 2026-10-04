@@ -66,7 +66,7 @@ class APIParameterLocationCodec {
 ///
 /// A unique parameter is defined by a combination of a [name] and [location].
 class APIParameter extends APIObject {
-  APIParameter(
+  new(
     this.name,
     this.location, {
     this.description,
@@ -80,9 +80,9 @@ class APIParameter extends APIObject {
     this.allowReserved,
   }) : _required = isRequired;
 
-  APIParameter.empty();
+  new empty();
 
-  APIParameter.header(
+  new header(
     this.name, {
     this.description,
     this.schema,
@@ -97,7 +97,7 @@ class APIParameter extends APIObject {
     location = APIParameterLocation.header;
   }
 
-  APIParameter.query(
+  new query(
     this.name, {
     this.description,
     this.schema,
@@ -112,12 +112,12 @@ class APIParameter extends APIObject {
     location = APIParameterLocation.query;
   }
 
-  APIParameter.path(this.name)
+  new path(this.name)
     : location = APIParameterLocation.path,
       schema = APISchemaObject.string(),
       _required = true;
 
-  APIParameter.cookie(
+  new cookie(
     this.name, {
     this.description,
     this.schema,

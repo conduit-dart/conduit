@@ -4,7 +4,7 @@ import 'package:conduit_open_api/src/v2/types.dart';
 
 /// Represents a header in the OpenAPI specification.
 class APIHeader extends APIProperty {
-  APIHeader();
+  new();
 
   String? description;
   APIProperty? items;

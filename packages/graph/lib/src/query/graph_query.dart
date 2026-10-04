@@ -8,7 +8,7 @@ enum GraphSortDirection { ascending, descending }
 
 /// A single ordering term: property + direction.
 class GraphOrderBy {
-  const GraphOrderBy(this.property, this.direction);
+  const new(this.property, this.direction);
 
   final String property;
   final GraphSortDirection direction;
@@ -43,7 +43,7 @@ typedef GraphQueryExecutor = Future<List<N>> Function<N extends GraphNode<N>>(
 /// final adults = await q.fetch();
 /// ```
 class GraphQuery<N extends GraphNode<N>> {
-  GraphQuery({required this.pattern, this.executor});
+  new({required this.pattern, this.executor});
 
   final GraphPattern<N> pattern;
 

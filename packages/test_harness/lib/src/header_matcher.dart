@@ -6,7 +6,7 @@ import 'http_value_wrapper.dart';
 import 'partial_matcher.dart';
 
 class HTTPHeaderMatcher extends Matcher {
-  HTTPHeaderMatcher(
+  new(
     Map<String, dynamic> headerMatchSpecifications, {
     this.shouldFailIfOthersPresent = false,
   }) {

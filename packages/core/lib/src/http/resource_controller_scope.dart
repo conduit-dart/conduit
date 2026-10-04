@@ -36,7 +36,7 @@ class Scope {
   /// Add to [ResourceController] operation method to require authorization scope.
   ///
   /// An incoming [Request.authorization] must have sufficient scope for all [scopes].
-  const Scope(this.scopes);
+  const new(this.scopes);
 
   /// The list of authorization scopes required.
   final List<String> scopes;

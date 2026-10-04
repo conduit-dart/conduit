@@ -65,7 +65,7 @@ class _User {
 
 // -- Post -------------------------------------------------------------------
 
-class Post extends ManagedObject<_Post> implements _Post {}
+class Post extends ManagedObject<_Post> implements _Post;
 
 class _Post {
   @primaryKey
@@ -95,7 +95,7 @@ class _Post {
 
 // -- Comment ----------------------------------------------------------------
 
-class Comment extends ManagedObject<_Comment> implements _Comment {}
+class Comment extends ManagedObject<_Comment> implements _Comment;
 
 class _Comment {
   @primaryKey
@@ -121,7 +121,7 @@ class _Comment {
 
 // -- Tag --------------------------------------------------------------------
 
-class Tag extends ManagedObject<_Tag> implements _Tag {}
+class Tag extends ManagedObject<_Tag> implements _Tag;
 
 class _Tag {
   @Column(primaryKey: true)
@@ -136,7 +136,7 @@ class _Tag {
 
 // -- PostTag join table -----------------------------------------------------
 
-class PostTag extends ManagedObject<_PostTag> implements _PostTag {}
+class PostTag extends ManagedObject<_PostTag> implements _PostTag;
 
 class _PostTag {
   @primaryKey

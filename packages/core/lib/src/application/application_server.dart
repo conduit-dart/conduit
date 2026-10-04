@@ -17,7 +17,7 @@ class ApplicationServer {
   /// Creates a new server.
   ///
   /// You should not need to invoke this method directly.
-  ApplicationServer(this.channelType, this.options, this.identifier) {
+  new(this.channelType, this.options, this.identifier) {
     channel =
         (RuntimeContext.current[channelType] as ChannelRuntime)
             .instantiateChannel()

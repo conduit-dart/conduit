@@ -65,7 +65,7 @@ RuntimeContext _resolveDefaultContext() {
 }
 
 class RuntimeCollection {
-  RuntimeCollection(this.map);
+  new(this.map);
 
   final Map<String, Object> map;
 
@@ -106,5 +106,5 @@ class RuntimeCollection {
 /// Annotate a type with the const instance of this type to prevent its
 /// compilation.
 class PreventCompilation {
-  const PreventCompilation();
+  const new();
 }

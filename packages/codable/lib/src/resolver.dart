@@ -1,7 +1,7 @@
 import 'package:conduit_codable/src/keyed_archive.dart';
 
 class ReferenceResolver {
-  ReferenceResolver(this.document);
+  new(this.document);
 
   final KeyedArchive document;
 

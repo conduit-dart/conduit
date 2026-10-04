@@ -484,7 +484,7 @@ void main() {
   });
 }
 
-class Parent extends ManagedObject<_Parent> implements _Parent {}
+class Parent extends ManagedObject<_Parent> implements _Parent;
 
 class _Parent {
   @primaryKey
@@ -494,7 +494,7 @@ class _Parent {
   Child? child;
 }
 
-class Child extends ManagedObject<_Child> implements _Child {}
+class Child extends ManagedObject<_Child> implements _Child;
 
 class _Child {
   @primaryKey
@@ -509,7 +509,7 @@ class _Child {
   ManagedSet<Vaccine>? vaccinations;
 }
 
-class Toy extends ManagedObject<_Toy> implements _Toy {}
+class Toy extends ManagedObject<_Toy> implements _Toy;
 
 class _Toy {
   @primaryKey
@@ -521,7 +521,7 @@ class _Toy {
   Child? child;
 }
 
-class Vaccine extends ManagedObject<_Vaccine> implements _Vaccine {}
+class Vaccine extends ManagedObject<_Vaccine> implements _Vaccine;
 
 class _Vaccine {
   @primaryKey

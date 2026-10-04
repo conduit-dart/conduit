@@ -7,11 +7,7 @@ import '../types/graph_relationship_direction.dart';
 /// Wraps the user's anchor variable and any chained relationship
 /// hops emitted by [GraphPatternNode.connectedTo].
 class GraphPatternNode<N extends GraphNode<N>> {
-  GraphPatternNode({
-    required this.variable,
-    required this.label,
-    this.nodeType,
-  });
+  new({required this.variable, required this.label, this.nodeType});
 
   /// The query-binding variable name (e.g. `u` in `(u:User)`).
   final String variable;
@@ -64,7 +60,7 @@ class GraphPatternNode<N extends GraphNode<N>> {
 
 /// A relationship hop captured inside a [GraphPatternNode].
 class GraphPatternRelationship {
-  const GraphPatternRelationship({
+  const new({
     required this.edgeLabel,
     required this.direction,
     this.edgeType,
@@ -109,11 +105,11 @@ class GraphPatternRelationship {
 /// This type is the **only** public surface for building a pattern
 /// from a closure; backends consume its [root].
 class GraphPattern<N extends GraphNode<N>> {
-  GraphPattern._(this.root);
+  new _(this.root);
 
   /// Build a pattern by calling [builder] with a fresh
   /// [GraphPatternNode] anchored on label [label] (or `T.toString()`).
-  factory GraphPattern.build(
+  factory build(
     void Function(GraphPatternNode<N>) builder, {
     String variable = 'n',
     GraphLabel? label,

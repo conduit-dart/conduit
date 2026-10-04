@@ -50,7 +50,7 @@ class ValidationContext {
 /// If you override [Validate.compile], throw errors of this type if a validator
 /// is applied to an invalid property.
 class ValidateCompilationError extends Error {
-  ValidateCompilationError(this.reason);
+  new(this.reason);
 
   final String reason;
 }
@@ -93,7 +93,7 @@ class Validate {
   ///                return someCondition;
   ///            }
   ///         }
-  const Validate({bool onUpdate = true, bool onInsert = true})
+  const new({bool onUpdate = true, bool onInsert = true})
     : runOnUpdate = onUpdate,
       runOnInsert = onInsert,
       _value = null,
@@ -104,7 +104,7 @@ class Validate {
       _equalTo = null,
       type = null;
 
-  const Validate._({
+  const new _({
     bool onUpdate = true,
     bool onInsert = true,
     ValidateType? validator,
@@ -127,7 +127,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation is run on update queries.
   /// If [onInsert] is true (the default), this validation is run on insert queries.
-  const Validate.matches(
+  const new matches(
     String pattern, {
     bool onUpdate = true,
     bool onInsert = true,
@@ -166,7 +166,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation is run on update queries.
   /// If [onInsert] is true (the default), this validation is run on insert queries.
-  const Validate.compare({
+  const new compare({
     Comparable? lessThan,
     Comparable? greaterThan,
     Comparable? equalTo,
@@ -205,7 +205,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation is run on update queries.
   /// If [onInsert] is true (the default), this validation is run on insert queries.
-  const Validate.length({
+  const new length({
     int? lessThan,
     int? greaterThan,
     int? equalTo,
@@ -231,7 +231,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation requires a property to be present for update queries.
   /// If [onInsert] is true (the default), this validation requires a property to be present for insert queries.
-  const Validate.present({bool onUpdate = true, bool onInsert = true})
+  const new present({bool onUpdate = true, bool onInsert = true})
     : this._(
         onUpdate: onUpdate,
         onInsert: onInsert,
@@ -251,7 +251,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation requires a property to be absent for update queries.
   /// If [onInsert] is true (the default), this validation requires a property to be absent for insert queries.
-  const Validate.absent({bool onUpdate = true, bool onInsert = true})
+  const new absent({bool onUpdate = true, bool onInsert = true})
     : this._(
         onUpdate: onUpdate,
         onInsert: onInsert,
@@ -273,7 +273,7 @@ class Validate {
   ///
   /// If [onUpdate] is true (the default), this validation is run on update queries.
   /// If [onInsert] is true (the default), this validation is run on insert queries.
-  const Validate.oneOf(
+  const new oneOf(
     List<dynamic> values, {
     bool onUpdate = true,
     bool onInsert = true,
@@ -287,7 +287,7 @@ class Validate {
   /// A validator that ensures a value cannot be modified after insertion.
   ///
   /// This is equivalent to `Validate.absent(onUpdate: true, onInsert: false).
-  const Validate.constant() : this.absent(onUpdate: true, onInsert: false);
+  const new constant() : this.absent(onUpdate: true, onInsert: false);
 
   /// Whether or not this validation is checked on update queries.
   final bool runOnUpdate;

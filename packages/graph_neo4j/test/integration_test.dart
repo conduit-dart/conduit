@@ -22,14 +22,14 @@ import 'package:conduit_graph_neo4j/conduit_graph_neo4j.dart';
 import 'package:test/test.dart';
 
 class User extends GraphNode<User> {
-  User({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
+  new({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
     if (name != null) this['name'] = name;
     if (age != null) this['age'] = age;
   }
 }
 
 class Friend extends GraphEdge<User, User> {
-  Friend({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Friend'));
 }
 

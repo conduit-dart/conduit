@@ -9,14 +9,14 @@ import 'package:yaml/yaml.dart';
 /// of an instance of this type.
 abstract class Configuration {
   /// Default constructor.
-  Configuration();
+  new();
 
-  Configuration.fromMap(Map<dynamic, dynamic> map) {
+  new fromMap(Map<dynamic, dynamic> map) {
     decode(map.map<String, dynamic>((k, v) => MapEntry(k.toString(), v)));
   }
 
   /// [contents] must be YAML.
-  Configuration.fromString(String contents) {
+  new fromString(String contents) {
     final yamlMap = loadYaml(contents) as Map<dynamic, dynamic>?;
     final map = yamlMap?.map<String, dynamic>(
       (k, v) => MapEntry(k.toString(), v),
@@ -27,7 +27,7 @@ abstract class Configuration {
   /// Opens a file and reads its string contents into this instance's properties.
   ///
   /// [file] must contain valid YAML data.
-  Configuration.fromFile(File file) : this.fromString(file.readAsStringSync());
+  new fromFile(File file) : this.fromString(file.readAsStringSync());
 
   ConfigurationRuntime get _runtime =>
       RuntimeContext.current[runtimeType] as ConfigurationRuntime;
@@ -153,20 +153,16 @@ enum ConfigurationItemAttributeType {
 /// }
 /// ```
 class ConfigurationItemAttribute {
-  const ConfigurationItemAttribute._(this.type);
+  const new _(this.type);
 
   final ConfigurationItemAttributeType type;
 }
 
 /// Thrown when reading data into a [Configuration] fails.
 class ConfigurationException {
-  ConfigurationException(
-    this.configuration,
-    this.message, {
-    this.keyPath = const [],
-  });
+  new(this.configuration, this.message, {this.keyPath = const []});
 
-  ConfigurationException.missingKeys(
+  new missingKeys(
     this.configuration,
     List<String> missingKeys, {
     this.keyPath = const [],
@@ -210,7 +206,7 @@ class ConfigurationException {
 
 /// Thrown when [Configuration] subclass is invalid and requires a change in code.
 class ConfigurationError {
-  ConfigurationError(this.type, this.message);
+  new(this.type, this.message);
 
   /// The type of [Configuration] in which this error appears in.
   final Type type;

@@ -4,7 +4,7 @@ import 'package:conduit_open_api/src/object.dart';
 /// Represents a metadata for an API in the OpenAPI specification.
 class APIInfo extends APIObject {
   /// Creates empty metadata for specification.
-  APIInfo();
+  new();
 
   String title = "API";
   String? description = "Description";
@@ -40,7 +40,7 @@ class APIInfo extends APIObject {
 
 /// Represents contact information in the OpenAPI specification.
 class APIContact extends APIObject {
-  APIContact();
+  new();
 
   @override
   void decode(KeyedArchive object) {
@@ -67,7 +67,7 @@ class APIContact extends APIObject {
 
 /// Represents a copyright/open source license in the OpenAPI specification.
 class APILicense extends APIObject {
-  APILicense();
+  new();
 
   @override
   void decode(KeyedArchive object) {
@@ -90,7 +90,7 @@ class APILicense extends APIObject {
 }
 
 class APITag extends APIObject {
-  APITag();
+  new();
 
   @override
   void decode(KeyedArchive object) {

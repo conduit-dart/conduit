@@ -33,7 +33,7 @@ import 'package:conduit_graphql/conduit_graphql.dart';
 // -- Domain model -----------------------------------------------------------
 
 /// Relational user. Lives in `User`'s ManagedObject; persists in SQL.
-class User extends ManagedObject<_User> implements _User {}
+class User extends ManagedObject<_User> implements _User;
 
 class _User {
   @primaryKey
@@ -51,14 +51,14 @@ class _User {
 /// the corresponding `Profile` node so the stitching resolver can
 /// re-key.
 class Profile extends GraphNode<Profile> {
-  Profile() : super(labels: const [GraphLabel.unchecked('Profile')]);
+  new() : super(labels: const [GraphLabel.unchecked('Profile')]);
 
   int? get userId => this['userId'] as int?;
   set userId(int? v) => this['userId'] = v;
 }
 
 class Friendship extends GraphEdge<Profile, Profile> {
-  Friendship({required super.from, required super.to})
+  new({required super.from, required super.to})
     : super(label: const GraphLabel.unchecked('Friendship'));
 
   DateTime? get since => this['since'] as DateTime?;

@@ -219,7 +219,7 @@ class _TestChannel extends ApplicationChannel {
 /// Minimal [PersistentStore] stub. Only [close] is exercised by these tests;
 /// the rest throw to make accidental use loud.
 class _FakeSqlStore extends PersistentStore {
-  _FakeSqlStore({this.throwOnClose = false});
+  new({this.throwOnClose = false});
 
   final bool throwOnClose;
   bool closed = false;
@@ -318,7 +318,7 @@ class _FakeSqlStore extends PersistentStore {
 /// umbrella invokes it dynamically — that contract is documented on
 /// [Persistence.close].
 class _FakeGraphStore {
-  _FakeGraphStore({this.throwOnClose = false});
+  new({this.throwOnClose = false});
 
   final bool throwOnClose;
   bool closed = false;
@@ -333,4 +333,4 @@ class _FakeGraphStore {
 
 /// Stand-in for `GraphContext` (which lives in conduit_graph). The umbrella
 /// holds it as `Object?` so we can use any value here.
-class _FakeGraphContext {}
+class _FakeGraphContext;

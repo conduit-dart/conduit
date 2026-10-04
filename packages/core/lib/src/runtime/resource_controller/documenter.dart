@@ -40,7 +40,7 @@ APISchemaObject? getSchemaObjectReference(
 }
 
 class ResourceControllerDocumenterImpl extends ResourceControllerDocumenter {
-  ResourceControllerDocumenterImpl(this.runtime);
+  new(this.runtime);
 
   final ResourceControllerRuntimeImpl runtime;
 
