@@ -15,8 +15,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('DataLoader.load', () {
-    test('batches concurrent loads into one batch fn invocation',
-        () async {
+    test('batches concurrent loads into one batch fn invocation', () async {
       var batchCalls = 0;
       final loader = DataLoader<int, String>((keys) async {
         batchCalls++;
@@ -46,7 +45,12 @@ void main() {
       ]);
       expect(results, equals(['v1', 'v1', 'v1']));
       // The batch should only see key 1 once.
-      expect(seenKeys, equals([[1]]));
+      expect(
+        seenKeys,
+        equals([
+          [1],
+        ]),
+      );
     });
 
     test('caches resolved values across ticks', () async {
@@ -67,8 +71,7 @@ void main() {
       expect(batchCalls, equals(1));
     });
 
-    test('returns null when the batch fn returns null for that key',
-        () async {
+    test('returns null when the batch fn returns null for that key', () async {
       final loader = DataLoader<int, String>((keys) async {
         return [for (final k in keys) k == 2 ? null : 'v$k'];
       });
@@ -94,17 +97,19 @@ void main() {
       expect(results, equals(['v5', 'v3', 'v1', 'v2']));
     });
 
-    test('empty input returns empty result without invoking batch fn',
-        () async {
-      var batchCalls = 0;
-      final loader = DataLoader<int, String>((keys) async {
-        batchCalls++;
-        return keys.map((_) => '').toList();
-      });
-      final result = await loader.loadMany(const []);
-      expect(result, isEmpty);
-      expect(batchCalls, equals(0));
-    });
+    test(
+      'empty input returns empty result without invoking batch fn',
+      () async {
+        var batchCalls = 0;
+        final loader = DataLoader<int, String>((keys) async {
+          batchCalls++;
+          return keys.map((_) => '').toList();
+        });
+        final result = await loader.loadMany(const []);
+        expect(result, isEmpty);
+        expect(batchCalls, equals(0));
+      },
+    );
   });
 
   group('DataLoader error propagation', () {
@@ -119,8 +124,7 @@ void main() {
       }
     });
 
-    test('batch fn returning wrong-length list errors all callers',
-        () async {
+    test('batch fn returning wrong-length list errors all callers', () async {
       final loader = DataLoader<int, String>((keys) async {
         return ['only-one']; // wrong length when keys.length > 1
       });
@@ -171,8 +175,9 @@ void main() {
       var factoryCalls = 0;
       DataLoader<int, String> make() {
         factoryCalls++;
-        return DataLoader<int, String>((keys) async =>
-            keys.map((k) => 'v$k').toList());
+        return DataLoader<int, String>(
+          (keys) async => keys.map((k) => 'v$k').toList(),
+        );
       }
 
       final l1 = registry.getOrAdd<int, String>('users', make);
@@ -186,12 +191,14 @@ void main() {
       final l1 = registry.getOrAdd<int, String>(
         'users',
         () => DataLoader<int, String>(
-            (keys) async => keys.map((k) => 'u$k').toList()),
+          (keys) async => keys.map((k) => 'u$k').toList(),
+        ),
       );
       final l2 = registry.getOrAdd<int, String>(
         'posts',
         () => DataLoader<int, String>(
-            (keys) async => keys.map((k) => 'p$k').toList()),
+          (keys) async => keys.map((k) => 'p$k').toList(),
+        ),
       );
       expect(identical(l1, l2), isFalse);
     });
@@ -199,7 +206,8 @@ void main() {
     test('register throws on duplicate keys', () {
       final registry = DataLoaderRegistry();
       final loader = DataLoader<int, String>(
-          (keys) async => keys.map((_) => '').toList());
+        (keys) async => keys.map((_) => '').toList(),
+      );
       registry.register<int, String>('k', loader);
       expect(
         () => registry.register<int, String>('k', loader),
@@ -212,7 +220,8 @@ void main() {
       registry.getOrAdd<int, String>(
         'users',
         () => DataLoader<int, String>(
-            (keys) async => keys.map((_) => '').toList()),
+          (keys) async => keys.map((_) => '').toList(),
+        ),
       );
       expect(registry.lookup<int, String>('users'), isNotNull);
       registry.clear();

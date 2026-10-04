@@ -13,7 +13,9 @@ import 'package:test/test.dart';
 late Directory tmp;
 
 Uri _writeMigration(String content) {
-  final file = File('${tmp.path}/${DateTime.now().microsecondsSinceEpoch}.dart');
+  final file = File(
+    '${tmp.path}/${DateTime.now().microsecondsSinceEpoch}.dart',
+  );
   file.writeAsStringSync(content);
   return file.uri;
 }

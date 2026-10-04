@@ -7,7 +7,7 @@ enum APISchemaRepresentation {
   array,
   object,
   structure,
-  unknownOrInvalid
+  unknownOrInvalid,
 }
 
 enum APICollectionFormat { csv, ssv, tsv, pipes }
@@ -79,8 +79,9 @@ class APIProperty extends APIObject {
 
     type = APITypeCodec.decode(object.decode("type"));
     format = object.decode("format");
-    collectionFormat =
-        APICollectionFormatCodec.decode(object.decode("collectionFormat"));
+    collectionFormat = APICollectionFormatCodec.decode(
+      object.decode("collectionFormat"),
+    );
     defaultValue = object.decode("default");
     maximum = object.decode("maximum");
     exclusiveMaximum = object.decode("exclusiveMaximum");

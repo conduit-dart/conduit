@@ -19,9 +19,9 @@ class RouteSpecification {
   static List<RouteSpecification> specificationsForRoutePattern(
     String routePattern,
   ) {
-    return _pathsFromRoutePattern(routePattern)
-        .map(RouteSpecification.new)
-        .toList();
+    return _pathsFromRoutePattern(
+      routePattern,
+    ).map(RouteSpecification.new).toList();
   }
 
   /// A list of this specification's [RouteSegment]s.

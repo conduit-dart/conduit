@@ -19,15 +19,17 @@ void main() async {
     });
 
     test("Response matcher not using response gives appropriate error", () {
-      expectFailureFor(() {
-        expect("foo", hasStatus(200));
-      },
-          allOf([
-            contains("Expected:"),
-            contains("Status code must be 200"),
-            contains("Actual: 'foo'"),
-            contains("Which: Is not an instance of TestResponse")
-          ]));
+      expectFailureFor(
+        () {
+          expect("foo", hasStatus(200));
+        },
+        allOf([
+          contains("Expected:"),
+          contains("Status code must be 200"),
+          contains("Actual: 'foo'"),
+          contains("Which: Is not an instance of TestResponse"),
+        ]),
+      );
     });
 
     test("Status code matcher succeeds when correct", () async {
@@ -40,14 +42,16 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
 
-      expectFailureFor(() {
-        expect(response, hasStatus(400));
-      },
-          allOf([
-            contains("Headers can be anything"),
-            contains("Body can be anything"),
-            contains("Status codes are different. Expected: 400. Actual: 200")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasStatus(400));
+        },
+        allOf([
+          contains("Headers can be anything"),
+          contains("Body can be anything"),
+          contains("Status codes are different. Expected: 400. Actual: 200"),
+        ]),
+      );
     });
   });
 
@@ -57,9 +61,13 @@ void main() async {
 
     late HttpServer server;
     setUpAll(() async {
-      server = await getUnusedPort((port) async => await HttpServer.bind(
-          InternetAddress.loopbackIPv4, port,
-          shared: true));
+      server = await getUnusedPort(
+        (port) async => await HttpServer.bind(
+          InternetAddress.loopbackIPv4,
+          port,
+          shared: true,
+        ),
+      );
       server.listen((req) {
         req.response.statusCode = 200;
 
@@ -83,39 +91,48 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
-          response,
-          hasHeaders(
-              {"x-frame-options": isNotNull, "content-type": isNotNull}));
+        response,
+        hasHeaders({"x-frame-options": isNotNull, "content-type": isNotNull}),
+      );
 
-      expectFailureFor(() {
-        expect(response, hasHeaders({"invalid": isNotNull}));
-      },
-          allOf([
-            contains("header 'invalid' must be not null"),
-            contains("Status code is 200"),
-            contains("x-frame-options")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasHeaders({"invalid": isNotNull}));
+        },
+        allOf([
+          contains("header 'invalid' must be not null"),
+          contains("Status code is 200"),
+          contains("x-frame-options"),
+        ]),
+      );
     });
 
     test("Ensure values of some headers w/ matcher", () async {
       final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
-          response,
-          hasHeaders({
-            "x-frame-options": "SAMEORIGIN",
-            "content-length": lessThan(1)
-          }));
+        response,
+        hasHeaders({
+          "x-frame-options": "SAMEORIGIN",
+          "content-length": lessThan(1),
+        }),
+      );
 
-      expectFailureFor(() {
-        expect(response, hasHeaders({"x-frame-options": startsWith("foobar")}));
-      },
-          allOf([
-            contains("x-frame-options: SAMEORIGIN"),
-            contains(
-                "header 'x-frame-options' must be a string starting with 'foobar'"),
-            contains("Which: the following headers differ: 'x-frame-options'")
-          ]));
+      expectFailureFor(
+        () {
+          expect(
+            response,
+            hasHeaders({"x-frame-options": startsWith("foobar")}),
+          );
+        },
+        allOf([
+          contains("x-frame-options: SAMEORIGIN"),
+          contains(
+            "header 'x-frame-options' must be a string starting with 'foobar'",
+          ),
+          contains("Which: the following headers differ: 'x-frame-options'"),
+        ]),
+      );
     });
 
     test("Ensure non-existence of header", () async {
@@ -123,34 +140,39 @@ void main() async {
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasHeaders({"invalid": isNotPresent}));
 
-      expectFailureFor(() {
-        expect(response, hasHeaders({"x-frame-options": isNotPresent}));
-      },
-          allOf([
-            contains("'x-frame-options' must be non-existent"),
-            contains("x-frame-options: SAMEORIGIN"),
-            contains("Which: the following headers differ: 'x-frame-options'")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasHeaders({"x-frame-options": isNotPresent}));
+        },
+        allOf([
+          contains("'x-frame-options' must be non-existent"),
+          contains("x-frame-options: SAMEORIGIN"),
+          contains("Which: the following headers differ: 'x-frame-options'"),
+        ]),
+      );
     });
 
     test("Ensure any headers other than those specified", () async {
       final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo").get();
       expect(
-          response,
-          hasHeaders({
-            "x-frame-options": isNotNull,
-            "content-type": isNotNull,
-            "x-xss-protection": startsWith("1"),
-            "x-content-type-options": isNotNull,
-            "content-length": greaterThan(-1)
-          }, failIfContainsUnmatchedHeader: true));
+        response,
+        hasHeaders({
+          "x-frame-options": isNotNull,
+          "content-type": isNotNull,
+          "x-xss-protection": startsWith("1"),
+          "x-content-type-options": isNotNull,
+          "content-length": greaterThan(-1),
+        }, failIfContainsUnmatchedHeader: true),
+      );
 
       expectFailureFor(() {
         expect(
-            response,
-            hasHeaders({"x-frame-options": isNotNull},
-                failIfContainsUnmatchedHeader: true));
+          response,
+          hasHeaders({
+            "x-frame-options": isNotNull,
+          }, failIfContainsUnmatchedHeader: true),
+        );
       }, allOf([contains("actual has extra headers")]));
     });
 
@@ -165,98 +187,134 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
       final response = await defaultTestClient.request("/foo?timestamp").get();
       expect(
-          response,
-          hasHeaders({
-            "x-timestamp":
-                isAfter(xTimestamp.subtract(const Duration(seconds: 10)))
-          }));
+        response,
+        hasHeaders({
+          "x-timestamp": isAfter(
+            xTimestamp.subtract(const Duration(seconds: 10)),
+          ),
+        }),
+      );
       expect(
-          response,
-          hasHeaders({
-            "x-timestamp": isBefore(xTimestamp.add(const Duration(seconds: 10)))
-          }));
-      expect(response,
-          hasHeaders({"x-timestamp": isBeforeOrSameMomentAs(xTimestamp)}));
+        response,
+        hasHeaders({
+          "x-timestamp": isBefore(xTimestamp.add(const Duration(seconds: 10))),
+        }),
+      );
       expect(
-          response,
-          hasHeaders({
-            "x-timestamp": isBeforeOrSameMomentAs(
-                xTimestamp.add(const Duration(seconds: 10)))
-          }));
-      expect(response,
-          hasHeaders({"x-timestamp": isAfterOrSameMomentAs(xTimestamp)}));
+        response,
+        hasHeaders({"x-timestamp": isBeforeOrSameMomentAs(xTimestamp)}),
+      );
       expect(
-          response,
-          hasHeaders({
-            "x-timestamp": isAfterOrSameMomentAs(
-                xTimestamp.subtract(const Duration(seconds: 10)))
-          }));
+        response,
+        hasHeaders({
+          "x-timestamp": isBeforeOrSameMomentAs(
+            xTimestamp.add(const Duration(seconds: 10)),
+          ),
+        }),
+      );
+      expect(
+        response,
+        hasHeaders({"x-timestamp": isAfterOrSameMomentAs(xTimestamp)}),
+      );
+      expect(
+        response,
+        hasHeaders({
+          "x-timestamp": isAfterOrSameMomentAs(
+            xTimestamp.subtract(const Duration(seconds: 10)),
+          ),
+        }),
+      );
       expect(response, hasHeaders({"x-timestamp": isSameMomentAs(xTimestamp)}));
 
-      expectFailureFor(() {
-        expect(
+      expectFailureFor(
+        () {
+          expect(
             response,
             hasHeaders({
-              "x-timestamp":
-                  isAfter(xTimestamp.add(const Duration(seconds: 10)))
-            }));
-      },
-          allOf([
-            contains(
-                "must be after ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}")
-          ]));
+              "x-timestamp": isAfter(
+                xTimestamp.add(const Duration(seconds: 10)),
+              ),
+            }),
+          );
+        },
+        allOf([
+          contains(
+            "must be after ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}",
+          ),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(
+      expectFailureFor(
+        () {
+          expect(
             response,
             hasHeaders({
-              "x-timestamp":
-                  isBefore(xTimestamp.subtract(const Duration(seconds: 10)))
-            }));
-      },
-          allOf([
-            contains(
-                "must be before ${xTimestamp.subtract(const Duration(seconds: 10)).toIso8601String()}")
-          ]));
+              "x-timestamp": isBefore(
+                xTimestamp.subtract(const Duration(seconds: 10)),
+              ),
+            }),
+          );
+        },
+        allOf([
+          contains(
+            "must be before ${xTimestamp.subtract(const Duration(seconds: 10)).toIso8601String()}",
+          ),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(
+      expectFailureFor(
+        () {
+          expect(
             response,
             hasHeaders({
               "x-timestamp": isBeforeOrSameMomentAs(
-                  xTimestamp.subtract(const Duration(seconds: 10)))
-            }));
-      },
-          allOf([
-            contains(
-                "must be before or same moment as ${xTimestamp.subtract(const Duration(seconds: 10)).toIso8601String()}")
-          ]));
+                xTimestamp.subtract(const Duration(seconds: 10)),
+              ),
+            }),
+          );
+        },
+        allOf([
+          contains(
+            "must be before or same moment as ${xTimestamp.subtract(const Duration(seconds: 10)).toIso8601String()}",
+          ),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(
+      expectFailureFor(
+        () {
+          expect(
             response,
             hasHeaders({
               "x-timestamp": isAfterOrSameMomentAs(
-                  xTimestamp.add(const Duration(seconds: 10)))
-            }));
-      },
-          allOf([
-            contains(
-                "must be after or same moment as ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}")
-          ]));
+                xTimestamp.add(const Duration(seconds: 10)),
+              ),
+            }),
+          );
+        },
+        allOf([
+          contains(
+            "must be after or same moment as ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}",
+          ),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(
+      expectFailureFor(
+        () {
+          expect(
             response,
             hasHeaders({
-              "x-timestamp":
-                  isSameMomentAs(xTimestamp.add(const Duration(seconds: 10)))
-            }));
-      },
-          allOf([
-            contains(
-                "must be same moment as ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}")
-          ]));
+              "x-timestamp": isSameMomentAs(
+                xTimestamp.add(const Duration(seconds: 10)),
+              ),
+            }),
+          );
+        },
+        allOf([
+          contains(
+            "must be same moment as ${xTimestamp.add(const Duration(seconds: 10)).toIso8601String()}",
+          ),
+        ]),
+      );
     });
 
     test("HttpDate", () async {
@@ -286,7 +344,8 @@ void main() async {
       expect(response, hasBody(isNull));
 
       server.queueResponse(
-          Response.ok(null, headers: {"Content-Type": "application/json"}));
+        Response.ok(null, headers: {"Content-Type": "application/json"}),
+      );
       response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody(isNull));
 
@@ -317,22 +376,26 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
-          Response.ok({"foo": "bar"})..contentType = ContentType.json);
+        Response.ok({"foo": "bar"})..contentType = ContentType.json,
+      );
       var response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody(isNotNull));
 
       server.queueResponse(
-          Response.ok({"foo": "bar"})..contentType = ContentType.json);
+        Response.ok({"foo": "bar"})..contentType = ContentType.json,
+      );
       response = await defaultTestClient.request("/foo").get();
-      expectFailureFor(() {
-        expect(response, hasBody({"foo": "notbar"}));
-      },
-          allOf([
-            contains("Body after decoding"),
-            contains("{'foo': 'notbar'}"),
-            contains("body differs for the following reasons"),
-            contains("at location ['foo'] is 'bar' instead of 'notbar'"),
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody({"foo": "notbar"}));
+        },
+        allOf([
+          contains("Body after decoding"),
+          contains("{'foo': 'notbar'}"),
+          contains("body differs for the following reasons"),
+          contains("at location ['foo'] is 'bar' instead of 'notbar'"),
+        ]),
+      );
     });
   });
 
@@ -355,22 +418,27 @@ void main() async {
 
       expect(response, hasBody(everyElement(greaterThan(0))));
 
-      expectFailureFor(() {
-        expect(response, hasBody([1, 2]));
-      },
-          allOf([
-            contains("[1, 2]"),
-            contains("at location [2] is [1, 2, 3] which longer than expected")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody([1, 2]));
+        },
+        allOf([
+          contains("[1, 2]"),
+          contains("at location [2] is [1, 2, 3] which longer than expected"),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(response, hasBody(everyElement(lessThan(0))));
-      },
-          allOf([
-            contains("every element(a value less than <0>)"),
-            contains(
-                "has value <1> which is not a value less than <0> at index 0")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody(everyElement(lessThan(0))));
+        },
+        allOf([
+          contains("every element(a value less than <0>)"),
+          contains(
+            "has value <1> which is not a value less than <0> at index 0",
+          ),
+        ]),
+      );
     });
 
     test("Exact map", () async {
@@ -379,13 +447,15 @@ void main() async {
       final response = await defaultTestClient.request("/foo").get();
       expect(response, hasBody({"foo": "bar", "x": "y"}));
 
-      expectFailureFor(() {
-        expect(response, hasBody({"foo": "notbar", "x": "y"}));
-      },
-          allOf([
-            contains("{'foo': 'notbar', 'x': 'y'}"),
-            contains("at location ['foo'] is 'bar' instead of 'notbar'")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody({"foo": "notbar", "x": "y"}));
+        },
+        allOf([
+          contains("{'foo': 'notbar', 'x': 'y'}"),
+          contains("at location ['foo'] is 'bar' instead of 'notbar'"),
+        ]),
+      );
     });
 
     test("Map with matchers", () async {
@@ -403,7 +473,8 @@ void main() async {
         allOf([
           contains("{'foo': <not <Instance of 'String'>>, 'x': 5}"),
           contains(
-              "at location ['foo'] is 'bar' which does not match not <Instance of 'String'>")
+            "at location ['foo'] is 'bar' which does not match not <Instance of 'String'>",
+          ),
         ]),
       );
     });
@@ -417,17 +488,11 @@ void main() async {
 
       expectFailureFor(() {
         expect(response, hasBody(partial({"foo": "notbar"})));
-      },
-          allOf([
-            contains("a map that contains at least the following"),
-          ]));
+      }, allOf([contains("a map that contains at least the following")]));
 
       expectFailureFor(() {
         expect(response, hasBody(partial({"x": lessThan(0)})));
-      },
-          allOf([
-            contains("'x' is not a value less than <0>"),
-          ]));
+      }, allOf([contains("'x' is not a value less than <0>")]));
     });
 
     test("Partial match, null and not present", () async {
@@ -438,21 +503,25 @@ void main() async {
       expect(response, hasBody(partial({"foo": isNull})));
       expect(response, hasBody(partial({"baz": isNotPresent})));
 
-      expectFailureFor(() {
-        expect(response, hasBody(partial({"foo": isNotPresent})));
-      },
-          allOf([
-            contains("key 'foo' must be non-existent"),
-            contains("following keys differ")
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody(partial({"foo": isNotPresent})));
+        },
+        allOf([
+          contains("key 'foo' must be non-existent"),
+          contains("following keys differ"),
+        ]),
+      );
 
-      expectFailureFor(() {
-        expect(response, hasBody(partial({"bar": isNotPresent})));
-      },
-          allOf([
-            contains("key 'bar' must be non-existent"),
-            contains('following keys differ')
-          ]));
+      expectFailureFor(
+        () {
+          expect(response, hasBody(partial({"bar": isNotPresent})));
+        },
+        allOf([
+          contains("key 'bar' must be non-existent"),
+          contains('following keys differ'),
+        ]),
+      );
     });
   });
 
@@ -470,10 +539,14 @@ void main() async {
     test("Succeeds on fully specificed spec", () async {
       final defaultTestClient = Agent.onPort(server.port);
       server.queueResponse(
-          Response.ok({"a": "b"})..contentType = ContentType.json);
+        Response.ok({"a": "b"})..contentType = ContentType.json,
+      );
       final resp = expectResponse(
-          await defaultTestClient.request("/foo").get(), 200,
-          body: {"a": "b"}, headers: {"content-type": ContentType.json});
+        await defaultTestClient.request("/foo").get(),
+        200,
+        body: {"a": "b"},
+        headers: {"content-type": ContentType.json},
+      );
 
       expect(resp!.statusCode, 200);
     });
@@ -482,21 +555,29 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
-          Response.ok({"foo": "bar"})..contentType = ContentType.json);
+        Response.ok({"foo": "bar"})..contentType = ContentType.json,
+      );
 
       final response = await defaultTestClient.request("/foo").get();
       expect(
-          response,
-          hasResponse(null,
-              body: {"foo": "bar"},
-              headers: {"content-type": "application/json; charset=utf-8"}));
+        response,
+        hasResponse(
+          null,
+          body: {"foo": "bar"},
+          headers: {"content-type": "application/json; charset=utf-8"},
+        ),
+      );
     });
 
     test("Omit headers from matcher, matching ignores them", () async {
       final defaultTestClient = Agent.onPort(server.port);
 
-      server.queueResponse(Response.ok({"foo": "bar"},
-          headers: {"content-type": "application/json; charset=utf-8"}));
+      server.queueResponse(
+        Response.ok(
+          {"foo": "bar"},
+          headers: {"content-type": "application/json; charset=utf-8"},
+        ),
+      );
       final response = await defaultTestClient.request("/foo").get();
 
       expect(response, hasResponse(200, body: {"foo": "bar"}));
@@ -506,12 +587,16 @@ void main() async {
       final defaultTestClient = Agent.onPort(server.port);
 
       server.queueResponse(
-          Response.ok({"foo": "bar"})..contentType = ContentType.json);
+        Response.ok({"foo": "bar"})..contentType = ContentType.json,
+      );
       final response = await defaultTestClient.request("/foo").get();
       expect(
-          response,
-          hasResponse(null,
-              headers: {"Content-Type": "application/json; charset=utf-8"}));
+        response,
+        hasResponse(
+          null,
+          headers: {"Content-Type": "application/json; charset=utf-8"},
+        ),
+      );
     });
   });
 }

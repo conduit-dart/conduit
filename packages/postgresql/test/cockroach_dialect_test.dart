@@ -15,7 +15,10 @@ void main() {
         'BIGSERIAL',
       );
       expect(d.columnDefinitionType('document', autoincrement: false), 'JSONB');
-      expect(d.columnDefinitionType('datetime', autoincrement: false), 'TIMESTAMP');
+      expect(
+        d.columnDefinitionType('datetime', autoincrement: false),
+        'TIMESTAMP',
+      );
     });
 
     test('inherits @name parameter syntax (wire-compat)', () {

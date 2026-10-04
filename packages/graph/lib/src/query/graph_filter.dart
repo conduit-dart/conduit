@@ -59,11 +59,9 @@ final class GraphPropertyFilter extends GraphFilterExpression {
 /// A compound expression — n-ary AND or OR.
 final class GraphCompoundFilter extends GraphFilterExpression {
   GraphCompoundFilter(this.combinator, List<GraphFilterExpression> children)
-      : children = List.unmodifiable(children) {
+    : children = List.unmodifiable(children) {
     if (children.isEmpty) {
-      throw GraphInvalidQuery(
-        'compound filter must have at least one child',
-      );
+      throw GraphInvalidQuery('compound filter must have at least one child');
     }
   }
 
@@ -99,22 +97,22 @@ class GraphFilterTerm {
   final String _property;
 
   GraphFilterExpression equalTo(Object? value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.equal,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.equal,
+    value: value,
+  );
 
   GraphFilterExpression notEqualTo(Object? value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.notEqual,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.notEqual,
+    value: value,
+  );
 
   GraphFilterExpression greaterThan(Object value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.greaterThan,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.greaterThan,
+    value: value,
+  );
 
   GraphFilterExpression greaterThanOrEqualTo(Object value) =>
       GraphPropertyFilter(
@@ -124,51 +122,50 @@ class GraphFilterTerm {
       );
 
   GraphFilterExpression lessThan(Object value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.lessThan,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.lessThan,
+    value: value,
+  );
 
-  GraphFilterExpression lessThanOrEqualTo(Object value) =>
-      GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.lessThanOrEqual,
-        value: value,
-      );
+  GraphFilterExpression lessThanOrEqualTo(Object value) => GraphPropertyFilter(
+    property: _property,
+    operator: GraphFilterOperator.lessThanOrEqual,
+    value: value,
+  );
 
   GraphFilterExpression contains(Object value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.contains,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.contains,
+    value: value,
+  );
 
   GraphFilterExpression startsWith(String value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.startsWith,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.startsWith,
+    value: value,
+  );
 
   GraphFilterExpression endsWith(String value) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.endsWith,
-        value: value,
-      );
+    property: _property,
+    operator: GraphFilterOperator.endsWith,
+    value: value,
+  );
 
   GraphFilterExpression isIn(List<Object?> values) => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.inList,
-        value: List<Object?>.unmodifiable(values),
-      );
+    property: _property,
+    operator: GraphFilterOperator.inList,
+    value: List<Object?>.unmodifiable(values),
+  );
 
   GraphFilterExpression get isNull => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.isNull,
-      );
+    property: _property,
+    operator: GraphFilterOperator.isNull,
+  );
 
   GraphFilterExpression get isNotNull => GraphPropertyFilter(
-        property: _property,
-        operator: GraphFilterOperator.isNotNull,
-      );
+    property: _property,
+    operator: GraphFilterOperator.isNotNull,
+  );
 }
 
 /// The proxy passed to a `where` closure. Property accesses return

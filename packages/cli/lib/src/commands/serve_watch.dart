@@ -199,7 +199,10 @@ class WatchedServer {
       _current = await starter();
       _restartCount += 1;
       _events.add(
-        WatchedServerEvent(WatchedServerEventKind.restarted, changedPaths: changed),
+        WatchedServerEvent(
+          WatchedServerEventKind.restarted,
+          changedPaths: changed,
+        ),
       );
       _log("Restart complete (#$_restartCount)");
     } catch (e) {

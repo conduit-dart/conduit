@@ -6,7 +6,8 @@ void main() {
   group('parseConnectionString — postgres', () {
     test('parses postgres://user:pass@host:port/db', () {
       final c = parseConnectionString(
-          'postgres://alice:secret@db.example.com:5432/myapp');
+        'postgres://alice:secret@db.example.com:5432/myapp',
+      );
       expect(c.flavor, DbFlavor.postgres);
       expect(c.username, 'alice');
       expect(c.password, 'secret');
@@ -18,14 +19,14 @@ void main() {
 
     test('postgresql:// is an alias for postgres://', () {
       final c = parseConnectionString(
-          'postgresql://alice:secret@db.example.com/myapp');
+        'postgresql://alice:secret@db.example.com/myapp',
+      );
       expect(c.flavor, DbFlavor.postgres);
       expect(c.port, 5432, reason: 'default postgres port');
     });
 
     test('URL-decodes percent-encoded password', () {
-      final c =
-          parseConnectionString('postgres://alice:p%40ss@host:5432/db');
+      final c = parseConnectionString('postgres://alice:p%40ss@host:5432/db');
       expect(c.password, 'p@ss');
     });
 
@@ -84,7 +85,8 @@ void main() {
   group('parseConnectionString — mysql', () {
     test('parses mysql://user:pass@host:port/db', () {
       final c = parseConnectionString(
-          'mysql://root:hunter2@127.0.0.1:3306/widgets');
+        'mysql://root:hunter2@127.0.0.1:3306/widgets',
+      );
       expect(c.flavor, DbFlavor.mysql);
       expect(c.username, 'root');
       expect(c.password, 'hunter2');
@@ -94,25 +96,31 @@ void main() {
     });
 
     test('defaults port to 3306 when missing', () {
-      final c =
-          parseConnectionString('mysql://root:hunter2@127.0.0.1/widgets');
+      final c = parseConnectionString('mysql://root:hunter2@127.0.0.1/widgets');
       expect(c.port, 3306);
     });
   });
 
   group('parseConnectionString — error paths', () {
     test('rejects empty input', () {
-      expect(() => parseConnectionString(''),
-          throwsA(isA<ConnectionStringFormatException>()));
-      expect(() => parseConnectionString('   '),
-          throwsA(isA<ConnectionStringFormatException>()));
+      expect(
+        () => parseConnectionString(''),
+        throwsA(isA<ConnectionStringFormatException>()),
+      );
+      expect(
+        () => parseConnectionString('   '),
+        throwsA(isA<ConnectionStringFormatException>()),
+      );
     });
 
     test('rejects unknown scheme', () {
       expect(
         () => parseConnectionString('oracle://host:1521/orcl'),
-        throwsA(predicate<ConnectionStringFormatException>(
-            (e) => e.message.contains('Unsupported scheme'))),
+        throwsA(
+          predicate<ConnectionStringFormatException>(
+            (e) => e.message.contains('Unsupported scheme'),
+          ),
+        ),
       );
     });
 
@@ -133,13 +141,16 @@ void main() {
     test('invokes the postgres factory', () {
       final c = parseConnectionString('postgres://u:p@h:5432/d');
       var called = false;
-      buildStore(c, postgresFactory: (_) {
-        called = true;
-        // Returning a real store is heavy; verify dispatch by side
-        // effect rather than constructing a PostgreSQLPersistentStore
-        // (which would try to open a connection).
-        return _NoopStore();
-      });
+      buildStore(
+        c,
+        postgresFactory: (_) {
+          called = true;
+          // Returning a real store is heavy; verify dispatch by side
+          // effect rather than constructing a PostgreSQLPersistentStore
+          // (which would try to open a connection).
+          return _NoopStore();
+        },
+      );
       expect(called, isTrue);
     });
 

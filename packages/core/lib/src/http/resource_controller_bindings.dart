@@ -22,54 +22,54 @@ class Operation {
     String? pathVariable2,
     String? pathVariable3,
     String? pathVariable4,
-  ])  : _pathVariable1 = pathVariable1,
-        _pathVariable2 = pathVariable2,
-        _pathVariable3 = pathVariable3,
-        _pathVariable4 = pathVariable4;
+  ]) : _pathVariable1 = pathVariable1,
+       _pathVariable2 = pathVariable2,
+       _pathVariable3 = pathVariable3,
+       _pathVariable4 = pathVariable4;
 
   const Operation.get([
     String? pathVariable1,
     String? pathVariable2,
     String? pathVariable3,
     String? pathVariable4,
-  ])  : method = "GET",
-        _pathVariable1 = pathVariable1,
-        _pathVariable2 = pathVariable2,
-        _pathVariable3 = pathVariable3,
-        _pathVariable4 = pathVariable4;
+  ]) : method = "GET",
+       _pathVariable1 = pathVariable1,
+       _pathVariable2 = pathVariable2,
+       _pathVariable3 = pathVariable3,
+       _pathVariable4 = pathVariable4;
 
   const Operation.put([
     String? pathVariable1,
     String? pathVariable2,
     String? pathVariable3,
     String? pathVariable4,
-  ])  : method = "PUT",
-        _pathVariable1 = pathVariable1,
-        _pathVariable2 = pathVariable2,
-        _pathVariable3 = pathVariable3,
-        _pathVariable4 = pathVariable4;
+  ]) : method = "PUT",
+       _pathVariable1 = pathVariable1,
+       _pathVariable2 = pathVariable2,
+       _pathVariable3 = pathVariable3,
+       _pathVariable4 = pathVariable4;
 
   const Operation.post([
     String? pathVariable1,
     String? pathVariable2,
     String? pathVariable3,
     String? pathVariable4,
-  ])  : method = "POST",
-        _pathVariable1 = pathVariable1,
-        _pathVariable2 = pathVariable2,
-        _pathVariable3 = pathVariable3,
-        _pathVariable4 = pathVariable4;
+  ]) : method = "POST",
+       _pathVariable1 = pathVariable1,
+       _pathVariable2 = pathVariable2,
+       _pathVariable3 = pathVariable3,
+       _pathVariable4 = pathVariable4;
 
   const Operation.delete([
     String? pathVariable1,
     String? pathVariable2,
     String? pathVariable3,
     String? pathVariable4,
-  ])  : method = "DELETE",
-        _pathVariable1 = pathVariable1,
-        _pathVariable2 = pathVariable2,
-        _pathVariable3 = pathVariable3,
-        _pathVariable4 = pathVariable4;
+  ]) : method = "DELETE",
+       _pathVariable1 = pathVariable1,
+       _pathVariable2 = pathVariable2,
+       _pathVariable3 = pathVariable3,
+       _pathVariable4 = pathVariable4;
 
   final String method;
   final String? _pathVariable1;
@@ -79,8 +79,12 @@ class Operation {
 
   /// Returns a list of all path variables required for this operation.
   List<String> get pathVariables {
-    return [_pathVariable1, _pathVariable2, _pathVariable3, _pathVariable4]
-        .fold([], (acc, s) {
+    return [
+      _pathVariable1,
+      _pathVariable2,
+      _pathVariable3,
+      _pathVariable4,
+    ].fold([], (acc, s) {
       if (s != null) {
         acc.add(s);
       }
@@ -119,11 +123,11 @@ class Bind {
   /// If the bound parameter is a property without any additional metadata, it is optional for all methods in an [ResourceController].
   /// If the bound parameter is a property with [requiredBinding], it is required for all methods in an [ResourceController].
   const Bind.query(this.name)
-      : bindingType = BindingType.query,
-        accept = null,
-        require = null,
-        ignore = null,
-        reject = null;
+    : bindingType = BindingType.query,
+      accept = null,
+      require = null,
+      ignore = null,
+      reject = null;
 
   /// Binds an HTTP request header to an [ResourceController] property or operation method argument.
   ///
@@ -147,11 +151,11 @@ class Bind {
   /// If the bound parameter is a property without any additional metadata, it is optional for all methods in an [ResourceController].
   /// If the bound parameter is a property with [requiredBinding], it is required for all methods in an [ResourceController].
   const Bind.header(this.name)
-      : bindingType = BindingType.header,
-        accept = null,
-        require = null,
-        ignore = null,
-        reject = null;
+    : bindingType = BindingType.header,
+      accept = null,
+      require = null,
+      ignore = null,
+      reject = null;
 
   /// Binds an HTTP request body to an [ResourceController] property or operation method argument.
   ///
@@ -182,8 +186,8 @@ class Bind {
   ///
   /// If not required and not present in a request, the bound arguments and properties will be null when the operation method is invoked.
   const Bind.body({this.accept, this.ignore, this.reject, this.require})
-      : name = null,
-        bindingType = BindingType.body;
+    : name = null,
+      bindingType = BindingType.body;
 
   /// Binds a route variable from [RequestPath.variables] to an [ResourceController] operation method argument.
   ///
@@ -205,11 +209,11 @@ class Bind {
   /// If the request path is /users/1, /users/2, etc., `getOneUser` is invoked because the path variable `id` is present and matches
   /// the [Bind.path] argument. If no path variables are present, `getUsers` is invoked.
   const Bind.path(this.name)
-      : bindingType = BindingType.path,
-        accept = null,
-        require = null,
-        ignore = null,
-        reject = null;
+    : bindingType = BindingType.path,
+      accept = null,
+      require = null,
+      ignore = null,
+      reject = null;
 
   final String? name;
   final BindingType bindingType;

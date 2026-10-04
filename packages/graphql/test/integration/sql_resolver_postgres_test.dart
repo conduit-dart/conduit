@@ -36,7 +36,8 @@ import 'dart:io';
 //     statements). This is the default-named one in the imported
 //     namespace.
 import 'package:conduit_core/conduit_core.dart';
-import 'package:conduit_graphql/conduit_graphql.dart' as gql
+import 'package:conduit_graphql/conduit_graphql.dart'
+    as gql
     show SchemaBuilder, SqlResolverFactory, dataLoaderRegistryArgKey;
 import 'package:conduit_graphql/conduit_graphql.dart'
     hide SchemaBuilder, SqlResolverFactory;
@@ -145,13 +146,9 @@ void main() {
       await q.insert();
     }
     store.queryCount = 0;
-    final response = await _execute(
-      schema,
-      factory,
-      r'''
+    final response = await _execute(schema, factory, r'''
         { users(where: { isActive: { eq: true } }) { email } }
-      ''',
-    );
+      ''');
     final users = (response['data'] as Map)['users'] as List;
     expect(users, hasLength(2));
     expect(
@@ -160,42 +157,36 @@ void main() {
     );
   });
 
-  test('list query with orderBy + limit + offset paginates correctly',
-      () async {
-    // Seed five rows so offset/limit have something to bite into.
-    for (var i = 0; i < 5; i++) {
-      final q = Query.forEntity(dataModel.entityForType(User), context)
-        ..valueMap = {'email': 'user$i@x.com'};
-      await q.insert();
-    }
-    final response = await _execute(
-      schema,
-      factory,
-      r'''
+  test(
+    'list query with orderBy + limit + offset paginates correctly',
+    () async {
+      // Seed five rows so offset/limit have something to bite into.
+      for (var i = 0; i < 5; i++) {
+        final q = Query.forEntity(dataModel.entityForType(User), context)
+          ..valueMap = {'email': 'user$i@x.com'};
+        await q.insert();
+      }
+      final response = await _execute(schema, factory, r'''
         { users(orderBy: [{field: email, direction: ASC}],
                 limit: 2, offset: 1) { email } }
-      ''',
-    );
-    final users = (response['data'] as Map)['users'] as List;
-    expect(users, hasLength(2));
-    // ASC by email starting at offset 1 -> user1, user2.
-    expect(users.map((u) => (u as Map)['email']).toList(),
-        equals(['user1@x.com', 'user2@x.com']));
-  });
+      ''');
+      final users = (response['data'] as Map)['users'] as List;
+      expect(users, hasLength(2));
+      // ASC by email starting at offset 1 -> user1, user2.
+      expect(
+        users.map((u) => (u as Map)['email']).toList(),
+        equals(['user1@x.com', 'user2@x.com']),
+      );
+    },
+  );
 
   test('by-pk fetches a single row, returning null on miss', () async {
-    final insertQ = Query.forEntity(
-      dataModel.entityForType(User),
-      context,
-    )..valueMap = {'email': 'pk@b.com'};
+    final insertQ = Query.forEntity(dataModel.entityForType(User), context)
+      ..valueMap = {'email': 'pk@b.com'};
     final inserted = await insertQ.insert();
     final pk = inserted['id'] as int;
 
-    final hit = await _execute(
-      schema,
-      factory,
-      '{ user(id: $pk) { email } }',
-    );
+    final hit = await _execute(schema, factory, '{ user(id: $pk) { email } }');
     expect(((hit['data'] as Map)['user'] as Map)['email'], equals('pk@b.com'));
 
     final miss = await _execute(
@@ -267,8 +258,7 @@ void main() {
 Future<void> _seedThreeUsers(ManagedContext context) async {
   final entity = context.dataModel!.entityForType(User);
   for (final email in ['a@b.com', 'c@d.com', 'e@f.com']) {
-    final q = Query.forEntity(entity, context)
-      ..valueMap = {'email': email};
+    final q = Query.forEntity(entity, context)..valueMap = {'email': email};
     await q.insert();
   }
 }

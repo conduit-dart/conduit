@@ -32,10 +32,7 @@ class QueryPredicate {
   /// Creates an empty predicate.
   ///
   /// The format string is the empty string and parameters is the empty map.
-  QueryPredicate.empty()
-      : format = "",
-        parameters = {},
-        expression = null;
+  QueryPredicate.empty() : format = "", parameters = {}, expression = null;
 
   /// Creates a predicate with an attached [expression] AST and a
   /// pre-rendered [format] / [parameters] pair (the named-parameter
@@ -43,11 +40,7 @@ class QueryPredicate {
   /// of `predicate.format` keep working byte-for-byte while AST-aware
   /// dialects can render the predicate in their preferred placeholder
   /// style.
-  QueryPredicate.withExpression(
-    this.expression,
-    this.format,
-    this.parameters,
-  );
+  QueryPredicate.withExpression(this.expression, this.format, this.parameters);
 
   /// Combines [predicates] with 'AND' keyword.
   ///
@@ -163,7 +156,7 @@ enum PredicateOperator {
   notEqual,
   lessThanEqualTo,
   greaterThanEqualTo,
-  equalTo
+  equalTo,
 }
 
 class ComparisonExpression implements PredicateExpression {

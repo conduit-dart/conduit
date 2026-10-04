@@ -79,8 +79,9 @@ class AuthorizationBasicParser
     final base64String = match[1]!;
     String decodedCredentials;
     try {
-      decodedCredentials =
-          String.fromCharCodes(const Base64Decoder().convert(base64String));
+      decodedCredentials = String.fromCharCodes(
+        const Base64Decoder().convert(base64String),
+      );
     } catch (e) {
       throw AuthorizationParserException(
         AuthorizationParserExceptionReason.malformed,

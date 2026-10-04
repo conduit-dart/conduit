@@ -7,8 +7,10 @@ void main() {
   ManagedContext? context;
 
   setUpAll(() async {
-    context =
-        await PostgresTestConfig().contextWithModels([TestModel, InnerModel]);
+    context = await PostgresTestConfig().contextWithModels([
+      TestModel,
+      InnerModel,
+    ]);
     var counter = 0;
     final names = ["Bob", "Fred", "Tim", "Sally", "Kanye", "Lisa"];
     for (final name in names) {

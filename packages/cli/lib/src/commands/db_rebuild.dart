@@ -101,14 +101,12 @@ class CLIDatabaseRebuild extends CLICommand
     if (databaseConnectionString != null) {
       upgradeArgs.addAll(["--connect", databaseConnectionString!]);
     } else {
-      upgradeArgs.addAll([
-        "--database-config",
-        databaseConfigurationFile.path,
-      ]);
+      upgradeArgs.addAll(["--database-config", databaseConfigurationFile.path]);
     }
     final upgrade = CLIDatabaseUpgrade()..outputSink = outputSink;
-    final upgradeResult =
-        await upgrade.process(upgrade.options.parse(upgradeArgs));
+    final upgradeResult = await upgrade.process(
+      upgrade.options.parse(upgradeArgs),
+    );
     if (upgradeResult != 0) {
       displayError("`db upgrade` failed during rebuild.");
       return upgradeResult;

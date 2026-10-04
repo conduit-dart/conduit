@@ -15,16 +15,15 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
 
   late DatabaseConfiguration connectedDatabase;
 
-  @Flag(
-    "use-ssl",
-    help: "DEPRECATED: Use ssl-mode instead",
-  )
+  @Flag("use-ssl", help: "DEPRECATED: Use ssl-mode instead")
   bool get useSSL => decode("use-ssl");
 
-  @Option("ssl-mode",
-      help:
-          "Whether or not the database connection should use SSL (disable/require/verifyFull)",
-      defaultsTo: "disable")
+  @Option(
+    "ssl-mode",
+    help:
+        "Whether or not the database connection should use SSL (disable/require/verifyFull)",
+    defaultsTo: "disable",
+  )
   String get sslMode => decode("ssl-mode");
 
   @Option(
@@ -95,7 +94,7 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
             "Invalid database configuration.",
             instructions: [
               "Invalid connection string was: $databaseConnectionString",
-              "Expected format:               database://user:password@host:port/databaseName"
+              "Expected format:               database://user:password@host:port/databaseName",
             ],
           );
         }
@@ -106,21 +105,22 @@ mixin CLIDatabaseConnectingCommand implements CLICommand, CLIProject {
             instructions: [
               "Expected file at: ${databaseConfigurationFile.path}.",
               "See --connect and --database-config. If not using --connect, "
-                  "this tool expects a YAML configuration file with the following format:\n$_dbConfigFormat"
+                  "this tool expects a YAML configuration file with the following format:\n$_dbConfigFormat",
             ],
           );
         }
 
         try {
-          connectedDatabase =
-              DatabaseConfiguration.fromFile(databaseConfigurationFile);
+          connectedDatabase = DatabaseConfiguration.fromFile(
+            databaseConfigurationFile,
+          );
         } catch (_) {
           throw CLIException(
             "Invalid database configuration.",
             instructions: [
               "File located at ${databaseConfigurationFile.path}.",
               "See --connect and --database-config. If not using --connect, "
-                  "this tool expects a YAML configuration file with the following format:\n$_dbConfigFormat"
+                  "this tool expects a YAML configuration file with the following format:\n$_dbConfigFormat",
             ],
           );
         }

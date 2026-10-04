@@ -69,7 +69,7 @@ mixin MysqlSchemaGenerator {
         .map((name) => _columnNameForColumn(table[name]!))
         .join(",");
     return [
-      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)"
+      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)",
     ];
   }
 
@@ -114,7 +114,7 @@ mixin MysqlSchemaGenerator {
 
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) {
     return [
-      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)}"
+      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)}",
     ];
   }
 
@@ -128,7 +128,7 @@ mixin MysqlSchemaGenerator {
     // emit RENAME COLUMN and let the user know in docs.
     return [
       "ALTER TABLE ${table.name} "
-      "RENAME COLUMN ${_columnNameForColumn(column)} TO $name"
+          "RENAME COLUMN ${_columnNameForColumn(column)} TO $name",
     ];
   }
 
@@ -140,7 +140,7 @@ mixin MysqlSchemaGenerator {
     if (column.isNullable!) {
       return [
         "ALTER TABLE ${table.name} MODIFY COLUMN "
-        "${_columnNameForColumn(column)} ${_columnTypeForColumn(column)} NULL"
+            "${_columnNameForColumn(column)} ${_columnTypeForColumn(column)} NULL",
       ];
     } else {
       final commands = <String>[];
@@ -162,12 +162,12 @@ mixin MysqlSchemaGenerator {
     if (column.isUnique!) {
       return [
         "CREATE UNIQUE INDEX ${dialect.uniqueKeyName(table.name ?? '', column.name)} "
-        "ON ${table.name} (${_columnNameForColumn(column)})"
+            "ON ${table.name} (${_columnNameForColumn(column)})",
       ];
     } else {
       return [
         "DROP INDEX ${dialect.uniqueKeyName(table.name ?? '', column.name)} "
-        "ON ${table.name}"
+            "ON ${table.name}",
       ];
     }
   }
@@ -176,12 +176,12 @@ mixin MysqlSchemaGenerator {
     if (column.defaultValue != null) {
       return [
         "ALTER TABLE ${table.name} ALTER COLUMN "
-        "${_columnNameForColumn(column)} SET DEFAULT ${column.defaultValue}"
+            "${_columnNameForColumn(column)} SET DEFAULT ${column.defaultValue}",
       ];
     } else {
       return [
         "ALTER TABLE ${table.name} ALTER COLUMN "
-        "${_columnNameForColumn(column)} DROP DEFAULT"
+            "${_columnNameForColumn(column)} DROP DEFAULT",
       ];
     }
   }
@@ -199,7 +199,7 @@ mixin MysqlSchemaGenerator {
   List<String> addIndexToColumn(SchemaTable table, SchemaColumn column) {
     return [
       "CREATE INDEX ${dialect.indexName(table.name ?? '', _columnNameForColumn(column))} "
-      "ON ${table.name} (${_columnNameForColumn(column)})"
+          "ON ${table.name} (${_columnNameForColumn(column)})",
     ];
   }
 
@@ -213,14 +213,14 @@ mixin MysqlSchemaGenerator {
       _columnNameForColumn(column),
     );
     return [
-      "ALTER TABLE ${table.name} RENAME INDEX $existing TO $newIndexName"
+      "ALTER TABLE ${table.name} RENAME INDEX $existing TO $newIndexName",
     ];
   }
 
   List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) {
     return [
       "DROP INDEX ${dialect.indexName(table.name ?? '', _columnNameForColumn(column))} "
-      "ON ${table.name}"
+          "ON ${table.name}",
     ];
   }
 

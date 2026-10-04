@@ -27,15 +27,17 @@ enum CLIColor { red, green, blue, boldRed, boldGreen, boldBlue, boldNone, none }
 abstract class CLICommand {
   CLICommand() {
     final arguments = reflect(this).type.instanceMembers.values.where(
-          (m) => m.metadata
-              .any((im) => im.type.isAssignableTo(reflectType(Argument))),
-        );
+      (m) =>
+          m.metadata.any((im) => im.type.isAssignableTo(reflectType(Argument))),
+    );
 
     for (final arg in arguments) {
       if (!arg.isGetter) {
-        throw StateError("Declaration "
-            "${MirrorSystem.getName(arg.owner!.simpleName)}.${MirrorSystem.getName(arg.simpleName)} "
-            "has CLI annotation, but is not a getter.");
+        throw StateError(
+          "Declaration "
+          "${MirrorSystem.getName(arg.owner!.simpleName)}.${MirrorSystem.getName(arg.simpleName)} "
+          "has CLI annotation, but is not a getter.",
+        );
       }
 
       final Argument? argType = firstMetadataOfType<Argument>(arg);
@@ -58,28 +60,16 @@ abstract class CLICommand {
         ?.runningProcess;
   }
 
-  @Flag(
-    "version",
-    help: "Prints version of this tool",
-    negatable: false,
-  )
+  @Flag("version", help: "Prints version of this tool", negatable: false)
   bool get showVersion => decode<bool>("version");
 
   @Flag("color", help: "Toggles ANSI color", defaultsTo: true)
   bool get showColors => decode<bool>("color");
 
-  @Flag(
-    "help",
-    abbr: "h",
-    help: "Shows this",
-    negatable: false,
-  )
+  @Flag("help", abbr: "h", help: "Shows this", negatable: false)
   bool get helpMeItsScary => decode<bool>("help");
 
-  @Flag(
-    "stacktrace",
-    help: "Shows the stacktrace if an error occurs",
-  )
+  @Flag("stacktrace", help: "Shows the stacktrace if an error occurs")
   bool get showStacktrace => decode<bool>("stacktrace");
 
   @Flag(
@@ -126,9 +116,7 @@ abstract class CLICommand {
   ///
   /// If the argument cannot be coerced to the expected type [T] then
   /// a [CLIException] is thrown.
-  T decode<T extends Object>(
-    String key,
-  ) {
+  T decode<T extends Object>(String key) {
     final T? val = decodeOptional(key);
 
     if (val != null) {
@@ -210,8 +198,10 @@ abstract class CLICommand {
 
     if (results.command != null) {
       parentCommandNames.add(name);
-      return _commandMap[results.command!.name!]!
-          .process(results.command!, commandPath: parentCommandNames);
+      return _commandMap[results.command!.name!]!.process(
+        results.command!,
+        commandPath: parentCommandNames,
+      );
     }
 
     try {
@@ -358,8 +348,9 @@ abstract class CLICommand {
 
   bool isExecutableInShellPath(String name) {
     final locator = Platform.isWindows ? "where" : "which";
-    final ProcessResult results =
-        Process.runSync(locator, [name], runInShell: true);
+    final ProcessResult results = Process.runSync(locator, [
+      name,
+    ], runInShell: true);
 
     return results.exitCode == 0;
   }

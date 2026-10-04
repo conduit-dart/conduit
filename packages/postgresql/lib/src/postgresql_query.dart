@@ -42,8 +42,11 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builder.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     return builder
         .instancesForRows<InstanceType>(results as List<List<dynamic>>)
@@ -92,11 +95,15 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builders.first.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), allVariables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      allVariables,
+      timeoutInSeconds,
+    );
 
-    return builders.first
-        .instancesForRows<InstanceType>(results as List<List<dynamic>>);
+    return builders.first.instancesForRows<InstanceType>(
+      results as List<List<dynamic>>,
+    );
   }
 
   @override
@@ -119,8 +126,11 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       buffer.write("RETURNING ${builder.sqlColumnsToReturn}");
     }
 
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
@@ -135,9 +145,10 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     }
 
     throw StateError(
-        "Query error. 'updateOne' modified more than one row in '${entity.tableName}'. "
-        "This was likely unintended and may be indicativate of a more serious error. Query "
-        "should add 'where' constraints on a unique column.");
+      "Query error. 'updateOne' modified more than one row in '${entity.tableName}'. "
+      "This was likely unintended and may be indicativate of a more serious error. Query "
+      "should add 'where' constraints on a unique column.",
+    );
   }
 
   @override
@@ -174,9 +185,10 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
       return results.first;
     } else if (results.length > 1) {
       throw StateError(
-          "Query error. 'fetchOne' returned more than one row from '${entity.tableName}'. "
-          "This was likely unintended and may be indicativate of a more serious error. Query "
-          "should add 'where' constraints on a unique column.");
+        "Query error. 'fetchOne' returned more than one row from '${entity.tableName}'. "
+        "This was likely unintended and may be indicativate of a more serious error. Query "
+        "should add 'where' constraints on a unique column.",
+      );
     }
 
     return null;
@@ -226,8 +238,11 @@ class PostgresQuery<InstanceType extends ManagedObject> extends Object
     if (offset != 0) {
       buffer.write("OFFSET $offset ");
     }
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 

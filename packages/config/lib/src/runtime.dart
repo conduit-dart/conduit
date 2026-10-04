@@ -80,9 +80,9 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime {
     var ptr = type;
     while (ptr.isSubclassOf(reflectClass(Configuration))) {
       declarations.addAll(
-        ptr.declarations.values
-            .whereType<VariableMirror>()
-            .where((vm) => !vm.isStatic && !vm.isPrivate),
+        ptr.declarations.values.whereType<VariableMirror>().where(
+          (vm) => !vm.isStatic && !vm.isPrivate,
+        ),
       );
       ptr = ptr.superclass!;
     }
@@ -94,5 +94,4 @@ class ConfigurationRuntimeImpl extends ConfigurationRuntime {
     }
     return m;
   }
-
 }

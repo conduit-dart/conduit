@@ -50,8 +50,11 @@ class MysqlQuery<InstanceType extends ManagedObject>
     }
     buffer.write("VALUES (${builder.sqlValuesToInsert})");
 
-    await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     final pkColumn = entity.primaryKey;
     final pkValueBuilder = builder.columnValueBuildersByKey[pkColumn];
@@ -65,11 +68,13 @@ class MysqlQuery<InstanceType extends ManagedObject>
       // need is the *id* not the count. Read it via SELECT
       // LAST_INSERT_ID() on the same connection (driver re-uses the
       // pooled connection for the same store instance).
-      final rows = await context.persistentStore.executeQuery(
-        "SELECT LAST_INSERT_ID()",
-        const {},
-        timeoutInSeconds,
-      ) as List<List<dynamic>>;
+      final rows =
+          await context.persistentStore.executeQuery(
+                "SELECT LAST_INSERT_ID()",
+                const {},
+                timeoutInSeconds,
+              )
+              as List<List<dynamic>>;
       rawPkValue = rows.first.first;
     }
 
@@ -80,15 +85,13 @@ class MysqlQuery<InstanceType extends ManagedObject>
     selectBuf.write("FROM ${selectBuilder.sqlTableName} ");
     selectBuf.write("WHERE $pkColumn = :__pk_value__");
 
-    final results = await context.persistentStore.executeQuery(
-      selectBuf.toString(),
-      {'__pk_value__': rawPkValue},
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final results =
+        await context.persistentStore.executeQuery(selectBuf.toString(), {
+              '__pk_value__': rawPkValue,
+            }, timeoutInSeconds)
+            as List<List<dynamic>>;
 
-    return selectBuilder
-        .instancesForRows<InstanceType>(results)
-        .first;
+    return selectBuilder.instancesForRows<InstanceType>(results).first;
   }
 
   @override
@@ -120,11 +123,13 @@ class MysqlQuery<InstanceType extends ManagedObject>
     }
     final selectIdsSql = selectIdsBuf.toString();
     final selectIdsParams = _filterParams(selectIdsSql, builder.variables);
-    final pkRows = await context.persistentStore.executeQuery(
-      selectIdsSql,
-      selectIdsParams,
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final pkRows =
+        await context.persistentStore.executeQuery(
+              selectIdsSql,
+              selectIdsParams,
+              timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     final pkValues = pkRows.map((r) => r.first).toList();
 
     final updBuf = StringBuffer();
@@ -155,11 +160,13 @@ class MysqlQuery<InstanceType extends ManagedObject>
     fetchBuf.write("SELECT ${fetchBuilder.sqlColumnsToReturn} ");
     fetchBuf.write("FROM ${fetchBuilder.sqlTableName} ");
     fetchBuf.write("WHERE $pkColumn IN (${placeholders.join(',')})");
-    final results = await context.persistentStore.executeQuery(
-      fetchBuf.toString(),
-      pkParams,
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final results =
+        await context.persistentStore.executeQuery(
+              fetchBuf.toString(),
+              pkParams,
+              timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     return fetchBuilder.instancesForRows(results);
   }
 
@@ -235,8 +242,11 @@ class MysqlQuery<InstanceType extends ManagedObject>
     buffer.write("${builder.sqlOrderBy} ");
     if (fetchLimit != 0) buffer.write("LIMIT $fetchLimit ");
     if (offset != 0) buffer.write("OFFSET $offset ");
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 
@@ -331,11 +341,13 @@ class _MysqlQueryReduce<T extends ManagedObject>
     if (builder.sqlWhereClause != null) {
       buffer.write("WHERE ${builder.sqlWhereClause} ");
     }
-    final result = await query.context.persistentStore.executeQuery(
-      buffer.toString(),
-      builder.variables,
-      query.timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final result =
+        await query.context.persistentStore.executeQuery(
+              buffer.toString(),
+              builder.variables,
+              query.timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     if (result.isEmpty) return null as U;
     return result.first.first as U;
   }

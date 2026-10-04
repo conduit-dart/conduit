@@ -259,7 +259,7 @@ class SchemaColumn {
       "relatedTableName": relatedTableName,
       "relatedColumnName": relatedColumnName,
       "deleteRule": _deleteRule,
-      "indexed": isIndexed
+      "indexed": isIndexed,
     };
   }
 
@@ -308,11 +308,7 @@ class SchemaColumnDifference {
       if (expectedColumn!.name.toLowerCase() !=
           actualColumn!.name.toLowerCase()) {
         _differingProperties.add(
-          _PropertyDifference(
-            "name",
-            expectedColumn!.name,
-            actualColumn!.name,
-          ),
+          _PropertyDifference("name", expectedColumn!.name, actualColumn!.name),
         );
       }
 
@@ -390,11 +386,11 @@ class SchemaColumnDifference {
   List<String> get errorMessages {
     if (expectedColumn == null && actualColumn != null) {
       return [
-        "Column '${actualColumn!.name}' in table '${actualColumn!.table!.name}' should NOT exist, but is created by migration files"
+        "Column '${actualColumn!.name}' in table '${actualColumn!.table!.name}' should NOT exist, but is created by migration files",
       ];
     } else if (expectedColumn != null && actualColumn == null) {
       return [
-        "Column '${expectedColumn!.name}' in table '${expectedColumn!.table!.name}' should exist, but is NOT created by migration files"
+        "Column '${expectedColumn!.name}' in table '${expectedColumn!.table!.name}' should exist, but is NOT created by migration files",
       ];
     }
 

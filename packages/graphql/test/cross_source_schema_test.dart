@@ -52,8 +52,7 @@ void main() {
     test('source tags expose which half emitted each ObjectType', () {
       final userType = persistenceSchema.sqlObjectTypes['User']!;
       final profileType = persistenceSchema.graphObjectTypes['Profile']!;
-      final friendshipType =
-          persistenceSchema.graphObjectTypes['Friendship']!;
+      final friendshipType = persistenceSchema.graphObjectTypes['Friendship']!;
       expect(persistenceSchema.sourceFor(userType), equals('sql'));
       expect(persistenceSchema.sourceFor(profileType), equals('graph'));
       expect(persistenceSchema.sourceFor(friendshipType), equals('graph'));
@@ -71,9 +70,7 @@ void main() {
     });
 
     test('graph-only umbrella still emits a unified schema', () {
-      final p = buildFakePersistence(
-        graphModel: buildCrossSourceGraphModel(),
-      );
+      final p = buildFakePersistence(graphModel: buildCrossSourceGraphModel());
       final result = SchemaBuilder().fromPersistence(
         p,
         graphConfig: buildCrossSourceGraphConfig(),

@@ -19,10 +19,11 @@ import 'package:conduit_core/src/db/query/mixin.dart';
 
 class QueryBuilder extends TableBuilder {
   QueryBuilder(QueryMixin query, [String prefixIndex = ""])
-      : valueKeyPrefix = "v${prefixIndex}_",
-        super(query) {
-    (query.valueMap ?? query.values.backing.contents)
-        .forEach(addColumnValueBuilder);
+    : valueKeyPrefix = "v${prefixIndex}_",
+      super(query) {
+    (query.valueMap ?? query.values.backing.contents).forEach(
+      addColumnValueBuilder,
+    );
     finalize(variables);
   }
 
@@ -66,8 +67,10 @@ class QueryBuilder extends TableBuilder {
   ColumnValueBuilder? _createColumnValueBuilder(String? key, dynamic value) {
     final property = entity.properties[key];
     if (property == null) {
-      throw ArgumentError("Invalid query. Column '$key' does "
-          "not exist for table '${entity.tableName}'");
+      throw ArgumentError(
+        "Invalid query. Column '$key' does "
+        "not exist for table '${entity.tableName}'",
+      );
     }
 
     if (property is ManagedRelationshipDescription) {
@@ -84,9 +87,11 @@ class QueryBuilder extends TableBuilder {
           );
         }
 
-        throw ArgumentError("Invalid query. Column '$key' in "
-            "'${entity.tableName}' does not exist. '$key' recognized as ORM relationship. "
-            "Provided value must be 'Map' or ${property.destinationEntity.name}.");
+        throw ArgumentError(
+          "Invalid query. Column '$key' in "
+          "'${entity.tableName}' does not exist. '$key' recognized as ORM relationship. "
+          "Provided value must be 'Map' or ${property.destinationEntity.name}.",
+        );
       }
     }
 
@@ -98,13 +103,15 @@ class QueryBuilder extends TableBuilder {
    */
 
   String get sqlColumnsAndValuesToUpdate {
-    return columnValueBuilders.map((m) {
-      final columnName = m.sqlColumnName();
-      final placeholder = dialect.parameterPlaceholder(
-        m.sqlColumnName(withPrefix: valueKeyPrefix),
-      );
-      return "$columnName=$placeholder";
-    }).join(",");
+    return columnValueBuilders
+        .map((m) {
+          final columnName = m.sqlColumnName();
+          final placeholder = dialect.parameterPlaceholder(
+            m.sqlColumnName(withPrefix: valueKeyPrefix),
+          );
+          return "$columnName=$placeholder";
+        })
+        .join(",");
   }
 
   String get sqlColumnsToInsert => columnValueKeys.join(",");
@@ -138,8 +145,9 @@ class QueryBuilder extends TableBuilder {
   String get sqlOrderBy {
     final allSorts = List<ColumnSortBuilder>.from(columnSortBuilders);
 
-    final nestedSorts =
-        returning.whereType<TableBuilder>().expand((m) => m.columnSortBuilders);
+    final nestedSorts = returning.whereType<TableBuilder>().expand(
+      (m) => m.columnSortBuilders,
+    );
     allSorts.addAll(nestedSorts);
 
     if (allSorts.isEmpty) {

@@ -79,9 +79,10 @@ class MeController extends ResourceController {
     }
 
     final sql = persistence.sql as _FakeSqlStore;
-    final row = sql.rows['users']!
-        .cast<Map<String, Object?>>()
-        .firstWhere((r) => r['id'] == id, orElse: () => const {});
+    final row = sql.rows['users']!.cast<Map<String, Object?>>().firstWhere(
+      (r) => r['id'] == id,
+      orElse: () => const {},
+    );
     if (row.isEmpty) {
       return Response.notFound();
     }
@@ -116,15 +117,13 @@ class _FakeSqlStore extends PersistentStore {
     ManagedContext context,
     ManagedEntity entity, {
     T? values,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> execute(
     String sql, {
     Map<String, dynamic>? substitutionValues,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<dynamic> executeQuery(
@@ -132,15 +131,13 @@ class _FakeSqlStore extends PersistentStore {
     Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T> Function(ManagedContext transaction) transactionBlock,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
 
   @override
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) =>
@@ -161,8 +158,7 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column, {
     String? unencodedInitialValue,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -171,15 +167,13 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String name,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnNullability(
     SchemaTable table,
     SchemaColumn column,
     String? unencodedInitialValue,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnUniqueness(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -187,8 +181,7 @@ class _FakeSqlStore extends PersistentStore {
   List<String> alterColumnDefaultValue(
     SchemaTable table,
     SchemaColumn column,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnDeleteRule(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -200,13 +193,9 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String newIndexName,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
-  List<String> deleteIndexFromColumn(
-    SchemaTable table,
-    SchemaColumn column,
-  ) =>
+  List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
 
   @override
@@ -217,8 +206,7 @@ class _FakeSqlStore extends PersistentStore {
     Schema fromSchema,
     List<Migration> withMigrations, {
     bool temporary = false,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }
 
 /// Toy in-memory graph store. Stand-in for `Neo4jPersistentStore` /

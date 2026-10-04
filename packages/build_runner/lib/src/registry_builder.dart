@@ -54,8 +54,8 @@ class RegistryBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        r'$package$': ['lib/conduit.g.dart'],
-      };
+    r'$package$': ['lib/conduit.g.dart'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -69,15 +69,17 @@ class RegistryBuilder implements Builder {
       final manifest =
           json.decode(await buildStep.readAsString(id)) as Map<String, dynamic>;
       final classes = (manifest[kind.manifestKey] as List).cast<String>();
-      final libraryPath = id.path.substring(
-              0, id.path.length - kind.manifestExtension.length) +
+      final libraryPath =
+          id.path.substring(0, id.path.length - kind.manifestExtension.length) +
           kind.libraryExtension;
       for (final cls in classes) {
-        bindings.add(_RuntimeBinding(
-          className: cls,
-          runtimeSuffix: kind.runtimeSuffix,
-          libraryAssetPath: libraryPath,
-        ));
+        bindings.add(
+          _RuntimeBinding(
+            className: cls,
+            runtimeSuffix: kind.runtimeSuffix,
+            libraryAssetPath: libraryPath,
+          ),
+        );
       }
     }
 
@@ -127,9 +129,7 @@ class RegistryBuilder implements Builder {
     );
     buf.writeln('/// before constructing `Application<T>`.');
     buf.writeln('void bootstrap() {');
-    buf.writeln(
-      '  RuntimeContext.install(_\$ConduitGeneratedContext());',
-    );
+    buf.writeln('  RuntimeContext.install(_\$ConduitGeneratedContext());');
     buf.writeln('}');
 
     final outputId = AssetId(pkg, 'lib/conduit.g.dart');

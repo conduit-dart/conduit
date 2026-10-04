@@ -3,10 +3,7 @@ import 'package:conduit_core/src/db/managed/entity.dart';
 
 Map<ManagedDataModel, int> _dataModels = {};
 
-ManagedEntity findEntity(
-  Type type, {
-  ManagedEntity Function()? orElse,
-}) {
+ManagedEntity findEntity(Type type, {ManagedEntity Function()? orElse}) {
   for (final d in _dataModels.keys) {
     final entity = d.tryEntityForType(type);
     if (entity != null) {

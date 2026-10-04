@@ -14,30 +14,46 @@ void main() {
       expect(d.parameterStyle, SqlParameterStyle.positional);
     });
 
-    test('parameter placeholder uses :name (driver rewrites to ? internally)',
-        () {
-      expect(d.parameterPlaceholder('foo'), ':foo');
-      expect(d.parameterPlaceholder('whatever'), ':whatever');
-    });
+    test(
+      'parameter placeholder uses :name (driver rewrites to ? internally)',
+      () {
+        expect(d.parameterPlaceholder('foo'), ':foo');
+        expect(d.parameterPlaceholder('whatever'), ':whatever');
+      },
+    );
 
     test('column types map to MySQL-flavored DDL', () {
       expect(d.columnDefinitionType('integer', autoincrement: false), 'INT');
-      expect(d.columnDefinitionType('integer', autoincrement: true),
-          'INT AUTO_INCREMENT');
-      expect(d.columnDefinitionType('bigInteger', autoincrement: false),
-          'BIGINT');
-      expect(d.columnDefinitionType('bigInteger', autoincrement: true),
-          'BIGINT AUTO_INCREMENT');
-      expect(d.columnDefinitionType('string', autoincrement: false),
-          'VARCHAR(255)');
-      expect(d.columnDefinitionType('datetime', autoincrement: false),
-          'DATETIME');
-      expect(d.columnDefinitionType('boolean', autoincrement: false),
-          'BOOLEAN');
+      expect(
+        d.columnDefinitionType('integer', autoincrement: true),
+        'INT AUTO_INCREMENT',
+      );
+      expect(
+        d.columnDefinitionType('bigInteger', autoincrement: false),
+        'BIGINT',
+      );
+      expect(
+        d.columnDefinitionType('bigInteger', autoincrement: true),
+        'BIGINT AUTO_INCREMENT',
+      );
+      expect(
+        d.columnDefinitionType('string', autoincrement: false),
+        'VARCHAR(255)',
+      );
+      expect(
+        d.columnDefinitionType('datetime', autoincrement: false),
+        'DATETIME',
+      );
+      expect(
+        d.columnDefinitionType('boolean', autoincrement: false),
+        'BOOLEAN',
+      );
       expect(d.columnDefinitionType('double', autoincrement: false), 'DOUBLE');
       expect(d.columnDefinitionType('document', autoincrement: false), 'JSON');
-      expect(d.columnDefinitionType('unknownType', autoincrement: false),
-          isNull);
+      expect(
+        d.columnDefinitionType('unknownType', autoincrement: false),
+        isNull,
+      );
     });
 
     test('case-sensitive LIKE uses LIKE BINARY', () {
@@ -95,10 +111,16 @@ void main() {
     test('AND combinator preserves positional ordering', () {
       final r = d.renderExpression(
         LogicalExpression('AND', [
-          BinaryOpExpression('=', ColumnExpression('a'),
-              ParameterExpression('av', 1)),
-          BinaryOpExpression('<', ColumnExpression('b'),
-              ParameterExpression('bv', 99)),
+          BinaryOpExpression(
+            '=',
+            ColumnExpression('a'),
+            ParameterExpression('av', 1),
+          ),
+          BinaryOpExpression(
+            '<',
+            ColumnExpression('b'),
+            ParameterExpression('bv', 99),
+          ),
         ]),
       );
       expect(r.sql, '(a = ? AND b < ?)');
@@ -107,14 +129,11 @@ void main() {
 
     test('IN expands to (?,?,?) and binds in order', () {
       final r = d.renderExpression(
-        InExpression(
-          ColumnExpression('id'),
-          [
-            ParameterExpression('a', 10),
-            ParameterExpression('b', 20),
-            ParameterExpression('c', 30),
-          ],
-        ),
+        InExpression(ColumnExpression('id'), [
+          ParameterExpression('a', 10),
+          ParameterExpression('b', 20),
+          ParameterExpression('c', 30),
+        ]),
       );
       expect(r.sql, 'id IN (?,?,?)');
       expect(r.positionalParameters, [10, 20, 30]);
@@ -144,9 +163,7 @@ void main() {
     });
 
     test('IS NULL renders without binding', () {
-      final r = d.renderExpression(
-        IsNullExpression(ColumnExpression('email')),
-      );
+      final r = d.renderExpression(IsNullExpression(ColumnExpression('email')));
       expect(r.sql, 'email IS NULL');
       expect(r.positionalParameters, isEmpty);
     });
@@ -207,7 +224,10 @@ void main() {
       expect(cmds.first, contains('email VARCHAR(255) NOT NULL UNIQUE'));
       // The indexed + non-PK column also generates an index command.
       expect(cmds.length, 2);
-      expect(cmds.last, contains('CREATE INDEX users_email_idx ON users (email)'));
+      expect(
+        cmds.last,
+        contains('CREATE INDEX users_email_idx ON users (email)'),
+      );
     });
 
     test('createTable emits BIGINT AUTO_INCREMENT for bigInteger serial', () {

@@ -19,24 +19,29 @@ void main() async {
     await server.close();
   });
 
-  test("Mismatched body shows decoded body and teh reason for the mismatch",
-      () async {
-    server.queueHandler((req) {
-      return Response.ok({"key": "value"});
-    });
+  test(
+    "Mismatched body shows decoded body and teh reason for the mismatch",
+    () async {
+      server.queueHandler((req) {
+        return Response.ok({"key": "value"});
+      });
 
-    final response = await agent.get("/");
-    final responseMatcher = HTTPResponseMatcher(
-        200, null, HTTPBodyMatcher(equals({"notkey": "bar"})));
-    expect(responseMatcher.matches(response, {}), false);
+      final response = await agent.get("/");
+      final responseMatcher = HTTPResponseMatcher(
+        200,
+        null,
+        HTTPBodyMatcher(equals({"notkey": "bar"})),
+      );
+      expect(responseMatcher.matches(response, {}), false);
 
-    final desc = StringDescription();
-    responseMatcher.describe(desc);
-    expect(desc.toString(), contains("Status code must be 200"));
-    expect(desc.toString(), contains("{'notkey': 'bar'}"));
+      final desc = StringDescription();
+      responseMatcher.describe(desc);
+      expect(desc.toString(), contains("Status code must be 200"));
+      expect(desc.toString(), contains("{'notkey': 'bar'}"));
 
-    final actual = response.toString();
-    expect(actual, contains("Status code is 200"));
-    expect(actual, contains("{key: value}"));
-  });
+      final actual = response.toString();
+      expect(actual, contains("Status code is 200"));
+      expect(actual, contains("{key: value}"));
+    },
+  );
 }

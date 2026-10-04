@@ -119,9 +119,7 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   /// [delegate] will store this client for future use.
   Future addClient(AuthClient client) async {
     if (client.id.isEmpty) {
-      throw ArgumentError(
-        "A client must have an id.",
-      );
+      throw ArgumentError("A client must have an id.");
     }
 
     if (client.redirectURI != null && client.hashedSecret == null) {
@@ -220,8 +218,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.invalidGrant, client);
     }
 
-    final validScopes =
-        _validatedScopes(client, authenticatable, requestedScopes);
+    final validScopes = _validatedScopes(
+      client,
+      authenticatable,
+      requestedScopes,
+    );
     final token = _generateToken(
       authenticatable.id,
       client.id,
@@ -401,8 +402,11 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
       throw AuthServerException(AuthRequestError.accessDenied, client);
     }
 
-    final validScopes =
-        _validatedScopes(client, authenticatable, requestedScopes);
+    final validScopes = _validatedScopes(
+      client,
+      authenticatable,
+      requestedScopes,
+    );
     final authCode = _generateAuthCode(
       authenticatable.id,
       client,
@@ -489,14 +493,13 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
     final basic = APISecurityScheme.http("basic")
       ..description =
           "This endpoint requires an OAuth2 Client ID and Secret as the Basic Authentication username and password. "
-              "If the client ID does not have a secret (public client), the password is the empty string (retain the separating colon, e.g. 'com.conduit.app:').";
+          "If the client ID does not have a secret (public client), the password is the empty string (retain the separating colon, e.g. 'com.conduit.app:').";
     context.securitySchemes.register("oauth2-client-authentication", basic);
 
     final oauth2 = APISecurityScheme.oauth2({
       "authorizationCode": documentedAuthorizationCodeFlow,
-      "password": documentedPasswordFlow
-    })
-      ..description = "Standard OAuth 2.0";
+      "password": documentedPasswordFlow,
+    })..description = "Standard OAuth 2.0";
 
     context.securitySchemes.register("oauth2", oauth2);
 
@@ -526,13 +529,13 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
   }) {
     if (authorizer.parser is AuthorizationBasicParser) {
       return [
-        APISecurityRequirement({"oauth2-client-authentication": []})
+        APISecurityRequirement({"oauth2-client-authentication": []}),
       ];
     } else if (authorizer.parser is AuthorizationBearerParser) {
       return [
-        APISecurityRequirement(
-          {"oauth2": scopes?.map((s) => s.toString()).toList() ?? []},
-        )
+        APISecurityRequirement({
+          "oauth2": scopes?.map((s) => s.toString()).toList() ?? [],
+        }),
       ];
     }
 
@@ -606,8 +609,9 @@ class AuthServer implements AuthValidator, APIComponentDocumenter {
         throw AuthServerException(AuthRequestError.invalidScope, client);
       }
 
-      final validScopesForAuthenticatable =
-          delegate.getAllowedScopes(authenticatable);
+      final validScopesForAuthenticatable = delegate.getAllowedScopes(
+        authenticatable,
+      );
       if (!identical(validScopesForAuthenticatable, AuthScope.any)) {
         validScopes.retainWhere(
           (clientAllowedScope) => validScopesForAuthenticatable!.any(
@@ -676,9 +680,7 @@ String randomStringOfLength(int length) {
     // `r.nextInt(1000) % 62` biased the first 12 characters (1000 mod
     // 62 = 12), reducing token entropy slightly. `nextInt(n)` is
     // already uniform over [0, n).
-    buff.write(
-      possibleCharacters[r.nextInt(possibleCharacters.length)],
-    );
+    buff.write(possibleCharacters[r.nextInt(possibleCharacters.length)]);
   }
 
   return buff.toString();

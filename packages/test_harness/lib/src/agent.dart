@@ -40,31 +40,31 @@ part 'response.dart';
 class Agent {
   /// Configures a new agent that sends requests to [app].
   Agent(Application? app)
-      : _application = app,
-        _host = null,
-        _port = null,
-        _scheme = null;
+    : _application = app,
+      _host = null,
+      _port = null,
+      _scheme = null;
 
   /// Configures a new agent that sends requests to 'http://localhost:[_port]'.
   Agent.onPort(this._port)
-      : _scheme = "http",
-        _host = "localhost",
-        _application = null;
+    : _scheme = "http",
+      _host = "localhost",
+      _application = null;
 
   /// Configures a new agent that sends requests to a server configured by [config].
   Agent.fromOptions(ApplicationOptions config, {bool useHTTPS = false})
-      : _scheme = useHTTPS ? "https" : "http",
-        _host = "localhost",
-        _port = config.port,
-        _application = null;
+    : _scheme = useHTTPS ? "https" : "http",
+      _host = "localhost",
+      _port = config.port,
+      _application = null;
 
   /// Configures a new agent with the same properties as [original].
   Agent.from(Agent original)
-      : _scheme = original._scheme,
-        _host = original._host,
-        _port = original._port,
-        contentType = original.contentType,
-        _application = original._application {
+    : _scheme = original._scheme,
+      _host = original._host,
+      _port = original._port,
+      contentType = original.contentType,
+      _application = original._application {
     headers.addAll(original.headers);
   }
 
@@ -123,8 +123,9 @@ class Agent {
 
   /// Adds Accept header to requests from this agent.
   set accept(List<ContentType> contentTypes) {
-    headers[HttpHeaders.acceptHeader] =
-        contentTypes.map((ct) => ct.toString()).join(",");
+    headers[HttpHeaders.acceptHeader] = contentTypes
+        .map((ct) => ct.toString())
+        .join(",");
   }
 
   /// Creates a request object for [path] that can be configured and executed later.
@@ -152,38 +153,47 @@ class Agent {
   /// Makes a GET request with this agent.
   ///
   /// Calls [execute] with "GET" method.
-  Future<TestResponse?> get(String path,
-      {Map<String, dynamic>? headers, Map<String, Object>? query}) {
+  Future<TestResponse?> get(
+    String path, {
+    Map<String, dynamic>? headers,
+    Map<String, Object>? query,
+  }) {
     return execute("GET", path, headers: headers, query: query);
   }
 
   /// Makes a POST request with this agent.
   ///
   /// Calls [execute] with "POST" method.
-  Future<TestResponse?> post(String path,
-      {dynamic body,
-      Map<String, dynamic>? headers,
-      Map<String, dynamic>? query}) {
+  Future<TestResponse?> post(
+    String path, {
+    dynamic body,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? query,
+  }) {
     return execute("POST", path, body: body, headers: headers, query: query);
   }
 
   /// Makes a DELETE request with this agent.
   ///
   /// Calls [execute] with "DELETE" method.
-  Future<TestResponse?> delete(String path,
-      {dynamic body,
-      Map<String, dynamic>? headers,
-      Map<String, dynamic>? query}) {
+  Future<TestResponse?> delete(
+    String path, {
+    dynamic body,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? query,
+  }) {
     return execute("DELETE", path, body: body, headers: headers, query: query);
   }
 
   /// Makes a PUT request with this agent.
   ///
   /// Calls [execute] with "PUT" method.
-  Future<TestResponse?> put(String path,
-      {dynamic body,
-      Map<String, dynamic>? headers,
-      Map<String, dynamic>? query}) {
+  Future<TestResponse?> put(
+    String path, {
+    dynamic body,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? query,
+  }) {
     return execute("PUT", path, body: body, headers: headers, query: query);
   }
 
@@ -200,10 +210,13 @@ class Agent {
   /// are only those in [Agent.headers].
   ///
   /// If [query] is non-null, each value is URI-encoded and then the map is encoding as the request URI's  query string.
-  Future<TestResponse?> execute(String method, String path,
-      {dynamic body,
-      Map<String, dynamic>? headers,
-      Map<String, dynamic>? query}) {
+  Future<TestResponse?> execute(
+    String method,
+    String path, {
+    dynamic body,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? query,
+  }) {
     final req = request(path)
       ..body = body
       ..query = query ?? {};

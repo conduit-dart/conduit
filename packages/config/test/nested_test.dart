@@ -3,9 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   test("Root", () {
-    final message = getMessage({
-      "id": 1,
-    });
+    final message = getMessage({"id": 1});
     expect(message, contains("Failed to read key 'id' for 'Parent'"));
   });
 
@@ -15,15 +13,15 @@ void main() {
 
     msg = getMessage({
       "id": "1",
-      "peers": [0]
+      "peers": [0],
     });
     expect(msg, contains("Failed to read key 'peers[0]' for 'Parent'"));
 
     msg = getMessage({
       "id": "1",
       "peers": [
-        {"id": 0}
-      ]
+        {"id": 0},
+      ],
     });
     expect(msg, contains("Failed to read key 'peers[0].id' for 'Parent'"));
 
@@ -31,8 +29,8 @@ void main() {
       "id": "1",
       "peers": [
         {"id": "2"},
-        {"id": 0}
-      ]
+        {"id": 0},
+      ],
     });
     expect(msg, contains("Failed to read key 'peers[1].id' for 'Parent'"));
   });
@@ -43,9 +41,9 @@ void main() {
       "peers": [
         {
           "id": "2",
-          "peers": [0]
-        }
-      ]
+          "peers": [0],
+        },
+      ],
     });
     expect(
       msg,
@@ -59,10 +57,10 @@ void main() {
           "id": "2",
           "peers": [
             {"id": "1"},
-            {}
-          ]
-        }
-      ]
+            {},
+          ],
+        },
+      ],
     });
     expect(
       msg,
@@ -76,10 +74,10 @@ void main() {
           "id": "2",
           "peers": [
             {"id": "1"},
-            {"id": 0}
-          ]
-        }
-      ]
+            {"id": 0},
+          ],
+        },
+      ],
     });
     expect(
       msg,
@@ -90,13 +88,13 @@ void main() {
   test("Root.Map", () {
     var msg = getMessage({
       "id": "1",
-      "namedChildren": {1: "key"}
+      "namedChildren": {1: "key"},
     });
     expect(msg, contains("Failed to read key 'namedChildren' for 'Parent'"));
 
     msg = getMessage({
       "id": "1",
-      "namedChildren": {"key": 0}
+      "namedChildren": {"key": 0},
     });
     expect(
       msg,
@@ -107,8 +105,8 @@ void main() {
       "id": "1",
       "namedChildren": {
         "2": {"id": "2"},
-        "3": {}
-      }
+        "3": {},
+      },
     });
     expect(msg, contains("Failed to read key 'namedChildren.3' for 'Parent'"));
   });
@@ -117,8 +115,8 @@ void main() {
     var msg = getMessage({
       "id": "1",
       "namedChildren": {
-        "key": {"id": "2", "peers": 0}
-      }
+        "key": {"id": "2", "peers": 0},
+      },
     });
     expect(
       msg,
@@ -131,10 +129,10 @@ void main() {
         "key": {
           "id": "2",
           "peers": [
-            {"id": 0}
-          ]
-        }
-      }
+            {"id": 0},
+          ],
+        },
+      },
     });
     expect(
       msg,
@@ -153,11 +151,11 @@ void main() {
           "parent": {
             "id": "3",
             "peers": [
-              {"id": 0}
-            ]
-          }
-        }
-      }
+              {"id": 0},
+            ],
+          },
+        },
+      },
     });
     expect(
       msg,
@@ -172,19 +170,17 @@ void main() {
       "id": "1",
       "listOfListOfParents": [
         [
-          {"id": "1"}
+          {"id": "1"},
         ],
         [
-          {"id", 0}
-        ]
-      ]
+          {"id", 0},
+        ],
+      ],
     });
 
     expect(
       msg,
-      contains(
-        "Failed to read key 'listOfListOfParents[0][1]' for 'Parent'",
-      ),
+      contains("Failed to read key 'listOfListOfParents[0][1]' for 'Parent'"),
     );
   });
 }

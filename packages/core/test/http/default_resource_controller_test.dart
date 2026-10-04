@@ -49,7 +49,7 @@ void main() {
       final expectedMap = {
         "id": 1,
         "name": "Fred",
-        "createdAt": allObjects.first.createdAt!.toIso8601String()
+        "createdAt": allObjects.first.createdAt!.toIso8601String(),
       };
 
       final resp = await client.put("/controller/1", body: {"name": "Fred"});
@@ -66,17 +66,18 @@ void main() {
     });
 
     test("Can create an object", () async {
-      final resp = await (client.request("/controller")
-            ..body = {
-              "name": "John",
-              "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
-            })
-          .post();
+      final resp =
+          await (client.request("/controller")
+                ..body = {
+                  "name": "John",
+                  "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String(),
+                })
+              .post();
 
       final expectedMap = {
         "id": allObjects.length + 1,
         "name": "John",
-        "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String()
+        "createdAt": DateTime(2000, 12, 12).toUtc().toIso8601String(),
       };
       expect(resp, hasResponse(200, body: expectedMap));
       expect(
@@ -105,23 +106,32 @@ void main() {
       await app.stop();
     });
 
-    test("Get an object with the wrong type of path param returns 404",
-        () async {
-      expect(await client.request("/controller/one").get(), hasStatus(404));
-    });
+    test(
+      "Get an object with the wrong type of path param returns 404",
+      () async {
+        expect(await client.request("/controller/one").get(), hasStatus(404));
+      },
+    );
 
-    test("Put an object with the wrong type of path param returns 404",
-        () async {
-      final resp = await (client.request("/controller/one")
-            ..body = {"name": "Fred"})
-          .put();
-      expect(resp, hasStatus(404));
-    });
+    test(
+      "Put an object with the wrong type of path param returns 404",
+      () async {
+        final resp = await (client.request(
+          "/controller/one",
+        )..body = {"name": "Fred"}).put();
+        expect(resp, hasStatus(404));
+      },
+    );
 
-    test("Delete an object with the wrong type of path param returns 404",
-        () async {
-      expect(await client.request("/controller/one").delete(), hasStatus(404));
-    });
+    test(
+      "Delete an object with the wrong type of path param returns 404",
+      () async {
+        expect(
+          await client.request("/controller/one").delete(),
+          hasStatus(404),
+        );
+      },
+    );
   });
 
   group("Objects that don't exist", () {
@@ -211,38 +221,42 @@ void main() {
     });
 
     test(
-        "Getting all objects with sort descriptor referencing unknown key fails",
-        () async {
-      expect(
-        await client.request("/controller?sortBy=foobar,asc").get(),
-        hasResponse(400, body: {"error": "cannot sort by '[foobar,asc]'"}),
-      );
-    });
+      "Getting all objects with sort descriptor referencing unknown key fails",
+      () async {
+        expect(
+          await client.request("/controller?sortBy=foobar,asc").get(),
+          hasResponse(400, body: {"error": "cannot sort by '[foobar,asc]'"}),
+        );
+      },
+    );
 
-    test("Getting all objects with a unknown sort descriptor order fails",
-        () async {
-      expect(
-        await client.request("/controller?sortBy=name,name").get(),
-        hasResponse(
-          400,
-          body: {
-            "error":
-                "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'."
-          },
-        ),
-      );
-    });
+    test(
+      "Getting all objects with a unknown sort descriptor order fails",
+      () async {
+        expect(
+          await client.request("/controller?sortBy=name,name").get(),
+          hasResponse(
+            400,
+            body: {
+              "error":
+                  "invalid 'sortBy' format. syntax: 'name,asc' or 'name,desc'.",
+            },
+          ),
+        );
+      },
+    );
 
     test("Getting all objects with bad syntax fails", () async {
-      final resp =
-          await client.request("/controller?sortBy=name,asc,bar").get();
+      final resp = await client
+          .request("/controller?sortBy=name,asc,bar")
+          .get();
       expect(
         resp,
         hasResponse(
           400,
           body: {
             "error":
-                "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'."
+                "invalid 'sortyBy' format. syntax: 'name,asc' or 'name,desc'.",
           },
         ),
       );
@@ -271,8 +285,11 @@ void main() {
             .get(),
         hasResponse(
           200,
-          body:
-              allObjects.sublist(0, 5).reversed.map((m) => m.asMap()).toList(),
+          body: allObjects
+              .sublist(0, 5)
+              .reversed
+              .map((m) => m.asMap())
+              .toList(),
         ),
       );
     });
@@ -293,7 +310,7 @@ void main() {
           400,
           body: {
             "error":
-                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given"
+                "missing required parameter 'pageAfter' or 'pagePrior' when 'pageBy' is given",
           },
         ),
       );
@@ -376,7 +393,9 @@ class TestChannel extends ApplicationChannel {
         .route("/controller/[:id]")
         .link(() => ManagedObjectController<TestModel>(context));
 
-    router.route("/dynamic/[:id]").link(
+    router
+        .route("/dynamic/[:id]")
+        .link(
           () => ManagedObjectController.forEntity(
             context.dataModel!.entityForType(TestModel),
             context,

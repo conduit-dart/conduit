@@ -5,78 +5,78 @@ void main() {
   group("Pattern splitting", () {
     test("No optionals, no expressions", () {
       expect(_segmentsForRoute("/"), [
-        [RouteSegment.direct(literal: "")]
+        [RouteSegment.direct(literal: "")],
       ]);
       expect(_segmentsForRoute("/a"), [
-        [RouteSegment.direct(literal: "a")]
+        [RouteSegment.direct(literal: "a")],
       ]);
       expect(_segmentsForRoute("/a/b"), [
-        [RouteSegment.direct(literal: "a"), RouteSegment.direct(literal: "b")]
+        [RouteSegment.direct(literal: "a"), RouteSegment.direct(literal: "b")],
       ]);
       expect(_segmentsForRoute("/a/:b"), [
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(variableName: "b")
-        ]
+          RouteSegment.direct(variableName: "b"),
+        ],
       ]);
       expect(_segmentsForRoute("/abcd/:efgh/*"), [
         [
           RouteSegment.direct(literal: "abcd"),
           RouteSegment.direct(variableName: "efgh"),
-          RouteSegment.direct(matchesAnything: true)
-        ]
+          RouteSegment.direct(matchesAnything: true),
+        ],
       ]);
     });
 
     test("With expressions, no optionals", () {
       expect(_segmentsForRoute("/(\\d+)"), [
-        [RouteSegment.direct(expression: r"\d+")]
+        [RouteSegment.direct(expression: r"\d+")],
       ]);
       expect(_segmentsForRoute("/a/(\\d+)"), [
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(expression: r"\d+")
-        ]
+          RouteSegment.direct(expression: r"\d+"),
+        ],
       ]);
       expect(_segmentsForRoute("/a/:id/(\\d+)"), [
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(variableName: "id"),
-          RouteSegment.direct(expression: r"\d+")
-        ]
+          RouteSegment.direct(expression: r"\d+"),
+        ],
       ]);
     });
 
     test("With expressions that look like optionals and remaining paths", () {
       expect(_segmentsForRoute("/([^x]*)"), [
-        [RouteSegment.direct(expression: "[^x]*")]
+        [RouteSegment.direct(expression: "[^x]*")],
       ]);
       expect(_segmentsForRoute("/a/([^x])"), [
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(expression: "[^x]")
-        ]
+          RouteSegment.direct(expression: "[^x]"),
+        ],
       ]);
       expect(_segmentsForRoute("/a/:id/([^\\]])"), [
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(variableName: "id"),
-          RouteSegment.direct(expression: r"[^\]]")
-        ]
+          RouteSegment.direct(expression: r"[^\]]"),
+        ],
       ]);
     });
 
     test("Optionals, no expressions", () {
       expect(_segmentsForRoute("/[a]"), [
         [RouteSegment.direct(literal: "")],
-        [RouteSegment.direct(literal: "a")]
+        [RouteSegment.direct(literal: "a")],
       ]);
       expect(_segmentsForRoute("/a[/:b]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(variableName: "b")
-        ]
+          RouteSegment.direct(variableName: "b"),
+        ],
       ]);
       expect(_segmentsForRoute("/a[/b[/c]]"), [
         [RouteSegment.direct(literal: "a")],
@@ -84,36 +84,36 @@ void main() {
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(literal: "b"),
-          RouteSegment.direct(literal: "c")
-        ]
+          RouteSegment.direct(literal: "c"),
+        ],
       ]);
       expect(_segmentsForRoute("/a[/b/c]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(literal: "b"),
-          RouteSegment.direct(literal: "c")
-        ]
+          RouteSegment.direct(literal: "c"),
+        ],
       ]);
       expect(_segmentsForRoute("/a[/ba/:cef]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(literal: "ba"),
-          RouteSegment.direct(variableName: "cef")
-        ]
+          RouteSegment.direct(variableName: "cef"),
+        ],
       ]);
       expect(_segmentsForRoute("/a[/*]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(matchesAnything: true)
-        ]
+          RouteSegment.direct(matchesAnything: true),
+        ],
       ]);
 
       expect(_segmentsForRoute("/a/[b]"), [
         [RouteSegment.direct(literal: "a")],
-        [RouteSegment.direct(literal: "a"), RouteSegment.direct(literal: "b")]
+        [RouteSegment.direct(literal: "a"), RouteSegment.direct(literal: "b")],
       ]);
     });
 
@@ -126,8 +126,8 @@ void main() {
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(variableName: "b", expression: "a*")
-        ]
+          RouteSegment.direct(variableName: "b", expression: "a*"),
+        ],
       ]);
 
       expect(_segmentsForRoute("/a[/b[/:c(x)]]"), [
@@ -136,21 +136,21 @@ void main() {
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(literal: "b"),
-          RouteSegment.direct(variableName: "c", expression: "x")
-        ]
+          RouteSegment.direct(variableName: "c", expression: "x"),
+        ],
       ]);
 
       expect(_segmentsForRoute("/a[/:b(^x)[/*]]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(variableName: "b", expression: "^x")
+          RouteSegment.direct(variableName: "b", expression: "^x"),
         ],
         [
           RouteSegment.direct(literal: "a"),
           RouteSegment.direct(variableName: "b", expression: "^x"),
-          RouteSegment.direct(matchesAnything: true)
-        ]
+          RouteSegment.direct(matchesAnything: true),
+        ],
       ]);
     });
 
@@ -159,15 +159,15 @@ void main() {
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(expression: "[^x]")
-        ]
+          RouteSegment.direct(expression: "[^x]"),
+        ],
       ]);
       expect(_segmentsForRoute("/a[/:b([^x])]"), [
         [RouteSegment.direct(literal: "a")],
         [
           RouteSegment.direct(literal: "a"),
-          RouteSegment.direct(variableName: "b", expression: "[^x]")
-        ]
+          RouteSegment.direct(variableName: "b", expression: "[^x]"),
+        ],
       ]);
     });
 
@@ -209,8 +209,7 @@ void expectRouterException(void Function() f, {String? exceptionMessage}) {
 }
 
 List<List<RouteSegment>?> _segmentsForRoute(String route) {
-  return RouteSpecification.specificationsForRoutePattern(route)
-      .map((spec) => spec.segments)
-      .map((segs) => segs)
-      .toList();
+  return RouteSpecification.specificationsForRoutePattern(
+    route,
+  ).map((spec) => spec.segments).map((segs) => segs).toList();
 }

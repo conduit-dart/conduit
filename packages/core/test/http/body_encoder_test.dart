@@ -21,18 +21,20 @@ void main() {
     client.close(force: true);
   });
 
-  test("Using an encoder that doesn't exist with a non-List<int> returns a 500",
-      () async {
-    final response = Response.ok("xyz")
-      ..contentType = ContentType("foo", "bar");
-    server = await bindAndRespondWith(response);
+  test(
+    "Using an encoder that doesn't exist with a non-List<int> returns a 500",
+    () async {
+      final response = Response.ok("xyz")
+        ..contentType = ContentType("foo", "bar");
+      server = await bindAndRespondWith(response);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
 
-    expect(resp.statusCode, 500);
-    expect(response.headers["content-type"], isNull);
-    expect(resp.body.isEmpty, true);
-  });
+      expect(resp.statusCode, 500);
+      expect(response.headers["content-type"], isNull);
+      expect(resp.body.isEmpty, true);
+    },
+  );
 
   test("Using an encoder that doesn't exist with a List<int> is OK", () async {
     final response = Response.ok(<int>[1, 2, 3, 4])
@@ -49,63 +51,73 @@ void main() {
   });
 
   test(
-      "String body, text content-type defaults content to latin1 but does not include in header",
-      () async {
-    final response = Response.ok("xyz")
-      ..contentType = ContentType("text", "bar");
-    server = await bindAndRespondWith(response);
+    "String body, text content-type defaults content to latin1 but does not include in header",
+    () async {
+      final response = Response.ok("xyz")
+        ..contentType = ContentType("text", "bar");
+      server = await bindAndRespondWith(response);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
-    final contentType = ContentType.parse(resp.headers["content-type"]!);
-    expect(resp.statusCode, 200);
-    expect(contentType.primaryType, "text");
-    expect(contentType.subType, "bar");
-    expect(contentType.charset, null);
-    expect(resp.body, "xyz");
-  });
-
-  test("A decoder with a match-all subtype will be used when matching",
-      () async {
-    final ct = ContentType("b", "*");
-    CodecRegistry.defaultInstance.add(ct, ByteCodec());
-    final serverResponse = Response.ok("hello")
-      ..contentType = ContentType("b", "bar");
-    server = await bindAndRespondWith(serverResponse);
-
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
-    expect(resp.statusCode, 200);
-    expect(resp.headers["content-type"], "b/bar");
-    expect(resp.body, "hello");
-  });
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      final contentType = ContentType.parse(resp.headers["content-type"]!);
+      expect(resp.statusCode, 200);
+      expect(contentType.primaryType, "text");
+      expect(contentType.subType, "bar");
+      expect(contentType.charset, null);
+      expect(resp.body, "xyz");
+    },
+  );
 
   test(
-      "A decoder with a subtype always trumps a decoder that matches any subtype",
-      () async {
-    CodecRegistry.defaultInstance.add(ContentType("a", "*"), ByteCodec());
-    CodecRegistry.defaultInstance
-        .add(ContentType("a", "specific"), const JsonCodec());
+    "A decoder with a match-all subtype will be used when matching",
+    () async {
+      final ct = ContentType("b", "*");
+      CodecRegistry.defaultInstance.add(ct, ByteCodec());
+      final serverResponse = Response.ok("hello")
+        ..contentType = ContentType("b", "bar");
+      server = await bindAndRespondWith(serverResponse);
 
-    final serverResponse = Response.ok({"key": "value"})
-      ..contentType = ContentType("a", "specific", charset: "utf-8");
-    server = await bindAndRespondWith(serverResponse);
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      expect(resp.statusCode, 200);
+      expect(resp.headers["content-type"], "b/bar");
+      expect(resp.body, "hello");
+    },
+  );
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
-    expect(resp.statusCode, 200);
-    expect(resp.headers["content-type"], "a/specific; charset=utf-8");
-    expect(json.decode(resp.body), {"key": "value"});
-  });
+  test(
+    "A decoder with a subtype always trumps a decoder that matches any subtype",
+    () async {
+      CodecRegistry.defaultInstance.add(ContentType("a", "*"), ByteCodec());
+      CodecRegistry.defaultInstance.add(
+        ContentType("a", "specific"),
+        const JsonCodec(),
+      );
 
-  test("Using an encoder that blows up during encoded returns 500 safely",
-      () async {
-    CodecRegistry.defaultInstance
-        .add(ContentType("application", "crash"), CrashingCodec());
-    final serverResponse = Response.ok("abcd")
-      ..contentType = ContentType("application", "crash");
-    server = await bindAndRespondWith(serverResponse);
+      final serverResponse = Response.ok({"key": "value"})
+        ..contentType = ContentType("a", "specific", charset: "utf-8");
+      server = await bindAndRespondWith(serverResponse);
 
-    final resp = await http.get(Uri.parse("http://localhost:8888"));
-    expect(resp.statusCode, 500);
-  });
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      expect(resp.statusCode, 200);
+      expect(resp.headers["content-type"], "a/specific; charset=utf-8");
+      expect(json.decode(resp.body), {"key": "value"});
+    },
+  );
+
+  test(
+    "Using an encoder that blows up during encoded returns 500 safely",
+    () async {
+      CodecRegistry.defaultInstance.add(
+        ContentType("application", "crash"),
+        CrashingCodec(),
+      );
+      final serverResponse = Response.ok("abcd")
+        ..contentType = ContentType("application", "crash");
+      server = await bindAndRespondWith(serverResponse);
+
+      final resp = await http.get(Uri.parse("http://localhost:8888"));
+      expect(resp.statusCode, 500);
+    },
+  );
 
   test("Invalid charset sends 415", () async {
     final serverResponse = Response.ok("abcd")
@@ -143,7 +155,7 @@ void main() {
     );
     expect(
       codec.encode(<String, dynamic>{
-        "k": ["v1", "v!"]
+        "k": ["v1", "v!"],
       }),
       "k=v1&k=v%21".codeUnits,
     );
@@ -151,96 +163,103 @@ void main() {
 
   group("Compression", () {
     test(
-        "Content-Type that can be gzipped and request has Accept-Encoding will be gzipped",
-        () async {
-      // both gzip and gzip, deflate
-      server = await bindAndRespondWith(Response.ok({"a": "b"}));
+      "Content-Type that can be gzipped and request has Accept-Encoding will be gzipped",
+      () async {
+        // both gzip and gzip, deflate
+        server = await bindAndRespondWith(Response.ok({"a": "b"}));
 
-      final acceptEncodingHeaders = ["gzip", "gzip, deflate", "deflate,gzip"];
-      for (final acceptEncoding in acceptEncodingHeaders) {
+        final acceptEncodingHeaders = ["gzip", "gzip, deflate", "deflate,gzip"];
+        for (final acceptEncoding in acceptEncodingHeaders) {
+          final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+          req.headers.clear();
+          req.headers.add("accept-encoding", acceptEncoding);
+          final resp = await req.close();
+
+          expect(resp.statusCode, 200);
+          expect(
+            resp.headers.contentType.toString(),
+            equals(ContentType.json.toString()),
+          );
+          expect(
+            resp.headers.value("content-encoding"),
+            "gzip",
+            reason: acceptEncoding,
+          );
+          expect(resp.headers.value("content-length"), isNotNull);
+          expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
+        }
+      },
+    );
+
+    test(
+      "Content-Type that can be gzipped but request does not have Accept-Encoding not gzipped",
+      () async {
+        server = await bindAndRespondWith(Response.ok({"a": "b"}));
+
         final req = await client.getUrl(Uri.parse("http://localhost:8888"));
         req.headers.clear();
-        req.headers.add("accept-encoding", acceptEncoding);
         final resp = await req.close();
 
-        expect(resp.statusCode, 200);
         expect(
           resp.headers.contentType.toString(),
           equals(ContentType.json.toString()),
         );
-        expect(
-          resp.headers.value("content-encoding"),
-          "gzip",
-          reason: acceptEncoding,
-        );
+        expect(resp.headers.value("content-encoding"), isNull);
         expect(resp.headers.value("content-length"), isNotNull);
+
+        expect(resp.statusCode, 200);
         expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
-      }
-    });
+      },
+    );
 
     test(
-        "Content-Type that can be gzipped but request does not have Accept-Encoding not gzipped",
-        () async {
-      server = await bindAndRespondWith(Response.ok({"a": "b"}));
+      "Content-Type that can be gzipped and request has Accept-Encoding but not gzip",
+      () async {
+        server = await bindAndRespondWith(Response.ok({"a": "b"}));
 
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
-      req.headers.clear();
-      final resp = await req.close();
+        final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+        req.headers.clear();
+        req.headers.add("accept-encoding", "deflate");
+        final resp = await req.close();
 
-      expect(
-        resp.headers.contentType.toString(),
-        equals(ContentType.json.toString()),
-      );
-      expect(resp.headers.value("content-encoding"), isNull);
-      expect(resp.headers.value("content-length"), isNotNull);
+        expect(
+          resp.headers.contentType.toString(),
+          equals(ContentType.json.toString()),
+        );
+        expect(resp.headers.value("content-encoding"), isNull);
 
-      expect(resp.statusCode, 200);
-      expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
-    });
+        expect(resp.statusCode, 200);
+        expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
+      },
+    );
 
     test(
-        "Content-Type that can be gzipped and request has Accept-Encoding but not gzip",
-        () async {
-      server = await bindAndRespondWith(Response.ok({"a": "b"}));
+      "Unregistered content-type of List<int> does not get gzipped",
+      () async {
+        final ct = ContentType("application", "1");
+        server = await bindAndRespondWith(
+          Response.ok([1, 2, 3, 4])..contentType = ct,
+        );
+        final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+        req.headers.clear();
+        req.headers.add("accept-encoding", "gzip");
+        final resp = await req.close();
 
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
-      req.headers.clear();
-      req.headers.add("accept-encoding", "deflate");
-      final resp = await req.close();
+        expect(resp.headers.contentType.toString(), ct.toString());
+        expect(resp.headers.value("content-encoding"), isNull);
 
-      expect(
-        resp.headers.contentType.toString(),
-        equals(ContentType.json.toString()),
-      );
-      expect(resp.headers.value("content-encoding"), isNull);
-
-      expect(resp.statusCode, 200);
-      expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
-    });
-
-    test("Unregistered content-type of List<int> does not get gzipped",
-        () async {
-      final ct = ContentType("application", "1");
-      server =
-          await bindAndRespondWith(Response.ok([1, 2, 3, 4])..contentType = ct);
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
-      req.headers.clear();
-      req.headers.add("accept-encoding", "gzip");
-      final resp = await req.close();
-
-      expect(resp.headers.contentType.toString(), ct.toString());
-      expect(resp.headers.value("content-encoding"), isNull);
-
-      expect(resp.statusCode, 200);
-      expect(await resp.first, [1, 2, 3, 4]);
-    });
+        expect(resp.statusCode, 200);
+        expect(await resp.first, [1, 2, 3, 4]);
+      },
+    );
 
     test("Can compress without content-type/codec pair", () async {
       final ct = ContentType("application", "2");
       CodecRegistry.defaultInstance.setAllowsCompression(ct, true);
       final largeBody = List.generate(2000, (i) => i % 255);
-      server =
-          await bindAndRespondWith(Response.ok(largeBody)..contentType = ct);
+      server = await bindAndRespondWith(
+        Response.ok(largeBody)..contentType = ct,
+      );
       final req = await client.getUrl(Uri.parse("http://localhost:8888"));
       req.headers.clear();
       req.headers.add("accept-encoding", "gzip");
@@ -254,24 +273,29 @@ void main() {
     });
 
     test(
-        "Content-type that can't be gzipped and Accept-Encoding accepts gzip, not gzipped",
-        () async {
-      final ct = ContentType("application", "3", charset: "utf-8");
-      CodecRegistry.defaultInstance
-          .add(ct, const JsonCodec(), allowCompression: false);
-      server =
-          await bindAndRespondWith(Response.ok({"a": "b"})..contentType = ct);
-      final req = await client.getUrl(Uri.parse("http://localhost:8888"));
-      req.headers.clear();
-      req.headers.add("accept-encoding", "gzip");
-      final resp = await req.close();
+      "Content-type that can't be gzipped and Accept-Encoding accepts gzip, not gzipped",
+      () async {
+        final ct = ContentType("application", "3", charset: "utf-8");
+        CodecRegistry.defaultInstance.add(
+          ct,
+          const JsonCodec(),
+          allowCompression: false,
+        );
+        server = await bindAndRespondWith(
+          Response.ok({"a": "b"})..contentType = ct,
+        );
+        final req = await client.getUrl(Uri.parse("http://localhost:8888"));
+        req.headers.clear();
+        req.headers.add("accept-encoding", "gzip");
+        final resp = await req.close();
 
-      expect(resp.headers.contentType.toString(), ct.toString());
-      expect(resp.headers.value("content-encoding"), isNull);
+        expect(resp.headers.contentType.toString(), ct.toString());
+        expect(resp.headers.value("content-encoding"), isNull);
 
-      expect(resp.statusCode, 200);
-      expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
-    });
+        expect(resp.statusCode, 200);
+        expect(json.decode(utf8.decode(await resp.first)), {"a": "b"});
+      },
+    );
   });
 }
 

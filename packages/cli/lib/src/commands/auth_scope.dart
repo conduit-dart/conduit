@@ -50,8 +50,9 @@ class CLIAuthScopeClient extends CLICommand
 
     final query = Query<ManagedAuthClient>(context)
       ..where((o) => o.id).equalTo(clientID)
-      ..values.allowedScope =
-          scopingClient.allowedScopes?.map((s) => s.toString()).join(" ");
+      ..values.allowedScope = scopingClient.allowedScopes
+          ?.map((s) => s.toString())
+          .join(" ");
 
     final result = await query.updateOne();
     if (result == null) {

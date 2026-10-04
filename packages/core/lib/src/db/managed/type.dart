@@ -27,7 +27,7 @@ enum ManagedPropertyType {
   list,
 
   /// Represented by instances of [Document]
-  document
+  document,
 }
 
 /// Complex type storage for [ManagedEntity] attributes.

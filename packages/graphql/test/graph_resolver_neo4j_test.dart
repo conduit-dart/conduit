@@ -33,7 +33,7 @@ void main() {
   final available = Platform.environment['CONDUIT_NEO4J_AVAILABLE'];
   final skip = (available == null || available.isEmpty)
       ? 'Set CONDUIT_NEO4J_AVAILABLE=1 to run; needs a Bolt-reachable Neo4j '
-          'on bolt://localhost:7687.'
+            'on bolt://localhost:7687.'
       : null;
 
   late Neo4jPersistentStore store;
@@ -48,13 +48,14 @@ void main() {
     final hostPort =
         Platform.environment['CONDUIT_NEO4J_URI'] ?? 'bolt://localhost:7687';
 
-    store = Neo4jPersistentStore(
-      Uri.parse(hostPort),
-      username: user,
-      password: pass,
-    )
-      ..registerNodeFactory<User>(User.new)
-      ..registerNodeFactory<Post>(Post.new);
+    store =
+        Neo4jPersistentStore(
+            Uri.parse(hostPort),
+            username: user,
+            password: pass,
+          )
+          ..registerNodeFactory<User>(User.new)
+          ..registerNodeFactory<Post>(Post.new);
 
     final dataModel = buildSocialGraphDataModel();
     context = GraphContext(dataModel, store);
@@ -89,71 +90,54 @@ void main() {
     await context.close();
   });
 
-  test(
-    '`{ users { id name } }` returns nodes from a seeded fixture',
-    () async {
-      final alice = User()..['name'] = '__conduit_g4_test_alice';
-      final bob = User()..['name'] = '__conduit_g4_test_bob';
-      await context.insertNode(alice);
-      await context.insertNode(bob);
+  test('`{ users { id name } }` returns nodes from a seeded fixture', () async {
+    final alice = User()..['name'] = '__conduit_g4_test_alice';
+    final bob = User()..['name'] = '__conduit_g4_test_bob';
+    await context.insertNode(alice);
+    await context.insertNode(bob);
 
-      final result = await engine.parseAndExecute(
-        '{ users { id name } }',
-      );
-      expect(result, isA<Map>());
-      final data = (result as Map)['users'];
-      expect(data, isA<List>());
-      // Filter out any preexisting User nodes that don't match the
-      // test prefix (the cleanup hook only catches our own prefix).
-      final ours = (data as List)
-          .where((row) => (row as Map)['name']
-              .toString()
-              .startsWith('__conduit_g4_test_'))
-          .toList();
-      expect(ours, hasLength(2));
-      final names = ours
-          .map((row) => (row as Map)['name'] as String)
-          .toSet();
-      expect(
-        names,
-        equals({'__conduit_g4_test_alice', '__conduit_g4_test_bob'}),
-      );
-    },
-    skip: skip,
-  );
+    final result = await engine.parseAndExecute('{ users { id name } }');
+    expect(result, isA<Map>());
+    final data = (result as Map)['users'];
+    expect(data, isA<List>());
+    // Filter out any preexisting User nodes that don't match the
+    // test prefix (the cleanup hook only catches our own prefix).
+    final ours = (data as List)
+        .where(
+          (row) =>
+              (row as Map)['name'].toString().startsWith('__conduit_g4_test_'),
+        )
+        .toList();
+    expect(ours, hasLength(2));
+    final names = ours.map((row) => (row as Map)['name'] as String).toSet();
+    expect(names, equals({'__conduit_g4_test_alice', '__conduit_g4_test_bob'}));
+  }, skip: skip);
 
-  test(
-    'traversal resolves connected nodes via `friends` field',
-    () async {
-      final alice = User()..['name'] = '__conduit_g4_test_alice';
-      final bob = User()..['name'] = '__conduit_g4_test_bob';
-      await context.insertNode(alice);
-      await context.insertNode(bob);
-      await context.insertEdge(Friend(from: alice, to: bob));
+  test('traversal resolves connected nodes via `friends` field', () async {
+    final alice = User()..['name'] = '__conduit_g4_test_alice';
+    final bob = User()..['name'] = '__conduit_g4_test_bob';
+    await context.insertNode(alice);
+    await context.insertNode(bob);
+    await context.insertEdge(Friend(from: alice, to: bob));
 
-      // The schema's `User.users` field is the User -[Friend]-> User
-      // traversal (named after the destination plural). We query by
-      // id to start at alice; then walk the friend edge.
-      final result = await engine.parseAndExecute(
-        'query Q(\$id: String!) {'
-        ' user(id: \$id) {'
-        '  ... on User { name users { name } }'
-        ' }'
-        '}',
-        variableValues: {'id': '${alice.id}'},
-      );
-      expect(result, isA<Map>());
-      final user = (result as Map)['user'] as Map;
-      expect(user['name'], equals('__conduit_g4_test_alice'));
-      final friends = user['users'] as List;
-      expect(friends, hasLength(1));
-      expect(
-        (friends.first as Map)['name'],
-        equals('__conduit_g4_test_bob'),
-      );
-    },
-    skip: skip,
-  );
+    // The schema's `User.users` field is the User -[Friend]-> User
+    // traversal (named after the destination plural). We query by
+    // id to start at alice; then walk the friend edge.
+    final result = await engine.parseAndExecute(
+      'query Q(\$id: String!) {'
+      ' user(id: \$id) {'
+      '  ... on User { name users { name } }'
+      ' }'
+      '}',
+      variableValues: {'id': '${alice.id}'},
+    );
+    expect(result, isA<Map>());
+    final user = (result as Map)['user'] as Map;
+    expect(user['name'], equals('__conduit_g4_test_alice'));
+    final friends = user['users'] as List;
+    expect(friends, hasLength(1));
+    expect((friends.first as Map)['name'], equals('__conduit_g4_test_bob'));
+  }, skip: skip);
 
   test(
     'edge connection (when exposed) surfaces edge properties via friends list',

@@ -30,8 +30,9 @@ class SchemaTable {
         )
         .toList();
 
-    _columns =
-        validProperties.map((p) => SchemaColumn.fromProperty(p!)).toList();
+    _columns = validProperties
+        .map((p) => SchemaColumn.fromProperty(p!))
+        .toList();
 
     uniqueColumnSet = entity.uniquePropertySet?.map((p) => p.name).toList();
   }
@@ -122,20 +123,20 @@ class SchemaTable {
   void renameColumn(SchemaColumn column, String? newName) {
     throw SchemaException("Renaming a column not yet implemented!");
 
-//    if (!columns.contains(column)) {
-//      throw new SchemaException("Column ${column.name} does not exist on ${name}.");
-//    }
-//
-//    if (columnForName(newName) != null) {
-//      throw new SchemaException("Column ${newName} already exists.");
-//    }
-//
-//    if (column.isPrimaryKey) {
-//      throw new SchemaException("May not rename primary key column (${column.name} -> ${newName})");
-//    }
-//
-//    // We also must rename indices
-//    column.name = newName;
+    //    if (!columns.contains(column)) {
+    //      throw new SchemaException("Column ${column.name} does not exist on ${name}.");
+    //    }
+    //
+    //    if (columnForName(newName) != null) {
+    //      throw new SchemaException("Column ${newName} already exists.");
+    //    }
+    //
+    //    if (column.isPrimaryKey) {
+    //      throw new SchemaException("May not rename primary key column (${column.name} -> ${newName})");
+    //    }
+    //
+    //    // We also must rename indices
+    //    column.name = newName;
   }
 
   /// Removes [column] from this table.
@@ -171,8 +172,9 @@ class SchemaTable {
   /// with [name].
   SchemaColumn? columnForName(String name) {
     final lowercaseName = name.toLowerCase();
-    return columns
-        .firstWhereOrNull((col) => col.name.toLowerCase() == lowercaseName);
+    return columns.firstWhereOrNull(
+      (col) => col.name.toLowerCase() == lowercaseName,
+    );
   }
 
   /// Returns portable representation of this table.
@@ -180,7 +182,7 @@ class SchemaTable {
     return {
       "name": name,
       "columns": columns.map((c) => c.asMap()).toList(),
-      "unique": uniqueColumnSet
+      "unique": uniqueColumnSet,
     };
   }
 
@@ -196,8 +198,9 @@ class SchemaTableDifference {
   SchemaTableDifference(this.expectedTable, this.actualTable) {
     if (expectedTable != null && actualTable != null) {
       for (final expectedColumn in expectedTable!.columns) {
-        final actualColumn =
-            actualTable != null ? actualTable![expectedColumn.name] : null;
+        final actualColumn = actualTable != null
+            ? actualTable![expectedColumn.name]
+            : null;
         if (actualColumn == null) {
           _differingColumns.add(SchemaColumnDifference(expectedColumn, null));
         } else {
@@ -209,15 +212,17 @@ class SchemaTableDifference {
       }
 
       _differingColumns.addAll(
-        actualTable!.columns
-            .where((t) => expectedTable![t.name] == null)
-            .map((unexpectedColumn) {
+        actualTable!.columns.where((t) => expectedTable![t.name] == null).map((
+          unexpectedColumn,
+        ) {
           return SchemaColumnDifference(null, unexpectedColumn);
         }),
       );
 
-      uniqueSetDifference =
-          SchemaTableUniqueSetDifference(expectedTable!, actualTable!);
+      uniqueSetDifference = SchemaTableUniqueSetDifference(
+        expectedTable!,
+        actualTable!,
+      );
     }
   }
 
@@ -248,16 +253,17 @@ class SchemaTableDifference {
   List<String> get errorMessages {
     if (expectedTable == null && actualTable != null) {
       return [
-        "Table '$actualTable' should NOT exist, but is created by migration files."
+        "Table '$actualTable' should NOT exist, but is created by migration files.",
       ];
     } else if (expectedTable != null && actualTable == null) {
       return [
-        "Table '$expectedTable' should exist, but it is NOT created by migration files."
+        "Table '$expectedTable' should exist, but it is NOT created by migration files.",
       ];
     }
 
-    final diffs =
-        _differingColumns.expand((diff) => diff.errorMessages).toList();
+    final diffs = _differingColumns
+        .expand((diff) => diff.errorMessages)
+        .toList();
     diffs.addAll(uniqueSetDifference?.errorMessages ?? []);
 
     return diffs;
@@ -301,9 +307,9 @@ class SchemaTableUniqueSetDifference {
   SchemaTableUniqueSetDifference(
     SchemaTable expectedTable,
     SchemaTable actualTable,
-  )   : expectedColumnNames = expectedTable.uniqueColumnSet ?? [],
-        actualColumnNames = actualTable.uniqueColumnSet ?? [],
-        _tableName = actualTable.name;
+  ) : expectedColumnNames = expectedTable.uniqueColumnSet ?? [],
+      actualColumnNames = actualTable.uniqueColumnSet ?? [],
+      _tableName = actualTable.name;
 
   /// The expected set of unique column names.
   final List<String> expectedColumnNames;
@@ -327,12 +333,12 @@ class SchemaTableUniqueSetDifference {
     if (expectedColumnNames.isEmpty && actualColumnNames.isNotEmpty) {
       return [
         "Multi-column unique constraint on table '$_tableName' "
-            "should NOT exist, but is created by migration files."
+            "should NOT exist, but is created by migration files.",
       ];
     } else if (expectedColumnNames.isNotEmpty && actualColumnNames.isEmpty) {
       return [
         "Multi-column unique constraint on table '$_tableName' "
-            "should exist, but it is NOT created by migration files."
+            "should exist, but it is NOT created by migration files.",
       ];
     }
 
@@ -342,7 +348,7 @@ class SchemaTableUniqueSetDifference {
 
       return [
         "Multi-column unique constraint on table '$_tableName' "
-            "is expected to be for properties $expectedColumns, but is actually $actualColumns"
+            "is expected to be for properties $expectedColumns, but is actually $actualColumns",
       ];
     }
 

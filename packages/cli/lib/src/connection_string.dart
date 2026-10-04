@@ -92,8 +92,9 @@ ParsedConnection parseConnectionString(String input) {
   final trimmed = input.trim();
   if (trimmed.isEmpty) {
     throw ConnectionStringFormatException(
-        'Connection string is empty; expected e.g. '
-        'postgres://user:pass@host:port/db or sqlite::memory:.');
+      'Connection string is empty; expected e.g. '
+      'postgres://user:pass@host:port/db or sqlite::memory:.',
+    );
   }
 
   // SQLite has two forms that don't survive a strict `Uri.parse` —
@@ -111,9 +112,10 @@ ParsedConnection parseConnectionString(String input) {
     final rest = trimmed.substring('sqlite://'.length);
     if (rest.isEmpty) {
       throw ConnectionStringFormatException(
-          'sqlite:// requires a path: e.g. sqlite:///tmp/conduit.db, '
-          'sqlite://relative/file.db, or sqlite::memory: for an in-memory '
-          'database.');
+        'sqlite:// requires a path: e.g. sqlite:///tmp/conduit.db, '
+        'sqlite://relative/file.db, or sqlite::memory: for an in-memory '
+        'database.',
+      );
     }
     return ParsedConnection(
       flavor: DbFlavor.sqlite,
@@ -127,7 +129,8 @@ ParsedConnection parseConnectionString(String input) {
     uri = Uri.parse(trimmed);
   } on FormatException catch (e) {
     throw ConnectionStringFormatException(
-        'Could not parse connection string "$trimmed": ${e.message}');
+      'Could not parse connection string "$trimmed": ${e.message}',
+    );
   }
 
   final scheme = uri.scheme.toLowerCase();
@@ -138,25 +141,27 @@ ParsedConnection parseConnectionString(String input) {
     // without `//`, which we reject so users don't mistakenly think
     // `sqlite:relative` is supported.
     'sqlite' => throw ConnectionStringFormatException(
-        'sqlite connection strings must use sqlite:// (with two slashes) '
-        'or the literal sqlite::memory:, got "$trimmed".',
-      ),
+      'sqlite connection strings must use sqlite:// (with two slashes) '
+      'or the literal sqlite::memory:, got "$trimmed".',
+    ),
     _ => throw ConnectionStringFormatException(
-        'Unsupported scheme "$scheme" — expected one of postgres, '
-        'postgresql, sqlite, mysql.',
-      ),
+      'Unsupported scheme "$scheme" — expected one of postgres, '
+      'postgresql, sqlite, mysql.',
+    ),
   };
 }
 
 ParsedConnection _parseWire(Uri uri, DbFlavor flavor, String raw) {
   if (uri.host.isEmpty) {
     throw ConnectionStringFormatException(
-        '${flavor.canonical}:// requires a host, got "$raw".');
+      '${flavor.canonical}:// requires a host, got "$raw".',
+    );
   }
   if (uri.pathSegments.isEmpty || uri.pathSegments.first.isEmpty) {
     throw ConnectionStringFormatException(
-        '${flavor.canonical}:// requires a database name in the path, '
-        'got "$raw".');
+      '${flavor.canonical}:// requires a database name in the path, '
+      'got "$raw".',
+    );
   }
 
   String? user;
@@ -169,8 +174,9 @@ ParsedConnection _parseWire(Uri uri, DbFlavor flavor, String raw) {
     }
   }
 
-  final defaultPort =
-      flavor == DbFlavor.postgres ? 5432 : 3306; // mysql default
+  final defaultPort = flavor == DbFlavor.postgres
+      ? 5432
+      : 3306; // mysql default
   return ParsedConnection(
     flavor: flavor,
     raw: raw,

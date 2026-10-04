@@ -6,31 +6,36 @@ import '../not_tests/postgres_test_config.dart';
 void main() {
   late ManagedContext ctx;
   setUpAll(() async {
-    ctx = await PostgresTestConfig()
-        .contextWithModels([Root, Child, Constructor]);
+    ctx = await PostgresTestConfig().contextWithModels([
+      Root,
+      Child,
+      Constructor,
+    ]);
   });
   tearDownAll(() async {
     await ctx.close();
   });
 
   test(
-      "If context does not contain data model with query type, throw exception",
-      () {
-    try {
-      Query<Missing>(ctx);
-      fail('unreachable');
-    } on ArgumentError catch (e) {
-      expect(e.toString(), contains("Invalid context"));
-    }
-  });
+    "If context does not contain data model with query type, throw exception",
+    () {
+      try {
+        Query<Missing>(ctx);
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid context"));
+      }
+    },
+  );
 
   test(
-      "Can immediately access primary key of belongs-to relationship when building Query.values",
-      () {
-    final q = Query<Child>(ctx);
-    q.values.parent.id = 1;
-    expect(q.values.parent.id, 1);
-  });
+    "Can immediately access primary key of belongs-to relationship when building Query.values",
+    () {
+      final q = Query<Child>(ctx);
+      q.values.parent.id = 1;
+      expect(q.values.parent.id, 1);
+    },
+  );
 
   test("Values set in constructor are replicated in Query.values", () {
     final q = Query<Constructor>(ctx);
@@ -48,28 +53,28 @@ void main() {
     }
   });
 
-//todo: Deferring these until later
-//  test("Can immediately access document property when building Query.values", () {
-//    final q = new Query<Root>();
-//    q.values.document["id"] = 1;
-//    expect(q.values.document["id"], 1);
-//  });
-//
-//  test("Can immediately access nested document property when building Query.values", () {
-//    final q = new Query<Root>();
-//    q.values.document["object"]["key"] = 1;
-//    expect(q.values.document["object"]["key"], 1);
-//  });
-//
-//  test("Can immediately access nested document list property when building Query.values", () {
-//    final q1 = new Query<Root>();
-//    q1.values.document["object"][2] = 1;
-//    expect(q1.values.document["object"][2], 1);
-//
-//    final q2 = new Query<Root>();
-//    q2.values.document[2]["object"] = 1;
-//    expect(q2.values.document[2]["object"], 1);
-//  });
+  //todo: Deferring these until later
+  //  test("Can immediately access document property when building Query.values", () {
+  //    final q = new Query<Root>();
+  //    q.values.document["id"] = 1;
+  //    expect(q.values.document["id"], 1);
+  //  });
+  //
+  //  test("Can immediately access nested document property when building Query.values", () {
+  //    final q = new Query<Root>();
+  //    q.values.document["object"]["key"] = 1;
+  //    expect(q.values.document["object"]["key"], 1);
+  //  });
+  //
+  //  test("Can immediately access nested document list property when building Query.values", () {
+  //    final q1 = new Query<Root>();
+  //    q1.values.document["object"][2] = 1;
+  //    expect(q1.values.document["object"][2], 1);
+  //
+  //    final q2 = new Query<Root>();
+  //    q2.values.document[2]["object"] = 1;
+  //    expect(q2.values.document[2]["object"], 1);
+  //  });
 
   test("Access ManagedSet property of Query.values throws error", () {
     final q = Query<Root>(ctx);
@@ -82,63 +87,69 @@ void main() {
   });
 
   test(
-      "Accessing non-primary key of ManagedObject property in Query.values throws error",
-      () {
-    final q = Query<Child>(ctx);
-    try {
-      q.values.parent.name = "ok";
-      fail('unreachable');
-    } on ArgumentError catch (e) {
-      expect(e.toString(), contains("Invalid property access"));
-    }
-  });
-
-  test("Accessing primary key of has-one property in Query.values throws error",
-      () {
-    final q = Query<Root>(ctx);
-    try {
-      q.values.child!.id = 1;
-      fail('unreachable');
-    } on ArgumentError catch (e) {
-      expect(e.toString(), contains("Invalid property access"));
-    }
-  });
+    "Accessing non-primary key of ManagedObject property in Query.values throws error",
+    () {
+      final q = Query<Child>(ctx);
+      try {
+        q.values.parent.name = "ok";
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid property access"));
+      }
+    },
+  );
 
   test(
-      "Can set belongs-to relationship with default constructed object if it is empty",
-      () {
-    final q = Query<Child>(ctx);
-    q.values.parent = Root();
-    q.values.parent.id = 1;
-    expect(q.values.parent.id, 1);
-  });
+    "Accessing primary key of has-one property in Query.values throws error",
+    () {
+      final q = Query<Root>(ctx);
+      try {
+        q.values.child!.id = 1;
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid property access"));
+      }
+    },
+  );
 
   test(
-      "Can set belongs-to relationship with default constructed object if it only contains primary key",
-      () {
-    final q = Query<Child>(ctx);
-    q.values.parent = Root()..id = 1;
-    expect(q.values.parent.id, 1);
-  });
+    "Can set belongs-to relationship with default constructed object if it is empty",
+    () {
+      final q = Query<Child>(ctx);
+      q.values.parent = Root();
+      q.values.parent.id = 1;
+      expect(q.values.parent.id, 1);
+    },
+  );
 
   test(
-      "Setting belongs-to relationship with default constructed object removes non-primary key values",
-      () {
-    final q = Query<Child>(ctx);
-    q.values.parent = Root()
-      ..id = 1
-      ..name = "bob";
+    "Can set belongs-to relationship with default constructed object if it only contains primary key",
+    () {
+      final q = Query<Child>(ctx);
+      q.values.parent = Root()..id = 1;
+      expect(q.values.parent.id, 1);
+    },
+  );
 
-    expect(q.values.backing.contents.keys, ["parent"]);
-    expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
+  test(
+    "Setting belongs-to relationship with default constructed object removes non-primary key values",
+    () {
+      final q = Query<Child>(ctx);
+      q.values.parent = Root()
+        ..id = 1
+        ..name = "bob";
 
-    try {
-      q.values.parent.name = "bob";
-      fail('unreachable');
-    } on ArgumentError catch (e) {
-      expect(e.toString(), contains("Invalid property access"));
-    }
-  });
+      expect(q.values.backing.contents.keys, ["parent"]);
+      expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
+
+      try {
+        q.values.parent.name = "bob";
+        fail('unreachable');
+      } on ArgumentError catch (e) {
+        expect(e.toString(), contains("Invalid property access"));
+      }
+    },
+  );
 
   group("Query.values assigned to instance created by default constroct", () {
     test("Can still create subobjects", () {
@@ -172,38 +183,41 @@ void main() {
     });
 
     test(
-        "If default instance holds belongs-to ManagedObject with more than primary key, remove inner key",
-        () {
-      final q = Query<Child>(ctx);
-      q.values = Child()..parent = (Root()..name = "fred");
-      expect(q.values.backing.contents.keys, ["parent"]);
-      expect(q.values.backing.contents["parent"].backing.contents, {});
-    });
+      "If default instance holds belongs-to ManagedObject with more than primary key, remove inner key",
+      () {
+        final q = Query<Child>(ctx);
+        q.values = Child()..parent = (Root()..name = "fred");
+        expect(q.values.backing.contents.keys, ["parent"]);
+        expect(q.values.backing.contents["parent"].backing.contents, {});
+      },
+    );
 
     test(
-        "If default instance holds belongs-to ManagedObject with only primary key, retain value",
-        () {
-      final q = Query<Child>(ctx);
-      final r = Child()..parent = (Root()..id = 1);
+      "If default instance holds belongs-to ManagedObject with only primary key, retain value",
+      () {
+        final q = Query<Child>(ctx);
+        final r = Child()..parent = (Root()..id = 1);
 
-      q.values = r;
+        q.values = r;
 
-      expect(q.values.parent.id, 1);
-    });
+        expect(q.values.parent.id, 1);
+      },
+    );
 
     test(
-        "If multiple values are set on assigned object, only remove those that need to be removed",
-        () {
-      final q = Query<Child>(ctx);
-      q.values = Child()
-        ..parent = (Root()
-          ..id = 1
-          ..name = "fred")
-        ..name = "fred";
+      "If multiple values are set on assigned object, only remove those that need to be removed",
+      () {
+        final q = Query<Child>(ctx);
+        q.values = Child()
+          ..parent = (Root()
+            ..id = 1
+            ..name = "fred")
+          ..name = "fred";
 
-      expect(q.values.backing.contents.keys, ["parent", "name"]);
-      expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
-    });
+        expect(q.values.backing.contents.keys, ["parent", "name"]);
+        expect(q.values.backing.contents["parent"].backing.contents, {"id": 1});
+      },
+    );
   });
 }
 

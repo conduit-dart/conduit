@@ -49,12 +49,12 @@ class APISecurityScheme extends APIObject {
   APISecurityScheme.http(this.scheme) : type = APISecuritySchemeType.http;
 
   APISecurityScheme.apiKey(this.name, this.location)
-      : type = APISecuritySchemeType.apiKey;
+    : type = APISecuritySchemeType.apiKey;
 
   APISecurityScheme.oauth2(this.flows) : type = APISecuritySchemeType.oauth2;
 
   APISecurityScheme.openID(this.connectURL)
-      : type = APISecuritySchemeType.openID;
+    : type = APISecuritySchemeType.openID;
 
   /// The type of the security scheme.
   ///

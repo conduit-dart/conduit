@@ -15,8 +15,11 @@ void main() {
   late List<User> createdUsers;
 
   setUpAll(() async {
-    context = await PostgresTestConfig()
-        .contextWithModels([User, ManagedAuthClient, ManagedAuthToken]);
+    context = await PostgresTestConfig().contextWithModels([
+      User,
+      ManagedAuthClient,
+      ManagedAuthToken,
+    ]);
     storage = RoleBasedAuthStorage(context);
     auth = AuthServer(storage);
     createdUsers = await createUsers(context, 5);
@@ -36,17 +39,19 @@ void main() {
     await Future.wait(
       clients
           .map(
-        (ac) => ManagedAuthClient()
-          ..id = ac.id
-          ..salt = ac.salt
-          ..allowedScope = ac.allowedScopes!.map((a) => a.toString()).join(" ")
-          ..hashedSecret = ac.hashedSecret
-          ..redirectURI = ac.redirectURI,
-      )
+            (ac) => ManagedAuthClient()
+              ..id = ac.id
+              ..salt = ac.salt
+              ..allowedScope = ac.allowedScopes!
+                  .map((a) => a.toString())
+                  .join(" ")
+              ..hashedSecret = ac.hashedSecret
+              ..redirectURI = ac.redirectURI,
+          )
           .map((mc) {
-        final q = Query<ManagedAuthClient>(context)..values = mc;
-        return q.insert();
-      }),
+            final q = Query<ManagedAuthClient>(context)..values = mc;
+            return q.insert();
+          }),
     );
   });
 
@@ -83,97 +88,105 @@ void main() {
     });
 
     test(
-        "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
-        () async {
-      try {
-        await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "user").username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("location:add")],
-        );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
-
-    test("Role that allows no scope prevents access token from being granted",
-        () async {
-      try {
-        await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == null).username,
-          User.defaultPassword,
-          "redirect",
-          "a",
-          requestedScopes: [AuthScope("location:add")],
-        );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
+      "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
+      () async {
+        try {
+          await auth.authenticate(
+            createdUsers.firstWhere((u) => u.role == "user").username,
+            User.defaultPassword,
+            "redirect",
+            "a",
+            requestedScopes: [AuthScope("location:add")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
 
     test(
-        "Client allows full scope, role restricts it to a subset, can only grant subset",
-        () async {
-      final t = await auth.authenticate(
-        createdUsers.firstWhere((u) => u.role == "viewer").username,
-        User.defaultPassword,
-        "redirect",
-        "a",
-        requestedScopes: [
-          AuthScope("user.readonly"),
-          AuthScope("location:add:xyz")
-        ],
-      );
+      "Role that allows no scope prevents access token from being granted",
+      () async {
+        try {
+          await auth.authenticate(
+            createdUsers.firstWhere((u) => u.role == null).username,
+            User.defaultPassword,
+            "redirect",
+            "a",
+            requestedScopes: [AuthScope("location:add")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
 
-      expect(t.scopes!.length, 2);
-      expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
-      expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
-    });
-
-    test("User allowed scopes can't grant higher privileges than client",
-        () async {
-      try {
-        await auth.authenticate(
-          createdUsers.firstWhere((u) => u.role == "invalid").username,
+    test(
+      "Client allows full scope, role restricts it to a subset, can only grant subset",
+      () async {
+        final t = await auth.authenticate(
+          createdUsers.firstWhere((u) => u.role == "viewer").username,
           User.defaultPassword,
           "redirect",
           "a",
-          requestedScopes: [AuthScope("location")],
+          requestedScopes: [
+            AuthScope("user.readonly"),
+            AuthScope("location:add:xyz"),
+          ],
         );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
+
+        expect(t.scopes!.length, 2);
+        expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
+        expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
+      },
+    );
+
+    test(
+      "User allowed scopes can't grant higher privileges than client",
+      () async {
+        try {
+          await auth.authenticate(
+            createdUsers.firstWhere((u) => u.role == "invalid").username,
+            User.defaultPassword,
+            "redirect",
+            "a",
+            requestedScopes: [AuthScope("location")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
   });
 
   group("Refresh", () {
-    test("Can't upgrade scope if it allowed by client, but restricted by role",
-        () async {
-      final t = await auth.authenticate(
-        createdUsers.firstWhere((u) => u.role == "viewer").username,
-        User.defaultPassword,
-        "redirect",
-        "a",
-        requestedScopes: [AuthScope("user.readonly")],
-      );
-
-      try {
-        await auth.refresh(
-          t.refreshToken,
+    test(
+      "Can't upgrade scope if it allowed by client, but restricted by role",
+      () async {
+        final t = await auth.authenticate(
+          createdUsers.firstWhere((u) => u.role == "viewer").username,
+          User.defaultPassword,
           "redirect",
           "a",
-          requestedScopes: [AuthScope("user")],
+          requestedScopes: [AuthScope("user.readonly")],
         );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
+
+        try {
+          await auth.refresh(
+            t.refreshToken,
+            "redirect",
+            "a",
+            requestedScopes: [AuthScope("user")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
 
     test("Can't upgrade scope even if client/user allow it", () async {
       final t = await auth.authenticate(
@@ -191,7 +204,7 @@ void main() {
           "a",
           requestedScopes: [
             AuthScope("user.readonly"),
-            AuthScope("location:add:xyz")
+            AuthScope("location:add:xyz"),
           ],
         );
         expect(true, false);
@@ -208,7 +221,7 @@ void main() {
         "a",
         requestedScopes: [
           AuthScope("user.readonly"),
-          AuthScope("location:add:xyz")
+          AuthScope("location:add:xyz"),
         ],
       );
 
@@ -248,69 +261,75 @@ void main() {
     });
 
     test(
-        "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
-        () async {
-      try {
-        await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "user").username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [AuthScope("location:add")],
-        );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
-
-    test("Role that allows no scope prevents access token from being granted",
-        () async {
-      try {
-        await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == null).username,
-          User.defaultPassword,
-          "redirect",
-          requestedScopes: [AuthScope("location:add")],
-        );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
+      "Role that allows scope but not requested, netting no scope, prevents access token from being granted",
+      () async {
+        try {
+          await auth.authenticateForCode(
+            createdUsers.firstWhere((u) => u.role == "user").username,
+            User.defaultPassword,
+            "redirect",
+            requestedScopes: [AuthScope("location:add")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
 
     test(
-        "Client allows full scope, role restricts it to a subset, can only grant subset",
-        () async {
-      final code = await auth.authenticateForCode(
-        createdUsers.firstWhere((u) => u.role == "viewer").username,
-        User.defaultPassword,
-        "redirect",
-        requestedScopes: [
-          AuthScope("user.readonly"),
-          AuthScope("location:add:xyz")
-        ],
-      );
-      final t = await auth.exchange(code.code, "redirect", "a");
+      "Role that allows no scope prevents access token from being granted",
+      () async {
+        try {
+          await auth.authenticateForCode(
+            createdUsers.firstWhere((u) => u.role == null).username,
+            User.defaultPassword,
+            "redirect",
+            requestedScopes: [AuthScope("location:add")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
 
-      expect(t.scopes!.length, 2);
-      expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
-      expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
-    });
-
-    test("User allowed scopes can't grant higher privileges than client",
-        () async {
-      try {
-        await auth.authenticateForCode(
-          createdUsers.firstWhere((u) => u.role == "invalid").username,
+    test(
+      "Client allows full scope, role restricts it to a subset, can only grant subset",
+      () async {
+        final code = await auth.authenticateForCode(
+          createdUsers.firstWhere((u) => u.role == "viewer").username,
           User.defaultPassword,
           "redirect",
-          requestedScopes: [AuthScope("location")],
+          requestedScopes: [
+            AuthScope("user.readonly"),
+            AuthScope("location:add:xyz"),
+          ],
         );
-        expect(true, false);
-      } on AuthServerException catch (e) {
-        expect(e.reason, AuthRequestError.invalidScope);
-      }
-    });
+        final t = await auth.exchange(code.code, "redirect", "a");
+
+        expect(t.scopes!.length, 2);
+        expect(t.scopes!.any((s) => s.isExactly("user.readonly")), true);
+        expect(t.scopes!.any((s) => s.isExactly("location:add:xyz")), true);
+      },
+    );
+
+    test(
+      "User allowed scopes can't grant higher privileges than client",
+      () async {
+        try {
+          await auth.authenticateForCode(
+            createdUsers.firstWhere((u) => u.role == "invalid").username,
+            User.defaultPassword,
+            "redirect",
+            requestedScopes: [AuthScope("location")],
+          );
+          expect(true, false);
+        } on AuthServerException catch (e) {
+          expect(e.reason, AuthRequestError.invalidScope);
+        }
+      },
+    );
   });
 }
 

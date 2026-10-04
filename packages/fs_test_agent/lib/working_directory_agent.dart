@@ -51,8 +51,10 @@ class WorkingDirectoryAgent {
   }) {
     final pathComponents = path.split("/");
 
-    final relativeDirectoryComponents =
-        pathComponents.sublist(0, pathComponents.length - 1);
+    final relativeDirectoryComponents = pathComponents.sublist(
+      0,
+      pathComponents.length - 1,
+    );
 
     final uri = relativeDirectoryComponents.fold(
       workingDirectory.uri,
@@ -76,8 +78,10 @@ class WorkingDirectoryAgent {
   /// the modified contents of the file
   void modifyFile(String path, String Function(String current) contents) {
     final pathComponents = path.split("/");
-    final relativeDirectoryComponents =
-        pathComponents.sublist(0, pathComponents.length - 1);
+    final relativeDirectoryComponents = pathComponents.sublist(
+      0,
+      pathComponents.length - 1,
+    );
     final directory = Directory.fromUri(
       relativeDirectoryComponents.fold(
         workingDirectory.uri,
@@ -95,8 +99,10 @@ class WorkingDirectoryAgent {
 
   File? getFile(String path) {
     final pathComponents = path.split("/");
-    final relativeDirectoryComponents =
-        pathComponents.sublist(0, pathComponents.length - 1);
+    final relativeDirectoryComponents = pathComponents.sublist(
+      0,
+      pathComponents.length - 1,
+    );
     final directory = Directory.fromUri(
       relativeDirectoryComponents.fold(
         workingDirectory.uri,

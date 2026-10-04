@@ -191,46 +191,51 @@ Future<List<RootObject>> populateModelGraph(ManagedContext? ctx) async {
         RootJoinObject() // 1
           ..other = OtherRootObject.withCounter(), // 1
         RootJoinObject() // 2
-          ..other = OtherRootObject.withCounter() // 2
+          ..other = OtherRootObject.withCounter(), // 2
       ])
-      ..child = (ChildObject.withCounter() // 1
-        ..grandChild = GrandChildObject.withCounter() // 1
-        ..grandChildren = ManagedSet.from([
-          GrandChildObject.withCounter(), // 2
-          GrandChildObject.withCounter() // 3
-        ]))
+      ..child =
+          (ChildObject.withCounter() // 1
+            ..grandChild =
+                GrandChildObject.withCounter() // 1
+            ..grandChildren = ManagedSet.from([
+              GrandChildObject.withCounter(), // 2
+              GrandChildObject.withCounter(), // 3
+            ]))
       ..children = ManagedSet.from([
         (ChildObject.withCounter() // 2
-          ..grandChild = GrandChildObject.withCounter() // 4
+          ..grandChild =
+              GrandChildObject.withCounter() // 4
           ..grandChildren = ManagedSet.from([
             GrandChildObject.withCounter(), // 5
-            GrandChildObject.withCounter() // 6
+            GrandChildObject.withCounter(), // 6
           ])),
         (ChildObject.withCounter() // 3
-          ..grandChild = GrandChildObject.withCounter() // 7
-        ),
+          ..grandChild =
+              GrandChildObject.withCounter() // 7
+              ),
         (ChildObject.withCounter() // 4
           ..grandChildren = ManagedSet.from([
-            GrandChildObject.withCounter() // 8
+            GrandChildObject.withCounter(), // 8
           ])),
-        ChildObject.withCounter() // 5
+        ChildObject.withCounter(), // 5
       ]),
     RootObject.withCounter() // 2
       ..join = ManagedSet.from([
         RootJoinObject() // 3
           ..other = OtherRootObject.withCounter(), // 3
       ])
-      ..child = ChildObject.withCounter() // 6
+      ..child =
+          ChildObject.withCounter() // 6
       ..children = ManagedSet.from([
-        ChildObject.withCounter() // 7
+        ChildObject.withCounter(), // 7
       ]),
     RootObject.withCounter() // 3
       ..child = ChildObject.withCounter(), // 8
     RootObject.withCounter() // 4
       ..children = ManagedSet.from([
-        ChildObject.withCounter() // 9
+        ChildObject.withCounter(), // 9
       ]),
-    RootObject.withCounter() // 5
+    RootObject.withCounter(), // 5
   ];
 
   for (final root in rootObjects) {

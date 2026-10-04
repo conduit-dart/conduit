@@ -138,28 +138,29 @@ void main() {
     });
 
     test(
-        "outer-context query proceeds on another connection while a transaction is open",
-        () async {
-      // On a single-connection store this pattern deadlocks (and issuing the
-      // outer query from inside the block throws a runTx error). On a pooled
-      // store the transaction holds one pooled connection while the outer
-      // query checks out another.
-      final release = Completer<void>();
-      final tx = context.transaction((t) async {
-        await Query.insertObject(t, PoolModel()..name = "in-tx");
-        await release.future;
-      });
+      "outer-context query proceeds on another connection while a transaction is open",
+      () async {
+        // On a single-connection store this pattern deadlocks (and issuing the
+        // outer query from inside the block throws a runTx error). On a pooled
+        // store the transaction holds one pooled connection while the outer
+        // query checks out another.
+        final release = Completer<void>();
+        final tx = context.transaction((t) async {
+          await Query.insertObject(t, PoolModel()..name = "in-tx");
+          await release.future;
+        });
 
-      final visibleDuringTx = await Query<PoolModel>(context).fetch();
-      expect(visibleDuringTx, isEmpty);
+        final visibleDuringTx = await Query<PoolModel>(context).fetch();
+        expect(visibleDuringTx, isEmpty);
 
-      release.complete();
-      await tx;
+        release.complete();
+        await tx;
 
-      final visibleAfterTx = await Query<PoolModel>(context).fetch();
-      expect(visibleAfterTx, hasLength(1));
-      expect(visibleAfterTx.first.name, "in-tx");
-    });
+        final visibleAfterTx = await Query<PoolModel>(context).fetch();
+        expect(visibleAfterTx, hasLength(1));
+        expect(visibleAfterTx.first.name, "in-tx");
+      },
+    );
   });
 }
 

@@ -32,9 +32,15 @@ void main() {
       // Friend, Authored, Liked.
       expect(
         names,
-        containsAll(
-          {'Query', 'User', 'Account', 'Post', 'Friend', 'Authored', 'Liked'},
-        ),
+        containsAll({
+          'Query',
+          'User',
+          'Account',
+          'Post',
+          'Friend',
+          'Authored',
+          'Liked',
+        }),
       );
     });
 
@@ -168,18 +174,20 @@ void main() {
       expect(names, equals({'id', 'labels', 'title', 'properties'}));
     });
 
-    test('exposeGraphEdgesAsConnections=true adds parallel edge-record lists',
-        () {
-      final wired = SchemaBuilder().fromGraphDataModel(
-        dataModel,
-        config: buildSocialGraphSchemaConfig(exposeEdges: true),
-      );
-      final user = _objectByName(wired, 'User');
-      final names = user.fields.map((f) => f.name).toSet();
-      expect(names, contains('friends')); // edge connection
-      expect(names, contains('authoreds')); // edge connection
-      expect(names, contains('likeds')); // edge connection
-    });
+    test(
+      'exposeGraphEdgesAsConnections=true adds parallel edge-record lists',
+      () {
+        final wired = SchemaBuilder().fromGraphDataModel(
+          dataModel,
+          config: buildSocialGraphSchemaConfig(exposeEdges: true),
+        );
+        final user = _objectByName(wired, 'User');
+        final names = user.fields.map((f) => f.name).toSet();
+        expect(names, contains('friends')); // edge connection
+        expect(names, contains('authoreds')); // edge connection
+        expect(names, contains('likeds')); // edge connection
+      },
+    );
   });
 
   group('SchemaBuilder configuration', () {
@@ -220,28 +228,35 @@ void main() {
     });
   });
 
-  group('nodeObjectTypeFor / edgeObjectTypeFor (single-entity convenience)',
-      () {
-    test('nodeObjectTypeFor returns a populated node type', () {
-      final entity = dataModel.nodeEntities[Post]!;
-      final type = SchemaBuilder().nodeObjectTypeFor(entity, config: config);
-      expect(type.name, equals('Post'));
-      final names = type.fields.map((f) => f.name).toSet();
-      expect(names, containsAll({'id', 'labels', 'title', 'properties'}));
-    });
+  group(
+    'nodeObjectTypeFor / edgeObjectTypeFor (single-entity convenience)',
+    () {
+      test('nodeObjectTypeFor returns a populated node type', () {
+        final entity = dataModel.nodeEntities[Post]!;
+        final type = SchemaBuilder().nodeObjectTypeFor(entity, config: config);
+        expect(type.name, equals('Post'));
+        final names = type.fields.map((f) => f.name).toSet();
+        expect(names, containsAll({'id', 'labels', 'title', 'properties'}));
+      });
 
-    test('edgeObjectTypeFor returns id + edge properties (endpoints stubbed)',
+      test(
+        'edgeObjectTypeFor returns id + edge properties (endpoints stubbed)',
         () {
-      final entity = dataModel.edgeEntities[Friend]!;
-      final type = SchemaBuilder().edgeObjectTypeFor(entity, config: config);
-      expect(type.name, equals('Friend'));
-      // No node registry means no from/to fields.
-      final names = type.fields.map((f) => f.name).toSet();
-      expect(names, containsAll({'id', 'since'}));
-      expect(names.contains('from'), isFalse);
-      expect(names.contains('to'), isFalse);
-    });
-  });
+          final entity = dataModel.edgeEntities[Friend]!;
+          final type = SchemaBuilder().edgeObjectTypeFor(
+            entity,
+            config: config,
+          );
+          expect(type.name, equals('Friend'));
+          // No node registry means no from/to fields.
+          final names = type.fields.map((f) => f.name).toSet();
+          expect(names, containsAll({'id', 'since'}));
+          expect(names.contains('from'), isFalse);
+          expect(names.contains('to'), isFalse);
+        },
+      );
+    },
+  );
 }
 
 // -- Helpers ----------------------------------------------------------------
@@ -345,9 +360,8 @@ void _walkInto(
 GraphQLObjectType _objectByName(GraphQLSchema schema, String name) {
   final found = _reachableObjectTypes(schema).firstWhere(
     (t) => t.name == name,
-    orElse: () => throw StateError(
-      'Type $name not reachable from schema.queryType',
-    ),
+    orElse: () =>
+        throw StateError('Type $name not reachable from schema.queryType'),
   );
   return found;
 }
@@ -356,9 +370,8 @@ String _fieldType(GraphQLSchema schema, String typeName, String fieldName) {
   final t = _objectByName(schema, typeName);
   final f = t.fields.firstWhere(
     (f) => f.name == fieldName,
-    orElse: () => throw StateError(
-      'Field $typeName.$fieldName not present in schema',
-    ),
+    orElse: () =>
+        throw StateError('Field $typeName.$fieldName not present in schema'),
   );
   return f.type.toString();
 }

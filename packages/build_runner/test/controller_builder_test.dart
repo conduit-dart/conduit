@@ -122,15 +122,11 @@ class RequestBody {
 ''';
 
 Future<({String? dart, String? json})> _runBuilder(String inputSource) async {
-  final result = await testBuilder(
-    controllerBuilder(BuilderOptions.empty),
-    {
-      'a|lib/controllers.dart': inputSource,
-      'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
-      'conduit_core|lib/aot.dart': _conduitCoreStub,
-    },
-    flattenOutput: true,
-  );
+  final result = await testBuilder(controllerBuilder(BuilderOptions.empty), {
+    'a|lib/controllers.dart': inputSource,
+    'conduit_core|lib/conduit_core.dart': _conduitCoreStub,
+    'conduit_core|lib/aot.dart': _conduitCoreStub,
+  }, flattenOutput: true);
   final dartId = AssetId.parse('a|lib/controllers.controller.conduit.dart');
   final jsonId = AssetId.parse('a|lib/controllers.controller.conduit.json');
   return (
@@ -172,8 +168,7 @@ class MutableController extends Controller {
     expect(out.dart, contains('bool get isMutable => true'));
   });
 
-  test(
-      'emits a ResourceControllerRuntime with one operation for a '
+  test('emits a ResourceControllerRuntime with one operation for a '
       '@Operation.get method', () async {
     final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';
@@ -184,23 +179,22 @@ class IdentityController extends ResourceController {
 }
 ''');
     expect(out.dart, contains(r'class $IdentityControllerControllerRuntime'));
-    expect(out.dart,
-        contains(r'class $IdentityControllerResourceControllerRuntime'));
+    expect(
+      out.dart,
+      contains(r'class $IdentityControllerResourceControllerRuntime'),
+    );
     expect(out.dart, contains("dartMethodName: 'getOne'"));
     expect(out.dart, contains("httpMethod: 'GET'"));
     expect(out.dart, contains("pathVariables: ['id']"));
     expect(out.dart, contains('BindingType.path'));
     // Static-dispatch invoker must downcast to the concrete controller.
-    expect(
-      out.dart,
-      contains('(rc as IdentityController).getOne('),
-    );
+    expect(out.dart, contains('(rc as IdentityController).getOne('));
   });
 
   test(
-      'emits decoders for path/query/header/body bindings without crashing',
-      () async {
-    final out = await _runBuilder('''
+    'emits decoders for path/query/header/body bindings without crashing',
+    () async {
+      final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';
 
 class Payload extends Serializable {
@@ -218,12 +212,13 @@ class MultiBindController extends ResourceController {
   ) async => null;
 }
 ''');
-    expect(out.dart, contains('BindingType.path'));
-    expect(out.dart, contains('BindingType.query'));
-    expect(out.dart, contains('BindingType.header'));
-    expect(out.dart, contains('BindingType.body'));
-    expect(out.dart, contains('Payload()..read'));
-  });
+      expect(out.dart, contains('BindingType.path'));
+      expect(out.dart, contains('BindingType.query'));
+      expect(out.dart, contains('BindingType.header'));
+      expect(out.dart, contains('BindingType.body'));
+      expect(out.dart, contains('Payload()..read'));
+    },
+  );
 
   test('skips abstract Controller subclasses', () async {
     final out = await _runBuilder('''
@@ -243,8 +238,7 @@ class Plain {}
     expect(out.json, isNull);
   });
 
-  test(
-      'emits specialized body cast for List<int> instead of generic '
+  test('emits specialized body cast for List<int> instead of generic '
       '.as<T>()', () async {
     final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';
@@ -277,10 +271,7 @@ class MapController extends ResourceController {
       dart,
       contains('(v as RequestBody).decoded as Map<String, dynamic>'),
     );
-    expect(
-      dart,
-      isNot(contains('as RequestBody).as<Map<String, dynamic>>()')),
-    );
+    expect(dart, isNot(contains('as RequestBody).as<Map<String, dynamic>>()')));
   });
 
   test('falls back to .as<T>() for unrecognized custom types', () async {
@@ -302,8 +293,7 @@ class CustomController extends ResourceController {
     expect(dart, isNot(contains('.decoded')));
   });
 
-  test(
-      'specialized path still routes Serializable through the .read() '
+  test('specialized path still routes Serializable through the .read() '
       'pattern (unchanged)', () async {
     final out = await _runBuilder('''
 import 'package:conduit_core/conduit_core.dart';

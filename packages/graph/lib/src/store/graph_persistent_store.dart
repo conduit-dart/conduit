@@ -50,8 +50,7 @@ abstract class GraphPersistentStore {
   Future<List<N>> traverse<N extends GraphNode<N>>(
     GraphNode<dynamic> from,
     Type edgeKind, {
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
   });
 
   /// **Always-on raw-Cypher escape hatch.**

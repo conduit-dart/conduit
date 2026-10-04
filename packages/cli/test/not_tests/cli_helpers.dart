@@ -89,7 +89,7 @@ class CLIClient {
         DartProjectAgent(
           name,
           dependencies: {
-            'conduit': {'path': project}
+            'conduit': {'path': project},
           },
           devDependencies: {"test": "^1.21.6"},
           dependencyOverrides: {
@@ -100,12 +100,12 @@ class CLIClient {
             'conduit_config': {'path': join(project, '..', 'config')},
             'conduit_core': {'path': join(project, '..', 'core')},
             'conduit_isolate_exec': {
-              'path': join(project, '..', 'isolate_exec')
+              'path': join(project, '..', 'isolate_exec'),
             },
             'conduit_open_api': {'path': join(project, '..', 'open_api')},
             'conduit_postgresql': {'path': join(project, '..', 'postgresql')},
             'conduit_password_hash': {
-              'path': join(project, '..', 'password_hash')
+              'path': join(project, '..', 'password_hash'),
             },
             'conduit_runtime': {'path': join(project, '..', 'runtime')},
           },
@@ -215,8 +215,9 @@ class TestChannel extends ApplicationChannel {
         if (elapsed > 60000) {
           Directory.current = saved;
           t.cancel();
-          task._processStarted
-              .completeError(TimeoutException("Timed out after 30 seconds"));
+          task._processStarted.completeError(
+            TimeoutException("Timed out after 30 seconds"),
+          );
         }
       }
     });

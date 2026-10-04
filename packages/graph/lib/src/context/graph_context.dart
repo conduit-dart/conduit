@@ -53,18 +53,15 @@ class GraphContext {
   Future<List<N>> traverse<N extends GraphNode<N>>(
     GraphNode<dynamic> from,
     Type edgeKind, {
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
-  }) =>
-      persistentStore.traverse<N>(from, edgeKind, direction: direction);
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
+  }) => persistentStore.traverse<N>(from, edgeKind, direction: direction);
 
   /// Always-on raw-Cypher escape hatch — convenience pass-through to
   /// [GraphPersistentStore.cypher].
   Future<List<Map<String, Object?>>> cypher(
     String rawQuery, {
     Map<String, Object?> params = const {},
-  }) =>
-      persistentStore.cypher(rawQuery, params: params);
+  }) => persistentStore.cypher(rawQuery, params: params);
 
   /// Close the backing store. Safe to call more than once.
   Future<void> close() => persistentStore.close();

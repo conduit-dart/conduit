@@ -68,7 +68,7 @@ mixin CLIDocumentOptions implements CLICommand {
       throw CLIException(
         "Invalid Host Option",
         instructions: [
-          "Host names must identify scheme, host and port. Example: https://api.myapp.com:8000"
+          "Host names must identify scheme, host and port. Example: https://api.myapp.com:8000",
         ],
       );
     }

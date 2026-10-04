@@ -20,12 +20,13 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
         .whereType<VariableMirror>()
         .where((decl) => decl.metadata.any((im) => im.reflectee is Bind))
         .map((decl) {
-      final isRequired = allDeclarations[decl.simpleName]!
-          .metadata
-          .any((im) => im.reflectee is RequiredBinding);
+          final isRequired = allDeclarations[decl.simpleName]!.metadata.any(
+            (im) => im.reflectee is RequiredBinding,
+          );
 
-      return getParameterForVariable(decl, isRequired: isRequired);
-    }).toList();
+          return getParameterForVariable(decl, isRequired: isRequired);
+        })
+        .toList();
 
     operations = type.instanceMembers.values
         .where(isOperation)
@@ -35,16 +36,18 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
     if (conflictingOperations.isNotEmpty) {
       final opNames = conflictingOperations.map((s) => "'$s'").join(", ");
       throw StateError(
-          "Invalid controller. Controller '${type.reflectedType}' has "
-          "ambiguous operations. Offending operating methods: $opNames.");
+        "Invalid controller. Controller '${type.reflectedType}' has "
+        "ambiguous operations. Offending operating methods: $opNames.",
+      );
     }
 
     if (unsatisfiableOperations.isNotEmpty) {
       final opNames = unsatisfiableOperations.map((s) => "'$s'").join(", ");
       throw StateError(
-          "Invalid controller. Controller '${type.reflectedType}' has operations where "
-          "parameter is bound with @Bind.path(), but path variable is not declared in "
-          "@Operation(). Offending operation methods: $opNames");
+        "Invalid controller. Controller '${type.reflectedType}' has operations where "
+        "parameter is bound with @Bind.path(), but path variable is not declared in "
+        "@Operation(). Offending operation methods: $opNames",
+      );
     }
 
     documenter = ResourceControllerDocumenterImpl(this);
@@ -55,11 +58,13 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
   List<String> get unsatisfiableOperations {
     return operations
         .where((op) {
-          final argPathParameters = op.positionalParameters
-              .where((p) => p.location == BindingType.path);
+          final argPathParameters = op.positionalParameters.where(
+            (p) => p.location == BindingType.path,
+          );
 
-          return !argPathParameters
-              .every((p) => op.pathVariables.contains(p.name));
+          return !argPathParameters.every(
+            (p) => op.pathVariables.contains(p.name),
+          );
         })
         .map((op) => op.dartMethodName)
         .toList();
@@ -79,8 +84,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
               return false;
             }
 
-            return opToCompare.pathVariables
-                .every((p) => op.pathVariables.contains(p));
+            return opToCompare.pathVariables.every(
+              (p) => op.pathVariables.contains(p),
+            );
           });
         })
         .map((op) => op.dartMethodName)
@@ -101,9 +107,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
     VariableMirror mirror, {
     required bool isRequired,
   }) {
-    final metadata = mirror.metadata
-        .firstWhere((im) => im.reflectee is Bind)
-        .reflectee as Bind;
+    final metadata =
+        mirror.metadata.firstWhere((im) => im.reflectee is Bind).reflectee
+            as Bind;
 
     if (mirror.type is! ClassMirror) {
       throw _makeError(mirror, "Cannot bind dynamic parameters.");
@@ -115,10 +121,12 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
     switch (metadata.bindingType) {
       case BindingType.body:
         {
-          final isDecodingSerializable =
-              isSerializable(boundType.reflectedType);
-          final isDecodingListOfSerializable =
-              isListSerializable(boundType.reflectedType);
+          final isDecodingSerializable = isSerializable(
+            boundType.reflectedType,
+          );
+          final isDecodingListOfSerializable = isListSerializable(
+            boundType.reflectedType,
+          );
           if (metadata.ignore != null ||
               metadata.reject != null ||
               metadata.require != null ||
@@ -135,8 +143,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
             decoder = (b) {
               final body = b as RequestBody;
 
-              final value = boundType.newInstance(Symbol.empty, []).reflectee
-                  as Serializable;
+              final value =
+                  boundType.newInstance(Symbol.empty, []).reflectee
+                      as Serializable;
               value.read(
                 body.as(),
                 accept: metadata.accept,
@@ -157,8 +166,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
 
               final typeArg = boundType.typeArguments.first as ClassMirror;
               final iterable = bodyList.map((object) {
-                final value = typeArg.newInstance(Symbol.empty, []).reflectee
-                    as Serializable;
+                final value =
+                    typeArg.newInstance(Symbol.empty, []).reflectee
+                        as Serializable;
                 value.read(
                   object,
                   accept: metadata.accept,
@@ -182,7 +192,8 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
         break;
       case BindingType.query:
         {
-          final isListOfBools = boundType.isAssignableTo(reflectType(List)) &&
+          final isListOfBools =
+              boundType.isAssignableTo(reflectType(List)) &&
               boundType.typeArguments.first.isAssignableTo(reflectType(bool));
 
           if (!(boundType.isAssignableTo(reflectType(bool)) || isListOfBools)) {
@@ -247,8 +258,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
       location: metadata.bindingType,
       isRequired: isRequired,
       decoder: decoder,
-      defaultValue:
-          (mirror is ParameterMirror) ? mirror.defaultValue?.reflectee : null,
+      defaultValue: (mirror is ParameterMirror)
+          ? mirror.defaultValue?.reflectee
+          : null,
     );
   }
 
@@ -263,8 +275,10 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
       final names = parametersWithoutMetadata
           .map((p) => "'${MirrorSystem.getName(p.simpleName)}'")
           .join(", ");
-      throw StateError("Invalid operation method parameter(s) $names on "
-          "'${getMethodAndClassName(parametersWithoutMetadata.first)}': Must have @Bind annotation.");
+      throw StateError(
+        "Invalid operation method parameter(s) $names on "
+        "'${getMethodAndClassName(parametersWithoutMetadata.first)}': Must have @Bind annotation.",
+      );
     }
 
     return ResourceControllerOperation(
@@ -274,12 +288,7 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
           .toList(),
       namedParameters: mirror.parameters
           .where((pm) => pm.isOptional)
-          .map(
-            (pm) => getParameterForVariable(
-              pm,
-              isRequired: false,
-            ),
-          )
+          .map((pm) => getParameterForVariable(pm, isRequired: false))
           .toList(),
       scopes: getMethodScopes(mirror),
       dartMethodName: MirrorSystem.getName(symbol),
@@ -287,12 +296,13 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
       pathVariables: operation.pathVariables,
       invoker: (rc, args) {
         return reflect(rc)
-            .invoke(
-              symbol,
-              args.positionalArguments,
-              args.namedArguments.map((k, v) => MapEntry(Symbol(k), v)),
-            )
-            .reflectee as Future<Response>;
+                .invoke(
+                  symbol,
+                  args.positionalArguments,
+                  args.namedArguments.map((k, v) => MapEntry(Symbol(k), v)),
+                )
+                .reflectee
+            as Future<Response>;
       },
     );
   }
@@ -300,8 +310,9 @@ class ResourceControllerRuntimeImpl extends ResourceControllerRuntime {
 
 StateError _makeError(VariableMirror mirror, String s) {
   return StateError(
-      "Invalid binding '${MirrorSystem.getName(mirror.simpleName)}' "
-      "on '${getMethodAndClassName(mirror)}':$s");
+    "Invalid binding '${MirrorSystem.getName(mirror.simpleName)}' "
+    "on '${getMethodAndClassName(mirror)}':$s",
+  );
 }
 
 void _enforceTypeCanBeParsedFromString(

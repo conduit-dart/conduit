@@ -39,24 +39,25 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
   Future<StoppableProcess> _listen() async {
     final server = await HttpServer.bind(InternetAddress.anyIPv4, port);
 
-    final fileController = FileController(
-      _hostedDirectory.uri.toFilePath(windows: Platform.isWindows),
-    )
-      ..addCachePolicy(
-        const CachePolicy(requireConditionalRequest: true),
-        (p) => p.endsWith(".html"),
-      )
-      ..addCachePolicy(
-        const CachePolicy(requireConditionalRequest: true),
-        (p) => p.endsWith(".json"),
-      )
-      ..addCachePolicy(
-        const CachePolicy(expirationFromNow: Duration(days: 300)),
-        (p) => true,
-      )
-      ..logger.onRecord.listen((rec) {
-        outputSink.writeln("${rec.message} ${rec.stackTrace ?? ""}");
-      });
+    final fileController =
+        FileController(
+            _hostedDirectory.uri.toFilePath(windows: Platform.isWindows),
+          )
+          ..addCachePolicy(
+            const CachePolicy(requireConditionalRequest: true),
+            (p) => p.endsWith(".html"),
+          )
+          ..addCachePolicy(
+            const CachePolicy(requireConditionalRequest: true),
+            (p) => p.endsWith(".json"),
+          )
+          ..addCachePolicy(
+            const CachePolicy(expirationFromNow: Duration(days: 300)),
+            (p) => true,
+          )
+          ..logger.onRecord.listen((rec) {
+            outputSink.writeln("${rec.message} ${rec.stackTrace ?? ""}");
+          });
 
     final router = Router();
     router.route("/*").link(() => fileController);
@@ -83,8 +84,9 @@ class CLIDocumentServe extends CLICommand with CLIProject, CLIDocumentOptions {
 
     final documentJSON = json.encode(await documentProject(this, this));
 
-    final jsonSpecFile =
-        File.fromUri(_hostedDirectory.uri.resolve("openapi.json"));
+    final jsonSpecFile = File.fromUri(
+      _hostedDirectory.uri.resolve("openapi.json"),
+    );
     jsonSpecFile.writeAsStringSync(documentJSON);
 
     final htmlFile = File.fromUri(_hostedDirectory.uri.resolve("index.html"));

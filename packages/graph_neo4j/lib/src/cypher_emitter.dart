@@ -70,13 +70,15 @@ class CypherEmitter {
     buf.write(' RETURN ${query.pattern.root.variable}');
     if (query.orderBy.isNotEmpty) {
       buf.write(' ORDER BY ');
-      buf.write(query.orderBy
-          .map(
-            (o) =>
-                '${query.pattern.root.variable}.${_escapeIdentifier(o.property)} '
-                '${o.direction == GraphSortDirection.ascending ? 'ASC' : 'DESC'}',
-          )
-          .join(', '));
+      buf.write(
+        query.orderBy
+            .map(
+              (o) =>
+                  '${query.pattern.root.variable}.${_escapeIdentifier(o.property)} '
+                  '${o.direction == GraphSortDirection.ascending ? 'ASC' : 'DESC'}',
+            )
+            .join(', '),
+      );
     }
     final offset = query.offset;
     if (offset != null) {
@@ -106,7 +108,8 @@ class CypherEmitter {
 
   String _renderPattern(GraphPattern<dynamic> pattern) {
     final root = pattern.root;
-    final buf = StringBuffer()..write(_renderNodeStep(root.variable, root.label));
+    final buf = StringBuffer()
+      ..write(_renderNodeStep(root.variable, root.label));
     for (final hop in root.relationships) {
       _hopCounter++;
       final relVar = 'r${_hopCounter - 1}';

@@ -144,8 +144,7 @@ class APIOperation extends APIObject {
         .decodeObjects("parameters", APIParameter.empty)
         ?.nonNulls
         .toList();
-    requestBody =
-        object.decodeObject("requestBody", APIRequestBody.empty);
+    requestBody = object.decodeObject("requestBody", APIRequestBody.empty);
     responses = object.decodeObjectMap("responses", APIResponse.empty);
     callbacks = object.decodeObjectMap("callbacks", APICallback.new);
     deprecated = object.decode("deprecated");
@@ -153,8 +152,7 @@ class APIOperation extends APIObject {
         .decodeObjects("security", APISecurityRequirement.empty)
         ?.nonNulls
         .toList();
-    servers =
-        object.decodeObjects("servers", APIServerDescription.empty);
+    servers = object.decodeObjects("servers", APIServerDescription.empty);
   }
 
   @override

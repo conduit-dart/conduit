@@ -16,8 +16,10 @@ void main() {
   late HttpServer server;
 
   setUpAll(() async {
-    context =
-        await PostgresTestConfig().contextWithModels([TestModel, StringModel]);
+    context = await PostgresTestConfig().contextWithModels([
+      TestModel,
+      StringModel,
+    ]);
 
     server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
     final router = Router();
@@ -46,8 +48,9 @@ void main() {
   });
 
   test("Request with path parameter of wrong type returns 404", () async {
-    final response =
-        await http.get(Uri.parse("http://localhost:8888/users/foo"));
+    final response = await http.get(
+      Uri.parse("http://localhost:8888/users/foo"),
+    );
     expect(response.statusCode, 404);
   });
 
@@ -70,8 +73,9 @@ void main() {
   });
 
   test("Non-integer, oddly named identifier", () async {
-    final response =
-        await http.get(Uri.parse("http://localhost:8888/string/bar"));
+    final response = await http.get(
+      Uri.parse("http://localhost:8888/string/bar"),
+    );
     expect(response.body, '"bar"');
   });
 }
@@ -102,10 +106,11 @@ class TestModelController extends QueryController<TestModel> {
       statusCode = 400;
     }
 
-    final comparisonMatcher = (query as QueryMixin)
-        .expressions
-        .firstWhere((expr) => expr.keyPath.path.first!.name == "id")
-        .expression as ComparisonExpression;
+    final comparisonMatcher =
+        (query as QueryMixin).expressions
+                .firstWhere((expr) => expr.keyPath.path.first!.name == "id")
+                .expression
+            as ComparisonExpression;
     if (comparisonMatcher.operator != PredicateOperator.equalTo ||
         comparisonMatcher.value != id) {
       statusCode = 400;
@@ -129,10 +134,11 @@ class TestModelController extends QueryController<TestModel> {
       statusCode = 400;
     }
 
-    final comparisonMatcher = (query as QueryMixin)
-        .expressions
-        .firstWhere((expr) => expr.keyPath.path.first!.name == "id")
-        .expression as ComparisonExpression;
+    final comparisonMatcher =
+        (query as QueryMixin).expressions
+                .firstWhere((expr) => expr.keyPath.path.first!.name == "id")
+                .expression
+            as ComparisonExpression;
     if (comparisonMatcher.operator != PredicateOperator.equalTo ||
         comparisonMatcher.value != id) {
       statusCode = 400;
@@ -179,10 +185,11 @@ class StringController extends QueryController<StringModel> {
 
   @Operation.get("id")
   Future<Response> get(@Bind.path("id") String id) async {
-    final comparisonMatcher = (query as QueryMixin)
-        .expressions
-        .firstWhere((expr) => expr.keyPath.path.first!.name == "foo")
-        .expression as StringExpression;
+    final comparisonMatcher =
+        (query as QueryMixin).expressions
+                .firstWhere((expr) => expr.keyPath.path.first!.name == "foo")
+                .expression
+            as StringExpression;
     return Response.ok(comparisonMatcher.value);
   }
 }

@@ -17,8 +17,9 @@ void main() {
       expect(orig!.type, APIType.string);
       expect(ref.type, isNull);
 
-      final constructed = components
-          .resolveUri(Uri(path: "/components/schemas/foo")) as APISchemaObject?;
+      final constructed =
+          components.resolveUri(Uri(path: "/components/schemas/foo"))
+              as APISchemaObject?;
       expect(constructed, isNotNull);
       expect(constructed!.type, APIType.string);
     });
@@ -72,19 +73,19 @@ void main() {
         "paths": <String, dynamic>{},
         "components": {
           "schemas": {
-            "string": {
-              "type": "string",
-            },
-            "container": {"\$ref": "#/components/schemas/string"}
-          }
-        }
+            "string": {"type": "string"},
+            "container": {"\$ref": "#/components/schemas/string"},
+          },
+        },
       });
 
       expect(
-        doc.components!.schemas["container"]!.referenceURI!
-            .toFilePath(windows: Platform.isWindows),
-        Uri.parse("/components/schemas/string")
-            .toFilePath(windows: Platform.isWindows),
+        doc.components!.schemas["container"]!.referenceURI!.toFilePath(
+          windows: Platform.isWindows,
+        ),
+        Uri.parse(
+          "/components/schemas/string",
+        ).toFilePath(windows: Platform.isWindows),
       );
 
       doc.components!.schemas["other"] = APISchemaObject()
@@ -229,9 +230,9 @@ void main() {
         "paths": <String, dynamic>{},
         "components": {
           "schemas": {
-            "freeform": {"type": "object", "additionalProperties": true}
-          }
-        }
+            "freeform": {"type": "object", "additionalProperties": true},
+          },
+        },
       });
 
       expect(
@@ -244,8 +245,7 @@ void main() {
         "object",
       );
       expect(
-        doc.asMap()["components"]["schemas"]["freeform"]
-            ["additionalProperties"],
+        doc.asMap()["components"]["schemas"]["freeform"]["additionalProperties"],
         true,
       );
     });
@@ -259,10 +259,10 @@ void main() {
           "schemas": {
             "freeform": {
               "type": "object",
-              "additionalProperties": <String, dynamic>{}
-            }
-          }
-        }
+              "additionalProperties": <String, dynamic>{},
+            },
+          },
+        },
       });
       expect(
         doc.components!.schemas["freeform"]!.additionalPropertyPolicy,
@@ -273,8 +273,7 @@ void main() {
         "object",
       );
       expect(
-        doc.asMap()["components"]["schemas"]["freeform"]
-            ["additionalProperties"],
+        doc.asMap()["components"]["schemas"]["freeform"]["additionalProperties"],
         true,
       );
     });
@@ -350,8 +349,9 @@ void main() {
           "KINDABAD",
           APISchemaObject.string(format: "second"),
           headers: {
-            "initial":
-                APIHeader(schema: APISchemaObject.string(format: "initial"))
+            "initial": APIHeader(
+              schema: APISchemaObject.string(format: "initial"),
+            ),
           },
         ),
       );
@@ -371,8 +371,9 @@ void main() {
           "REALBAD",
           APISchemaObject.string(format: "third"),
           headers: {
-            "second":
-                APIHeader(schema: APISchemaObject.string(format: "initial"))
+            "second": APIHeader(
+              schema: APISchemaObject.string(format: "initial"),
+            ),
           },
         ),
       );
@@ -406,13 +407,14 @@ void main() {
 
       op.addResponse(
         400,
-        APIResponse.schema(
-          "REALBAD",
-          APISchemaObject.string(format: "third"),
-        ),
+        APIResponse.schema("REALBAD", APISchemaObject.string(format: "third")),
       );
       expect(
-        op.responses!["400"]!.content!["application/json"]!.schema!.oneOf!
+        op
+            .responses!["400"]!
+            .content!["application/json"]!
+            .schema!
+            .oneOf!
             .length,
         2,
       );

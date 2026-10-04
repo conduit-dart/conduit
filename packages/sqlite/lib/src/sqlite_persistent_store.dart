@@ -320,18 +320,14 @@ class SqlitePersistentStore extends PersistentStore with SqliteSchemaGenerator {
   QueryException<s3.SqliteException> _translate(s3.SqliteException e) {
     final msg = e.message;
     if (msg.contains('UNIQUE constraint failed')) {
-      return QueryException.conflict(
-        'entity_already_exists',
-        [_extractConstraintTarget(msg)],
-        underlyingException: e,
-      );
+      return QueryException.conflict('entity_already_exists', [
+        _extractConstraintTarget(msg),
+      ], underlyingException: e);
     }
     if (msg.contains('NOT NULL constraint failed')) {
-      return QueryException.input(
-        'non_null_violation',
-        [_extractConstraintTarget(msg)],
-        underlyingException: e,
-      );
+      return QueryException.input('non_null_violation', [
+        _extractConstraintTarget(msg),
+      ], underlyingException: e);
     }
     if (msg.contains('FOREIGN KEY constraint failed')) {
       return QueryException.input(

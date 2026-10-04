@@ -229,8 +229,7 @@ class BoltConnection {
     socket.setOption(SocketOption.tcpNoDelay, true);
 
     // Send magic + four version offers.
-    final hs = BytesBuilder(copy: false)
-      ..add(_boltMagic);
+    final hs = BytesBuilder(copy: false)..add(_boltMagic);
     for (final v in _offeredVersions) {
       // Each offer is a 32-bit big-endian word: 00 00 minor major.
       hs
@@ -331,11 +330,7 @@ class BoltConnection {
         'while pulling result',
       );
     }
-    return BoltResult(
-      fields: fields,
-      records: records,
-      summary: pullSummary,
-    );
+    return BoltResult(fields: fields, records: records, summary: pullSummary);
   }
 
   /// Begin an explicit transaction. The returned [BoltTransaction]
@@ -361,7 +356,9 @@ class BoltConnection {
     await _subscription?.cancel();
     try {
       await _socket.close();
-    } catch (_) {/* ignore */}
+    } catch (_) {
+      /* ignore */
+    }
     _socket.destroy();
   }
 
@@ -516,10 +513,12 @@ class BoltConnection {
             // onto the handshake response, so this is a protocol
             // violation we surface rather than silently buffer.
             sub.cancel();
-            completer.completeError(BoltProtocolException(
-              'handshake response had $n bytes expected, got '
-              '${bytes.length}',
-            ));
+            completer.completeError(
+              BoltProtocolException(
+                'handshake response had $n bytes expected, got '
+                '${bytes.length}',
+              ),
+            );
             return;
           }
           sub.pause();
@@ -532,9 +531,11 @@ class BoltConnection {
       },
       onDone: () {
         if (!completer.isCompleted) {
-          completer.completeError(BoltProtocolException(
-            'socket closed before handshake response was read',
-          ));
+          completer.completeError(
+            BoltProtocolException(
+              'socket closed before handshake response was read',
+            ),
+          );
         }
       },
       cancelOnError: true,
@@ -554,8 +555,7 @@ class BoltTransaction {
   Future<BoltResult> run(
     String cypher, {
     Map<String, Object?> parameters = const {},
-  }) =>
-      _connection.runAndPull(cypher, parameters: parameters);
+  }) => _connection.runAndPull(cypher, parameters: parameters);
 
   Future<void> commit() async {
     if (_settled) return;

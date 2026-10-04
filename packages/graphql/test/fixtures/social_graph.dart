@@ -26,12 +26,12 @@ class User extends GraphNode<User> {
   /// store. The schema builder surfaces this as a `UserOrAccount`
   /// union of two object types.
   User()
-      : super(
-          labels: const [
-            GraphLabel.unchecked('User'),
-            GraphLabel.unchecked('Account'),
-          ],
-        );
+    : super(
+        labels: const [
+          GraphLabel.unchecked('User'),
+          GraphLabel.unchecked('Account'),
+        ],
+      );
 }
 
 class Post extends GraphNode<Post> {
@@ -42,7 +42,7 @@ class Post extends GraphNode<Post> {
 
 class Friend extends GraphEdge<User, User> {
   Friend({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Friend'));
+    : super(label: const GraphLabel.unchecked('Friend'));
 
   DateTime? get since => this['since'] as DateTime?;
   set since(DateTime? v) => this['since'] = v;
@@ -50,12 +50,12 @@ class Friend extends GraphEdge<User, User> {
 
 class Authored extends GraphEdge<User, Post> {
   Authored({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Authored'));
+    : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 class Liked extends GraphEdge<User, Post> {
   Liked({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Liked'));
+    : super(label: const GraphLabel.unchecked('Liked'));
 
   int? get score => this['score'] as int?;
   set score(int? v) => this['score'] = v;
@@ -87,10 +87,7 @@ GraphSchemaConfig buildSocialGraphSchemaConfig({bool exposeEdges = false}) {
       User: const GraphNodeSchemaConfig(
         unionLabels: ['Account'],
         properties: [
-          GraphPropertyDescriptor(
-            name: 'name',
-            type: GraphPropertyType.string,
-          ),
+          GraphPropertyDescriptor(name: 'name', type: GraphPropertyType.string),
           GraphPropertyDescriptor(
             name: 'age',
             type: GraphPropertyType.integer,

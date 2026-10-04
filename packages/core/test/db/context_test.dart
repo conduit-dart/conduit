@@ -74,22 +74,23 @@ void main() {
     });
 
     test(
-        "Cannot create query on context whose data model doesn't contain query type",
-        () async {
-      try {
-        Query<T>(ctx2);
-        fail('unreachable');
-      } on ArgumentError catch (e) {
-        expect(e.toString(), contains("Invalid context"));
-      }
+      "Cannot create query on context whose data model doesn't contain query type",
+      () async {
+        try {
+          Query<T>(ctx2);
+          fail('unreachable');
+        } on ArgumentError catch (e) {
+          expect(e.toString(), contains("Invalid context"));
+        }
 
-      try {
-        Query<U>(ctx1);
-        fail('unreachable');
-      } on ArgumentError catch (e) {
-        expect(e.toString(), contains("Invalid context"));
-      }
-    });
+        try {
+          Query<U>(ctx1);
+          fail('unreachable');
+        } on ArgumentError catch (e) {
+          expect(e.toString(), contains("Invalid context"));
+        }
+      },
+    );
   });
 }
 
@@ -113,8 +114,10 @@ class U extends ManagedObject<_U> implements _U {}
 Future<ManagedContext> contextWithDataModel(ManagedDataModel dataModel) async {
   final persistentStore = PostgresTestConfig().persistentStore();
 
-  final commands =
-      PostgresTestConfig().commandsFromDataModel(dataModel, temporary: true);
+  final commands = PostgresTestConfig().commandsFromDataModel(
+    dataModel,
+    temporary: true,
+  );
   final context = ManagedContext(dataModel, persistentStore);
 
   for (final cmd in commands) {

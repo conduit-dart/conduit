@@ -170,9 +170,7 @@ void main() {
       // ApplicationChannel.persistence is typed as Persistence<Object>?;
       // a Persistence<_FakeGraphStore> must be assignable into it via
       // Dart's covariant generics. This is a compile-time check.
-      final concrete = Persistence<_FakeGraphStore>(
-        graph: _FakeGraphStore(),
-      );
+      final concrete = Persistence<_FakeGraphStore>(graph: _FakeGraphStore());
       final Persistence<Object> widened = concrete;
       expect(widened.hasGraph, isTrue);
     });
@@ -239,8 +237,7 @@ class _FakeSqlStore extends PersistentStore {
     ManagedContext context,
     ManagedEntity entity, {
     T? values,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future execute(String sql, {Map<String, dynamic>? substitutionValues}) =>
@@ -252,15 +249,13 @@ class _FakeSqlStore extends PersistentStore {
     Map<String, dynamic> values,
     int timeoutInSeconds, {
     PersistentStoreQueryReturnType? returnType,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 
   @override
   Future<T> transaction<T>(
     ManagedContext transactionContext,
     Future<T> Function(ManagedContext transaction) transactionBlock,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
 
   @override
   List<String> createTable(SchemaTable table, {bool isTemporary = false}) =>
@@ -281,8 +276,7 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column, {
     String? unencodedInitialValue,
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
   @override
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -291,15 +285,13 @@ class _FakeSqlStore extends PersistentStore {
     SchemaTable table,
     SchemaColumn column,
     String name,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnNullability(
     SchemaTable table,
     SchemaColumn column,
     String? unencodedInitialValue,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
   @override
   List<String> alterColumnUniqueness(SchemaTable table, SchemaColumn column) =>
       throw UnimplementedError();
@@ -307,8 +299,7 @@ class _FakeSqlStore extends PersistentStore {
   List<String> alterColumnDefaultValue(
     SchemaTable table,
     SchemaColumn column,
-  ) =>
-      throw UnimplementedError();
+  ) => throw UnimplementedError();
 
   // Concrete PersistentStore has additional methods past 6.0.0 — fall
   // through with noSuchMethod so this stub stays small even if the

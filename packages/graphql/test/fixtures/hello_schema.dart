@@ -18,26 +18,16 @@ final GraphQLSchema helloSchema = graphQLSchema(
   queryType: objectType(
     'Query',
     fields: [
-      field(
-        'hello',
-        graphQLString,
-        resolve: (_, _) => 'world',
-      ),
+      field('hello', graphQLString, resolve: (_, _) => 'world'),
       field(
         'echo',
         graphQLString,
-        inputs: [
-          GraphQLFieldInput('message', graphQLString.nonNullable()),
-        ],
+        inputs: [GraphQLFieldInput('message', graphQLString.nonNullable())],
         resolve: (_, args) => args['message'] as String,
       ),
       // Used by the "resolver throws" test. Spec says runtime resolver
       // errors come back inside the JSON envelope, not as HTTP 4xx.
-      field(
-        'boom',
-        graphQLString,
-        resolve: (_, _) => throw StateError('boom'),
-      ),
+      field('boom', graphQLString, resolve: (_, _) => throw StateError('boom')),
     ],
   ),
   mutationType: objectType(
@@ -46,11 +36,8 @@ final GraphQLSchema helloSchema = graphQLSchema(
       field(
         'shout',
         graphQLString,
-        inputs: [
-          GraphQLFieldInput('message', graphQLString.nonNullable()),
-        ],
-        resolve: (_, args) =>
-            (args['message'] as String).toUpperCase(),
+        inputs: [GraphQLFieldInput('message', graphQLString.nonNullable())],
+        resolve: (_, args) => (args['message'] as String).toUpperCase(),
       ),
     ],
   ),

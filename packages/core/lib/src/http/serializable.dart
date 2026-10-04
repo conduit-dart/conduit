@@ -68,9 +68,9 @@ abstract class Serializable {
     }
 
     if (stillRequired?.isNotEmpty ?? false) {
-      throw SerializableException(
-        ["missing required input key(s): '${stillRequired!.join(", ")}'"],
-      );
+      throw SerializableException([
+        "missing required input key(s): '${stillRequired!.join(", ")}'",
+      ]);
     }
 
     readFromMap(copy);

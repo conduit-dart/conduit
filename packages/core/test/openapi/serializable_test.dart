@@ -42,18 +42,19 @@ void main() {
   });
 
   test(
-      "If Serializable cannot be documented, it still allows doc generation but shows error in document",
-      () async {
-    final doc = FailsToDocument().documentSchema(ctx);
-    await ctx.finalize();
+    "If Serializable cannot be documented, it still allows doc generation but shows error in document",
+    () async {
+      final doc = FailsToDocument().documentSchema(ctx);
+      await ctx.finalize();
 
-    expect(doc.title, "FailsToDocument");
-    expect(doc.description, contains("HttpServer"));
-    expect(
-      doc.additionalPropertyPolicy,
-      APISchemaAdditionalPropertyPolicy.freeForm,
-    );
-  });
+      expect(doc.title, "FailsToDocument");
+      expect(doc.description, contains("HttpServer"));
+      expect(
+        doc.additionalPropertyPolicy,
+        APISchemaAdditionalPropertyPolicy.freeForm,
+      );
+    },
+  );
 
   test("Serializable can override static document method", () async {
     final doc = OverrideDocument().documentSchema(ctx);
@@ -63,27 +64,28 @@ void main() {
   });
 
   test(
-      "Can bind a Serializable implementor to a resource controller method and it auto-documents",
-      () async {
-    final c = BoundBodyController();
-    c.didAddToChannel();
-    c.restore(c.recycledState);
+    "Can bind a Serializable implementor to a resource controller method and it auto-documents",
+    () async {
+      final c = BoundBodyController();
+      c.didAddToChannel();
+      c.restore(c.recycledState);
 
-    c.documentComponents(ctx);
-    final op = c.documentOperations(ctx, "/", APIPath.empty());
-    await ctx.finalize();
+      c.documentComponents(ctx);
+      final op = c.documentOperations(ctx, "/", APIPath.empty());
+      await ctx.finalize();
 
-    expect(
-      op["post"]!
-          .requestBody!
-          .content!["application/json"]!
-          .schema!
-          .referenceURI!
-          .pathSegments
-          .last,
-      "BoundBody",
-    );
-  });
+      expect(
+        op["post"]!
+            .requestBody!
+            .content!["application/json"]!
+            .schema!
+            .referenceURI!
+            .pathSegments
+            .last,
+        "BoundBody",
+      );
+    },
+  );
 }
 
 class A extends Serializable {

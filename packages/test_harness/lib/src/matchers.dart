@@ -60,7 +60,9 @@ const TypeMatcher<bool> isBoolean = TypeMatcher<bool>();
 ///         expectResponse(response, 200, headers: {"x-timestamp": isAfter(DateTime())});
 Matcher isAfter(DateTime date) {
   return predicate(
-      (DateTime d) => d.isAfter(date), "after ${date.toIso8601String()}");
+    (DateTime d) => d.isAfter(date),
+    "after ${date.toIso8601String()}",
+  );
 }
 
 /// Validates that a [DateTime] is before [date].
@@ -72,7 +74,9 @@ Matcher isAfter(DateTime date) {
 ///         expectResponse(response, 200, headers: {"x-timestamp": isBefore(DateTime())});
 Matcher isBefore(DateTime date) {
   return predicate(
-      (DateTime d) => d.isBefore(date), "before ${date.toIso8601String()}");
+    (DateTime d) => d.isBefore(date),
+    "before ${date.toIso8601String()}",
+  );
 }
 
 /// Validates that a [DateTime] is before or the same moment as [date].
@@ -83,8 +87,10 @@ Matcher isBefore(DateTime date) {
 ///
 ///         expectResponse(response, 200, headers: {"x-timestamp": isBeforeOrSameMomentAs(DateTime())});
 Matcher isBeforeOrSameMomentAs(DateTime date) {
-  return predicate((DateTime d) => d.isBefore(date) || d == date,
-      "before or same moment as ${date.toIso8601String()}");
+  return predicate(
+    (DateTime d) => d.isBefore(date) || d == date,
+    "before or same moment as ${date.toIso8601String()}",
+  );
 }
 
 /// Validates that a [DateTime] is after or the same moment as [date].
@@ -95,8 +101,10 @@ Matcher isBeforeOrSameMomentAs(DateTime date) {
 ///
 ///         expectResponse(response, 200, headers: {"x-timestamp": isAfterOrSameMomentAs(DateTime())});
 Matcher isAfterOrSameMomentAs(DateTime date) {
-  return predicate((DateTime d) => d.isAfter(date) || d == date,
-      "after or same moment as ${date.toIso8601String()}");
+  return predicate(
+    (DateTime d) => d.isAfter(date) || d == date,
+    "after or same moment as ${date.toIso8601String()}",
+  );
 }
 
 /// Validates that a [DateTime] is the same moment as [date].
@@ -108,7 +116,9 @@ Matcher isAfterOrSameMomentAs(DateTime date) {
 ///         expectResponse(response, 200, headers: {"x-timestamp": isSameMomentAs(DateTime())});
 Matcher isSameMomentAs(DateTime date) {
   return predicate(
-      (DateTime d) => d == date, "same moment as ${date.toIso8601String()}");
+    (DateTime d) => d == date,
+    "same moment as ${date.toIso8601String()}",
+  );
 }
 
 /// Validates that a value is a ISO8601 timestamp.
@@ -202,13 +212,17 @@ Matcher hasBody(dynamic bodyMatcher) =>
 /// You may pass [failIfContainsUnmatchedHeader] as true to force evaluate every
 /// header in the response - but recall that many requests contain headers
 /// that do not need to be tested or may change depending on the environment.
-Matcher hasHeaders(Map<String, dynamic> headerMatcher,
-        {bool failIfContainsUnmatchedHeader = false}) =>
-    HTTPResponseMatcher(
-        null,
-        HTTPHeaderMatcher(headerMatcher,
-            shouldFailIfOthersPresent: failIfContainsUnmatchedHeader),
-        null);
+Matcher hasHeaders(
+  Map<String, dynamic> headerMatcher, {
+  bool failIfContainsUnmatchedHeader = false,
+}) => HTTPResponseMatcher(
+  null,
+  HTTPHeaderMatcher(
+    headerMatcher,
+    shouldFailIfOthersPresent: failIfContainsUnmatchedHeader,
+  ),
+  null,
+);
 
 /// Validates that [TestResponse] has matching [statusCode], [body], and [headers].
 ///
@@ -226,17 +240,22 @@ Matcher hasHeaders(Map<String, dynamic> headerMatcher,
 ///     });
 ///
 /// For details on [failIfContainsUnmatchedHeader], see [hasHeaders].
-Matcher hasResponse(int? statusCode,
-    {dynamic body,
-    Map<String, dynamic>? headers,
-    bool failIfContainsUnmatchedHeader = false}) {
+Matcher hasResponse(
+  int? statusCode, {
+  dynamic body,
+  Map<String, dynamic>? headers,
+  bool failIfContainsUnmatchedHeader = false,
+}) {
   return HTTPResponseMatcher(
-      statusCode,
-      headers != null
-          ? HTTPHeaderMatcher(headers,
-              shouldFailIfOthersPresent: failIfContainsUnmatchedHeader)
-          : null,
-      body != null ? HTTPBodyMatcher(body) : null);
+    statusCode,
+    headers != null
+        ? HTTPHeaderMatcher(
+            headers,
+            shouldFailIfOthersPresent: failIfContainsUnmatchedHeader,
+          )
+        : null,
+    body != null ? HTTPBodyMatcher(body) : null,
+  );
 }
 
 /// A convenience for [expect] with [hasResponse].
@@ -251,8 +270,12 @@ Matcher hasResponse(int? statusCode,
 ///           await client.request("/foo").get(),
 ///           200, body: "foo", headers: {"x-foo": "foo"});
 ///         print("$response");
-TestResponse? expectResponse(TestResponse? response, int statusCode,
-    {dynamic body, Map<String, dynamic>? headers}) {
+TestResponse? expectResponse(
+  TestResponse? response,
+  int statusCode, {
+  dynamic body,
+  Map<String, dynamic>? headers,
+}) {
   expect(response, hasResponse(statusCode, body: body, headers: headers));
   return response;
 }

@@ -60,7 +60,7 @@ class AuthRedirectController extends ResourceController {
     this.allowsImplicit = true,
   }) {
     acceptedContentTypes = [
-      ContentType("application", "x-www-form-urlencoded")
+      ContentType("application", "x-www-form-urlencoded"),
     ];
   }
 
@@ -120,8 +120,14 @@ class AuthRedirectController extends ResourceController {
       return _unsupportedResponseTypeResponse;
     }
 
-    final renderedPage = await delegate!
-        .render(this, request!.raw.uri, responseType, clientID!, state, scope);
+    final renderedPage = await delegate!.render(
+      this,
+      request!.raw.uri,
+      responseType,
+      clientID!,
+      state,
+      scope,
+    );
     if (renderedPage == null) {
       return Response.notFound();
     }
@@ -238,14 +244,18 @@ class AuthRedirectController extends ResourceController {
   ) {
     final body = super.documentOperationRequestBody(context, operation);
     if (operation!.method == "POST") {
-      body!.content!["application/x-www-form-urlencoded"]!.schema!
-          .properties!["password"]!.format = "password";
+      body!
+              .content!["application/x-www-form-urlencoded"]!
+              .schema!
+              .properties!["password"]!
+              .format =
+          "password";
       body.content!["application/x-www-form-urlencoded"]!.schema!.isRequired = [
         "client_id",
         "state",
         "response_type",
         "username",
-        "password"
+        "password",
       ];
     }
     return body;
@@ -274,7 +284,7 @@ class AuthRedirectController extends ResourceController {
           "Serves a login form.",
           APISchemaObject.string(),
           contentTypes: ["text/html"],
-        )
+        ),
       };
     } else if (operation.method == "POST") {
       return {
@@ -286,14 +296,14 @@ class AuthRedirectController extends ResourceController {
           "contains an access token. Otherwise, the fragment contains an error code.",
           headers: {
             "Location": APIHeader()
-              ..schema = APISchemaObject.string(format: "uri")
+              ..schema = APISchemaObject.string(format: "uri"),
           },
         ),
         "${HttpStatus.badRequest}": APIResponse.schema(
           "If 'client_id' is invalid, the redirect URI cannot be verified and this response is sent.",
           APISchemaObject.object({"error": APISchemaObject.string()}),
           contentTypes: ["application/json"],
-        )
+        ),
       };
     }
 
@@ -333,8 +343,9 @@ class AuthRedirectController extends ResourceController {
       return Response.badRequest();
     }
 
-    final queryParameters =
-        Map<String, String>.from(redirectURI.queryParameters);
+    final queryParameters = Map<String, String>.from(
+      redirectURI.queryParameters,
+    );
     String? fragment;
 
     if (responseType == "code") {
@@ -373,14 +384,10 @@ class AuthRedirectController extends ResourceController {
       queryParameters: queryParameters,
       fragment: fragment,
     );
-    return Response(
-      HttpStatus.movedTemporarily,
-      {
-        HttpHeaders.locationHeader: responseURI.toString(),
-        HttpHeaders.cacheControlHeader: "no-store",
-        HttpHeaders.pragmaHeader: "no-cache"
-      },
-      null,
-    );
+    return Response(HttpStatus.movedTemporarily, {
+      HttpHeaders.locationHeader: responseURI.toString(),
+      HttpHeaders.cacheControlHeader: "no-store",
+      HttpHeaders.pragmaHeader: "no-cache",
+    }, null);
   }
 }

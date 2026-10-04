@@ -38,8 +38,8 @@ class ManagedObjectBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': ['.managed.conduit.dart', '.managed.conduit.json'],
-      };
+    '.dart': ['.managed.conduit.dart', '.managed.conduit.json'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -109,14 +109,19 @@ class ManagedObjectBuilder implements Builder {
     if (tableDefType is! InterfaceType) return null;
     final tableDefElement = tableDefType.element;
 
-    final tableMeta = _readTableAnnotation(tableDefElement.metadata.annotations);
-    final responseModelMeta =
-        _readResponseModelAnnotation(tableDefElement.metadata.annotations);
+    final tableMeta = _readTableAnnotation(
+      tableDefElement.metadata.annotations,
+    );
+    final responseModelMeta = _readResponseModelAnnotation(
+      tableDefElement.metadata.annotations,
+    );
 
     final useSnakeCaseTable = tableMeta?.useSnakeCaseName ?? true;
     final useSnakeCaseColumn = tableMeta?.useSnakeCaseColumnName ?? true;
 
-    final tableName = tableMeta?.name ?? _maybeSnake(tableDefElement.name ?? '', useSnakeCaseTable);
+    final tableName =
+        tableMeta?.name ??
+        _maybeSnake(tableDefElement.name ?? '', useSnakeCaseTable);
     if (tableName.isEmpty) return null;
 
     final imports = <String>{};
@@ -181,8 +186,7 @@ class ManagedObjectBuilder implements Builder {
 
     final ann = _ColumnAnnotation(
       isPrimaryKey: columnMeta?.isPrimaryKey ?? isPrimaryKey,
-      autoincrement:
-          columnMeta?.autoincrement ?? (isPrimaryKey ? true : false),
+      autoincrement: columnMeta?.autoincrement ?? (isPrimaryKey ? true : false),
       isNullable: columnMeta?.isNullable ?? false,
       isUnique: columnMeta?.isUnique ?? false,
       isIndexed: columnMeta?.isIndexed ?? (isPrimaryKey ? true : false),
@@ -198,7 +202,8 @@ class ManagedObjectBuilder implements Builder {
     final managedType = _resolveManagedType(fieldType);
     if (managedType == null) return null;
 
-    final columnName = ann.explicitName ??
+    final columnName =
+        ann.explicitName ??
         _maybeSnake(fieldName, ann.useSnakeCaseName ?? useSnakeCase);
 
     final validatorSources = <String>[];
@@ -247,8 +252,7 @@ class ManagedObjectBuilder implements Builder {
       case 'List':
         if (t.typeArguments.length == 1 &&
             (t.typeArguments.first.element?.name == 'int')) {
-          return _ManagedTypeInfo('list', 'List<int>',
-              typeArguments: ['int']);
+          return _ManagedTypeInfo('list', 'List<int>', typeArguments: ['int']);
         }
         return null;
       default:
@@ -264,8 +268,7 @@ class ManagedObjectBuilder implements Builder {
     if (value == null) return false;
     final t = value.type;
     if (t is! InterfaceType) return false;
-    if (!t.element.library.identifier
-        .startsWith(_conduitCorePackagePrefix)) {
+    if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
       return false;
     }
     if (t.element.name != 'Column') return false;
@@ -278,8 +281,7 @@ class ManagedObjectBuilder implements Builder {
       if (value == null) continue;
       final t = value.type;
       if (t is! InterfaceType) continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
       if (t.element.name != 'Column') continue;
@@ -292,8 +294,7 @@ class ManagedObjectBuilder implements Builder {
 
       return _ColumnAnnotation(
         isPrimaryKey: value.getField('isPrimaryKey')?.toBoolValue() ?? false,
-        autoincrement:
-            value.getField('autoincrement')?.toBoolValue() ?? false,
+        autoincrement: value.getField('autoincrement')?.toBoolValue() ?? false,
         isNullable: value.getField('isNullable')?.toBoolValue() ?? false,
         isUnique: value.getField('isUnique')?.toBoolValue() ?? false,
         isIndexed: value.getField('isIndexed')?.toBoolValue() ?? false,
@@ -301,7 +302,8 @@ class ManagedObjectBuilder implements Builder {
             value.getField('shouldOmitByDefault')?.toBoolValue() ?? false,
         defaultValueLiteral: defaultLiteral,
         databaseType: _readManagedPropertyTypeEnum(
-            value.getField('databaseType')),
+          value.getField('databaseType'),
+        ),
         useSnakeCaseName: value.getField('useSnakeCaseName')?.toBoolValue(),
         explicitName: value.getField('name')?.toStringValue(),
       );
@@ -326,8 +328,7 @@ class ManagedObjectBuilder implements Builder {
       if (value == null) continue;
       final t = value.type;
       if (t is! InterfaceType) continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
       if (t.element.name != 'Table') continue;
@@ -337,9 +338,7 @@ class ManagedObjectBuilder implements Builder {
             value.getField('useSnakeCaseName')?.toBoolValue() ?? true,
         useSnakeCaseColumnName:
             value.getField('useSnakeCaseColumnName')?.toBoolValue() ?? true,
-        uniquePropertySet: _readSymbolList(
-          value.getField('uniquePropertySet'),
-        ),
+        uniquePropertySet: _readSymbolList(value.getField('uniquePropertySet')),
       );
     }
     return null;
@@ -367,8 +366,7 @@ class ManagedObjectBuilder implements Builder {
       if (value == null) continue;
       final t = value.type;
       if (t is! InterfaceType) continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
       if (t.element.name != 'ResponseModel') continue;
@@ -385,8 +383,7 @@ class ManagedObjectBuilder implements Builder {
       if (value == null) continue;
       final t = value.type;
       if (t is! InterfaceType) continue;
-      if (!t.element.library.identifier
-          .startsWith(_conduitCorePackagePrefix)) {
+      if (!t.element.library.identifier.startsWith(_conduitCorePackagePrefix)) {
         continue;
       }
       if (t.element.name != 'ResponseKey') continue;
@@ -413,8 +410,8 @@ class ManagedObjectBuilder implements Builder {
     final el = t.element;
     final libUri = el.library.identifier;
     if (!libUri.startsWith(_conduitCorePackagePrefix)) return null;
-    final isValidate = el.allSupertypes
-            .any((s) => s.element.name == 'Validate') ||
+    final isValidate =
+        el.allSupertypes.any((s) => s.element.name == 'Validate') ||
         el.name == 'Validate';
     if (!isValidate) return null;
     imports.add(libUri);
@@ -425,9 +422,7 @@ class ManagedObjectBuilder implements Builder {
 
   String _emitRuntime(_EntityAnalysis e) {
     final attrEntries = e.properties
-        .map(
-          (p) => "'${p.propertyName}': ${_attributeInstantiator(e, p)}",
-        )
+        .map((p) => "'${p.propertyName}': ${_attributeInstantiator(e, p)}")
         .join(', ');
 
     final symbolMapEntries = StringBuffer();
@@ -443,7 +438,7 @@ class ManagedObjectBuilder implements Builder {
     final uniqueLiteral = e.uniquePropertySet == null
         ? 'null'
         : '[${e.uniquePropertySet!.map((s) => "'$s'").join(',')}]'
-            ".map((k) => entity.properties[k]).whereType<ManagedPropertyDescription>().toList()";
+              ".map((k) => entity.properties[k]).whereType<ManagedPropertyDescription>().toList()";
 
     return '''
 class \$${e.instanceClassName}EntityRuntime extends ManagedEntityRuntime {
@@ -529,15 +524,15 @@ ${symbolMapEntries.toString().trimRight()}
     final validatorSrc = p.validatorSources.isEmpty
         ? '<ManagedValidator>[]'
         : '() {'
-            'final out = <ManagedValidator>[];'
-            'for (final v in <Validate>[${p.validatorSources.join(', ')}]) {'
-            '  final state = v.compile('
-            '    ManagedType.make<${p.declaredTypeSource}>(${_managedKindName(p.managedTypeKind)}, null, const <String, dynamic>{}),'
-            '    relationshipInverseType: null);'
-            '  out.add(ManagedValidator(v, state));'
-            '}'
-            'return out;'
-            '}()';
+              'final out = <ManagedValidator>[];'
+              'for (final v in <Validate>[${p.validatorSources.join(', ')}]) {'
+              '  final state = v.compile('
+              '    ManagedType.make<${p.declaredTypeSource}>(${_managedKindName(p.managedTypeKind)}, null, const <String, dynamic>{}),'
+              '    relationshipInverseType: null);'
+              '  out.add(ManagedValidator(v, state));'
+              '}'
+              'return out;'
+              '}()';
 
     final defaultValue = p.defaultValueLiteral ?? 'null';
     final responseKey = p.responseKeyLiteral ?? 'null';
@@ -710,5 +705,4 @@ extension<E> on Iterable<E> {
   }
 }
 
-Builder managedObjectBuilder(BuilderOptions options) =>
-    ManagedObjectBuilder();
+Builder managedObjectBuilder(BuilderOptions options) => ManagedObjectBuilder();

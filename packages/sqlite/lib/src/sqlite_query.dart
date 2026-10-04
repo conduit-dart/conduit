@@ -52,8 +52,11 @@ class SqliteQuery<InstanceType extends ManagedObject>
 
     buffer.write("VALUES (${builder.sqlValuesToInsert})");
 
-    await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
 
     // SQLite has no RETURNING (pre-3.35) — fall back to selecting
     // the just-inserted row by primary key, using
@@ -66,9 +69,13 @@ class SqliteQuery<InstanceType extends ManagedObject>
     if (pkValueBuilder != null && pkValueBuilder.value != null) {
       rawPkValue = pkValueBuilder.value;
     } else {
-      final rows = await context.persistentStore
-              .executeQuery("SELECT last_insert_rowid()", const {},
-                  timeoutInSeconds) as List<List<dynamic>>;
+      final rows =
+          await context.persistentStore.executeQuery(
+                "SELECT last_insert_rowid()",
+                const {},
+                timeoutInSeconds,
+              )
+              as List<List<dynamic>>;
       rawPkValue = rows.first.first;
     }
 
@@ -79,15 +86,13 @@ class SqliteQuery<InstanceType extends ManagedObject>
     selectBuf.write("FROM ${selectBuilder.sqlTableName} ");
     selectBuf.write("WHERE $pkColumn = :__pk_value__");
 
-    final results = await context.persistentStore.executeQuery(
-      selectBuf.toString(),
-      {'__pk_value__': rawPkValue},
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final results =
+        await context.persistentStore.executeQuery(selectBuf.toString(), {
+              '__pk_value__': rawPkValue,
+            }, timeoutInSeconds)
+            as List<List<dynamic>>;
 
-    return selectBuilder
-        .instancesForRows<InstanceType>(results)
-        .first;
+    return selectBuilder.instancesForRows<InstanceType>(results).first;
   }
 
   @override
@@ -134,11 +139,13 @@ class SqliteQuery<InstanceType extends ManagedObject>
     }
     final selectIdsSql = selectIdsBuf.toString();
     final selectIdsParams = _filterParams(selectIdsSql, builder.variables);
-    final pkRows = await context.persistentStore.executeQuery(
-      selectIdsSql,
-      selectIdsParams,
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final pkRows =
+        await context.persistentStore.executeQuery(
+              selectIdsSql,
+              selectIdsParams,
+              timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     final pkValues = pkRows.map((r) => r.first).toList();
 
     final updBuf = StringBuffer();
@@ -174,11 +181,13 @@ class SqliteQuery<InstanceType extends ManagedObject>
     fetchBuf.write("FROM ${fetchBuilder.sqlTableName} ");
     fetchBuf.write("WHERE $pkColumn IN (${placeholders.join(',')})");
 
-    final results = await context.persistentStore.executeQuery(
-      fetchBuf.toString(),
-      pkParams,
-      timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final results =
+        await context.persistentStore.executeQuery(
+              fetchBuf.toString(),
+              pkParams,
+              timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     return fetchBuilder.instancesForRows(results);
   }
 
@@ -287,8 +296,11 @@ class SqliteQuery<InstanceType extends ManagedObject>
     if (offset != 0) {
       buffer.write("OFFSET $offset ");
     }
-    final results = await context.persistentStore
-        .executeQuery(buffer.toString(), builder.variables, timeoutInSeconds);
+    final results = await context.persistentStore.executeQuery(
+      buffer.toString(),
+      builder.variables,
+      timeoutInSeconds,
+    );
     return builder.instancesForRows(results as List<List<dynamic>>);
   }
 
@@ -385,11 +397,13 @@ class _SqliteQueryReduce<T extends ManagedObject>
       buffer.write("WHERE ${builder.sqlWhereClause} ");
     }
 
-    final result = await query.context.persistentStore.executeQuery(
-      buffer.toString(),
-      builder.variables,
-      query.timeoutInSeconds,
-    ) as List<List<dynamic>>;
+    final result =
+        await query.context.persistentStore.executeQuery(
+              buffer.toString(),
+              builder.variables,
+              query.timeoutInSeconds,
+            )
+            as List<List<dynamic>>;
     if (result.isEmpty) {
       return null as U;
     }

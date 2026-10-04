@@ -38,7 +38,7 @@ class Table {
   /// properties declared in the table definition, and those properties must be either attributes
   /// or belongs-to relationship properties. See [Table] for example.
   const Table.unique(List<Symbol> properties)
-      : this(uniquePropertySet: properties);
+    : this(uniquePropertySet: properties);
 
   /// Each instance of the associated table definition is unique for these properties.
   ///
@@ -74,7 +74,7 @@ enum DeleteRule {
   nullify,
 
   /// All objects with a foreign key reference to the deleted object will have that reference set to the column's default value.
-  setDefault
+  setDefault,
 }
 
 /// Metadata to configure property of [ManagedObject] as a foreign key column.
@@ -92,7 +92,7 @@ class Relate {
   });
 
   const Relate.deferred(DeleteRule onDelete, {bool isRequired = false})
-      : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
+    : this(_deferredSymbol, onDelete: onDelete, isRequired: isRequired);
 
   /// The symbol for the property in the related [ManagedObject].
   ///
@@ -149,11 +149,11 @@ class Column {
     this.validators = const [],
     this.useSnakeCaseName,
     this.name,
-  })  : isPrimaryKey = primaryKey,
-        isNullable = nullable,
-        isUnique = unique,
-        isIndexed = indexed,
-        shouldOmitByDefault = omitByDefault;
+  }) : isPrimaryKey = primaryKey,
+       isNullable = nullable,
+       isUnique = unique,
+       isIndexed = indexed,
+       shouldOmitByDefault = omitByDefault;
 
   /// When true, indicates that this property is the primary key.
   ///
@@ -282,8 +282,8 @@ class Serialize {
   ///
   /// Both [input] and [output] default to true.
   const Serialize({bool input = true, bool output = true})
-      : isAvailableAsInput = input,
-        isAvailableAsOutput = output;
+    : isAvailableAsInput = input,
+      isAvailableAsOutput = output;
 
   /// See constructor.
   final bool isAvailableAsInput;

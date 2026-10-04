@@ -11,10 +11,10 @@ import 'package:conduit_core/src/utilities/mirror_helpers.dart';
 
 class PropertyBuilder {
   PropertyBuilder(this.parent, this.declaration)
-      : relate = firstMetadataOfType(declaration),
-        column = firstMetadataOfType(declaration),
-        responseKey = firstMetadataOfType(declaration),
-        serialize = _getTransienceForProperty(declaration) {
+    : relate = firstMetadataOfType(declaration),
+      column = firstMetadataOfType(declaration),
+      responseKey = firstMetadataOfType(declaration),
+      serialize = _getTransienceForProperty(declaration) {
     propertyName = _getPropertyName();
     name = _getName();
     type = _getType();
@@ -23,13 +23,14 @@ class PropertyBuilder {
     * is replicated in the generated code. if more implicit validators are created, a more general
     * purpose solution should be created
     * */
-    _validators = validatorsFromDeclaration(declaration)
-        .map((v) => ValidatorBuilder(this, v))
-        .toList();
+    _validators = validatorsFromDeclaration(
+      declaration,
+    ).map((v) => ValidatorBuilder(this, v)).toList();
 
     if (column?.validators.isNotEmpty ?? false) {
-      _validators!
-          .addAll(column!.validators.map((v) => ValidatorBuilder(this, v)));
+      _validators!.addAll(
+        column!.validators.map((v) => ValidatorBuilder(this, v)),
+      );
     }
 
     if (type?.isEnumerated ?? false) {
@@ -75,8 +76,9 @@ class PropertyBuilder {
   void compile(final List<EntityBuilder> entityBuilders) {
     if (type == null) {
       if (relate != null) {
-        relatedProperty =
-            _getRelatedEntityBuilderFrom(entityBuilders).getInverseOf(this);
+        relatedProperty = _getRelatedEntityBuilderFrom(
+          entityBuilders,
+        ).getInverseOf(this);
         type = relatedProperty!.parent.primaryKeyProperty.type;
         relationshipType = ManagedRelationshipType.belongsTo;
         includeInDefaultResultSet = true;
@@ -131,8 +133,9 @@ class PropertyBuilder {
     } else {
       if (defaultValue != null && autoincrement) {
         throw ManagedDataModelError(
-            "Property '${parent.name}.$name' is invalid. "
-            "A property cannot have a default value and be autoincrementing. ");
+          "Property '${parent.name}.$name' is invalid. "
+          "A property cannot have a default value and be autoincrementing. ",
+        );
       }
     }
 
@@ -154,8 +157,9 @@ class PropertyBuilder {
       v.link(others);
     }
     if (isRelationship) {
-      final destinationEntity =
-          others.firstWhere((e) => e == relatedProperty!.parent.entity);
+      final destinationEntity = others.firstWhere(
+        (e) => e == relatedProperty!.parent.entity,
+      );
 
       final dartType =
           ((declaration as VariableMirror).type as ClassMirror).reflectedType;
@@ -224,8 +228,9 @@ class PropertyBuilder {
 
     if (type is! ClassMirror) {
       throw ManagedDataModelError(
-          "Invalid type for field '${MirrorSystem.getName(declaration.simpleName)}' "
-          "in table definition '${parent.tableDefinitionTypeName}'.");
+        "Invalid type for field '${MirrorSystem.getName(declaration.simpleName)}' "
+        "in table definition '${parent.tableDefinitionTypeName}'.",
+      );
     }
 
     return type;
@@ -262,8 +267,9 @@ class PropertyBuilder {
     }
 
     throw ManagedDataModelError(
-        "Tried getting property type description from non-property. This is an internal error, "
-        "as this method shouldn't be invoked on non-property or non-accessors.");
+      "Tried getting property type description from non-property. This is an internal error, "
+      "as this method shouldn't be invoked on non-property or non-accessors.",
+    );
   }
 
   String _getName() {
@@ -284,7 +290,8 @@ class PropertyBuilder {
   }
 
   EntityBuilder _getRelatedEntityBuilderFrom(
-      final List<EntityBuilder> builders) {
+    final List<EntityBuilder> builders,
+  ) {
     final expectedInstanceType = getDeclarationType();
     if (!relate!.isDeferred) {
       return builders.firstWhere(

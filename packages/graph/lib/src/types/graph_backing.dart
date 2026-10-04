@@ -37,7 +37,7 @@ abstract class GraphBacking {
 /// query strings.
 class GraphMapBacking implements GraphBacking {
   GraphMapBacking([Map<String, Object?>? initial])
-      : _contents = <String, Object?>{...?initial};
+    : _contents = <String, Object?>{...?initial};
 
   final Map<String, Object?> _contents;
 

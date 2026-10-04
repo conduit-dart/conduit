@@ -19,7 +19,7 @@ void main() {
       RootJoinObject,
       OtherRootObject,
       ChildObject,
-      GrandChildObject
+      GrandChildObject,
     ]);
     rootObjects = await populateModelGraph(ctx);
   });
@@ -47,30 +47,33 @@ void main() {
     });
 
     test(
-        "Can match on belongsTo relationship's primary key, does not cause join",
-        () async {
-      final q = Query<ChildObject>(ctx!)
-        ..where((o) => o.parents!.rid).equalTo(1);
-      final results = await q.fetch();
+      "Can match on belongsTo relationship's primary key, does not cause join",
+      () async {
+        final q = Query<ChildObject>(ctx!)
+          ..where((o) => o.parents!.rid).equalTo(1);
+        final results = await q.fetch();
 
-      expect(
-        results.length,
-        rootObjects.firstWhere((r) => r.rid == 1).children!.length,
-      );
-      for (final child in rootObjects.first.children!) {
-        final matching = results.firstWhere((c) => c.cid == child.cid);
-        expect(child.value1, matching.value1);
-        expect(child.value2, matching.value2);
-        expect(child.parents!.rid, 1);
-      }
-    });
+        expect(
+          results.length,
+          rootObjects.firstWhere((r) => r.rid == 1).children!.length,
+        );
+        for (final child in rootObjects.first.children!) {
+          final matching = results.firstWhere((c) => c.cid == child.cid);
+          expect(child.value1, matching.value1);
+          expect(child.value2, matching.value2);
+          expect(child.parents!.rid, 1);
+        }
+      },
+    );
 
     test("Can use whereNull", () async {
       var q = Query<ChildObject>(ctx!)..where((o) => o.parents).isNull();
       var results = await q.fetch();
 
-      final childNotChildren =
-          rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
+      final childNotChildren = rootObjects
+          .expand((r) => [r.child])
+          .where((c) => c != null)
+          .toList();
 
       expect(results.length, childNotChildren.length);
       for (final c in childNotChildren) {
@@ -83,8 +86,9 @@ void main() {
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNull();
       results = await q.fetch();
 
-      final childrenNotChild =
-          rootObjects.expand((r) => r.children ?? []).toList();
+      final childrenNotChild = rootObjects
+          .expand((r) => r.children ?? [])
+          .toList();
 
       expect(results.length, childrenNotChild.length);
       for (final c in childrenNotChild) {
@@ -114,8 +118,10 @@ void main() {
 
       q = Query<ChildObject>(ctx!)..where((o) => o.parent).isNotNull();
       results = await q.fetch();
-      final childNotChildren =
-          rootObjects.expand((r) => [r.child]).where((c) => c != null).toList();
+      final childNotChildren = rootObjects
+          .expand((r) => [r.child])
+          .where((c) => c != null)
+          .toList();
 
       expect(results.length, childNotChildren.length);
       for (final c in childNotChildren) {
@@ -181,7 +187,7 @@ void main() {
           ChildObject,
           9,
           and: {"parents": fullObjectMap(RootObject, 4), "parent": null},
-        )
+        ),
       ]),
     );
   });
@@ -199,7 +205,7 @@ void main() {
             1,
             and: {
               "parents": null,
-              "parent": {"rid": 1}
+              "parent": {"rid": 1},
             },
           ),
           fullObjectMap(
@@ -227,7 +233,7 @@ void main() {
             6,
             and: {
               "parents": null,
-              "parent": {"rid": 2}
+              "parent": {"rid": 2},
             },
           ),
           fullObjectMap(
@@ -240,14 +246,14 @@ void main() {
             8,
             and: {
               "parents": null,
-              "parent": {"rid": 3}
+              "parent": {"rid": 3},
             },
           ),
           fullObjectMap(
             ChildObject,
             9,
             and: {"parents": fullObjectMap(RootObject, 4), "parent": null},
-          )
+          ),
         ]),
       );
     });
@@ -265,7 +271,7 @@ void main() {
             1,
             and: {
               "parents": null,
-              "parent": {"cid": 1}
+              "parent": {"cid": 1},
             },
           ),
           fullObjectMap(
@@ -278,9 +284,9 @@ void main() {
                 1,
                 and: {
                   "parents": null,
-                  "parent": {"rid": 1}
+                  "parent": {"rid": 1},
                 },
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -293,9 +299,9 @@ void main() {
                 1,
                 and: {
                   "parents": null,
-                  "parent": {"rid": 1}
+                  "parent": {"rid": 1},
                 },
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -303,7 +309,7 @@ void main() {
             4,
             and: {
               "parents": null,
-              "parent": {"cid": 2}
+              "parent": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -315,7 +321,7 @@ void main() {
                 ChildObject,
                 2,
                 and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -327,7 +333,7 @@ void main() {
                 ChildObject,
                 2,
                 and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -335,7 +341,7 @@ void main() {
             7,
             and: {
               "parents": null,
-              "parent": {"cid": 3}
+              "parent": {"cid": 3},
             },
           ),
           fullObjectMap(
@@ -347,7 +353,7 @@ void main() {
                 ChildObject,
                 4,
                 and: {"parents": fullObjectMap(RootObject, 1), "parent": null},
-              )
+              ),
             },
           ),
         ]),
@@ -357,8 +363,9 @@ void main() {
     test("Bidirectional join", () async {
       final q = Query<ChildObject>(ctx!)
         ..sortBy((c) => c.cid, QuerySortOrder.ascending)
-        ..join(set: (c) => c.grandChildren)
-            .sortBy((g) => g.gid, QuerySortOrder.descending)
+        ..join(
+          set: (c) => c.grandChildren,
+        ).sortBy((g) => g.gid, QuerySortOrder.descending)
         ..join(object: (c) => c.parents);
 
       final results = await q.fetch();
@@ -378,7 +385,7 @@ void main() {
                   3,
                   and: {
                     "parents": {"cid": 1},
-                    "parent": null
+                    "parent": null,
                   },
                 ),
                 fullObjectMap(
@@ -386,10 +393,10 @@ void main() {
                   2,
                   and: {
                     "parents": {"cid": 1},
-                    "parent": null
+                    "parent": null,
                   },
                 ),
-              ]
+              ],
             },
           ),
           fullObjectMap(
@@ -404,7 +411,7 @@ void main() {
                   6,
                   and: {
                     "parents": {"cid": 2},
-                    "parent": null
+                    "parent": null,
                   },
                 ),
                 fullObjectMap(
@@ -412,10 +419,10 @@ void main() {
                   5,
                   and: {
                     "parents": {"cid": 2},
-                    "parent": null
+                    "parent": null,
                   },
                 ),
-              ]
+              ],
             },
           ),
           fullObjectMap(
@@ -424,7 +431,7 @@ void main() {
             and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
-              "grandChildren": []
+              "grandChildren": [],
             },
           ),
           fullObjectMap(
@@ -439,10 +446,10 @@ void main() {
                   8,
                   and: {
                     "parents": {"cid": 4},
-                    "parent": null
+                    "parent": null,
                   },
                 ),
-              ]
+              ],
             },
           ),
           fullObjectMap(
@@ -451,7 +458,7 @@ void main() {
             and: {
               "parents": fullObjectMap(RootObject, 1),
               "parent": null,
-              "grandChildren": []
+              "grandChildren": [],
             },
           ),
           fullObjectMap(
@@ -460,7 +467,7 @@ void main() {
             and: {
               "parents": null,
               "parent": {"rid": 2},
-              "grandChildren": []
+              "grandChildren": [],
             },
           ),
           fullObjectMap(
@@ -469,7 +476,7 @@ void main() {
             and: {
               "parents": fullObjectMap(RootObject, 2),
               "parent": null,
-              "grandChildren": []
+              "grandChildren": [],
             },
           ),
           fullObjectMap(
@@ -478,7 +485,7 @@ void main() {
             and: {
               "parents": null,
               "parent": {"rid": 3},
-              "grandChildren": []
+              "grandChildren": [],
             },
           ),
           fullObjectMap(
@@ -487,29 +494,30 @@ void main() {
             and: {
               "parents": fullObjectMap(RootObject, 4),
               "parent": null,
-              "grandChildren": []
+              "grandChildren": [],
             },
-          )
+          ),
         ]),
       );
     });
 
     test(
-        "Can use two 'where' criteria on parent object when not joining parent object explicitly",
-        () async {
-      final q = Query<ChildObject>(ctx!)
-        ..where((o) => o.parent!.value1).equalTo(1)
-        ..where((o) => o.parent!.value2).equalTo(1);
-      final res1 = await q.fetchOne();
-      expect(res1, isNotNull);
-      expect(res1!.cid, 1);
+      "Can use two 'where' criteria on parent object when not joining parent object explicitly",
+      () async {
+        final q = Query<ChildObject>(ctx!)
+          ..where((o) => o.parent!.value1).equalTo(1)
+          ..where((o) => o.parent!.value2).equalTo(1);
+        final res1 = await q.fetchOne();
+        expect(res1, isNotNull);
+        expect(res1!.cid, 1);
 
-      final q2 = Query<ChildObject>(ctx!)
-        ..where((o) => o.parent!.value1).equalTo(1)
-        ..where((o) => o.parent!.value2).equalTo(2);
-      final res2 = await q2.fetch();
-      expect(res2.length, 0);
-    });
+        final q2 = Query<ChildObject>(ctx!)
+          ..where((o) => o.parent!.value1).equalTo(1)
+          ..where((o) => o.parent!.value2).equalTo(2);
+        final res2 = await q2.fetch();
+        expect(res2.length, 0);
+      },
+    );
   });
 
   group("Join on parent of hasOne relationship", () {
@@ -532,7 +540,7 @@ void main() {
             2,
             and: {
               "parents": {"rid": 1},
-              "parent": null
+              "parent": null,
             },
           ),
           fullObjectMap(
@@ -540,7 +548,7 @@ void main() {
             3,
             and: {
               "parents": {"rid": 1},
-              "parent": null
+              "parent": null,
             },
           ),
           fullObjectMap(
@@ -548,7 +556,7 @@ void main() {
             4,
             and: {
               "parents": {"rid": 1},
-              "parent": null
+              "parent": null,
             },
           ),
           fullObjectMap(
@@ -556,7 +564,7 @@ void main() {
             5,
             and: {
               "parents": {"rid": 1},
-              "parent": null
+              "parent": null,
             },
           ),
           fullObjectMap(
@@ -569,7 +577,7 @@ void main() {
             7,
             and: {
               "parents": {"rid": 2},
-              "parent": null
+              "parent": null,
             },
           ),
           fullObjectMap(
@@ -582,9 +590,9 @@ void main() {
             9,
             and: {
               "parents": {"rid": 4},
-              "parent": null
+              "parent": null,
             },
-          )
+          ),
         ]),
       );
     });
@@ -609,7 +617,7 @@ void main() {
                 ChildObject,
                 1,
                 and: {"parents": null, "parent": fullObjectMap(RootObject, 1)},
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -617,7 +625,7 @@ void main() {
             2,
             and: {
               "parent": null,
-              "parents": {"cid": 1}
+              "parents": {"cid": 1},
             },
           ),
           fullObjectMap(
@@ -625,7 +633,7 @@ void main() {
             3,
             and: {
               "parent": null,
-              "parents": {"cid": 1}
+              "parents": {"cid": 1},
             },
           ),
           fullObjectMap(
@@ -638,9 +646,9 @@ void main() {
                 2,
                 and: {
                   "parents": {"rid": 1},
-                  "parent": null
+                  "parent": null,
                 },
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -648,7 +656,7 @@ void main() {
             5,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -656,7 +664,7 @@ void main() {
             6,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -669,9 +677,9 @@ void main() {
                 3,
                 and: {
                   "parents": {"rid": 1},
-                  "parent": null
+                  "parent": null,
                 },
-              )
+              ),
             },
           ),
           fullObjectMap(
@@ -679,9 +687,9 @@ void main() {
             8,
             and: {
               "parent": null,
-              "parents": {"cid": 4}
+              "parents": {"cid": 4},
             },
-          )
+          ),
         ]),
       );
     });
@@ -701,7 +709,7 @@ void main() {
             2,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
           fullObjectMap(
@@ -709,7 +717,7 @@ void main() {
             3,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
           fullObjectMap(
@@ -717,7 +725,7 @@ void main() {
             4,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
           fullObjectMap(
@@ -725,7 +733,7 @@ void main() {
             5,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
         ]),
@@ -747,7 +755,7 @@ void main() {
             5,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -755,7 +763,7 @@ void main() {
             6,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -763,7 +771,7 @@ void main() {
             8,
             and: {
               "parent": null,
-              "parents": {"cid": 4}
+              "parents": {"cid": 4},
             },
           ),
         ]),
@@ -782,7 +790,7 @@ void main() {
             5,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -790,7 +798,7 @@ void main() {
             6,
             and: {
               "parent": null,
-              "parents": {"cid": 2}
+              "parents": {"cid": 2},
             },
           ),
           fullObjectMap(
@@ -798,7 +806,7 @@ void main() {
             8,
             and: {
               "parent": null,
-              "parents": {"cid": 4}
+              "parents": {"cid": 4},
             },
           ),
         ]),
@@ -818,7 +826,7 @@ void main() {
             2,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
           fullObjectMap(
@@ -826,7 +834,7 @@ void main() {
             3,
             and: {
               "parent": null,
-              "parents": {"rid": 1}
+              "parents": {"rid": 1},
             },
           ),
         ]),

@@ -183,11 +183,7 @@ void main() {
   test('Decodes multiple string args of the same key', () {
     final cmd = TestCLICommand();
 
-    final args = [
-      '--define=foo',
-      '--define=bar',
-      '--define=baz',
-    ];
+    final args = ['--define=foo', '--define=bar', '--define=baz'];
 
     final results = cmd.options.parse(args);
     cmd.process(results);

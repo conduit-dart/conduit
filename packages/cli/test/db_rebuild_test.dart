@@ -96,8 +96,9 @@ class _TestObject {
       // rebuild it should still be gone (dropped explicitly via the tracked
       // schema set, OR untouched because it isn't tracked — this test
       // documents that the version table + tracked tables go away).
-      await store!
-          .execute("CREATE TABLE IF NOT EXISTS _stale_table (id integer)");
+      await store!.execute(
+        "CREATE TABLE IF NOT EXISTS _stale_table (id integer)",
+      );
 
       // Baseline: generate + upgrade once to land schema in DB.
       var res = await projectUnderTestCli.run("db", ["generate"]);
@@ -207,10 +208,12 @@ class _TestObject {
 }
 
 Future<bool> _tableExists(PostgreSQLPersistentStore store, String name) async {
-  final result = await store.execute(
-    "SELECT to_regclass(@n:text)",
-    substitutionValues: {"n": name},
-  ) as List<List<dynamic>>;
+  final result =
+      await store.execute(
+            "SELECT to_regclass(@n:text)",
+            substitutionValues: {"n": name},
+          )
+          as List<List<dynamic>>;
   return result.first.first != null;
 }
 
@@ -218,9 +221,11 @@ Future<List<String>> _columnsOfTable(
   PostgreSQLPersistentStore store,
   String tableName,
 ) async {
-  final results = await store.execute(
-    "SELECT column_name FROM information_schema.columns WHERE table_name=@n:text",
-    substitutionValues: {"n": tableName},
-  ) as List<List<dynamic>>;
+  final results =
+      await store.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_name=@n:text",
+            substitutionValues: {"n": tableName},
+          )
+          as List<List<dynamic>>;
   return results.map((r) => r.first as String).toList();
 }

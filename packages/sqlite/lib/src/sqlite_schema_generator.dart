@@ -31,9 +31,7 @@ mixin SqliteSchemaGenerator {
     );
 
     final indexCommands = table.columns
-        .where(
-          (col) => col.isIndexed! && !col.isPrimaryKey!,
-        )
+        .where((col) => col.isIndexed! && !col.isPrimaryKey!)
         .map((col) => addIndexToColumn(table, col))
         .expand((commands) => commands);
     commands.addAll(indexCommands);
@@ -58,7 +56,7 @@ mixin SqliteSchemaGenerator {
         .map((name) => _columnNameForColumn(table[name]!))
         .join(",");
     return [
-      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)"
+      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)",
     ];
   }
 
@@ -99,7 +97,7 @@ mixin SqliteSchemaGenerator {
     // Available since SQLite 3.35 (2021); package:sqlite3 ships a newer
     // build, so this is fine.
     return [
-      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)}"
+      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)}",
     ];
   }
 
@@ -110,7 +108,7 @@ mixin SqliteSchemaGenerator {
   ) {
     return [
       "ALTER TABLE ${table.name} "
-      "RENAME COLUMN ${_columnNameForColumn(column)} TO $name"
+          "RENAME COLUMN ${_columnNameForColumn(column)} TO $name",
     ];
   }
 
@@ -151,7 +149,7 @@ mixin SqliteSchemaGenerator {
   List<String> addIndexToColumn(SchemaTable table, SchemaColumn column) {
     return [
       "CREATE INDEX ${dialect.indexName(table.name ?? '', _columnNameForColumn(column))} "
-      "ON ${table.name} (${_columnNameForColumn(column)})"
+          "ON ${table.name} (${_columnNameForColumn(column)})",
     ];
   }
 
@@ -174,7 +172,7 @@ mixin SqliteSchemaGenerator {
 
   List<String> deleteIndexFromColumn(SchemaTable table, SchemaColumn column) {
     return [
-      "DROP INDEX ${dialect.indexName(table.name ?? '', _columnNameForColumn(column))}"
+      "DROP INDEX ${dialect.indexName(table.name ?? '', _columnNameForColumn(column))}",
     ];
   }
 

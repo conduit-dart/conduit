@@ -23,8 +23,10 @@ class ReferenceResolver {
   ///}
   /// ```
   KeyedArchive? resolve(Uri ref) {
-    final folded = ref.pathSegments.fold<KeyedArchive?>(document,
-        (KeyedArchive? objectPtr, pathSegment) {
+    final folded = ref.pathSegments.fold<KeyedArchive?>(document, (
+      KeyedArchive? objectPtr,
+      pathSegment,
+    ) {
       if (objectPtr != null) {
         return objectPtr[pathSegment] as KeyedArchive?;
       } else {

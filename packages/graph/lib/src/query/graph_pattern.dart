@@ -36,8 +36,7 @@ class GraphPatternNode<N extends GraphNode<N>> {
   /// `(u)-[:Friend]->(:?)`. The terminal node label / type is filled
   /// in by the backend renderer when it lowers the pattern.
   GraphPatternNode<N> connectedTo<E>({
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
     GraphLabel? edgeLabel,
     Type? toType,
     GraphLabel? toLabel,

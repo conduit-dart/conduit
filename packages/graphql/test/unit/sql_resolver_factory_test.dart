@@ -53,34 +53,31 @@ void main() {
   });
 
   group('listResolverFor argument lowering', () {
-    test('limit + offset land on Query.fetchLimit / Query.offset',
-        () async {
-      final query = buildQueryWithArgs(User, {
-        'limit': 10,
-        'offset': 5,
-      });
+    test('limit + offset land on Query.fetchLimit / Query.offset', () async {
+      final query = buildQueryWithArgs(User, {'limit': 10, 'offset': 5});
       expect(query.fetchLimit, equals(10));
       expect(query.offset, equals(5));
     });
 
-    test('orderBy ASC builds a QuerySortDescriptor with ascending order',
-        () async {
-      final query = buildQueryWithArgs(User, {
-        'orderBy': [
-          {'field': 'createdAt', 'direction': 'ASC'},
-        ],
-      });
-      final mixin = query as QueryMixin;
-      expect(mixin.sortDescriptors, hasLength(1));
-      expect(mixin.sortDescriptors.first.key, equals('createdAt'));
-      expect(
-        mixin.sortDescriptors.first.order,
-        equals(QuerySortOrder.ascending),
-      );
-    });
+    test(
+      'orderBy ASC builds a QuerySortDescriptor with ascending order',
+      () async {
+        final query = buildQueryWithArgs(User, {
+          'orderBy': [
+            {'field': 'createdAt', 'direction': 'ASC'},
+          ],
+        });
+        final mixin = query as QueryMixin;
+        expect(mixin.sortDescriptors, hasLength(1));
+        expect(mixin.sortDescriptors.first.key, equals('createdAt'));
+        expect(
+          mixin.sortDescriptors.first.order,
+          equals(QuerySortOrder.ascending),
+        );
+      },
+    );
 
-    test('orderBy DESC builds a descending QuerySortDescriptor',
-        () async {
+    test('orderBy DESC builds a descending QuerySortDescriptor', () async {
       final query = buildQueryWithArgs(User, {
         'orderBy': [
           {'field': 'createdAt', 'direction': 'DESC'},
@@ -106,8 +103,7 @@ void main() {
       expect(mixin.sortDescriptors[1].key, equals('email'));
     });
 
-    test('orderBy on unknown field is silently dropped (defensive)',
-        () async {
+    test('orderBy on unknown field is silently dropped (defensive)', () async {
       final query = buildQueryWithArgs(User, {
         'orderBy': [
           {'field': 'doesNotExist', 'direction': 'ASC'},
@@ -119,21 +115,25 @@ void main() {
   });
 
   group('listResolverFor predicate lowering', () {
-    test('eq lowers to a ComparisonExpression(equalTo) on numeric attrs',
-        () async {
-      final query = buildQueryWithArgs(Post, {
-        'where': {
-          'rating': {'eq': 4.5},
-        },
-      });
-      final mixin = query as QueryMixin;
-      expect(mixin.expressions, hasLength(1));
-      final expr = mixin.expressions.first.expression;
-      expect(expr, isA<ComparisonExpression>());
-      expect((expr as ComparisonExpression).operator,
-          equals(PredicateOperator.equalTo));
-      expect(expr.value, equals(4.5));
-    });
+    test(
+      'eq lowers to a ComparisonExpression(equalTo) on numeric attrs',
+      () async {
+        final query = buildQueryWithArgs(Post, {
+          'where': {
+            'rating': {'eq': 4.5},
+          },
+        });
+        final mixin = query as QueryMixin;
+        expect(mixin.expressions, hasLength(1));
+        final expr = mixin.expressions.first.expression;
+        expect(expr, isA<ComparisonExpression>());
+        expect(
+          (expr as ComparisonExpression).operator,
+          equals(PredicateOperator.equalTo),
+        );
+        expect(expr.value, equals(4.5));
+      },
+    );
 
     test('eq on string lowers to a StringExpression(equals)', () async {
       final query = buildQueryWithArgs(User, {
@@ -162,32 +162,42 @@ void main() {
       expect(expr.operator, equals(PredicateOperator.notEqual));
     });
 
-    test('gt / gte / lt / lte lower to the right comparison operators',
-        () async {
-      final cases = {
-        'gt': PredicateOperator.greaterThan,
-        'gte': PredicateOperator.greaterThanEqualTo,
-        'lt': PredicateOperator.lessThan,
-        'lte': PredicateOperator.lessThanEqualTo,
-      };
-      for (final entry in cases.entries) {
-        final query = buildQueryWithArgs(Post, {
-          'where': {
-            'rating': {entry.key: 3.0},
-          },
-        });
-        final expr = (query as QueryMixin).expressions.first.expression;
-        expect(expr, isA<ComparisonExpression>(),
-            reason: '${entry.key} must lower to ComparisonExpression');
-        expect((expr as ComparisonExpression).operator, equals(entry.value),
-            reason: '${entry.key} should map to ${entry.value}');
-      }
-    });
+    test(
+      'gt / gte / lt / lte lower to the right comparison operators',
+      () async {
+        final cases = {
+          'gt': PredicateOperator.greaterThan,
+          'gte': PredicateOperator.greaterThanEqualTo,
+          'lt': PredicateOperator.lessThan,
+          'lte': PredicateOperator.lessThanEqualTo,
+        };
+        for (final entry in cases.entries) {
+          final query = buildQueryWithArgs(Post, {
+            'where': {
+              'rating': {entry.key: 3.0},
+            },
+          });
+          final expr = (query as QueryMixin).expressions.first.expression;
+          expect(
+            expr,
+            isA<ComparisonExpression>(),
+            reason: '${entry.key} must lower to ComparisonExpression',
+          );
+          expect(
+            (expr as ComparisonExpression).operator,
+            equals(entry.value),
+            reason: '${entry.key} should map to ${entry.value}',
+          );
+        }
+      },
+    );
 
     test('in lowers to SetMembershipExpression(within: true)', () async {
       final query = buildQueryWithArgs(Post, {
         'where': {
-          'rating': {'in': [3.0, 4.0, 5.0]},
+          'rating': {
+            'in': [3.0, 4.0, 5.0],
+          },
         },
       });
       final expr = (query as QueryMixin).expressions.first.expression;
@@ -196,15 +206,17 @@ void main() {
       expect(expr.values, equals([3.0, 4.0, 5.0]));
     });
 
-    test('notIn lowers to SetMembershipExpression(within: false)',
-        () async {
+    test('notIn lowers to SetMembershipExpression(within: false)', () async {
       final query = buildQueryWithArgs(Post, {
         'where': {
-          'rating': {'notIn': [1.0, 2.0]},
+          'rating': {
+            'notIn': [1.0, 2.0],
+          },
         },
       });
-      final expr = (query as QueryMixin).expressions.first.expression
-          as SetMembershipExpression;
+      final expr =
+          (query as QueryMixin).expressions.first.expression
+              as SetMembershipExpression;
       expect(expr.within, isFalse);
     });
 
@@ -214,23 +226,27 @@ void main() {
           'email': {'like': 'gmail'},
         },
       });
-      final expr = (query as QueryMixin).expressions.first.expression
-          as StringExpression;
+      final expr =
+          (query as QueryMixin).expressions.first.expression
+              as StringExpression;
       expect(expr.operator, equals(PredicateStringOperator.contains));
       expect(expr.value, equals('gmail'));
     });
 
-    test('isNull: true lowers to NullCheckExpression(shouldBeNull: true)',
-        () async {
-      final query = buildQueryWithArgs(User, {
-        'where': {
-          'firstName': {'isNull': true},
-        },
-      });
-      final expr = (query as QueryMixin).expressions.first.expression
-          as NullCheckExpression;
-      expect(expr.shouldBeNull, isTrue);
-    });
+    test(
+      'isNull: true lowers to NullCheckExpression(shouldBeNull: true)',
+      () async {
+        final query = buildQueryWithArgs(User, {
+          'where': {
+            'firstName': {'isNull': true},
+          },
+        });
+        final expr =
+            (query as QueryMixin).expressions.first.expression
+                as NullCheckExpression;
+        expect(expr.shouldBeNull, isTrue);
+      },
+    );
 
     test('isNull: false lowers to shouldBeNull: false', () async {
       final query = buildQueryWithArgs(User, {
@@ -238,25 +254,27 @@ void main() {
           'firstName': {'isNull': false},
         },
       });
-      final expr = (query as QueryMixin).expressions.first.expression
-          as NullCheckExpression;
+      final expr =
+          (query as QueryMixin).expressions.first.expression
+              as NullCheckExpression;
       expect(expr.shouldBeNull, isFalse);
     });
 
-    test('multiple where fields AND together (one expression per field)',
-        () async {
-      final query = buildQueryWithArgs(Post, {
-        'where': {
-          'rating': {'gt': 3.0},
-          'title': {'like': 'Foo'},
-        },
-      });
-      final mixin = query as QueryMixin;
-      expect(mixin.expressions, hasLength(2));
-    });
+    test(
+      'multiple where fields AND together (one expression per field)',
+      () async {
+        final query = buildQueryWithArgs(Post, {
+          'where': {
+            'rating': {'gt': 3.0},
+            'title': {'like': 'Foo'},
+          },
+        });
+        final mixin = query as QueryMixin;
+        expect(mixin.expressions, hasLength(2));
+      },
+    );
 
-    test('unknown predicate keys are dropped without throwing',
-        () async {
+    test('unknown predicate keys are dropped without throwing', () async {
       final query = buildQueryWithArgs(Post, {
         'where': {
           'rating': {'unknownOp': 1.0},
@@ -265,8 +283,7 @@ void main() {
       expect((query as QueryMixin).expressions, isEmpty);
     });
 
-    test('unknown attribute keys are dropped without throwing',
-        () async {
+    test('unknown attribute keys are dropped without throwing', () async {
       final query = buildQueryWithArgs(Post, {
         'where': {
           'doesNotExist': {'eq': 1},

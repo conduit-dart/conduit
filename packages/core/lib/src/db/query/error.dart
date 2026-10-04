@@ -19,8 +19,8 @@ class QueryException<T> implements HandlerException {
     this.underlyingException,
   }) : event = QueryExceptionEvent.input;
   QueryException.transport(this.message, {this.underlyingException})
-      : event = QueryExceptionEvent.transport,
-        offendingItems = null;
+    : event = QueryExceptionEvent.transport,
+      offendingItems = null;
   QueryException.conflict(
     this.message,
     this.offendingItems, {
@@ -46,9 +46,7 @@ class QueryException<T> implements HandlerException {
     String? message,
     List<String>? offendingItems,
   ) {
-    final body = {
-      "error": message ?? "query failed",
-    };
+    final body = {"error": message ?? "query failed"};
 
     if (offendingItems != null && offendingItems.isNotEmpty) {
       body["detail"] = "Offending Items: ${offendingItems.join(", ")}";

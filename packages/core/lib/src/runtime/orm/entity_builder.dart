@@ -13,14 +13,10 @@ import 'package:logging/logging.dart';
 
 class EntityBuilder {
   EntityBuilder(Type type)
-      : instanceType = reflectClass(type),
-        tableDefinitionType = getTableDefinitionForType(type),
-        metadata = firstMetadataOfType(
-          getTableDefinitionForType(type),
-        ),
-        responseModel = firstMetadataOfType(
-          getTableDefinitionForType(type),
-        ) {
+    : instanceType = reflectClass(type),
+      tableDefinitionType = getTableDefinitionForType(type),
+      metadata = firstMetadataOfType(getTableDefinitionForType(type)),
+      responseModel = firstMetadataOfType(getTableDefinitionForType(type)) {
     entity = ManagedEntity(
       name,
       type,
@@ -30,8 +26,9 @@ class EntityBuilder {
     runtime = ManagedEntityRuntimeImpl(instanceType, entity);
 
     properties = _getProperties();
-    final primaryKeyProperty1 =
-        properties.firstWhereOrNull((p) => p.column?.isPrimaryKey ?? false);
+    final primaryKeyProperty1 = properties.firstWhereOrNull(
+      (p) => p.column?.isPrimaryKey ?? false,
+    );
     if (primaryKeyProperty1 == null) {
       throw ManagedDataModelErrorImpl.noPrimaryKey(entity);
     }
@@ -64,8 +61,9 @@ class EntityBuilder {
       p.compile(entityBuilders);
     }
 
-    uniquePropertySet =
-        metadata?.uniquePropertySet?.map(MirrorSystem.getName).toList();
+    uniquePropertySet = metadata?.uniquePropertySet
+        ?.map(MirrorSystem.getName)
+        .toList();
   }
 
   void validate(final List<EntityBuilder> entityBuilders) {
@@ -171,14 +169,15 @@ class EntityBuilder {
 
   PropertyBuilder getInverseOf(PropertyBuilder foreignKey) {
     final expectedSymbol = foreignKey.relate!.inversePropertyName;
-    var finder =
-        (PropertyBuilder p) => p.declaration.simpleName == expectedSymbol;
+    var finder = (PropertyBuilder p) =>
+        p.declaration.simpleName == expectedSymbol;
     if (foreignKey.relate!.isDeferred) {
       finder = (p) {
         final propertyType = p.getDeclarationType();
         if (propertyType.isSubtypeOf(reflectType(ManagedSet))) {
-          return propertyType.typeArguments.first
-              .isSubtypeOf(foreignKey.parent.tableDefinitionType);
+          return propertyType.typeArguments.first.isSubtypeOf(
+            foreignKey.parent.tableDefinitionType,
+          );
         }
         return propertyType.isSubtypeOf(foreignKey.parent.tableDefinitionType);
       };
@@ -198,10 +197,11 @@ class EntityBuilder {
     }
 
     throw ManagedDataModelError(
-        "The relationship '${foreignKey.name}' on '${foreignKey.parent.tableDefinitionTypeName}' "
-        "has multiple inverse candidates. There must be exactly one property that is a subclass of the expected type "
-        "('${MirrorSystem.getName(foreignKey.getDeclarationType().simpleName)}'), but the following are all possible:"
-        " ${candidates.map((p) => p.name).join(", ")}");
+      "The relationship '${foreignKey.name}' on '${foreignKey.parent.tableDefinitionTypeName}' "
+      "has multiple inverse candidates. There must be exactly one property that is a subclass of the expected type "
+      "('${MirrorSystem.getName(foreignKey.getDeclarationType().simpleName)}'), but the following are all possible:"
+      " ${candidates.map((p) => p.name).join(", ")}",
+    );
   }
 
   String _getName() {
@@ -210,8 +210,9 @@ class EntityBuilder {
     }
 
     String mirrorName() {
-      final declaredTableNameClass = classHierarchyForClass(tableDefinitionType)
-          .firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
+      final declaredTableNameClass = classHierarchyForClass(
+        tableDefinitionType,
+      ).firstWhereOrNull((cm) => cm.staticMembers[#tableName] != null);
 
       if (declaredTableNameClass == null) {
         return tableDefinitionTypeName;
@@ -232,9 +233,9 @@ class EntityBuilder {
 
   List<PropertyBuilder> _getProperties() {
     final transientProperties = _getTransientAttributes();
-    final persistentProperties = instanceVariablesFromClass(tableDefinitionType)
-        .map((p) => PropertyBuilder(this, p))
-        .toList();
+    final persistentProperties = instanceVariablesFromClass(
+      tableDefinitionType,
+    ).map((p) => PropertyBuilder(this, p)).toList();
 
     return [...transientProperties, ...persistentProperties];
   }
@@ -272,11 +273,12 @@ class EntityBuilder {
     );
 
     return classHierarchyForClass(reflectClass(instanceType))
-        .firstWhere(
-          (cm) => !cm.superclass!.isSubtypeOf(reflectType(ManagedObject)),
-          orElse: () => throw ifNotFoundException,
-        )
-        .typeArguments
-        .first as ClassMirror;
+            .firstWhere(
+              (cm) => !cm.superclass!.isSubtypeOf(reflectType(ManagedObject)),
+              orElse: () => throw ifNotFoundException,
+            )
+            .typeArguments
+            .first
+        as ClassMirror;
   }
 }

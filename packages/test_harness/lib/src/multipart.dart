@@ -43,13 +43,14 @@ class MultipartFormFile {
     String value, {
     this.filename,
     ContentType? contentType,
-  })  : bytes = List<int>.unmodifiable(
-            (contentType?.charset != null
-                    ? Encoding.getByName(contentType!.charset) ?? utf8
-                    : utf8)
-                .encode(value)),
-        contentType = contentType ??
-            ContentType("text", "plain", charset: "utf-8");
+  }) : bytes = List<int>.unmodifiable(
+         (contentType?.charset != null
+                 ? Encoding.getByName(contentType!.charset) ?? utf8
+                 : utf8)
+             .encode(value),
+       ),
+       contentType =
+           contentType ?? ContentType("text", "plain", charset: "utf-8");
 
   /// The raw bytes of this part's body.
   final List<int> bytes;
@@ -95,8 +96,7 @@ List<int> _encodeMultipartFormData(
       disposition.write("\r\n");
       builder.add(utf8.encode(disposition.toString()));
       if (value.contentType != null) {
-        builder
-            .add(utf8.encode("content-type: ${value.contentType}\r\n"));
+        builder.add(utf8.encode("content-type: ${value.contentType}\r\n"));
       }
       builder.add(crlf);
       builder.add(value.bytes);

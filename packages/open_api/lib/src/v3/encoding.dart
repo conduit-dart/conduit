@@ -13,9 +13,7 @@ class APIEncoding extends APIObject {
     this.explode = false,
   });
 
-  APIEncoding.empty()
-      : allowReserved = false,
-        explode = false;
+  APIEncoding.empty() : allowReserved = false, explode = false;
 
   /// The Content-Type for encoding a specific property.
   ///

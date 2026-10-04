@@ -33,7 +33,7 @@ void main() {
       server = await enableController("/", ListTestController.new);
       final m = [
         {"name": "Bob"},
-        {"name": "Fred"}
+        {"name": "Fred"},
       ];
       final response = await postJSON(m);
       expect(response.statusCode, 200);
@@ -89,8 +89,11 @@ void main() {
 
     test("Can use accept filters", () async {
       server = await enableController("/", FilterController.new);
-      final response =
-          await postJSON({"required": "", "accept": "", "noAccept": ""});
+      final response = await postJSON({
+        "required": "",
+        "accept": "",
+        "noAccept": "",
+      });
 
       expect(json.decode(response.body), {"required": "", "accept": ""});
     });
@@ -99,12 +102,12 @@ void main() {
       server = await enableController("/", FilterListController.new);
       final response = await postJSON([
         {"required": ""},
-        {"required": "", "ignore": ""}
+        {"required": "", "ignore": ""},
       ]);
 
       expect(json.decode(response.body), [
         {"required": ""},
-        {"required": ""}
+        {"required": ""},
       ]);
     });
 
@@ -113,9 +116,8 @@ void main() {
       expect(
         (await postJSON([
           {"required": ""},
-          {"required": "", "error": ""}
-        ]))
-            .statusCode,
+          {"required": "", "error": ""},
+        ])).statusCode,
         400,
       );
     });
@@ -125,9 +127,8 @@ void main() {
       expect(
         (await postJSON([
           {"required": ""},
-          {"key": ""}
-        ]))
-            .statusCode,
+          {"key": ""},
+        ])).statusCode,
         400,
       );
     });
@@ -136,12 +137,12 @@ void main() {
       server = await enableController("/", FilterListController.new);
       final response = await postJSON([
         {"required": "", "accept": ""},
-        {"required": "", "noAccept": ""}
+        {"required": "", "noAccept": ""},
       ]);
 
       expect(json.decode(response.body), [
         {"required": "", "accept": ""},
-        {"required": ""}
+        {"required": ""},
       ]);
     });
 
@@ -198,7 +199,7 @@ void main() {
     test("Is List when expecting Map returns 400", () async {
       server = await enableController("/", TestController.new);
       final m = [
-        {"id": 2, "name": "Bob"}
+        {"id": 2, "name": "Bob"},
       ];
       final response = await postJSON(m);
       expect(response.statusCode, 400);

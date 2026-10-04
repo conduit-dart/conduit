@@ -16,14 +16,17 @@ void main() {
       // QueryBuilder path doesn't touch the wire, only the dialect
       // and the data model.
       final store = MysqlPersistentStore(
-        'unused', 'unused', 'localhost', 13306, 'unused',
+        'unused',
+        'unused',
+        'localhost',
+        13306,
+        'unused',
       );
       context = ManagedContext(ManagedDataModel([Simple]), store);
     });
 
     test('placeholders use :name (driver rewrites to ?)', () {
-      final q = Query<Simple>(context)
-        ..where((s) => s.id).equalTo(42);
+      final q = Query<Simple>(context)..where((s) => s.id).equalTo(42);
       final builder = QueryBuilder(q as QueryMixin<Simple>);
       expect(builder.sqlWhereClause, isNotNull);
       expect(builder.sqlWhereClause, contains(':_Simple_id'));

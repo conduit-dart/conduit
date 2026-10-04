@@ -25,9 +25,10 @@ class _NamedDialect extends SqlDialect {
   @override
   String get name => 'named-bench';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -41,9 +42,10 @@ class _PositionalDialect extends SqlDialect {
   @override
   String parameterPlaceholder(String name) => '?';
   @override
-  String? columnDefinitionType(String typeString,
-          {required bool autoincrement}) =>
-      null;
+  String? columnDefinitionType(
+    String typeString, {
+    required bool autoincrement,
+  }) => null;
   @override
   String tableExistsQuery() => 'SELECT 1';
 }
@@ -62,11 +64,13 @@ class _QueryE2EBench extends BenchmarkBase {
         ColumnExpression('c$i', tableNamespace: 't0'),
         ParameterExpression('t0_c${i}_v', i),
       );
-      preds.add(QueryPredicate.withExpression(
-        ast,
-        't0.c$i = ${dialect.parameterPlaceholder("t0_c${i}_v")}',
-        {'t0_c${i}_v': i},
-      ));
+      preds.add(
+        QueryPredicate.withExpression(
+          ast,
+          't0.c$i = ${dialect.parameterPlaceholder("t0_c${i}_v")}',
+          {'t0_c${i}_v': i},
+        ),
+      );
     }
     final combined = QueryPredicate.and(preds);
     final expr = combined.expression;
@@ -82,10 +86,14 @@ void main() {
 
   _QueryE2EBench(named, 5, 'query e2e: 5-term where() (named)').report();
   _QueryE2EBench(named, 10, 'query e2e: 10-term where() (named)').report();
-  _QueryE2EBench(positional, 5,
-          'query e2e: 5-term where() (positional)')
-      .report();
-  _QueryE2EBench(positional, 10,
-          'query e2e: 10-term where() (positional)')
-      .report();
+  _QueryE2EBench(
+    positional,
+    5,
+    'query e2e: 5-term where() (positional)',
+  ).report();
+  _QueryE2EBench(
+    positional,
+    10,
+    'query e2e: 10-term where() (positional)',
+  ).report();
 }

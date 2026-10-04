@@ -421,5 +421,5 @@ enum QuerySortOrder {
   ascending,
 
   /// Descending order. Example: 4, 3, 2, 1, ...
-  descending
+  descending,
 }

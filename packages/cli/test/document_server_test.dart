@@ -37,8 +37,9 @@ void main() {
 
     expect(
       Directory.fromUri(
-        projectUnderTestCli.agent.workingDirectory.uri
-            .resolve(".conduit_spec/"),
+        projectUnderTestCli.agent.workingDirectory.uri.resolve(
+          ".conduit_spec/",
+        ),
       ).existsSync(),
       true,
     );
@@ -50,8 +51,9 @@ void main() {
     expect(await task.exitCode, 0);
     expect(
       Directory.fromUri(
-        projectUnderTestCli.agent.workingDirectory.uri
-            .resolve(".conduit_spec/"),
+        projectUnderTestCli.agent.workingDirectory.uri.resolve(
+          ".conduit_spec/",
+        ),
       ).existsSync(),
       false,
     );

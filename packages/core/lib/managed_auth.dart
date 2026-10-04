@@ -47,8 +47,10 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
 
   /// Instance from an [AuthToken].
   ManagedAuthToken.fromToken(AuthToken t) : super() {
-    final tokenResourceOwner =
-        entity.relationships["resourceOwner"]!.destinationEntity.instanceOf();
+    final tokenResourceOwner = entity
+        .relationships["resourceOwner"]!
+        .destinationEntity
+        .instanceOf();
     tokenResourceOwner["id"] = t.resourceOwnerIdentifier;
     this
       ..accessToken = t.accessToken
@@ -63,8 +65,10 @@ class ManagedAuthToken extends ManagedObject<_ManagedAuthToken>
 
   /// Instance from an [AuthCode].
   ManagedAuthToken.fromCode(AuthCode code) : super() {
-    final tokenResourceOwner =
-        entity.relationships["resourceOwner"]!.destinationEntity.instanceOf();
+    final tokenResourceOwner = entity
+        .relationships["resourceOwner"]!
+        .destinationEntity
+        .instanceOf();
     tokenResourceOwner["id"] = code.resourceOwnerIdentifier;
 
     this
@@ -484,8 +488,9 @@ class ManagedAuthDelegate<T extends ManagedAuthResourceOwner>
     if (results.length == 1) {
       final deleteQ = Query<ManagedAuthToken>(context)
         ..where((o) => o.resourceOwner).identifiedBy(resourceOwnerIdentifier)
-        ..where((o) => o.expirationDate)
-            .lessThanEqualTo(results.first.expirationDate);
+        ..where(
+          (o) => o.expirationDate,
+        ).lessThanEqualTo(results.first.expirationDate);
 
       return deleteQ.delete();
     }

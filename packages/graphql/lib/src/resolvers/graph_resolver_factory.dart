@@ -62,12 +62,13 @@ class _NodeDispatcher {
   });
 
   final Future<List<GraphNode<dynamic>>> Function(Map<String, dynamic> args)
-      list;
+  list;
   final Future<GraphNode<dynamic>?> Function(Map<String, dynamic> args) byId;
   final Future<List<GraphNode<dynamic>>> Function(
     GraphNode<dynamic> from,
     Type edgeKind,
-  ) traverse;
+  )
+  traverse;
 }
 
 /// Lowers GraphQL field arguments to [GraphQuery] / traversal calls
@@ -118,8 +119,7 @@ class GraphResolverFactory {
         return query.fetchOne();
       },
       traverse: (from, edgeKind) async {
-        final result =
-            await context.traverse<N>(from, edgeKind);
+        final result = await context.traverse<N>(from, edgeKind);
         return List<GraphNode<dynamic>>.from(result);
       },
     );
@@ -171,7 +171,8 @@ class GraphResolverFactory {
     final label = entity.label.name;
     // No filter / pagination support yet — that surface lands when
     // `GraphQuery<E>` does.
-    final cypher = 'MATCH (a)-[r:$label]->(b) '
+    final cypher =
+        'MATCH (a)-[r:$label]->(b) '
         'RETURN id(r) AS id, properties(r) AS props, '
         'id(a) AS fromId, id(b) AS toId';
     final rows = await context.cypher(cypher);
@@ -321,86 +322,110 @@ class GraphResolverFactory {
       ops.forEach((op, value) {
         switch (op) {
           case 'equalTo':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.equal,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.equal,
+                value: value,
+              ),
+            );
           case 'notEqualTo':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.notEqual,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.notEqual,
+                value: value,
+              ),
+            );
           case 'greaterThan':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.greaterThan,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.greaterThan,
+                value: value,
+              ),
+            );
           case 'greaterThanOrEqualTo':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.greaterThanOrEqual,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.greaterThanOrEqual,
+                value: value,
+              ),
+            );
           case 'lessThan':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.lessThan,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.lessThan,
+                value: value,
+              ),
+            );
           case 'lessThanOrEqualTo':
-            terms.add(GraphPropertyFilter(
-              property: property,
-              operator: GraphFilterOperator.lessThanOrEqual,
-              value: value,
-            ));
+            terms.add(
+              GraphPropertyFilter(
+                property: property,
+                operator: GraphFilterOperator.lessThanOrEqual,
+                value: value,
+              ),
+            );
           case 'contains':
             if (value != null) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.contains,
-                value: value,
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.contains,
+                  value: value,
+                ),
+              );
             }
           case 'startsWith':
             if (value is String) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.startsWith,
-                value: value,
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.startsWith,
+                  value: value,
+                ),
+              );
             }
           case 'endsWith':
             if (value is String) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.endsWith,
-                value: value,
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.endsWith,
+                  value: value,
+                ),
+              );
             }
           case 'isIn':
             if (value is List) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.inList,
-                value: List<Object?>.unmodifiable(value),
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.inList,
+                  value: List<Object?>.unmodifiable(value),
+                ),
+              );
             }
           case 'isNull':
             if (value == true) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.isNull,
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.isNull,
+                ),
+              );
             }
           case 'isNotNull':
             if (value == true) {
-              terms.add(GraphPropertyFilter(
-                property: property,
-                operator: GraphFilterOperator.isNotNull,
-              ));
+              terms.add(
+                GraphPropertyFilter(
+                  property: property,
+                  operator: GraphFilterOperator.isNotNull,
+                ),
+              );
             }
           default:
             // Unknown operator — drop on the floor. The schema-side

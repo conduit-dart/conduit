@@ -285,8 +285,12 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     // Integer column codes: TINY (1), SHORT (2), LONG (3), LONGLONG (8),
     // INT24 (9), YEAR (13). BOOLEAN is TINYINT(1) — encoded as TINY here;
     // Conduit binds bool ↔ INTEGER 0/1 anyway.
-    if (code == 1 || code == 2 || code == 3 || code == 8 ||
-        code == 9 || code == 13) {
+    if (code == 1 ||
+        code == 2 ||
+        code == 3 ||
+        code == 8 ||
+        code == 9 ||
+        code == 13) {
       return (v) => v == null ? null : int.parse(v.toString());
     }
     // FLOAT (4), DOUBLE (5).
@@ -299,8 +303,12 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     }
     // DATETIME (0x0c), DATETIME2 (0x12), TIMESTAMP (0x07),
     // TIMESTAMP2 (0x11), DATE (0x0a), NEW_DATE (0x0e).
-    if (code == 0x0c || code == 0x12 || code == 0x07 ||
-        code == 0x11 || code == 0x0a || code == 0x0e) {
+    if (code == 0x0c ||
+        code == 0x12 ||
+        code == 0x07 ||
+        code == 0x11 ||
+        code == 0x0a ||
+        code == 0x0e) {
       return (v) {
         if (v == null) return null;
         final s = v.toString().replaceFirst(' ', 'T');
@@ -467,10 +475,9 @@ class MysqlPersistentStore extends PersistentStore with MysqlSchemaGenerator {
     final conn = await _ensureConnected();
     final tbl = versionTable;
     final commands = createTable(tbl, isTemporary: temporary);
-    final exists = await conn.execute(
-      dialect.tableExistsQuery(),
-      {'tableName': tbl.name},
-    );
+    final exists = await conn.execute(dialect.tableExistsQuery(), {
+      'tableName': tbl.name,
+    });
     if (exists.rows.isNotEmpty) return;
 
     _logger.info('Initializing database...');

@@ -4,17 +4,19 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test("Modifying return value from Response.headers changes actual headers",
-      () {
-    final response = Response(0, {}, null);
-    response.headers["a"] = "b";
+  test(
+    "Modifying return value from Response.headers changes actual headers",
+    () {
+      final response = Response(0, {}, null);
+      response.headers["a"] = "b";
 
-    final headers = response.headers;
-    headers["b"] = "c";
-    expect(response.headers["a"], "b");
-    expect(response.headers["b"], "c");
-    expect(response.headers.length, 2);
-  });
+      final headers = response.headers;
+      headers["b"] = "c";
+      expect(response.headers["a"], "b");
+      expect(response.headers["b"], "c");
+      expect(response.headers.length, 2);
+    },
+  );
 
   test("Headers get lowercased when set in default constructor", () {
     final response = Response(0, {"AbC": "b"}, null);
@@ -67,26 +69,28 @@ void main() {
   });
 
   test(
-      "Setting content type as String through headers returns same type from contentType",
-      () {
-    final response = Response.ok(
-      null,
-      headers: {HttpHeaders.contentTypeHeader: "application/xml"},
-    );
-    expect(response.contentType!.primaryType, "application");
-    expect(response.contentType!.subType, "xml");
-  });
+    "Setting content type as String through headers returns same type from contentType",
+    () {
+      final response = Response.ok(
+        null,
+        headers: {HttpHeaders.contentTypeHeader: "application/xml"},
+      );
+      expect(response.contentType!.primaryType, "application");
+      expect(response.contentType!.subType, "xml");
+    },
+  );
 
   test(
-      "Setting content type as ContentType through headers returns same type from contentType",
-      () {
-    final response = Response.ok(
-      null,
-      headers: {
-        HttpHeaders.contentTypeHeader: ContentType("application", "xml")
-      },
-    );
-    expect(response.contentType!.primaryType, "application");
-    expect(response.contentType!.subType, "xml");
-  });
+    "Setting content type as ContentType through headers returns same type from contentType",
+    () {
+      final response = Response.ok(
+        null,
+        headers: {
+          HttpHeaders.contentTypeHeader: ContentType("application", "xml"),
+        },
+      );
+      expect(response.contentType!.primaryType, "application");
+      expect(response.contentType!.subType, "xml");
+    },
+  );
 }

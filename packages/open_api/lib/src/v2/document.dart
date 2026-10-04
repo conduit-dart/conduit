@@ -42,12 +42,11 @@ class APIDocument extends APIObject {
 
   @override
   Map<String, cast.Cast> get castMap => {
-        "schemes": const cast.List(cast.string),
-        "consumes": const cast.List(cast.string),
-        "produces": const cast.List(cast.string),
-        "security":
-            const cast.List(cast.Map(cast.string, cast.List(cast.string)))
-      };
+    "schemes": const cast.List(cast.string),
+    "consumes": const cast.List(cast.string),
+    "produces": const cast.List(cast.string),
+    "security": const cast.List(cast.Map(cast.string, cast.List(cast.string))),
+  };
 
   @override
   void decode(KeyedArchive object) {
@@ -68,8 +67,7 @@ class APIDocument extends APIObject {
     paths = object.decodeObjectMap("paths", APIPath.new);
     responses = object.decodeObjectMap("responses", APIResponse.new);
     parameters = object.decodeObjectMap("parameters", APIParameter.new);
-    definitions =
-        object.decodeObjectMap("definitions", APISchemaObject.new);
+    definitions = object.decodeObjectMap("definitions", APISchemaObject.new);
     securityDefinitions = object.decodeObjectMap(
       "securityDefinitions",
       APISecurityScheme.new,

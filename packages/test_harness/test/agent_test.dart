@@ -53,19 +53,22 @@ void main() async {
     });
 
     test(
-        "Create agent from another agent has same request URL, contentType and headers",
-        () {
-      final original = Agent.fromOptions(ApplicationOptions()
-        ..port = 2121
-        ..address = "foobar.com");
-      original.headers["key"] = "value";
-      original.contentType = ContentType.text;
+      "Create agent from another agent has same request URL, contentType and headers",
+      () {
+        final original = Agent.fromOptions(
+          ApplicationOptions()
+            ..port = 2121
+            ..address = "foobar.com",
+        );
+        original.headers["key"] = "value";
+        original.contentType = ContentType.text;
 
-      final clone = Agent.from(original);
-      expect(clone.baseURL, original.baseURL);
-      expect(clone.headers, original.headers);
-      expect(clone.contentType, original.contentType);
-    });
+        final clone = Agent.from(original);
+        expect(clone.baseURL, original.baseURL);
+        expect(clone.headers, original.headers);
+        expect(clone.contentType, original.contentType);
+      },
+    );
   });
 
   group("Request building", () {
@@ -82,49 +85,67 @@ void main() async {
     test("Host created correctly", () async {
       final portLocal = await getUnusedPort((port) => port);
       final defaultTestClient = Agent.onPort(server.port);
-      final portConfiguredClient =
-          Agent.fromOptions(ApplicationOptions()..port = portLocal);
-      final hostPortConfiguredClient = Agent.fromOptions(ApplicationOptions()
-        ..port = portLocal
-        ..address = "foobar.com");
+      final portConfiguredClient = Agent.fromOptions(
+        ApplicationOptions()..port = portLocal,
+      );
+      final hostPortConfiguredClient = Agent.fromOptions(
+        ApplicationOptions()
+          ..port = portLocal
+          ..address = "foobar.com",
+      );
       final hostPortSSLConfiguredClient = Agent.fromOptions(
-          ApplicationOptions()
-            ..port = portLocal
-            ..address = "foobar.com",
-          useHTTPS: true);
+        ApplicationOptions()
+          ..port = portLocal
+          ..address = "foobar.com",
+        useHTTPS: true,
+      );
       expect(defaultTestClient.baseURL, "http://localhost:${server.port}");
       expect(portConfiguredClient.baseURL, "http://localhost:$portLocal");
       expect(hostPortConfiguredClient.baseURL, "http://localhost:$portLocal");
       expect(
-          hostPortSSLConfiguredClient.baseURL, "https://localhost:$portLocal");
+        hostPortSSLConfiguredClient.baseURL,
+        "https://localhost:$portLocal",
+      );
     });
 
     test("Request URLs are created correctly", () {
       final defaultTestClient = Agent.onPort(server.port);
 
-      expect(defaultTestClient.request("/foo").requestURL,
-          "http://localhost:${server.port}/foo");
-      expect(defaultTestClient.request("foo").requestURL,
-          "http://localhost:${server.port}/foo");
-      expect(defaultTestClient.request("foo/bar").requestURL,
-          "http://localhost:${server.port}/foo/bar");
+      expect(
+        defaultTestClient.request("/foo").requestURL,
+        "http://localhost:${server.port}/foo",
+      );
+      expect(
+        defaultTestClient.request("foo").requestURL,
+        "http://localhost:${server.port}/foo",
+      );
+      expect(
+        defaultTestClient.request("foo/bar").requestURL,
+        "http://localhost:${server.port}/foo/bar",
+      );
 
       expect(
-          (defaultTestClient.request("/foo")..query = {"baz": "bar"})
-              .requestURL,
-          "http://localhost:${server.port}/foo?baz=bar");
-      expect((defaultTestClient.request("/foo")..query = {"baz": 2}).requestURL,
-          "http://localhost:${server.port}/foo?baz=2");
+        (defaultTestClient.request("/foo")..query = {"baz": "bar"}).requestURL,
+        "http://localhost:${server.port}/foo?baz=bar",
+      );
       expect(
-          (defaultTestClient.request("/foo")..query = {"baz": null}).requestURL,
-          "http://localhost:${server.port}/foo?baz");
+        (defaultTestClient.request("/foo")..query = {"baz": 2}).requestURL,
+        "http://localhost:${server.port}/foo?baz=2",
+      );
       expect(
-          (defaultTestClient.request("/foo")..query = {"baz": true}).requestURL,
-          "http://localhost:${server.port}/foo?baz");
+        (defaultTestClient.request("/foo")..query = {"baz": null}).requestURL,
+        "http://localhost:${server.port}/foo?baz",
+      );
       expect(
-          (defaultTestClient.request("/foo")..query = {"baz": true, "boom": 7})
-              .requestURL,
-          "http://localhost:${server.port}/foo?baz&boom=7");
+        (defaultTestClient.request("/foo")..query = {"baz": true}).requestURL,
+        "http://localhost:${server.port}/foo?baz",
+      );
+      expect(
+        (defaultTestClient.request(
+          "/foo",
+        )..query = {"baz": true, "boom": 7}).requestURL,
+        "http://localhost:${server.port}/foo?baz&boom=7",
+      );
     });
 
     test("HTTP requests are issued", () async {
@@ -140,27 +161,30 @@ void main() async {
       expect(msg.method, "DELETE");
 
       expect(
-          await defaultTestClient.post("/foo", body: {"foo": "bar"})
-              is TestResponse,
-          true);
+        await defaultTestClient.post("/foo", body: {"foo": "bar"})
+            is TestResponse,
+        true,
+      );
       msg = await server.next();
       expect(msg.path.string, "/foo");
       expect(msg.method, "POST");
       expect(msg.body.as(), {"foo": "bar"});
 
       expect(
-          await defaultTestClient.execute("PATCH", "/foo", body: {"foo": "bar"})
-              is TestResponse,
-          true);
+        await defaultTestClient.execute("PATCH", "/foo", body: {"foo": "bar"})
+            is TestResponse,
+        true,
+      );
       msg = await server.next();
       expect(msg.path.string, "/foo");
       expect(msg.method, "PATCH");
       expect(msg.body.as(), {"foo": "bar"});
 
       expect(
-          await defaultTestClient.put("/foo", body: {"foo": "bar"})
-              is TestResponse,
-          true);
+        await defaultTestClient.put("/foo", body: {"foo": "bar"})
+            is TestResponse,
+        true,
+      );
       msg = await server.next();
       expect(msg.path.string, "/foo");
       expect(msg.method, "PUT");
@@ -187,7 +211,7 @@ void main() async {
 
       await (defaultTestClient.request("/foo")
             ..headers = {
-              "X-Int": [1, 2]
+              "X-Int": [1, 2],
             })
           .get();
 
@@ -207,7 +231,9 @@ void main() async {
 
       final resp = await client.request("/na").get();
       expect(
-          resp, hasResponse(200, body: everyElement({"id": greaterThan(0)})));
+        resp,
+        hasResponse(200, body: everyElement({"id": greaterThan(0)})),
+      );
 
       await server.close(force: true);
     });
@@ -232,8 +258,10 @@ void main() async {
       final Request msg = await server.next();
       expect(msg.path.string, "/foo");
       expect(msg.raw.headers.value("k"), "v");
-      expect(msg.raw.headers.value("authorization"),
-          "Basic ${base64.encode("username:password".codeUnits)}");
+      expect(
+        msg.raw.headers.value("authorization"),
+        "Basic ${base64.encode("username:password".codeUnits)}",
+      );
     });
 
     test("Bearer authorization adds header to all requests", () async {
@@ -262,9 +290,11 @@ void main() async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, portLocal);
       server.listen((req) {
         final resReq = Request(req);
-        resReq.respond(Response.ok([
-          {"a": "b"}
-        ]));
+        resReq.respond(
+          Response.ok([
+            {"a": "b"},
+          ]),
+        );
       });
 
       final defaultTestClient = Agent.onPort(portLocal);
@@ -291,8 +321,9 @@ void main() async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, portLocal);
       server.listen((req) {
         final resReq = Request(req);
-        resReq.respond(Response.ok(
-            {"ACCEPT": req.headers.value(HttpHeaders.acceptHeader)}));
+        resReq.respond(
+          Response.ok({"ACCEPT": req.headers.value(HttpHeaders.acceptHeader)}),
+        );
       });
 
       final client = Agent.onPort(portLocal);
@@ -301,7 +332,7 @@ void main() async {
 
       final response = await req.post();
       expect(response.body.as<Map<String, dynamic>>(), {
-        "ACCEPT": "application/json; charset=utf-8,text/plain; charset=utf-8"
+        "ACCEPT": "application/json; charset=utf-8,text/plain; charset=utf-8",
       });
     });
   });
@@ -321,7 +352,7 @@ class TestController extends ResourceController {
   Future<Response> get() async {
     return Response.ok([
       {"id": 1},
-      {"id": 2}
+      {"id": 2},
     ]);
   }
 }

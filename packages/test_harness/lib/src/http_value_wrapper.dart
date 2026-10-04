@@ -64,8 +64,12 @@ class HTTPValueMatcherWrapper extends Matcher {
   }
 
   @override
-  Description describeMismatch(dynamic item, Description mismatchDescription,
-      Map matchState, bool verbose) {
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
     _matcher.describeMismatch(item, mismatchDescription, matchState, verbose);
 
     return mismatchDescription;

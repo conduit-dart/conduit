@@ -72,8 +72,9 @@ class ColumnBuilder extends Returnable {
     if (property is ManagedRelationshipDescription &&
         property.relationshipType != ManagedRelationshipType.belongsTo) {
       throw ArgumentError(
-          "Could not construct query. Column '$propertyName' does not exist for table '${entity.tableName}'. "
-          "'$propertyName' recognized as ORM relationship, use 'Query.join' instead.");
+        "Could not construct query. Column '$propertyName' does not exist for table '${entity.tableName}'. "
+        "'$propertyName' recognized as ORM relationship, use 'Query.join' instead.",
+      );
     }
 
     return property;
@@ -89,7 +90,7 @@ class ColumnBuilder extends Returnable {
     PredicateOperator.notEqual: "!=",
     PredicateOperator.lessThanEqualTo: "<=",
     PredicateOperator.greaterThanEqualTo: ">=",
-    PredicateOperator.equalTo: "="
+    PredicateOperator.equalTo: "=",
   };
 
   final TableBuilder? table;
@@ -148,10 +149,7 @@ class ColumnBuilder extends Returnable {
     return value;
   }
 
-  String sqlColumnName({
-    bool withTableNamespace = false,
-    String? withPrefix,
-  }) {
+  String sqlColumnName({bool withTableNamespace = false, String? withPrefix}) {
     var name = property!.name;
 
     if (property is ManagedRelationshipDescription) {
@@ -160,8 +158,9 @@ class ColumnBuilder extends Returnable {
           .primaryKey;
       name = "${name}_$relatedPrimaryKey";
     } else if (documentKeyPath != null) {
-      final keys =
-          documentKeyPath!.map((k) => k is String ? "'$k'" : k).join("->");
+      final keys = documentKeyPath!
+          .map((k) => k is String ? "'$k'" : k)
+          .join("->");
       name = "$name->$keys";
     }
 

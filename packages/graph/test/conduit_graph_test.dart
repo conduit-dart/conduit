@@ -6,8 +6,7 @@ import 'package:test/test.dart';
 // ---------------------------------------------------------------------------
 
 class User extends GraphNode<User> {
-  User({String? name, int? age})
-      : super(labels: [GraphLabel('User')]) {
+  User({String? name, int? age}) : super(labels: [GraphLabel('User')]) {
     if (name != null) this['name'] = name;
     if (age != null) this['age'] = age;
   }
@@ -30,7 +29,7 @@ class Post extends GraphNode<Post> {
 
 class Friend extends GraphEdge<User, User> {
   Friend({required super.from, required super.to, DateTime? since})
-      : super(label: const GraphLabel.unchecked('Friend')) {
+    : super(label: const GraphLabel.unchecked('Friend')) {
     if (since != null) this['since'] = since;
   }
 
@@ -40,7 +39,7 @@ class Friend extends GraphEdge<User, User> {
 
 class Authored extends GraphEdge<User, Post> {
   Authored({required super.from, required super.to})
-      : super(label: const GraphLabel.unchecked('Authored'));
+    : super(label: const GraphLabel.unchecked('Authored'));
 }
 
 // ---------------------------------------------------------------------------
@@ -53,8 +52,10 @@ class _FakeGraphPersistentStore implements GraphPersistentStore {
   final List<GraphNode<dynamic>> createCalls = [];
   final List<GraphEdge<dynamic, dynamic>> createEdgeCalls = [];
   final List<({String query, Map<String, Object?> params})> cypherCalls = [];
-  final List<({GraphNode<dynamic> from, Type kind, GraphRelationshipDirection dir})>
-      traverseCalls = [];
+  final List<
+    ({GraphNode<dynamic> from, Type kind, GraphRelationshipDirection dir})
+  >
+  traverseCalls = [];
 
   // Programmable return values.
   List<GraphNode<dynamic>> matchReturn = [];
@@ -73,7 +74,9 @@ class _FakeGraphPersistentStore implements GraphPersistentStore {
   }
 
   @override
-  Future<List<N>> executeQuery<N extends GraphNode<N>>(GraphQuery<N> query) async {
+  Future<List<N>> executeQuery<N extends GraphNode<N>>(
+    GraphQuery<N> query,
+  ) async {
     executeCalls.add(query);
     return executeReturn.cast<N>();
   }
@@ -135,10 +138,7 @@ void main() {
 
   group('GraphNode', () {
     test('instantiation requires at least one label', () {
-      expect(
-        _NoLabelNode.new,
-        throwsArgumentError,
-      );
+      expect(_NoLabelNode.new, throwsArgumentError);
     });
 
     test('property get / set go through the backing', () {
@@ -263,10 +263,9 @@ void main() {
     });
 
     test('compound expressions support OR via the filter API', () {
-      final q = GraphQuery<User>(pattern: GraphPattern<User>.build((_) {}))
-          .where(
-        (u) => u['age'].lessThan(18).or(u['age'].greaterThan(65)),
-      );
+      final q = GraphQuery<User>(
+        pattern: GraphPattern<User>.build((_) {}),
+      ).where((u) => u['age'].lessThan(18).or(u['age'].greaterThan(65)));
 
       final f = q.filter;
       expect(f, isA<GraphCompoundFilter>());
@@ -365,7 +364,7 @@ void main() {
     test('cypher escape hatch is surfaced on context and store', () async {
       final fake = _FakeGraphPersistentStore()
         ..cypherReturn = [
-          {'n.name': 'alice'}
+          {'n.name': 'alice'},
         ];
       final ctx = GraphContext(GraphDataModel(), fake);
 
@@ -384,8 +383,11 @@ void main() {
       final ctx = GraphContext(GraphDataModel(), fake);
       final alice = User(name: 'alice')..id = 1;
 
-      await ctx.traverse<User>(alice, Friend,
-          direction: GraphRelationshipDirection.incoming);
+      await ctx.traverse<User>(
+        alice,
+        Friend,
+        direction: GraphRelationshipDirection.incoming,
+      );
 
       expect(fake.traverseCalls.single.kind, Friend);
       expect(
@@ -408,7 +410,10 @@ void main() {
       expect(inferGraphPropertyType(true), GraphPropertyType.bool);
       expect(inferGraphPropertyType(42), GraphPropertyType.integer);
       expect(inferGraphPropertyType(3.14), GraphPropertyType.double);
-      expect(inferGraphPropertyType(DateTime.now()), GraphPropertyType.datetime);
+      expect(
+        inferGraphPropertyType(DateTime.now()),
+        GraphPropertyType.datetime,
+      );
       expect(inferGraphPropertyType([1, 2]), GraphPropertyType.list);
       expect(inferGraphPropertyType({'a': 1}), GraphPropertyType.map);
       expect(inferGraphPropertyType(null), isNull);

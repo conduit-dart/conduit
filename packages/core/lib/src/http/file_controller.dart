@@ -6,10 +6,8 @@ import 'package:conduit_core/src/http/http.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:path/path.dart' as path;
 
-typedef FileControllerClosure = FutureOr<Response> Function(
-  FileController controller,
-  Request req,
-);
+typedef FileControllerClosure =
+    FutureOr<Response> Function(FileController controller, Request req);
 
 /// Serves files from a directory on the filesystem.
 ///
@@ -42,10 +40,8 @@ class FileController extends Controller {
   /// according to [CodecRegistry].
   ///
   /// Note that the 'Last-Modified' header is always applied to a response served from this instance.
-  FileController(
-    String pathOfDirectoryToServe, {
-    this._onFileNotFound,
-  })  : _servingDirectory = Uri.directory(pathOfDirectoryToServe);
+  FileController(String pathOfDirectoryToServe, {this._onFileNotFound})
+    : _servingDirectory = Uri.directory(pathOfDirectoryToServe);
 
   static final Map<String, ContentType> _defaultExtensionMap = {
     /* Web content */
@@ -82,10 +78,7 @@ class FileController extends Controller {
   final Map<String, ContentType> _extensionMap = Map.from(_defaultExtensionMap);
   final List<_PolicyPair?> _policyPairs = [];
   final Uri _servingDirectory;
-  final FutureOr<Response> Function(
-    FileController,
-    Request,
-  )? _onFileNotFound;
+  final FutureOr<Response> Function(FileController, Request)? _onFileNotFound;
 
   /// Returns a [ContentType] for a file extension.
   ///
@@ -184,8 +177,9 @@ class FileController extends Controller {
     }
 
     final lastModifiedDate = file.lastModifiedSync();
-    final ifModifiedSince =
-        request.raw.headers.value(HttpHeaders.ifModifiedSinceHeader);
+    final ifModifiedSince = request.raw.headers.value(
+      HttpHeaders.ifModifiedSinceHeader,
+    );
     if (ifModifiedSince != null) {
       final date = HttpDate.parse(ifModifiedSince);
       if (!lastModifiedDate.isAfter(date)) {
@@ -194,14 +188,15 @@ class FileController extends Controller {
     }
 
     final lastModifiedDateStringValue = HttpDate.format(lastModifiedDate);
-    final contentType = contentTypeForExtension(path.extension(file.path)) ??
+    final contentType =
+        contentTypeForExtension(path.extension(file.path)) ??
         ContentType("application", "octet-stream");
     final byteStream = file.openRead();
 
     return Response.ok(
-      byteStream,
-      headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue},
-    )
+        byteStream,
+        headers: {HttpHeaders.lastModifiedHeader: lastModifiedDateStringValue},
+      )
       ..cachePolicy = _policyForFile(file)
       ..encodeBody = false
       ..contentType = contentType;
@@ -221,11 +216,11 @@ class FileController extends Controller {
             "Successful file fetch.",
             content: {"*/*": APIMediaType(schema: APISchemaObject.file())},
           ),
-          "404": APIResponse("No file exists at path.")
+          "404": APIResponse("No file exists at path."),
         },
         description: "Content-Type is determined by the suffix of the file.",
         summary: "Returns the contents of a file on the server's filesystem.",
-      )
+      ),
     };
   }
 

@@ -14,8 +14,8 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
   @override
   ManagedObject instanceOfImplementation({ManagedBacking? backing}) {
     try {
-      final object = instanceType.newInstance(Symbol.empty, []).reflectee
-          as ManagedObject;
+      final object =
+          instanceType.newInstance(Symbol.empty, []).reflectee as ManagedObject;
 
       if (backing != null) {
         object.backing = backing;
@@ -39,9 +39,9 @@ class ManagedEntityRuntimeImpl extends ManagedEntityRuntime {
   ManagedSet setOfImplementation(Iterable<dynamic> objects) {
     final type =
         reflectType(ManagedSet, [instanceType.reflectedType]) as ClassMirror;
-    final set = type
-        .newInstance(const Symbol("fromDynamic"), [objects]).reflectee
-        as ManagedSet?;
+    final set =
+        type.newInstance(const Symbol("fromDynamic"), [objects]).reflectee
+            as ManagedSet?;
 
     if (set == null) {
       throw StateError('No set implementation found for $instanceType');

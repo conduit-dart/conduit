@@ -31,8 +31,9 @@ class APISchemaObject extends APIProperty {
   }
 
   @override
-  Map<String, cast.Cast> get castMap =>
-      {"required": const cast.List(cast.string)};
+  Map<String, cast.Cast> get castMap => {
+    "required": const cast.List(cast.string),
+  };
 
   @override
   void decode(KeyedArchive object) {
@@ -45,8 +46,10 @@ class APISchemaObject extends APIProperty {
     readOnly = object.decode("readOnly") ?? false;
 
     items = object.decodeObject("items", APISchemaObject.new);
-    additionalProperties =
-        object.decodeObject("additionalProperties", APISchemaObject.new);
+    additionalProperties = object.decodeObject(
+      "additionalProperties",
+      APISchemaObject.new,
+    );
     properties = object.decodeObjectMap("properties", APISchemaObject.new);
   }
 

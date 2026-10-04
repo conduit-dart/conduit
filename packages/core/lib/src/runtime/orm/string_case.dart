@@ -37,7 +37,8 @@ List<String> _groupIntoWords(String text) {
 
     buffer.write(char);
 
-    final isEndOfWord = nextChar == null ||
+    final isEndOfWord =
+        nextChar == null ||
         (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
         _symbolSet.contains(nextChar);
 

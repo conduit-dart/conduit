@@ -22,8 +22,8 @@ class ChannelBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => const {
-        '.dart': ['.channel.conduit.dart', '.channel.conduit.json'],
-      };
+    '.dart': ['.channel.conduit.dart', '.channel.conduit.json'],
+  };
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -37,9 +37,7 @@ class ChannelBuilder implements Builder {
 
     if (classes.isEmpty) return;
 
-    final manifest = {
-      'channels': classes.map((c) => c.name).toList(),
-    };
+    final manifest = {'channels': classes.map((c) => c.name).toList()};
     await buildStep.writeAsString(
       input.changeExtension('.channel.conduit.json'),
       json.encode(manifest),

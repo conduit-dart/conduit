@@ -21,23 +21,25 @@ class AuthClient {
     String? salt, {
     List<AuthScope>? allowedScopes,
   }) : this.withRedirectURI(
-          id,
-          hashedSecret,
-          salt,
-          null,
-          allowedScopes: allowedScopes,
-        );
+         id,
+         hashedSecret,
+         salt,
+         null,
+         allowedScopes: allowedScopes,
+       );
 
   /// Creates an instance of a public [AuthClient].
-  AuthClient.public(String id,
-      {List<AuthScope>? allowedScopes, String? redirectURI})
-      : this.withRedirectURI(
-          id,
-          null,
-          null,
-          redirectURI,
-          allowedScopes: allowedScopes,
-        );
+  AuthClient.public(
+    String id, {
+    List<AuthScope>? allowedScopes,
+    String? redirectURI,
+  }) : this.withRedirectURI(
+         id,
+         null,
+         null,
+         redirectURI,
+         allowedScopes: allowedScopes,
+       );
 
   /// Creates an instance of [AuthClient] that uses the authorization code grant flow.
   ///
@@ -95,8 +97,9 @@ class AuthClient {
 
   /// Whether or not this client can issue tokens for the provided [scope].
   bool allowsScope(AuthScope scope) {
-    return allowedScopes
-            ?.any((clientScope) => scope.isSubsetOrEqualTo(clientScope)) ??
+    return allowedScopes?.any(
+          (clientScope) => scope.isSubsetOrEqualTo(clientScope),
+        ) ??
         false;
   }
 
@@ -164,8 +167,9 @@ class AuthToken {
     final map = {
       "access_token": accessToken,
       "token_type": type,
-      "expires_in":
-          expirationDate!.difference(DateTime.now().toUtc()).inSeconds,
+      "expires_in": expirationDate!
+          .difference(DateTime.now().toUtc())
+          .inSeconds,
     };
 
     if (refreshToken != null) {
@@ -351,7 +355,7 @@ class AuthScope {
   ///
   /// See [AuthServerDelegate.getAllowedScopes] for more details.
   static const List<AuthScope> any = [
-    AuthScope._("_scope:_constant:_marker", [], null)
+    AuthScope._("_scope:_constant:_marker", [], null),
   ];
 
   /// Returns true if that [providedScopes] fulfills [requiredScopes].
@@ -368,8 +372,9 @@ class AuthScope {
     }
 
     return requiredScopes.every((requiredScope) {
-      final tokenHasValidScope = providedScopes
-          ?.any((tokenScope) => requiredScope.isSubsetOrEqualTo(tokenScope));
+      final tokenHasValidScope = providedScopes?.any(
+        (tokenScope) => requiredScope.isSubsetOrEqualTo(tokenScope),
+      );
 
       return tokenHasValidScope ?? false;
     });
@@ -400,8 +405,7 @@ class AuthScope {
       );
     }
 
-    final elements =
-        scopeString.split(":").map(_AuthScopeSegment.new).toList();
+    final elements = scopeString.split(":").map(_AuthScopeSegment.new).toList();
 
     var scannedOffset = 0;
     for (var i = 0; i < elements.length - 1; i++) {

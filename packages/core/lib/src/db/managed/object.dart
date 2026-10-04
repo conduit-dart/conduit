@@ -70,10 +70,11 @@ abstract class ManagedObject<T> extends Serializable {
 
   /// Cache of entity.properties using ResponseKey name as key, in case no ResponseKey is set then default property name is used as key
   late Map<String, ManagedPropertyDescription?> responseKeyProperties = {
-    for (final key in properties.keys) mapKeyName(key): properties[key]
+    for (final key in properties.keys) mapKeyName(key): properties[key],
   };
 
-  late final bool modelFieldIncludeIfNull = properties.isEmpty ||
+  late final bool modelFieldIncludeIfNull =
+      properties.isEmpty ||
       (properties.values.first?.responseModel?.includeIfNullField ?? true);
 
   String mapKeyName(String propertyName) {
@@ -100,8 +101,10 @@ abstract class ManagedObject<T> extends Serializable {
   dynamic operator [](String propertyName) {
     final prop = properties[propertyName];
     if (prop == null) {
-      throw ArgumentError("Invalid property access for '${entity.name}'. "
-          "Property '$propertyName' does not exist on '${entity.name}'.");
+      throw ArgumentError(
+        "Invalid property access for '${entity.name}'. "
+        "Property '$propertyName' does not exist on '${entity.name}'.",
+      );
     }
 
     return backing.valueForProperty(prop);
@@ -111,8 +114,10 @@ abstract class ManagedObject<T> extends Serializable {
   void operator []=(String? propertyName, dynamic value) {
     final prop = properties[propertyName];
     if (prop == null) {
-      throw ArgumentError("Invalid property access for '${entity.name}'. "
-          "Property '$propertyName' does not exist on '${entity.name}'.");
+      throw ArgumentError(
+        "Invalid property access for '${entity.name}'. "
+        "Property '$propertyName' does not exist on '${entity.name}'.",
+      );
     }
 
     backing.setValueForProperty(prop, value);
@@ -244,8 +249,11 @@ abstract class ManagedObject<T> extends Serializable {
             throw ValidationException(["invalid input type for key '$key'"]);
           }
 
-          entity.runtime
-              .setTransientValueForKey(this, property.name, decodedValue);
+          entity.runtime.setTransientValueForKey(
+            this,
+            property.name,
+            decodedValue,
+          );
         }
       } else {
         backing.setValueForProperty(
@@ -283,11 +291,14 @@ abstract class ManagedObject<T> extends Serializable {
     entity.attributes.values
         .where((attr) => attr!.transientStatus?.isAvailableAsOutput ?? false)
         .forEach((attr) {
-      final value = entity.runtime.getTransientValueForKey(this, attr!.name);
-      if (value != null) {
-        outputMap[mapKeyName(attr.responseKey?.name ?? attr.name)] = value;
-      }
-    });
+          final value = entity.runtime.getTransientValueForKey(
+            this,
+            attr!.name,
+          );
+          if (value != null) {
+            outputMap[mapKeyName(attr.responseKey?.name ?? attr.name)] = value;
+          }
+        });
 
     return outputMap;
   }

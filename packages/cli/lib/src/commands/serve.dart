@@ -289,8 +289,7 @@ class CLIServer extends CLICommand with CLIProject {
         // Wait briefly for the child to acknowledge the stop, then close the
         // per-child receive ports so they don't leak across restarts.
         try {
-          await stoppedCompleter.future
-              .timeout(const Duration(seconds: 5));
+          await stoppedCompleter.future.timeout(const Duration(seconds: 5));
         } catch (_) {
           // Best-effort: even if the isolate didn't acknowledge, drop ports.
         }

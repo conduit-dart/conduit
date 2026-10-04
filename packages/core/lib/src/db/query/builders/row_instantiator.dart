@@ -114,13 +114,18 @@ class RowInstantiator {
       return;
     }
 
-    final innerInstanceWrapper =
-        instanceFromRow(rowIterator, table.returning.iterator, table: table);
+    final innerInstanceWrapper = instanceFromRow(
+      rowIterator,
+      table.returning.iterator,
+      table: table,
+    );
 
     if (table.joinedBy!.relationshipType == ManagedRelationshipType.hasMany) {
       // If to many, put in a managed set.
-      final list = (instance[table.joinedBy!.name] ??
-          table.joinedBy!.destinationEntity.setOf([])) as ManagedSet?;
+      final list =
+          (instance[table.joinedBy!.name] ??
+                  table.joinedBy!.destinationEntity.setOf([]))
+              as ManagedSet?;
 
       if (innerInstanceWrapper?.isNew ?? false) {
         list!.add(innerInstanceWrapper!.instance);

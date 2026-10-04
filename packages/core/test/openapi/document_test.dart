@@ -24,18 +24,21 @@ void main() {
       DefaultChannel.controllerPrepared = Completer();
       DefaultChannel.appPrepared = Completer();
 
-      DefaultChannel.appPrepared!.future
-          .then((_) => appPrepared = DateTime.now());
+      DefaultChannel.appPrepared!.future.then(
+        (_) => appPrepared = DateTime.now(),
+      );
 
-      DefaultChannel.controllerPrepared!.future
-          .then((_) => controllerPrepared = DateTime.now());
+      DefaultChannel.controllerPrepared!.future.then(
+        (_) => controllerPrepared = DateTime.now(),
+      );
 
-      DefaultChannel.controllerDocumented!.future
-          .then((_) => controllerDocumented = DateTime.now());
+      DefaultChannel.controllerDocumented!.future.then(
+        (_) => controllerDocumented = DateTime.now(),
+      );
       doc = await Application.document(DefaultChannel, ApplicationOptions(), {
         "name": "test-title",
         "description": "test-description",
-        "version": "1.2.3"
+        "version": "1.2.3",
       });
     });
 
@@ -106,116 +109,127 @@ void main() {
       expect(completer.future, completes);
     });
 
-    test("Deferred operations are executed in order, even when async",
-        () async {
-      final completer1 = Completer<DateTime>();
-      final completer2 = Completer<DateTime>();
-      final completer3 = Completer<DateTime>();
+    test(
+      "Deferred operations are executed in order, even when async",
+      () async {
+        final completer1 = Completer<DateTime>();
+        final completer2 = Completer<DateTime>();
+        final completer3 = Completer<DateTime>();
 
-      ctx.defer(() {
-        return Future(() => completer1.complete(DateTime.now()));
-      });
-      ctx.defer(() {
-        completer2.complete(DateTime.now());
-      });
-      ctx.defer(() {
-        return Future(() => completer3.complete(DateTime.now()));
-      });
-      await ctx.finalize();
-
-      final f1 = await completer1.future;
-      final f2 = await completer2.future;
-      final f3 = await completer3.future;
-
-      expect(f1.isBefore(f2) || f1.isAtSameMomentAs(f2), true);
-      expect(f2.isBefore(f3) || f2.isAtSameMomentAs(f3), true);
-    });
-
-    test("Finalize throws error if contains unresolved type reference",
-        () async {
-      ctx.document.paths = {
-        "/path": APIPath(
-          operations: {
-            "get": APIOperation(
-              "id1",
-              {"200": ctx.responses.getObjectWithType(String)},
-            )
-          },
-        )
-      };
-
-      try {
+        ctx.defer(() {
+          return Future(() => completer1.complete(DateTime.now()));
+        });
+        ctx.defer(() {
+          completer2.complete(DateTime.now());
+        });
+        ctx.defer(() {
+          return Future(() => completer3.complete(DateTime.now()));
+        });
         await ctx.finalize();
-        fail("unreachable");
-      } on ArgumentError catch (e) {
-        expect(e.message, contains("Reference"));
-        expect(e.message, contains("responses"));
-        expect(e.message, contains("String"));
-        expect(e.message, contains("does not exist"));
-      }
-    });
 
-    test("Finalize throws error if contains unresolved uri reference",
-        () async {
-      ctx.document.components!.responses["test"] = APIResponse(
-        "desc",
-        content: {
-          "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
-        },
-      );
+        final f1 = await completer1.future;
+        final f2 = await completer2.future;
+        final f3 = await completer3.future;
 
-      try {
-        await ctx.finalize();
-        fail("unreachable");
-      } on ArgumentError catch (e) {
-        expect(e.message, contains("Reference"));
-        expect(e.message, contains("'#/components/schemas/foo'"));
-        expect(e.message, contains("does not exist"));
-      }
-    });
+        expect(f1.isBefore(f2) || f1.isAtSameMomentAs(f2), true);
+        expect(f2.isBefore(f3) || f2.isAtSameMomentAs(f3), true);
+      },
+    );
 
     test(
-        "Deferred async/sync components can be used to register components after they have been referenced",
-        () async {
-      ctx.document.paths = {
-        "/path": APIPath(
-          operations: {
-            "get": APIOperation(
-              "id1",
-              {"200": ctx.responses.getObjectWithType(String)},
-            )
+      "Finalize throws error if contains unresolved type reference",
+      () async {
+        ctx.document.paths = {
+          "/path": APIPath(
+            operations: {
+              "get": APIOperation("id1", {
+                "200": ctx.responses.getObjectWithType(String),
+              }),
+            },
+          ),
+        };
+
+        try {
+          await ctx.finalize();
+          fail("unreachable");
+        } on ArgumentError catch (e) {
+          expect(e.message, contains("Reference"));
+          expect(e.message, contains("responses"));
+          expect(e.message, contains("String"));
+          expect(e.message, contains("does not exist"));
+        }
+      },
+    );
+
+    test(
+      "Finalize throws error if contains unresolved uri reference",
+      () async {
+        ctx.document.components!.responses["test"] = APIResponse(
+          "desc",
+          content: {
+            "application/json": APIMediaType(
+              schema: ctx.schema.getObject("foo"),
+            ),
           },
-        )
-      };
-
-      ctx.document.components!.responses["test"] = APIResponse(
-        "desc",
-        content: {
-          "application/json": APIMediaType(schema: ctx.schema.getObject("foo"))
-        },
-      );
-
-      ctx.schema.register("foo", APISchemaObject.integer());
-      ctx.defer(() {
-        return Future(
-          () => ctx.responses
-              .register("whatever", APIResponse("foo"), representation: String),
         );
-      });
 
-      await ctx.finalize();
+        try {
+          await ctx.finalize();
+          fail("unreachable");
+        } on ArgumentError catch (e) {
+          expect(e.message, contains("Reference"));
+          expect(e.message, contains("'#/components/schemas/foo'"));
+          expect(e.message, contains("does not exist"));
+        }
+      },
+    );
 
-      final map = ctx.document.asMap();
-      expect(
-        map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
-        "#/components/responses/whatever",
-      );
-      expect(
-        map["components"]["responses"]["test"]["content"]["application/json"]
-            ["schema"][r"$ref"],
-        "#/components/schemas/foo",
-      );
-    });
+    test(
+      "Deferred async/sync components can be used to register components after they have been referenced",
+      () async {
+        ctx.document.paths = {
+          "/path": APIPath(
+            operations: {
+              "get": APIOperation("id1", {
+                "200": ctx.responses.getObjectWithType(String),
+              }),
+            },
+          ),
+        };
+
+        ctx.document.components!.responses["test"] = APIResponse(
+          "desc",
+          content: {
+            "application/json": APIMediaType(
+              schema: ctx.schema.getObject("foo"),
+            ),
+          },
+        );
+
+        ctx.schema.register("foo", APISchemaObject.integer());
+        ctx.defer(() {
+          return Future(
+            () => ctx.responses.register(
+              "whatever",
+              APIResponse("foo"),
+              representation: String,
+            ),
+          );
+        });
+
+        await ctx.finalize();
+
+        final map = ctx.document.asMap();
+        expect(
+          map["paths"]["/path"]["get"]["responses"]["200"][r"$ref"],
+          "#/components/responses/whatever",
+        );
+        expect(
+          map["components"]["responses"]["test"]["content"]["application/json"]["schema"][r"$ref"],
+          "#/components/schemas/foo",
+        );
+      },
+    );
   });
 
   group("Happy path", () {
@@ -225,7 +239,7 @@ void main() {
       doc = await Application.document(DefaultChannel, ApplicationOptions(), {
         "name": "test-title",
         "description": "test-description",
-        "version": "1.2.3"
+        "version": "1.2.3",
       });
     });
 
@@ -313,18 +327,20 @@ void main() {
       });
 
       test(
-          "APIComponentDocumenter properties in channel are automatically emitted in components",
-          () {
-        expect(doc.components!.schemas["someObject"], isNotNull);
-        expect(doc.components!.schemas["named-component"], isNotNull);
-        expect(doc.components!.schemas["ref-component"], isNotNull);
-      });
+        "APIComponentDocumenter properties in channel are automatically emitted in components",
+        () {
+          expect(doc.components!.schemas["someObject"], isNotNull);
+          expect(doc.components!.schemas["named-component"], isNotNull);
+          expect(doc.components!.schemas["ref-component"], isNotNull);
+        },
+      );
 
       test(
-          "Componentable getter/regular instance method in channel does not automatically emit components",
-          () {
-        expect(doc.components!.schemas["won't-show-up"], isNull);
-      });
+        "Componentable getter/regular instance method in channel does not automatically emit components",
+        () {
+          expect(doc.components!.schemas["won't-show-up"], isNull);
+        },
+      );
 
       test("Can resolve component by type", () {
         final ref =
@@ -394,9 +410,10 @@ void main() {
     });
 
     test("Non-string key map throws error", () {
-      final schema = (RuntimeContext.current.runtimes[InvalidMapKey]
-              as SerializableRuntime)
-          .documentSchema(ctx);
+      final schema =
+          (RuntimeContext.current.runtimes[InvalidMapKey]
+                  as SerializableRuntime)
+              .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
       expect(
         schema.additionalPropertyPolicy,
@@ -407,9 +424,10 @@ void main() {
     });
 
     test("List that contains non-serializble types throws", () {
-      final schema = (RuntimeContext.current.runtimes[InvalidListValue]
-              as SerializableRuntime)
-          .documentSchema(ctx);
+      final schema =
+          (RuntimeContext.current.runtimes[InvalidListValue]
+                  as SerializableRuntime)
+              .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
       expect(
         schema.additionalPropertyPolicy,
@@ -420,9 +438,10 @@ void main() {
     });
 
     test("Map that contains values that aren't serializable throws", () {
-      final schema = (RuntimeContext.current.runtimes[InvalidMapValue]
-              as SerializableRuntime)
-          .documentSchema(ctx);
+      final schema =
+          (RuntimeContext.current.runtimes[InvalidMapValue]
+                  as SerializableRuntime)
+              .documentSchema(ctx);
       expect(schema.properties!.isEmpty, true);
       expect(
         schema.additionalPropertyPolicy,
@@ -567,8 +586,8 @@ class DefaultChannel extends ApplicationChannel {
   ComponentB b = ComponentB();
 
   UnaccountedForControllerWithComponents
-      get documentableButNotAutomaticGetter =>
-          UnaccountedForControllerWithComponents();
+  get documentableButNotAutomaticGetter =>
+      UnaccountedForControllerWithComponents();
 
   String? notDocumentable;
 
@@ -673,12 +692,9 @@ class Endpoint extends Controller {
       return {
         "get": APIOperation(
           "get1",
-          {
-            "200": APIResponse("get/1-200"),
-            "400": APIResponse("get/1-400"),
-          },
+          {"200": APIResponse("get/1-200"), "400": APIResponse("get/1-400")},
           parameters: [
-            APIParameter.header("x-op", schema: APISchemaObject.integer())
+            APIParameter.header("x-op", schema: APISchemaObject.integer()),
           ],
         ),
         "put": APIOperation("put1", {"200": APIResponse("put/1-200")}),
@@ -691,10 +707,11 @@ class Endpoint extends Controller {
         "post0",
         {"200": APIResponse("post/0-200")},
         requestBody: APIRequestBody({
-          "application/json":
-              APIMediaType(schema: registry.schema["someObject"])
+          "application/json": APIMediaType(
+            schema: registry.schema["someObject"],
+          ),
         }),
-      )
+      ),
     };
   }
 
@@ -714,9 +731,10 @@ class ComponentA implements APIComponentDocumenter {
   void documentComponents(APIDocumentContext components) {
     final schemaObject = APISchemaObject.object({
       "name": APISchemaObject.string(),
-      "refByType":
-          components.schema.getObjectWithType(ReferencableSchemaObject),
-      "refByName": components.schema["named-component"]
+      "refByType": components.schema.getObjectWithType(
+        ReferencableSchemaObject,
+      ),
+      "refByName": components.schema["named-component"],
     });
 
     components.schema.register("someObject", schemaObject);

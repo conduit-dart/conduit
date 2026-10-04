@@ -21,32 +21,27 @@ void main() {
     test('allows when caller scopes intersect annotation scopes', () async {
       const auth = FieldAuthorize(scopes: ['pii:read']);
       final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
-      final result = await wrapped(
-        const _Parent(),
-        <String, dynamic>{
-          fieldAuthorizationArgKey: _authWithScopes(['pii:read']),
-        },
-      );
+      final result = await wrapped(const _Parent(), <String, dynamic>{
+        fieldAuthorizationArgKey: _authWithScopes(['pii:read']),
+      });
       expect(result, equals('ok'));
     });
 
-    test('rejects when caller scopes do not intersect annotation scopes',
-        () async {
-      const auth = FieldAuthorize(scopes: ['pii:read']);
-      final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
-      expect(
-        () => wrapped(
-          const _Parent(),
-          <String, dynamic>{
+    test(
+      'rejects when caller scopes do not intersect annotation scopes',
+      () async {
+        const auth = FieldAuthorize(scopes: ['pii:read']);
+        final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
+        expect(
+          () => wrapped(const _Parent(), <String, dynamic>{
             fieldAuthorizationArgKey: _authWithScopes(['profile:read']),
-          },
-        ),
-        throwsA(isA<GraphQLException>()),
-      );
-    });
+          }),
+          throwsA(isA<GraphQLException>()),
+        );
+      },
+    );
 
-    test('rejects when neither Request nor Authorization is in args',
-        () async {
+    test('rejects when neither Request nor Authorization is in args', () async {
       const auth = FieldAuthorize(scopes: ['pii:read']);
       final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
       expect(
@@ -57,24 +52,24 @@ void main() {
   });
 
   group('wrapResolverWithAuth — allowOwner', () {
-    test('allowOwner short-circuits the scope check when it returns true',
-        () async {
-      final auth = FieldAuthorize(
-        scopes: const ['pii:read'],
-        allowOwner: (parent, request) =>
-            parent is _Parent && parent.isOwner,
-      );
-      final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
-      final request = _stubRequest()..authorization = _authWithScopes([]);
-      final result = await wrapped(
-        const _Parent(isOwner: true),
-        <String, dynamic>{authorizationArgKey: request},
-      );
-      expect(result, equals('ok'));
-    });
+    test(
+      'allowOwner short-circuits the scope check when it returns true',
+      () async {
+        final auth = FieldAuthorize(
+          scopes: const ['pii:read'],
+          allowOwner: (parent, request) => parent is _Parent && parent.isOwner,
+        );
+        final wrapped = wrapResolverWithAuth(_passThroughResolver, auth);
+        final request = _stubRequest()..authorization = _authWithScopes([]);
+        final result = await wrapped(
+          const _Parent(isOwner: true),
+          <String, dynamic>{authorizationArgKey: request},
+        );
+        expect(result, equals('ok'));
+      },
+    );
 
-    test('allowOwner does not short-circuit when it returns false',
-        () async {
+    test('allowOwner does not short-circuit when it returns false', () async {
       final auth = FieldAuthorize(
         scopes: const ['pii:read'],
         allowOwner: (parent, request) => false,
@@ -83,10 +78,9 @@ void main() {
       final request = _stubRequest()
         ..authorization = _authWithScopes(['profile:read']);
       expect(
-        () => wrapped(
-          const _Parent(),
-          <String, dynamic>{authorizationArgKey: request},
-        ),
+        () => wrapped(const _Parent(), <String, dynamic>{
+          authorizationArgKey: request,
+        }),
         throwsA(isA<GraphQLException>()),
       );
     });
@@ -127,8 +121,7 @@ void main() {
 
 // -- Helpers ---------------------------------------------------------------
 
-Object? _passThroughResolver(Object? parent, Map<String, dynamic> args) =>
-    'ok';
+Object? _passThroughResolver(Object? parent, Map<String, dynamic> args) => 'ok';
 
 class _Parent {
   const _Parent({this.isOwner = false});
@@ -140,11 +133,11 @@ class _FakeProfile {}
 class _FakeAccount {}
 
 Authorization _authWithScopes(List<String> scopeStrings) => Authorization(
-      'client',
-      null,
-      null,
-      scopes: scopeStrings.map(AuthScope.new).toList(),
-    );
+  'client',
+  null,
+  null,
+  scopes: scopeStrings.map(AuthScope.new).toList(),
+);
 
 /// Constructs a real [Request] against a stub [HttpRequest]. Only the
 /// `Request.authorization` slot is exercised by [wrapResolverWithAuth]

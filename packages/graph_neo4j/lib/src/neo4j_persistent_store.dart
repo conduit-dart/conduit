@@ -128,9 +128,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   Future<BoltConnection> _openConnection() async {
     final host = uri.host;
     if (host.isEmpty) {
-      throw GraphConnectionError(
-        'Bolt URI must have a host: $uri',
-      );
+      throw GraphConnectionError('Bolt URI must have a host: $uri');
     }
     final port = uri.hasPort ? uri.port : 7687;
     try {
@@ -175,9 +173,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   // ---------------------------------------------------------------------
 
   @override
-  Future<List<N>> match<N extends GraphNode<N>>(
-    GraphPattern<N> pattern,
-  ) async {
+  Future<List<N>> match<N extends GraphNode<N>>(GraphPattern<N> pattern) async {
     final stmt = emitPattern(pattern);
     final rows = await _runRaw(stmt.cypher, stmt.parameters);
     final anchorVar = pattern.root.variable;
@@ -202,9 +198,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   Future<N> create<N extends GraphNode<N>>(N node) async {
     final labels = node.labels.map((l) => l.name).toList();
     if (labels.isEmpty) {
-      throw GraphInvalidQuery(
-        'cannot persist a node with no labels',
-      );
+      throw GraphInvalidQuery('cannot persist a node with no labels');
     }
     final labelClause = labels
         .map(_escapeIdentifierSafe)
@@ -218,9 +212,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
     final created = rows.first['n'];
     final id = _extractId(created);
     if (id == null) {
-      throw GraphConnectionError(
-        'CREATE response did not include a node id',
-      );
+      throw GraphConnectionError('CREATE response did not include a node id');
     }
     node.id = id;
     return node;
@@ -258,8 +250,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   Future<List<N>> traverse<N extends GraphNode<N>>(
     GraphNode<dynamic> from,
     Type edgeKind, {
-    GraphRelationshipDirection direction =
-        GraphRelationshipDirection.outgoing,
+    GraphRelationshipDirection direction = GraphRelationshipDirection.outgoing,
   }) async {
     if (from.id == null) {
       throw GraphNotFoundError(
@@ -268,7 +259,8 @@ class Neo4jPersistentStore implements GraphPersistentStore {
     }
     final edgeLabel = _resolveEdgeLabel(edgeKind);
     final arrow = _arrowFor(direction);
-    final cypher = 'MATCH (a) WHERE id(a) = \$fromId '
+    final cypher =
+        'MATCH (a) WHERE id(a) = \$fromId '
         'MATCH (a)${arrow.open}[:${_escapeIdentifierSafe(edgeLabel)}]'
         '${arrow.close}(b) RETURN b';
     final rows = await _runRaw(cypher, {'fromId': from.id});
@@ -281,8 +273,7 @@ class Neo4jPersistentStore implements GraphPersistentStore {
   Future<List<Map<String, Object?>>> cypher(
     String rawQuery, {
     Map<String, Object?> params = const {},
-  }) =>
-      _runRaw(rawQuery, params);
+  }) => _runRaw(rawQuery, params);
 
   @override
   Future<void> close() async {

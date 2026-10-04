@@ -24,14 +24,16 @@ Future main() async {
   test("Can get user with valid credentials", () async {
     final response = await agents![0]!.get("/users/1");
     expect(
-        response,
-        hasResponse(200,
-            body: partial({"username": "bob+0@conduit.dart.com"})));
+      response,
+      hasResponse(200, body: partial({"username": "bob+0@conduit.dart.com"})),
+    );
   });
 
   test("Updating user fails if not owner", () async {
-    final response =
-        await agents![4]!.put("/users/1", body: {"username": "a@a.com"});
+    final response = await agents![4]!.put(
+      "/users/1",
+      body: {"username": "a@a.com"},
+    );
     expect(response, hasStatus(401));
   });
 }

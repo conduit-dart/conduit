@@ -4,13 +4,7 @@ import 'package:postgres/postgres.dart';
 import 'postgresql_persistent_store.dart';
 import 'postgresql_query.dart';
 
-enum _Reducer {
-  avg,
-  count,
-  max,
-  min,
-  sum,
-}
+enum _Reducer { avg, count, max, min, sum }
 
 class PostgresQueryReduce<T extends ManagedObject>
     extends QueryReduceOperation<T> {

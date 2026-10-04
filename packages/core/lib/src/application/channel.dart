@@ -251,8 +251,8 @@ abstract class ApplicationChannel implements APIComponentDocumenter {
     (RuntimeContext.current[runtimeType] as ChannelRuntime)
         .getDocumentableChannelComponents(this)
         .forEach((component) {
-      component.documentComponents(registry);
-    });
+          component.documentComponents(registry);
+        });
   }
 }
 
@@ -299,15 +299,15 @@ class ApplicationMessageHub extends Stream<dynamic> implements Sink<dynamic> {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError = false,
-  }) =>
-      _inboundController.stream.listen(
-        onData,
-        onError: onError ??
-            ((err, StackTrace st) =>
-                _logger.severe("ApplicationMessageHub error", err, st)),
-        onDone: onDone,
-        cancelOnError: cancelOnError,
-      );
+  }) => _inboundController.stream.listen(
+    onData,
+    onError:
+        onError ??
+        ((err, StackTrace st) =>
+            _logger.severe("ApplicationMessageHub error", err, st)),
+    onDone: onDone,
+    cancelOnError: cancelOnError,
+  );
 
   /// Sends a message to all other hubs.
   ///

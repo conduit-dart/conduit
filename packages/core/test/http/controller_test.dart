@@ -40,72 +40,89 @@ void main() {
     });
 
     test("Can add change status code", () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => resp.statusCode = 201);
-      })!.linkFunction((r) async {
-        return Response.ok(null);
-      });
+      root
+          .linkFunction((r) async {
+            return r..addResponseModifier((resp) => resp.statusCode = 201);
+          })!
+          .linkFunction((r) async {
+            return Response.ok(null);
+          });
 
       final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.statusCode, 201);
     });
 
     test("Can remove header", () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => resp.headers.remove("x-foo"));
-      })!.linkFunction((r) async {
-        return Response.ok(null, headers: {"x-foo": "foo"});
-      });
+      root
+          .linkFunction((r) async {
+            return r
+              ..addResponseModifier((resp) => resp.headers.remove("x-foo"));
+          })!
+          .linkFunction((r) async {
+            return Response.ok(null, headers: {"x-foo": "foo"});
+          });
 
       final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers.containsKey("x-foo"), false);
     });
 
     test("Can add header", () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
-      })!.linkFunction((r) async {
-        return Response.ok(null);
-      });
+      root
+          .linkFunction((r) async {
+            return r
+              ..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
+          })!
+          .linkFunction((r) async {
+            return Response.ok(null);
+          });
 
       final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
     test("Can change header value", () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
-      })!.linkFunction((r) async {
-        return Response.ok(null, headers: {"x-foo": "foo"});
-      });
+      root
+          .linkFunction((r) async {
+            return r
+              ..addResponseModifier((resp) => resp.headers["x-foo"] = "bar");
+          })!
+          .linkFunction((r) async {
+            return Response.ok(null, headers: {"x-foo": "foo"});
+          });
 
       final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(resp.headers["x-foo"], "bar");
     });
 
     test("Can modify body prior to encoding", () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => resp.body["foo"] = "y");
-      })!.linkFunction((r) async {
-        return Response.ok({"x": "a"});
-      });
+      root
+          .linkFunction((r) async {
+            return r..addResponseModifier((resp) => resp.body["foo"] = "y");
+          })!
+          .linkFunction((r) async {
+            return Response.ok({"x": "a"});
+          });
 
       final resp = await http.get(Uri.parse("http://localhost:4111/"));
       expect(json.decode(resp.body), {"foo": "y", "x": "a"});
     });
 
     test(
-        "Response modifier that throws uncaught exception sends 500 server error",
-        () async {
-      root.linkFunction((r) async {
-        return r..addResponseModifier((resp) => throw Exception('expected'));
-      })!.linkFunction((r) async {
-        return Response.ok(null);
-      });
+      "Response modifier that throws uncaught exception sends 500 server error",
+      () async {
+        root
+            .linkFunction((r) async {
+              return r
+                ..addResponseModifier((resp) => throw Exception('expected'));
+            })!
+            .linkFunction((r) async {
+              return Response.ok(null);
+            });
 
-      final resp = await http.get(Uri.parse("http://localhost:4111/"));
-      expect(resp.statusCode, 500);
-    });
+        final resp = await http.get(Uri.parse("http://localhost:4111/"));
+        expect(resp.statusCode, 500);
+      },
+    );
   });
 
   group("Can return null from request controller is valid", () {
@@ -127,15 +144,17 @@ void main() {
 
     test("Return null", () async {
       var set = false;
-      root.linkFunction((req) {
-        req.raw.response.statusCode = 200;
-        req.raw.response.close();
+      root
+          .linkFunction((req) {
+            req.raw.response.statusCode = 200;
+            req.raw.response.close();
 
-        return null;
-      })!.linkFunction((req) {
-        set = true;
-        return null;
-      });
+            return null;
+          })!
+          .linkFunction((req) {
+            set = true;
+            return null;
+          });
 
       final response = await http.get(Uri.parse("http://localhost:4111"));
       expect(response.statusCode, 200);
@@ -159,48 +178,60 @@ void main() {
     });
 
     test(
-        "Logging after socket is closed throws uncaught exception, still works correctly after",
-        () async {
-      final request = await HttpClient().get("localhost", port, "/detach");
-      final response = await request.close();
-      try {
-        await response.toList();
-        expect(true, false);
-        // ignore: empty_catches
-      } on HttpException {}
+      "Logging after socket is closed throws uncaught exception, still works correctly after",
+      () async {
+        final request = await HttpClient().get("localhost", port, "/detach");
+        final response = await request.close();
+        try {
+          await response.toList();
+          expect(true, false);
+          // ignore: empty_catches
+        } on HttpException {}
 
-      expect(
-        (await http.get(Uri.parse("http://localhost:$port/detach"))).statusCode,
-        200,
-      );
-    });
-
-    test("Request on bad state: header already sent is captured in Controller",
-        () async {
-      expect(
-        (await http.get(Uri.parse("http://localhost:$port/closed"))).statusCode,
-        200,
-      );
-      expect(
-        (await http.get(Uri.parse("http://localhost:$port/closed"))).statusCode,
-        200,
-      );
-    });
+        expect(
+          (await http.get(
+            Uri.parse("http://localhost:$port/detach"),
+          )).statusCode,
+          200,
+        );
+      },
+    );
 
     test(
-        "Request controller throwing HttpResponseException that dies on bad state: header already sent is captured in Controller",
-        () async {
-      expect(
-        (await http.get(Uri.parse("http://localhost:$port/closed_exception")))
-            .statusCode,
-        200,
-      );
-      expect(
-        (await http.get(Uri.parse("http://localhost:$port/closed_exception")))
-            .statusCode,
-        200,
-      );
-    });
+      "Request on bad state: header already sent is captured in Controller",
+      () async {
+        expect(
+          (await http.get(
+            Uri.parse("http://localhost:$port/closed"),
+          )).statusCode,
+          200,
+        );
+        expect(
+          (await http.get(
+            Uri.parse("http://localhost:$port/closed"),
+          )).statusCode,
+          200,
+        );
+      },
+    );
+
+    test(
+      "Request controller throwing HttpResponseException that dies on bad state: header already sent is captured in Controller",
+      () async {
+        expect(
+          (await http.get(
+            Uri.parse("http://localhost:$port/closed_exception"),
+          )).statusCode,
+          200,
+        );
+        expect(
+          (await http.get(
+            Uri.parse("http://localhost:$port/closed_exception"),
+          )).statusCode,
+          200,
+        );
+      },
+    );
   });
 
   group("Response error cases", () {
@@ -210,151 +241,163 @@ void main() {
     });
 
     test(
-        "Request controller's can serialize and encode Serializable objects as JSON by default",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.linkFunction((req) async {
-          final obj = SomeObject()..name = "Bob";
-          return Response.ok(obj);
+      "Request controller's can serialize and encode Serializable objects as JSON by default",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.linkFunction((req) async {
+            final obj = SomeObject()..name = "Bob";
+            return Response.ok(obj);
+          });
+          await next.receive(req);
         });
-        await next.receive(req);
-      });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
-      expect(resp.headers["content-type"], startsWith("application/json"));
-      expect(json.decode(resp.body), {"name": "Bob"});
-    });
+        final resp = await http.get(Uri.parse("http://localhost:8888"));
+        expect(resp.headers["content-type"], startsWith("application/json"));
+        expect(json.decode(resp.body), {"name": "Bob"});
+      },
+    );
 
     test(
-        "Responding to request with no content-type, but does have a body, defaults to application/json",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.linkFunction((req) async {
-          return Response.ok({"a": "b"});
+      "Responding to request with no content-type, but does have a body, defaults to application/json",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.linkFunction((req) async {
+            return Response.ok({"a": "b"});
+          });
+          await next.receive(req);
         });
-        await next.receive(req);
-      });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
-      expect(resp.headers["content-type"], startsWith("application/json"));
-      expect(json.decode(resp.body), {"a": "b"});
-    });
+        final resp = await http.get(Uri.parse("http://localhost:8888"));
+        expect(resp.headers["content-type"], startsWith("application/json"));
+        expect(json.decode(resp.body), {"a": "b"});
+      },
+    );
 
     test(
-        "Responding to a request with no explicit content-type and has a body that cannot be encoded to JSON will throw 500",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.linkFunction((req) async {
-          return Response.ok(DateTime.now());
+      "Responding to a request with no explicit content-type and has a body that cannot be encoded to JSON will throw 500",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.linkFunction((req) async {
+            return Response.ok(DateTime.now());
+          });
+          await next.receive(req);
         });
-        await next.receive(req);
-      });
 
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
-      expect(resp.statusCode, 500);
-      expect(resp.headers["content-type"], isNull);
-      expect(resp.body.isEmpty, true);
-    });
+        final resp = await http.get(Uri.parse("http://localhost:8888"));
+        expect(resp.statusCode, 500);
+        expect(resp.headers["content-type"], isNull);
+        expect(resp.body.isEmpty, true);
+      },
+    );
 
     test(
-        "Responding to request with no explicit content-type, does not have a body, has no content-type",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.linkFunction((req) async {
-          return Response.ok(null);
+      "Responding to request with no explicit content-type, does not have a body, has no content-type",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.linkFunction((req) async {
+            return Response.ok(null);
+          });
+          await next.receive(req);
         });
-        await next.receive(req);
-      });
-      final resp = await http.get(Uri.parse("http://localhost:8888"));
-      expect(resp.statusCode, 200);
-      expect(resp.headers["content-length"], "0");
-      expect(resp.headers["content-type"], isNull);
-      expect(resp.body.isEmpty, true);
-    });
+        final resp = await http.get(Uri.parse("http://localhost:8888"));
+        expect(resp.statusCode, 200);
+        expect(resp.headers["content-length"], "0");
+        expect(resp.headers["content-type"], isNull);
+        expect(resp.body.isEmpty, true);
+      },
+    );
 
     test(
-        "willSendResponse is always called prior to Response being sent for preflight requests",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.link(Always200Controller.new);
-        await next.receive(req);
-      });
+      "willSendResponse is always called prior to Response being sent for preflight requests",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.link(Always200Controller.new);
+          await next.receive(req);
+        });
 
-      // Invalid preflight
-      var req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
-      req.headers.set("Origin", "http://foobar.com");
-      req.headers.set("Access-Control-Request-Method", "POST");
-      req.headers
-          .set("Access-Control-Request-Headers", "accept, authorization");
-      var resp = await req.close();
+        // Invalid preflight
+        var req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
+        req.headers.set("Origin", "http://foobar.com");
+        req.headers.set("Access-Control-Request-Method", "POST");
+        req.headers.set(
+          "Access-Control-Request-Headers",
+          "accept, authorization",
+        );
+        var resp = await req.close();
 
-      expect(resp.statusCode, 200);
-      expect(
-        json.decode(String.fromCharCodes(await resp.first)),
-        {"statusCode": 403},
-      );
+        expect(resp.statusCode, 200);
+        expect(json.decode(String.fromCharCodes(await resp.first)), {
+          "statusCode": 403,
+        });
 
-      // valid preflight
-      req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
-      req.headers.set("Origin", "http://somewhere.com");
-      req.headers.set("Access-Control-Request-Method", "POST");
-      req.headers
-          .set("Access-Control-Request-Headers", "accept, authorization");
-      resp = await req.close();
+        // valid preflight
+        req = await HttpClient().open("OPTIONS", "localhost", 8888, "");
+        req.headers.set("Origin", "http://somewhere.com");
+        req.headers.set("Access-Control-Request-Method", "POST");
+        req.headers.set(
+          "Access-Control-Request-Headers",
+          "accept, authorization",
+        );
+        resp = await req.close();
 
-      expect(resp.statusCode, 200);
-      expect(
-        resp.headers.value("access-control-allow-methods"),
-        "POST, PUT, DELETE, GET",
-      );
-      expect(
-        json.decode(String.fromCharCodes(await resp.first)),
-        {"statusCode": 200},
-      );
-    });
+        expect(resp.statusCode, 200);
+        expect(
+          resp.headers.value("access-control-allow-methods"),
+          "POST, PUT, DELETE, GET",
+        );
+        expect(json.decode(String.fromCharCodes(await resp.first)), {
+          "statusCode": 200,
+        });
+      },
+    );
 
     test(
-        "willSendResponse is always called prior to Response being sent for normal requests",
-        () async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
-      server.map(Request.new).listen((req) async {
-        final next = PassthruController();
-        next.link(Always200Controller.new);
-        await next.receive(req);
-      });
+      "willSendResponse is always called prior to Response being sent for normal requests",
+      () async {
+        server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+        server.map(Request.new).listen((req) async {
+          final next = PassthruController();
+          next.link(Always200Controller.new);
+          await next.receive(req);
+        });
 
-      // normal response
-      var resp = await http.get(Uri.parse("http://localhost:8888"));
-      expect(resp.statusCode, 200);
-      expect(json.decode(resp.body), {"statusCode": 100});
+        // normal response
+        var resp = await http.get(Uri.parse("http://localhost:8888"));
+        expect(resp.statusCode, 200);
+        expect(json.decode(resp.body), {"statusCode": 100});
 
-      // httpresponseexception
-      resp = await http
-          .get(Uri.parse("http://localhost:8888?q=http_response_exception"));
-      expect(resp.statusCode, 200);
-      expect(json.decode(resp.body), {"statusCode": 400});
+        // httpresponseexception
+        resp = await http.get(
+          Uri.parse("http://localhost:8888?q=http_response_exception"),
+        );
+        expect(resp.statusCode, 200);
+        expect(json.decode(resp.body), {"statusCode": 400});
 
-      // query exception
-      resp =
-          await http.get(Uri.parse("http://localhost:8888?q=query_exception"));
-      expect(resp.statusCode, 200);
-      expect(json.decode(resp.body), {"statusCode": 503});
+        // query exception
+        resp = await http.get(
+          Uri.parse("http://localhost:8888?q=query_exception"),
+        );
+        expect(resp.statusCode, 200);
+        expect(json.decode(resp.body), {"statusCode": 503});
 
-      // any other exception (500)
-      resp = await http.get(Uri.parse("http://localhost:8888?q=server_error"));
-      expect(resp.statusCode, 200);
-      expect(json.decode(resp.body), {"statusCode": 500});
-    });
+        // any other exception (500)
+        resp = await http.get(
+          Uri.parse("http://localhost:8888?q=server_error"),
+        );
+        expect(resp.statusCode, 200);
+        expect(json.decode(resp.body), {"statusCode": 500});
+      },
+    );
 
     test("Failure to decode request body as appropriate type is 400", () async {
       server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);

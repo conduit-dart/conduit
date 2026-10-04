@@ -18,8 +18,8 @@ class RequestBody extends BodyDecoder {
   ///
   /// Decoded data is cached the after it is decoded.
   RequestBody(HttpRequest super.request)
-      : _request = request,
-        _originalByteStream = request;
+    : _request = request,
+      _originalByteStream = request;
 
   /// The maximum size of a request body.
   ///
@@ -39,11 +39,9 @@ class RequestBody extends BodyDecoder {
     // and just return the original stream.
     if (_hasContentLength) {
       if (_request.headers.contentLength > maxSize) {
-        throw Response(
-          HttpStatus.requestEntityTooLarge,
-          null,
-          {"error": "entity length exceeds maximum"},
-        );
+        throw Response(HttpStatus.requestEntityTooLarge, null, {
+          "error": "entity length exceeds maximum",
+        });
       }
 
       return _originalByteStream;
@@ -60,11 +58,9 @@ class RequestBody extends BodyDecoder {
           _bytesRead += chunk.length;
           if (_bytesRead > maxSize) {
             _bufferingController!.addError(
-              Response(
-                HttpStatus.requestEntityTooLarge,
-                null,
-                {"error": "entity length exceeds maximum"},
-              ),
+              Response(HttpStatus.requestEntityTooLarge, null, {
+                "error": "entity length exceeds maximum",
+              }),
             );
             _bufferingController!.close();
             return;

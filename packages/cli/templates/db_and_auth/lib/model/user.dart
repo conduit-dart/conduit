@@ -7,7 +7,7 @@ class User extends ManagedObject<_User>
 }
 
 class _User extends ResourceOwnerTableDefinition {
-/* This class inherits the following from ManagedAuthenticatable:
+  /* This class inherits the following from ManagedAuthenticatable:
 
   @primaryKey
   int? id;

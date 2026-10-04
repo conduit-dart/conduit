@@ -31,57 +31,39 @@ void main() {
   });
 
   test("Build works", () async {
-    await cli.run(
-      "create",
-      [
-        "test_project",
-        "--offline",
-        "--stacktrace",
-      ],
-    );
-    final res = await cli.run(
-      "build",
-      [
-        "--directory",
-        "test_project/",
-      ],
-    );
+    await cli.run("create", ["test_project", "--offline", "--stacktrace"]);
+    final res = await cli.run("build", ["--directory", "test_project/"]);
     expect(res, 0);
     final binPath = cli.agent.workingDirectory.uri
         .resolve("test_project/test_project.aot")
         .toFilePath(windows: Platform.isWindows);
-    expect(
-      File(
-        binPath,
-      ).existsSync(),
-      isTrue,
-    );
+    expect(File(binPath).existsSync(), isTrue);
 
     final binRes = await Process.start(binPath, []);
     pids.add(binRes.pid);
 
-    expect(String.fromCharCodes(await binRes.stdout.first),
-        contains("[INFO] conduit: Server conduit/1 started."));
+    expect(
+      String.fromCharCodes(await binRes.stdout.first),
+      contains("[INFO] conduit: Server conduit/1 started."),
+    );
     Process.killPid(binRes.pid);
   });
 
   test("Build works with define", () async {
-    await cli.run(
-      "create",
-      [
-        "test_project",
-        "--offline",
-        "--stacktrace",
-      ],
+    await cli.run("create", ["test_project", "--offline", "--stacktrace"]);
+    final mainFile = File(
+      cli.agent.workingDirectory.uri
+          .resolve("test_project/lib/controller/simple_controller.dart")
+          .toFilePath(windows: Platform.isWindows),
     );
-    final mainFile = File(cli.agent.workingDirectory.uri
-        .resolve("test_project/lib/controller/simple_controller.dart")
-        .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
-      mainFile.writeAsStringSync(source.replaceFirst(
+      mainFile.writeAsStringSync(
+        source.replaceFirst(
           'return Response.ok({"key": "value"});',
           '''const lit = String.fromEnvironment("FOO");
-          return Response.ok({"key": lit});'''));
+          return Response.ok({"key": lit});''',
+        ),
+      );
     });
 
     final res = await cli.run("build", [
@@ -94,60 +76,54 @@ void main() {
     final binPath = cli.agent.workingDirectory.uri
         .resolve("test_project/test_project.aot")
         .toFilePath(windows: Platform.isWindows);
-    expect(
-      File(
-        binPath,
-      ).existsSync(),
-      isTrue,
-    );
+    expect(File(binPath).existsSync(), isTrue);
 
     final binRes = await Process.start(binPath, []);
     pids.add(binRes.pid);
-    expect(String.fromCharCodes(await binRes.stdout.first),
-        contains("[INFO] conduit: Server conduit/1 started."));
+    expect(
+      String.fromCharCodes(await binRes.stdout.first),
+      contains("[INFO] conduit: Server conduit/1 started."),
+    );
     final response = await http.get(Uri.parse('http://0.0.0.0:8888/example'));
     expect(response.body, contains("BAR"));
     Process.killPid(binRes.pid);
   });
 
   test("Build works with args", () async {
-    await cli.run(
-      "create",
-      [
-        "test_project",
-        "--offline",
-        "--stacktrace",
-        "-tdb",
-      ],
+    await cli.run("create", [
+      "test_project",
+      "--offline",
+      "--stacktrace",
+      "-tdb",
+    ]);
+    final mainFile = File(
+      cli.agent.workingDirectory.uri
+          .resolve("test_project/lib/controller/simple_controller.dart")
+          .toFilePath(windows: Platform.isWindows),
     );
-    final mainFile = File(cli.agent.workingDirectory.uri
-        .resolve("test_project/lib/controller/simple_controller.dart")
-        .toFilePath(windows: Platform.isWindows));
     await mainFile.readAsString().then((String source) {
       mainFile.writeAsStringSync(
-          source.replaceFirst('return Response.ok({"key": "value"});', '''
-          return Response.ok({"key": (context.persistentStore as PostgreSQLPersistentStore).databaseName});'''));
+        source.replaceFirst(
+          'return Response.ok({"key": "value"});',
+          '''
+          return Response.ok({"key": (context.persistentStore as PostgreSQLPersistentStore).databaseName});''',
+        ),
+      );
     });
 
-    final res = await cli.run("build", [
-      "--directory",
-      "test_project/",
-    ]);
+    final res = await cli.run("build", ["--directory", "test_project/"]);
     expect(res, 0);
 
     final binPath = cli.agent.workingDirectory.uri
         .resolve("test_project/test_project.aot")
         .toFilePath(windows: Platform.isWindows);
-    expect(
-      File(
-        binPath,
-      ).existsSync(),
-      isTrue,
-    );
+    expect(File(binPath).existsSync(), isTrue);
 
-    final configPath = File(cli.agent.workingDirectory.uri
-        .resolve("test_project.yaml")
-        .toFilePath(windows: Platform.isWindows));
+    final configPath = File(
+      cli.agent.workingDirectory.uri
+          .resolve("test_project.yaml")
+          .toFilePath(windows: Platform.isWindows),
+    );
 
     configPath.writeAsStringSync('''
 database:
@@ -159,11 +135,16 @@ database:
       ''');
 
     final port = await getUnusedPort();
-    final binRes =
-        await Process.start(binPath, ['-p$port', '-c', configPath.path]);
+    final binRes = await Process.start(binPath, [
+      '-p$port',
+      '-c',
+      configPath.path,
+    ]);
     pids.add(binRes.pid);
-    expect(String.fromCharCodes(await binRes.stdout.first),
-        contains("[INFO] conduit: Server conduit/1 started."));
+    expect(
+      String.fromCharCodes(await binRes.stdout.first),
+      contains("[INFO] conduit: Server conduit/1 started."),
+    );
     final response = await http.get(Uri.parse('http://0.0.0.0:$port/example'));
     expect(response.body, contains("foo"));
     Process.killPid(binRes.pid);

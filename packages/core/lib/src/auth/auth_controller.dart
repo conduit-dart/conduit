@@ -27,7 +27,7 @@ class AuthController extends ResourceController {
   /// [authServer] is the isRequired authorization server that grants tokens.
   AuthController(this.authServer) {
     acceptedContentTypes = [
-      ContentType("application", "x-www-form-urlencoded")
+      ContentType("application", "x-www-form-urlencoded"),
     ];
   }
 
@@ -103,7 +103,10 @@ class AuthController extends ResourceController {
         }
 
         final token = await authServer.exchange(
-            authCode, basicRecord.username, basicRecord.password);
+          authCode,
+          basicRecord.username,
+          basicRecord.password,
+        );
 
         return AuthController.tokenResponse(token);
       } else if (grantType == null) {
@@ -121,11 +124,10 @@ class AuthController extends ResourceController {
   /// Transforms a [AuthToken] into a [Response] object with an RFC6749 compliant JSON token
   /// as the HTTP response body.
   static Response tokenResponse(AuthToken token) {
-    return Response(
-      HttpStatus.ok,
-      {"Cache-Control": "no-store", "Pragma": "no-cache"},
-      token.asMap(),
-    );
+    return Response(HttpStatus.ok, {
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache",
+    }, token.asMap());
   }
 
   @override
@@ -139,8 +141,9 @@ class AuthController extends ResourceController {
         final errorMessage = body["error"] as String;
         if (errorMessage.startsWith("multiple values")) {
           response.body = {
-            "error":
-                AuthServerException.errorString(AuthRequestError.invalidRequest)
+            "error": AuthServerException.errorString(
+              AuthRequestError.invalidRequest,
+            ),
           };
         }
       }
@@ -164,10 +167,14 @@ class AuthController extends ResourceController {
   ) {
     final body = super.documentOperationRequestBody(context, operation)!;
     body.content!["application/x-www-form-urlencoded"]!.schema!.isRequired = [
-      "grant_type"
+      "grant_type",
     ];
-    body.content!["application/x-www-form-urlencoded"]!.schema!
-        .properties!["password"]!.format = "password";
+    body
+            .content!["application/x-www-form-urlencoded"]!
+            .schema!
+            .properties!["password"]!
+            .format =
+        "password";
     return body;
   }
 
@@ -181,7 +188,7 @@ class AuthController extends ResourceController {
 
     operations.forEach((_, op) {
       op.security = [
-        APISecurityRequirement({"oauth2-client-authentication": []})
+        APISecurityRequirement({"oauth2-client-authentication": []}),
       ];
     });
 
@@ -208,7 +215,7 @@ class AuthController extends ResourceController {
           "token_type": APISchemaObject.string(),
           "expires_in": APISchemaObject.integer(),
           "refresh_token": APISchemaObject.string(),
-          "scope": APISchemaObject.string()
+          "scope": APISchemaObject.string(),
         }),
         contentTypes: ["application/json"],
       ),
@@ -216,7 +223,7 @@ class AuthController extends ResourceController {
         "Invalid credentials or missing parameters.",
         APISchemaObject.object({"error": APISchemaObject.string()}),
         contentTypes: ["application/json"],
-      )
+      ),
     };
   }
 

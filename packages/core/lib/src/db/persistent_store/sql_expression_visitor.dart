@@ -94,7 +94,9 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
   @override
   String visitIsNull(IsNullExpression node) {
     final operand = node.operand.accept(this);
-    final op = node.negated ? dialect.isNotNullOperator : dialect.isNullOperator;
+    final op = node.negated
+        ? dialect.isNotNullOperator
+        : dialect.isNullOperator;
     return '$operand $op';
   }
 
@@ -145,8 +147,7 @@ class NamedSqlExpressionVisitor extends SqlExpressionVisitor<String> {
 /// Visitor base for positional-parameter dialects (`?` for MySQL).
 /// Each [ParameterExpression] appends to [positionalParameters] in
 /// SQL-string order; placeholders all render as `?`.
-class PositionalSqlExpressionVisitor
-    extends SqlExpressionVisitor<String> {
+class PositionalSqlExpressionVisitor extends SqlExpressionVisitor<String> {
   PositionalSqlExpressionVisitor(this.dialect);
 
   final SqlDialect dialect;
@@ -193,7 +194,9 @@ class PositionalSqlExpressionVisitor
   @override
   String visitIsNull(IsNullExpression node) {
     final operand = node.operand.accept(this);
-    final op = node.negated ? dialect.isNotNullOperator : dialect.isNullOperator;
+    final op = node.negated
+        ? dialect.isNotNullOperator
+        : dialect.isNullOperator;
     return '$operand $op';
   }
 

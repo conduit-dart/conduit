@@ -48,8 +48,9 @@ class CLIDatabaseUpgrade extends CLICommand
         );
       }
 
-      final currentSchema =
-          await schemaByApplyingMigrationSources(appliedMigrations);
+      final currentSchema = await schemaByApplyingMigrationSources(
+        appliedMigrations,
+      );
 
       await executeMigrations(
         migrationsToExecute,

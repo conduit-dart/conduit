@@ -17,7 +17,7 @@ class ListArchive extends Object
 
   /// Replaces all instances of [Map] and [List] in this object with [KeyedArchive] and [ListArchive]s.
   ListArchive.from(List<dynamic> raw)
-      : _inner = raw.map(_toAtchiveType).toList();
+    : _inner = raw.map(_toAtchiveType).toList();
 
   @override
   dynamic operator [](int index) => _inner[index];

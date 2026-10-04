@@ -49,8 +49,8 @@ class PostgreSQLPersistentStore extends PersistentStore
     // aren't allowed in Dart; the assignment form is the idiomatic
     // alternative.
     // ignore: prefer_initializing_formals
-  })  : _dialect = dialect,
-        isSSLConnection = sslMode.toSslMode() != SslMode.disable;
+  }) : _dialect = dialect,
+       isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   /// Same constructor as default constructor.
   ///
@@ -69,8 +69,8 @@ class PostgreSQLPersistentStore extends PersistentStore
     // aren't allowed in Dart; the assignment form is the idiomatic
     // alternative.
     // ignore: prefer_initializing_formals
-  })  : _dialect = dialect,
-        isSSLConnection = sslMode.toSslMode() != SslMode.disable;
+  }) : _dialect = dialect,
+       isSSLConnection = sslMode.toSslMode() != SslMode.disable;
 
   PostgreSQLPersistentStore._from(PostgreSQLPersistentStore from)
     : _dialect = from._dialect,
@@ -170,7 +170,9 @@ class PostgreSQLPersistentStore extends PersistentStore
     (connection) => connection.close(),
   );
 
-  static final Finalizer<Pool> _poolFinalizer = Finalizer((pool) => pool.close());
+  static final Finalizer<Pool> _poolFinalizer = Finalizer(
+    (pool) => pool.close(),
+  );
 
   Connection? _databaseConnection;
   Completer<Connection>? _pendingConnectionCompleter;

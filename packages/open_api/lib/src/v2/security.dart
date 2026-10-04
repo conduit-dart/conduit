@@ -8,7 +8,7 @@ enum APISecuritySchemeFlow {
   implicit,
   password,
   application,
-  authorizationCode
+  authorizationCode,
 }
 
 class APISecuritySchemeFlowCodec {
@@ -82,8 +82,9 @@ class APISecurityScheme extends APIObject {
   }
 
   @override
-  Map<String, cast.Cast> get castMap =>
-      {"scopes": const cast.Map(cast.string, cast.string)};
+  Map<String, cast.Cast> get castMap => {
+    "scopes": const cast.Map(cast.string, cast.string),
+  };
 
   @override
   void decode(KeyedArchive object) {

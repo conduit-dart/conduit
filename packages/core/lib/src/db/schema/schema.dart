@@ -29,8 +29,7 @@ class Schema {
 
   /// Creates a deep copy of [otherSchema].
   Schema.from(Schema otherSchema) {
-    _tables =
-        otherSchema.tables.map(SchemaTable.from).toList();
+    _tables = otherSchema.tables.map(SchemaTable.from).toList();
   }
 
   /// Creates a instance of this type from [map].
@@ -104,17 +103,17 @@ class Schema {
 
   void renameTable(SchemaTable table, String newName) {
     throw SchemaException("Renaming a table not yet implemented!");
-//
-//    if (tableForName(newName) != null) {
-//      throw new SchemaException("Table ${newName} already exist.");
-//    }
-//
-//    if (!tables.contains(table)) {
-//      throw new SchemaException("Table ${table.name} does not exist in schema.");
-//    }
-//
-//    // Rename indices and constraints
-//    table.name = newName;
+    //
+    //    if (tableForName(newName) != null) {
+    //      throw new SchemaException("Table ${newName} already exist.");
+    //    }
+    //
+    //    if (!tables.contains(table)) {
+    //      throw new SchemaException("Table ${table.name} does not exist in schema.");
+    //    }
+    //
+    //    // Rename indices and constraints
+    //    table.name = newName;
   }
 
   /// Removes a table from this instance.
@@ -139,8 +138,9 @@ class Schema {
   SchemaTable? tableForName(String name) {
     final lowercaseName = name.toLowerCase();
 
-    return tables
-        .firstWhereOrNull((t) => t.name!.toLowerCase() == lowercaseName);
+    return tables.firstWhereOrNull(
+      (t) => t.name!.toLowerCase() == lowercaseName,
+    );
   }
 
   /// Emits this instance as a transportable [Map].
@@ -169,9 +169,9 @@ class SchemaDifference {
     }
 
     _differingTables.addAll(
-      actualSchema.tables
-          .where((t) => expectedSchema[t.name!] == null)
-          .map((unexpectedTable) {
+      actualSchema.tables.where((t) => expectedSchema[t.name!] == null).map((
+        unexpectedTable,
+      ) {
         return SchemaTableDifference(null, unexpectedTable);
       }),
     );

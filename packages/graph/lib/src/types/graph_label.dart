@@ -26,8 +26,7 @@ final class GraphLabel {
   final String name;
 
   @override
-  bool operator ==(Object other) =>
-      other is GraphLabel && other.name == name;
+  bool operator ==(Object other) => other is GraphLabel && other.name == name;
 
   @override
   int get hashCode => name.hashCode;

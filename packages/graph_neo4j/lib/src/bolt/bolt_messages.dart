@@ -48,10 +48,7 @@ BoltStructure helloMessage({
   String? credentials,
   Map<String, Object?> extra = const {},
 }) {
-  final body = <String, Object?>{
-    'user_agent': userAgent,
-    ...extra,
-  };
+  final body = <String, Object?>{'user_agent': userAgent, ...extra};
   if (scheme != null) {
     body['scheme'] = scheme;
     if (principal != null) body['principal'] = principal;
@@ -77,8 +74,7 @@ BoltStructure runMessage({
   required String cypher,
   Map<String, Object?> parameters = const {},
   Map<String, Object?> extra = const {},
-}) =>
-    BoltStructure(BoltTag.run, [cypher, parameters, extra]);
+}) => BoltStructure(BoltTag.run, [cypher, parameters, extra]);
 
 /// Construct a PULL request.
 ///

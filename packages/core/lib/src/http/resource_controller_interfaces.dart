@@ -72,7 +72,8 @@ class ResourceControllerOperation {
   final Future<Response> Function(
     ResourceController resourceController,
     ResourceControllerOperationInvocationArgs args,
-  ) invoker;
+  )
+  invoker;
 
   /// Checks if a request's method and path variables will select this binder.
   ///

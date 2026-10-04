@@ -7,7 +7,7 @@ enum ValidationOperator {
   lessThan,
   lessThanEqualTo,
   greaterThan,
-  greaterThanEqualTo
+  greaterThanEqualTo,
 }
 
 class ValidationExpression {
@@ -55,8 +55,9 @@ class ValidationExpression {
       case ValidationOperator.lessThanEqualTo:
         {
           if (comparisonValue!.compareTo(input) < 0) {
-            context
-                .addError("must be less than or equal to '$comparisonValue'.");
+            context.addError(
+              "must be less than or equal to '$comparisonValue'.",
+            );
           }
         }
         break;

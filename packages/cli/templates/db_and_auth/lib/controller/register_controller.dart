@@ -12,7 +12,8 @@ class RegisterController extends ResourceController {
     // Check for required parameters before we spend time hashing
     if (user.username == null || user.password == null) {
       return Response.badRequest(
-          body: {"error": "username and password required."});
+        body: {"error": "username and password required."},
+      );
     }
 
     user
@@ -23,10 +24,11 @@ class RegisterController extends ResourceController {
 
     final u = await query.insert();
     final token = await authServer.authenticate(
-        user.username,
-        user.password,
-        request!.authorization!.credentials!.username,
-        request?.authorization?.credentials?.password);
+      user.username,
+      user.password,
+      request!.authorization!.credentials!.username,
+      request?.authorization?.credentials?.password,
+    );
 
     final response = AuthController.tokenResponse(token);
     final newBody = u.asMap()..["authorization"] = response.body;
@@ -35,11 +37,15 @@ class RegisterController extends ResourceController {
 
   @override
   Map<String, APIResponse> documentOperationResponses(
-      APIDocumentContext context, Operation operation) {
+    APIDocumentContext context,
+    Operation operation,
+  ) {
     return {
-      "200": APIResponse.schema("User successfully registered.",
-          context.schema.getObject("UserRegistration")),
-      "400": APIResponse.schema("Error response", APISchemaObject.freeForm())
+      "200": APIResponse.schema(
+        "User successfully registered.",
+        context.schema.getObject("UserRegistration"),
+      ),
+      "400": APIResponse.schema("Error response", APISchemaObject.freeForm()),
     };
   }
 
@@ -54,8 +60,8 @@ class RegisterController extends ResourceController {
         "token_type": APISchemaObject.string(),
         "expires_in": APISchemaObject.integer(),
         "refresh_token": APISchemaObject.string(),
-        "scope": APISchemaObject.string()
-      })
+        "scope": APISchemaObject.string(),
+      }),
     });
 
     context.schema.register("UserRegistration", userRegistration);

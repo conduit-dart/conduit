@@ -93,8 +93,8 @@ class SchemaBuilder {
     this.generateFilterArgs = false,
     this.generateSortArgs = false,
     this.generatePaginationArgs = false,
-  })  : dateTimeScalar = dateTimeScalar ?? graphQLDateTime,
-        uuidScalar = uuidScalar ?? graphQLUUID;
+  }) : dateTimeScalar = dateTimeScalar ?? graphQLDateTime,
+       uuidScalar = uuidScalar ?? graphQLUUID;
 
   /// Scalar used for `ManagedPropertyType.datetime` properties.
   /// Defaults to [graphQLDateTime].
@@ -123,12 +123,12 @@ class SchemaBuilder {
   /// captured into the returned resolver should be stable across
   /// requests (the resolver itself is invoked per request).
   final SchemaResolver? Function(ManagedAttributeDescription attr)?
-      attributeResolver;
+  attributeResolver;
 
   /// Optional resolver hook invoked at relationship-field construction
   /// time. Returns `null` to leave the field's `resolve:` slot empty.
   final SchemaResolver? Function(ManagedRelationshipDescription rel)?
-      relationshipResolver;
+  relationshipResolver;
 
   /// Optional resolver hook invoked at Query-root list-field
   /// construction time (i.e. for `<plural>: [<Entity>!]!`).
@@ -174,7 +174,10 @@ class SchemaBuilder {
     // relationship resolver might need is known to the registry.
     final registry = <ManagedEntity, GraphQLObjectType>{};
     for (final entity in entities) {
-      registry[entity] = GraphQLObjectType(entity.name, _entityDescription(entity));
+      registry[entity] = GraphQLObjectType(
+        entity.name,
+        _entityDescription(entity),
+      );
     }
 
     // Second pass: populate fields for each registered type.
@@ -204,7 +207,9 @@ class SchemaBuilder {
     // Pre-register destination entities so relationship fields have a
     // reference to point at. We don't recurse — the destinations come
     // back as empty stubs.
-    for (final rel in entity.relationships.values.whereType<ManagedRelationshipDescription>()) {
+    for (final rel
+        in entity.relationships.values
+            .whereType<ManagedRelationshipDescription>()) {
       registry.putIfAbsent(
         rel.destinationEntity,
         () => GraphQLObjectType(
@@ -231,7 +236,8 @@ class SchemaBuilder {
     final type = registry[entity]!;
 
     // Attributes — scalar columns + transient props.
-    for (final attr in entity.attributes.values.whereType<ManagedAttributeDescription>()) {
+    for (final attr
+        in entity.attributes.values.whereType<ManagedAttributeDescription>()) {
       // Skip transient attributes that are input-only — they aren't
       // observable on the output side of the entity, so they shouldn't
       // appear in the GraphQL output schema.
@@ -243,7 +249,9 @@ class SchemaBuilder {
     }
 
     // Relationships — both directions (hasMany / hasOne / belongsTo).
-    for (final rel in entity.relationships.values.whereType<ManagedRelationshipDescription>()) {
+    for (final rel
+        in entity.relationships.values
+            .whereType<ManagedRelationshipDescription>()) {
       final f = _fieldForRelationship(rel, registry);
       if (f != null) type.fields.add(f);
     }
@@ -480,8 +488,7 @@ class SchemaBuilder {
               GraphQLFieldInput(
                 pkAttr.name,
                 pkScalar.nonNullable(),
-                description:
-                    'Primary key of the ${entity.name} to fetch.',
+                description: 'Primary key of the ${entity.name} to fetch.',
               ),
             ],
             description:
@@ -532,7 +539,6 @@ class SchemaBuilder {
     return '${singular}s';
   }
 
-
   // -- G3: filter / sort / pagination args ------------------------------------
 
   /// Cache of scalar-keyed predicate input types. Each base scalar
@@ -545,7 +551,7 @@ class SchemaBuilder {
   /// reject that, but the cache shouldn't depend on the printer's
   /// rejection path).
   final Map<GraphQLType<dynamic, dynamic>, GraphQLInputObjectType>
-      _predicateInputCache = {};
+  _predicateInputCache = {};
 
   /// Cache of `<Entity>Filter` input types, keyed by entity. Each
   /// entity gets at most one filter type per builder invocation.
@@ -597,7 +603,8 @@ class SchemaBuilder {
         GraphQLFieldInput(
           'limit',
           graphQLInt,
-          description: 'Maximum number of rows to return. 0 / unset = no '
+          description:
+              'Maximum number of rows to return. 0 / unset = no '
               'limit.',
         ),
       );
@@ -605,7 +612,8 @@ class SchemaBuilder {
         GraphQLFieldInput(
           'offset',
           graphQLInt,
-          description: 'Number of rows to skip from the start of the '
+          description:
+              'Number of rows to skip from the start of the '
               'sorted result set.',
         ),
       );
@@ -623,8 +631,8 @@ class SchemaBuilder {
     if (cached != null) return cached;
 
     final fields = <GraphQLInputObjectField>[];
-    for (final attr in entity.attributes.values
-        .whereType<ManagedAttributeDescription>()) {
+    for (final attr
+        in entity.attributes.values.whereType<ManagedAttributeDescription>()) {
       // Transient attributes can't be filtered (they don't map to a
       // column). Filtering on them requires evaluating the getter,
       // which the SQL backend can't do.
@@ -644,7 +652,8 @@ class SchemaBuilder {
 
     final input = GraphQLInputObjectType(
       '${entity.name}Filter',
-      description: 'Filter input for ${entity.name} list queries. Multiple '
+      description:
+          'Filter input for ${entity.name} list queries. Multiple '
           'fields AND together. Each field accepts a scalar predicate '
           '(eq, ne, gt, gte, lt, lte, in, notIn, like — string only — '
           'isNull).',
@@ -683,8 +692,7 @@ class SchemaBuilder {
       GraphQLInputObjectField('eq', scalar, description: 'Equality match.'),
       GraphQLInputObjectField('ne', scalar, description: 'Inequality match.'),
       GraphQLInputObjectField('gt', scalar, description: 'Strictly greater.'),
-      GraphQLInputObjectField('gte', scalar,
-          description: 'Greater or equal.'),
+      GraphQLInputObjectField('gte', scalar, description: 'Greater or equal.'),
       GraphQLInputObjectField('lt', scalar, description: 'Strictly less.'),
       GraphQLInputObjectField('lte', scalar, description: 'Less or equal.'),
       GraphQLInputObjectField(
@@ -766,9 +774,7 @@ class SchemaBuilder {
         .toList();
     if (names.isEmpty) return null;
 
-    final values = names
-        .map((n) => GraphQLEnumValue<String>(n, n))
-        .toList();
+    final values = names.map((n) => GraphQLEnumValue<String>(n, n)).toList();
     final e = GraphQLEnumType<String>(
       '${entity.name}SortField',
       values,
@@ -783,20 +789,18 @@ class SchemaBuilder {
   GraphQLEnumType<String> _sortDirectionEnumValue() {
     final existing = _sortDirectionEnum;
     if (existing != null) return existing;
-    final e = GraphQLEnumType<String>(
-      'SortDirection',
-      [
-        GraphQLEnumValue<String>('ASC', 'ASC',
-            description: 'Ascending order.'),
-        GraphQLEnumValue<String>('DESC', 'DESC',
-            description: 'Descending order.'),
-      ],
-      description: 'Direction of a sort: ASC or DESC.',
-    );
+    final e = GraphQLEnumType<String>('SortDirection', [
+      GraphQLEnumValue<String>('ASC', 'ASC', description: 'Ascending order.'),
+      GraphQLEnumValue<String>(
+        'DESC',
+        'DESC',
+        description: 'Descending order.',
+      ),
+    ], description: 'Direction of a sort: ASC or DESC.');
     _sortDirectionEnum = e;
     return e;
   }
-  
+
   // ===========================================================================
   // G4 — graph schema derivation (parallel hierarchy to fromManagedDataModel).
   //
@@ -886,7 +890,7 @@ class SchemaBuilder {
           () => GraphQLObjectType(
             extraName,
             'Multi-label projection of ${entity.label.name} '
-                'under the additional label $extraName.',
+            'under the additional label $extraName.',
           ),
         );
       }
@@ -930,8 +934,7 @@ class SchemaBuilder {
       final members = <GraphQLObjectType>[
         nodeRegistry[entity]!,
         for (final extraName in extra)
-          if (extraName != entity.label.name)
-            unionMemberRegistry[extraName]!,
+          if (extraName != entity.label.name) unionMemberRegistry[extraName]!,
       ];
       // Union name follows the convention `<Primary>Or<Other>...`,
       // which is verbose but stable and conflict-free. Most users will
@@ -999,23 +1002,19 @@ class SchemaBuilder {
     final nodeRegistry = <GraphNodeEntity, GraphQLObjectType>{};
     if (fromType != null && entity.fromType != null) {
       nodeRegistry[GraphNodeEntity(
-        type: entity.fromType!,
-        label: GraphLabel(fromType.name),
-      )] = fromType;
+            type: entity.fromType!,
+            label: GraphLabel(fromType.name),
+          )] =
+          fromType;
     }
     if (toType != null && entity.toType != null) {
       nodeRegistry[GraphNodeEntity(
-        type: entity.toType!,
-        label: GraphLabel(toType.name),
-      )] = toType;
+            type: entity.toType!,
+            label: GraphLabel(toType.name),
+          )] =
+          toType;
     }
-    _populateEdgeFields(
-      entity,
-      cfg,
-      nodeRegistry,
-      edgeRegistry,
-      null,
-    );
+    _populateEdgeFields(entity, cfg, nodeRegistry, edgeRegistry, null);
     return edgeRegistry[entity]!;
   }
 
@@ -1082,8 +1081,10 @@ class SchemaBuilder {
       if (destEntity == null) continue;
       final destObject = nodeRegistry[destEntity]!;
       final pluralDest = _pluralFieldName(_lowerFirst(destObject.name));
-      final destinationFieldName =
-          _disambiguateTraversalField(pluralDest, fields);
+      final destinationFieldName = _disambiguateTraversalField(
+        pluralDest,
+        fields,
+      );
       final destinationField = GraphQLObjectField<dynamic, dynamic>(
         destinationFieldName,
         GraphQLListType(destObject.nonNullable()).nonNullable(),
@@ -1214,8 +1215,7 @@ class SchemaBuilder {
     GraphPropertyDescriptor descriptor,
   ) {
     final scalar = _scalarForGraphPropertyType(descriptor.type);
-    final wrapped =
-        descriptor.isNullable ? scalar : scalar.nonNullable();
+    final wrapped = descriptor.isNullable ? scalar : scalar.nonNullable();
     return GraphQLObjectField<dynamic, dynamic>(
       descriptor.name,
       wrapped,
@@ -1298,8 +1298,7 @@ class SchemaBuilder {
           GraphQLListType((union ?? type).nonNullable()).nonNullable(),
           resolve: resolverFactory == null
               ? null
-              : (_, args) =>
-                  resolverFactory.list(entity: entity, args: args),
+              : (_, args) => resolverFactory.list(entity: entity, args: args),
           description:
               'Returns every ${type.name}. Read-only in G4; G5 adds '
               'where/order/pagination arguments and cross-source '
@@ -1343,7 +1342,7 @@ class SchemaBuilder {
           resolve: resolverFactory == null
               ? null
               : (_, args) =>
-                  resolverFactory.edgeList(entity: entity, args: args),
+                    resolverFactory.edgeList(entity: entity, args: args),
           description:
               'Returns every ${type.name} edge record. The edge '
               'object carries its declared edge properties plus '
@@ -1474,8 +1473,7 @@ class SchemaBuilder {
     Persistence<G> persistence, {
     PersistenceResolverFactory<G>? resolverFactory,
     GraphSchemaConfig? graphConfig,
-    QueryRootCollisionPolicy collisionPolicy =
-        QueryRootCollisionPolicy.error,
+    QueryRootCollisionPolicy collisionPolicy = QueryRootCollisionPolicy.error,
     FieldAuthPolicy? authPolicy,
   }) {
     if (!persistence.hasSql && !persistence.hasGraph) {
@@ -1510,10 +1508,7 @@ class SchemaBuilder {
       }
       sqlEntities.addAll(model.entities);
       for (final entity in sqlEntities) {
-        final type = GraphQLObjectType(
-          entity.name,
-          _entityDescription(entity),
-        );
+        final type = GraphQLObjectType(entity.name, _entityDescription(entity));
         sqlRegistry[entity] = type;
         _sourceTags[type] = 'sql';
       }
@@ -1566,7 +1561,7 @@ class SchemaBuilder {
             () => GraphQLObjectType(
               extraName,
               'Multi-label projection of ${entity.label.name} '
-                  'under the additional label $extraName.',
+              'under the additional label $extraName.',
             ),
           );
           _sourceTags[memberType] = 'graph';
@@ -1606,8 +1601,7 @@ class SchemaBuilder {
         final members = <GraphQLObjectType>[
           nodeRegistry[entity]!,
           for (final extraName in extra)
-            if (extraName != entity.label.name)
-              unionMemberRegistry[extraName]!,
+            if (extraName != entity.label.name) unionMemberRegistry[extraName]!,
         ];
         final unionName = _unionTypeName(entity.label.name, extra);
         unionRegistry[entity] = GraphQLUnionType(unionName, members);
@@ -1671,8 +1665,9 @@ class SchemaBuilder {
       final entity = entry.key;
       final type = entry.value;
       final replacements = <GraphQLObjectField, GraphQLObjectField>{};
-      for (final attr in entity.attributes.values
-          .whereType<ManagedAttributeDescription>()) {
+      for (final attr
+          in entity.attributes.values
+              .whereType<ManagedAttributeDescription>()) {
         final auth = policy.authFor(attr);
         if (auth == null) continue;
         final field = _findFieldByName(type, attr.name);
@@ -1689,8 +1684,9 @@ class SchemaBuilder {
           deprecationReason: field.deprecationReason,
         );
       }
-      for (final rel in entity.relationships.values
-          .whereType<ManagedRelationshipDescription>()) {
+      for (final rel
+          in entity.relationships.values
+              .whereType<ManagedRelationshipDescription>()) {
         final auth = policy.authFor(rel);
         if (auth == null) continue;
         final field = _findFieldByName(type, rel.name);
@@ -1770,8 +1766,9 @@ class SchemaBuilder {
   }) {
     for (final descriptor in descriptors) {
       final declared = descriptor.auth;
-      final lookedUp =
-          policy.authFor(GraphPropertyAuthKey(owningType, descriptor.name));
+      final lookedUp = policy.authFor(
+        GraphPropertyAuthKey(owningType, descriptor.name),
+      );
       final auth = declared ?? lookedUp;
       if (auth == null) continue;
       final field = _findFieldByName(objectType, descriptor.name);
@@ -1811,10 +1808,7 @@ class SchemaBuilder {
     };
   }
 
-  GraphQLObjectField? _findFieldByName(
-    GraphQLObjectType type,
-    String name,
-  ) {
+  GraphQLObjectField? _findFieldByName(GraphQLObjectType type, String name) {
     for (final f in type.fields) {
       if (f.name == name) return f;
     }
@@ -1874,14 +1868,14 @@ class SchemaBuilder {
 
     String renameSql(String name) =>
         colliding.contains(name) &&
-                collisionPolicy == QueryRootCollisionPolicy.prefixRelational
-            ? 'r_$name'
-            : name;
+            collisionPolicy == QueryRootCollisionPolicy.prefixRelational
+        ? 'r_$name'
+        : name;
     String renameGraph(String name) =>
         colliding.contains(name) &&
-                collisionPolicy == QueryRootCollisionPolicy.prefixGraph
-            ? 'g_$name'
-            : name;
+            collisionPolicy == QueryRootCollisionPolicy.prefixGraph
+        ? 'g_$name'
+        : name;
 
     final fields = <GraphQLObjectField<dynamic, dynamic>>[];
 
@@ -1900,8 +1894,7 @@ class SchemaBuilder {
           GraphQLListType(type.nonNullable()).nonNullable(),
           resolve: listResolver,
           arguments: listArgs,
-          description:
-              'Returns every ${entity.name} (relational source).',
+          description: 'Returns every ${entity.name} (relational source).',
         ),
       );
       final pkAttr = entity.primaryKeyAttribute;
@@ -1919,7 +1912,8 @@ class SchemaBuilder {
                 description: 'Primary key of the ${entity.name} to fetch.',
               ),
             ],
-            description: 'Returns the ${entity.name} with the given '
+            description:
+                'Returns the ${entity.name} with the given '
                 '${pkAttr.name}, or null if none exists.',
           ),
         );
@@ -1936,8 +1930,8 @@ class SchemaBuilder {
       // List-all
       GraphQLFieldResolver<Object?, Object?>? listResolver =
           graphFactory == null
-              ? null
-              : (_, args) => graphFactory.list(entity: entity, args: args);
+          ? null
+          : (_, args) => graphFactory.list(entity: entity, args: args);
       if (authPolicy != null && listResolver != null) {
         final auth = authPolicy.authFor(entity);
         if (auth != null) {
@@ -1956,8 +1950,8 @@ class SchemaBuilder {
       // By-id
       GraphQLFieldResolver<Object?, Object?>? byIdResolver =
           graphFactory == null
-              ? null
-              : (_, args) => graphFactory.byId(entity: entity, args: args);
+          ? null
+          : (_, args) => graphFactory.byId(entity: entity, args: args);
       if (authPolicy != null && byIdResolver != null) {
         final auth = authPolicy.authFor(entity);
         if (auth != null) {
@@ -1973,11 +1967,11 @@ class SchemaBuilder {
             GraphQLFieldInput(
               'id',
               graphQLString.nonNullable(),
-              description:
-                  'Store-assigned id of the ${type.name} to fetch.',
+              description: 'Store-assigned id of the ${type.name} to fetch.',
             ),
           ],
-          description: 'Returns the ${type.name} with the given id '
+          description:
+              'Returns the ${type.name} with the given id '
               '(graph source), or null if none exists.',
         ),
       );
@@ -1992,7 +1986,8 @@ class SchemaBuilder {
           resolve: graphFactory == null
               ? null
               : (_, args) => graphFactory.edgeList(entity: entity, args: args),
-          description: 'Returns every ${type.name} edge record (graph '
+          description:
+              'Returns every ${type.name} edge record (graph '
               'source).',
         ),
       );

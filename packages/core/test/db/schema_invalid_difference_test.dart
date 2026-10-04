@@ -4,10 +4,9 @@ import 'package:test/test.dart';
 void main() {
   test("Cannot change type", () {
     final original = Schema([
-      SchemaTable(
-        "_u",
-        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
-      ),
+      SchemaTable("_u", [
+        SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
+      ]),
     ]);
 
     final dest = Schema.from(original)
@@ -24,10 +23,9 @@ void main() {
 
   test("Cannot change relatedTable", () {
     final original = Schema([
-      SchemaTable(
-        "_u",
-        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
-      ),
+      SchemaTable("_u", [
+        SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
+      ]),
       SchemaTable("_t", [
         SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
         SchemaColumn.relationship(
@@ -35,16 +33,15 @@ void main() {
           ManagedType.integer,
           relatedTableName: "_u",
           relatedColumnName: "id",
-        )
-      ])
+        ),
+      ]),
     ]);
 
     final dest = Schema.from(original)
       ..addTable(
-        SchemaTable(
-          "_v",
-          [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
-        ),
+        SchemaTable("_v", [
+          SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
+        ]),
       )
       ..tableForName("_t")!.columnForName("_u_id")!.relatedTableName = "_v";
 
@@ -58,10 +55,9 @@ void main() {
 
   test("Cannot change primary key property", () {
     final original = Schema([
-      SchemaTable(
-        "_u",
-        [SchemaColumn("id", ManagedType.integer, isPrimaryKey: true)],
-      ),
+      SchemaTable("_u", [
+        SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
+      ]),
     ]);
 
     final dest = Schema.from(original)
@@ -124,7 +120,7 @@ void main() {
     final original = Schema([
       SchemaTable("_u", [
         SchemaColumn("id", ManagedType.integer, isPrimaryKey: true),
-        SchemaColumn("i", ManagedType.integer, autoincrement: true)
+        SchemaColumn("i", ManagedType.integer, autoincrement: true),
       ]),
     ]);
 

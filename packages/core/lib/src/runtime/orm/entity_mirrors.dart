@@ -53,17 +53,18 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
 List<VariableMirror> instanceVariablesFromClass(ClassMirror classMirror) {
   return classHierarchyForClass(classMirror)
       .expand(
-    (cm) => cm.declarations.values
-        .where(isInstanceVariableMirror)
-        .map((decl) => decl as VariableMirror),
-  )
+        (cm) => cm.declarations.values
+            .where(isInstanceVariableMirror)
+            .map((decl) => decl as VariableMirror),
+      )
       .fold(<VariableMirror>[], (List<VariableMirror> acc, decl) {
-    if (!acc.any((vm) => vm.simpleName == decl.simpleName)) {
-      acc.add(decl);
-    }
+        if (!acc.any((vm) => vm.simpleName == decl.simpleName)) {
+          acc.add(decl);
+        }
 
-    return acc;
-  }).toList();
+        return acc;
+      })
+      .toList();
 }
 
 bool classHasDefaultConstructor(ClassMirror type) {

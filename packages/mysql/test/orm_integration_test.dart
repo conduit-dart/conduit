@@ -76,8 +76,9 @@ void main() {
   group('MysqlPersistentStore.newQuery — basic CRUD', () {
     test('insert + fetch round-trips a row', () async {
       context = await _bootstrap([Simple]);
-      final inserted = await (Query<Simple>(context!)..values.name = 'alice')
-          .insert();
+      final inserted = await (Query<Simple>(
+        context!,
+      )..values.name = 'alice').insert();
       expect(inserted.name, 'alice');
       expect(inserted.id, isNotNull);
 
@@ -90,10 +91,11 @@ void main() {
       context = await _bootstrap([Simple]);
       await (Query<Simple>(context!)..values.name = 'old').insert();
 
-      final updated = await (Query<Simple>(context!)
-            ..values.name = 'new'
-            ..where((s) => s.name).equalTo('old'))
-          .update();
+      final updated =
+          await (Query<Simple>(context!)
+                ..values.name = 'new'
+                ..where((s) => s.name).equalTo('old'))
+              .update();
       expect(updated, hasLength(1));
       expect(updated.first.name, 'new');
     });
@@ -102,9 +104,9 @@ void main() {
       context = await _bootstrap([Simple]);
       await (Query<Simple>(context!)..values.name = 'doomed').insert();
       await (Query<Simple>(context!)..values.name = 'survives').insert();
-      final n = await (Query<Simple>(context!)
-            ..where((s) => s.name).equalTo('doomed'))
-          .delete();
+      final n = await (Query<Simple>(
+        context!,
+      )..where((s) => s.name).equalTo('doomed')).delete();
       expect(n, 1);
     });
 

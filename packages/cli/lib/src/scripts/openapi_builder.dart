@@ -11,28 +11,29 @@ import 'package:yaml/yaml.dart';
 
 class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
   OpenAPIBuilder(super.message)
-      : pubspecContents = message["pubspec"] as String?,
-        configPath = message["configPath"] as String?,
-        title = message["title"] as String?,
-        description = message["description"] as String?,
-        version = message["version"] as String?,
-        termsOfServiceURL = message["termsOfServiceURL"] != null
-            ? Uri.parse(message["termsOfServiceURL"] as String)
-            : null,
-        contactEmail = message["contactEmail"] as String?,
-        contactName = message["contactName"] as String?,
-        contactURL = message["contactURL"] != null
-            ? Uri.parse(message["contactURL"] as String)
-            : null,
-        licenseURL = message["licenseURL"] != null
-            ? Uri.parse(message["licenseURL"] as String)
-            : null,
-        licenseName = message["licenseName"] as String?,
-        hosts = (message["hosts"] as List<String>?)
-                ?.map((uri) => APIServerDescription(Uri.parse(uri)))
-                .toList() ??
-            [],
-        resolveRelativeUrls = message["resolveRelativeUrls"] as bool?;
+    : pubspecContents = message["pubspec"] as String?,
+      configPath = message["configPath"] as String?,
+      title = message["title"] as String?,
+      description = message["description"] as String?,
+      version = message["version"] as String?,
+      termsOfServiceURL = message["termsOfServiceURL"] != null
+          ? Uri.parse(message["termsOfServiceURL"] as String)
+          : null,
+      contactEmail = message["contactEmail"] as String?,
+      contactName = message["contactName"] as String?,
+      contactURL = message["contactURL"] != null
+          ? Uri.parse(message["contactURL"] as String)
+          : null,
+      licenseURL = message["licenseURL"] != null
+          ? Uri.parse(message["licenseURL"] as String)
+          : null,
+      licenseName = message["licenseName"] as String?,
+      hosts =
+          (message["hosts"] as List<String>?)
+              ?.map((uri) => APIServerDescription(Uri.parse(uri)))
+              .toList() ??
+          [],
+      resolveRelativeUrls = message["resolveRelativeUrls"] as bool?;
 
   OpenAPIBuilder.input(super.variables);
 
@@ -52,8 +53,8 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
 
   @override
   Future<Map<String, dynamic>> execute() async {
-    final channels =
-        RuntimeContext.current.runtimes.iterable.whereType<ChannelRuntime>();
+    final channels = RuntimeContext.current.runtimes.iterable
+        .whereType<ChannelRuntime>();
     if (channels.length != 1) {
       throw StateError(
         "Zero or more than one ApplicationChannel subclass found: ${channels.map((c) => "'${c.channelType}'").join(", ")}",
@@ -66,8 +67,11 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
       final yaml = (loadYaml(pubspecContents!) as Map<dynamic, dynamic>)
           .cast<String, dynamic>();
 
-      final document =
-          await Application.document(channels.first.channelType, config, yaml);
+      final document = await Application.document(
+        channels.first.channelType,
+        config,
+        yaml,
+      );
 
       document.servers = hosts;
       if (title != null) {
@@ -114,8 +118,9 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
               }
               if (flow.authorizationURL != null &&
                   !flow.authorizationURL!.isAbsolute) {
-                flow.authorizationURL =
-                    baseUri.resolveUri(flow.authorizationURL!);
+                flow.authorizationURL = baseUri.resolveUri(
+                  flow.authorizationURL!,
+                );
               }
               if (flow.tokenURL != null && !flow.tokenURL!.isAbsolute) {
                 flow.tokenURL = baseUri.resolveUri(flow.tokenURL!);
@@ -129,24 +134,24 @@ class OpenAPIBuilder extends Executable<Map<String, dynamic>> {
     } on ConfigurationException catch (e) {
       return {
         "error":
-            "There was an issue loading the configuration file '$configPath': ${e.message}"
+            "There was an issue loading the configuration file '$configPath': ${e.message}",
       };
     } on ManagedDataModelError catch (e) {
       return {
-        "error": "There was an issue compiling a data model: ${e.message}"
+        "error": "There was an issue compiling a data model: ${e.message}",
       };
     }
   }
 
   static List<String> importsForPackage(String? packageName) => [
-        "package:conduit_core/conduit_core.dart",
-        "package:$packageName/$packageName.dart",
-        "package:yaml/yaml.dart",
-        "dart:convert",
-        "dart:io",
-        "package:conduit_runtime/dev.dart",
-        "package:conduit_open_api/v3.dart"
-      ];
+    "package:conduit_core/conduit_core.dart",
+    "package:$packageName/$packageName.dart",
+    "package:yaml/yaml.dart",
+    "dart:convert",
+    "dart:io",
+    "package:conduit_runtime/dev.dart",
+    "package:conduit_open_api/v3.dart",
+  ];
 }
 
 Future<Map<String, dynamic>> documentProject(
@@ -166,7 +171,7 @@ Future<Map<String, dynamic>> documentProject(
     "contactURL": options.contactURL,
     "licenseURL": options.licenseURL,
     "licenseName": options.licenseName,
-    "resolveRelativeUrls": options.resolveRelativeUrls
+    "resolveRelativeUrls": options.resolveRelativeUrls,
   };
 
   final result = await IsolateExecutor.run(

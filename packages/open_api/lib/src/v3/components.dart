@@ -116,7 +116,7 @@ class APIComponents extends APIObject {
     parameters = removeNullsFromMap(
       object.decodeObjectMap("parameters", APIParameter.empty),
     );
-//    examples = object.decodeObjectMap("examples", () => APIExample());
+    //    examples = object.decodeObjectMap("examples", () => APIExample());
     requestBodies = removeNullsFromMap(
       object.decodeObjectMap("requestBodies", APIRequestBody.empty),
     );
@@ -127,7 +127,7 @@ class APIComponents extends APIObject {
     securitySchemes = removeNullsFromMap(
       object.decodeObjectMap("securitySchemes", APISecurityScheme.new),
     );
-//    links = object.decodeObjectMap("links", () => APILink());
+    //    links = object.decodeObjectMap("links", () => APILink());
     callbacks = removeNullsFromMap(
       object.decodeObjectMap("callbacks", APICallback.new),
     );
@@ -140,7 +140,7 @@ class APIComponents extends APIObject {
     if (schemas.isNotEmpty) object.encodeObjectMap("schemas", schemas);
     if (responses.isNotEmpty) object.encodeObjectMap("responses", responses);
     if (parameters.isNotEmpty) object.encodeObjectMap("parameters", parameters);
-//    object.encodeObjectMap("examples", examples);
+    //    object.encodeObjectMap("examples", examples);
     if (requestBodies.isNotEmpty) {
       object.encodeObjectMap("requestBodies", requestBodies);
     }
@@ -149,7 +149,7 @@ class APIComponents extends APIObject {
       object.encodeObjectMap("securitySchemes", securitySchemes);
     }
 
-//    object.encodeObjectMap("links", links);
+    //    object.encodeObjectMap("links", links);
     if (callbacks.isNotEmpty) object.encodeObjectMap("callbacks", callbacks);
   }
 }

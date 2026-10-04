@@ -56,7 +56,7 @@ mixin PostgreSQLSchemaGenerator {
         .map((name) => _columnNameForColumn(table[name]!))
         .join(",");
     return [
-      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)"
+      "CREATE UNIQUE INDEX ${table.name}_unique_idx ON ${table.name} ($colNames)",
     ];
   }
 
@@ -75,11 +75,11 @@ mixin PostgreSQLSchemaGenerator {
       column.defaultValue = unencodedInitialValue;
       commands.addAll([
         "ALTER TABLE ${table.name} ADD COLUMN ${_columnStringForColumn(column)}",
-        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP DEFAULT"
+        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP DEFAULT",
       ]);
     } else {
       commands.addAll([
-        "ALTER TABLE ${table.name} ADD COLUMN ${_columnStringForColumn(column)}"
+        "ALTER TABLE ${table.name} ADD COLUMN ${_columnStringForColumn(column)}",
       ]);
     }
 
@@ -96,7 +96,7 @@ mixin PostgreSQLSchemaGenerator {
 
   List<String> deleteColumn(SchemaTable table, SchemaColumn column) {
     return [
-      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)} ${column.relatedColumnName != null ? "CASCADE" : "RESTRICT"}"
+      "ALTER TABLE ${table.name} DROP COLUMN ${_columnNameForColumn(column)} ${column.relatedColumnName != null ? "CASCADE" : "RESTRICT"}",
     ];
   }
 
@@ -116,7 +116,7 @@ mixin PostgreSQLSchemaGenerator {
   ) {
     if (column.isNullable!) {
       return [
-        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP NOT NULL"
+        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP NOT NULL",
       ];
     } else {
       if (unencodedInitialValue != null) {
@@ -126,7 +126,7 @@ mixin PostgreSQLSchemaGenerator {
         ];
       } else {
         return [
-          "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} SET NOT NULL"
+          "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} SET NOT NULL",
         ];
       }
     }
@@ -137,7 +137,7 @@ mixin PostgreSQLSchemaGenerator {
       return ["ALTER TABLE ${table.name} ADD UNIQUE (${column.name})"];
     } else {
       return [
-        "ALTER TABLE ${table.name} DROP CONSTRAINT ${_uniqueKeyName(table.name, column)}"
+        "ALTER TABLE ${table.name} DROP CONSTRAINT ${_uniqueKeyName(table.name, column)}",
       ];
     }
   }
@@ -145,11 +145,11 @@ mixin PostgreSQLSchemaGenerator {
   List<String> alterColumnDefaultValue(SchemaTable table, SchemaColumn column) {
     if (column.defaultValue != null) {
       return [
-        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} SET DEFAULT ${column.defaultValue}"
+        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} SET DEFAULT ${column.defaultValue}",
       ];
     } else {
       return [
-        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP DEFAULT"
+        "ALTER TABLE ${table.name} ALTER COLUMN ${_columnNameForColumn(column)} DROP DEFAULT",
       ];
     }
   }
@@ -166,7 +166,7 @@ mixin PostgreSQLSchemaGenerator {
 
   List<String> addIndexToColumn(SchemaTable table, SchemaColumn column) {
     return [
-      "CREATE INDEX ${_indexNameForColumn(table.name, column)} ON ${table.name} (${_columnNameForColumn(column)})"
+      "CREATE INDEX ${_indexNameForColumn(table.name, column)} ON ${table.name} (${_columnNameForColumn(column)})",
     ];
   }
 
@@ -190,7 +190,10 @@ mixin PostgreSQLSchemaGenerator {
   }
 
   String _foreignKeyName(String? tableName, SchemaColumn column) {
-    return dialect.foreignKeyName(tableName ?? '', _columnNameForColumn(column));
+    return dialect.foreignKeyName(
+      tableName ?? '',
+      _columnNameForColumn(column),
+    );
   }
 
   List<String> _addConstraintsForColumn(

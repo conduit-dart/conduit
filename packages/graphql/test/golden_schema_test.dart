@@ -32,7 +32,8 @@ void main() {
     expect(
       goldenFile.existsSync(),
       isTrue,
-      reason: 'Golden file ${goldenFile.path} not found. '
+      reason:
+          'Golden file ${goldenFile.path} not found. '
           'Run `dart run test/_print_sdl_helper.dart > '
           'test/fixtures/expected.graphql` from the package root.',
     );
