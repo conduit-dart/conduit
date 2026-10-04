@@ -7,6 +7,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 // Some CachePolicy fields are tested by file_controller_test.dart, this
 // file tests the combinations not tested there.
 void main() {
@@ -19,20 +22,21 @@ void main() {
   test("Prevent intermediate caching", () async {
     const policy = CachePolicy(preventIntermediateProxyCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    final result = await http.get(Uri.parse("http://localhost:8888/"));
+    final result = await http.get(Uri.parse("http://localhost:$serverPort/"));
     expect(result.headers["cache-control"], "private");
   });
 
   test("Prevent caching altogether", () async {
     const policy = CachePolicy(preventCaching: true);
     server = await bindAndRespondWith(Response.ok("foo")..cachePolicy = policy);
-    final result = await http.get(Uri.parse("http://localhost:8888/"));
+    final result = await http.get(Uri.parse("http://localhost:$serverPort/"));
     expect(result.headers["cache-control"], "no-cache, no-store");
   });
 }
 
 Future<HttpServer> bindAndRespondWith(Response response) async {
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8888);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+  serverPort = server.port;
   server.map(Request.new).listen((req) async {
     final next = PassthruController();
     next.linkFunction((req) async {

@@ -11,16 +11,18 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../_helpers/free_port.dart';
+
 void main() {
-  const port = 8888;
-  const urlPrefix = 'ws://localhost:$port';
+  late String urlPrefix;
 
   group("Upgrade to WebSocket", () {
-    final app = Application<TestChannel>();
-    app.options.port = port;
+    late Application<TestChannel> app;
 
     setUpAll(() async {
-      return app.start();
+      final started = await startWithFreePort(Application<TestChannel>.new);
+      app = started.app;
+      urlPrefix = 'ws://localhost:${started.port}';
     });
 
     tearDownAll(() async {

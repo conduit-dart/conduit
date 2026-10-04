@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:test/test.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   final clientServer = ClientServer();
 
@@ -173,7 +176,8 @@ class ClientServer {
 
   Future open() async {
     client = HttpClient();
-    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    serverPort = server.port;
     server.map(Request.new).listen((r) {
       _requests.add(r);
       r.raw.response.statusCode = 200;
@@ -190,7 +194,10 @@ class ClientServer {
   Future<Request> getWithTypes(List<String>? contentTypeStrings) async {
     assert(_requests.isEmpty);
 
-    final req = await client.openUrl("GET", Uri.parse("http://localhost:8123"));
+    final req = await client.openUrl(
+      "GET",
+      Uri.parse("http://localhost:$serverPort"),
+    );
     if (contentTypeStrings != null) {
       if (contentTypeStrings.isEmpty) {
         req.headers.set(HttpHeaders.acceptHeader, "");

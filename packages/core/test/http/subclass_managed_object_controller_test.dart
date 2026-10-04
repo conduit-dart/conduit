@@ -9,12 +9,13 @@ import '../not_tests/postgres_test_config.dart';
 void main() {
   group("Standard operations", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(app.options.port);
+    app.options.port = 0;
+    late Agent client;
     final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {

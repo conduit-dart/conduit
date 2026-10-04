@@ -5,7 +5,6 @@ import "dart:io";
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import "package:test/test.dart";
-import 'package:test_core/src/util/io.dart' show getUnusedPort;
 
 // These tests are based on the specification found at http://www.w3.org/TR/cors/.
 void main() {
@@ -14,9 +13,11 @@ void main() {
   late int port;
 
   setUpAll(() async {
-    port = await getUnusedPort((p) => p);
-    app.options.port = port;
+    // Bind port 0 and read back the OS-assigned port: probing for a free
+    // port and binding it later races with other processes.
+    app.options.port = 0;
     await app.startOnCurrentIsolate();
+    port = app.server.server.port;
   });
 
   tearDownAll(() async {

@@ -6,6 +6,9 @@ import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   late ServerRoot server;
 
@@ -25,8 +28,8 @@ void main() {
     server.root.link(DefaultController.new);
     server.root.didAddToChannel();
 
-    final r1 = await http.get(Uri.parse("http://localhost:4040"));
-    final r2 = await http.get(Uri.parse("http://localhost:4040"));
+    final r1 = await http.get(Uri.parse("http://localhost:$serverPort"));
+    final r2 = await http.get(Uri.parse("http://localhost:$serverPort"));
 
     final firstAddress = json.decode(r1.body)["hashCode"];
     final secondAddress = json.decode(r2.body)["hashCode"];
@@ -37,8 +40,8 @@ void main() {
     server.root.link(DefaultRecyclable.new);
     server.root.didAddToChannel();
 
-    final r1 = await http.get(Uri.parse("http://localhost:4040"));
-    final r2 = await http.get(Uri.parse("http://localhost:4040"));
+    final r1 = await http.get(Uri.parse("http://localhost:$serverPort"));
+    final r2 = await http.get(Uri.parse("http://localhost:$serverPort"));
 
     final firstAddress = json.decode(r1.body)["hashCode"];
     final secondAddress = json.decode(r2.body)["hashCode"];
@@ -53,19 +56,19 @@ void main() {
 
       final addresses = await Future.wait([
         http
-            .get(Uri.parse("http://localhost:4040"))
+            .get(Uri.parse("http://localhost:$serverPort"))
             .then((r) => json.decode(r.body)["hashCode"]),
         http
-            .get(Uri.parse("http://localhost:4040"))
+            .get(Uri.parse("http://localhost:$serverPort"))
             .then((r) => json.decode(r.body)["hashCode"]),
         http
-            .get(Uri.parse("http://localhost:4040"))
+            .get(Uri.parse("http://localhost:$serverPort"))
             .then((r) => json.decode(r.body)["hashCode"]),
         http
-            .get(Uri.parse("http://localhost:4040"))
+            .get(Uri.parse("http://localhost:$serverPort"))
             .then((r) => json.decode(r.body)["hashCode"]),
         http
-            .get(Uri.parse("http://localhost:4040"))
+            .get(Uri.parse("http://localhost:$serverPort"))
             .then((r) => json.decode(r.body)["hashCode"]),
       ]);
 
@@ -84,19 +87,19 @@ void main() {
 
     final states = await Future.wait([
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
     ]);
 
@@ -109,13 +112,13 @@ void main() {
 
     await Future.wait([
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body)["state"]),
     ]);
 
@@ -128,19 +131,19 @@ void main() {
 
     final List<Map<String, dynamic>> responses = await Future.wait([
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
     ]);
 
@@ -173,19 +176,19 @@ void main() {
 
     final List<Map<String, dynamic>> responses = await Future.wait([
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
       http
-          .get(Uri.parse("http://localhost:4040"))
+          .get(Uri.parse("http://localhost:$serverPort"))
           .then((r) => json.decode(r.body) as Map<String, dynamic>),
     ]);
 
@@ -224,7 +227,8 @@ class ServerRoot {
   Controller root = ClosureController((req) => req);
 
   Future open() async {
-    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+    serverPort = server.port;
     server.map(Request.new).listen(root.receive);
   }
 

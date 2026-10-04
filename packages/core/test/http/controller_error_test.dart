@@ -7,6 +7,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   HttpServer? server;
 
@@ -21,7 +24,7 @@ void main() {
       }),
     );
 
-    final r = await http.get(Uri.parse("http://localhost:4040"));
+    final r = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(r.statusCode, 200);
   });
 
@@ -32,7 +35,7 @@ void main() {
       }),
     );
 
-    final r = await http.get(Uri.parse("http://localhost:4040"));
+    final r = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(r.statusCode, 500);
   });
 
@@ -43,7 +46,7 @@ void main() {
       }),
     );
 
-    final r = await http.get(Uri.parse("http://localhost:4040"));
+    final r = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(r.statusCode, 200);
   });
 
@@ -56,7 +59,7 @@ void main() {
         }),
       );
 
-      final r = await http.get(Uri.parse("http://localhost:4040"));
+      final r = await http.get(Uri.parse("http://localhost:$serverPort"));
       expect(r.statusCode, 500);
     },
   );
@@ -69,13 +72,14 @@ void main() {
       }),
     );
 
-    final r = await http.get(Uri.parse("http://localhost:4040"));
+    final r = await http.get(Uri.parse("http://localhost:$serverPort"));
     expect(r.statusCode, 500);
   });
 }
 
 Future<HttpServer> enableController(Controller controller) async {
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+  serverPort = server.port;
 
   controller.didAddToChannel();
 

@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import '../not_tests/helpers.dart';
 
 void main() {
-  final app = Application<Channel>();
+  final app = Application<Channel>()..options.port = 0;
   late Agent client;
 
   setUpAll(() async {

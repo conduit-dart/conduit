@@ -6,13 +6,19 @@ import 'dart:io';
 import 'package:conduit_core/conduit_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
+import 'package:test_core/src/util/io.dart' show getUnsafeUnusedPort;
+
+import '../../_helpers/free_port.dart';
 
 void main() {
   tearDownAll(Logger("conduit").clearListeners);
 
   group("Failures", () {
     test("Application start fails and logs appropriate message if request stream doesn't open", () async {
-      final crashingApp = Application<CrashChannel>();
+      // The crash attempts fail before binding; give them a free port anyway
+      // so an occupied default port can't mask the expected exception.
+      final crashingApp = Application<CrashChannel>()
+        ..options.port = await getUnsafeUnusedPort();
 
       try {
         crashingApp.options.context["crashIn"] = "addRoutes";
@@ -31,8 +37,8 @@ void main() {
       }
 
       crashingApp.options.context["crashIn"] = "dontCrash";
-      await crashingApp.start(consoleLogging: true);
-      final response = await http.get(Uri.parse("http://localhost:8888/t"));
+      final port = (await startWithFreePort(() => crashingApp)).port;
+      final response = await http.get(Uri.parse("http://localhost:$port/t"));
       expect(response.statusCode, 200);
       await crashingApp.stop();
     });
@@ -40,11 +46,11 @@ void main() {
     test(
       "Application that fails to open because port is bound fails gracefully",
       () async {
-        final server = await HttpServer.bind(InternetAddress.anyIPv4, 8888);
+        final server = await HttpServer.bind(InternetAddress.anyIPv4, 0);
         server.listen((req) {});
 
         final conflictingApp = Application<TestChannel>();
-        conflictingApp.options.port = 8888;
+        conflictingApp.options.port = server.port;
 
         try {
           await conflictingApp.start(consoleLogging: true);
@@ -62,6 +68,7 @@ void main() {
       () async {
         final timeoutApp = Application<TimeoutChannel>()
           ..isolateStartupTimeout = const Duration(seconds: 4)
+          ..options.port = 0
           ..options.context["timeout1"] = 10;
 
         try {
@@ -79,6 +86,7 @@ void main() {
     test("Isolate timeout kills application when first isolate succeeds, but next fails", () async {
       final timeoutApp = Application<TimeoutChannel>()
         ..isolateStartupTimeout = const Duration(seconds: 4)
+        ..options.port = 0
         ..options.context["timeout2"] = 10;
 
       try {

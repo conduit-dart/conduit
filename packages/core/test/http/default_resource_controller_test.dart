@@ -9,12 +9,13 @@ import '../not_tests/postgres_test_config.dart';
 void main() {
   group("Standard operations", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(app.options.port);
+    app.options.port = 0;
+    late Agent client;
     final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 5; i++) {
@@ -94,11 +95,12 @@ void main() {
 
   group("Standard operation failure cases", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(8888);
+    app.options.port = 0;
+    late Agent client;
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
     });
 
     tearDownAll(() async {
@@ -136,11 +138,12 @@ void main() {
 
   group("Objects that don't exist", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(8888);
+    app.options.port = 0;
+    late Agent client;
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
     });
 
     tearDownAll(() async {
@@ -173,12 +176,13 @@ void main() {
 
   group("Extended GET requests", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(8888);
+    app.options.port = 0;
+    late Agent client;
     final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {
@@ -325,12 +329,13 @@ void main() {
 
   group("With dynamic entity", () {
     final app = Application<TestChannel>();
-    app.options.port = 8888;
-    final client = Agent.onPort(8888);
+    app.options.port = 0;
+    late Agent client;
     final List<TestModel> allObjects = [];
 
     setUpAll(() async {
       await app.startOnCurrentIsolate();
+      client = Agent.onPort(app.server.server.port);
 
       var now = DateTime.now().toUtc();
       for (var i = 0; i < 10; i++) {

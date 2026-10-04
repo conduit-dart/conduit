@@ -8,6 +8,9 @@ import "package:test/test.dart";
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   HttpServer? server;
 
@@ -24,7 +27,7 @@ void main() {
   test("Get w/ no params", () async {
     server = await enableController("/a", TController.new);
 
-    final res = await http.get(Uri.parse("http://localhost:4040/a"));
+    final res = await http.get(Uri.parse("http://localhost:$serverPort/a"));
 
     expect(res.statusCode, 200);
     expect(json.decode(res.body), "getAll");
@@ -32,7 +35,7 @@ void main() {
 
   test("Get w/ 1 param", () async {
     server = await enableController("/a/:id", TController.new);
-    final res = await http.get(Uri.parse("http://localhost:4040/a/123"));
+    final res = await http.get(Uri.parse("http://localhost:$serverPort/a/123"));
 
     expect(res.statusCode, 200);
     expect(json.decode(res.body), "123");
@@ -41,7 +44,9 @@ void main() {
   test("Get w/ 2 param", () async {
     server = await enableController("/a/:id/:flag", TController.new);
 
-    final res = await http.get(Uri.parse("http://localhost:4040/a/123/active"));
+    final res = await http.get(
+      Uri.parse("http://localhost:$serverPort/a/123/active"),
+    );
 
     expect(res.statusCode, 200);
     expect(json.decode(res.body), "123active");
@@ -49,7 +54,9 @@ void main() {
 
   test("Can get path variable without binding", () async {
     server = await enableController("/:id", NoBindController.new);
-    final response = await http.get(Uri.parse("http://localhost:4040/foo"));
+    final response = await http.get(
+      Uri.parse("http://localhost:$serverPort/foo"),
+    );
     expect(json.decode(response.body), {"id": "foo"});
   });
 
@@ -57,7 +64,9 @@ void main() {
     test("Returns status code 405 with Allow response header", () async {
       server = await enableController("/a", TController.new);
 
-      final res = await http.delete(Uri.parse("http://localhost:4040/a"));
+      final res = await http.delete(
+        Uri.parse("http://localhost:$serverPort/a"),
+      );
       expect(res.statusCode, 405);
       expect(res.headers["allow"], "GET, POST");
     });
@@ -67,15 +76,19 @@ void main() {
       () async {
         server = await enableController("/a/[:id/[:flag]]", TController.new);
 
-        var res = await http.delete(Uri.parse("http://localhost:4040/a"));
+        var res = await http.delete(
+          Uri.parse("http://localhost:$serverPort/a"),
+        );
         expect(res.statusCode, 405);
         expect(res.headers["allow"], "GET, POST");
 
-        res = await http.delete(Uri.parse("http://localhost:4040/a/1"));
+        res = await http.delete(Uri.parse("http://localhost:$serverPort/a/1"));
         expect(res.statusCode, 405);
         expect(res.headers["allow"], "GET, PUT");
 
-        res = await http.delete(Uri.parse("http://localhost:4040/a/1/foo"));
+        res = await http.delete(
+          Uri.parse("http://localhost:$serverPort/a/1/foo"),
+        );
         expect(res.statusCode, 405);
         expect(res.headers["allow"], "GET");
       },
@@ -85,7 +98,7 @@ void main() {
   test("Crashing controller delivers 500", () async {
     server = await enableController("/a/:id", TController.new);
 
-    final res = await http.put(Uri.parse("http://localhost:4040/a/a"));
+    final res = await http.put(Uri.parse("http://localhost:$serverPort/a/a"));
 
     expect(res.statusCode, 500);
   });
@@ -95,7 +108,7 @@ void main() {
 
     final body = json.encode({"a": "b"});
     final res = await http.post(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -108,7 +121,7 @@ void main() {
 
     final body = json.encode({"a": "b"});
     final res = await http.post(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       headers: {"Content-Type": "application/somenonsense"},
       body: body,
     );
@@ -120,32 +133,42 @@ void main() {
     () async {
       server = await enableController("/a", QController.new);
 
-      var res = await http.get(Uri.parse("http://localhost:4040/a?opt=x"));
+      var res = await http.get(
+        Uri.parse("http://localhost:$serverPort/a?opt=x"),
+      );
       expect(res.body, '"OK"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/a"));
+      res = await http.get(Uri.parse("http://localhost:$serverPort/a"));
       expect(res.body, '"NOT"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/a?option=x"));
+      res = await http.get(
+        Uri.parse("http://localhost:$serverPort/a?option=x"),
+      );
       expect(res.body, '"NOT"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/a?opt=x&q=1"));
+      res = await http.get(
+        Uri.parse("http://localhost:$serverPort/a?opt=x&q=1"),
+      );
       expect(res.body, '"OK"');
 
       await server!.close(force: true);
 
       server = await enableController("/:id", QController.new);
 
-      res = await http.get(Uri.parse("http://localhost:4040/123?opt=x"));
+      res = await http.get(Uri.parse("http://localhost:$serverPort/123?opt=x"));
       expect(res.body, '"OK"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/123"));
+      res = await http.get(Uri.parse("http://localhost:$serverPort/123"));
       expect(res.body, '"NOT"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/123?option=x"));
+      res = await http.get(
+        Uri.parse("http://localhost:$serverPort/123?option=x"),
+      );
       expect(res.body, '"NOT"');
 
-      res = await http.get(Uri.parse("http://localhost:4040/123?opt=x&q=1"));
+      res = await http.get(
+        Uri.parse("http://localhost:$serverPort/123?opt=x&q=1"),
+      );
       expect(res.body, '"OK"');
     },
   );
@@ -153,34 +176,36 @@ void main() {
   test("Path parameters are parsed into appropriate type", () async {
     server = await enableController("/:id", IntController.new);
 
-    var res = await http.get(Uri.parse("http://localhost:4040/123"));
+    var res = await http.get(Uri.parse("http://localhost:$serverPort/123"));
     expect(res.body, '"246"');
 
-    res = await http.get(Uri.parse("http://localhost:4040/word"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/word"));
     expect(res.statusCode, 400);
 
     await server!.close(force: true);
 
     server = await enableController("/:time", DateTimeController.new);
     res = await http.get(
-      Uri.parse("http://localhost:4040/2001-01-01T00:00:00.000000Z"),
+      Uri.parse("http://localhost:$serverPort/2001-01-01T00:00:00.000000Z"),
     );
     expect(res.statusCode, 200);
     expect(res.body, '"2001-01-01 00:00:05.000Z"');
 
-    res = await http.get(Uri.parse("http://localhost:4040/foobar"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/foobar"));
     expect(res.statusCode, 400);
   });
 
   test("Query parameters are parsed into appropriate types", () async {
     server = await enableController("/a", IntController.new);
-    var res = await http.get(Uri.parse("http://localhost:4040/a?opt=12"));
+    var res = await http.get(
+      Uri.parse("http://localhost:$serverPort/a?opt=12"),
+    );
     expect(res.body, '"12"');
 
-    res = await http.get(Uri.parse("http://localhost:4040/a?opt=word"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a?opt=word"));
     expect(res.statusCode, 400);
 
-    res = await http.get(Uri.parse("http://localhost:4040/a?foo=2"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a?foo=2"));
     expect(res.statusCode, 200);
     expect(res.body, '"null"');
 
@@ -188,16 +213,20 @@ void main() {
 
     server = await enableController("/a", DateTimeController.new);
     res = await http.get(
-      Uri.parse("http://localhost:4040/a?opt=2001-01-01T00:00:00.000000Z"),
+      Uri.parse(
+        "http://localhost:$serverPort/a?opt=2001-01-01T00:00:00.000000Z",
+      ),
     );
     expect(res.statusCode, 200);
     expect(res.body, '"2001-01-01 00:00:00.000Z"');
 
-    res = await http.get(Uri.parse("http://localhost:4040/a?opt=word"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a?opt=word"));
     expect(res.statusCode, 400);
 
     res = await http.get(
-      Uri.parse("http://localhost:4040/a?foo=2001-01-01T00:00:00.000000Z"),
+      Uri.parse(
+        "http://localhost:$serverPort/a?foo=2001-01-01T00:00:00.000000Z",
+      ),
     );
     expect(res.statusCode, 200);
   });
@@ -205,7 +234,7 @@ void main() {
   test("Query parameters can be obtained from x-www-form-urlencoded", () async {
     server = await enableController("/a", IntController.new);
     final res = await http.post(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
       body: "opt=7",
     );
@@ -214,22 +243,22 @@ void main() {
 
   test("Model and lists are encoded in response", () async {
     server = await enableController("/a/:thing", ModelEncodeController.new);
-    var res = await http.get(Uri.parse("http://localhost:4040/a/list"));
+    var res = await http.get(Uri.parse("http://localhost:$serverPort/a/list"));
     expect(json.decode(res.body), [
       {"id": 1},
       {"id": 2},
     ]);
 
-    res = await http.get(Uri.parse("http://localhost:4040/a/model"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a/model"));
     expect(json.decode(res.body), {"id": 1, "name": "Bob"});
 
-    res = await http.get(Uri.parse("http://localhost:4040/a/modellist"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a/modellist"));
     expect(json.decode(res.body), [
       {"id": 1, "name": "Bob"},
       {"id": 2, "name": "Fred"},
     ]);
 
-    res = await http.get(Uri.parse("http://localhost:4040/a/null"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a/null"));
     expect(res.body, isEmpty);
     expect(res.statusCode, 200);
   });
@@ -237,7 +266,9 @@ void main() {
   test("Controllers return no body if null", () async {
     server = await enableController("/a/:thing", ModelEncodeController.new);
 
-    final res = await http.get(Uri.parse("http://localhost:4040/a/null"));
+    final res = await http.get(
+      Uri.parse("http://localhost:$serverPort/a/null"),
+    );
     expect(res.body, isEmpty);
     expect(res.statusCode, 200);
   });
@@ -245,24 +276,24 @@ void main() {
   test("Sending bad JSON returns 400", () async {
     server = await enableController("/a", TController.new);
     var res = await http.post(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       body: "{`foobar' : 2}",
       headers: {"Content-Type": "application/json"},
     );
     expect(res.statusCode, 400);
 
-    res = await http.get(Uri.parse("http://localhost:4040/a"));
+    res = await http.get(Uri.parse("http://localhost:$serverPort/a"));
     expect(res.statusCode, 200);
   });
 
   test("Prefilter requests", () async {
     server = await enableController("/a", FilteringController.new);
 
-    var resp = await http.get(Uri.parse("http://localhost:4040/a"));
+    var resp = await http.get(Uri.parse("http://localhost:$serverPort/a"));
     expect(resp.statusCode, 200);
 
     resp = await http.get(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       headers: {"Ignore": "true"},
     );
     expect(resp.statusCode, 400);
@@ -272,7 +303,7 @@ void main() {
   test("Request with multiple query parameters of same key", () async {
     server = await enableController("/a", MultiQueryParamController.new);
     final resp = await http.get(
-      Uri.parse("http://localhost:4040/a?params=1&params=2"),
+      Uri.parse("http://localhost:$serverPort/a?params=1&params=2"),
     );
     expect(resp.statusCode, 200);
     expect(resp.body, '"1,2"');
@@ -280,18 +311,20 @@ void main() {
 
   test("Request with query parameter key is bool", () async {
     server = await enableController("/a", BooleanQueryParamController.new);
-    var resp = await http.get(Uri.parse("http://localhost:4040/a?param"));
+    var resp = await http.get(
+      Uri.parse("http://localhost:$serverPort/a?param"),
+    );
     expect(resp.statusCode, 200);
     expect(resp.body, '"true"');
 
-    resp = await http.get(Uri.parse("http://localhost:4040/a"));
+    resp = await http.get(Uri.parse("http://localhost:$serverPort/a"));
     expect(resp.statusCode, 200);
     expect(resp.body, '"false"');
   });
 
   test("Content-Type defaults to application/json", () async {
     server = await enableController("/a", TController.new);
-    final resp = await http.get(Uri.parse("http://localhost:4040/a"));
+    final resp = await http.get(Uri.parse("http://localhost:$serverPort/a"));
     expect(resp.statusCode, 200);
     expect(
       ContentType.parse(resp.headers["content-type"]!).primaryType,
@@ -303,7 +336,7 @@ void main() {
   test("Content-Type can be set adjusting responseContentType", () async {
     server = await enableController("/a", ContentTypeController.new);
     final resp = await http.get(
-      Uri.parse("http://localhost:4040/a?opt=responseContentType"),
+      Uri.parse("http://localhost:$serverPort/a?opt=responseContentType"),
     );
     expect(resp.statusCode, 200);
     expect(resp.headers["content-type"], "text/plain");
@@ -315,7 +348,7 @@ void main() {
     () async {
       server = await enableController("/a", ContentTypeController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?opt=direct"),
+        Uri.parse("http://localhost:$serverPort/a?opt=direct"),
       );
       expect(resp.statusCode, 200);
       expect(resp.headers["content-type"], "text/plain");
@@ -325,11 +358,11 @@ void main() {
 
   test("didDecodeRequestBody invoked when there is a request body", () async {
     server = await enableController("/a", DecodeCallbackController.new);
-    var resp = await http.get(Uri.parse("http://localhost:4040/a"));
+    var resp = await http.get(Uri.parse("http://localhost:$serverPort/a"));
     expect(json.decode(resp.body), {"didDecode": false});
 
     resp = await http.post(
-      Uri.parse("http://localhost:4040/a"),
+      Uri.parse("http://localhost:$serverPort/a"),
       headers: {HttpHeaders.contentTypeHeader: ContentType.json.toString()},
       body: json.encode({"k": "v"}),
     );
@@ -341,7 +374,7 @@ void main() {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
         Uri.parse(
-          "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
+          "http://localhost:$serverPort/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
         ),
         headers: {
           "x-request-id": "3423423adfea90",
@@ -367,7 +400,7 @@ void main() {
     test("optional parameters aren't required", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        Uri.parse("http://localhost:$serverPort/a?Shaqs=1&Table=IKEA"),
         headers: {"x-request-id": "3423423adfea90", "Cookie": "Chips Ahoy"},
       );
 
@@ -387,7 +420,7 @@ void main() {
     test("missing required controller header param fails", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        Uri.parse("http://localhost:$serverPort/a?Shaqs=1&Table=IKEA"),
         headers: {"Cookie": "Chips Ahoy"},
       );
 
@@ -400,7 +433,7 @@ void main() {
     test("missing required controller query param fails", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?Table=IKEA"),
+        Uri.parse("http://localhost:$serverPort/a?Table=IKEA"),
         headers: {"x-request-id": "3423423adfea90", "Cookie": "Chips Ahoy"},
       );
 
@@ -413,7 +446,7 @@ void main() {
     test("missing required method header param fails", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?Shaqs=1&Table=IKEA"),
+        Uri.parse("http://localhost:$serverPort/a?Shaqs=1&Table=IKEA"),
         headers: {"x-request-id": "3423423adfea90"},
       );
 
@@ -426,7 +459,7 @@ void main() {
     test("missing require method query param fails", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?Shaqs=1"),
+        Uri.parse("http://localhost:$serverPort/a?Shaqs=1"),
         headers: {"x-request-id": "3423423adfea90", "Cookie": "Chips Ahoy"},
       );
 
@@ -438,7 +471,7 @@ void main() {
 
     test("reports all missing required parameters", () async {
       server = await enableController("/a", HTTPParameterController.new);
-      final resp = await http.get(Uri.parse("http://localhost:4040/a"));
+      final resp = await http.get(Uri.parse("http://localhost:$serverPort/a"));
 
       expect(resp.statusCode, 400);
       final errorMessage = json.decode(resp.body)["error"];
@@ -452,7 +485,7 @@ void main() {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
         Uri.parse(
-          "http://localhost:4040/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
+          "http://localhost:$serverPort/a?number=3&Shaqs=1&Table=IKEA&table_legs=8",
         ),
         headers: {
           "X-Request-ID": "3423423adfea90",
@@ -478,7 +511,7 @@ void main() {
     test("Query parameters are case-SENSITIVE", () async {
       server = await enableController("/a", HTTPParameterController.new);
       final resp = await http.get(
-        Uri.parse("http://localhost:4040/a?SHAQS=1&table=IKEA"),
+        Uri.parse("http://localhost:$serverPort/a?SHAQS=1&table=IKEA"),
         headers: {"X-Request-ID": "3423423adfea90", "Cookie": "Chips Ahoy"},
       );
 
@@ -497,7 +530,9 @@ void main() {
       () async {
         server = await enableController("/a", DuplicateParamController.new);
         final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?list=a&list=b&single=x&single=y"),
+          Uri.parse(
+            "http://localhost:$serverPort/a?list=a&list=b&single=x&single=y",
+          ),
         );
 
         expect(resp.statusCode, 400);
@@ -514,7 +549,7 @@ void main() {
       () async {
         server = await enableController("/a", DuplicateParamController.new);
         final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?list=a&list=b&single=x"),
+          Uri.parse("http://localhost:$serverPort/a?list=a&list=b&single=x"),
         );
 
         expect(resp.statusCode, 200);
@@ -531,7 +566,7 @@ void main() {
       () async {
         server = await enableController("/a", DuplicateParamController.new);
         final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?list=a&single=x"),
+          Uri.parse("http://localhost:$serverPort/a?list=a&single=x"),
         );
 
         expect(resp.statusCode, 200);
@@ -548,7 +583,7 @@ void main() {
       () async {
         server = await enableController("/a", DuplicateParamController.new);
         final resp = await http.get(
-          Uri.parse("http://localhost:4040/a?single=x"),
+          Uri.parse("http://localhost:$serverPort/a?single=x"),
         );
 
         expect(resp.statusCode, 400);
@@ -565,16 +600,16 @@ void main() {
         server = await enableController("/a/[:id/[:flag]]", TController.new);
 
         final List<http.Response> responses = await Future.wait([
-          http.get(Uri.parse("http://localhost:4040/a")),
-          http.get(Uri.parse("http://localhost:4040/a/foo")),
-          http.get(Uri.parse("http://localhost:4040/a/foo/bar")),
+          http.get(Uri.parse("http://localhost:$serverPort/a")),
+          http.get(Uri.parse("http://localhost:$serverPort/a/foo")),
+          http.get(Uri.parse("http://localhost:$serverPort/a/foo/bar")),
           http.put(
-            Uri.parse("http://localhost:4040/a/foo"),
+            Uri.parse("http://localhost:$serverPort/a/foo"),
             body: json.encode({"k": "v"}),
             headers: {"content-type": "application/json;charset=utf-8"},
           ),
           http.post(
-            Uri.parse("http://localhost:4040/a"),
+            Uri.parse("http://localhost:$serverPort/a"),
             body: json.encode({"k": "v"}),
             headers: {"content-type": "application/json;charset=utf-8"},
           ),
@@ -844,7 +879,9 @@ Future<HttpServer> enableController(
   router.route(pattern).link(instantiate);
   router.didAddToChannel();
 
-  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 4040);
+  final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+
+  serverPort = server.port;
   server.map(Request.new).listen(router.receive);
 
   return server;

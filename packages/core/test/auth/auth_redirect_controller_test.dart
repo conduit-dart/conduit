@@ -10,7 +10,7 @@ import '../not_tests/helpers.dart';
 
 void main() {
   late Application<TestChannel> application;
-  final client = Agent.onPort(8888);
+  late Agent client;
 
   Future<TestResponse> codeResponse(Map<String, String?> form) {
     final m = Map<String, String>.from(form);
@@ -43,9 +43,10 @@ void main() {
   }
 
   setUpAll(() async {
-    application = Application<TestChannel>();
+    application = Application<TestChannel>()..options.port = 0;
 
     await application.startOnCurrentIsolate();
+    client = Agent.onPort(application.server.server.port);
   });
 
   tearDownAll(() async {

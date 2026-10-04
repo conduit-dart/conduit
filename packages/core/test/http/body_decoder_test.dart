@@ -9,6 +9,9 @@ import 'package:test/test.dart';
 
 import '../not_tests/helpers.dart';
 
+/// Port of the server under test; bound to an OS-assigned free port.
+late int serverPort;
+
 void main() {
   final defaultSize = RequestBody.maxSize;
   setUp(() {
@@ -22,7 +25,8 @@ void main() {
 
     setUp(() async {
       print('http server starting');
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -45,7 +49,7 @@ void main() {
       test("Empty body shows as isEmpty", () async {
         unawaited(
           http
-              .get(Uri.parse("http://localhost:8123"))
+              .get(Uri.parse("http://localhost:$serverPort"))
               .catchError((err) => Future.value(http.Response.bytes([], 500))),
         );
         print('get completed');
@@ -58,7 +62,7 @@ void main() {
         final bytes = utf8.encode(json.encode({"k": "v"}));
         final req = await client.openUrl(
           "POST",
-          Uri.parse("http://localhost:8123"),
+          Uri.parse("http://localhost:$serverPort"),
         );
         req.headers.add(
           HttpHeaders.contentTypeHeader,
@@ -84,7 +88,7 @@ void main() {
         final bytes = utf8.encode(json.encode({"k": "v"}));
         final req = await client.openUrl(
           "POST",
-          Uri.parse("http://localhost:8123"),
+          Uri.parse("http://localhost:$serverPort"),
         );
         req.headers.add(
           HttpHeaders.contentTypeHeader,
@@ -110,7 +114,7 @@ void main() {
     test("application/json decoder works on valid json", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
             body: json.encode({"a": "val"}),
           )
@@ -125,7 +129,9 @@ void main() {
       "Omit charset from known decoder defaults to charset added if exists",
       () async {
         final client = HttpClient();
-        final req = await client.postUrl(Uri.parse("http://localhost:8123"));
+        final req = await client.postUrl(
+          Uri.parse("http://localhost:$serverPort"),
+        );
         req.headers.add(HttpHeaders.contentTypeHeader, "application/json");
         req.add(utf8.encode(json.encode({"a": "val"})));
 
@@ -144,7 +150,7 @@ void main() {
       () async {
         http
             .post(
-              Uri.parse("http://localhost:8123"),
+              Uri.parse("http://localhost:$serverPort"),
               headers: {"Content-Type": "application/x-www-form-urlencoded"},
               body: "a=b&c=2%2F4",
             )
@@ -164,7 +170,7 @@ void main() {
     test("Any text decoder works on text with charset", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "text/plain; charset=utf-8"},
             body: "foobar",
           )
@@ -178,7 +184,7 @@ void main() {
     test("No found decoder for primary type returns binary", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "notarealthing/nothing"},
             body: "foobar".codeUnits,
           )
@@ -192,7 +198,7 @@ void main() {
     test("No content-type returns binary", () async {
       final req = await HttpClient().openUrl(
         "POST",
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
       );
       req.add("foobar".codeUnits);
 
@@ -208,7 +214,7 @@ void main() {
     test("Failed decoding throws exception", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
             body: "{a=b&c=2",
           )
@@ -241,7 +247,8 @@ void main() {
     });
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -251,7 +258,7 @@ void main() {
     test("Added decoder works when content-type matches", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/thingy"},
             body: json.encode({"key": "value"}),
           )
@@ -264,7 +271,7 @@ void main() {
     test("Added decoder that matches any subtype works", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "somethingelse/whatever"},
             body: json.encode({"key": "value"}),
           )
@@ -277,7 +284,9 @@ void main() {
 
     test("Omit charset from added decoder with default charset and match-all subtype", () async {
       final client = HttpClient();
-      final req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      final req = await client.postUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.add(HttpHeaders.contentTypeHeader, "somethingelse/foobar");
       req.add(utf8.encode(json.encode({"a": "val"})));
 
@@ -292,7 +301,9 @@ void main() {
 
     test("Omit charset from added decoder does not add charset decoded if not specified", () async {
       final client = HttpClient();
-      final req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      final req = await client.postUrl(
+        Uri.parse("http://localhost:$serverPort"),
+      );
       req.headers.add(HttpHeaders.contentTypeHeader, "application/thingy");
       req.add(utf8.encode(json.encode({"a": "val"})));
 
@@ -318,7 +329,8 @@ void main() {
     late HttpServer server;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -366,7 +378,7 @@ void main() {
     test("decodeAsMap with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -379,7 +391,7 @@ void main() {
     test("asMap with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -394,7 +406,8 @@ void main() {
     late HttpServer server;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -450,7 +463,7 @@ void main() {
     test("decodeAsList with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -463,7 +476,7 @@ void main() {
     test("asList with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -478,7 +491,8 @@ void main() {
     late HttpServer server;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -535,7 +549,7 @@ void main() {
     test("decodeAsString with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "text/plain; charset=utf-8"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -548,7 +562,7 @@ void main() {
     test("asString with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "text/plain; charset=utf-8"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -563,7 +577,8 @@ void main() {
     late HttpServer server;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -597,7 +612,7 @@ void main() {
     test("decodeAsBytes with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/octet-stream"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -610,7 +625,7 @@ void main() {
     test("asBytes with no data returns null", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/octet-stream"},
           )
           .catchError((err) => Future.value(http.Response.bytes([], 500)));
@@ -655,7 +670,8 @@ void main() {
     late HttpServer server;
 
     setUp(() async {
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -665,7 +681,7 @@ void main() {
     test("Subsequent decodes do not re-process body", () async {
       http
           .post(
-            Uri.parse("http://localhost:8123"),
+            Uri.parse("http://localhost:$serverPort"),
             headers: {"Content-Type": "application/json"},
             body: json.encode({"a": "val"}),
           )
@@ -695,7 +711,7 @@ void main() {
       });
 
       var result = await http.post(
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "application/json"},
         body: utf8.encode('{"key":'),
       );
@@ -703,7 +719,7 @@ void main() {
 
       // Send it again just to make sure things have recovered.
       result = await http.post(
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "application/json"},
         body: utf8.encode('{"key":'),
       );
@@ -731,7 +747,8 @@ void main() {
 
     setUp(() async {
       client = HttpClient();
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8123);
+      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      serverPort = server.port;
     });
 
     tearDown(() async {
@@ -751,7 +768,7 @@ void main() {
         controller.receive(Request(req));
       });
 
-      var req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      var req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
       req.headers.add(
         HttpHeaders.contentTypeHeader,
         "application/json; charset=utf-8",
@@ -766,7 +783,7 @@ void main() {
       );
       expect(response.statusCode, 413);
 
-      req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
       req.headers.add(
         HttpHeaders.contentTypeHeader,
         "application/json; charset=utf-8",
@@ -790,7 +807,7 @@ void main() {
         controller.receive(Request(req));
       });
 
-      var req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      var req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
       final bytes = List.generate(8192 * 100, (_) => 1);
       req.headers.add(
         HttpHeaders.contentTypeHeader,
@@ -804,7 +821,7 @@ void main() {
       );
       expect(response.statusCode, 413);
 
-      req = await client.postUrl(Uri.parse("http://localhost:8123"));
+      req = await client.postUrl(Uri.parse("http://localhost:$serverPort"));
       req.headers.add(
         HttpHeaders.contentTypeHeader,
         "application/octet-stream",
@@ -821,7 +838,7 @@ void main() {
 Future postJSON(dynamic body) {
   return http
       .post(
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "application/json"},
         body: json.encode(body),
       )
@@ -831,7 +848,7 @@ Future postJSON(dynamic body) {
 Future postString(String data) {
   return http
       .post(
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "text/html; charset=utf-8"},
         body: data,
       )
@@ -841,7 +858,7 @@ Future postString(String data) {
 Future postBytes(List<int> bytes) {
   return http
       .post(
-        Uri.parse("http://localhost:8123"),
+        Uri.parse("http://localhost:$serverPort"),
         headers: {"Content-Type": "application/octet-stream"},
         body: bytes,
       )
