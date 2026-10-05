@@ -42,6 +42,8 @@ jobs:
           REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number || inputs.issue }}
           ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          TRIGGERS: ${{ vars.AI_PIPELINE_TRIGGERS }}
+          ACTOR: ${{ github.triggering_actor }}
           SENDER: ${{ github.event.sender.login }}
           SENDER_TYPE: ${{ github.event.sender.type }}
           REQUIRED_LABELS: ai:approved
