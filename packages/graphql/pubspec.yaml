@@ -12,9 +12,9 @@ resolution: workspace
 dependencies:
   conduit_core: ^7.0.0
   conduit_graph: ^7.0.0
-  graphql_parser2: ^6.5.0
-  graphql_schema2: ^6.5.0
-  graphql_server2: ^6.5.0
+  graphql_parser2: ^7.0.0
+  graphql_schema2: ^7.0.0
+  graphql_server2: ^7.0.0
 
 dev_dependencies:
   # Neo4j backend is exercised only by the gated G4 integration test;

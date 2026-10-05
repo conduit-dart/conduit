@@ -18,7 +18,7 @@ dependencies:
   # `conduit_core`. The older `mysql_client` (0.0.27, 2022) and `mysql1`
   # (0.20.0, 2022) packages are stale; `mysql_dart` is the
   # active-libraries pick.
-  mysql_dart: ^1.2.1
+  mysql_dart: ^3.0.0
 
 dev_dependencies:
   lints: ^6.0.0
