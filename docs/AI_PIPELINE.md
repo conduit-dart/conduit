@@ -1,8 +1,9 @@
 # AI-assisted pipeline: feature request to release
 
 An event-driven companion to the scheduled chores in
-[AGENTIC_MAINTENANCE.md](AGENTIC_MAINTENANCE.md). Feature requests move
-through research, an optional dependency review, implementation and AI review,
+[AGENTIC_MAINTENANCE.md](AGENTIC_MAINTENANCE.md). Feature requests and bug
+reports move through research, an optional dependency review, implementation
+and AI review,
 with a **maintainer gate** at every step that matters. The existing CI and
 release gates are unchanged: AI pull requests run the same Linux/macOS/Windows
 workflows, need the same approving review, and only a maintainer's tag
@@ -14,7 +15,7 @@ The whole pipeline is off unless the repository variable
 ## Flow
 
 ```
-issue opened (enhancement) ─► ai:triage
+issue opened (enhancement or bug) ─► ai:triage
         │  maintainer adds ai:approved                 ◄── Gate 1
         ▼
 research (ai-research.yml)
@@ -43,11 +44,28 @@ release prep (ai-release-prep.yml, on release:prepare or manual dispatch)
 publish.yml (unchanged)
 ```
 
+## Bug reports
+
+Issues labelled `bug` (the bug report template applies it) are ingested the
+same way as feature requests and pass the same gates. The difference is in
+what the agents do:
+
+- **Research** reproduces the bug and posts a **Root cause** section with
+  `path:line` references, or says plainly that it could not reproduce it
+  and what information is missing.
+- **Implementation** writes the regression test first, confirms it fails,
+  then makes the smallest fix for that root cause and titles the PR
+  `fix(<scope>): …`.
+
+Issues opened before the pipeline existed (or without a label) can enter at
+Gate 1 directly: adding `ai:approved` starts research; `ai:triage` is not
+required.
+
 ## Labels
 
 | Label | Set by | Meaning |
 |---|---|---|
-| `ai:triage` | intake | New feature request, awaiting review |
+| `ai:triage` | intake | New feature request or bug report, awaiting review |
 | `ai:approved` | **maintainer** | Gate 1: start research |
 | `ai:researching`, `ai:implementing` | pipeline | Stage running |
 | `deps:review` | pipeline | Dependency candidates posted |
