@@ -160,6 +160,22 @@ void main() {
       expect(gt, hasLength(2));
     });
 
+    test('two predicates on the same column are ANDed', () async {
+      context = await _bootstrap([Simple]);
+      for (final n in ['a', 'b', 'c', 'd']) {
+        await (Query<Simple>(context!)..values.name = n).insert();
+      }
+      final all = await Query<Simple>(context!).fetch();
+      final lo = all[0].id!;
+      final hi = all[3].id!;
+      final mid =
+          await (Query<Simple>(context!)
+                ..where((s) => s.id).lessThan(hi)
+                ..where((s) => s.id).greaterThan(lo))
+              .fetch();
+      expect(mid.map((r) => r.name).toSet(), {'b', 'c'});
+    });
+
     test('oneOf (IN) predicate', () async {
       context = await _bootstrap([Simple]);
       for (final n in ['a', 'b', 'c']) {

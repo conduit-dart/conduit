@@ -287,7 +287,7 @@ void main() {
       expect(combined.format, '(a = @av AND b = @bv)');
     });
 
-    test('and() drops AST when parameter names collide', () {
+    test('and() keeps AST when parameter names collide', () {
       // The dupe-renaming path rewrites the format string but doesn't
       // touch the AST, so the safe choice is to drop the AST and let
       // the backend fall back to the format-string render.
@@ -310,7 +310,7 @@ void main() {
         ),
       );
       final combined = QueryPredicate.and([p1, p2]);
-      expect(combined.expression, isNull);
+      expect(combined.expression, isA<LogicalExpression>());
       expect(combined.format, '(p = @p AND p = @p0)');
       expect(combined.parameters, {'p': 1, 'p0': 2});
     });
