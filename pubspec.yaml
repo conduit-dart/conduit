@@ -11,7 +11,7 @@ dev_dependencies:
   # 7.4.0 introduced layered topological sort for `melos exec
   # --order-dependents`, which is what the publish workflow relies on.
   # 7.7.0 fixes pubspec_overrides handling under workspace resolution.
-  melos: ^7.7.0
+  melos: ^8.9.0
 
 workspace:
   - packages/build_runner

@@ -32,7 +32,7 @@ dependencies:
 
 dev_dependencies:
   # migration_execution_test.dart imports package:analyzer directly.
-  analyzer: ^13.0.0
+  analyzer: ^14.4.0
   conduit_test:
     path: ../test_harness
   fs_test_agent:
