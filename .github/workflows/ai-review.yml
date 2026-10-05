@@ -1,0 +1,83 @@
+# AI pipeline, stage 3: review notes.
+#
+# Runs on pull requests from the pipeline's own branches
+# (`claude/ai-issue-<n>-*` in this repository, never forks). Posts the AI
+# review to the linked issue and a pointer on the PR. It never approves or
+# merges: the normal CI and a maintainer's review remain the gate.
+# See docs/AI_PIPELINE.md.
+name: AI review
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, ready_for_review]
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  review:
+    if: >-
+      vars.AI_PIPELINE_ENABLED == 'true'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && startsWith(github.head_ref, 'claude/ai-issue-')
+      && !github.event.pull_request.draft
+    runs-on: [self-hosted, conduit-ai]
+    timeout-minutes: 45
+    env:
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      HEAD_REF: ${{ github.head_ref }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Load issue context
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          issue=$(sed -nE 's#^claude/ai-issue-([0-9]+)-.*#\1#p' <<<"$HEAD_REF")
+          [ -n "$issue" ] || { echo "cannot read an issue number from $HEAD_REF" >&2; exit 1; }
+          echo "ISSUE=$issue" >> "$GITHUB_ENV"
+          mkdir -p .ai
+          gh issue view "$issue" --repo "$REPO" --json number,title,body,comments > .ai/issue.json
+          jq -r '[.comments[] | select(.body | startswith("<!-- conduit-ai:research -->"))] | last | .body // ""' \
+            .ai/issue.json > .ai/research.md
+          git fetch -q origin master
+
+      - name: Review (agent)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+        run: |
+          tool/ai/run-agent.sh .github/ai/prompts/review.md 60 \
+            "Read,Glob,Grep,Write(.ai/review.md),Bash(git diff:*),Bash(git log:*),Bash(git show:*)"
+          test -s .ai/review.md
+          git diff --quiet || { echo "review agent modified tracked files" >&2; exit 1; }
+
+      - name: Post review notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          {
+            echo "<!-- conduit-ai:review -->"
+            echo "## AI review of #${PR} (\`${HEAD_SHA:0:8}\`)"
+            echo
+            cat .ai/review.md
+            echo
+            echo "<sub>AI pipeline · [run]($RUN_URL) · not a merge gate; a maintainer reviews and merges.</sub>"
+          } > .ai/comment.md
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/comment.md
+          verdict=$(sed -n '/^### Verdict/{n;:a;/^[[:space:]]*$/{n;ba};p;q}' .ai/review.md | head -c 200)
+          gh pr comment "$PR" --repo "$REPO" \
+            --body "AI review posted on #${ISSUE}. Verdict: ${verdict:-see the issue}"

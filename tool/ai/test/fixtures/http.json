@@ -1,0 +1,14 @@
+{
+  "name": "http",
+  "isDiscontinued": null,
+  "replacedBy": null,
+  "latest": {
+    "version": "1.6.0",
+    "published": "2025-11-10T18:27:56.434747Z",
+    "pubspec": {
+      "environment": {
+        "sdk": "^3.4.0"
+      }
+    }
+  }
+}

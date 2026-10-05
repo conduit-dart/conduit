@@ -1,0 +1,181 @@
+# AI pipeline, stage 1: package refresh + research.
+#
+# Trigger: a maintainer adds `ai:approved` to a feature request (Gate 1),
+# or `ai-retry.yml` dispatches it. The gate job runs on a GitHub-hosted
+# runner; only an open gate schedules work on the self-hosted `conduit-ai`
+# runner. See docs/AI_PIPELINE.md.
+name: AI research
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Issue number
+        required: true
+
+concurrency:
+  group: ai-issue-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  gate:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'ai:approved'
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.gate.outputs.ok }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tool/ai/gate.sh
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number || inputs.issue }}
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          SENDER: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          REQUIRED_LABELS: ai:approved
+          SKIP_SENDER_CHECK: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: tool/ai/gate.sh
+
+  research:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
+    runs-on: [self-hosted, conduit-ai]
+    timeout-minutes: 60
+    env:
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number || inputs.issue }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.AI_APP_ID }}
+          private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Mark stage
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:researching \
+            --remove-label ai:triage --remove-label ai:blocked --remove-label ai:retry
+          mkdir -p .ai
+          gh issue view "$ISSUE" --repo "$REPO" --json number,title,body,labels,comments > .ai/issue.json
+
+      - name: Package refresh (deterministic)
+        id: deps
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          dart pub get
+          dart pub outdated --json > .ai/outdated.json || true
+          dart pub upgrade --major-versions
+          if git diff --quiet -- '*pubspec.yaml'; then
+            echo "Dependencies are current." > .ai/deps-refresh.md
+            exit 0
+          fi
+          branch="claude/ai-deps-issue-${ISSUE}"
+          existing=$(gh pr list --repo "$REPO" --state open --label bot:ai-pipeline \
+            --search "chore(deps) in:title" --json url --jq '.[0].url // empty')
+          if [ -n "$existing" ]; then
+            echo "Constraint updates are available; an AI dependency PR is already open: $existing" > .ai/deps-refresh.md
+            git checkout -- .
+            exit 0
+          fi
+          if ! { melos run analyze && melos run test-fast; } > .ai/deps-checks.log 2>&1; then
+            {
+              echo "Constraint updates are available but break \`analyze\`/\`test-fast\`, so no PR was opened. Tail of the log:"
+              echo; echo '```'; tail -40 .ai/deps-checks.log; echo '```'
+            } > .ai/deps-refresh.md
+            git checkout -- .
+            exit 0
+          fi
+          bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          git switch -c "$branch"
+          git add -- '*pubspec.yaml'
+          git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
+            commit -q -m "chore(deps): upgrade dependency constraints" -m "Refreshed by the AI pipeline while researching #${ISSUE}."
+          git push -q --force-with-lease origin "$branch"
+          url=$(gh pr create --repo "$REPO" --base master --head "$branch" --label bot:ai-pipeline \
+            --title "chore(deps): upgrade dependency constraints" \
+            --body "Dependency constraints raised with \`dart pub upgrade --major-versions\` while researching #${ISSUE}. \`melos run analyze\` and \`melos run test-fast\` passed on the runner; full CI runs on this PR.")
+          echo "Opened $url with upgraded constraints (analyze + test-fast green)." > .ai/deps-refresh.md
+          git switch -q -
+          git checkout -- .
+
+      - name: Research (agent)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+        run: |
+          tool/ai/run-agent.sh .github/ai/prompts/research.md 60 \
+            "Read,Glob,Grep,Write(.ai/**),WebFetch(domain:pub.dev),WebFetch(domain:dart.dev),Bash(dart pub deps:*),Bash(git log:*)"
+          test -s .ai/research.md
+          jq -e '(.needs_dependency | type) == "boolean" and (.candidates | type) == "array"' .ai/research.json
+          if ! git diff --quiet; then
+            echo "research agent modified tracked files:" >&2; git diff --stat >&2; exit 1
+          fi
+
+      - name: Post research note
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          {
+            echo "<!-- conduit-ai:research -->"
+            echo "## Research"
+            echo
+            cat .ai/research.md
+            echo
+            echo "### Package refresh"
+            echo
+            cat .ai/deps-refresh.md
+            echo
+            echo "<sub>AI pipeline · [run]($RUN_URL)</sub>"
+          } > .ai/comment.md
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/comment.md
+
+      - name: Dependency candidates (Gate 2) or hand off to implementation
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          if [ "$(jq -r .needs_dependency .ai/research.json)" = "true" ]; then
+            jq -r '.rationale // {}' .ai/research.json > .ai/rationale.json
+            mapfile -t names < <(jq -r '.candidates[]' .ai/research.json)
+            sdk_floor=$(grep -m1 -oE 'sdk: ">=[0-9.]+' pubspec.yaml | grep -oE '[0-9.]+$')
+            dart run tool/ai/bin/dep_candidates.dart --sdk-floor "$sdk_floor" \
+              --rationale .ai/rationale.json "${names[@]}" > .ai/candidates.md
+            gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/candidates.md
+            gh issue edit "$ISSUE" --repo "$REPO" --add-label deps:review
+          else
+            gh workflow run ai-implement.yml --repo "$REPO" -f issue="$ISSUE"
+          fi
+
+      - name: Clear stage
+        if: always()
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: gh issue edit "$ISSUE" --repo "$REPO" --remove-label ai:researching || true
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:blocked || true
+          gh issue comment "$ISSUE" --repo "$REPO" \
+            --body "The research stage failed. See the [run]($RUN_URL). A maintainer can add \`ai:retry\` to run it again." || true

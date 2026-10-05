@@ -1,0 +1,206 @@
+# AI pipeline, stage 2: implementation.
+#
+# Trigger: a maintainer adds `deps:approved` after ticking one candidate
+# (Gate 2), or the research stage dispatches it when no dependency is
+# needed. The agent edits the tree; this workflow re-checks everything and
+# does the commit/push/PR itself, so the agent never holds a push
+# credential. The PR then goes through the normal CI gates and needs a
+# maintainer's review. See docs/AI_PIPELINE.md.
+name: AI implement
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Issue number
+        required: true
+
+concurrency:
+  group: ai-issue-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  gate:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'deps:approved'
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.gate.outputs.ok }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tool/ai/gate.sh
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number || inputs.issue }}
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          SENDER: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          REQUIRED_LABELS: ai:approved
+          SKIP_SENDER_CHECK: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+        run: tool/ai/gate.sh
+
+  implement:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
+    runs-on: [self-hosted, conduit-ai]
+    timeout-minutes: 120
+    env:
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number || inputs.issue }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "15432"
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: conduit!
+      POSTGRES_DB: conduit_test_db
+      TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
+      TEST_VALUE: "1"
+      TEST_BOOL: "true"
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.AI_APP_ID }}
+          private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: master
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Resolve inputs
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          FROM_LABEL: ${{ github.event_name == 'issues' }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:implementing \
+            --remove-label deps:review --remove-label ai:blocked --remove-label ai:retry
+          mkdir -p .ai
+          gh issue view "$ISSUE" --repo "$REPO" --json number,title,body,labels,comments > .ai/issue.json
+
+          # Latest research note posted by the pipeline.
+          jq -r '[.comments[] | select(.body | startswith("<!-- conduit-ai:research -->"))] | last | .body // ""' \
+            .ai/issue.json > .ai/research.md
+          test -s .ai/research.md || { echo "no research note on #$ISSUE" >&2; exit 1; }
+
+          # Gate 2: the ticked candidate, or in-house when research said no dependency.
+          candidates=$(jq -r '[.comments[] | select(.body | startswith("<!-- conduit-ai:deps-candidates -->"))] | last | .body // ""' .ai/issue.json)
+          if [ -n "$candidates" ]; then
+            printf '%s' "$candidates" > .ai/candidates.md
+            dart pub get >/dev/null
+            dart run tool/ai/bin/dep_candidates.dart --parse-choice .ai/candidates.md > .ai/dependency.txt
+          elif [ "$FROM_LABEL" = "true" ]; then
+            echo "deps:approved was added but there is no candidates comment" >&2; exit 1
+          else
+            echo in-house > .ai/dependency.txt
+          fi
+          echo "dependency: $(cat .ai/dependency.txt)"
+
+          # One open AI PR per issue: a retry must not clobber a PR under review.
+          slug=$(jq -r .title .ai/issue.json | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//; s/-*$//' | cut -c1-40 | sed 's/-*$//')
+          branch="claude/ai-issue-${ISSUE}-${slug:-feature}"
+          open=$(gh pr list --repo "$REPO" --state open --search "head:claude/ai-issue-${ISSUE}-" --json url --jq '.[0].url // empty')
+          if [ -n "$open" ]; then
+            echo "an AI PR is already open for #$ISSUE: $open (review or close it before retrying)" >&2; exit 1
+          fi
+          echo "BRANCH=$branch" >> "$GITHUB_ENV"
+
+      - name: Prepare workspace
+        run: |
+          git switch -c "$BRANCH"
+          dart pub get
+          start-test-postgres
+
+      - name: Implement (agent)
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+        run: |
+          tool/ai/run-agent.sh .github/ai/prompts/implement.md 150 \
+            "Read,Edit,Write,Glob,Grep,WebFetch(domain:pub.dev),WebFetch(domain:dart.dev),Bash(dart:*),Bash(melos:*),Bash(git diff:*),Bash(git status:*),Bash(git log:*)"
+          if [ -s .ai/blocked.md ]; then
+            echo "agent stopped:" >&2; cat .ai/blocked.md >&2; exit 1
+          fi
+          test -s .ai/commit-title.txt && test -s .ai/pr-body.md
+
+      - name: Verify (deterministic)
+        run: |
+          [ "$(git branch --show-current)" = "$BRANCH" ] || { echo "agent changed branch" >&2; exit 1; }
+          # Workflows and prompts are off-limits (edits *and* new files).
+          if [ -n "$(git status --porcelain -- .github)" ]; then
+            echo "agent touched .github/:" >&2; git status --short -- .github >&2; exit 1
+          fi
+          [ -n "$(git status --porcelain)" ] || { echo "agent made no changes" >&2; exit 1; }
+
+          approve=()
+          dep=$(cat .ai/dependency.txt)
+          [ "$dep" = in-house ] || approve=(--approve "$dep")
+          dart run tool/ai/bin/new_deps.dart --base origin/master "${approve[@]}"
+
+          dart format --output=none --set-exit-if-changed .
+          melos run analyze
+
+          # Tests of every package the change touches.
+          git add -A
+          mapfile -t pkgs < <(git diff --cached --name-only origin/master -- 'packages/*' \
+            | cut -d/ -f1-2 | sort -u)
+          for p in "${pkgs[@]}"; do
+            [ -d "$p/test" ] || continue
+            echo "::group::dart test $p"
+            (cd "$p" && dart test -r failures-only)
+            echo "::endgroup::"
+          done
+
+      - name: Commit, push, open PR
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          title=$(head -1 .ai/commit-title.txt)
+          bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          git reset -q -- .ai
+          git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
+            commit -q -m "$title" -m "Implements #${ISSUE}. Generated by the AI pipeline: $RUN_URL"
+          git push -q origin "$BRANCH"
+          {
+            cat .ai/pr-body.md
+            echo
+            echo "Closes #${ISSUE}"
+            echo
+            echo "<sub>Opened by the AI pipeline · [run]($RUN_URL) · dependency: \`$(cat .ai/dependency.txt)\`</sub>"
+          } > .ai/pr.md
+          url=$(gh pr create --repo "$REPO" --base master --head "$BRANCH" \
+            --label bot:ai-pipeline --title "$title" --body-file .ai/pr.md)
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:in-review
+          gh issue comment "$ISSUE" --repo "$REPO" \
+            --body "Implementation opened as $url. It runs the normal CI and needs a maintainer's review to merge; AI review notes will follow here."
+
+      - name: Clear stage
+        if: always()
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: gh issue edit "$ISSUE" --repo "$REPO" --remove-label ai:implementing || true
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:blocked || true
+          {
+            echo "The implementation stage failed. See the [run]($RUN_URL)."
+            if [ -s .ai/blocked.md ]; then echo; echo "The agent reported:"; echo; cat .ai/blocked.md; fi
+            echo
+            echo "A maintainer can add \`ai:retry\` to run it again."
+          } > .ai/failure.md 2>/dev/null || true
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/failure.md || true

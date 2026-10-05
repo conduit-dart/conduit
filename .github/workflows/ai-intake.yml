@@ -1,0 +1,42 @@
+# AI pipeline, stage 0: intake (GitHub-hosted, no model).
+#
+# A new feature request (label `enhancement`) gets `ai:triage` and a comment
+# explaining the gates. Nothing else happens until a maintainer applies
+# `ai:approved`. See docs/AI_PIPELINE.md.
+name: AI intake
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  intake:
+    if: >-
+      vars.AI_PIPELINE_ENABLED == 'true'
+      && contains(github.event.issue.labels.*.name, 'enhancement')
+      && !contains(github.event.issue.labels.*.name, 'ai:triage')
+      && (github.event.action == 'opened' || github.event.label.name == 'enhancement')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label and explain the gates
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:triage
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file - <<'BODY'
+          <!-- conduit-ai:intake -->
+          Thanks for the request. This issue is in conduit's AI-assisted pipeline:
+
+          1. **Triage (maintainer).** A maintainer reviews the request and adds `ai:approved` to start research.
+          2. **Research.** An agent refreshes dependencies, studies the codebase and posts a research note here.
+          3. **Dependencies (maintainer, only if needed).** If the feature needs a new package, vetted candidates are posted here; a maintainer ticks one and adds `deps:approved`.
+          4. **Implementation.** An agent opens a pull request that goes through the normal CI and needs a maintainer's review to merge.
+          5. **Review notes.** An AI review of the pull request is posted here.
+
+          Maintainers can add `ai:stop` at any time to halt the pipeline for this issue.
+          BODY

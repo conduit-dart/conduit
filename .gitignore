@@ -44,3 +44,6 @@ _build/
 # load-test harness output
 tool/load/**/*.jsonl
 load-smoke-out/
+
+# AI pipeline scratch space (.github/workflows/ai-*.yml)
+.ai/
