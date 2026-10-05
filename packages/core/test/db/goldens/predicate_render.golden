@@ -58,23 +58,23 @@
 
 ## lt / lte / gt / gte AND chain
 - named-at
-  [_GoldenBook] (no AST; format fallback) (_GoldenBook.pages < @_GoldenBook_pages AND _GoldenBook.pages > @_GoldenBook_pages0 AND _GoldenBook.rating <= @_GoldenBook_rating AND _GoldenBook.rating >= @_GoldenBook_rating1)
+  [_GoldenBook] (_GoldenBook.pages < @_GoldenBook_pages AND _GoldenBook.pages > @_GoldenBook_pages_0 AND _GoldenBook.rating <= @_GoldenBook_rating AND _GoldenBook.rating >= @_GoldenBook_rating_1)
     _GoldenBook_pages = 500
-    _GoldenBook_pages0 = 10
+    _GoldenBook_pages_0 = 10
     _GoldenBook_rating = 4.5
-    _GoldenBook_rating1 = 1.0
+    _GoldenBook_rating_1 = 1.0
 - named-colon
-  [_GoldenBook] (no AST; format fallback) (_GoldenBook.pages < :_GoldenBook_pages AND _GoldenBook.pages > :_GoldenBook_pages AND _GoldenBook.rating <= :_GoldenBook_rating AND _GoldenBook.rating >= :_GoldenBook_rating)
+  [_GoldenBook] (_GoldenBook.pages < :_GoldenBook_pages AND _GoldenBook.pages > :_GoldenBook_pages_0 AND _GoldenBook.rating <= :_GoldenBook_rating AND _GoldenBook.rating >= :_GoldenBook_rating_1)
     _GoldenBook_pages = 500
-    _GoldenBook_pages0 = 10
+    _GoldenBook_pages_0 = 10
     _GoldenBook_rating = 4.5
-    _GoldenBook_rating1 = 1.0
+    _GoldenBook_rating_1 = 1.0
 - positional
-  [_GoldenBook] (no AST; format fallback) (_GoldenBook.pages < ? AND _GoldenBook.pages > ? AND _GoldenBook.rating <= ? AND _GoldenBook.rating >= ?)
-    _GoldenBook_pages = 500
-    _GoldenBook_pages0 = 10
-    _GoldenBook_rating = 4.5
-    _GoldenBook_rating1 = 1.0
+  [_GoldenBook] (_GoldenBook.pages < ? AND _GoldenBook.pages > ? AND _GoldenBook.rating <= ? AND _GoldenBook.rating >= ?)
+    ?0 = 500
+    ?1 = 10
+    ?2 = 4.5
+    ?3 = 1.0
 
 ## beginsWith
 - named-at

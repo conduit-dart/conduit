@@ -171,9 +171,8 @@ String _renderCase(String caseName, _Shape shape, SqlDialect dialect) {
   for (final (table, predicate) in _predicates(builder)) {
     final expr = predicate.expression;
     if (expr == null) {
-      // QueryPredicate.and drops the AST when it has to rename a
-      // colliding parameter; the backend then executes the format
-      // string. Record that path verbatim so it is pinned too.
+      // Predicates without an AST (legacy string predicates) execute
+      // from the format string. Record that path verbatim.
       out.writeln('  [$table] (no AST; format fallback) ${predicate.format}');
       final keys = predicate.parameters.keys.toList()..sort();
       for (final k in keys) {
@@ -182,17 +181,31 @@ String _renderCase(String caseName, _Shape shape, SqlDialect dialect) {
       continue;
     }
     final rendered = dialect.renderExpression(expr);
-    expect(
-      rendered.sql,
-      predicate.format,
-      reason:
-          '[$caseName/${dialect.name}] AST render diverged from the '
-          'legacy format string',
+    // When QueryPredicate.and renamed colliding keys, the legacy format
+    // and the renderer pick different (equally valid) suffixes, so only
+    // the bound values must agree; otherwise the text is identical.
+    final renamed = !predicate.parameters.keys.toSet().containsAll(
+      rendered.parameters.keys,
     );
+    if (renamed) {
+      expect(
+        rendered.parameters.values.toList(),
+        predicate.parameters.values.toList(),
+        reason: '[$caseName/${dialect.name}] AST bound different values',
+      );
+    } else {
+      expect(
+        rendered.sql,
+        predicate.format,
+        reason:
+            '[$caseName/${dialect.name}] AST render diverged from the '
+            'legacy format string',
+      );
+    }
 
     out.writeln('  [$table] ${rendered.sql}');
     if (dialect.parameterStyle == SqlParameterStyle.named) {
-      expect(rendered.parameters, predicate.parameters);
+      if (!renamed) expect(rendered.parameters, predicate.parameters);
       final keys = rendered.parameters.keys.toList()..sort();
       for (final k in keys) {
         out.writeln('    $k = ${_describe(rendered.parameters[k])}');
