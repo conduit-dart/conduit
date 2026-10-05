@@ -17,10 +17,6 @@ on:
         description: Issue number
         required: true
 
-concurrency:
-  group: ai-issue-${{ github.event.issue.number || inputs.issue }}
-  cancel-in-progress: false
-
 permissions:
   contents: read
   issues: read
@@ -53,6 +49,13 @@ jobs:
   implement:
     needs: gate
     if: needs.gate.outputs.ok == 'true'
+    # Job-level, not workflow-level: every `issues: labeled` event starts this
+    # workflow, and GitHub keeps only one *pending* run per concurrency group,
+    # so a workflow-level group let unrelated label events cancel a pending
+    # run that mattered. Only a job whose gate opened joins the group.
+    concurrency:
+      group: ai-issue-${{ github.event.issue.number || inputs.issue }}
+      cancel-in-progress: false
     runs-on: [self-hosted, conduit-ai]
     timeout-minutes: 120
     env:
