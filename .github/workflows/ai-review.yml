@@ -22,12 +22,35 @@ permissions:
   pull-requests: write
 
 jobs:
-  review:
+  gate:
     if: >-
       vars.AI_PIPELINE_ENABLED == 'true'
       && github.event.pull_request.head.repo.full_name == github.repository
       && startsWith(github.head_ref, 'claude/ai-issue-')
       && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.author.outputs.ok }}
+    steps:
+      # Only PRs the pipeline opened (its App bot) or that someone on
+      # AI_PIPELINE_TRIGGERS opened get a review on the subscription.
+      - id: author
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          TRIGGERS: ${{ vars.AI_PIPELINE_TRIGGERS }}
+        run: |
+          ok=false
+          case "$AUTHOR" in *"[bot]") ok=true ;; esac
+          if [ -z "${TRIGGERS//[ ,]/}" ]; then ok=true; fi
+          for login in ${TRIGGERS//,/ }; do
+            [ "${login,,}" = "${AUTHOR,,}" ] && ok=true
+          done
+          echo "PR author ${AUTHOR}: ok=${ok}"
+          echo "ok=${ok}" >> "$GITHUB_OUTPUT"
+
+  review:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
     runs-on: [self-hosted, conduit-ai]
     timeout-minutes: 45
     env:

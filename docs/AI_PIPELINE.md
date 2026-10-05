@@ -109,12 +109,24 @@ PR could point a workflow at `conduit-ai`.
 | Name | Kind | Purpose |
 |---|---|---|
 | `AI_PIPELINE_ENABLED` | variable | `true` turns the pipeline on |
+| `AI_PIPELINE_TRIGGERS` | variable | Logins (space or comma separated) allowed to drive the pipeline: their labels open gates, their manual dispatches run, and AI review runs on PRs they open. Empty means anyone with triage or higher. |
 | `AI_MODEL` | variable | Optional model override for `claude` |
 | `CLAUDE_CODE_OAUTH_TOKEN` | secret | From `claude setup-token` |
 | `AI_APP_ID`, `AI_APP_PRIVATE_KEY` | secrets | GitHub App that pushes branches and opens PRs (contents, issues, pull requests: read & write; actions: write) |
 
+Set these as **repository** variables (Settings → Secrets and variables →
+Actions → Variables). Environment variables are not visible to these
+workflows: the jobs declare no `environment:`, and job-level `if:`
+conditions are evaluated before any environment applies.
+
 PRs opened with the default `GITHUB_TOKEN` would not trigger the CI
 workflows, which is why the pipeline uses an App.
+
+**Subscription tokens are personal.** A `CLAUDE_CODE_OAUTH_TOKEN` from
+`claude setup-token` bills the subscription of whoever generated it. When
+using one, set `AI_PIPELINE_TRIGGERS` to that person so other maintainers
+cannot spend it; for a pipeline the whole team drives, use an
+`ANTHROPIC_API_KEY` from the Claude Console instead.
 
 ## Tooling
 

@@ -46,6 +46,8 @@ jobs:
           REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number }}
           ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          TRIGGERS: ${{ vars.AI_PIPELINE_TRIGGERS }}
+          ACTOR: ${{ github.triggering_actor }}
           SENDER: ${{ github.event.sender.login }}
           SENDER_TYPE: ${{ github.event.sender.type }}
           REQUIRED_LABELS: release:prepare
@@ -54,7 +56,18 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
-        run: echo "ok=$([ "$ENABLED" = true ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          TRIGGERS: ${{ vars.AI_PIPELINE_TRIGGERS }}
+          ACTOR: ${{ github.triggering_actor }}
+        run: |
+          ok=false
+          if [ "$ENABLED" = true ]; then
+            if [ -z "${TRIGGERS//[ ,]/}" ]; then ok=true; fi
+            for login in ${TRIGGERS//,/ }; do
+              [ "${login,,}" = "${ACTOR,,}" ] && ok=true
+            done
+          fi
+          echo "dispatch by ${ACTOR}: ok=${ok}"
+          echo "ok=${ok}" >> "$GITHUB_OUTPUT"
 
   prep:
     needs: gate

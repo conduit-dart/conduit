@@ -15,9 +15,25 @@
 #   SENDER_TYPE         github.event.sender.type ("User", "Bot", ...)
 #   REQUIRED_LABELS     space-separated labels the issue must carry
 #   SKIP_SENDER_CHECK   "1" for workflow_dispatch (dispatch already needs write)
+#   TRIGGERS            value of vars.AI_PIPELINE_TRIGGERS: logins (space or
+#                       comma separated) allowed to drive the pipeline. Empty
+#                       means anyone with triage or higher. The model runs on
+#                       the subscription of whoever ran `claude setup-token`,
+#                       so restrict this to that person when using one.
+#   ACTOR               github.triggering_actor (checked on workflow_dispatch)
 set -euo pipefail
 
 out() { echo "$1=$2" >> "${GITHUB_OUTPUT:-/dev/stdout}"; }
+
+# Is $1 in the TRIGGERS allowlist? An empty allowlist allows everyone.
+allowed() {
+  [ -z "${TRIGGERS//[ ,]/}" ] && return 0
+  local login
+  for login in ${TRIGGERS//,/ }; do
+    [ "${login,,}" = "${1,,}" ] && return 0
+  done
+  return 1
+}
 close() {
   echo "gate closed: $1"
   out ok false
@@ -34,6 +50,15 @@ if [ "${SKIP_SENDER_CHECK:-0}" != "1" ]; then
   case "$role" in
     admin|maintain|write|triage) ;;
     *) close "sender ${SENDER} has role '${role}', needs triage or higher" ;;
+  esac
+  allowed "$SENDER" || close "sender ${SENDER} is not in AI_PIPELINE_TRIGGERS"
+else
+  # Dispatches from the pipeline's own workflows run as a bot (the App, or
+  # github-actions[bot] for ai-retry); a person dispatching by hand must be
+  # on the allowlist.
+  case "${ACTOR:-}" in
+    *"[bot]") ;;
+    *) allowed "${ACTOR:-}" || close "dispatcher ${ACTOR:-unknown} is not in AI_PIPELINE_TRIGGERS" ;;
   esac
 fi
 
