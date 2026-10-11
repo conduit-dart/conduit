@@ -49,12 +49,11 @@ xcopy); `windows.yml` calls that instead.
 separators. `cmd.exe`'s `mkdir` rejects the embedded forward slash with
 `The syntax of the command is incorrect.`
 
-Note: since melos 8, `cache-source-win` references the package as
-`%MELOS_PACKAGE_NAME%`, `%MELOS_PACKAGE_VERSION%` and `%MELOS_PACKAGE_PATH%`.
-melos 7 substituted the bare tokens (`MELOS_PACKAGE_NAME`) itself; melos 8
-only sets environment variables, and on Windows substitutes `%VAR%`
-references before handing the command to `cmd.exe`. The POSIX scripts use
-`"$MELOS_PACKAGE_NAME"` and let `sh` expand them.
+Note: since melos 8, `cache-source` and `cache-source-win` both run
+`tool/cache_source.dart`. melos 8 dropped melos 7's bare-token substitution
+(`MELOS_PACKAGE_NAME`), and its `%MELOS_PACKAGE_NAME%` handling expanded to
+an empty string through the nested `melos exec` on Windows, so the copy no
+longer goes through `melos exec` on any platform.
 
 **Fix:** `windows.yml` normalizes `PUB_CACHE` to all-backslashes
 (`export PUB_CACHE="${PUB_CACHE//\//\\}"`) and persists it via

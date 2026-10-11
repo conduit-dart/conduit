@@ -12,8 +12,8 @@ dev_dependencies:
   # --order-dependents`, which is what the publish workflow relies on.
   # 7.7.0 fixes pubspec_overrides handling under workspace resolution.
   # 8.x no longer substitutes bare MELOS_PACKAGE_* tokens in exec commands;
-  # scripts reference them as environment variables ($VAR on POSIX, %VAR% on
-  # Windows, which melos 8 substitutes itself).
+  # scripts reference them as "$VAR" environment variables, and
+  # cache-source runs tool/cache_source.dart instead of melos exec.
   melos: ^8.9.0
 
 workspace:
@@ -80,13 +80,11 @@ melos:
       packageFilters:
         noPrivate: true
     cache-source:
-      run: melos exec -- 'dest="$PUB_CACHE/hosted/pub.dev/$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION" && mkdir -p "$dest" && cp -rf "$MELOS_PACKAGE_PATH"/* "$dest"'
-      packageFilters:
-        noPrivate: true
+      description: Copy the publishable workspace packages into the pub cache.
+      run: dart tool/cache_source.dart
     cache-source-win:
-      run: melos exec -- mkdir %PUB_CACHE%\hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% && melos exec -- xcopy %MELOS_PACKAGE_PATH% %PUB_CACHE%\hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% /Y /s /e
-      packageFilters:
-        noPrivate: true
+      description: Alias of cache-source, kept for windows.yml.
+      run: dart tool/cache_source.dart
     hard-clean:
       run: melos exec -- 'rm -rf "$MELOS_PACKAGE_PATH/.dart_tool" "$MELOS_PACKAGE_PATH/pubspec.lock"'
     gen-docs:
