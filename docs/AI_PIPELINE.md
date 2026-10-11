@@ -79,6 +79,10 @@ required.
 
 Create them with `tool/ai/setup-labels.sh`.
 
+Closing an issue removes its stage labels (`ai:triage`, `ai:researching`,
+`ai:implementing`, `ai:in-review`, `ai:blocked`, `ai:retry`, `deps:review`)
+through `ai-cleanup.yml`. The labels a maintainer applied stay as a record.
+
 ## Guardrails
 
 These follow the non-negotiables in AGENTIC_MAINTENANCE.md.
