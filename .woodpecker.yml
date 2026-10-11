@@ -148,10 +148,29 @@ steps:
       TEST_DB_ENV_VAR: 'postgres://user:password@host:5432/dbname'
       TEST_VALUE: '1'
       TEST_BOOL: 'true'
+      CONDUIT_POSTGIS: 'true'
     commands:
       - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
       - export PATH="$PATH:$PUB_CACHE/bin"
       - cd packages/core
+      - dart test -r failures-only
+
+  postgresql-integration-tests:
+    when:
+      - event: [pull_request, push]
+    image: *dart_image
+    depends_on: [bootstrap]
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: '5432'
+      POSTGRES_USER: conduit_test_user
+      POSTGRES_PASSWORD: 'conduit!'
+      POSTGRES_DB: conduit_test_db
+      CONDUIT_POSTGIS: 'true'
+    commands:
+      - export PUB_CACHE="$CI_WORKSPACE/.pub-cache"
+      - export PATH="$PATH:$PUB_CACHE/bin"
+      - cd packages/postgresql
       - dart test -r failures-only
 
   load-test-smoke:
@@ -176,7 +195,8 @@ steps:
 
 services:
   postgres:
-    image: postgres:18
+    # PostGIS on the PG 18 major (amd64 only; the agents are amd64).
+    image: postgis/postgis:18-3.6
     environment:
       POSTGRES_USER: conduit_test_user
       POSTGRES_PASSWORD: 'conduit!'

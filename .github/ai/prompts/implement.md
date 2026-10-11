@@ -30,7 +30,8 @@ Rules:
   - `dart format .`
   - `melos run analyze`
   - the tests of every package you touched (`dart test` in that package;
-    Postgres is running on 127.0.0.1:15432 with the `ci/.env` settings)
+    Postgres with PostGIS is running on 127.0.0.1:15432 with the
+    `ci/.env` settings)
 - Do not run git commands that change history or remotes (`commit`,
   `push`, `checkout`, `reset`, `rebase`). The pipeline commits for you.
 

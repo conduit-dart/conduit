@@ -9,6 +9,7 @@
 #
 # Available gates: lint build-runner-tests workspace-unit-tests
 #                  aot-smoke template-aot-smoke core-integration-tests
+#                  postgresql-integration-tests
 #
 # State that persists between runs:
 #   docker volume "conduit-pub-cache" — workspace pub cache
@@ -21,12 +22,12 @@ set -euo pipefail
 
 WORKSPACE="$(cd "$(dirname "$0")/.." && pwd)"
 DART_IMAGE="dart:3.13"
-PG_IMAGE="postgres:18.0"
+PG_IMAGE="postgis/postgis:18-3.6"
 PUB_VOL="conduit-pub-cache"
 PG_VOL="conduit-pgdata"
 PG_CONTAINER="conduit-ci-postgres"
 
-ALL_GATES=(lint build-runner-tests workspace-unit-tests aot-smoke template-aot-smoke core-integration-tests)
+ALL_GATES=(lint build-runner-tests workspace-unit-tests aot-smoke template-aot-smoke core-integration-tests postgresql-integration-tests)
 
 if [ "$#" -eq 0 ]; then
   GATES=("${ALL_GATES[@]}")
@@ -158,7 +159,22 @@ for gate in "${GATES[@]}"; do
         export TEST_DB_ENV_VAR="postgres://user:password@host:5432/dbname"
         export TEST_VALUE=1
         export TEST_BOOL=true
+        export CONDUIT_POSTGIS=true
         cd packages/core && dart test -r failures-only
+      '
+      ;;
+
+    postgresql-integration-tests)
+      ensure_network
+      start_postgres
+      NETWORK=conduit-ci run_in_dart "postgresql-integration-tests" '
+        export POSTGRES_HOST='"$PG_CONTAINER"'
+        export POSTGRES_PORT=5432
+        export POSTGRES_USER=conduit_test_user
+        export POSTGRES_PASSWORD="conduit!"
+        export POSTGRES_DB=conduit_test_db
+        export CONDUIT_POSTGIS=true
+        cd packages/postgresql && dart test -r failures-only
       '
       ;;
 

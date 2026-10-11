@@ -20,12 +20,14 @@ block a release; treat each one as an independent contract.
 | `workspace-unit-tests` | Pure-Dart unit tests across `conduit_codable`, `conduit_open_api`, `conduit_password_hash`, `conduit_runtime`, `conduit_config` — no Postgres needed. | every PR + push | ~30s |
 | `aot-smoke` (`ci/aot-smoke.sh`) | A scaffolded channel-only Conduit app survives `dart run build_runner build && dart compile exe`, and the resulting binary boots `bootstrap()` and resolves `RuntimeContext.current[Channel]` to the generated runtime. **Failure here means the new AOT path documented in `docs/AOT_WITHOUT_BUILD.md` is broken.** | every PR + push | ~45s |
 | `template-aot-smoke` (`ci/template-aot-smoke.sh`) | A `conduit create -t default` project goes the full user path: `dart pub get` → `dart run build_runner build` → `dart compile exe` → start the binary → `curl /example` returns the expected payload. **Failure here means the `conduit create` template is producing apps that can't ship AOT** — a deployable-state regression for new users. | every PR + push | ~45s |
-| `core-integration-tests` | Full `conduit_core` test suite against a Postgres 18.0 service container. Same matrix as the GitHub `unit` job. Verified on snowman: 1046 tests pass, 7 skipped, 0 fail. | every PR + push | ~5 min |
+| `core-integration-tests` | Full `conduit_core` test suite against a PostGIS (`postgis/postgis:18-3.6`) service container. Same matrix as the GitHub `unit` job. | every PR + push | ~5 min |
+| `postgresql-integration-tests` | The `conduit_postgresql` suite (dialect, migrations, typing, PostGIS checks in `test/postgis_test.dart`) against the same PostGIS service. Mirrors the GitHub `postgresql` job. | every PR + push | ~1 min |
 
 ## Inputs the gates consume
 
-- `ci/.env` — Postgres connection variables for `conduit_core` integration tests. The Woodpecker pipeline overrides these to point at the in-pipeline `postgres` service (host `postgres`, port `5432`); the GitHub Actions matrix uses host `localhost` port `15432` via the published service mapping. Either way the test env vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `TEST_DB_ENV_VAR`, `TEST_VALUE`, `TEST_BOOL`) come from this file.
+- `ci/.env` — Postgres connection variables for `conduit_core` integration tests. The Woodpecker pipeline overrides these to point at the in-pipeline `postgres` service (host `postgres`, port `5432`); the GitHub Actions matrix uses host `localhost` port `15432` via the published service mapping. Either way the test env vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `TEST_DB_ENV_VAR`, `TEST_VALUE`, `TEST_BOOL`, `CONDUIT_POSTGIS`) come from this file.
 - `ci/docker-compose.yaml` — local-dev Postgres service for `melos run test-unit` work. Not used by CI.
+- **PostGIS.** Linux CI (GitHub `unit`/`postgresql`/`coverage`), Woodpecker, `ci/docker-compose.yaml`, `ci/run-local.sh` and the AI pipeline's runner all use Postgres 18 with PostGIS 3; the `postgis/postgis` image enables the extension in `conduit_test_db`. `CONDUIT_POSTGIS=true` tells tests PostGIS is present; PostGIS tests skip without it. macOS and Windows CI install stock Postgres (`ikalnytskyi/action-setup-postgres`), so PostGIS tests are Linux-only. The image is amd64-only. An existing `conduit-pgdata` volume created from `postgres:18` lacks the extension until a test runs `CREATE EXTENSION IF NOT EXISTS postgis` (the test user is a superuser), or `docker volume rm conduit-pgdata`.
 - `ci/ssl/`, `ci/conduit.cert.pem`, `ci/conduit.key.pem` — TLS material the integration tests load when exercising HTTPS paths.
 - `ci/aot-smoke.sh`, `ci/template-aot-smoke.sh` — see file headers; both are bash, both expect `PUB_CACHE` and `PATH` set to the workspace pub cache by the surrounding pipeline.
 
@@ -54,7 +56,7 @@ reproducer in front of me":
   ci/run-local.sh                        # all 6 gates
   ci/run-local.sh lint build-runner-tests
   ci/run-local.sh aot-smoke              # iterate the AOT path
-  ci/run-local.sh core-integration-tests # spins postgres:18.0 sidecar
+  ci/run-local.sh core-integration-tests # spins a postgis/postgis:18-3.6 sidecar
   ```
 
 - **`ci/diagnose-step.sh`** reads step logs out of Woodpecker's sqlite
