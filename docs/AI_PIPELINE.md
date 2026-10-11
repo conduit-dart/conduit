@@ -19,7 +19,7 @@ issue opened (enhancement or bug) ─► ai:triage
         │  maintainer adds ai:approved                 ◄── Gate 1
         ▼
 research (ai-research.yml)
-  • dart pub upgrade --major-versions → separate chore(deps) PR if analyze + test-fast pass
+  • lists outdated direct dependencies (report only, no upgrade PR)
   • agent posts a research note
   • needs a new dependency?
         ├─ no ──────────────────────────────────────────────┐
@@ -102,7 +102,8 @@ These follow the non-negotiables in AGENTIC_MAINTENANCE.md.
   limited to pub.dev and dart.dev; the agent's own environment and the
   runner's credentials are unreadable.
 - **One PR per issue.** Implementation refuses to run while an AI PR for
-  the issue is open. Dependency-refresh PRs are skipped while one is open.
+  the issue is open. Research never opens dependency PRs: it only reports
+  what is outdated, and upgrades come through Dependabot with full CI.
 - **No automated releases.** Release prep deletes every tag melos creates
   locally and pushes a single branch ref; publishing still requires a
   maintainer to push `vX.Y.Z`.
@@ -156,7 +157,7 @@ cannot spend it; for a pipeline the whole team drives, use an
   were not approved.
 - `bin/next_version.dart`: next version and breaking commits from
   conventional commits.
-- `gate.sh`, `run-agent.sh`, `setup-labels.sh`.
+- `gate.sh`, `run-agent.sh`, `setup-labels.sh`, and `outdated_report.jq` (the research note's outdated-dependency table).
 
 Run its tests with `cd tool/ai && dart test` (offline; pub.dev responses
 are recorded fixtures).

@@ -1,4 +1,4 @@
-# AI pipeline, stage 1: package refresh + research.
+# AI pipeline, stage 1: package report + research.
 #
 # Trigger: a maintainer adds `ai:approved` to a feature request (Gate 1),
 # or `ai-retry.yml` dispatches it. The gate job runs on a GitHub-hosted
@@ -81,47 +81,15 @@ jobs:
           mkdir -p .ai
           gh issue view "$ISSUE" --repo "$REPO" --json number,title,body,labels,comments > .ai/issue.json
 
-      - name: Package refresh (deterministic)
-        id: deps
-        env:
-          GH_TOKEN: ${{ steps.app.outputs.token }}
-          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+      - name: Package report (deterministic)
+        # Report-only: list outdated direct dependencies in the research note.
+        # Upgrades come through Dependabot, which runs full CI. Opening a PR
+        # here after only analyze + test-fast let a melos 8 bump that breaks
+        # CI setup through looking green (#316).
         run: |
           dart pub get
-          dart pub outdated --json > .ai/outdated.json || true
-          dart pub upgrade --major-versions
-          if git diff --quiet -- '*pubspec.yaml'; then
-            echo "Dependencies are current." > .ai/deps-refresh.md
-            exit 0
-          fi
-          branch="claude/ai-deps-issue-${ISSUE}"
-          existing=$(gh pr list --repo "$REPO" --state open --label bot:ai-pipeline \
-            --search "chore(deps) in:title" --json url --jq '.[0].url // empty')
-          if [ -n "$existing" ]; then
-            echo "Constraint updates are available; an AI dependency PR is already open: $existing" > .ai/deps-refresh.md
-            git checkout -- .
-            exit 0
-          fi
-          if ! { melos run analyze && melos run test-fast; } > .ai/deps-checks.log 2>&1; then
-            {
-              echo "Constraint updates are available but break \`analyze\`/\`test-fast\`, so no PR was opened. Tail of the log:"
-              echo; echo '```'; tail -40 .ai/deps-checks.log; echo '```'
-            } > .ai/deps-refresh.md
-            git checkout -- .
-            exit 0
-          fi
-          bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
-          git switch -c "$branch"
-          git add -- '*pubspec.yaml'
-          git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
-            commit -q -m "chore(deps): upgrade dependency constraints" -m "Refreshed by the AI pipeline while researching #${ISSUE}."
-          git push -q --force-with-lease origin "$branch"
-          url=$(gh pr create --repo "$REPO" --base master --head "$branch" --label bot:ai-pipeline \
-            --title "chore(deps): upgrade dependency constraints" \
-            --body "Dependency constraints raised with \`dart pub upgrade --major-versions\` while researching #${ISSUE}. \`melos run analyze\` and \`melos run test-fast\` passed on the runner; full CI runs on this PR.")
-          echo "Opened $url with upgraded constraints (analyze + test-fast green)." > .ai/deps-refresh.md
-          git switch -q -
-          git checkout -- .
+          dart pub outdated --json > .ai/outdated.json || echo '{"packages":[]}' > .ai/outdated.json
+          jq -r -f tool/ai/outdated_report.jq .ai/outdated.json > .ai/deps-refresh.md
 
       - name: Research (agent)
         env:
@@ -146,7 +114,7 @@ jobs:
             echo
             cat .ai/research.md
             echo
-            echo "### Package refresh"
+            echo "### Outdated dependencies"
             echo
             cat .ai/deps-refresh.md
             echo
