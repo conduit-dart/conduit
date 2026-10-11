@@ -3,7 +3,10 @@
 # Stage labels (`ai:in-review`, `ai:blocked`, ...) describe work in flight.
 # Once the issue is closed, by a merged AI PR or by hand, they only add noise
 # to label filters. The gate labels a maintainer applied (`ai:approved`,
-# `deps:approved`, `ai:stop`) stay as a record. See docs/AI_PIPELINE.md.
+# `deps:approved`, `ai:stop`) stay as a record.
+#
+# A closed sub-issue of an `ai:tracking` issue (one ai-split.yml created)
+# closes that parent once every sub-issue is closed. See docs/AI_PIPELINE.md.
 name: AI cleanup
 
 on:
@@ -23,7 +26,8 @@ jobs:
           || contains(github.event.issue.labels.*.name, 'ai:in-review')
           || contains(github.event.issue.labels.*.name, 'ai:blocked')
           || contains(github.event.issue.labels.*.name, 'ai:retry')
-          || contains(github.event.issue.labels.*.name, 'deps:review'))
+          || contains(github.event.issue.labels.*.name, 'deps:review')
+          || contains(github.event.issue.labels.*.name, 'split:review'))
     runs-on: ubuntu-latest
     steps:
       - name: Remove stage labels
@@ -34,9 +38,38 @@ jobs:
           LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
         run: |
           args=()
-          for l in ai:triage ai:researching ai:implementing ai:in-review ai:blocked ai:retry deps:review; do
+          for l in ai:triage ai:researching ai:implementing ai:in-review ai:blocked ai:retry deps:review split:review; do
             if jq -e --arg l "$l" 'index($l) != null' <<<"$LABELS" >/dev/null; then
               args+=(--remove-label "$l")
             fi
           done
           [ ${#args[@]} -eq 0 ] || gh issue edit "$ISSUE" --repo "$REPO" "${args[@]}"
+
+  close-parent:
+    if: vars.AI_PIPELINE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close a finished tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          # shellcheck disable=SC2016 # $owner/$name/$n are GraphQL variables
+          parent=$(gh api graphql -F owner="${REPO%/*}" -F name="${REPO#*/}" -F n="$ISSUE" -f query='
+            query($owner: String!, $name: String!, $n: Int!) {
+              repository(owner: $owner, name: $name) {
+                issue(number: $n) { parent { number state labels(first: 50) { nodes { name } } } }
+              }
+            }' --jq '.data.repository.issue.parent')
+          if [ -z "$parent" ] || [ "$parent" = null ] \
+            || ! jq -e '.state == "OPEN" and any(.labels.nodes[]; .name == "ai:tracking")' <<<"$parent" >/dev/null; then
+            echo "#$ISSUE has no open ai:tracking parent"; exit 0
+          fi
+          num=$(jq -r .number <<<"$parent")
+          open=$(gh api --paginate "repos/${REPO}/issues/${num}/sub_issues" --jq '.[] | select(.state == "open") | "#\(.number)"')
+          if [ -n "$open" ]; then
+            echo "#$num still has open sub-issues: $open"; exit 0
+          fi
+          gh issue close "$num" --repo "$REPO" \
+            --comment "Every sub-issue is closed (the last was #${ISSUE}), so this tracking issue is done."

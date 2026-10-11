@@ -14,6 +14,8 @@
 #   SENDER              github.event.sender.login
 #   SENDER_TYPE         github.event.sender.type ("User", "Bot", ...)
 #   REQUIRED_LABELS     space-separated labels the issue must carry
+#   FORBIDDEN_LABELS    space-separated labels that close the gate (ai:stop
+#                       always does)
 #   SKIP_SENDER_CHECK   "1" for workflow_dispatch (dispatch already needs write)
 #   TRIGGERS            value of vars.AI_PIPELINE_TRIGGERS: logins (space or
 #                       comma separated) allowed to drive the pipeline. Empty
@@ -66,6 +68,10 @@ issue=$(gh api "repos/${REPO}/issues/${ISSUE}" --jq '{state: .state, pr: (.pull_
 [ "$(jq -r .pr <<<"$issue")" = "false" ] || close "#${ISSUE} is a pull request, not an issue"
 [ "$(jq -r .state <<<"$issue")" = "open" ] || close "#${ISSUE} is not open"
 jq -e '.labels | index("ai:stop") | not' <<<"$issue" >/dev/null || close "#${ISSUE} carries ai:stop"
+for label in ${FORBIDDEN_LABELS:-}; do
+  jq -e --arg l "$label" '.labels | index($l) | not' <<<"$issue" >/dev/null \
+    || close "#${ISSUE} carries ${label}"
+done
 for label in ${REQUIRED_LABELS:-}; do
   jq -e --arg l "$label" '.labels | index($l)' <<<"$issue" >/dev/null \
     || close "#${ISSUE} is missing label ${label}"

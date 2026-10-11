@@ -29,6 +29,24 @@ package names. Look them up on pub.dev to make sure they are real, but do
 not report versions, scores, licenses or dates: the pipeline fetches those
 facts from the pub.dev API itself.
 
+Decide whether the work fits **one reviewable pull request**. Propose a
+split into sub-issues when it does not, for example when:
+
+- the issue bundles independent features (each part could ship alone);
+- the change spans several layers that are each substantial (a new core
+  type, a dialect, migrations, runtime codegen) and can land in order;
+- part of it needs a maintainer: changes under `.github/`, CI images or
+  services, secrets, or infrastructure the pipeline cannot touch or test
+  (mark those parts `manual`);
+- an earlier attempt on this issue was blocked as too large (see the
+  issue's comments).
+
+Each part must be shippable on its own with its tests, in the order
+given. Keep to two to six parts, and prefer fewer. Do not split work that
+fits one PR. When you propose a split, the research note still covers the
+whole issue; each sub-issue is researched again on its own, so leave
+`needs_dependency` false and `candidates` empty.
+
 Write exactly two files and nothing else:
 
 1. `.ai/research.md`: a note for the maintainers, in this shape:
@@ -46,10 +64,21 @@ Write exactly two files and nothing else:
    {
      "needs_dependency": false,
      "candidates": [],
-     "rationale": {}
+     "rationale": {},
+     "split": []
    }
    ```
    When `needs_dependency` is true, `candidates` lists package names and
    `rationale` maps each name to one sentence on why it fits.
+
+   `split` is empty unless you propose sub-issues. Each part is
+   `{"title": …, "body": …, "depends_on": [...], "manual": false}`:
+   - `title`: one line, at most 100 characters, a conventional-commit
+     style summary such as `feat(postgresql): geography column type`;
+   - `body`: markdown for the sub-issue: what it delivers, the packages it
+     touches, and the tests that prove it (enough to research it alone);
+   - `depends_on`: 1-based positions of **earlier** parts that must land
+     first;
+   - `manual`: true when a maintainer must do it (see above).
 
 Do not edit any other file.
