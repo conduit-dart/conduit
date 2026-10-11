@@ -67,23 +67,42 @@ String? _field(String pubspec, String key) => RegExp(
 /// Copies the non-hidden entries of [from] into [to], like `cp -rf from/* to`.
 void _copyContents(Directory from, Directory to) {
   to.createSync(recursive: true);
-  for (final entity in from.listSync()) {
-    final base = entity.uri.pathSegments.lastWhere((s) => s.isNotEmpty);
+  for (final entity in from.listSync(followLinks: false)) {
+    final base = _basename(entity);
     if (base.startsWith('.')) continue;
     _copy(entity, _join([to.path, base]));
   }
 }
 
+/// Copies [entity] to [target]. Symlinks (such as the packages' README.md,
+/// which point at the root README) are resolved by hand and copied as their
+/// target's contents: following them implicitly fails on Windows, and a
+/// relative link would dangle inside the cache.
 void _copy(FileSystemEntity entity, String target) {
-  if (entity is File) {
+  if (entity is Link) {
+    final dest = entity.targetSync().replaceAll('/', Platform.pathSeparator);
+    final resolved = File(dest).isAbsolute
+        ? dest
+        : _join([entity.parent.path, dest]);
+    final type = FileSystemEntity.typeSync(resolved);
+    if (type == FileSystemEntityType.file) {
+      _copy(File(resolved), target);
+    } else if (type == FileSystemEntityType.directory) {
+      _copy(Directory(resolved), target);
+    } else {
+      stderr.writeln('skipping dangling link ${entity.path} -> $dest');
+    }
+  } else if (entity is File) {
     entity.copySync(target);
   } else if (entity is Directory) {
     Directory(target).createSync(recursive: true);
-    for (final child in entity.listSync()) {
-      final base = child.uri.pathSegments.lastWhere((s) => s.isNotEmpty);
-      _copy(child, _join([target, base]));
+    for (final child in entity.listSync(followLinks: false)) {
+      _copy(child, _join([target, _basename(child)]));
     }
   }
 }
+
+String _basename(FileSystemEntity entity) =>
+    entity.uri.pathSegments.lastWhere((s) => s.isNotEmpty);
 
 String _join(List<String> parts) => parts.join(Platform.pathSeparator);
