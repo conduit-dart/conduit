@@ -61,19 +61,36 @@ jobs:
       REPO: ${{ github.repository }}
       ISSUE: ${{ github.event.issue.number || inputs.issue }}
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # After the agent runs, later steps must not run anything it could have
+      # planted (docs/AI_PIPELINE.md, "Containing the agent"): no
+      # user-writable directory on PATH, no gh configuration, and git only
+      # once its configuration matches the fingerprint taken before the agent.
+      PATH: /opt/dart-sdk/bin:/usr/lib/postgresql/18/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GH_CONFIG_DIR: /nonexistent/gh
+      GH_NO_UPDATE_NOTIFIER: "1"
+      GIT_FINGERPRINT: >-
+        { cat .git/config .git/info/* .git/objects/info/alternates .git/hooks/*
+        ~/.gitconfig ~/.config/git/* 2>/dev/null;
+        ls -A .git/hooks .git/info ~/.config/git 2>/dev/null; } | sha256sum
     steps:
       - id: app
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.AI_APP_ID }}
           private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+          # Revoked by the last step instead: the action's post step gets the
+          # token and runs action code from a directory the agent can write to.
+          skip-token-revoke: true
 
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ steps.app.outputs.token }}
+          # No token input (post steps get the same inputs) and no persisted
+          # credentials: the agent must find no push token in the workspace.
+          persist-credentials: false
 
       - name: Mark stage
+        id: mark
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
@@ -82,6 +99,7 @@ jobs:
             --remove-label split:review
           mkdir -p .ai
           gh issue view "$ISSUE" --repo "$REPO" --json number,title,body,labels,comments > .ai/issue.json
+          echo "gitfp=$(bash -c "$GIT_FINGERPRINT")" >> "$GITHUB_OUTPUT"
 
       - name: Package report (deterministic)
         # Report-only: list outdated direct dependencies in the research note.
@@ -97,16 +115,20 @@ jobs:
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           AI_MODEL: ${{ vars.AI_MODEL }}
+          GITFP: ${{ steps.mark.outputs.gitfp }}
         run: |
           tool/ai/run-agent.sh .github/ai/prompts/research.md 60 \
             "Read,Glob,Grep,Write(.ai/**),WebFetch(domain:pub.dev),WebFetch(domain:dart.dev),Bash(dart pub deps:*),Bash(git log:*)"
+          # `git log --output=<file>` can write any file, so check git before
+          # running git, and the tree before running anything from it.
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed during the agent run" >&2; exit 1; }
+          stray=$(git status --porcelain --untracked-files=all | grep -v ' \.ai/' || true)
+          [ -z "$stray" ] || { echo "research agent changed files outside .ai/:" >&2; echo "$stray" >&2; exit 1; }
           test -s .ai/research.md
           jq -e '(.needs_dependency | type) == "boolean" and (.candidates | type) == "array"' .ai/research.json
           # A malformed split proposal fails the stage rather than being ignored.
-          dart run tool/ai/bin/split_plan.dart --count .ai/research.json
-          if ! git diff --quiet; then
-            echo "research agent modified tracked files:" >&2; git diff --stat >&2; exit 1
-          fi
+          tool/ai/contain.sh dart run tool/ai/bin/split_plan.dart --count .ai/research.json
 
       - name: Post research note
         env:
@@ -133,8 +155,10 @@ jobs:
           # Too large for one PR: propose sub-issues and stop. Each sub-issue
           # gets its own research and dependency gate once created, so the
           # parent's dependency candidates are not posted.
-          if [ "$(dart run tool/ai/bin/split_plan.dart --count .ai/research.json)" != 0 ]; then
-            dart run tool/ai/bin/split_plan.dart --render .ai/research.json > .ai/split.md
+          # Dart tools run contained: they load code from the pub cache, which
+          # the agent could have written to, and this step holds the App token.
+          if [ "$(tool/ai/contain.sh dart run tool/ai/bin/split_plan.dart --count .ai/research.json)" != 0 ]; then
+            tool/ai/contain.sh dart run tool/ai/bin/split_plan.dart --render .ai/research.json > .ai/split.md
             echo >> .ai/split.md
             echo "<sub>AI pipeline · [run]($RUN_URL)</sub>" >> .ai/split.md
             gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/split.md
@@ -143,7 +167,7 @@ jobs:
             jq -r '.rationale // {}' .ai/research.json > .ai/rationale.json
             mapfile -t names < <(jq -r '.candidates[]' .ai/research.json)
             sdk_floor=$(grep -m1 -oE 'sdk: ">=[0-9.]+' pubspec.yaml | grep -oE '[0-9.]+$')
-            dart run tool/ai/bin/dep_candidates.dart --sdk-floor "$sdk_floor" \
+            tool/ai/contain.sh dart run tool/ai/bin/dep_candidates.dart --sdk-floor "$sdk_floor" \
               --rationale .ai/rationale.json "${names[@]}" > .ai/candidates.md
             gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/candidates.md
             gh issue edit "$ISSUE" --repo "$REPO" --add-label deps:review
@@ -165,3 +189,9 @@ jobs:
           gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:blocked || true
           gh issue comment "$ISSUE" --repo "$REPO" \
             --body "The research stage failed. See the [run]($RUN_URL). A maintainer can add \`ai:retry\` to run it again." || true
+
+      - name: Revoke App token
+        if: always() && steps.app.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: gh api -X DELETE installation/token || true

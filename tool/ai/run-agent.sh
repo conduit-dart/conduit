@@ -10,6 +10,12 @@
 # CLAUDE_CODE_OAUTH_TOKEN) or the runner registration. The checkout itself
 # lives under /home/runner/_work and stays readable.
 #
+# Those deny rules bind only Claude's own tools: code the agent runs through
+# an allowed Bash command (dart, melos) is not covered. contain.sh therefore
+# keeps that code from reaching later steps (workflow command files, leftover
+# processes). Checkouts must use persist-credentials: false so no push token
+# sits in .git/config.
+#
 # Env: CLAUDE_CODE_OAUTH_TOKEN (required), AI_MODEL (optional).
 # Writes the JSON transcript summary to .ai/<stage>-run.json.
 set -euo pipefail
@@ -26,7 +32,10 @@ stage=$(basename "$prompt_file" .md)
 model_args=()
 if [ -n "${AI_MODEL:-}" ]; then model_args=(--model "$AI_MODEL"); fi
 
-claude -p "$(cat "$prompt_file")" \
+# By absolute path: the job's PATH leaves out user-writable directories.
+claude_bin=$(command -v claude || echo "$HOME/.local/bin/claude")
+
+"$(dirname "$0")/contain.sh" --keep CLAUDE_CODE_OAUTH_TOKEN "$claude_bin" -p "$(cat "$prompt_file")" \
   "${model_args[@]}" \
   --max-turns "$max_turns" \
   --allowedTools "$allowed" \
