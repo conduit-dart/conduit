@@ -41,6 +41,7 @@ jobs:
           SENDER: ${{ github.event.sender.login }}
           SENDER_TYPE: ${{ github.event.sender.type }}
           REQUIRED_LABELS: ai:approved
+          FORBIDDEN_LABELS: ai:tracking ai:manual
           SKIP_SENDER_CHECK: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: tool/ai/gate.sh
 
@@ -77,7 +78,8 @@ jobs:
           GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
           gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:researching \
-            --remove-label ai:triage --remove-label ai:blocked --remove-label ai:retry
+            --remove-label ai:triage --remove-label ai:blocked --remove-label ai:retry \
+            --remove-label split:review
           mkdir -p .ai
           gh issue view "$ISSUE" --repo "$REPO" --json number,title,body,labels,comments > .ai/issue.json
 
@@ -100,6 +102,8 @@ jobs:
             "Read,Glob,Grep,Write(.ai/**),WebFetch(domain:pub.dev),WebFetch(domain:dart.dev),Bash(dart pub deps:*),Bash(git log:*)"
           test -s .ai/research.md
           jq -e '(.needs_dependency | type) == "boolean" and (.candidates | type) == "array"' .ai/research.json
+          # A malformed split proposal fails the stage rather than being ignored.
+          dart run tool/ai/bin/split_plan.dart --count .ai/research.json
           if ! git diff --quiet; then
             echo "research agent modified tracked files:" >&2; git diff --stat >&2; exit 1
           fi
@@ -122,11 +126,20 @@ jobs:
           } > .ai/comment.md
           gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/comment.md
 
-      - name: Dependency candidates (Gate 2) or hand off to implementation
+      - name: Split proposal, dependency candidates (Gate 2), or hand off to implementation
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
         run: |
-          if [ "$(jq -r .needs_dependency .ai/research.json)" = "true" ]; then
+          # Too large for one PR: propose sub-issues and stop. Each sub-issue
+          # gets its own research and dependency gate once created, so the
+          # parent's dependency candidates are not posted.
+          if [ "$(dart run tool/ai/bin/split_plan.dart --count .ai/research.json)" != 0 ]; then
+            dart run tool/ai/bin/split_plan.dart --render .ai/research.json > .ai/split.md
+            echo >> .ai/split.md
+            echo "<sub>AI pipeline · [run]($RUN_URL)</sub>" >> .ai/split.md
+            gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/split.md
+            gh issue edit "$ISSUE" --repo "$REPO" --add-label split:review
+          elif [ "$(jq -r .needs_dependency .ai/research.json)" = "true" ]; then
             jq -r '.rationale // {}' .ai/research.json > .ai/rationale.json
             mapfile -t names < <(jq -r '.candidates[]' .ai/research.json)
             sdk_floor=$(grep -m1 -oE 'sdk: ">=[0-9.]+' pubspec.yaml | grep -oE '[0-9.]+$')

@@ -9,6 +9,10 @@ done <<'LABELS'
 ai:triage|d4c5f9|AI pipeline: feature request awaiting maintainer review
 ai:approved|0e8a16|AI pipeline Gate 1: maintainer approved, start research
 ai:researching|c5def5|AI pipeline: research stage running
+split:review|fbca04|AI pipeline: research proposed sub-issues, awaiting split:approved
+split:approved|0e8a16|AI pipeline: maintainer accepted the split; create the sub-issues
+ai:tracking|5319e7|AI pipeline: split into sub-issues; closes when they all close
+ai:manual|e4e669|AI pipeline: needs a maintainer (CI, workflows, infra); pipeline skips it
 deps:review|fbca04|AI pipeline: dependency candidates posted, awaiting Gate 2
 deps:approved|0e8a16|AI pipeline Gate 2: maintainer picked a dependency option
 ai:implementing|c5def5|AI pipeline: implementation stage running

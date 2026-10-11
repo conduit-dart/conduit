@@ -1,0 +1,162 @@
+# AI pipeline: split an issue into sub-issues (no model).
+#
+# Trigger: research proposed a split (label `split:review`) and a
+# maintainer adds `split:approved`. The plan is read back from the
+# proposal comment, so a maintainer's edit to its JSON block is what gets
+# created. Each part becomes a sub-issue of this one, blocked by the parts
+# it depends on, and enters the pipeline at its own Gate 1. Parts marked
+# manual get `ai:manual` and stay out of the pipeline. This issue becomes
+# `ai:tracking`; ai-cleanup.yml closes it when every sub-issue is closed.
+# Runs on a GitHub-hosted runner. See docs/AI_PIPELINE.md.
+name: AI split
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  gate:
+    if: github.event.label.name == 'split:approved'
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.gate.outputs.ok }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tool/ai/gate.sh
+          sparse-checkout-cone-mode: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          ENABLED: ${{ vars.AI_PIPELINE_ENABLED }}
+          TRIGGERS: ${{ vars.AI_PIPELINE_TRIGGERS }}
+          ACTOR: ${{ github.triggering_actor }}
+          SENDER: ${{ github.event.sender.login }}
+          SENDER_TYPE: ${{ github.event.sender.type }}
+          REQUIRED_LABELS: ai:approved split:review split:approved
+          FORBIDDEN_LABELS: ai:tracking
+        run: tool/ai/gate.sh
+
+  split:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
+    concurrency:
+      group: ai-issue-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.AI_APP_ID }}
+          private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Read the approved plan
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          mkdir -p .ai
+          # Re-running must not create a second set of sub-issues.
+          existing=$(gh api "repos/${REPO}/issues/${ISSUE}/sub_issues" --jq length)
+          if [ "$existing" != 0 ]; then
+            echo "#$ISSUE already has $existing sub-issues" >&2; exit 1
+          fi
+          gh issue view "$ISSUE" --repo "$REPO" --json labels,comments > .ai/issue.json
+          # Latest proposal posted by the pipeline's App, not by anyone else.
+          jq -r --arg bot "$APP_SLUG" '[.comments[]
+              | select(.author.login == $bot and (.body | startswith("<!-- conduit-ai:split -->")))]
+            | last | .body // ""' .ai/issue.json > .ai/proposal.md
+          test -s .ai/proposal.md || { echo "no split proposal on #$ISSUE" >&2; exit 1; }
+          dart pub get >/dev/null
+          dart run tool/ai/bin/split_plan.dart --parse .ai/proposal.md > .ai/plan.json
+          jq . .ai/plan.json
+
+      - name: Create sub-issues
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          kind=$(jq -r 'if any(.labels[]; .name == "bug") then "bug" else "enhancement" end' .ai/issue.json)
+          nums=() ids=()
+          : > .ai/created.txt
+          for i in $(seq 0 $(( $(jq length .ai/plan.json) - 1 ))); do
+            jq ".[$i]" .ai/plan.json > .ai/part.json
+            mapfile -t deps < <(jq -r '.depends_on[]' .ai/part.json)
+            manual=$(jq -r .manual .ai/part.json)
+            {
+              jq -r .body .ai/part.json
+              echo
+              echo "Part of #${ISSUE}."
+              if [ ${#deps[@]} -gt 0 ]; then
+                refs=(); for d in "${deps[@]}"; do refs+=("#${nums[d-1]}"); done
+                echo "Depends on ${refs[*]}; start it once those are closed."
+              fi
+              echo
+              if [ "$manual" = true ]; then
+                echo "This part needs a maintainer (\`ai:manual\`), so the AI pipeline will not run on it."
+              else
+                echo "A maintainer adds \`ai:approved\` to start research."
+              fi
+              echo
+              echo "<sub>Split from #${ISSUE} by the AI pipeline · [run]($RUN_URL)</sub>"
+            } > .ai/part.md
+            label=ai:triage; [ "$manual" = true ] && label=ai:manual
+            url=$(gh issue create --repo "$REPO" --title "$(jq -r .title .ai/part.json)" \
+              --body-file .ai/part.md --label "$kind" --label "$label")
+            num=${url##*/}
+            id=$(gh api "repos/${REPO}/issues/${num}" --jq .id)
+            echo "#$num" >> .ai/created.txt
+            gh api -X POST "repos/${REPO}/issues/${ISSUE}/sub_issues" -F sub_issue_id="$id" >/dev/null
+            for d in "${deps[@]}"; do
+              # Best effort: the body already names the dependency.
+              gh api -X POST "repos/${REPO}/issues/${num}/dependencies/blocked_by" \
+                -F issue_id="${ids[d-1]}" >/dev/null \
+                || echo "::warning::could not mark #$num blocked by #${nums[d-1]}"
+            done
+            nums+=("$num") ids+=("$id")
+          done
+
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:tracking \
+            --remove-label split:review --remove-label ai:blocked --remove-label ai:retry
+          {
+            echo "Split into $(printf '#%s, ' "${nums[@]}" | sed 's/, $//')."
+            echo
+            echo "Each sub-issue enters the pipeline when a maintainer adds \`ai:approved\` to it; start a part once the parts it depends on are closed. Parts labelled \`ai:manual\` are for a maintainer. This issue closes when every sub-issue is closed."
+            echo
+            echo "<sub>AI pipeline · [run]($RUN_URL)</sub>"
+          } > .ai/done.md
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/done.md
+
+      - name: Report failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:blocked || true
+          {
+            echo "The split stage failed. See the [run]($RUN_URL)."
+            if [ -s .ai/created.txt ]; then
+              echo
+              echo "Sub-issues created before the failure: $(paste -sd' ' .ai/created.txt). Close or link them by hand before trying again."
+            fi
+            echo
+            echo "To try again, remove and re-add \`split:approved\`."
+          } > .ai/failure.md 2>/dev/null || true
+          gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/failure.md || true

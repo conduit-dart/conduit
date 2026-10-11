@@ -21,6 +21,11 @@ issue opened (enhancement or bug) ─► ai:triage
 research (ai-research.yml)
   • lists outdated direct dependencies (report only, no upgrade PR)
   • agent posts a research note
+  • too large for one PR? ── yes: sub-issues proposed, label split:review
+        │                    maintainer adds split:approved   ◄── split gate
+        │                    ai-split.yml creates linked sub-issues, each
+        │                    starting again at Gate 1; this issue becomes
+        │                    ai:tracking and closes with its last sub-issue
   • needs a new dependency?
         ├─ no ──────────────────────────────────────────────┐
         └─ yes: candidates vetted against pub.dev, posted    │
@@ -43,6 +48,38 @@ release prep (ai-release-prep.yml, on release:prepare or manual dispatch)
         ▼
 publish.yml (unchanged)
 ```
+
+## Splitting large issues
+
+When an issue bundles independent features, or is too large to review as
+one pull request, research proposes a split instead of handing off to
+implementation. It posts a **Proposed split** comment: a table of two to
+six parts in landing order, with each part's dependencies, and the plan as
+an editable JSON block. Parts that need a maintainer (workflow or CI image
+changes, secrets, infrastructure the runner cannot test) are marked manual.
+The pipeline validates the plan (`tool/ai/bin/split_plan.dart`): a part may
+only depend on earlier parts, and titles are one line.
+
+A maintainer then chooses:
+
+- **Accept:** add `split:approved`. `ai-split.yml` (GitHub-hosted, no model)
+  reads the plan back from the comment, so edits to the JSON count. It
+  creates each part as a sub-issue of this one, marks it blocked by the
+  parts it depends on, and labels it `ai:triage`, or `ai:manual` for manual
+  parts, which the pipeline never runs. This issue gets `ai:tracking`.
+- **Decline:** remove `split:review` and add `ai:retry` to implement the
+  issue as a single PR.
+- **Re-research:** remove `split:review`, then remove and re-add
+  `ai:approved`.
+
+Each sub-issue goes through the whole flow on its own: Gate 1, research,
+Gate 2 if needed, its own PR. Start a part only once the parts it depends
+on are closed. When the last sub-issue closes, `ai-cleanup.yml` closes the
+tracking issue.
+
+An issue whose implementation was blocked as too large can be re-researched
+the same way (remove and re-add `ai:approved`): research reads the blocked
+report in the comments and will usually propose a split.
 
 ## Bug reports
 
@@ -68,6 +105,10 @@ required.
 | `ai:triage` | intake | New feature request or bug report, awaiting review |
 | `ai:approved` | **maintainer** | Gate 1: start research |
 | `ai:researching`, `ai:implementing` | pipeline | Stage running |
+| `split:review` | pipeline | Sub-issues proposed, awaiting the split gate |
+| `split:approved` | **maintainer** | Create the proposed sub-issues |
+| `ai:tracking` | pipeline | Split into sub-issues; no further stages run on it |
+| `ai:manual` | pipeline | Sub-issue a maintainer must do; the pipeline skips it |
 | `deps:review` | pipeline | Dependency candidates posted |
 | `deps:approved` | **maintainer** | Gate 2: implement with the ticked option |
 | `ai:in-review` | pipeline | Implementation PR is open |
@@ -80,8 +121,8 @@ required.
 Create them with `tool/ai/setup-labels.sh`.
 
 Closing an issue removes its stage labels (`ai:triage`, `ai:researching`,
-`ai:implementing`, `ai:in-review`, `ai:blocked`, `ai:retry`, `deps:review`)
-through `ai-cleanup.yml`. The labels a maintainer applied stay as a record.
+`ai:implementing`, `ai:in-review`, `ai:blocked`, `ai:retry`, `deps:review`,
+`split:review`) through `ai-cleanup.yml`. The labels a maintainer applied stay as a record.
 
 ## Guardrails
 
@@ -90,8 +131,8 @@ These follow the non-negotiables in AGENTIC_MAINTENANCE.md.
 - **Maintainer gates.** Every stage first runs `tool/ai/gate.sh` on a
   GitHub-hosted runner: the label's author must have triage or higher, bots
   are ignored, the issue must be open, carry the stage's required labels and
-  not carry `ai:stop`. Only an open gate schedules work on the self-hosted
-  runner.
+  not carry `ai:stop` (or a stage-specific blocker such as `ai:tracking`).
+  Only an open gate schedules work on the self-hosted runner.
 - **No model chooses facts.** Dependency facts (version, date, license,
   SDK constraint, points, likes, downloads, publisher) come from the pub.dev
   API via `tool/ai/bin/dep_candidates.dart`; the model only proposes names.
@@ -159,6 +200,8 @@ cannot spend it; for a pipeline the whole team drives, use an
   `--parse-choice` reads the maintainer's tick.
 - `bin/new_deps.dart`: fail on dependencies added since a base ref that
   were not approved.
+- `bin/split_plan.dart`: validate a split plan, render the proposal
+  comment, and read the approved plan back from it.
 - `bin/next_version.dart`: next version and breaking commits from
   conventional commits.
 - `gate.sh`, `run-agent.sh`, `setup-labels.sh`, and `outdated_report.jq` (the research note's outdated-dependency table).

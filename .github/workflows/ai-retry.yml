@@ -33,6 +33,7 @@ jobs:
           SENDER: ${{ github.event.sender.login }}
           SENDER_TYPE: ${{ github.event.sender.type }}
           REQUIRED_LABELS: ai:approved ai:retry
+          FORBIDDEN_LABELS: ai:tracking ai:manual split:review
         run: tool/ai/gate.sh
       - name: Dispatch the stuck stage
         if: steps.gate.outputs.ok == 'true'

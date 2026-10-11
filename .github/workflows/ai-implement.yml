@@ -43,6 +43,7 @@ jobs:
           SENDER: ${{ github.event.sender.login }}
           SENDER_TYPE: ${{ github.event.sender.type }}
           REQUIRED_LABELS: ai:approved
+          FORBIDDEN_LABELS: ai:tracking ai:manual split:review
           SKIP_SENDER_CHECK: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
         run: tool/ai/gate.sh
 
