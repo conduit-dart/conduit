@@ -252,10 +252,17 @@ mixin MysqlSchemaGenerator {
   String? _columnTypeForColumn(SchemaColumn t) {
     final ts = t.typeString;
     if (ts == null) return null;
-    return dialect.columnDefinitionType(
+    final definition = dialect.columnDefinitionType(
       ts,
       autoincrement: t.autoincrement ?? false,
     );
+    if (definition == null && ts == "geography") {
+      throw UnsupportedError(
+        "Column '${t.name}' has type 'geography' (GeoPoint), which is not "
+        "supported by the '${dialect.name}' dialect.",
+      );
+    }
+    return definition;
   }
 
   List<String> _addConstraintsForColumn(

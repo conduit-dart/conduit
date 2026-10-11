@@ -100,6 +100,7 @@ enum ManagedPropertyType {
   boolean,
   datetime,
   document,
+  geography,
   list,
   map,
 }
@@ -171,6 +172,8 @@ class ResponseKey {
 }
 
 class Document {}
+
+class GeoPoint {}
 ''';
 
 Future<({String? dart, String? json})> _runBuilder(String source) async {
@@ -222,6 +225,30 @@ class User extends ManagedObject<_User> implements _User {
     expect(flat, contains('instanceOfImplementation'));
     final manifest = json.decode(out.json!) as Map<String, dynamic>;
     expect(manifest['managedObjects'], equals(['User']));
+  });
+
+  test('maps a GeoPoint field to ManagedPropertyType.geography', () async {
+    final out = await _runBuilder('''
+import 'package:conduit_core/conduit_core.dart';
+
+class _Place {
+  @primaryKey
+  int? id;
+  GeoPoint? location;
+}
+
+class Place extends ManagedObject<_Place> implements _Place {
+  @override
+  ManagedBacking? backing;
+  @override
+  int? id;
+  @override
+  GeoPoint? location;
+}
+''');
+    expect(out.dart, isNotNull);
+    final flat = out.dart!.replaceAll(RegExp(r'\s+'), ' ');
+    expect(flat, contains('ManagedPropertyType.geography'));
   });
 
   test('honors @Table(name: ...) override for table name', () async {

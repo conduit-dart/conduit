@@ -31,7 +31,7 @@ import 'package:build/build.dart';
 ///    trip exactly.
 ///  - `@ResponseKey(...)` and `@ResponseModel(...)`.
 ///  - Standard column types: `int`, `String`, `bool`, `double`, `DateTime`,
-///    `Document`, `List<int>`.
+///    `Document`, `GeoPoint`, `List<int>`.
 class ManagedObjectBuilder implements Builder {
   static const _conduitCorePackagePrefix = 'package:conduit_core/';
   static const _managedObjectName = 'ManagedObject';
@@ -249,6 +249,8 @@ class ManagedObjectBuilder implements Builder {
         return _ManagedTypeInfo('datetime', name);
       case 'Document':
         return _ManagedTypeInfo('document', name);
+      case 'GeoPoint':
+        return _ManagedTypeInfo('geography', name);
       case 'List':
         if (t.typeArguments.length == 1 &&
             (t.typeArguments.first.element?.name == 'int')) {

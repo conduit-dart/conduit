@@ -328,6 +328,11 @@ class SchemaBuilder({
         // Documents are JSON-encoded into a string for v1. See README
         // "G2 schema-derivation limitations".
         return graphQLString;
+      case ManagedPropertyType.geography:
+        throw UnsupportedError(
+          "Property '${attr.name}' has type 'GeoPoint', which is not yet "
+          "supported by the GraphQL schema builder.",
+        );
       case ManagedPropertyType.list:
         final inner = _scalarForElement(type.elements);
         return GraphQLListType(inner.nonNullable());
@@ -356,6 +361,7 @@ class SchemaBuilder({
       case ManagedPropertyType.doublePrecision:
         return graphQLFloat;
       case ManagedPropertyType.document:
+      case ManagedPropertyType.geography:
       case ManagedPropertyType.list:
       case ManagedPropertyType.map:
         return graphQLString;

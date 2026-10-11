@@ -39,7 +39,7 @@ abstract class SqlDialect {
   // -- Type mapping -----------------------------------------------------------
 
   /// Map a Conduit `ManagedPropertyType.toString()` (one of `integer`,
-  /// `bigInteger`, `string`, `datetime`, `boolean`, `double`, `document`) to
+  /// `bigInteger`, `string`, `datetime`, `boolean`, `double`, `document`, `geography`) to
   /// the dialect-specific column-definition type string.
   ///
   /// Returning `null` signals "not a supported type for this dialect" —

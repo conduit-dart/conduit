@@ -34,6 +34,10 @@ void main() {
       );
     });
 
+    test('geography is unsupported', () {
+      expect(d.columnDefinitionType('geography', autoincrement: false), isNull);
+    });
+
     test('LIKE is the only matching operator', () {
       expect(d.caseSensitiveLikeOperator, 'LIKE');
       expect(d.caseInsensitiveLikeOperator, 'LIKE');
@@ -59,6 +63,34 @@ void main() {
   });
 
   group('SqliteSchemaGenerator', () {
+    test('createTable throws a descriptive error for geography', () {
+      final gen = _Gen();
+      final t = SchemaTable('places', [
+        SchemaColumn.empty()
+          ..name = 'location'
+          ..type = ManagedPropertyType.geography
+          ..isPrimaryKey = false
+          ..autoincrement = false
+          ..isNullable = false
+          ..isIndexed = false
+          ..isUnique = false,
+      ]);
+      expect(
+        () => gen.createTable(t),
+        throwsA(
+          isA<UnsupportedError>().having(
+            (e) => e.message,
+            'message',
+            allOf(
+              contains('location'),
+              contains('geography'),
+              contains('sqlite'),
+            ),
+          ),
+        ),
+      );
+    });
+
     final gen = _Gen();
 
     test('createTable emits INTEGER PRIMARY KEY for auto-incremented PK', () {

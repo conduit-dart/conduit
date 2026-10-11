@@ -28,6 +28,9 @@ enum ManagedPropertyType {
 
   /// Represented by instances of [Document]
   document,
+
+  /// Represented by instances of [GeoPoint]
+  geography,
 }
 
 /// Complex type storage for [ManagedEntity] attributes.
@@ -88,6 +91,8 @@ class ManagedType(
         return dartValue is List<dynamic>;
       case ManagedPropertyType.document:
         return dartValue is Document;
+      case ManagedPropertyType.geography:
+        return dartValue is GeoPoint;
       case ManagedPropertyType.string:
         {
           if (enumerationMap.isNotEmpty) {
@@ -104,7 +109,7 @@ class ManagedType(
   }
 
   static List<Type> get supportedDartTypes {
-    return [String, DateTime, bool, int, double, Document];
+    return [String, DateTime, bool, int, double, Document, GeoPoint];
   }
 
   static ManagedPropertyType get integer => ManagedPropertyType.integer;
@@ -125,4 +130,6 @@ class ManagedType(
   static ManagedPropertyType get list => ManagedPropertyType.list;
 
   static ManagedPropertyType get document => ManagedPropertyType.document;
+
+  static ManagedPropertyType get geography => ManagedPropertyType.geography;
 }

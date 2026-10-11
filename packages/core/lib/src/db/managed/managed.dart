@@ -4,6 +4,7 @@ export 'data_model.dart';
 export 'document.dart';
 export 'entity.dart';
 export 'exception.dart';
+export 'geo_point.dart';
 export 'key_path.dart';
 export 'object.dart';
 export 'property_description.dart';

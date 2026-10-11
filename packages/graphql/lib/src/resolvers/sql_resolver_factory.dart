@@ -235,6 +235,7 @@ class SqlResolverFactory {
         if (value is Document) return value.data;
         return value;
       case ManagedPropertyType.integer:
+      case ManagedPropertyType.geography:
       case ManagedPropertyType.string:
       case ManagedPropertyType.boolean:
       case ManagedPropertyType.doublePrecision:
@@ -706,6 +707,7 @@ class SqlResolverFactory {
       case ManagedPropertyType.boolean:
       case ManagedPropertyType.string:
       case ManagedPropertyType.document:
+      case ManagedPropertyType.geography:
       case ManagedPropertyType.list:
       case ManagedPropertyType.map:
         return raw;
