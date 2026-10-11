@@ -48,8 +48,9 @@ class QueryPredicate {
   /// [format] string with 'AND'. Each [parameters] from individual [predicates] is combined
   /// into the returned [parameters].
   ///
-  /// If there are duplicate parameter names in [predicates], they will be disambiguated by suffixing
-  /// the parameter name (`@name` or `:name` placeholders) in both [format] and [parameters] with a unique integer.
+  /// If there are duplicate parameter names in [predicates], later occurrences are renamed to
+  /// `name_<n>` (in `@name` and `:name` placeholders) in both [format] and [parameters], matching
+  /// how the AST renderers disambiguate repeated parameters.
   ///
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
@@ -74,9 +75,13 @@ class QueryPredicate {
     //       coverage would silently corrupt positional-parameter
     //       renders by missing some values.
     //   (2) renamed keys are not applied to the AST. The AST renderers
-    //       disambiguate repeated parameter names themselves, so the
-    //       AST is kept as-is even when the format string and map had
-    //       to be renamed below.
+    //       disambiguate repeated parameter names themselves with the
+    //       same `<name>_<n>` scheme used below, so the AST is kept
+    //       as-is and both renders agree on names. The exception is a
+    //       predicate that already uses a `<name>_<n>` key: the rename
+    //       below skips it, while the renderer renames that later key
+    //       instead. Bind `format` with `parameters`, or an AST render
+    //       with its own parameters; never mix the two.
     // If (1) fails we drop the AST and the backend falls back to
     // rendering from the format string.
     final childExpressions = <SqlExpression>[];
@@ -105,7 +110,7 @@ class QueryPredicate {
         for (final key in duplicateKeys) {
           String replacementKey;
           do {
-            replacementKey = "$key$dupeCounter";
+            replacementKey = "${key}_$dupeCounter";
             dupeCounter++;
           } while (valueMap.containsKey(replacementKey) ||
               predicateList.any(

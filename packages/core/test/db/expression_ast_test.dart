@@ -288,9 +288,9 @@ void main() {
     });
 
     test('and() keeps AST when parameter names collide', () {
-      // The dupe-renaming path rewrites the format string but doesn't
-      // touch the AST, so the safe choice is to drop the AST and let
-      // the backend fall back to the format-string render.
+      // The rename rewrites the format string and map only. The AST is
+      // kept as-is: its renderers disambiguate repeated parameter names
+      // with the same `<name>_<n>` scheme, so both renders agree.
       final p1 = QueryPredicate(
         'p = @p',
         {'p': 1},
@@ -311,8 +311,8 @@ void main() {
       );
       final combined = QueryPredicate.and([p1, p2]);
       expect(combined.expression, isA<LogicalExpression>());
-      expect(combined.format, '(p = @p AND p = @p0)');
-      expect(combined.parameters, {'p': 1, 'p0': 2});
+      expect(combined.format, '(p = @p AND p = @p_0)');
+      expect(combined.parameters, {'p': 1, 'p_0': 2});
     });
 
     test('and() drops AST when any constituent lacks one', () {
