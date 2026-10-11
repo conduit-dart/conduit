@@ -36,7 +36,7 @@ jobs:
           Thanks for the report. This issue is in conduit's AI-assisted pipeline:
 
           1. **Triage (maintainer).** A maintainer reviews the issue and adds `ai:approved` to start research.
-          2. **Research.** An agent refreshes dependencies, studies the codebase and posts a research note here (for a bug: reproduction and root cause).
+          2. **Research.** An agent studies the codebase and posts a research note here (for a bug: reproduction and root cause).
           3. **Dependencies (maintainer, only if needed).** If the feature needs a new package, vetted candidates are posted here; a maintainer ticks one and adds `deps:approved`.
           4. **Implementation.** An agent opens a pull request (for a bug: the fix plus a regression test) that goes through the normal CI and needs a maintainer's review to merge.
           5. **Review notes.** An AI review of the pull request is posted here.
