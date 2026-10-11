@@ -87,7 +87,9 @@ jobs:
         # major (latest patch). Pinning to 18.0 here held Linux at the
         # initial release while macOS got patch fixes — version skew
         # caused Linux-only test failures during the AOT-migration window.
-        image: postgres:18
+        # PostGIS image (same PG major) for the geography work in #234;
+        # macOS and Windows stay on stock Postgres and skip PostGIS tests.
+        image: postgis/postgis:18-3.6
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!
@@ -115,6 +117,36 @@ jobs:
       - name: Run tests
         working-directory: ${{ env.TEST_DIR }}
         run: . ../../ci/.env && dart test -r failures-only
+  postgresql:
+    needs: smoke
+    if: |
+      startsWith(github.head_ref, 'feat/')
+      || startsWith(github.head_ref, 'fix/')
+      || startsWith(github.head_ref, 'refactor/')
+      || startsWith(github.head_ref, 'claude/')
+    runs-on: ubuntu-latest
+    # conduit_postgresql's own suite (dialect, migrations, typing, and the
+    # PostGIS checks in test/postgis_test.dart) against the PostGIS image.
+    # `unit` covers conduit_core only.
+    services:
+      postgres:
+        image: postgis/postgis:18-3.6
+        env:
+          POSTGRES_USER: conduit_test_user
+          POSTGRES_PASSWORD: conduit!
+          POSTGRES_DB: conduit_test_db
+        ports:
+          - 15432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Get Dependencies
+        run: dart pub get
+      - name: Run tests
+        working-directory: packages/postgresql
+        run: . ../../ci/.env && dart test -r failures-only
   coverage:
     needs: smoke
     if: |
@@ -133,7 +165,7 @@ jobs:
       MELOS_PACKAGES: conduit_core,conduit_build_runner,conduit_open_api,conduit_password_hash,conduit_config
     services:
       postgres:
-        image: postgres:18
+        image: postgis/postgis:18-3.6
         env:
           POSTGRES_USER: conduit_test_user
           POSTGRES_PASSWORD: conduit!

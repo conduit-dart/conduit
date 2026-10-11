@@ -71,6 +71,8 @@ jobs:
       TEST_DB_ENV_VAR: postgres://user:password@host:5432/dbname
       TEST_VALUE: "1"
       TEST_BOOL: "true"
+      # start-test-postgres enables PostGIS, as Linux CI does.
+      CONDUIT_POSTGIS: "true"
     steps:
       - id: app
         uses: actions/create-github-app-token@v2
