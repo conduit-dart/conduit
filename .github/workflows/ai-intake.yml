@@ -23,6 +23,9 @@ jobs:
       && (github.event.action == 'opened'
           || github.event.label.name == 'enhancement'
           || github.event.label.name == 'bug')
+    concurrency:
+      group: ai-intake-${{ github.event.issue.number }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - name: Label and explain the gates
