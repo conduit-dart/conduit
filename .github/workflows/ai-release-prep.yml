@@ -82,19 +82,35 @@ jobs:
       ISSUE: ${{ github.event.issue.number }}
       INPUT_VERSION: ${{ inputs.version }}
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # After the agent runs, later steps must not run anything it could have
+      # planted (docs/AI_PIPELINE.md, "Containing the agent"): no
+      # user-writable directory on PATH, no gh configuration, and git only
+      # once its configuration matches the fingerprint taken before the agent.
+      PATH: /opt/dart-sdk/bin:/usr/lib/postgresql/18/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GH_CONFIG_DIR: /nonexistent/gh
+      GH_NO_UPDATE_NOTIFIER: "1"
+      GIT_FINGERPRINT: >-
+        { cat .git/config .git/info/* .git/objects/info/alternates .git/hooks/*
+        ~/.gitconfig ~/.config/git/* 2>/dev/null;
+        ls -A .git/hooks .git/info ~/.config/git 2>/dev/null; } | sha256sum
     steps:
       - id: app
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.AI_APP_ID }}
           private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+          # Revoked by the last step instead: the action's post step gets the
+          # token and runs action code from a directory the agent can write to.
+          skip-token-revoke: true
 
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
           ref: master
-          token: ${{ steps.app.outputs.token }}
+          # No token input (post steps get the same inputs) and no persisted
+          # credentials: the agent must find no push token in the workspace.
+          persist-credentials: false
 
       - name: Decide the version (deterministic)
         run: |
@@ -117,7 +133,9 @@ jobs:
           echo "release ${last} -> v${version} (derived ${derived})"
 
       - name: Set version and write CHANGELOGs (melos)
+        id: version
         run: |
+          export PATH="$PATH:$HOME/.pub-cache/bin"
           git switch -c "claude/ai-release-v${VERSION}"
           sed -i -E "s/^version: .*/version: ${VERSION}/" pubspec.yaml
           git tag -l > .ai/tags-before.txt
@@ -128,14 +146,19 @@ jobs:
           # commits back into a working-tree change for one clean commit.
           comm -13 <(sort .ai/tags-before.txt) <(git tag -l | sort) | xargs -r git tag -d
           git reset -q --soft origin/master
+          echo "gitfp=$(bash -c "$GIT_FINGERPRINT")" >> "$GITHUB_OUTPUT"
 
       - name: Curate CHANGELOGs and migration notes (agent)
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           AI_MODEL: ${{ vars.AI_MODEL }}
+          GITFP: ${{ steps.version.outputs.gitfp }}
         run: |
           tool/ai/run-agent.sh .github/ai/prompts/release-prep.md 60 \
             "Read,Glob,Grep,Edit(packages/*/CHANGELOG.md),Edit(docs/migration/**),Write(docs/migration/**),Write(.ai/release-notes.md),Bash(git log:*),Bash(git show:*),Bash(git diff:*)"
+          # `git log/diff --output=<file>` can write any file: check git first.
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed during the agent run" >&2; exit 1; }
           test -s .ai/release-notes.md
           # Only CHANGELOGs, docs/migration and the version files may change.
           bad=$(git status --porcelain | awk '{print $2}' \
@@ -146,14 +169,21 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           APP_SLUG: ${{ steps.app.outputs.app-slug }}
+          GITFP: ${{ steps.version.outputs.gitfp }}
         run: |
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed since the agent ran" >&2; exit 1; }
           branch="claude/ai-release-v${VERSION}"
           bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
           git add -A -- pubspec.yaml packages/*/pubspec.yaml packages/*/CHANGELOG.md docs/migration
           git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
             commit -q -m "chore(release): v${VERSION}" -m "Prepared by the AI pipeline: $RUN_URL"
+          # The checkout keeps no credentials (persist-credentials: false), so
+          # the App token is passed to this one push only.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
           # Push exactly one branch ref. Never --tags / --follow-tags.
-          git push -q origin "refs/heads/${branch}:refs/heads/${branch}"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push -q origin "refs/heads/${branch}:refs/heads/${branch}"
           {
             echo "## Release v${VERSION}"
             echo
@@ -180,3 +210,9 @@ jobs:
             gh issue comment "$ISSUE" --repo "$REPO" --body "Release PR for v${VERSION}: $url"
             gh issue edit "$ISSUE" --repo "$REPO" --remove-label release:prepare || true
           fi
+
+      - name: Revoke App token
+        if: always() && steps.app.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: gh api -X DELETE installation/token || true

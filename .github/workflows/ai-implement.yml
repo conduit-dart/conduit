@@ -63,6 +63,20 @@ jobs:
       REPO: ${{ github.repository }}
       ISSUE: ${{ github.event.issue.number || inputs.issue }}
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # After the agent runs, later steps must not run anything it could have
+      # planted (docs/AI_PIPELINE.md, "Containing the agent"): no
+      # user-writable directory on PATH, no gh configuration, and git only
+      # once its configuration matches the fingerprint taken before the agent.
+      PATH: /opt/dart-sdk/bin:/usr/lib/postgresql/18/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GH_CONFIG_DIR: /nonexistent/gh
+      GH_NO_UPDATE_NOTIFIER: "1"
+      GIT_FINGERPRINT: >-
+        { cat .git/config .git/info/* .git/objects/info/alternates .git/hooks/*
+        ~/.gitconfig ~/.config/git/* 2>/dev/null;
+        ls -A .git/hooks .git/info ~/.config/git 2>/dev/null; } | sha256sum
+      # Paths the agent may not change: CI, the pipeline itself, and the
+      # configuration the checks read (lint rules, melos scripts, test config).
+      PROTECTED_PATHS: '^(\.github/|tool/ai/|ci/|docker/|\.woodpecker\.yml$|flake\.(nix|lock)$|pubspec\.yaml$|(.*/)?analysis_options[^/]*\.yaml$|(.*/)?dart_test\.yaml$)'
       POSTGRES_HOST: localhost
       POSTGRES_PORT: "15432"
       POSTGRES_USER: conduit_test_user
@@ -79,12 +93,17 @@ jobs:
         with:
           app-id: ${{ secrets.AI_APP_ID }}
           private-key: ${{ secrets.AI_APP_PRIVATE_KEY }}
+          # Revoked by the last step instead: the action's post step gets the
+          # token and runs action code from a directory the agent can write to.
+          skip-token-revoke: true
 
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: master
-          token: ${{ steps.app.outputs.token }}
+          # No token input (post steps get the same inputs) and no persisted
+          # credentials: the agent must find no push token in the workspace.
+          persist-credentials: false
 
       - name: Resolve inputs
         env:
@@ -124,8 +143,11 @@ jobs:
           echo "BRANCH=$branch" >> "$GITHUB_ENV"
 
       - name: Prepare workspace
+        id: prep
         run: |
           git switch -c "$BRANCH"
+          echo "base=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "gitfp=$(bash -c "$GIT_FINGERPRINT")" >> "$GITHUB_OUTPUT"
           dart pub get
           start-test-postgres
 
@@ -142,30 +164,40 @@ jobs:
           test -s .ai/commit-title.txt && test -s .ai/pr-body.md
 
       - name: Verify (deterministic)
+        env:
+          BASE: ${{ steps.prep.outputs.base }}
+          GITFP: ${{ steps.prep.outputs.gitfp }}
         run: |
+          # The agent could run code, so check git before running git, and the
+          # tree before running anything from it.
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed during the agent run" >&2; exit 1; }
           [ "$(git branch --show-current)" = "$BRANCH" ] || { echo "agent changed branch" >&2; exit 1; }
-          # Workflows and prompts are off-limits (edits *and* new files).
-          if [ -n "$(git status --porcelain -- .github)" ]; then
-            echo "agent touched .github/:" >&2; git status --short -- .github >&2; exit 1
-          fi
-          [ -n "$(git status --porcelain)" ] || { echo "agent made no changes" >&2; exit 1; }
+          git add -A
+          git reset -q -- .ai
+          protected=$(git diff --cached --name-only "$BASE" | grep -E "$PROTECTED_PATHS" || true)
+          [ -z "$protected" ] || { echo "agent changed protected paths:" >&2; echo "$protected" >&2; exit 1; }
+          ! git diff --cached --quiet "$BASE" || { echo "agent made no changes" >&2; exit 1; }
+          mapfile -t pkgs < <(git diff --cached --name-only "$BASE" -- 'packages/*' | cut -d/ -f1-2 | sort -u)
 
           approve=()
           dep=$(cat .ai/dependency.txt)
           [ "$dep" = in-house ] || approve=(--approve "$dep")
-          dart run tool/ai/bin/new_deps.dart --base origin/master "${approve[@]}"
 
-          dart format --output=none --set-exit-if-changed .
-          melos run analyze
+          # Everything below runs code the agent wrote or could have changed
+          # (tests, the pub cache, melos), so it runs contained and secret-free.
+          tool/ai/contain.sh bash -euo pipefail -c '
+            export PATH="$PATH:$HOME/.pub-cache/bin"
+            dart run tool/ai/bin/new_deps.dart --base "$BASE" "$@"
+            dart format --output=none --set-exit-if-changed .
+            melos run analyze
+          ' new_deps "${approve[@]}"
 
           # Tests of every package the change touches.
-          git add -A
-          mapfile -t pkgs < <(git diff --cached --name-only origin/master -- 'packages/*' \
-            | cut -d/ -f1-2 | sort -u)
           for p in "${pkgs[@]}"; do
             [ -d "$p/test" ] || continue
             echo "::group::dart test $p"
-            (cd "$p" && dart test -r failures-only)
+            (cd "$p" && "$GITHUB_WORKSPACE/tool/ai/contain.sh" dart test -r failures-only)
             echo "::endgroup::"
           done
 
@@ -173,13 +205,33 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           APP_SLUG: ${{ steps.app.outputs.app-slug }}
+          BASE: ${{ steps.prep.outputs.base }}
+          GITFP: ${{ steps.prep.outputs.gitfp }}
         run: |
+          # The verify step ran the agent's tests; check git and the tree again.
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed during verification" >&2; exit 1; }
           title=$(head -1 .ai/commit-title.txt)
           bot_id=$(gh api "users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          # Commit what verify staged before the tests ran, not files the tests
+          # wrote. The index is re-checked: test code could have rewritten it.
           git reset -q -- .ai
+          protected=$(git diff --cached --name-only "$BASE" | grep -E "$PROTECTED_PATHS" || true)
+          [ -z "$protected" ] || { echo "protected paths changed:" >&2; echo "$protected" >&2; exit 1; }
           git -c user.name="${APP_SLUG}[bot]" -c user.email="${bot_id}+${APP_SLUG}[bot]@users.noreply.github.com" \
             commit -q -m "$title" -m "Implements #${ISSUE}. Generated by the AI pipeline: $RUN_URL"
-          git push -q origin "$BRANCH"
+          # The checkout keeps no credentials (persist-credentials: false), so
+          # the App token is passed to this one push only.
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push -q origin "$BRANCH"
+          # The local checks trust an object store the agent could write to;
+          # GitHub's view of the pushed branch is authoritative.
+          bad=$(gh api "repos/$REPO/compare/$BASE...$BRANCH" --jq '.files[].filename' | grep -E "$PROTECTED_PATHS" || true)
+          if [ -n "$bad" ]; then
+            gh api -X DELETE "repos/$REPO/git/refs/heads/$BRANCH" || true
+            echo "the pushed branch changes protected paths, so it was deleted:" >&2; echo "$bad" >&2; exit 1
+          fi
           {
             cat .ai/pr-body.md
             echo
@@ -212,3 +264,9 @@ jobs:
             echo "A maintainer can add \`ai:retry\` to run it again."
           } > .ai/failure.md 2>/dev/null || true
           gh issue comment "$ISSUE" --repo "$REPO" --body-file .ai/failure.md || true
+
+      - name: Revoke App token
+        if: always() && steps.app.outputs.token != ''
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: gh api -X DELETE installation/token || true
