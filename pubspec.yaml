@@ -11,7 +11,10 @@ dev_dependencies:
   # 7.4.0 introduced layered topological sort for `melos exec
   # --order-dependents`, which is what the publish workflow relies on.
   # 7.7.0 fixes pubspec_overrides handling under workspace resolution.
-  melos: ^7.7.0
+  # 8.x no longer substitutes bare MELOS_PACKAGE_* tokens in exec commands;
+  # scripts reference them as environment variables ($VAR on POSIX, %VAR% on
+  # Windows, which melos 8 substitutes itself).
+  melos: ^8.9.0
 
 workspace:
   - packages/build_runner
@@ -47,7 +50,7 @@ melos:
       packageFilters:
         noPrivate: true
     test-with-coverage:
-      run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- "dart MELOS_ROOT_PATH/utils/unused_port.dart | dart pub global run coverage:test_with_coverage --port -"
+      run: melos exec --ignore "*common*" --ignore "*application*" --ignore "*dependency*" -- 'dart "$MELOS_ROOT_PATH/utils/unused_port.dart" | dart pub global run coverage:test_with_coverage --port -'
       packageFilters:
         noPrivate: true
     test-fast:
@@ -69,23 +72,23 @@ melos:
     outdated:
       run: melos exec -- "dart pub outdated"
     activate-all:
-      run: melos exec -- "dart pub global activate -spath MELOS_PACKAGE_PATH"
+      run: melos exec -- 'dart pub global activate -spath "$MELOS_PACKAGE_PATH"'
       packageFilters:
         noPrivate: true
     deactivate-all:
-      run: melos exec -- "dart pub global deactivate MELOS_PACKAGE_NAME"
+      run: melos exec -- 'dart pub global deactivate "$MELOS_PACKAGE_NAME"'
       packageFilters:
         noPrivate: true
     cache-source:
-      run: melos exec -- "mkdir -p '$PUB_CACHE/hosted/pub.dev/MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION' && cp -rf 'MELOS_PACKAGE_PATH'/* '$PUB_CACHE/hosted/pub.dev/MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION'"
+      run: melos exec -- 'dest="$PUB_CACHE/hosted/pub.dev/$MELOS_PACKAGE_NAME-$MELOS_PACKAGE_VERSION" && mkdir -p "$dest" && cp -rf "$MELOS_PACKAGE_PATH"/* "$dest"'
       packageFilters:
         noPrivate: true
     cache-source-win:
-      run: melos exec -- mkdir %PUB_CACHE%\hosted\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION && melos exec -- xcopy MELOS_PACKAGE_PATH %PUB_CACHE%\hosted\pub.dev\MELOS_PACKAGE_NAME-MELOS_PACKAGE_VERSION /Y /s /e
+      run: melos exec -- mkdir %PUB_CACHE%\hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% && melos exec -- xcopy %MELOS_PACKAGE_PATH% %PUB_CACHE%\hosted\pub.dev\%MELOS_PACKAGE_NAME%-%MELOS_PACKAGE_VERSION% /Y /s /e
       packageFilters:
         noPrivate: true
     hard-clean:
-      run: melos exec -- "rm -rf 'MELOS_PACKAGE_PATH/.dart_tool' 'MELOS_PACKAGE_PATH/pubspec.lock'"
+      run: melos exec -- 'rm -rf "$MELOS_PACKAGE_PATH/.dart_tool" "$MELOS_PACKAGE_PATH/pubspec.lock"'
     gen-docs:
       run: |
         melos exec --ignore "*common*" --ignore "fs_test_agent" -- "dart doc"
