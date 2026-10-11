@@ -181,31 +181,17 @@ String _renderCase(String caseName, _Shape shape, SqlDialect dialect) {
       continue;
     }
     final rendered = dialect.renderExpression(expr);
-    // When QueryPredicate.and renamed colliding keys, the legacy format
-    // and the renderer pick different (equally valid) suffixes, so only
-    // the bound values must agree; otherwise the text is identical.
-    final renamed = !predicate.parameters.keys.toSet().containsAll(
-      rendered.parameters.keys,
+    expect(
+      rendered.sql,
+      predicate.format,
+      reason:
+          '[$caseName/${dialect.name}] AST render diverged from the '
+          'legacy format string',
     );
-    if (renamed) {
-      expect(
-        rendered.parameters.values.toList(),
-        predicate.parameters.values.toList(),
-        reason: '[$caseName/${dialect.name}] AST bound different values',
-      );
-    } else {
-      expect(
-        rendered.sql,
-        predicate.format,
-        reason:
-            '[$caseName/${dialect.name}] AST render diverged from the '
-            'legacy format string',
-      );
-    }
 
     out.writeln('  [$table] ${rendered.sql}');
     if (dialect.parameterStyle == SqlParameterStyle.named) {
-      if (!renamed) expect(rendered.parameters, predicate.parameters);
+      expect(rendered.parameters, predicate.parameters);
       final keys = rendered.parameters.keys.toList()..sort();
       for (final k in keys) {
         out.writeln('    $k = ${_describe(rendered.parameters[k])}');
