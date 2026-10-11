@@ -35,6 +35,11 @@ jobs:
           ISSUE: ${{ github.event.issue.number }}
         run: |
           gh issue edit "$ISSUE" --repo "$REPO" --add-label ai:triage
+          if gh api "repos/$REPO/issues/$ISSUE/comments" --paginate \
+               --jq 'any(.[]; .body | startswith("<!-- conduit-ai:intake -->"))' \
+             | grep -q true; then
+            echo "intake comment already present"; exit 0
+          fi
           gh issue comment "$ISSUE" --repo "$REPO" --body-file - <<'BODY'
           <!-- conduit-ai:intake -->
           Thanks for the report. This issue is in conduit's AI-assisted pipeline:
