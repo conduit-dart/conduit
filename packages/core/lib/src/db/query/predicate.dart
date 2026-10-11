@@ -49,7 +49,7 @@ class QueryPredicate {
   /// into the returned [parameters].
   ///
   /// If there are duplicate parameter names in [predicates], they will be disambiguated by suffixing
-  /// the parameter name in both [format] and [parameters] with a unique integer.
+  /// the parameter name (`@name` or `:name` placeholders) in both [format] and [parameters] with a unique integer.
   ///
   /// If [predicates] is null or empty, an empty predicate is returned. If [predicates] contains only
   /// one predicate, that predicate is returned.
@@ -73,10 +73,12 @@ class QueryPredicate {
     //   (1) every constituent has an `expression` AST — partial AST
     //       coverage would silently corrupt positional-parameter
     //       renders by missing some values.
-    //   (2) no parameter-name collision occurred (the dupe-renaming
-    //       below only rewrites the format string + map, not the
-    //       AST). If either condition fails we drop the AST and the
-    //       backend falls back to rendering from the format string.
+    //   (2) renamed keys are not applied to the AST. The AST renderers
+    //       disambiguate repeated parameter names themselves, so the
+    //       AST is kept as-is even when the format string and map had
+    //       to be renamed below.
+    // If (1) fails we drop the AST and the backend falls back to
+    // rendering from the format string.
     final childExpressions = <SqlExpression>[];
     var allHaveExpressions = true;
     for (final p in predicateList) {
@@ -90,7 +92,6 @@ class QueryPredicate {
 
     // If we have duplicate keys anywhere, we need to disambiguate them.
     var dupeCounter = 0;
-    var dupeOccurred = false;
     final allFormatStrings = [];
     final valueMap = <String, dynamic>{};
     for (final predicate in predicateList) {
@@ -99,14 +100,24 @@ class QueryPredicate {
           .toList();
 
       if (duplicateKeys.isNotEmpty) {
-        dupeOccurred = true;
         var fmt = predicate.format;
         final Map<String, String> dupeMap = {};
         for (final key in duplicateKeys) {
-          final replacementKey = "$key$dupeCounter";
-          fmt = fmt.replaceAll("@$key", "@$replacementKey");
+          String replacementKey;
+          do {
+            replacementKey = "$key$dupeCounter";
+            dupeCounter++;
+          } while (valueMap.containsKey(replacementKey) ||
+              predicateList.any(
+                (p) => p.parameters.containsKey(replacementKey),
+              ));
+          // Rewrite both `@key` and `:key` placeholders, but not a
+          // longer name sharing the prefix or a `::` cast.
+          fmt = fmt.replaceAll(
+            RegExp("(?<=@|(?<!:):)${RegExp.escape(key)}(?!\\w)"),
+            replacementKey,
+          );
           dupeMap[key] = replacementKey;
-          dupeCounter++;
         }
 
         allFormatStrings.add(fmt);
@@ -120,7 +131,7 @@ class QueryPredicate {
     }
 
     final predicateFormat = "(${allFormatStrings.join(" AND ")})";
-    final combinedExpression = (allHaveExpressions && !dupeOccurred)
+    final combinedExpression = allHaveExpressions
         ? LogicalExpression('AND', childExpressions)
         : null;
     return QueryPredicate(predicateFormat, valueMap, combinedExpression);

@@ -110,6 +110,20 @@ void main() {
       expect(n, 1);
     });
 
+    test('two predicates on the same column are ANDed', () async {
+      context = await _bootstrap([Simple]);
+      for (final n in ['a', 'b', 'c', 'd']) {
+        await (Query<Simple>(context!)..values.name = n).insert();
+      }
+      final all = await Query<Simple>(context!).fetch();
+      final mid =
+          await (Query<Simple>(context!)
+                ..where((s) => s.id).lessThan(all[3].id!)
+                ..where((s) => s.id).greaterThan(all[0].id!))
+              .fetch();
+      expect(mid.map((r) => r.name).toSet(), {'b', 'c'});
+    });
+
     test('count via reduce', () async {
       context = await _bootstrap([Simple]);
       for (final n in ['a', 'b', 'c']) {
