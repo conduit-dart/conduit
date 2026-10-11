@@ -1,0 +1,42 @@
+# AI pipeline: clear transient stage labels when an issue closes.
+#
+# Stage labels (`ai:in-review`, `ai:blocked`, ...) describe work in flight.
+# Once the issue is closed, by a merged AI PR or by hand, they only add noise
+# to label filters. The gate labels a maintainer applied (`ai:approved`,
+# `deps:approved`, `ai:stop`) stay as a record. See docs/AI_PIPELINE.md.
+name: AI cleanup
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+
+jobs:
+  cleanup:
+    if: >-
+      vars.AI_PIPELINE_ENABLED == 'true'
+      && (contains(github.event.issue.labels.*.name, 'ai:triage')
+          || contains(github.event.issue.labels.*.name, 'ai:researching')
+          || contains(github.event.issue.labels.*.name, 'ai:implementing')
+          || contains(github.event.issue.labels.*.name, 'ai:in-review')
+          || contains(github.event.issue.labels.*.name, 'ai:blocked')
+          || contains(github.event.issue.labels.*.name, 'ai:retry')
+          || contains(github.event.issue.labels.*.name, 'deps:review'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove stage labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+        run: |
+          args=()
+          for l in ai:triage ai:researching ai:implementing ai:in-review ai:blocked ai:retry deps:review; do
+            if jq -e --arg l "$l" 'index($l) != null' <<<"$LABELS" >/dev/null; then
+              args+=(--remove-label "$l")
+            fi
+          done
+          [ ${#args[@]} -eq 0 ] || gh issue edit "$ISSUE" --repo "$REPO" "${args[@]}"
