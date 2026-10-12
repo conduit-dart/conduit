@@ -56,6 +56,10 @@ void main() {
       );
     });
 
+    test('geography is unsupported', () {
+      expect(d.columnDefinitionType('geography', autoincrement: false), isNull);
+    });
+
     test('case-sensitive LIKE uses LIKE BINARY', () {
       expect(d.caseSensitiveLikeOperator, 'LIKE BINARY');
     });
@@ -184,6 +188,34 @@ void main() {
   });
 
   group('MysqlSchemaGenerator', () {
+    test('createTable throws a descriptive error for geography', () {
+      final gen = _Gen();
+      final t = SchemaTable('places', [
+        SchemaColumn.empty()
+          ..name = 'location'
+          ..type = ManagedPropertyType.geography
+          ..isPrimaryKey = false
+          ..autoincrement = false
+          ..isNullable = false
+          ..isIndexed = false
+          ..isUnique = false,
+      ]);
+      expect(
+        () => gen.createTable(t),
+        throwsA(
+          isA<UnsupportedError>().having(
+            (e) => e.message,
+            'message',
+            allOf(
+              contains('location'),
+              contains('geography'),
+              contains('mysql'),
+            ),
+          ),
+        ),
+      );
+    });
+
     final gen = _Gen();
 
     test('createTable emits INT AUTO_INCREMENT for serial PK', () {

@@ -56,7 +56,10 @@ The data type of a column is inferred from the Dart type of the property as show
 | `DateTime` | timestamp | `TIMESTAMP` |
 | `bool` | boolean | `BOOLEAN` |
 | `Document` | a JSON object or array | `JSONB` |
+| `GeoPoint` | latitude/longitude pair (JSON: `{"latitude": .., "longitude": ..}`) | none yet; see below |
 | Any `enum` | text, restricted to enum cases | `TEXT` |
+
+`GeoPoint` is validated on construction (latitude in -90..90, longitude in -180..180). It is the type-system foundation for geographic columns: no built-in store persists it yet, and the PostgreSQL, CockroachDB, MySQL and SQLite schema generators throw an `UnsupportedError` naming the column if a model declares one.
 
 Some types can be represented by many database types; for example, an integer can be stored as 2, 4 or 8 bytes. Use the `databaseType` of a `Column` annotation to specify:
 

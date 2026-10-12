@@ -31,6 +31,8 @@ ManagedType getManagedTypeFromType(TypeMirror type) {
     elements = getManagedTypeFromType(type.typeArguments.first);
   } else if (type.isAssignableTo(reflectType(Document))) {
     kind = ManagedPropertyType.document;
+  } else if (type.isAssignableTo(reflectType(GeoPoint))) {
+    kind = ManagedPropertyType.geography;
   } else if (type is ClassMirror && type.isEnum) {
     kind = ManagedPropertyType.string;
     final enumeratedCases = type.getField(#values).reflectee as List<dynamic>;

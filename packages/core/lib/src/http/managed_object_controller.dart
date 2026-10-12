@@ -506,6 +506,8 @@ class ManagedObjectController<InstanceType extends ManagedObject>
           return null;
         case ManagedPropertyType.document:
           return null;
+        case ManagedPropertyType.geography:
+          return null;
       }
     } on FormatException {
       throw onError ?? Response.badRequest();

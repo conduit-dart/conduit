@@ -125,6 +125,15 @@ abstract class ManagedPropertyDescription(
         );
       case ManagedPropertyType.document:
         return APISchemaObject.freeForm();
+      case ManagedPropertyType.geography:
+        return APISchemaObject.object({
+          "latitude": APISchemaObject.number()
+            ..minimum = -90
+            ..maximum = 90,
+          "longitude": APISchemaObject.number()
+            ..minimum = -180
+            ..maximum = 180,
+        })..isRequired = ["latitude", "longitude"];
     }
 
     // throw UnsupportedError("Unsupported type '$type' when documenting entity.");
@@ -339,6 +348,9 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
     } else if (type!.kind == ManagedPropertyType.document &&
         value is Document) {
       return value.data;
+    } else if (type!.kind == ManagedPropertyType.geography &&
+        value is GeoPoint) {
+      return value.toJson();
     }
 
     return value;
@@ -367,6 +379,18 @@ class ManagedAttributeDescription extends ManagedPropertyDescription {
       return enumerationValueMap[value];
     } else if (type!.kind == ManagedPropertyType.document) {
       return Document(value);
+    } else if (type!.kind == ManagedPropertyType.geography) {
+      if (value is GeoPoint) {
+        return value;
+      }
+      if (value is! Map) {
+        throw ValidationException(["invalid input value for '$name'"]);
+      }
+      try {
+        return GeoPoint.fromJson(Map<String, dynamic>.from(value));
+      } on ArgumentError {
+        throw ValidationException(["invalid input value for '$name'"]);
+      }
     } else if (type!.kind == ManagedPropertyType.list ||
         type!.kind == ManagedPropertyType.map) {
       try {

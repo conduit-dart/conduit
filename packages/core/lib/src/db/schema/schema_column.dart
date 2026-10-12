@@ -190,6 +190,8 @@ class SchemaColumn {
         return null;
       case ManagedPropertyType.document:
         return "document";
+      case ManagedPropertyType.geography:
+        return "geography";
       default:
         return null;
     }
@@ -212,6 +214,8 @@ class SchemaColumn {
         return ManagedPropertyType.string;
       case "document":
         return ManagedPropertyType.document;
+      case "geography":
+        return ManagedPropertyType.geography;
       default:
         return null;
     }

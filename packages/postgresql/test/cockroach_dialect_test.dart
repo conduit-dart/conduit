@@ -1,4 +1,6 @@
+import 'package:conduit_core/conduit_core.dart';
 import 'package:conduit_postgresql/conduit_postgresql.dart';
+import 'package:conduit_postgresql/src/postgresql_schema_generator.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -19,6 +21,10 @@ void main() {
         d.columnDefinitionType('datetime', autoincrement: false),
         'TIMESTAMP',
       );
+    });
+
+    test('geography is unsupported', () {
+      expect(d.columnDefinitionType('geography', autoincrement: false), isNull);
     });
 
     test('inherits @name parameter syntax (wire-compat)', () {
@@ -88,4 +94,52 @@ void main() {
       expect(store.versionTable.name, '_conduit_version_cockroach');
     });
   });
+
+  group('geography', () {
+    final t = SchemaTable('places', [
+      SchemaColumn.empty()
+        ..name = 'location'
+        ..type = ManagedPropertyType.geography
+        ..isPrimaryKey = false
+        ..autoincrement = false
+        ..isNullable = false
+        ..isIndexed = false
+        ..isUnique = false,
+    ]);
+
+    test('dialects have no geography column type yet', () {
+      expect(
+        const PostgresSqlDialect().columnDefinitionType(
+          'geography',
+          autoincrement: false,
+        ),
+        isNull,
+      );
+      expect(
+        const CockroachSqlDialect().columnDefinitionType(
+          'geography',
+          autoincrement: false,
+        ),
+        isNull,
+      );
+    });
+
+    test('Cockroach schema generator throws a descriptive error', () {
+      expect(
+        () => _CockroachGen().createTable(t),
+        throwsA(
+          isA<UnsupportedError>().having(
+            (e) => e.message,
+            'message',
+            allOf(contains('location'), contains('geography')),
+          ),
+        ),
+      );
+    });
+  });
+}
+
+class _CockroachGen with PostgreSQLSchemaGenerator {
+  @override
+  SqlDialect get dialect => const CockroachSqlDialect();
 }
