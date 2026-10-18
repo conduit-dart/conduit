@@ -82,7 +82,11 @@ nav:
         - 'Deploy on AWS (VM)': 'deploy/deploy_aws.md'
         - 'Deploying without aqueduct serve (VM)': 'deploy/script.md'
     - Migration:
-        - 'migration/4.1.8.md'
+        - 'Overview': 'migration/README.md'
+        - '7.0': 'migration/7.0.md'
+        - '6.0': 'migration/6.0.md'
+        - '4.3.6': 'migration/4.3.6.md'
+        - '4.1.8': 'migration/4.1.8.md'
   - Snippets:
     - 'Overview': 'snippets/README.md'
     - 'HTTP': 'snippets/http.md'
