@@ -57,7 +57,9 @@ melos exec --scope="conduit_core" -- dart test test/http/router_test.dart   # on
 - Branch naming: `docs/<desc>`, `fix/<user>-<desc>`, `feature/<user>-<desc>`,
   `refactor/<user>-<desc>`.
 - Every non-doc change needs tests, including failure cases.
-- New packages must carry the root-level BSD-2 license.
+- New packages carry an MIT `LICENSE` (copyright AnhQuan Nguyen). Original
+  Stable-Kernel-era packages keep their BSD-2-Clause license (`config` is
+  BSD-3-Clause); don't relicense them.
 
 ## Sharp edges (read before touching)
 
