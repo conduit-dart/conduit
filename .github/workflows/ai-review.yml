@@ -4,6 +4,9 @@
 # (`claude/ai-issue-<n>-*` in this repository, never forks). Posts the AI
 # review to the linked issue and a pointer on the PR. It never approves or
 # merges: the normal CI and a maintainer's review remain the gate.
+#
+# The agent job holds read-only permissions; a separate GitHub-hosted job
+# posts the review, so no write token is ever in the agent's container.
 # See docs/AI_PIPELINE.md.
 name: AI review
 
@@ -18,8 +21,8 @@ concurrency:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
+  issues: read
+  pull-requests: read
 
 jobs:
   gate:
@@ -53,45 +56,86 @@ jobs:
     if: needs.gate.outputs.ok == 'true'
     runs-on: [self-hosted, conduit-ai]
     timeout-minutes: 45
+    outputs:
+      issue: ${{ steps.ctx.outputs.issue }}
+      review: ${{ steps.agent.outputs.review }}
     env:
       REPO: ${{ github.repository }}
       PR: ${{ github.event.pull_request.number }}
       HEAD_REF: ${{ github.head_ref }}
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      # After the agent runs, later steps must not run anything it could have
+      # planted (docs/AI_PIPELINE.md, "Containing the agent"): no
+      # user-writable directory on PATH, no gh configuration, and git only
+      # once its configuration matches the fingerprint taken before the agent.
+      PATH: /opt/dart-sdk/bin:/usr/lib/postgresql/18/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      GH_CONFIG_DIR: /nonexistent/gh
+      GH_NO_UPDATE_NOTIFIER: "1"
+      GIT_FINGERPRINT: >-
+        { cat .git/config .git/info/* .git/objects/info/alternates .git/hooks/*
+        ~/.gitconfig ~/.config/git/* 2>/dev/null;
+        ls -A .git/hooks .git/info ~/.config/git 2>/dev/null; } | sha256sum
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Load issue context
+        id: ctx
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           issue=$(sed -nE 's#^claude/ai-issue-([0-9]+)-.*#\1#p' <<<"$HEAD_REF")
           [ -n "$issue" ] || { echo "cannot read an issue number from $HEAD_REF" >&2; exit 1; }
           echo "ISSUE=$issue" >> "$GITHUB_ENV"
+          echo "issue=$issue" >> "$GITHUB_OUTPUT"
           mkdir -p .ai
           gh issue view "$issue" --repo "$REPO" --json number,title,body,comments > .ai/issue.json
           jq -r '[.comments[] | select(.body | startswith("<!-- conduit-ai:research -->"))] | last | .body // ""' \
             .ai/issue.json > .ai/research.md
           git fetch -q origin master
+          echo "gitfp=$(bash -c "$GIT_FINGERPRINT")" >> "$GITHUB_OUTPUT"
 
       - name: Review (agent)
+        id: agent
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           AI_MODEL: ${{ vars.AI_MODEL }}
+          GITFP: ${{ steps.ctx.outputs.gitfp }}
         run: |
           tool/ai/run-agent.sh .github/ai/prompts/review.md 60 \
             "Read,Glob,Grep,Write(.ai/review.md),Bash(git diff:*),Bash(git log:*),Bash(git show:*)"
+          # `git diff/log --output=<file>` can write any file: check git first.
+          [ "$(bash -c "$GIT_FINGERPRINT")" = "$GITFP" ] \
+            || { echo "git configuration or hooks changed during the agent run" >&2; exit 1; }
+          stray=$(git status --porcelain --untracked-files=all | grep -v ' \.ai/' || true)
+          [ -z "$stray" ] || { echo "review agent changed files outside .ai/:" >&2; echo "$stray" >&2; exit 1; }
           test -s .ai/review.md
-          git diff --quiet || { echo "review agent modified tracked files" >&2; exit 1; }
+          delim="EOF_$(od -An -N8 -tx8 /dev/urandom | tr -d ' ')"
+          { echo "review<<$delim"; cat .ai/review.md; echo; echo "$delim"; } >> "$GITHUB_OUTPUT"
 
+  post:
+    needs: review
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    env:
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      ISSUE: ${{ needs.review.outputs.issue }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
       - name: Post review notes
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REVIEW: ${{ needs.review.outputs.review }}
         run: |
+          mkdir -p .ai
+          printf '%s\n' "$REVIEW" > .ai/review.md
           {
             echo "<!-- conduit-ai:review -->"
             echo "## AI review of #${PR} (\`${HEAD_SHA:0:8}\`)"

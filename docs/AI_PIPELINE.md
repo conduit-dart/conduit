@@ -140,12 +140,15 @@ These follow the non-negotiables in AGENTIC_MAINTENANCE.md.
   `tool/ai/bin/next_version.dart`.
 - **Agents never hold push credentials.** Agents edit the working tree; the
   workflow verifies the result and commits, pushes and opens PRs with the
-  GitHub App token. Agents cannot touch `.github/`, and every agent runs
+  GitHub App token, which never sits in the workspace (see *Containing the
+  agent*). Agents cannot change protected paths (`.github/`, `tool/ai/`,
+  CI and lint configuration, the root `pubspec.yaml`), and every agent runs
   with an explicit tool allow-list (`tool/ai/run-agent.sh`).
 - **Issue text is data.** Prompts (`.github/ai/prompts/`) tell agents to
-  treat issue content as a description, not instructions; web access is
-  limited to pub.dev and dart.dev; the agent's own environment and the
-  runner's credentials are unreadable.
+  treat issue content as a description, not instructions; web access through
+  the agent's tools is limited to pub.dev and dart.dev, and its Read tool
+  cannot open the runner's credential files. Those rules bind only the
+  agent's own tools, which is why the next section exists.
 - **One PR per issue.** Implementation refuses to run while an AI PR for
   the issue is open. Research never opens dependency PRs: it only reports
   what is outdated, and upgrades come through Dependabot with full CI.
@@ -155,6 +158,48 @@ These follow the non-negotiables in AGENTIC_MAINTENANCE.md.
 - **Branch names** use the `claude/` prefix so the required `unit` job runs
   on AI PRs (the job is skipped for other prefixes, which would satisfy the
   required check without running tests).
+
+### Containing the agent
+
+The tool allow-list is not a sandbox. Code the agent runs through an allowed
+command (`dart`, `melos`, the tests it writes) can do anything the runner
+user can, and even `git log` or `git diff` can write any file through
+`--output`. A planted `core.fsmonitor` in `.git/config` then runs code at
+the pipeline's next git command. So everything after an agent step assumes
+the agent may have tampered with the container, and the steps that hold the
+App token rely only on things the agent cannot change:
+
+- **No credentials in the workspace.** Checkouts use
+  `persist-credentials: false` and take no `token:` input (action post steps
+  receive the same inputs). The App token is passed to `git push` for that
+  one command, and `create-github-app-token` runs with
+  `skip-token-revoke: true` because its post step runs action code from a
+  directory the agent can write to; the job's last step revokes the token
+  instead.
+- **`tool/ai/contain.sh`** wraps the agent and every later run of
+  agent-influenced code (tests, analysis, the Dart tools, which load the pub
+  cache). The command runs without the job's secrets and without the
+  `$GITHUB_ENV` / `$GITHUB_PATH` / `$GITHUB_OUTPUT` files, which are restored
+  afterwards, so it cannot set environment variables such as `LD_PRELOAD`
+  for later steps. Every process it started is then killed, matched by pid
+  and start time, so nothing outlives it to read a later step's environment.
+- **Git is checked before it runs.** A fingerprint of `.git/config`,
+  `.git/info`, hooks, alternates and the user's git configuration is taken
+  before the agent starts and compared before any later git command.
+- **The tree is checked before anything in it runs.** Research and review
+  may change only `.ai/`; implementation fails on protected paths, checked
+  locally and again against GitHub's own compare of the pushed branch (the
+  local checks trust an object store the agent could write to; a branch that
+  fails is deleted).
+- **A fixed `PATH`** without user-writable directories, and `gh` reads no
+  configuration (`GH_CONFIG_DIR` points at a directory nobody can create).
+- **The review job has read-only permissions.** A separate GitHub-hosted job
+  posts the review it produced.
+
+What remains: during its own step the agent can still read
+`CLAUDE_CODE_OAUTH_TOKEN` (through `/proc`), and the runner limits only
+where that could be sent (see the runner's egress allow-list). Moving the
+token out of the job entirely needs a host-side credential proxy.
 
 ## Runner
 
@@ -204,7 +249,7 @@ cannot spend it; for a pipeline the whole team drives, use an
   comment, and read the approved plan back from it.
 - `bin/next_version.dart`: next version and breaking commits from
   conventional commits.
-- `gate.sh`, `run-agent.sh`, `setup-labels.sh`, and `outdated_report.jq` (the research note's outdated-dependency table).
+- `gate.sh`, `run-agent.sh`, `contain.sh`, `setup-labels.sh`, and `outdated_report.jq` (the research note's outdated-dependency table).
 
 Run its tests with `cd tool/ai && dart test` (offline; pub.dev responses
 are recorded fixtures).
